@@ -9,17 +9,31 @@ import {
 import './Portal.css';
 
 export default function Portal() {
-  // Theme State (default to dark)
-  const [theme, setTheme] = useState(localStorage.getItem('crm-theme') || 'dark');
+  // Theme State (light / dark / system)
+  const [themeMode, setThemeMode] = useState(localStorage.getItem('crm-theme-mode') || 'dark');
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
   
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove('light-theme');
-    if (theme === 'light') {
+    
+    if (themeMode === 'light') {
       root.classList.add('light-theme');
+    } else if (themeMode === 'system') {
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (!systemPrefersDark) {
+        root.classList.add('light-theme');
+      }
     }
-    localStorage.setItem('crm-theme', theme);
-  }, [theme]);
+    localStorage.setItem('crm-theme-mode', themeMode);
+  }, [themeMode]);
+
+  useEffect(() => {
+    if (!isThemeMenuOpen) return;
+    const closeMenu = () => setIsThemeMenuOpen(false);
+    document.addEventListener('click', closeMenu);
+    return () => document.removeEventListener('click', closeMenu);
+  }, [isThemeMenuOpen]);
 
   // HNWI Private Office Mandate Toggle
   const [isHnwiMode, setIsHnwiMode] = useState(false);
@@ -437,7 +451,7 @@ export default function Portal() {
   };
 
   return (
-    <div className={`portal-container ${theme}-theme`} style={{ paddingTop: '80px' }}>
+    <div className="portal-container" style={{ paddingTop: '80px' }}>
       {/* Toast Notification */}
       {notification && (
         <div className="notification premium-toast">
@@ -461,9 +475,8 @@ export default function Portal() {
       <nav className="luxury-navbar">
         <div className="nav-container">
           <a href="#" className="nav-logo">
-            <span className="logo-number">24K</span>
-            <span className="logo-text">Realtors</span>
-            <span className="logo-city">Pune</span>
+            <span className="logo-number">24K REALTORS</span>
+            <span className="logo-city-tagline">PUNE • PREMIUM ADVISORY</span>
           </a>
 
           {/* HNWI Portfolio Mode Selector Desk */}
@@ -476,33 +489,79 @@ export default function Portal() {
           </div>
           
           <div className="nav-links">
-            <a href="#philosophy">Our Philosophy</a>
-            <a href="#corridors">Tech Corridors</a>
-            <a href="#listings-anchor">{isHnwiMode ? 'Private Portfolios' : 'Signature Listings'}</a>
-            <a href="#testimonials">Client Reviews</a>
-            <a href="/dashboard" className="nav-dashboard-link">CRM Terminal</a>
+            <a href="#philosophy">OVERVIEW</a>
+            <a href="#corridors">WHY 24K</a>
+            <a href="#listings-anchor">{isHnwiMode ? 'PORTFOLIOS' : 'PRICE LIST'}</a>
+            <a href="#listings-anchor">FLOOR PLANS</a>
+            <a href="#testimonials">CLIENTS</a>
+            <a href="/dashboard" className="nav-dashboard-link">CRM</a>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            {/* Premium Gold Day/Night Toggle Switch */}
-            <div 
-              className="premium-theme-switch" 
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              title={`Switch to ${theme === 'dark' ? 'Day' : 'Night'} Mode`}
-            >
-              <div className={`switch-knob ${theme === 'light' ? 'light' : 'dark'}`}>
-                {theme === 'light' ? <Sun size={12} fill="#D4AF37" color="#D4AF37" /> : <Moon size={12} fill="#D4AF37" color="#D4AF37" />}
-              </div>
-              <div className="switch-icons">
-                <Sun size={12} color={theme === 'light' ? '#D4AF37' : '#8E9AAF'} />
-                <Moon size={12} color={theme === 'dark' ? '#D4AF37' : '#8E9AAF'} />
-              </div>
-            </div>
-
-            <a href="https://wa.me/919673000053" target="_blank" rel="noopener noreferrer" className="nav-cta">
-              <Phone size={14} />
-              <span>Contact Advisory</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {/* Phone Number Pill Button */}
+            <a href="tel:+919673000053" className="nav-pill-phone">
+              <Phone size={13} />
+              <span>+91 96730 00053</span>
             </a>
+            
+            {/* WhatsApp Pill Button */}
+            <a href="https://wa.me/919673000053" target="_blank" rel="noopener noreferrer" className="nav-pill-whatsapp">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+                <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371c1.394.756 2.96 1.157 4.777 1.158h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2zm5.787 14.404c-.24.675-1.397 1.285-1.92 1.36-.474.07-1.088.13-3.18-.737-2.677-1.11-4.4-3.837-4.536-4.015-.132-.178-1.08-1.433-1.08-2.73 0-1.298.68-1.936.92-2.199.243-.263.53-.328.706-.328.176 0 .353.003.507.01.162.007.382-.062.597.45.22.524.75 1.83.816 1.964.066.13.11.286.022.463-.087.177-.13.287-.26.439-.13.15-.27.337-.385.45-.126.126-.259.263-.11.517.15.253.66.1.91 1.488.75 1.309 1.37 2.14 2.15 2.65.783.51 1.237.585 1.58.204.34-.38 1.484-1.72 1.88-2.31.398-.59.794-.49 1.346-.29.553.2.3.5 1.764 1.226.22.11.365.163.475.328.11.165.11.954-.13 1.63z"/>
+              </svg>
+              <span>WhatsApp</span>
+            </a>
+
+            {/* Book Visit Pill Button */}
+            <button 
+              onClick={() => { setSelectedChauffeurProp(properties[0] || null); setIsChauffeurModalOpen(true); }} 
+              className="nav-pill-book"
+            >
+              <Calendar size={13} />
+              <span>BOOK VISIT</span>
+            </button>
+
+            {/* Circular Theme Dropdown Selector */}
+            <div className="nav-theme-dropdown-container">
+              <button 
+                className="nav-theme-circle-btn" 
+                onClick={(e) => { e.stopPropagation(); setIsThemeMenuOpen(!isThemeMenuOpen); }}
+                title="Toggle Theme Mode"
+              >
+                {themeMode === 'light' && <Sun size={13} />}
+                {themeMode === 'dark' && <Moon size={13} />}
+                {themeMode === 'system' && <Laptop size={13} />}
+              </button>
+              
+              {isThemeMenuOpen && (
+                <div className="theme-dropdown-menu">
+                  <button 
+                    className={`theme-menu-item ${themeMode === 'light' ? 'active' : ''}`}
+                    onClick={() => setThemeMode('light')}
+                  >
+                    <Sun size={12} />
+                    <span>Light Theme</span>
+                    {themeMode === 'light' && <span className="checkmark">✓</span>}
+                  </button>
+                  <button 
+                    className={`theme-menu-item ${themeMode === 'dark' ? 'active' : ''}`}
+                    onClick={() => setThemeMode('dark')}
+                  >
+                    <Moon size={12} />
+                    <span>Dark Theme</span>
+                    {themeMode === 'dark' && <span className="checkmark">✓</span>}
+                  </button>
+                  <button 
+                    className={`theme-menu-item ${themeMode === 'system' ? 'active' : ''}`}
+                    onClick={() => setThemeMode('system')}
+                  >
+                    <Laptop size={12} />
+                    <span>System Preference</span>
+                    {themeMode === 'system' && <span className="checkmark">✓</span>}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </nav>
