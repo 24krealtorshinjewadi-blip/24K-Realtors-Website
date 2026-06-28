@@ -1,0 +1,66 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: twentyfourk-realestate
+
+whatsapp:
+  api:
+    url: ${WHATSAPP_API_URL:https://graph.facebook.com/v20.0/103984029348928/messages}
+    token: ${WHATSAPP_API_TOKEN:EAAXX_PLACEHOLDER_MOCK_TOKEN}
+    template: ${WHATSAPP_API_TEMPLATE:welcome_lead_intro}
+
+---
+# Development Profile (Active by default, uses H2 database)
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:twentyfourkdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none # Flyway manages DB creation
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    clean-disabled: true
+
+server:
+  port: 8080
+
+---
+# Production Profile (uses PostgreSQL)
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:twentyfourk}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none # Flyway manages DB creation in production
+    show-sql: false
+  flyway:
+    enabled: true
+    clean-disabled: true
+
+server:
+  port: 8080
