@@ -39,7 +39,7 @@
 }
 
 .nav-container {
-  max-width: 1200px;
+  max-width: 1450px;
   margin: 0 auto;
   height: 100%;
   display: flex;
@@ -130,18 +130,20 @@
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
 }
 
 .nav-links a {
   color: var(--text-muted);
   text-decoration: none;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   transition: all 0.3s ease;
   position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-links a:hover {
@@ -182,6 +184,8 @@
   gap: 6px;
   text-decoration: none;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-pill-phone:hover {
@@ -203,6 +207,8 @@
   gap: 6px;
   text-decoration: none;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-pill-whatsapp:hover {
@@ -224,6 +230,8 @@
   cursor: pointer;
   letter-spacing: 0.04em;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-pill-book:hover {

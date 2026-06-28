@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import './Portal.css';
 
-export default function Portal() {
+export default function Portal({ onViewChange }) {
   // Theme State (light / dark / system)
   const [themeMode, setThemeMode] = useState(localStorage.getItem('crm-theme-mode') || 'dark');
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
@@ -494,7 +494,13 @@ export default function Portal() {
             <a href="#listings-anchor">{isHnwiMode ? 'PORTFOLIOS' : 'PRICE LIST'}</a>
             <a href="#listings-anchor">FLOOR PLANS</a>
             <a href="#testimonials">CLIENTS</a>
-            <a href="/dashboard" className="nav-dashboard-link">CRM</a>
+            <button 
+              onClick={() => onViewChange && onViewChange('dashboard')} 
+              className="nav-dashboard-link"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none' }}
+            >
+              CRM
+            </button>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

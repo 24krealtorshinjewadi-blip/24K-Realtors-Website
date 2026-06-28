@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import './Dashboard.css';
 
-export default function Dashboard() {
+export default function Dashboard({ onViewChange }) {
   // Authentication state
   const [isLoggedIn, setIsLoggedIn] = useState(apiService.isAuthenticated());
   const [authTab, setAuthTab] = useState('login'); // login | register
@@ -472,6 +472,14 @@ export default function Dashboard() {
               {authLoading ? <Loader className="animate-spin" size={20} /> : (authTab === 'login' ? 'Secure Login' : 'Register Operator')}
             </button>
           </form>
+          <button 
+            type="button" 
+            onClick={() => onViewChange && onViewChange('portal')} 
+            className="btn-outline" 
+            style={{ width: '100%', marginTop: '12px', justifyContent: 'center' }}
+          >
+            ← Return to Portal
+          </button>
         </div>
       </div>
     );
@@ -486,10 +494,16 @@ export default function Dashboard() {
           <h1 className="luxury-title" style={{ fontSize: '1.8rem', marginBottom: '4px' }}>24K CRM Dashboard</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Real-time listing pipeline and round-robin lead allocation terminal.</p>
         </div>
-        <button onClick={handleLogout} className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FF4D6D', borderColor: 'rgba(255,77,109,0.2)' }}>
-          <LogOut size={16} />
-          Sign Out
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={() => onViewChange && onViewChange('portal')} className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Home size={16} />
+            View Portal
+          </button>
+          <button onClick={handleLogout} className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FF4D6D', borderColor: 'rgba(255,77,109,0.2)' }}>
+            <LogOut size={16} />
+            Sign Out
+          </button>
+        </div>
       </header>
 
       {/* Metrics Row */}
