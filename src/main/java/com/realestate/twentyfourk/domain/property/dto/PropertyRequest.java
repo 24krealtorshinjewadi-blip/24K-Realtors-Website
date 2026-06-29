@@ -4,6 +4,7 @@ import com.realestate.twentyfourk.domain.property.PrimeCorridor;
 import com.realestate.twentyfourk.domain.property.PropertyStatus;
 import com.realestate.twentyfourk.domain.property.PropertyType;
 import com.realestate.twentyfourk.domain.property.TransactionType;
+import com.realestate.twentyfourk.domain.property.FurnishingStatus;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -54,5 +55,10 @@ public record PropertyRequest(
         boolean verifiedListing,
         boolean exclusiveDeal,
         boolean noBrokerage,
-        String reraNumber
+        String reraNumber,
+        String imageUrl,
+        String videoUrl,
+        String threeDTourUrl,
+        FurnishingStatus furnishingStatus,
+        boolean gasPipeline
 ) {}

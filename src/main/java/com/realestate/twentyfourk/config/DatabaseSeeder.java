@@ -86,7 +86,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             
             Property prop1 = Property.builder()
                     .title("24K Opula Premium 3 BHK")
-                    .description("Luxurious residential apartments with modular kitchens, located on Baner-Balewadi Link Road, close to prime IT corridors.")
+                    .description("Luxurious residential apartments with modular kitchens, located on Baner-Balewadi Link Road, close to prime IT corridors. Features premium marble flooring, spacious decks, and piped gas connection.")
                     .propertyType(PropertyType.RESIDENTIAL)
                     .transactionType(TransactionType.BUY)
                     .price(new BigDecimal("14500000")) // 1.45 Cr
@@ -101,11 +101,16 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .verifiedListing(true)
                     .exclusiveDeal(true)
                     .reraNumber("RERA-PUN-PRM-24K091")
+                    .imageUrl("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.FULLY_FURNISHED)
+                    .gasPipeline(true)
                     .build();
 
             Property prop2 = Property.builder()
                     .title("24K Altura Smart 2 BHK")
-                    .description("Modern apartments with smart automation, located in the heart of Wakad, near Datta Mandir road, offering excellent connectivity.")
+                    .description("Modern apartments with smart automation, located in the heart of Wakad, near Datta Mandir road, offering excellent connectivity. Equipped with modular fittings and direct pipeline gas.")
                     .propertyType(PropertyType.RESIDENTIAL)
                     .transactionType(TransactionType.BUY)
                     .price(new BigDecimal("8200000")) // 82 L
@@ -116,14 +121,19 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .longitude(73.7707)
                     .bedrooms(2)
                     .bathrooms(2)
-                    .status(PropertyStatus.AVAILABLE)
+                    .status(PropertyStatus.SOLD)
                     .verifiedListing(true)
                     .reraNumber("RERA-PUN-PRM-24K074")
+                    .imageUrl("https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.SEMI_FURNISHED)
+                    .gasPipeline(true)
                     .build();
 
             Property prop3 = Property.builder()
                     .title("Hinjewadi IT Plaza Office Space")
-                    .description("Plug-and-play commercial space in Hinjewadi Phase 1, fully furnished with conference rooms, cabins, and cafeteria access.")
+                    .description("Plug-and-play commercial space in Hinjewadi Phase 1, fully furnished with conference rooms, cabins, and cafeteria access. Excellent location inside Rajiv Gandhi IT Park.")
                     .propertyType(PropertyType.COMMERCIAL)
                     .transactionType(TransactionType.RENT)
                     .price(new BigDecimal("250000")) // 2.5 L/month
@@ -134,15 +144,20 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .longitude(73.7389)
                     .bedrooms(0)
                     .bathrooms(4)
-                    .status(PropertyStatus.AVAILABLE)
+                    .status(PropertyStatus.RENTED)
                     .verifiedListing(true)
                     .noBrokerage(true)
                     .reraNumber("RERA-PUN-PRM-24K118")
+                    .imageUrl("https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.FULLY_FURNISHED)
+                    .gasPipeline(false)
                     .build();
 
             Property prop4 = Property.builder()
                     .title("Balewadi High Street Retail Showroom")
-                    .description("Prime retail space on Balewadi High Street, offering high footfall, dual frontage, and premium glass architecture.")
+                    .description("Prime retail space on Balewadi High Street, offering high footfall, dual frontage, and premium glass architecture. Ideal for boutique or luxury brand outlet.")
                     .propertyType(PropertyType.COMMERCIAL)
                     .transactionType(TransactionType.RENT)
                     .price(new BigDecimal("180000")) // 1.8 L/month
@@ -156,11 +171,16 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .status(PropertyStatus.AVAILABLE)
                     .noBrokerage(true)
                     .reraNumber("RERA-PUN-PRM-24K085")
+                    .imageUrl("https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.UNFURNISHED)
+                    .gasPipeline(false)
                     .build();
 
             Property prop5 = Property.builder()
                     .title("24K Glitterati Elite 4 BHK Penthouse")
-                    .description("Super-spacious ultra-luxury penthouse with private deck, panoramic views, and premium automation fittings in Tathawade.")
+                    .description("Super-spacious ultra-luxury penthouse with private deck, panoramic views, and premium automation fittings in Tathawade. Includes piped gas connection and Italian modular setup.")
                     .propertyType(PropertyType.RESIDENTIAL)
                     .transactionType(TransactionType.BUY)
                     .price(new BigDecimal("19500000")) // 1.95 Cr
@@ -175,11 +195,16 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .verifiedListing(true)
                     .exclusiveDeal(true)
                     .reraNumber("RERA-PUN-PRM-24K041")
+                    .imageUrl("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.FULLY_FURNISHED)
+                    .gasPipeline(true)
                     .build();
 
             Property prop6 = Property.builder()
                     .title("Baner Corporate Tower Studio")
-                    .description("Premium corporate desk workspace office studio unit, ideal for startups and consultancy services.")
+                    .description("Premium corporate desk workspace office studio unit, ideal for startups and consultancy services. Centrally located on Baner High Street.")
                     .propertyType(PropertyType.COMMERCIAL)
                     .transactionType(TransactionType.BUY)
                     .price(new BigDecimal("12500000")) // 1.25 Cr
@@ -193,11 +218,16 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .status(PropertyStatus.AVAILABLE)
                     .noBrokerage(true)
                     .reraNumber("RERA-PUN-PRM-24K199")
+                    .imageUrl("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.SEMI_FURNISHED)
+                    .gasPipeline(false)
                     .build();
 
             Property prop7 = Property.builder()
                     .title("24K Mahalunge Oasis 3 BHK")
-                    .description("Premium apartments featuring state-of-the-art ventilation, modular configurations, and scenic views in Mahalunge.")
+                    .description("Premium apartments featuring state-of-the-art ventilation, modular configurations, and scenic views in Mahalunge. Complete with private amenities and gas connection.")
                     .propertyType(PropertyType.RESIDENTIAL)
                     .transactionType(TransactionType.BUY)
                     .price(new BigDecimal("11000000")) // 1.10 Cr
@@ -212,6 +242,11 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .verifiedListing(true)
                     .noBrokerage(true)
                     .reraNumber("RERA-PUN-PRM-24K212")
+                    .imageUrl("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.FULLY_FURNISHED)
+                    .gasPipeline(true)
                     .build();
 
             propertyRepository.saveAll(List.of(prop1, prop2, prop3, prop4, prop5, prop6, prop7));

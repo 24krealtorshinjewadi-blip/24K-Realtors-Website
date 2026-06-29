@@ -101,6 +101,11 @@ public class PropertyServiceImpl implements PropertyService {
                 .bedrooms(request.bedrooms())
                 .bathrooms(request.bathrooms())
                 .status(request.status())
+                .imageUrl(request.imageUrl())
+                .videoUrl(request.videoUrl())
+                .threeDTourUrl(request.threeDTourUrl())
+                .furnishingStatus(request.furnishingStatus())
+                .gasPipeline(request.gasPipeline())
                 .build();
     }
 
@@ -122,6 +127,11 @@ public class PropertyServiceImpl implements PropertyService {
         existingProperty.setBedrooms(request.bedrooms());
         existingProperty.setBathrooms(request.bathrooms());
         existingProperty.setStatus(request.status());
+        existingProperty.setImageUrl(request.imageUrl());
+        existingProperty.setVideoUrl(request.videoUrl());
+        existingProperty.setThreeDTourUrl(request.threeDTourUrl());
+        existingProperty.setFurnishingStatus(request.furnishingStatus());
+        existingProperty.setGasPipeline(request.gasPipeline());
     }
 
     private PropertyResponse mapToResponse(Property property) {
@@ -144,8 +154,14 @@ public class PropertyServiceImpl implements PropertyService {
                 property.isExclusiveDeal(),
                 property.isNoBrokerage(),
                 property.getReraNumber(),
+                property.getImageUrl(),
+                property.getVideoUrl(),
+                property.getThreeDTourUrl(),
+                property.getFurnishingStatus(),
+                property.isGasPipeline(),
                 property.getCreatedDate(),
                 property.getUpdatedDate()
         );
     }
+
 }

@@ -4,6 +4,7 @@ import com.realestate.twentyfourk.domain.property.PrimeCorridor;
 import com.realestate.twentyfourk.domain.property.PropertyStatus;
 import com.realestate.twentyfourk.domain.property.PropertyType;
 import com.realestate.twentyfourk.domain.property.TransactionType;
+import com.realestate.twentyfourk.domain.property.FurnishingStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,6 +29,11 @@ public record PropertyResponse(
         boolean exclusiveDeal,
         boolean noBrokerage,
         String reraNumber,
+        String imageUrl,
+        String videoUrl,
+        String threeDTourUrl,
+        FurnishingStatus furnishingStatus,
+        boolean gasPipeline,
         LocalDateTime createdDate,
         LocalDateTime updatedDate
 ) {}

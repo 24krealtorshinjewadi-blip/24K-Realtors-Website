@@ -54,7 +54,12 @@ export default function Dashboard({ onViewChange }) {
     verifiedListing: false,
     exclusiveDeal: false,
     noBrokerage: false,
-    reraNumber: ''
+    reraNumber: '',
+    imageUrl: '',
+    videoUrl: '',
+    threeDTourUrl: '',
+    furnishingStatus: 'FULLY_FURNISHED',
+    gasPipeline: false
   });
 
   const [formSubmitLoading, setFormSubmitLoading] = useState(false);
@@ -183,7 +188,12 @@ export default function Dashboard({ onViewChange }) {
       verifiedListing: property.verifiedListing || false,
       exclusiveDeal: property.exclusiveDeal || false,
       noBrokerage: property.noBrokerage || false,
-      reraNumber: property.reraNumber || ''
+      reraNumber: property.reraNumber || '',
+      imageUrl: property.imageUrl || '',
+      videoUrl: property.videoUrl || '',
+      threeDTourUrl: property.threeDTourUrl || '',
+      furnishingStatus: property.furnishingStatus || 'FULLY_FURNISHED',
+      gasPipeline: property.gasPipeline || false
     });
     setShowPropForm(true);
   };
@@ -206,7 +216,12 @@ export default function Dashboard({ onViewChange }) {
       verifiedListing: false,
       exclusiveDeal: false,
       noBrokerage: false,
-      reraNumber: ''
+      reraNumber: '',
+      imageUrl: '',
+      videoUrl: '',
+      threeDTourUrl: '',
+      furnishingStatus: 'FULLY_FURNISHED',
+      gasPipeline: false
     });
   };
 
@@ -223,7 +238,12 @@ export default function Dashboard({ onViewChange }) {
         verifiedListing: propertyForm.verifiedListing,
         exclusiveDeal: propertyForm.exclusiveDeal,
         noBrokerage: propertyForm.noBrokerage,
-        reraNumber: propertyForm.reraNumber || 'RERA-PUN-PRM-24K' + Math.floor(100 + Math.random() * 900)
+        reraNumber: propertyForm.reraNumber || 'RERA-PUN-PRM-24K' + Math.floor(100 + Math.random() * 900),
+        imageUrl: propertyForm.imageUrl || null,
+        videoUrl: propertyForm.videoUrl || null,
+        threeDTourUrl: propertyForm.threeDTourUrl || null,
+        furnishingStatus: propertyForm.furnishingStatus,
+        gasPipeline: propertyForm.gasPipeline
       };
 
       if (editingPropertyId) {
@@ -387,6 +407,20 @@ export default function Dashboard({ onViewChange }) {
     }
     if (lowerText.includes('no brokerage') || lowerText.includes('zero brokerage') || lowerText.includes('0 brokerage') || lowerText.includes('no commission')) {
       updatedForm.noBrokerage = true;
+    }
+
+    // Furnishing Status parsing
+    if (lowerText.includes('semi furnished') || lowerText.includes('semi-furnished') || lowerText.includes('half furnished')) {
+      updatedForm.furnishingStatus = 'SEMI_FURNISHED';
+    } else if (lowerText.includes('fully furnished') || lowerText.includes('fully-furnished') || lowerText.includes('furnished')) {
+      updatedForm.furnishingStatus = 'FULLY_FURNISHED';
+    } else if (lowerText.includes('unfurnished') || lowerText.includes('raw')) {
+      updatedForm.furnishingStatus = 'UNFURNISHED';
+    }
+
+    // Gas Pipeline parsing
+    if (lowerText.includes('gas pipe') || lowerText.includes('piped gas') || lowerText.includes('gas pipeline') || lowerText.includes('gas connection')) {
+      updatedForm.gasPipeline = true;
     }
 
     // 9.5 RERA Number Match
@@ -836,6 +870,45 @@ export default function Dashboard({ onViewChange }) {
                   <div className="form-group">
                     <label className="form-label">Detailed Address</label>
                     <input type="text" name="address" className="form-input" required placeholder="Address..." value={propertyForm.address} onChange={e => setPropertyForm({...propertyForm, address: e.target.value})} />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Image URL</label>
+                    <input type="text" name="imageUrl" className="form-input" placeholder="https://images.unsplash.com/... or local url" value={propertyForm.imageUrl} onChange={e => setPropertyForm({...propertyForm, imageUrl: e.target.value})} />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Drone Walkthrough Video URL (embed format)</label>
+                    <input type="text" name="videoUrl" className="form-input" placeholder="e.g. https://www.youtube.com/embed/dQw4w9WgXcQ" value={propertyForm.videoUrl} onChange={e => setPropertyForm({...propertyForm, videoUrl: e.target.value})} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">3D Tour URL (Matterport embed link)</label>
+                    <input type="text" name="threeDTourUrl" className="form-input" placeholder="e.g. https://my.matterport.com/show/?m=JGPmBB6q58g" value={propertyForm.threeDTourUrl} onChange={e => setPropertyForm({...propertyForm, threeDTourUrl: e.target.value})} />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Furnishing Status</label>
+                    <select name="furnishingStatus" value={propertyForm.furnishingStatus} onChange={e => setPropertyForm({...propertyForm, furnishingStatus: e.target.value})} className="form-input">
+                      <option value="FULLY_FURNISHED">Fully Furnished</option>
+                      <option value="SEMI_FURNISHED">Semi Furnished</option>
+                      <option value="UNFURNISHED">Unfurnished</option>
+                    </select>
+                  </div>
+                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: 'var(--text-light)', marginTop: '24px' }}>
+                      <input 
+                        type="checkbox" 
+                        checked={propertyForm.gasPipeline} 
+                        onChange={e => setPropertyForm({...propertyForm, gasPipeline: e.target.checked})} 
+                      />
+                      Piped Gas Connection (Gas Pipe)
+                    </label>
                   </div>
                 </div>
 

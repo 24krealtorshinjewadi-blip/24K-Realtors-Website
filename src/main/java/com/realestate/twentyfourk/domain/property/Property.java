@@ -82,6 +82,24 @@ public class Property {
     @Column(name = "status", nullable = false)
     private PropertyStatus status;
 
+    @Column(name = "image_url", length = 1024)
+    private String imageUrl;
+
+    @Column(name = "video_url", length = 1024)
+    private String videoUrl;
+
+    @Column(name = "three_d_tour_url", length = 1024)
+    private String threeDTourUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "furnishing_status")
+    private FurnishingStatus furnishingStatus;
+
+    @Column(name = "gas_pipeline", nullable = false)
+    @Builder.Default
+    private boolean gasPipeline = false;
+
+
     @CreationTimestamp
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;

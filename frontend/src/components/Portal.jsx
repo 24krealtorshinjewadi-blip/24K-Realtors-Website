@@ -109,6 +109,31 @@ export default function Portal({ onViewChange }) {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [activeTourProperty, setActiveTourProperty] = useState(null);
 
+  // Closed Deals FOMO State
+  const [closedProperties, setClosedProperties] = useState([]);
+  const [closedLoading, setClosedLoading] = useState(true);
+
+  // 3D Tour State
+  const [is3DTourOpen, setIs3DTourOpen] = useState(false);
+  const [active3DTourProperty, setActive3DTourProperty] = useState(null);
+
+  // Fetch closed properties on mount
+  useEffect(() => {
+    const fetchClosedProperties = async () => {
+      setClosedLoading(true);
+      try {
+        const soldData = await apiService.getProperties({ status: 'SOLD' }, 0, 4);
+        const rentedData = await apiService.getProperties({ status: 'RENTED' }, 0, 4);
+        setClosedProperties([...(soldData.content || []), ...(rentedData.content || [])]);
+      } catch (err) {
+        console.error("Failed to load closed properties:", err);
+      } finally {
+        setClosedLoading(false);
+      }
+    };
+    fetchClosedProperties();
+  }, []);
+
   // VIP Chauffeur Site Visit Scheduler State
   const [isChauffeurModalOpen, setIsChauffeurModalOpen] = useState(false);
   const [selectedChauffeurProp, setSelectedChauffeurProp] = useState(null);
@@ -342,9 +367,16 @@ export default function Portal({ onViewChange }) {
   };
 
   // Open Walkthrough Drone Video Player
+  const [activeTourVideoUrl, setActiveTourVideoUrl] = useState(null);
   const handleOpenWalkthrough = (property) => {
     setActiveTourProperty(property);
     setIsTourOpen(true);
+  };
+
+  // Open 3D Floor Tour Matterport Player
+  const handleOpen3DTour = (property) => {
+    setActive3DTourProperty(property);
+    setIs3DTourOpen(true);
   };
 
   // Open MahaRERA Compliance Drawer
@@ -448,6 +480,19 @@ export default function Portal({ onViewChange }) {
   const calculateAppreciatedValue = (price, loc, years) => {
     const cagr = getAppreciationCAGR(loc) / 100;
     return Math.round(Number(price) * Math.pow(1 + cagr, years));
+  };
+
+  const getEmbedVideoUrl = (url) => {
+    if (!url) return "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WgXcQ";
+    if (url.includes("/embed/")) {
+      return url.includes("?") ? `${url}&autoplay=1&mute=1` : `${url}?autoplay=1&mute=1`;
+    }
+    const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+    const match = url.match(ytRegex);
+    if (match && match[1]) {
+      return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}`;
+    }
+    return url;
   };
 
   return (
@@ -837,9 +882,13 @@ export default function Portal({ onViewChange }) {
                 {properties.map(property => {
                   const isCompared = selectedForCompare.some(p => p.id === property.id);
                   const scores = getLocationScorecard(property.location);
+                  const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
+                  const cardImageStyle = {
+                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(7,15,30,0.8) 100%), url('${property.imageUrl || defaultImg}')`
+                  };
                   return (
                     <div key={property.id} className="property-card premium-luxury-card">
-                      <div className="property-image-container premium-hover-tint">
+                      <div className="property-image-container premium-hover-tint" style={cardImageStyle}>
                         <span className="property-tag">{property.transactionType}</span>
                         <div className="property-badge-container">
                           {property.verifiedListing && <span className="p-badge p-badge-verified">✓ Verified</span>}
@@ -929,12 +978,19 @@ export default function Portal({ onViewChange }) {
 
                         {/* Signature Luxury Amenities tags */}
                         <div className="luxury-amenities-mini-grid">
+                          <span className="amenity-badge" style={{ borderColor: 'rgba(212,175,55,0.4)', color: 'var(--gold-primary)', fontWeight: 600 }}>
+                            <Sparkles size={10} /> {property.furnishingStatus ? property.furnishingStatus.replace('_', ' ') : 'FULLY FURNISHED'}
+                          </span>
+                          {property.gasPipeline && (
+                            <span className="amenity-badge" style={{ borderColor: '#2ec4b6', color: '#2ec4b6' }}>
+                              🔥 Piped Gas
+                            </span>
+                          )}
                           <span className="amenity-badge"><Sparkles size={10} /> Infinity Pool</span>
                           <span className="amenity-badge"><Users size={10} /> 24/7 Concierge</span>
-                          <span className="amenity-badge"><Lock size={10} /> Private Elevator</span>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
                           <button 
                             onClick={() => handleOpenWalkthrough(property)}
                             className="btn-outline"
@@ -943,21 +999,31 @@ export default function Portal({ onViewChange }) {
                           >
                             <Eye size={14} />
                           </button>
+
+                          <button 
+                            onClick={() => handleOpen3DTour(property)}
+                            className="btn-outline"
+                            title="3D Floor View"
+                            style={{ padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                          >
+                            <Compass size={14} />
+                            <span style={{ fontSize: '0.78rem' }}>3D Tour</span>
+                          </button>
                           
                           {/* VIP Private Site Chauffeur Scheduler CTA */}
                           <button 
                             onClick={() => { setSelectedChauffeurProp(property); setIsChauffeurModalOpen(true); }}
                             className="btn-outline"
-                            style={{ flex: 1, padding: '10px 0', justifyContent: 'center', borderColor: 'var(--gold-secondary)', color: 'var(--gold-secondary)' }}
+                            style={{ flex: '1 1 auto', padding: '10px 8px', justifyContent: 'center', borderColor: 'var(--gold-secondary)', color: 'var(--gold-secondary)', fontSize: '0.78rem' }}
                           >
-                            <Car size={14} style={{ marginRight: '6px' }} />
+                            <Car size={14} style={{ marginRight: '4px' }} />
                             <span>VIP Chauffeur</span>
                           </button>
 
                           <button 
                             onClick={() => handleOpenInquiry(property)} 
                             className="btn-gold" 
-                            style={{ flex: 1, padding: '10px 0', justifyContent: 'center' }}
+                            style={{ flex: '1 1 auto', padding: '10px 8px', justifyContent: 'center', fontSize: '0.78rem' }}
                           >
                             Private Presentation
                           </button>
@@ -973,6 +1039,102 @@ export default function Portal({ onViewChange }) {
                   <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} className="pagination-btn">Previous</button>
                   <span className="pagination-info">Page {page + 1} of {totalPages}</span>
                   <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} className="pagination-btn">Next</button>
+                </div>
+              )}
+
+              {/* Recently Closed Deals FOMO Section */}
+              {closedProperties.length > 0 && (
+                <div className="closed-deals-fomo-section" style={{ marginTop: '50px', borderTop: '1px solid var(--border-gold)', paddingTop: '40px' }}>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '24px' }}>
+                    <TrendingUpIcon size={24} style={{ color: '#d90429' }} />
+                    <div>
+                      <h2 className="luxury-title" style={{ fontSize: '1.6rem', color: 'var(--text-light)', margin: 0 }}>⚜️ Recently Closed Deals (Wakad & Hinjewadi)</h2>
+                      <p style={{ fontSize: '0.85rem', color: '#ff4d6d', margin: '4px 0 0 0', fontWeight: 600 }}>Opportunity Missed! These premium flats have already been transacted.</p>
+                    </div>
+                  </div>
+
+                  <div className="properties-grid" style={{ opacity: 0.85 }}>
+                    {closedProperties.map(property => {
+                      const scores = getLocationScorecard(property.location);
+                      const isSold = property.status === 'SOLD';
+                      return (
+                        <div key={property.id} className="property-card premium-luxury-card closed-deal-card" style={{ filter: 'grayscale(70%)', border: '1px solid rgba(255, 255, 255, 0.1)', position: 'relative' }}>
+                          
+                          {/* Missed Chance FOMO Ribbon */}
+                          <div style={{
+                            position: 'absolute',
+                            top: '12px',
+                            left: '12px',
+                            zIndex: 10,
+                            background: '#d90429',
+                            color: '#ffffff',
+                            padding: '4px 10px',
+                            borderRadius: '4px',
+                            fontSize: '0.72rem',
+                            fontWeight: 'bold',
+                            boxShadow: '0 2px 10px rgba(217, 4, 41, 0.4)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px'
+                          }}>
+                            {isSold ? '❌ SOLD OUT' : '🔑 RENTED OUT'}
+                          </div>
+
+                          <div className="property-image-container" style={{
+                            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(7,15,30,0.9) 100%), url('${property.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'}')`,
+                            height: '180px'
+                          }}>
+                            <span className="property-price-tag" style={{ background: 'rgba(0, 0, 0, 0.7)', textDecoration: 'line-through' }}>
+                              {formatPrice(property.price)}
+                            </span>
+                          </div>
+
+                          <div className="property-info" style={{ padding: '16px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                              <span className="property-location" style={{ fontSize: '0.78rem' }}>
+                                <MapPin size={11} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                                {property.location}
+                              </span>
+                              <span style={{ fontSize: '0.7rem', color: '#ff4d6d', fontWeight: 'bold' }}>
+                                Chance Missed
+                              </span>
+                            </div>
+
+                            <h3 className="property-title" style={{ fontSize: '1.1rem', margin: '4px 0 8px 0', textDecoration: 'line-through', opacity: 0.7 }}>{property.title}</h3>
+                            
+                            {/* Urgent FOMO Alert message */}
+                            <div style={{ background: 'rgba(217, 4, 41, 0.08)', border: '1px solid rgba(217, 4, 41, 0.2)', borderRadius: '4px', padding: '8px 10px', fontSize: '0.76rem', color: '#ff4d6d', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <Clock size={12} className="spin-slow" />
+                              <span>Closed recently! <strong>14 leads missed this opportunity</strong>.</span>
+                            </div>
+
+                            <p className="property-desc" style={{ fontSize: '0.78rem', height: '36px', overflow: 'hidden', marginBottom: '12px', opacity: 0.6 }}>
+                              {property.description}
+                            </p>
+
+                            <div className="property-specs" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '10px', margin: '10px 0 0 0' }}>
+                              <span style={{ fontSize: '0.75rem' }}>{property.bedrooms} BHK • {property.areaSquareFeet} sqft</span>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{property.furnishingStatus ? property.furnishingStatus.replace('_', ' ') : 'FULLY FURNISHED'}</span>
+                            </div>
+
+                            <button 
+                              onClick={() => {
+                                setLeadForm(prev => ({
+                                  ...prev,
+                                  notes: `Missed out on: "${property.title}" (ID: ${property.id}). Please notify me if a similar flat in ${property.location} becomes available!`
+                                }));
+                                setSelectedProperty(property);
+                                setIsModalOpen(true);
+                              }}
+                              className="btn-gold" 
+                              style={{ width: '100%', padding: '8px 0', justifyContent: 'center', marginTop: '12px', background: 'none', border: '1px solid var(--gold-primary)', color: 'var(--gold-primary)', fontSize: '0.8rem' }}
+                            >
+                              Get Similar Alerts
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </>
@@ -1205,7 +1367,7 @@ export default function Portal({ onViewChange }) {
               <iframe 
                 width="100%" 
                 height="450" 
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WgXcQ" 
+                src={getEmbedVideoUrl(activeTourProperty.videoUrl)} 
                 title="Cinematic Tour"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -1215,6 +1377,44 @@ export default function Portal({ onViewChange }) {
                 <h3>Cinematic Tour: {activeTourProperty.title}</h3>
                 <p>Interactive drone walkthrough. Connect to RERA: {activeTourProperty.reraNumber}</p>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3D Floor View Modal */}
+      {is3DTourOpen && active3DTourProperty && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '850px', background: '#080f1e', padding: '20px', border: '1px solid var(--border-gold)' }}>
+            <button className="modal-close" onClick={() => setIs3DTourOpen(false)}>×</button>
+            <h3 className="modal-title" style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Compass size={22} className="animate-spin" style={{ animationDuration: '8s' }} />
+              <span>Interactive 3D Floor View: {active3DTourProperty.title}</span>
+            </h3>
+            <p className="modal-subtitle" style={{ marginBottom: '15px' }}>Walk through this premium RERA registered listing in real time. Use mouse or touch to navigate.</p>
+            
+            <div className="video-player-container" style={{ border: '1px solid var(--border-gold)', borderRadius: '6px', overflow: 'hidden', height: '480px' }}>
+              <iframe 
+                width="100%" 
+                height="100%" 
+                src={active3DTourProperty.threeDTourUrl || "https://my.matterport.com/show/?m=JGPmBB6q58g"} 
+                frameBorder="0"
+                allowFullScreen
+                allow="xr-spatial-tracking"
+              />
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px' }}>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+                Powered by Matterport 3D Scanning Desk
+              </span>
+              <button 
+                onClick={() => { setIs3DTourOpen(false); handleOpenInquiry(active3DTourProperty); }}
+                className="btn-gold"
+                style={{ padding: '8px 20px', fontSize: '0.85rem' }}
+              >
+                Inquire About Floor Plan
+              </button>
             </div>
           </div>
         </div>
