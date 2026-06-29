@@ -19,6 +19,7 @@ public interface PropertyService {
             TransactionType transactionType,
             Integer bedrooms,
             PropertyStatus status,
+            FurnishingStatus furnishingStatus,
             Pageable pageable
     );
     PropertyResponse updateProperty(UUID id, PropertyRequest request);

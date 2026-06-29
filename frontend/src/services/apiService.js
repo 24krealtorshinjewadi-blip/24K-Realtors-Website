@@ -84,6 +84,7 @@ export const apiService = {
     if (filters.transactionType) params.append('transactionType', filters.transactionType);
     if (filters.bedrooms) params.append('bedrooms', filters.bedrooms);
     if (filters.status) params.append('status', filters.status);
+    if (filters.furnishingStatus) params.append('furnishingStatus', filters.furnishingStatus);
     
     const response = await fetch(`${BASE_URL}/properties?${params.toString()}`);
     if (!response.ok) {
