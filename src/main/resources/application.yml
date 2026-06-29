@@ -10,6 +10,14 @@ whatsapp:
     token: ${WHATSAPP_API_TOKEN:EAAXX_PLACEHOLDER_MOCK_TOKEN}
     template: ${WHATSAPP_API_TEMPLATE:welcome_lead_intro}
 
+jwt:
+  secret: ${JWT_SECRET:YTI5M2Y0YjVkNmQ4Zjg5YTA5YjQzOWM1YTMzYjM1YzZmNzI4ZjkzYWUzYzYyN2M4ODliMWMzNmRmOTBhN2M4ZQ==}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+admin:
+  username: ${ADMIN_USERNAME:admin}
+  password: ${ADMIN_PASSWORD:adminpassword}
+
 ---
 # Development Profile (Active by default, uses H2 database)
 spring:
