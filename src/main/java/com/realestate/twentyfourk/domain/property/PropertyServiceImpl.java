@@ -18,12 +18,40 @@ import java.util.UUID;
 public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
+    private final com.realestate.twentyfourk.domain.lead.LeadRepository leadRepository;
 
     @Override
     @Transactional
     public PropertyResponse createProperty(PropertyRequest request) {
         Property property = mapToEntity(request);
         Property savedProperty = propertyRepository.save(property);
+
+        // Matching Engine Check
+        try {
+            java.util.List<com.realestate.twentyfourk.domain.lead.Lead> leads = leadRepository.findAll();
+            for (com.realestate.twentyfourk.domain.lead.Lead lead : leads) {
+                if (lead.getPreferredLocation() == savedProperty.getLocation()) {
+                    boolean budgetMatches = true;
+                    if (lead.getBudgetMin() != null && savedProperty.getPrice().compareTo(lead.getBudgetMin()) < 0) {
+                        budgetMatches = false;
+                    }
+                    if (lead.getBudgetMax() != null && savedProperty.getPrice().compareTo(lead.getBudgetMax()) > 0) {
+                        budgetMatches = false;
+                    }
+
+                    if (budgetMatches) {
+                        System.out.println(String.format(
+                            "[MATCHING ENGINE ALERT] Lead '%s' (Phone: %s, Email: %s) matches newly created property '%s' in %s Corridor! Property Price: %s",
+                            lead.getName(), lead.getPhone(), lead.getEmail(), savedProperty.getTitle(),
+                            savedProperty.getLocation(), savedProperty.getPrice()
+                        ));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[MATCHING ENGINE ERROR] Could not perform matchmaking checklist check: " + e.getMessage());
+        }
+
         return mapToResponse(savedProperty);
     }
 
