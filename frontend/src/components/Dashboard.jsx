@@ -541,41 +541,57 @@ export default function Dashboard({ onViewChange }) {
       </header>
 
       {/* Metrics Row */}
-      <section className="metrics-grid">
-        <div className="metric-card">
-          <h3>Total Enquiries</h3>
-          <p className="value">{stats.totalLeads}</p>
-          <span className="caption">Captured from portal</span>
+      <section className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-icon" style={{ color: 'var(--gold-primary)' }}>
+            <Users size={24} />
+          </div>
+          <div className="stat-info">
+            <span className="stat-num">{stats.totalLeads}</span>
+            <span className="stat-label">Total Enquiries</span>
+          </div>
         </div>
-        <div className="metric-card">
-          <h3>Active Properties</h3>
-          <p className="value">{stats.activeProperties}</p>
-          <span className="caption">Verified Pune listings</span>
+        <div className="stat-card">
+          <div className="stat-icon" style={{ color: 'var(--gold-primary)' }}>
+            <Home size={24} />
+          </div>
+          <div className="stat-info">
+            <span className="stat-num">{stats.activeProperties}</span>
+            <span className="stat-label">Active Properties</span>
+          </div>
         </div>
-        <div className="metric-card">
-          <h3>New Leads</h3>
-          <p className="value" style={{ color: 'var(--gold-light)' }}>{stats.newLeads}</p>
-          <span className="caption">Pending follow-up</span>
+        <div className="stat-card">
+          <div className="stat-icon" style={{ color: 'var(--gold-light)' }}>
+            <TrendingUp size={24} />
+          </div>
+          <div className="stat-info">
+            <span className="stat-num" style={{ color: 'var(--gold-light)' }}>{stats.newLeads}</span>
+            <span className="stat-label">New Leads</span>
+          </div>
         </div>
-        <div className="metric-card">
-          <h3>Converted Deals</h3>
-          <p className="value" style={{ color: '#2ec4b6' }}>{stats.convertedLeads}</p>
-          <span className="caption">Rented or Sold</span>
+        <div className="stat-card">
+          <div className="stat-icon" style={{ color: '#2ec4b6' }}>
+            <Calendar size={24} />
+          </div>
+          <div className="stat-info">
+            <span className="stat-num" style={{ color: '#2ec4b6' }}>{stats.convertedLeads}</span>
+            <span className="stat-label">Converted Deals</span>
+          </div>
         </div>
       </section>
 
       {/* Navigation Tabs */}
-      <nav className="crm-tabs">
+      <nav className="dashboard-tabs">
         <button 
           onClick={() => setActiveTab('leads')} 
-          className={`crm-tab-btn ${activeTab === 'leads' ? 'active' : ''}`}
+          className={`tab-btn ${activeTab === 'leads' ? 'active' : ''}`}
         >
           <Users size={16} />
           Leads Pipeline
         </button>
         <button 
           onClick={() => setActiveTab('properties')} 
-          className={`crm-tab-btn ${activeTab === 'properties' ? 'active' : ''}`}
+          className={`tab-btn ${activeTab === 'properties' ? 'active' : ''}`}
         >
           <Home size={16} />
           Property Inventory
@@ -679,17 +695,22 @@ export default function Dashboard({ onViewChange }) {
                           )}
                         </td>
                         <td>
-                          <select 
-                            value={lead.status} 
-                            onChange={e => handleLeadStatusChange(lead.id, e.target.value)}
-                            className="form-input"
-                            style={{ padding: '4px 8px', fontSize: '0.85rem', width: 'auto' }}
-                          >
-                            <option value="NEW">New Inquiry</option>
-                            <option value="CONTACTED">In Discussion</option>
-                            <option value="CONVERTED">Closed / Won</option>
-                            <option value="LOST">Lost / Archived</option>
-                          </select>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
+                            <span className={`status-pill ${lead.status.toLowerCase()}`}>
+                              {lead.status.replace('_', ' ')}
+                            </span>
+                            <select 
+                              value={lead.status} 
+                              onChange={e => handleLeadStatusChange(lead.id, e.target.value)}
+                              className="status-select-btn"
+                              style={{ width: '130px' }}
+                            >
+                              <option value="NEW">New Inquiry</option>
+                              <option value="CONTACTED">In Discussion</option>
+                              <option value="CONVERTED">Closed / Won</option>
+                              <option value="LOST">Lost / Archived</option>
+                            </select>
+                          </div>
                         </td>
                         <td>
                           {lead.notes && (
