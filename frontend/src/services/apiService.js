@@ -1,4 +1,17 @@
-const BASE_URL = 'http://localhost:8080/api/v1';
+const getApiBaseUrl = () => {
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:8080/api/v1';
+  }
+  // If loaded via local IP (192.168.x.x), use that hostname
+  if (hostname.startsWith('192.168.') || hostname.startsWith('10.') || hostname.startsWith('172.')) {
+    return `http://${hostname}:8080/api/v1`;
+  }
+  // Fallback for Vercel loading: point directly to local dev laptop IP on Wi-Fi
+  return 'http://192.168.1.14:8080/api/v1';
+};
+
+const BASE_URL = getApiBaseUrl();
 
 // Helper to retrieve JWT token and construct authentication headers
 const getAuthHeaders = () => {
