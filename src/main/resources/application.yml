@@ -29,6 +29,11 @@ spring:
     username: sa
     password: password
     driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      connection-timeout: 10000
   h2:
     console:
       enabled: true
@@ -43,6 +48,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc.batch_size: 25
+        order_inserts: true
+        order_updates: true
   flyway:
     enabled: true
     clean-disabled: true
@@ -61,11 +69,22 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 8
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none # Flyway manages DB creation in production
     show-sql: false
+    properties:
+      hibernate:
+        jdbc.batch_size: 25
+        order_inserts: true
+        order_updates: true
   flyway:
     enabled: true
     clean-disabled: true

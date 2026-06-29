@@ -44,6 +44,7 @@ export default function Dashboard({ onViewChange }) {
   const [agents, setAgents] = useState([]);
   const [agentsLoading, setAgentsLoading] = useState(true);
   const [allLeadsForStats, setAllLeadsForStats] = useState([]);
+  const [showMatrix, setShowMatrix] = useState(true);
   const [propertyForm, setPropertyForm] = useState({
     title: '',
     description: '',
@@ -145,6 +146,37 @@ export default function Dashboard({ onViewChange }) {
       fetchAgents();
     }
   }, [isLoggedIn, activeTab]);
+
+  // Get corridor performance and comparison matrix stats
+  const getCorridorMatrixStats = () => {
+    const locations = ['BANER', 'WAKAD', 'HINJEWADI', 'BALEWADI', 'TATHAWADE', 'MAHALUNGE'];
+    return locations.map(loc => {
+      const locLeads = allLeadsForStats.filter(l => l.preferredLocation === loc);
+      const total = locLeads.length;
+      
+      const newInquiries = locLeads.filter(l => l.status === 'NEW').length;
+      const contacted = locLeads.filter(l => l.status === 'CONTACTED').length;
+      const won = locLeads.filter(l => l.status === 'CONVERTED').length;
+      const lost = locLeads.filter(l => l.status === 'LOST').length;
+      
+      const conversionRate = total > 0 ? Math.round((won / total) * 100) : 0;
+      
+      // Compute average budget min
+      const budgets = locLeads.map(l => Number(l.budgetMin || 0)).filter(b => b > 0);
+      const avgBudget = budgets.length > 0 ? Math.round(budgets.reduce((sum, b) => sum + b, 0) / budgets.length) : 0;
+
+      return {
+        location: loc,
+        total,
+        newInquiries,
+        contacted,
+        won,
+        lost,
+        conversionRate,
+        avgBudget
+      };
+    });
+  };
 
   // Auth Handlers
   const handleAuthSubmit = async (e) => {
@@ -636,6 +668,76 @@ export default function Dashboard({ onViewChange }) {
       {/* LEADS PIPELINE MANAGER */}
       {activeTab === 'leads' && (
         <section>
+          {/* Corridor Performance Comparison Matrix Toggle Banner */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            background: 'rgba(7, 15, 30, 0.6)',
+            border: '1px solid var(--border-gold)',
+            borderRadius: '12px',
+            padding: '16px 24px',
+            marginBottom: '25px',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+            animation: 'fadeInUp 0.6s ease forwards'
+          }}>
+            <div>
+              <h3 className="luxury-title" style={{ fontSize: '1.2rem', margin: '0 0 4px 0', color: 'var(--gold-primary)' }}>
+                ⚜️ Corridor Conversion & Pipeline Comparison Matrix
+              </h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', margin: 0 }}>
+                Dynamic analytical comparison of premium IT/Residential corridors in Pune based on seeder and incoming inquiries.
+              </p>
+            </div>
+            <button 
+              onClick={() => setShowMatrix(!showMatrix)} 
+              className="btn-outline"
+              style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+            >
+              {showMatrix ? 'Hide Performance Matrix' : 'Show Performance Matrix'}
+            </button>
+          </div>
+
+          {showMatrix && (
+            <div className="table-responsive" style={{ marginBottom: '35px', animation: 'slideDown 0.3s forwards' }}>
+              <table className="crm-table" style={{ borderCollapse: 'collapse', width: '100%' }}>
+                <thead>
+                  <tr>
+                    <th>Location Corridor</th>
+                    <th>Total Inquiries</th>
+                    <th>New Inquiries</th>
+                    <th>In Discussion</th>
+                    <th>Closed Won Deals</th>
+                    <th>Lost / Archived</th>
+                    <th>Conversion Rate</th>
+                    <th>Avg Budget Inquired</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getCorridorMatrixStats().map(row => (
+                    <tr key={row.location} style={{ background: row.total > 0 ? 'rgba(212, 175, 55, 0.03)' : 'transparent' }}>
+                      <td style={{ fontWeight: 'bold', color: 'var(--text-light)' }}>{row.location} Corridor</td>
+                      <td>{row.total}</td>
+                      <td style={{ color: 'var(--gold-light)' }}>{row.newInquiries}</td>
+                      <td>{row.contacted}</td>
+                      <td style={{ color: '#2ec4b6', fontWeight: 600 }}>{row.won}</td>
+                      <td style={{ opacity: 0.6 }}>{row.lost}</td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontWeight: 'bold' }}>{row.conversionRate}%</span>
+                          <div style={{ flexGrow: 1, height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', minWidth: '60px', overflow: 'hidden' }}>
+                            <div style={{ width: `${row.conversionRate}%`, height: '100%', background: 'linear-gradient(90deg, #2ec4b6, #d4af37)', borderRadius: '3px' }}></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td style={{ color: 'var(--gold-primary)' }}>{row.avgBudget > 0 ? formatPrice(row.avgBudget) : 'N/A'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
           {/* Filters Row */}
           <div className="filters-row">
             <div className="form-group" style={{ margin: 0 }}>
