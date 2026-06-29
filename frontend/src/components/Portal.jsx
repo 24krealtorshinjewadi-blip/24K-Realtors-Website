@@ -128,6 +128,7 @@ export default function Portal({ onViewChange }) {
   // Walkthrough Tour State
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [activeTourProperty, setActiveTourProperty] = useState(null);
+  const [mediaConsoleTab, setMediaConsoleTab] = useState('3d'); // '3d' | 'video'
 
   // Closed Deals FOMO State
   const [closedProperties, setClosedProperties] = useState([]);
@@ -474,16 +475,17 @@ export default function Portal({ onViewChange }) {
   };
 
   // Open Walkthrough Drone Video Player
-  const [activeTourVideoUrl, setActiveTourVideoUrl] = useState(null);
   const handleOpenWalkthrough = (property) => {
     setActiveTourProperty(property);
     setIsTourOpen(true);
+    setMediaConsoleTab('video');
   };
 
   // Open 3D Floor Tour Matterport Player
   const handleOpen3DTour = (property) => {
-    setActive3DTourProperty(property);
-    setIs3DTourOpen(true);
+    setActiveTourProperty(property);
+    setIsTourOpen(true);
+    setMediaConsoleTab('3d');
   };
 
   // Open MahaRERA Compliance Drawer
@@ -1764,64 +1766,84 @@ export default function Portal({ onViewChange }) {
         </div>
       )}
 
-      {/* Cinematic Drone Tour Modal */}
+      {/* Unified Media Console (3D & Drone Tour) */}
       {isTourOpen && activeTourProperty && (
         <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '750px', background: '#000000', padding: '0', overflow: 'hidden' }}>
-            <button className="modal-close" style={{ color: '#ffffff', zIndex: 100 }} onClick={() => setIsTourOpen(false)}>×</button>
+          <div className="modal-content" style={{ maxWidth: '850px', background: '#080f1e', padding: '24px', border: '1px solid var(--gold-primary)', borderRadius: '12px' }}>
+            <button className="modal-close" onClick={() => setIsTourOpen(false)}>×</button>
             
-            <div className="video-player-container">
-              <iframe 
-                width="100%" 
-                height="450" 
-                src={getEmbedVideoUrl(activeTourProperty.videoUrl)} 
-                title="Cinematic Tour"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen
-              />
-              <div className="video-overlay-info">
-                <h3>Cinematic Tour: {activeTourProperty.title}</h3>
-                <p>Interactive drone walkthrough. Connect to RERA: {activeTourProperty.reraNumber}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 3D Floor View Modal */}
-      {is3DTourOpen && active3DTourProperty && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '850px', background: '#080f1e', padding: '20px', border: '1px solid var(--border-gold)' }}>
-            <button className="modal-close" onClick={() => setIs3DTourOpen(false)}>×</button>
-            <h3 className="modal-title" style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Compass size={22} className="animate-spin" style={{ animationDuration: '8s' }} />
-              <span>Interactive 3D Floor View: {active3DTourProperty.title}</span>
+            <h3 className="modal-title" style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+              <Compass size={22} className={mediaConsoleTab === '3d' ? "animate-spin" : ""} style={{ animationDuration: '8s' }} />
+              <span>{activeTourProperty.title} — Immersive Media Console</span>
             </h3>
-            <p className="modal-subtitle" style={{ marginBottom: '15px' }}>Walk through this premium RERA registered listing in real time. Use mouse or touch to navigate.</p>
-            
-            <div className="video-player-container" style={{ border: '1px solid var(--border-gold)', borderRadius: '6px', overflow: 'hidden', height: '480px' }}>
-              <iframe 
-                width="100%" 
-                height="100%" 
-                src={active3DTourProperty.threeDTourUrl || "https://my.matterport.com/show/?m=JGPmBB6q58g"} 
-                frameBorder="0"
-                allowFullScreen
-                allow="xr-spatial-tracking"
-              />
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px' }}>
-              <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
-                Powered by Matterport 3D Scanning Desk
-              </span>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '20px' }}>
+              RERA No: {activeTourProperty.reraNumber} | Location: {activeTourProperty.location} Corridor
+            </p>
+
+            {/* Media Tabs Selection */}
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '10px' }}>
               <button 
-                onClick={() => { setIs3DTourOpen(false); handleOpenInquiry(active3DTourProperty); }}
-                className="btn-gold"
-                style={{ padding: '8px 20px', fontSize: '0.85rem' }}
+                onClick={() => setMediaConsoleTab('3d')}
+                className={`exclusive-tab-btn ${mediaConsoleTab === '3d' ? 'active' : ''}`}
+                style={{ padding: '8px 16px', fontSize: '0.85rem', flexGrow: 1, justifyContent: 'center' }}
               >
-                Inquire About Floor Plan
+                📐 Interactive 3D Floor View
               </button>
+              <button 
+                onClick={() => setMediaConsoleTab('video')}
+                className={`exclusive-tab-btn ${mediaConsoleTab === 'video' ? 'active' : ''}`}
+                style={{ padding: '8px 16px', fontSize: '0.85rem', flexGrow: 1, justifyContent: 'center' }}
+              >
+                📹 Cinematic Drone Tour
+              </button>
+            </div>
+
+            {/* Console Screen Panel */}
+            <div className="video-player-container" style={{ border: '1px solid var(--border-gold)', borderRadius: '8px', overflow: 'hidden', height: '480px', background: '#020617' }}>
+              {mediaConsoleTab === '3d' ? (
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  src={activeTourProperty.threeDTourUrl || "https://my.matterport.com/show/?m=JGPmBB6q58g"} 
+                  frameBorder="0"
+                  allowFullScreen
+                  allow="xr-spatial-tracking"
+                  title="3D Tour Frame"
+                />
+              ) : (
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  src={getEmbedVideoUrl(activeTourProperty.videoUrl)} 
+                  title="Cinematic Tour Frame"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                />
+              )}
+            </div>
+
+            {/* Console footer controls */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                {mediaConsoleTab === '3d' ? 'Powered by Matterport 3D Scanning Desk' : 'Powered by 24K Cinematic Drone Campaigns'}
+              </span>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button 
+                  onClick={() => { setIsTourOpen(false); handleOpenInquiry(activeTourProperty); }}
+                  className="btn-outline"
+                  style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                >
+                  Request Consultation
+                </button>
+                <button 
+                  onClick={() => { setIsTourOpen(false); handleOpenBookingModal(activeTourProperty); }}
+                  className="btn-gold"
+                  style={{ padding: '8px 20px', fontSize: '0.85rem' }}
+                >
+                  Book Chauffeur Site Visit
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -178,6 +178,82 @@ export default function Dashboard({ onViewChange }) {
     });
   };
 
+  // Render visual stars rating for lead hotness score
+  const renderLeadScoreStars = (score) => {
+    let stars = 1;
+    let color = '#ef4444'; // Red (Cold)
+    let label = 'Cold';
+    
+    if (score >= 85) {
+      stars = 5;
+      color = '#e2c044'; // Gold
+      label = 'Immediate HNWI';
+    } else if (score >= 70) {
+      stars = 4;
+      color = '#f5b041'; // Orange (Warm)
+      label = 'High Intent';
+    } else if (score >= 55) {
+      stars = 3;
+      color = '#3498db'; // Blue (Interested)
+      label = 'Interested';
+    } else if (score >= 40) {
+      stars = 2;
+      color = '#2ec4b6'; // Teal (Generic)
+      label = 'Generic';
+    }
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+        <div style={{ display: 'flex', gap: '2px', color }}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span key={i} style={{ fontSize: '1.1rem', opacity: i < stars ? 1 : 0.2 }}>★</span>
+          ))}
+        </div>
+        <span style={{ fontSize: '0.7rem', color, fontWeight: 'bold', textTransform: 'uppercase' }}>{label}</span>
+      </div>
+    );
+  };
+
+  // Export leads to CSV file
+  const exportLeadsToCSV = () => {
+    if (leads.length === 0) {
+      alert("No leads available to export.");
+      return;
+    }
+    
+    const headers = ["Name", "Phone", "Email", "Requirement Type", "Min Budget", "Max Budget", "Preferred Location", "Status", "Lead Score", "Assigned Agent", "Created Date"];
+    
+    const rows = leads.map(l => [
+      l.name,
+      l.phone,
+      l.email,
+      l.requirementType,
+      l.budgetMin || "0",
+      l.budgetMax || "0",
+      l.preferredLocation || "N/A",
+      l.status,
+      l.leadScore || 50,
+      l.assignedAgentName || "Unassigned",
+      new Date(l.createdDate).toLocaleDateString()
+    ]);
+    
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers.join(","), ...rows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(","))].join("\n");
+      
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `24k_leads_report_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Trigger browser print for PDF report generation
+  const printLeadsReport = () => {
+    window.print();
+  };
+
   // Auth Handlers
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
@@ -776,6 +852,15 @@ export default function Dashboard({ onViewChange }) {
               <RefreshCw size={14} />
               Reset Filters
             </button>
+
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: '10px' }} className="no-print">
+              <button onClick={exportLeadsToCSV} className="btn-outline" style={{ borderColor: '#2ec4b6', color: '#2ec4b6' }}>
+                📥 Export CSV
+              </button>
+              <button onClick={printLeadsReport} className="btn-gold" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
+                🖨️ Generate PDF
+              </button>
+            </div>
           </div>
 
           {leadsLoading ? (
@@ -795,6 +880,7 @@ export default function Dashboard({ onViewChange }) {
                       <th>Requirement</th>
                       <th>Location</th>
                       <th>Assigned Agent</th>
+                      <th>Lead Hotness</th>
                       <th>Pipeline Status</th>
                       <th>Actions</th>
                     </tr>
@@ -830,6 +916,9 @@ export default function Dashboard({ onViewChange }) {
                           ) : (
                             <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Auto-routing...</span>
                           )}
+                        </td>
+                        <td data-label="Hotness">
+                          {renderLeadScoreStars(lead.leadScore || 50)}
                         </td>
                         <td data-label="Status">
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>

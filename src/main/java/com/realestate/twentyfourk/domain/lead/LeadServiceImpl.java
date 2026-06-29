@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
@@ -33,6 +34,9 @@ public class LeadServiceImpl implements LeadService {
         if (lead.getStatus() == null) {
             lead.setStatus(LeadStatus.NEW);
         }
+        
+        // Calculate lead hotness score
+        lead.setLeadScore(calculateLeadScore(lead));
         
         // Auto-assign Agent round-robin
         Agent assignedAgent = leadRoutingService.getNextAgentForAssignment();
@@ -69,6 +73,7 @@ public class LeadServiceImpl implements LeadService {
                 .orElseThrow(() -> new ResourceNotFoundException("Lead not found with ID: " + id));
         
         lead.setStatus(status);
+        lead.setLeadScore(calculateLeadScore(lead));
         Lead updatedLead = leadRepository.save(lead);
         return mapToResponse(updatedLead);
     }
@@ -80,6 +85,51 @@ public class LeadServiceImpl implements LeadService {
             throw new ResourceNotFoundException("Lead not found with ID: " + id);
         }
         leadRepository.deleteById(id);
+    }
+
+    private int calculateLeadScore(Lead lead) {
+        int score = 40; // Base score
+
+        // Location match score
+        if (lead.getPreferredLocation() != null) {
+            PrimeCorridor loc = lead.getPreferredLocation();
+            if (loc == PrimeCorridor.HINJEWADI || loc == PrimeCorridor.BANER || loc == PrimeCorridor.WAKAD) {
+                score += 15;
+            } else {
+                score += 5;
+            }
+        }
+
+        // Budget match score
+        if (lead.getBudgetMax() != null) {
+            BigDecimal max = lead.getBudgetMax();
+            if (max.compareTo(new BigDecimal("15000000")) >= 0) {
+                score += 20;
+            } else if (max.compareTo(new BigDecimal("8000000")) >= 0) {
+                score += 10;
+            }
+        }
+
+        // Requirement type score
+        if (lead.getRequirementType() != null) {
+            if (lead.getRequirementType().name().equals("BUY")) {
+                score += 10;
+            } else {
+                score += 5;
+            }
+        }
+
+        // Notes high-intent check
+        if (lead.getNotes() != null && !lead.getNotes().isBlank()) {
+            String notes = lead.getNotes().toLowerCase();
+            if (notes.contains("immediate") || notes.contains("urgent") || notes.contains("visit") || notes.contains("soon")) {
+                score += 15;
+            } else {
+                score += 5;
+            }
+        }
+
+        return Math.min(score, 100);
     }
 
     // Mapping Helpers
@@ -111,6 +161,7 @@ public class LeadServiceImpl implements LeadService {
                 lead.getNotes(),
                 lead.getAssignedAgent() != null ? lead.getAssignedAgent().getName() : "Unassigned",
                 lead.getAssignedAgent() != null ? lead.getAssignedAgent().getPhone() : null,
+                lead.getLeadScore(),
                 lead.getCreatedDate()
         );
     }

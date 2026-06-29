@@ -21,5 +21,6 @@ public record LeadResponse(
         String notes,
         String assignedAgentName,
         String assignedAgentPhone,
+        Integer leadScore,
         LocalDateTime createdDate
 ) {}

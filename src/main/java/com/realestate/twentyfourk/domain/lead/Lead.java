@@ -58,6 +58,10 @@ public class Lead {
     @Column(name = "notes", length = 1000)
     private String notes;
 
+    @Column(name = "lead_score")
+    @Builder.Default
+    private Integer leadScore = 50;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_agent_id")
     private Agent assignedAgent;
