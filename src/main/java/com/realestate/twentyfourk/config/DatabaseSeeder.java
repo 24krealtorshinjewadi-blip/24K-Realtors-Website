@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -32,6 +32,12 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final AgentRepository agentRepository;
 
+    @Value("${admin.username}")
+    private String adminUsername;
+
+    @Value("${admin.password}")
+    private String adminPassword;
+
     @Override
     public void run(String... args) {
         log.info("Running platform seeder checks...");
@@ -45,12 +51,12 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (userRepository.count() == 0) {
             log.info("Seeding default administrator credentials...");
             User admin = User.builder()
-                    .username("admin")
-                    .password(passwordEncoder.encode("adminpassword"))
+                    .username(adminUsername)
+                    .password(passwordEncoder.encode(adminPassword))
                     .role(UserRole.ADMIN)
                     .build();
             userRepository.save(admin);
-            log.info("Admin user created successfully (username: 'admin', password: 'adminpassword')");
+            log.info("Admin user created successfully (username: '{}')", adminUsername);
         }
     }
 
