@@ -77,6 +77,9 @@ export default function Portal({ onViewChange }) {
     'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80'
   ];
 
+  // Scroll State
+  const [scrolled, setScrolled] = useState(false);
+
   // Inquiry Modal State
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -209,6 +212,38 @@ export default function Portal({ onViewChange }) {
   useEffect(() => {
     fetchProperties();
   }, [page, activeCollection]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Open general luxury presentation modal
+  const handleOpenGeneralInquiry = () => {
+    setSelectedProperty({
+      title: 'General Luxury Advisory Presentation',
+      price: 15000000,
+      location: 'HINJEWADI'
+    });
+    setLeadForm({
+      name: '',
+      phone: '',
+      email: '',
+      requirementType: 'BUY',
+      budgetMin: '10000000',
+      budgetMax: '30000000',
+      preferredLocation: 'HINJEWADI',
+      notes: 'General enquiry submitted via Live Investment Desk floating badge.'
+    });
+    setIsModalOpen(true);
+  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -531,7 +566,7 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* Premium Luxury Navbar */}
-      <nav className="luxury-navbar">
+      <nav className={`luxury-navbar ${scrolled ? 'scrolled' : ''}`}>
         <div className="nav-container">
           <a href="#" className="nav-logo">
             <span className="logo-number">24K REALTORS</span>
@@ -1400,6 +1435,16 @@ export default function Portal({ onViewChange }) {
           </div>
         </div>
       </section>
+
+      {/* Floating Pulse Investment Desk Badge */}
+      <button 
+        onClick={handleOpenGeneralInquiry} 
+        className="floating-desk-badge"
+        title="Open Live Advisory Desk Presentation"
+      >
+        <span className="pulse-dot"></span>
+        <span>Live Desk</span>
+      </button>
 
       {/* Sticky Floating WhatsApp */}
       <a 
