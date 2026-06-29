@@ -1875,7 +1875,7 @@
     height: 70px;
   }
   .nav-links {
-    display: none;
+    display: none !important;
   }
   .nav-cta {
     padding: 6px 12px;

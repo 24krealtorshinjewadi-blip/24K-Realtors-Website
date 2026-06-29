@@ -56,11 +56,6 @@
   margin-left: 4px;
 }
 
-/* Nav Link Action Buttons */
-.nav-links {
-  display: flex;
-  gap: 16px;
-}
 
 .nav-btn {
   background: transparent;
