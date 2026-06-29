@@ -744,6 +744,35 @@ export default function Dashboard({ onViewChange }) {
       {/* LEADS PIPELINE MANAGER */}
       {activeTab === 'leads' && (
         <section>
+          {/* System Match Notifications Ticker */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            background: 'rgba(239, 68, 68, 0.05)',
+            border: '1px dashed rgba(239, 68, 68, 0.3)',
+            borderRadius: '8px',
+            padding: '10px 16px',
+            marginBottom: '20px',
+            animation: 'fadeInUp 0.5s ease forwards'
+          }}>
+            <span style={{ 
+              width: '8px', 
+              height: '8px', 
+              borderRadius: '50%', 
+              background: '#ef4444', 
+              display: 'inline-block',
+              boxShadow: '0 0 8px #ef4444'
+            }} className="animate-pulse" />
+            <div style={{ fontSize: '0.82rem', color: 'var(--text-light)', fontWeight: 500 }}>
+              <strong style={{ color: '#ef4444', textTransform: 'uppercase', marginRight: '6px' }}>[Matching Engine Alert]:</strong>
+              Lead 'Rahul Kumar' matches newly registered mandate listing 'TCG Crown 3BHK' in Hinjewadi (Price: ₹1.25 Cr).
+            </div>
+            <div style={{ marginLeft: 'auto', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              Just Now
+            </div>
+          </div>
+
           {/* Corridor Performance Comparison Matrix Toggle Banner */}
           <div style={{
             display: 'flex',
@@ -1278,6 +1307,117 @@ export default function Dashboard({ onViewChange }) {
       {/* TEAM PERFORMANCE MANAGER */}
       {activeTab === 'team' && (
         <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          
+          {/* Corridor Valuation Trend Chart Panel */}
+          <div style={{
+            background: 'rgba(7, 15, 30, 0.6)',
+            border: '1px solid var(--border-gold)',
+            borderRadius: '12px',
+            padding: '24px',
+            marginBottom: '35px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+            animation: 'fadeInUp 0.6s ease forwards'
+          }}>
+            <h3 className="luxury-title" style={{ fontSize: '1.2rem', margin: '0 0 8px 0', color: 'var(--gold-primary)' }}>
+              ⚜️ IT Corridor Property Valuation & Price Trend Index (Per Sq.Ft.)
+            </h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '24px' }}>
+              Quarterly price progression trends (INR / Sq.Ft.) across prime Pune growth corridors.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', alignItems: 'center' }}>
+              
+              {/* Responsive SVG Chart */}
+              <div style={{ background: '#020617', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-muted)', position: 'relative' }}>
+                <svg viewBox="0 0 600 220" width="100%" height="220" style={{ overflow: 'visible' }}>
+                  {/* Grid Lines */}
+                  <line x1="50" y1="20" x2="550" y2="20" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+                  <line x1="50" y1="70" x2="550" y2="70" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+                  <line x1="50" y1="120" x2="550" y2="120" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+                  <line x1="50" y1="170" x2="550" y2="170" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+                  
+                  {/* Y Axis Labels */}
+                  <text x="40" y="25" fill="var(--text-muted)" fontSize="9" textAnchor="end">10K</text>
+                  <text x="40" y="75" fill="var(--text-muted)" fontSize="9" textAnchor="end">8K</text>
+                  <text x="40" y="125" fill="var(--text-muted)" fontSize="9" textAnchor="end">6K</text>
+                  <text x="40" y="175" fill="var(--text-muted)" fontSize="9" textAnchor="end">4K</text>
+
+                  {/* X Axis Labels */}
+                  <text x="50" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q1 2026</text>
+                  <text x="175" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q2 2026</text>
+                  <text x="300" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q3 2026</text>
+                  <text x="425" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q4 2026</text>
+                  <text x="550" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q1 2027 (Proj)</text>
+
+                  {/* Baner Trend Line (Gold) */}
+                  <polyline
+                    fill="none"
+                    stroke="var(--gold-primary)"
+                    strokeWidth="3"
+                    points="50,130 175,125 300,115 425,100 550,90"
+                    style={{ transition: 'all 0.5s ease' }}
+                  />
+                  <circle cx="50" cy="130" r="4" fill="var(--gold-primary)" />
+                  <circle cx="175" cy="125" r="4" fill="var(--gold-primary)" />
+                  <circle cx="300" cy="115" r="4" fill="var(--gold-primary)" />
+                  <circle cx="425" cy="100" r="4" fill="var(--gold-primary)" />
+                  <circle cx="550" cy="90" r="4" fill="var(--gold-primary)" />
+
+                  {/* Wakad Trend Line (Teal) */}
+                  <polyline
+                    fill="none"
+                    stroke="#2ec4b6"
+                    strokeWidth="3"
+                    points="50,150 175,145 300,135 425,120 550,110"
+                  />
+                  <circle cx="50" cy="150" r="4" fill="#2ec4b6" />
+                  <circle cx="175" cy="145" r="4" fill="#2ec4b6" />
+                  <circle cx="300" cy="135" r="4" fill="#2ec4b6" />
+                  <circle cx="425" cy="120" r="4" fill="#2ec4b6" />
+                  <circle cx="550" cy="110" r="4" fill="#2ec4b6" />
+
+                  {/* Hinjewadi Trend Line (Silver/White) */}
+                  <polyline
+                    fill="none"
+                    stroke="#94a3b8"
+                    strokeWidth="3"
+                    points="50,165 175,160 300,150 425,140 550,130"
+                  />
+                  <circle cx="50" cy="165" r="4" fill="#94a3b8" />
+                  <circle cx="175" cy="160" r="4" fill="#94a3b8" />
+                  <circle cx="300" cy="150" r="4" fill="#94a3b8" />
+                  <circle cx="425" cy="140" r="4" fill="#94a3b8" />
+                  <circle cx="550" cy="130" r="4" fill="#94a3b8" />
+                </svg>
+              </div>
+
+              {/* Legend & Details */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--gold-primary)' }}></div>
+                  <div>
+                    <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-light)' }}>Baner Corridor</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Avg: ₹8,800/sq.ft. (+12% YoY)</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#2ec4b6' }}></div>
+                  <div>
+                    <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-light)' }}>Wakad Corridor</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Avg: ₹7,400/sq.ft. (+9% YoY)</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#94a3b8' }}></div>
+                  <div>
+                    <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-light)' }}>Hinjewadi Corridor</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Avg: ₹6,500/sq.ft. (+7% YoY)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Relationship Managers & Performance Index</h2>
             <button onClick={fetchAgents} className="btn-outline" style={{ padding: '10px 16px', fontSize: '0.9rem' }}>
