@@ -58,10 +58,11 @@ export default function Portal({ onViewChange }) {
     minPrice: '',
     maxPrice: '',
     bedrooms: '',
+    furnishingStatus: '',
     status: 'AVAILABLE'
   });
 
-  // Collections Category state (ALL | SKY_PENTHOUSE | TECH_OFFICE | READY_TO_MOVE)
+  // Collections Category state (ALL | SKY_PENTHOUSE | TECH_OFFICE | READY_TO_MOVE | HINJEWADI_RENTALS)
   const [activeCollection, setActiveCollection] = useState('ALL');
 
   // Comparison State
@@ -188,6 +189,9 @@ export default function Portal({ onViewChange }) {
       } else if (activeCollection === 'READY_TO_MOVE') {
         queryFilters.propertyType = 'RESIDENTIAL';
         queryFilters.transactionType = 'BUY';
+      } else if (activeCollection === 'HINJEWADI_RENTALS') {
+        queryFilters.location = 'HINJEWADI';
+        queryFilters.transactionType = 'RENT';
       }
 
       const data = await apiService.getProperties(queryFilters, page, 6);
@@ -226,6 +230,7 @@ export default function Portal({ onViewChange }) {
       minPrice: '',
       maxPrice: '',
       bedrooms: '',
+      furnishingStatus: '',
       status: 'AVAILABLE'
     });
     setActiveCollection('ALL');
@@ -415,15 +420,22 @@ export default function Portal({ onViewChange }) {
   };
 
   // Formatter for Indian Rupee only
-  const formatPrice = (price) => {
+  const formatPrice = (price, transactionType = null) => {
     if (!price) return 'N/A';
     const num = Number(price);
+    let formattedPrice = '';
     if (num >= 10000000) {
-      return `₹${(num / 10000000).toFixed(2)} Cr`;
+      formattedPrice = `₹${(num / 10000000).toFixed(2)} Cr`;
     } else if (num >= 100000) {
-      return `₹${(num / 100000).toFixed(2)} L`;
+      formattedPrice = `₹${(num / 100000).toFixed(2)} L`;
+    } else {
+      formattedPrice = `₹${num.toLocaleString('en-IN')}`;
     }
-    return `₹${num.toLocaleString('en-IN')}`;
+    
+    if (transactionType === 'RENT') {
+      return `${formattedPrice} / Month`;
+    }
+    return formattedPrice;
   };
 
   // Get Mock Landmarks based on Location
@@ -877,6 +889,16 @@ export default function Portal({ onViewChange }) {
               </div>
 
               <div className="form-group">
+                <label className="form-label">Furnishing</label>
+                <select name="furnishingStatus" value={filters.furnishingStatus} onChange={handleFilterChange} className="form-input">
+                  <option value="">All Furnishings</option>
+                  <option value="FULLY_FURNISHED">Fully Furnished</option>
+                  <option value="SEMI_FURNISHED">Semi Furnished</option>
+                  <option value="UNFURNISHED">Unfurnished</option>
+                </select>
+              </div>
+
+              <div className="form-group">
                 <label className="form-label">Min Price (₹)</label>
                 <input type="number" name="minPrice" placeholder="e.g. 5000000" value={filters.minPrice} onChange={handleFilterChange} className="form-input" />
               </div>
@@ -906,6 +928,9 @@ export default function Portal({ onViewChange }) {
             </button>
             <button onClick={() => setActiveCollection('READY_TO_MOVE')} className={activeCollection === 'READY_TO_MOVE' ? 'active' : ''}>
               🔑 Premium Ready-to-Move
+            </button>
+            <button onClick={() => setActiveCollection('HINJEWADI_RENTALS')} className={activeCollection === 'HINJEWADI_RENTALS' ? 'active' : ''}>
+              🏡 Hinjewadi Rentals
             </button>
           </div>
 
@@ -975,8 +1000,8 @@ export default function Portal({ onViewChange }) {
 
                         <span className="property-price-tag">
                           {isHnwiMode 
-                            ? `Gross Yield: ${property.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice(property.price)}` 
-                            : formatPrice(property.price)}
+                            ? `Gross Yield: ${property.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice(property.price, property.transactionType)}` 
+                            : formatPrice(property.price, property.transactionType)}
                         </span>
                       </div>
                       
@@ -1169,7 +1194,7 @@ export default function Portal({ onViewChange }) {
                                zIndex: 1
                              }}></div>
                             <span className="property-price-tag" style={{ background: 'rgba(0, 0, 0, 0.7)', textDecoration: 'line-through' }}>
-                              {formatPrice(property.price)}
+                              {formatPrice(property.price, property.transactionType)}
                             </span>
                           </div>
 
@@ -1403,7 +1428,7 @@ export default function Portal({ onViewChange }) {
                   <div className="compare-img" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80')` }} />
                   <h4 style={{ color: 'var(--gold-primary)', margin: '12px 0 6px 0', fontSize: '1.1rem' }}>{p.title}</h4>
                   <div className="compare-field"><strong>Location:</strong> {p.location}</div>
-                  <div className="compare-field"><strong>Price:</strong> {formatPrice(p.price)}</div>
+                  <div className="compare-field"><strong>Price:</strong> {formatPrice(p.price, p.transactionType)}</div>
                   <div className="compare-field"><strong>Size:</strong> {p.areaSquareFeet} sqft</div>
                   <div className="compare-field"><strong>Rooms:</strong> {p.bedrooms > 0 ? `${p.bedrooms} BHK` : 'N/A'}</div>
                   <div className="compare-field"><strong>Baths:</strong> {p.bathrooms}</div>
