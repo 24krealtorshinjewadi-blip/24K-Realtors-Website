@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface LeadRepository extends JpaRepository<Lead, UUID>, JpaSpecificationExecutor<Lead> {
+    long countByStatus(LeadStatus status);
 }

@@ -39,6 +39,11 @@ export default function Dashboard({ onViewChange }) {
   // Property Form Drawer State
   const [showPropForm, setShowPropForm] = useState(false);
   const [editingPropertyId, setEditingPropertyId] = useState(null);
+  
+  // Team states
+  const [agents, setAgents] = useState([]);
+  const [agentsLoading, setAgentsLoading] = useState(true);
+  const [allLeadsForStats, setAllLeadsForStats] = useState([]);
   const [propertyForm, setPropertyForm] = useState({
     title: '',
     description: '',
@@ -105,6 +110,23 @@ export default function Dashboard({ onViewChange }) {
     }
   };
 
+  // Fetch Relationship Managers (Agents)
+  const fetchAgents = async () => {
+    if (!isLoggedIn) return;
+    setAgentsLoading(true);
+    try {
+      const data = await apiService.getAgents();
+      setAgents(data || []);
+      
+      const leadsData = await apiService.getLeads({}, 0, 1000);
+      setAllLeadsForStats(leadsData.content || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAgentsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (isLoggedIn) {
       fetchLeads();
@@ -117,6 +139,12 @@ export default function Dashboard({ onViewChange }) {
       fetchProperties();
     }
   }, [isLoggedIn, activeTab, propPage]);
+
+  useEffect(() => {
+    if (isLoggedIn && activeTab === 'team') {
+      fetchAgents();
+    }
+  }, [isLoggedIn, activeTab]);
 
   // Auth Handlers
   const handleAuthSubmit = async (e) => {
@@ -596,6 +624,13 @@ export default function Dashboard({ onViewChange }) {
           <Home size={16} />
           Property Inventory
         </button>
+        <button 
+          onClick={() => setActiveTab('team')} 
+          className={`tab-btn ${activeTab === 'team' ? 'active' : ''}`}
+        >
+          <TrendingUp size={16} />
+          Team Performance
+        </button>
       </nav>
 
       {/* LEADS PIPELINE MANAGER */}
@@ -1044,6 +1079,155 @@ export default function Dashboard({ onViewChange }) {
                   <button onClick={() => setPropPage(p => Math.min(propTotalPages - 1, p + 1))} disabled={propPage === propTotalPages - 1} className="pagination-btn">Next</button>
                 </div>
               )}
+            </>
+          )}
+        </section>
+      )}
+
+      {/* TEAM PERFORMANCE MANAGER */}
+      {activeTab === 'team' && (
+        <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Relationship Managers & Performance Index</h2>
+            <button onClick={fetchAgents} className="btn-outline" style={{ padding: '10px 16px', fontSize: '0.9rem' }}>
+              <RefreshCw size={14} className={agentsLoading ? "animate-spin" : ""} />
+              Refresh Team Data
+            </button>
+          </div>
+
+          {agentsLoading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+              <Loader className="animate-spin" size={32} color="#D4AF37" />
+            </div>
+          ) : agents.length === 0 ? (
+            <div className="empty-state">No relationship managers registered in the system.</div>
+          ) : (
+            <>
+              <div className="agent-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: '35px' }}>
+                {agents.map(agent => {
+                  const agentLeads = allLeadsForStats.filter(lead => lead.assignedAgentPhone === agent.phone);
+                  const totalAssigned = agentLeads.length;
+                  
+                  const activeDeals = agentLeads.filter(lead => 
+                    lead.status === 'NEW' || lead.status === 'IN_PROGRESS' || lead.status === 'CONTACTED' || lead.status === 'VISITED'
+                  ).length;
+                  
+                  const wonDeals = agentLeads.filter(lead => lead.status === 'CONVERTED').length;
+                  const conversionRate = totalAssigned > 0 ? Math.round((wonDeals / totalAssigned) * 100) : 0;
+                  
+                  const initials = agent.name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+                  return (
+                    <div key={agent.id} className="stat-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', padding: '24px', position: 'relative', minHeight: '280px' }}>
+                      
+                      {/* Active Status Ring */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '14px', marginBottom: '14px' }}>
+                        <div style={{ 
+                          width: '44px', 
+                          height: '44px', 
+                          borderRadius: '50%', 
+                          background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', 
+                          color: 'var(--text-dark)', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          fontWeight: 'bold',
+                          fontSize: '1.1rem'
+                        }}>
+                          {initials}
+                        </div>
+                        <div style={{ flexGrow: 1 }}>
+                          <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-light)' }}>{agent.name}</h4>
+                          <span style={{ fontSize: '0.72rem', color: '#2ec4b6', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#2ec4b6', display: 'inline-block' }}></span>
+                            Active Lead Advisor
+                          </span>
+                        </div>
+                        
+                        {conversionRate >= 33 && (
+                          <span style={{ background: 'rgba(212,175,55,0.12)', color: 'var(--gold-primary)', border: '1px solid var(--border-gold)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.68rem', fontWeight: 'bold' }}>
+                            🏆 Top Performer
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Contact Info */}
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '16px' }}>
+                        <div>📞 {agent.phone}</div>
+                        <div>✉️ {agent.email}</div>
+                      </div>
+
+                      {/* Stats Metrics breakdown */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', textAlign: 'center', marginBottom: '18px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
+                        <div>
+                          <strong style={{ fontSize: '1.25rem', color: 'var(--text-light)', display: 'block' }}>{totalAssigned}</strong>
+                          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Assigned</span>
+                        </div>
+                        <div>
+                          <strong style={{ fontSize: '1.25rem', color: 'var(--gold-light)', display: 'block' }}>{activeDeals}</strong>
+                          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Active</span>
+                        </div>
+                        <div>
+                          <strong style={{ fontSize: '1.25rem', color: '#2ec4b6', display: 'block' }}>{wonDeals}</strong>
+                          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Won</span>
+                        </div>
+                      </div>
+
+                      {/* Conversion progress bar */}
+                      <div style={{ marginTop: 'auto' }}>
+                        <div style={{ display: 'flex', justifycontent: 'space-between', fontSize: '0.75rem', marginBottom: '6px', color: 'var(--text-muted)' }}>
+                          <span>Conversion Rate</span>
+                          <strong style={{ color: conversionRate > 30 ? '#2ec4b6' : 'var(--text-light)' }}>{conversionRate}%</strong>
+                        </div>
+                        <div style={{ height: '6px', backgroundColor: 'var(--border-muted)', borderRadius: '3px', overflow: 'hidden' }}>
+                          <div style={{ 
+                            height: '100%', 
+                            width: `${conversionRate}%`, 
+                            backgroundColor: conversionRate > 30 ? '#2ec4b6' : 'var(--gold-primary)',
+                            transition: 'width 0.5s ease-in-out' 
+                          }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Operational Settings panel */}
+              <div className="crm-drawer" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+                <div>
+                  <h4 style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', fontSize: '1.1rem' }}>
+                    🟢 Lead Allocation Engine Rules
+                  </h4>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '10px' }}>
+                    Our Spring Boot backend employs an event-driven <strong>Round-Robin routing listener</strong>. Leads captured dynamically from client callback requests are automatically routed to the next active agent.
+                  </p>
+                  <ul style={{ fontSize: '0.8rem', color: 'var(--text-muted)', paddingLeft: '20px', lineHeight: 1.6 }}>
+                    <li>Automatic Load Balancing across active relationship managers.</li>
+                    <li>Fail-safe backup ensures no lead is left unassigned.</li>
+                    <li>Lead routing details are saved directly in database logs.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', fontSize: '1.1rem' }}>
+                    ⚡ CRM Integrations & Gateways
+                  </h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.82rem' }}>
+                    <div style={{ display: 'flex', justifycontent: 'space-between', borderBottom: '1px solid var(--border-muted)', paddingBottom: '6px' }}>
+                      <span>WhatsApp API Gateway</span>
+                      <strong style={{ color: '#2ec4b6' }}>🟢 Connected (Mock)</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifycontent: 'space-between', borderBottom: '1px solid var(--border-muted)', paddingBottom: '6px' }}>
+                      <span>SMS Service Desk</span>
+                      <strong style={{ color: 'var(--gold-primary)' }}>🟢 Standby (Dev mode)</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifycontent: 'space-between', paddingBottom: '6px' }}>
+                      <span>Real-time DB Synchronization</span>
+                      <strong style={{ color: '#2ec4b6' }}>🟢 Active</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </>
           )}
         </section>

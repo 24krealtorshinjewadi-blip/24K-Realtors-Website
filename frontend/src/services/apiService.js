@@ -220,5 +220,31 @@ export const apiService = {
       throw new Error(`Failed to delete lead: ${response.statusText}`);
     }
     return true;
+  },
+
+  // Fetch dashboard stats (Admin - Secured)
+  async getStats() {
+    const response = await fetch(`${BASE_URL}/dashboard/stats`, {
+      headers: {
+        ...getAuthHeaders()
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch stats: ${response.statusText}`);
+    }
+    return response.json();
+  },
+
+  // Fetch all agents (Admin - Secured)
+  async getAgents() {
+    const response = await fetch(`${BASE_URL}/agents`, {
+      headers: {
+        ...getAuthHeaders()
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch agents: ${response.statusText}`);
+    }
+    return response.json();
   }
 };

@@ -12,6 +12,7 @@ import java.util.UUID;
 
 @Repository
 public interface PropertyRepository extends JpaRepository<Property, UUID>, JpaSpecificationExecutor<Property> {
+    long countByStatus(PropertyStatus status);
 
     @Query("SELECT p FROM Property p WHERE " +
            "(6371.0 * acos(sin(radians(:lat)) * sin(radians(p.latitude)) + " +
