@@ -4,7 +4,8 @@ import {
   Search, MapPin, Bed, Bath, Maximize, Phone, Mail, Loader, 
   CheckCircle, Tag, IndianRupee, Laptop, Sparkles, Activity, 
   LineChart, Car, Users, Award, ShieldCheck, 
-  Sliders, Calculator, Eye, Compass, Star, Sun, Moon, Calendar, Clock, Lock, TrendingUp, Building, Key
+  Sliders, Calculator, Eye, Compass, Star, Sun, Moon, Calendar, Clock, Lock, TrendingUp, Building, Key,
+  Menu, X
 } from 'lucide-react';
 import './Portal.css';
 
@@ -12,6 +13,7 @@ export default function Portal({ onViewChange }) {
   // Theme State (light / dark / system)
   const [themeMode, setThemeMode] = useState(localStorage.getItem('crm-theme-mode') || 'dark');
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   useEffect(() => {
     const root = document.documentElement;
@@ -613,9 +615,58 @@ export default function Portal({ onViewChange }) {
                 </div>
               )}
             </div>
+
+            {/* Mobile Toggle Menu Button */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+              className="mobile-menu-btn"
+              aria-label="Toggle Menu"
+            >
+              {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Side Drawer Overlay Menu */}
+      <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}></div>
+      <div className={`mobile-nav-drawer ${isMobileMenuOpen ? 'active' : ''}`}>
+        <div className="mobile-drawer-header">
+          <span className="logo-number" style={{ fontSize: '1.25rem' }}>24K REALTORS</span>
+          <button className="mobile-drawer-close" onClick={() => setIsMobileMenuOpen(false)}>
+            <X size={22} />
+          </button>
+        </div>
+        
+        {/* Private Office Mobile Switcher */}
+        <div style={{ margin: '10px 0 20px 0', padding: '16px', border: '1px solid var(--border-gold)', borderRadius: '10px', background: 'rgba(255,255,255,0.02)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-light)' }}>Private Office (HNWI)</span>
+            <div className={`hnwi-pill-switch ${isHnwiMode ? 'active' : ''}`} onClick={() => setIsHnwiMode(!isHnwiMode)}>
+              <div className="hnwi-pill-knob"></div>
+            </div>
+          </div>
+          <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '8px', lineHeight: 1.4 }}>
+            Enable to view high-value signature portfolios and private advisory deals.
+          </p>
+        </div>
+
+        <div className="mobile-drawer-links">
+          <a href="#philosophy" onClick={() => setIsMobileMenuOpen(false)}>OVERVIEW</a>
+          <a href="#corridors" onClick={() => setIsMobileMenuOpen(false)}>WHY 24K</a>
+          <a href="#listings-anchor" onClick={() => setIsMobileMenuOpen(false)}>{isHnwiMode ? 'PORTFOLIOS' : 'PRICE LIST'}</a>
+          <a href="#listings-anchor" onClick={() => setIsMobileMenuOpen(false)}>FLOOR PLANS</a>
+          <a href="#testimonials" onClick={() => setIsMobileMenuOpen(false)}>CLIENTS</a>
+          
+          <button 
+            onClick={() => { setIsMobileMenuOpen(false); onViewChange && onViewChange('dashboard'); }} 
+            className="btn-gold"
+            style={{ width: '100%', marginTop: '20px', justifyContent: 'center' }}
+          >
+            Open CRM Dashboard
+          </button>
+        </div>
+      </div>
 
       {/* Animated Hero Slideshow Section */}
       <section className="portal-hero">
@@ -883,12 +934,29 @@ export default function Portal({ onViewChange }) {
                   const isCompared = selectedForCompare.some(p => p.id === property.id);
                   const scores = getLocationScorecard(property.location);
                   const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
-                  const cardImageStyle = {
-                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(7,15,30,0.8) 100%), url('${property.imageUrl || defaultImg}')`
-                  };
                   return (
                     <div key={property.id} className="property-card premium-luxury-card">
-                      <div className="property-image-container premium-hover-tint" style={cardImageStyle}>
+                      <div className="property-image-container premium-hover-tint" style={{ position: 'relative', overflow: 'hidden' }}>
+                        <img 
+                          src={property.imageUrl || defaultImg} 
+                          alt={property.title} 
+                          loading="lazy" 
+                          style={{ 
+                            position: 'absolute', 
+                            top: 0, 
+                            left: 0, 
+                            width: '100%', 
+                            height: '100%', 
+                            objectFit: 'cover', 
+                            zIndex: 0
+                          }}
+                        />
+                        <div style={{
+                          position: 'absolute',
+                          top: 0, left: 0, right: 0, bottom: 0,
+                          background: 'linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(7,15,30,0.9) 100%)',
+                          zIndex: 1
+                        }}></div>
                         <span className="property-tag">{property.transactionType}</span>
                         <div className="property-badge-container">
                           {property.verifiedListing && <span className="p-badge p-badge-verified">✓ Verified</span>}
@@ -1079,10 +1147,27 @@ export default function Portal({ onViewChange }) {
                             {isSold ? '❌ SOLD OUT' : '🔑 RENTED OUT'}
                           </div>
 
-                          <div className="property-image-container" style={{
-                            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(7,15,30,0.9) 100%), url('${property.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'}')`,
-                            height: '180px'
-                          }}>
+                          <div className="property-image-container" style={{ height: '180px', position: 'relative', overflow: 'hidden' }}>
+                            <img 
+                               src={property.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'} 
+                               alt={property.title} 
+                               loading="lazy" 
+                               style={{ 
+                                 position: 'absolute', 
+                                 top: 0, 
+                                 left: 0, 
+                                 width: '100%', 
+                                 height: '100%', 
+                                 objectFit: 'cover', 
+                                 zIndex: 0
+                               }}
+                             />
+                             <div style={{
+                               position: 'absolute',
+                               top: 0, left: 0, right: 0, bottom: 0,
+                               background: 'linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(7,15,30,0.9) 100%)',
+                               zIndex: 1
+                             }}></div>
                             <span className="property-price-tag" style={{ background: 'rgba(0, 0, 0, 0.7)', textDecoration: 'line-through' }}>
                               {formatPrice(property.price)}
                             </span>

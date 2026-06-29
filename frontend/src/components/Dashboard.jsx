@@ -700,17 +700,17 @@ export default function Dashboard({ onViewChange }) {
                   <tbody>
                     {leads.map(lead => (
                       <tr key={lead.id}>
-                        <td>
+                        <td data-label="Name">
                           <div style={{ fontWeight: 600, color: 'var(--text-light)' }}>{lead.name}</div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                             {new Date(lead.createdDate).toLocaleDateString()}
                           </div>
                         </td>
-                        <td>
+                        <td data-label="Contact">
                           <div>{lead.phone}</div>
                           <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>{lead.email}</div>
                         </td>
-                        <td>
+                        <td data-label="Requirement">
                           <span style={{ fontSize: '0.8rem', background: lead.requirementType === 'BUY' ? 'rgba(197,168,128,0.15)' : 'rgba(255,255,255,0.05)', color: lead.requirementType === 'BUY' ? 'var(--gold-light)' : 'var(--text-light)', padding: '2px 6px', borderRadius: '4px', textTransform: 'uppercase' }}>
                             {lead.requirementType}
                           </span>
@@ -718,8 +718,8 @@ export default function Dashboard({ onViewChange }) {
                             {lead.budgetMin ? formatPrice(lead.budgetMin) : 'Any'} - {lead.budgetMax ? formatPrice(lead.budgetMax) : 'Any'}
                           </div>
                         </td>
-                        <td>{lead.preferredLocation}</td>
-                        <td>
+                        <td data-label="Location">{lead.preferredLocation}</td>
+                        <td data-label="Assigned Agent">
                           {lead.assignedAgentName ? (
                             <div>
                               <div style={{ fontWeight: 500 }}>{lead.assignedAgentName}</div>
@@ -729,7 +729,7 @@ export default function Dashboard({ onViewChange }) {
                             <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Auto-routing...</span>
                           )}
                         </td>
-                        <td>
+                        <td data-label="Status">
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
                             <span className={`status-pill ${lead.status.toLowerCase()}`}>
                               {lead.status.replace('_', ' ')}
@@ -747,7 +747,7 @@ export default function Dashboard({ onViewChange }) {
                             </select>
                           </div>
                         </td>
-                        <td>
+                        <td data-label="Actions">
                           {lead.notes && (
                             <button 
                               onClick={() => alert(`Inquiry details:\n\n${lead.notes}`)} 
