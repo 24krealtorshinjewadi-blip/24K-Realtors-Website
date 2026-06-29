@@ -11,7 +11,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "leads")
+@Table(name = "leads", indexes = {
+    @Index(name = "idx_lead_status", columnList = "status"),
+    @Index(name = "idx_lead_pref_loc", columnList = "preferred_location"),
+    @Index(name = "idx_lead_created", columnList = "created_date")
+})
 @Getter
 @Setter
 @NoArgsConstructor
