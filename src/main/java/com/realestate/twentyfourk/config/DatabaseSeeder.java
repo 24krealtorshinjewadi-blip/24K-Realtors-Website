@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -32,6 +32,12 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final AgentRepository agentRepository;
 
+    @Value("${admin.username}")
+    private String adminUsername;
+
+    @Value("${admin.password}")
+    private String adminPassword;
+
     @Override
     public void run(String... args) {
         log.info("Running platform seeder checks...");
@@ -45,12 +51,12 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (userRepository.count() == 0) {
             log.info("Seeding default administrator credentials...");
             User admin = User.builder()
-                    .username("admin")
-                    .password(passwordEncoder.encode("adminpassword"))
+                    .username(adminUsername)
+                    .password(passwordEncoder.encode(adminPassword))
                     .role(UserRole.ADMIN)
                     .build();
             userRepository.save(admin);
-            log.info("Admin user created successfully (username: 'admin', password: 'adminpassword')");
+            log.info("Admin user created successfully (username: '{}')", adminUsername);
         }
     }
 
@@ -249,8 +255,80 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .gasPipeline(true)
                     .build();
 
-            propertyRepository.saveAll(List.of(prop1, prop2, prop3, prop4, prop5, prop6, prop7));
-            log.info("Seeded 7 signature listings successfully.");
+            Property prop8 = Property.builder()
+                    .title("Megapolis Splendour 1 BHK")
+                    .description("Premium cozy 1 BHK apartment in Megapolis Splendour, Hinjewadi Phase 3. Fully equipped with semi-furnished cabinets, modular kitchen setup, piped gas connection, and private balcony overlooking the IT corridor.")
+                    .propertyType(PropertyType.RESIDENTIAL)
+                    .transactionType(TransactionType.RENT)
+                    .price(new BigDecimal("22000")) // 22K/month
+                    .areaSquareFeet(650.0)
+                    .location(PrimeCorridor.HINJEWADI)
+                    .address("Megapolis Splendour, Phase 3, Hinjewadi, Pune")
+                    .latitude(18.5919)
+                    .longitude(73.7025)
+                    .bedrooms(1)
+                    .bathrooms(1)
+                    .status(PropertyStatus.AVAILABLE)
+                    .verifiedListing(true)
+                    .exclusiveDeal(true)
+                    .reraNumber("RERA-PUN-PRM-24K301")
+                    .imageUrl("https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.SEMI_FURNISHED)
+                    .gasPipeline(true)
+                    .build();
+
+            Property prop9 = Property.builder()
+                    .title("Godrej Elements Luxury 2 BHK")
+                    .description("Modern premium fully-furnished 2 BHK apartment in Godrej Elements, Hinjewadi Phase 1. Features high-end woodwork, smart home automation, modular kitchen, piped gas, and premium accessories.")
+                    .propertyType(PropertyType.RESIDENTIAL)
+                    .transactionType(TransactionType.RENT)
+                    .price(new BigDecimal("28000")) // 28K/month
+                    .areaSquareFeet(1150.0)
+                    .location(PrimeCorridor.HINJEWADI)
+                    .address("Godrej Elements, Phase 1, Hinjewadi, Pune")
+                    .latitude(18.5955)
+                    .longitude(73.7380)
+                    .bedrooms(2)
+                    .bathrooms(2)
+                    .status(PropertyStatus.AVAILABLE)
+                    .verifiedListing(true)
+                    .exclusiveDeal(true)
+                    .reraNumber("RERA-PUN-PRM-24K302")
+                    .imageUrl("https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.FULLY_FURNISHED)
+                    .gasPipeline(true)
+                    .build();
+
+            Property prop10 = Property.builder()
+                    .title("TCG The Crown Greens 3 BHK")
+                    .description("Spacious semi-furnished 3 BHK flat in TCG The Crown Greens, Hinjewadi Phase 2, right next to Embassy Techzone. Boasts three large balconies, modular kitchen, and double parking slots.")
+                    .propertyType(PropertyType.RESIDENTIAL)
+                    .transactionType(TransactionType.RENT)
+                    .price(new BigDecimal("38000")) // 38K/month
+                    .areaSquareFeet(1550.0)
+                    .location(PrimeCorridor.HINJEWADI)
+                    .address("TCG The Crown Greens, Phase 2, Hinjewadi, Pune")
+                    .latitude(18.5872)
+                    .longitude(73.7251)
+                    .bedrooms(3)
+                    .bathrooms(3)
+                    .status(PropertyStatus.AVAILABLE)
+                    .verifiedListing(true)
+                    .exclusiveDeal(true)
+                    .reraNumber("RERA-PUN-PRM-24K303")
+                    .imageUrl("https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80")
+                    .videoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.SEMI_FURNISHED)
+                    .gasPipeline(true)
+                    .build();
+
+            propertyRepository.saveAll(List.of(prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8, prop9, prop10));
+            log.info("Seeded 10 signature listings successfully (including 3 new Hinjewadi rentals).");
         }
     }
 

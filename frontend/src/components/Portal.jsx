@@ -58,10 +58,11 @@ export default function Portal({ onViewChange }) {
     minPrice: '',
     maxPrice: '',
     bedrooms: '',
+    furnishingStatus: '',
     status: 'AVAILABLE'
   });
 
-  // Collections Category state (ALL | SKY_PENTHOUSE | TECH_OFFICE | READY_TO_MOVE)
+  // Collections Category state (ALL | SKY_PENTHOUSE | TECH_OFFICE | READY_TO_MOVE | HINJEWADI_RENTALS)
   const [activeCollection, setActiveCollection] = useState('ALL');
 
   // Comparison State
@@ -75,6 +76,9 @@ export default function Portal({ onViewChange }) {
     'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=80',
     'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80'
   ];
+
+  // Scroll State
+  const [scrolled, setScrolled] = useState(false);
 
   // Inquiry Modal State
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -91,6 +95,20 @@ export default function Portal({ onViewChange }) {
   });
   const [submitLoading, setSubmitLoading] = useState(false);
   const [notification, setNotification] = useState(null);
+
+  // Exclusive Inventory Active Tab State (BUY | SELL | RENT)
+  const [exclusiveTab, setExclusiveTab] = useState('BUY');
+
+  // Seller Mandate form state
+  const [sellerForm, setSellerForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    propertyTitle: '',
+    location: 'HINJEWADI',
+    expectedPrice: '',
+    description: ''
+  });
 
   // VIP Callback State
   const [vipForm, setVipForm] = useState({ name: '', phone: '' });
@@ -188,6 +206,9 @@ export default function Portal({ onViewChange }) {
       } else if (activeCollection === 'READY_TO_MOVE') {
         queryFilters.propertyType = 'RESIDENTIAL';
         queryFilters.transactionType = 'BUY';
+      } else if (activeCollection === 'HINJEWADI_RENTALS') {
+        queryFilters.location = 'HINJEWADI';
+        queryFilters.transactionType = 'RENT';
       }
 
       const data = await apiService.getProperties(queryFilters, page, 6);
@@ -204,7 +225,90 @@ export default function Portal({ onViewChange }) {
 
   useEffect(() => {
     fetchProperties();
-  }, [page, activeCollection]);
+  }, [page, activeCollection, filters.transactionType]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Open general luxury presentation modal
+  const handleOpenGeneralInquiry = () => {
+    setSelectedProperty({
+      title: 'General Luxury Advisory Presentation',
+      price: 15000000,
+      location: 'HINJEWADI'
+    });
+    setLeadForm({
+      name: '',
+      phone: '',
+      email: '',
+      requirementType: 'BUY',
+      budgetMin: '10000000',
+      budgetMax: '30000000',
+      preferredLocation: 'HINJEWADI',
+      notes: 'General enquiry submitted via Live Investment Desk floating badge.'
+    });
+    setIsModalOpen(true);
+  };
+
+  // Handle exclusive tabs switching (BUY | SELL | RENT)
+  const handleExclusiveTabChange = (tab) => {
+    setExclusiveTab(tab);
+    setPage(0);
+    if (tab === 'BUY' || tab === 'RENT') {
+      setFilters(prev => ({
+        ...prev,
+        transactionType: tab
+      }));
+    }
+  };
+
+  // Handle seller mandate form input changes
+  const handleSellerFormChange = (e) => {
+    const { name, value } = e.target;
+    setSellerForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Submit seller mandate lead to backend H2/database CRM
+  const handleSellerSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitLoading(true);
+    try {
+      const notes = `[SELLER EXCLUSIVE REGISTRY] Asset: "${sellerForm.propertyTitle}", Corridor: ${sellerForm.location}, Expected Valuation: ₹${sellerForm.expectedPrice}. Owner description: ${sellerForm.description}`;
+      await apiService.submitLead({
+        name: sellerForm.name,
+        phone: sellerForm.phone,
+        email: sellerForm.email,
+        requirementType: 'BUY',
+        budgetMin: sellerForm.expectedPrice ? sellerForm.expectedPrice : '0',
+        budgetMax: sellerForm.expectedPrice ? sellerForm.expectedPrice : '0',
+        preferredLocation: sellerForm.location,
+        notes: notes
+      });
+      showNotification('Success! Your asset has been listed on our Private Seller Desk. Our lead analyst will reach out.');
+      setSellerForm({
+        name: '',
+        phone: '',
+        email: '',
+        propertyTitle: '',
+        location: 'HINJEWADI',
+        expectedPrice: '',
+        description: ''
+      });
+    } catch (err) {
+      alert(`Seller registration failed: ${err.message}`);
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -226,6 +330,7 @@ export default function Portal({ onViewChange }) {
       minPrice: '',
       maxPrice: '',
       bedrooms: '',
+      furnishingStatus: '',
       status: 'AVAILABLE'
     });
     setActiveCollection('ALL');
@@ -415,15 +520,22 @@ export default function Portal({ onViewChange }) {
   };
 
   // Formatter for Indian Rupee only
-  const formatPrice = (price) => {
+  const formatPrice = (price, transactionType = null) => {
     if (!price) return 'N/A';
     const num = Number(price);
+    let formattedPrice = '';
     if (num >= 10000000) {
-      return `₹${(num / 10000000).toFixed(2)} Cr`;
+      formattedPrice = `₹${(num / 10000000).toFixed(2)} Cr`;
     } else if (num >= 100000) {
-      return `₹${(num / 100000).toFixed(2)} L`;
+      formattedPrice = `₹${(num / 100000).toFixed(2)} L`;
+    } else {
+      formattedPrice = `₹${num.toLocaleString('en-IN')}`;
     }
-    return `₹${num.toLocaleString('en-IN')}`;
+    
+    if (transactionType === 'RENT') {
+      return `${formattedPrice} / Month`;
+    }
+    return formattedPrice;
   };
 
   // Get Mock Landmarks based on Location
@@ -519,7 +631,7 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* Premium Luxury Navbar */}
-      <nav className="luxury-navbar">
+      <nav className={`luxury-navbar ${scrolled ? 'scrolled' : ''}`}>
         <div className="nav-container">
           <a href="#" className="nav-logo">
             <span className="logo-number">24K REALTORS</span>
@@ -877,6 +989,16 @@ export default function Portal({ onViewChange }) {
               </div>
 
               <div className="form-group">
+                <label className="form-label">Furnishing</label>
+                <select name="furnishingStatus" value={filters.furnishingStatus} onChange={handleFilterChange} className="form-input">
+                  <option value="">All Furnishings</option>
+                  <option value="FULLY_FURNISHED">Fully Furnished</option>
+                  <option value="SEMI_FURNISHED">Semi Furnished</option>
+                  <option value="UNFURNISHED">Unfurnished</option>
+                </select>
+              </div>
+
+              <div className="form-group">
                 <label className="form-label">Min Price (₹)</label>
                 <input type="number" name="minPrice" placeholder="e.g. 5000000" value={filters.minPrice} onChange={handleFilterChange} className="form-input" />
               </div>
@@ -907,320 +1029,510 @@ export default function Portal({ onViewChange }) {
             <button onClick={() => setActiveCollection('READY_TO_MOVE')} className={activeCollection === 'READY_TO_MOVE' ? 'active' : ''}>
               🔑 Premium Ready-to-Move
             </button>
+            <button onClick={() => setActiveCollection('HINJEWADI_RENTALS')} className={activeCollection === 'HINJEWADI_RENTALS' ? 'active' : ''}>
+              🏡 Hinjewadi Rentals
+            </button>
           </div>
 
-          {/* Properties Display Header */}
-          <div className="properties-header">
-            <h2 className="listings-section-title">{isHnwiMode ? 'HNWI Mandated Assets' : 'Exclusive Inventory'}</h2>
-            <span className="properties-count">{totalElements} Premium listings found</span>
+          {/* Exclusive Inventory Sub-Tab Row */}
+          <div className="exclusive-tabs-wrapper">
+            <div className="exclusive-tabs-container">
+              <button 
+                onClick={() => handleExclusiveTabChange('BUY')} 
+                className={`exclusive-tab-btn ${exclusiveTab === 'BUY' ? 'active' : ''}`}
+              >
+                💎 BUY Asset
+              </button>
+              <button 
+                onClick={() => handleExclusiveTabChange('SELL')} 
+                className={`exclusive-tab-btn ${exclusiveTab === 'SELL' ? 'active' : ''}`}
+              >
+                📈 SELL Asset
+              </button>
+              <button 
+                onClick={() => handleExclusiveTabChange('RENT')} 
+                className={`exclusive-tab-btn ${exclusiveTab === 'RENT' ? 'active' : ''}`}
+              >
+                🏡 RENT Asset
+              </button>
+            </div>
           </div>
 
-          {loading ? (
-            <div className="premium-loader-box">
-              <PremiumGoldLoader />
-            </div>
-          ) : error ? (
-            <div className="empty-state" style={{ borderColor: '#D90429', color: '#FF4D6D' }}>
-              <p>{error}</p>
-            </div>
-          ) : properties.length === 0 ? (
-            <div className="empty-state">
-              <p>No premium properties match your criteria at this moment. Adjust your filters or click a corridor card.</p>
-            </div>
-          ) : (
-            <>
-              <div className="properties-grid">
-                {properties.map(property => {
-                  const isCompared = selectedForCompare.some(p => p.id === property.id);
-                  const scores = getLocationScorecard(property.location);
-                  const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
-                  return (
-                    <div key={property.id} className="property-card premium-luxury-card">
-                      <div className="property-image-container premium-hover-tint" style={{ position: 'relative', overflow: 'hidden' }}>
-                        <img 
-                          src={property.imageUrl || defaultImg} 
-                          alt={property.title} 
-                          loading="lazy" 
-                          style={{ 
-                            position: 'absolute', 
-                            top: 0, 
-                            left: 0, 
-                            width: '100%', 
-                            height: '100%', 
-                            objectFit: 'cover', 
-                            zIndex: 0
-                          }}
-                        />
-                        <div style={{
-                          position: 'absolute',
-                          top: 0, left: 0, right: 0, bottom: 0,
-                          background: 'linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(7,15,30,0.9) 100%)',
-                          zIndex: 1
-                        }}></div>
-                        <span className="property-tag">{property.transactionType}</span>
-                        <div className="property-badge-container">
-                          {property.verifiedListing && <span className="p-badge p-badge-verified">✓ Verified</span>}
-                          {property.exclusiveDeal && <span className="p-badge p-badge-exclusive">★ Exclusive</span>}
-                          {property.noBrokerage && <span className="p-badge p-badge-nobroker">No Brokerage</span>}
-                        </div>
-                        
-                        <button 
-                          onClick={() => handleToggleCompare(property)}
-                          className={`btn-compare-badge ${isCompared ? 'compared' : ''}`}
-                          title={isCompared ? 'Remove from comparison' : 'Compare property'}
-                        >
-                          <Sliders size={14} />
-                          <span>{isCompared ? 'Compared' : 'Compare'}</span>
-                        </button>
+          {exclusiveTab === 'SELL' ? (
+            <div className="seller-mandate-desk">
+              <div className="seller-info-side">
+                <h2 className="listings-section-title" style={{ textAlign: 'left', margin: '0 0 10px 0' }}>Private Mandate Selling Desk</h2>
+                <p className="seller-section-subtitle">List your premium Pune asset with 24K Realtors for exclusive institutional & HNWI buyer outreach.</p>
+                
+                <div className="seller-benefit-item">
+                  <div className="seller-benefit-icon">
+                    <Eye size={20} />
+                  </div>
+                  <div className="seller-benefit-text">
+                    <h4>4K Cinematic Drone & VR Tours</h4>
+                    <p>We create complimentary high-end virtual property assets including Matterport floor plans and aerial footage to captivate remote buyers.</p>
+                  </div>
+                </div>
 
-                        <span className="property-price-tag">
-                          {isHnwiMode 
-                            ? `Gross Yield: ${property.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice(property.price)}` 
-                            : formatPrice(property.price)}
-                        </span>
-                      </div>
-                      
-                      <div className="property-info">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                          <span className="property-location">
-                            <MapPin size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                            {property.location}
-                          </span>
-                          
-                          {/* MahaRERA Interactive compliance badge */}
-                          <button 
-                            className="rera-interactive-btn"
-                            onClick={(e) => handleOpenReraDrawer(property, e)}
-                            title="Open compliance dossier"
-                          >
-                            <ShieldCheck size={12} color="#D4AF37" style={{ marginRight: '4px' }} />
-                            <span>{property.reraNumber || 'PRM/VERIFIED'}</span>
-                          </button>
-                        </div>
+                <div className="seller-benefit-item">
+                  <div className="seller-benefit-icon">
+                    <Sparkles size={20} />
+                  </div>
+                  <div className="seller-benefit-text">
+                    <h4>Targeted HNWI Outreach Campaigns</h4>
+                    <p>Direct advertising to high-income IT corridor executives and local investment groups looking for high-yield Corridor properties.</p>
+                  </div>
+                </div>
 
-                        <h3 className="property-title">{property.title}</h3>
-                        
-                        {/* Advisory Digital Signature Stamp */}
-                        <div className="signature-compliance-stamp">
-                          <Lock size={12} color="#D4AF37" />
-                          <span>Certified Title-Clear Portfolio (Regional Lead Advisory)</span>
-                        </div>
-
-                        <p className="property-desc">{property.description || 'Premium architectural layout featuring cross ventilation, modern structural design.'}</p>
-                        
-                        {/* Location Scorecard index */}
-                        <div className="location-scorecard">
-                          <div className="score-item">
-                            <span>Appreciation</span>
-                            <strong>{scores.appreciation}/10</strong>
-                          </div>
-                          <div className="score-item">
-                            <span>Commute</span>
-                            <strong>{scores.commute}/10</strong>
-                          </div>
-                          <div className="score-item">
-                            <span>Green Index</span>
-                            <strong>{scores.green}/10</strong>
-                          </div>
-                        </div>
-
-                        <div className="landmarks-snippets">
-                          <span className="landmark-tag-mini">{getLandmarks(property.location)[0]}</span>
-                          <span className="landmark-tag-mini">{getLandmarks(property.location)[1]}</span>
-                        </div>
-
-                        <div className="property-specs">
-                          <div className="spec-item">
-                            <Bed size={16} color="#C5A880" />
-                            <span className="spec-value">{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A'}</span>
-                          </div>
-                          <div className="spec-item">
-                            <Bath size={16} color="#C5A880" />
-                            <span className="spec-value">{property.bathrooms} Baths</span>
-                          </div>
-                          <div className="spec-item">
-                            <Maximize size={16} color="#C5A880" />
-                            <span className="spec-value">{property.areaSquareFeet} sqft</span>
-                          </div>
-                        </div>
-
-                        {/* Signature Luxury Amenities tags */}
-                        <div className="luxury-amenities-mini-grid">
-                          <span className="amenity-badge" style={{ borderColor: 'rgba(212,175,55,0.4)', color: 'var(--gold-primary)', fontWeight: 600 }}>
-                            <Sparkles size={10} /> {property.furnishingStatus ? property.furnishingStatus.replace('_', ' ') : 'FULLY FURNISHED'}
-                          </span>
-                          {property.gasPipeline && (
-                            <span className="amenity-badge" style={{ borderColor: '#2ec4b6', color: '#2ec4b6' }}>
-                              🔥 Piped Gas
-                            </span>
-                          )}
-                          <span className="amenity-badge"><Sparkles size={10} /> Infinity Pool</span>
-                          <span className="amenity-badge"><Users size={10} /> 24/7 Concierge</span>
-                        </div>
-
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
-                          <button 
-                            onClick={() => handleOpenWalkthrough(property)}
-                            className="btn-outline"
-                            title="Drone Virtual Tour"
-                            style={{ padding: '10px 12px' }}
-                          >
-                            <Eye size={14} />
-                          </button>
-
-                          <button 
-                            onClick={() => handleOpen3DTour(property)}
-                            className="btn-outline"
-                            title="3D Floor View"
-                            style={{ padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
-                          >
-                            <Compass size={14} />
-                            <span style={{ fontSize: '0.78rem' }}>3D Tour</span>
-                          </button>
-                          
-                          {/* VIP Private Site Chauffeur Scheduler CTA */}
-                          <button 
-                            onClick={() => { setSelectedChauffeurProp(property); setIsChauffeurModalOpen(true); }}
-                            className="btn-outline"
-                            style={{ flex: '1 1 auto', padding: '10px 8px', justifyContent: 'center', borderColor: 'var(--gold-secondary)', color: 'var(--gold-secondary)', fontSize: '0.78rem' }}
-                          >
-                            <Car size={14} style={{ marginRight: '4px' }} />
-                            <span>VIP Chauffeur</span>
-                          </button>
-
-                          <button 
-                            onClick={() => handleOpenInquiry(property)} 
-                            className="btn-gold" 
-                            style={{ flex: '1 1 auto', padding: '10px 8px', justifyContent: 'center', fontSize: '0.78rem' }}
-                          >
-                            Private Presentation
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                <div className="seller-benefit-item">
+                  <div className="seller-benefit-icon">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <div className="seller-benefit-text">
+                    <h4>Compliance & Title Clearance Dossier</h4>
+                    <p>Our PMRDA/MahaRERA advisory team drafts clean-title audit dossiers to expedite institutional legal verification.</p>
+                  </div>
+                </div>
               </div>
 
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} className="pagination-btn">Previous</button>
-                  <span className="pagination-info">Page {page + 1} of {totalPages}</span>
-                  <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} className="pagination-btn">Next</button>
-                </div>
-              )}
-
-              {/* Recently Closed Deals FOMO Section */}
-              {closedProperties.length > 0 && (
-                <div className="closed-deals-fomo-section" style={{ marginTop: '50px', borderTop: '1px solid var(--border-gold)', paddingTop: '40px' }}>
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '24px' }}>
-                    <TrendingUpIcon size={24} style={{ color: '#d90429' }} />
-                    <div>
-                      <h2 className="luxury-title" style={{ fontSize: '1.6rem', color: 'var(--text-light)', margin: 0 }}>⚜️ Recently Closed Deals (Wakad & Hinjewadi)</h2>
-                      <p style={{ fontSize: '0.85rem', color: '#ff4d6d', margin: '4px 0 0 0', fontWeight: 600 }}>Opportunity Missed! These premium flats have already been transacted.</p>
+              <div className="seller-form-side">
+                <h3 className="seller-form-title">Register Listing Mandate</h3>
+                <form onSubmit={handleSellerSubmit}>
+                  <div className="form-group">
+                    <label className="form-label">Full Name</label>
+                    <input 
+                      type="text" 
+                      name="name" 
+                      className="form-input" 
+                      required 
+                      placeholder="e.g. Amit Deshmukh" 
+                      value={sellerForm.name} 
+                      onChange={handleSellerFormChange} 
+                    />
+                  </div>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                    <div className="form-group">
+                      <label className="form-label">Phone Number</label>
+                      <input 
+                        type="tel" 
+                        name="phone" 
+                        className="form-input" 
+                        required 
+                        placeholder="e.g. +91 98765 43210" 
+                        value={sellerForm.phone} 
+                        onChange={handleSellerFormChange} 
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Email Address</label>
+                      <input 
+                        type="email" 
+                        name="email" 
+                        className="form-input" 
+                        required 
+                        placeholder="e.g. amit@gmail.com" 
+                        value={sellerForm.email} 
+                        onChange={handleSellerFormChange} 
+                      />
                     </div>
                   </div>
 
-                  <div className="properties-grid" style={{ opacity: 0.85 }}>
-                    {closedProperties.map(property => {
-                      const scores = getLocationScorecard(property.location);
-                      const isSold = property.status === 'SOLD';
-                      return (
-                        <div key={property.id} className="property-card premium-luxury-card closed-deal-card" style={{ filter: 'grayscale(70%)', border: '1px solid rgba(255, 255, 255, 0.1)', position: 'relative' }}>
-                          
-                          {/* Missed Chance FOMO Ribbon */}
-                          <div style={{
-                            position: 'absolute',
-                            top: '12px',
-                            left: '12px',
-                            zIndex: 10,
-                            background: '#d90429',
-                            color: '#ffffff',
-                            padding: '4px 10px',
-                            borderRadius: '4px',
-                            fontSize: '0.72rem',
-                            fontWeight: 'bold',
-                            boxShadow: '0 2px 10px rgba(217, 4, 41, 0.4)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px'
-                          }}>
-                            {isSold ? '❌ SOLD OUT' : '🔑 RENTED OUT'}
-                          </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                    <div className="form-group">
+                      <label className="form-label">Asset Title</label>
+                      <input 
+                        type="text" 
+                        name="propertyTitle" 
+                        className="form-input" 
+                        required 
+                        placeholder="e.g. 3 BHK Wakad Flat" 
+                        value={sellerForm.propertyTitle} 
+                        onChange={handleSellerFormChange} 
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Corridor Location</label>
+                      <select 
+                        name="location" 
+                        className="form-input" 
+                        value={sellerForm.location} 
+                        onChange={handleSellerFormChange}
+                      >
+                        <option value="HINJEWADI">Hinjewadi</option>
+                        <option value="BANER">Baner</option>
+                        <option value="WAKAD">Wakad</option>
+                        <option value="BALEWADI">Balewadi</option>
+                        <option value="TATHAWADE">Tathawade</option>
+                        <option value="MAHALUNGE">Mahalunge</option>
+                      </select>
+                    </div>
+                  </div>
 
-                          <div className="property-image-container" style={{ height: '180px', position: 'relative', overflow: 'hidden' }}>
+                  <div className="form-group">
+                    <label className="form-label">Expected Valuation (₹)</label>
+                    <input 
+                      type="number" 
+                      name="expectedPrice" 
+                      className="form-input" 
+                      required 
+                      placeholder="e.g. 9500000" 
+                      value={sellerForm.expectedPrice} 
+                      onChange={handleSellerFormChange} 
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Asset Specifications / Key Features</label>
+                    <textarea 
+                      name="description" 
+                      className="form-input" 
+                      rows="3" 
+                      placeholder="e.g. Semi-furnished 3BHK, modular kitchen, 12th floor, overlooking park..."
+                      value={sellerForm.description} 
+                      onChange={handleSellerFormChange} 
+                    />
+                  </div>
+
+                  <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }} disabled={submitLoading}>
+                    {submitLoading ? 'Registering Mandate...' : 'Submit Sale Listing Mandate'}
+                  </button>
+                </form>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Properties Display Header */}
+              <div className="properties-header">
+                <h2 className="listings-section-title">{isHnwiMode ? 'HNWI Mandated Assets' : 'Exclusive Inventory'}</h2>
+                <span className="properties-count">{totalElements} Premium listings found</span>
+              </div>
+
+              {loading ? (
+                <div className="premium-loader-box">
+                  <PremiumGoldLoader />
+                </div>
+              ) : error ? (
+                <div className="empty-state" style={{ borderColor: '#D90429', color: '#FF4D6D' }}>
+                  <p>{error}</p>
+                </div>
+              ) : properties.length === 0 ? (
+                <div className="empty-state">
+                  <p>No premium properties match your criteria at this moment. Adjust your filters or click a corridor card.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="properties-grid">
+                    {properties.map(property => {
+                      const isCompared = selectedForCompare.some(p => p.id === property.id);
+                      const scores = getLocationScorecard(property.location);
+                      const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
+                      
+                      // Predefined custom WhatsApp message for card click
+                      const waLink = `https://wa.me/919673000053?text=Hi%2024K%20Realtors,%20I%20am%20interested%20in%20"${property.title}"%20located%20at%20${property.address}%20for%20₹${property.price}`;
+                      
+                      return (
+                        <div key={property.id} className="property-card premium-luxury-card">
+                          <div className="property-image-container premium-hover-tint" style={{ position: 'relative', overflow: 'hidden' }}>
                             <img 
-                               src={property.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'} 
-                               alt={property.title} 
-                               loading="lazy" 
-                               style={{ 
-                                 position: 'absolute', 
-                                 top: 0, 
-                                 left: 0, 
-                                 width: '100%', 
-                                 height: '100%', 
-                                 objectFit: 'cover', 
-                                 zIndex: 0
-                               }}
-                             />
-                             <div style={{
-                               position: 'absolute',
-                               top: 0, left: 0, right: 0, bottom: 0,
-                               background: 'linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(7,15,30,0.9) 100%)',
-                               zIndex: 1
-                             }}></div>
-                            <span className="property-price-tag" style={{ background: 'rgba(0, 0, 0, 0.7)', textDecoration: 'line-through' }}>
-                              {formatPrice(property.price)}
+                              src={property.imageUrl || defaultImg} 
+                              alt={property.title} 
+                              loading="lazy" 
+                              style={{ 
+                                position: 'absolute', 
+                                top: 0, 
+                                left: 0, 
+                                width: '100%', 
+                                height: '100%', 
+                                objectFit: 'cover', 
+                                zIndex: 0
+                              }}
+                            />
+                            <div style={{
+                              position: 'absolute',
+                              top: 0, left: 0, right: 0, bottom: 0,
+                              background: 'linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(7,15,30,0.9) 100%)',
+                              zIndex: 1
+                            }}></div>
+                            <span className="property-tag">{property.transactionType}</span>
+                            <div className="property-badge-container">
+                              {property.verifiedListing && <span className="p-badge p-badge-verified">✓ Verified</span>}
+                              {property.exclusiveDeal && <span className="p-badge p-badge-exclusive">★ Exclusive</span>}
+                              {property.noBrokerage && <span className="p-badge p-badge-nobroker">No Brokerage</span>}
+                            </div>
+                            
+                            <button 
+                              onClick={() => handleToggleCompare(property)}
+                              className={`btn-compare-badge ${isCompared ? 'compared' : ''}`}
+                              title={isCompared ? 'Remove from comparison' : 'Compare property'}
+                            >
+                              <Sliders size={14} />
+                              <span>{isCompared ? 'Compared' : 'Compare'}</span>
+                            </button>
+
+                            <span className="property-price-tag">
+                              {isHnwiMode 
+                                ? `Gross Yield: ${property.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice(property.price, property.transactionType)}` 
+                                : formatPrice(property.price, property.transactionType)}
                             </span>
                           </div>
-
-                          <div className="property-info" style={{ padding: '16px' }}>
+                          
+                          <div className="property-info">
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                              <span className="property-location" style={{ fontSize: '0.78rem' }}>
-                                <MapPin size={11} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                              <span className="property-location">
+                                <MapPin size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
                                 {property.location}
                               </span>
-                              <span style={{ fontSize: '0.7rem', color: '#ff4d6d', fontWeight: 'bold' }}>
-                                Chance Missed
-                              </span>
+                              
+                              {/* MahaRERA Interactive compliance badge */}
+                              <button 
+                                className="rera-interactive-btn"
+                                onClick={(e) => handleOpenReraDrawer(property, e)}
+                                title="Open compliance dossier"
+                              >
+                                <ShieldCheck size={12} color="#D4AF37" style={{ marginRight: '4px' }} />
+                                <span>{property.reraNumber || 'PRM/VERIFIED'}</span>
+                              </button>
                             </div>
 
-                            <h3 className="property-title" style={{ fontSize: '1.1rem', margin: '4px 0 8px 0', textDecoration: 'line-through', opacity: 0.7 }}>{property.title}</h3>
+                            <h3 className="property-title">{property.title}</h3>
                             
-                            {/* Urgent FOMO Alert message */}
-                            <div style={{ background: 'rgba(217, 4, 41, 0.08)', border: '1px solid rgba(217, 4, 41, 0.2)', borderRadius: '4px', padding: '8px 10px', fontSize: '0.76rem', color: '#ff4d6d', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <Clock size={12} className="spin-slow" />
-                              <span>Closed recently! <strong>14 leads missed this opportunity</strong>.</span>
+                            {/* Advisory Digital Signature Stamp */}
+                            <div className="signature-compliance-stamp">
+                              <Lock size={12} color="#D4AF37" />
+                              <span>Certified Title-Clear Portfolio (Regional Lead Advisory)</span>
                             </div>
 
-                            <p className="property-desc" style={{ fontSize: '0.78rem', height: '36px', overflow: 'hidden', marginBottom: '12px', opacity: 0.6 }}>
-                              {property.description}
-                            </p>
-
-                            <div className="property-specs" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '10px', margin: '10px 0 0 0' }}>
-                              <span style={{ fontSize: '0.75rem' }}>{property.bedrooms} BHK • {property.areaSquareFeet} sqft</span>
-                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{property.furnishingStatus ? property.furnishingStatus.replace('_', ' ') : 'FULLY FURNISHED'}</span>
+                            <p className="property-desc">{property.description || 'Premium architectural layout featuring cross ventilation, modern structural design.'}</p>
+                            
+                            {/* Location Scorecard index */}
+                            <div className="location-scorecard">
+                              <div className="score-item">
+                                <span>Appreciation</span>
+                                <strong>{scores.appreciation}/10</strong>
+                              </div>
+                              <div className="score-item">
+                                <span>Commute</span>
+                                <strong>{scores.commute}/10</strong>
+                              </div>
+                              <div className="score-item">
+                                <span>Green Index</span>
+                                <strong>{scores.green}/10</strong>
+                              </div>
                             </div>
 
-                            <button 
-                              onClick={() => {
-                                setLeadForm(prev => ({
-                                  ...prev,
-                                  notes: `Missed out on: "${property.title}" (ID: ${property.id}). Please notify me if a similar flat in ${property.location} becomes available!`
-                                }));
-                                setSelectedProperty(property);
-                                setIsModalOpen(true);
-                              }}
-                              className="btn-gold" 
-                              style={{ width: '100%', padding: '8px 0', justifyContent: 'center', marginTop: '12px', background: 'none', border: '1px solid var(--gold-primary)', color: 'var(--gold-primary)', fontSize: '0.8rem' }}
-                            >
-                              Get Similar Alerts
-                            </button>
+                            <div className="landmarks-snippets">
+                              <span className="landmark-tag-mini">{getLandmarks(property.location)[0]}</span>
+                              <span className="landmark-tag-mini">{getLandmarks(property.location)[1]}</span>
+                            </div>
+
+                            <div className="property-specs">
+                              <div className="spec-item">
+                                <Bed size={16} color="#C5A880" />
+                                <span className="spec-value">{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A'}</span>
+                              </div>
+                              <div className="spec-item">
+                                <Bath size={16} color="#C5A880" />
+                                <span className="spec-value">{property.bathrooms} Baths</span>
+                              </div>
+                              <div className="spec-item">
+                                <Maximize size={16} color="#C5A880" />
+                                <span className="spec-value">{property.areaSquareFeet} sqft</span>
+                              </div>
+                            </div>
+
+                            {/* Signature Luxury Amenities tags */}
+                            <div className="luxury-amenities-mini-grid">
+                              <span className="amenity-badge" style={{ borderColor: 'rgba(212,175,55,0.4)', color: 'var(--gold-primary)', fontWeight: 600 }}>
+                                <Sparkles size={10} /> {property.furnishingStatus ? property.furnishingStatus.replace('_', ' ') : 'FULLY FURNISHED'}
+                              </span>
+                              {property.gasPipeline && (
+                                <span className="amenity-badge" style={{ borderColor: '#2ec4b6', color: '#2ec4b6' }}>
+                                  🔥 Piped Gas
+                                </span>
+                              )}
+                              <span className="amenity-badge"><Sparkles size={10} /> Infinity Pool</span>
+                              <span className="amenity-badge"><Users size={10} /> 24/7 Concierge</span>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
+                              <button 
+                                onClick={() => handleOpenWalkthrough(property)}
+                                className="btn-outline"
+                                title="Drone Virtual Tour"
+                                style={{ padding: '10px 12px' }}
+                              >
+                                <Eye size={14} />
+                              </button>
+
+                              <button 
+                                onClick={() => handleOpen3DTour(property)}
+                                className="btn-outline"
+                                title="3D Floor View"
+                                style={{ padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                              >
+                                <Compass size={14} />
+                                <span style={{ fontSize: '0.78rem' }}>3D Tour</span>
+                              </button>
+                              
+                              {/* VIP Private Site Chauffeur Scheduler CTA */}
+                              <button 
+                                onClick={() => { setSelectedChauffeurProp(property); setIsChauffeurModalOpen(true); }}
+                                className="btn-outline"
+                                style={{ flex: '1 1 auto', padding: '10px 8px', justifyContent: 'center', borderColor: 'var(--gold-secondary)', color: 'var(--gold-secondary)', fontSize: '0.78rem' }}
+                              >
+                                <Car size={14} style={{ marginRight: '4px' }} />
+                                <span>VIP Chauffeur</span>
+                              </button>
+
+                              {/* WhatsApp Mini Click-to-consult */}
+                              <a 
+                                href={waLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn-whatsapp-mini"
+                                title="Quick WhatsApp Consultation"
+                              >
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                  <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371c1.394.756 2.96 1.157 4.777 1.158h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2zm5.787 14.404c-.24.675-1.397 1.285-1.92 1.36-.474.07-1.088.13-3.18-.737-2.677-1.11-4.4-3.837-4.536-4.015-.132-.178-1.08-1.433-1.08-2.73 0-1.298.68-1.936.92-2.199.243-.263.53-.328.706-.328.176 0 .353.003.507.01.162.007.382-.062.597.45.22.524.75 1.83.816 1.964.066.13.11.286.022.463-.087.177-.13.287-.26.439-.13.15-.27.337-.385.45-.126.126-.259.263-.11.517.15.253.66.1.91 1.488.75 1.309 1.37 2.14 2.15 2.65.783.51 1.237.585 1.58.204.34-.38 1.484-1.72 1.88-2.31.398-.59.794-.49 1.346-.29.553.2.3.5 1.764 1.226.22.11.365.163.475.328.11.165.11.954-.13 1.63z"/>
+                                </svg>
+                              </a>
+
+                              <button 
+                                onClick={() => handleOpenInquiry(property)} 
+                                className="btn-gold" 
+                                style={{ flex: '1 1 auto', padding: '10px 8px', justifyContent: 'center', fontSize: '0.78rem' }}
+                              >
+                                Private Presentation
+                              </button>
+                            </div>
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                </div>
+
+                  {totalPages > 1 && (
+                    <div className="pagination">
+                      <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} className="pagination-btn">Previous</button>
+                      <span className="pagination-info">Page {page + 1} of {totalPages}</span>
+                      <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} className="pagination-btn">Next</button>
+                    </div>
+                  )}
+
+                  {/* Recently Closed Deals FOMO Section */}
+                  {closedProperties.length > 0 && (
+                    <div className="closed-deals-fomo-section" style={{ marginTop: '50px', borderTop: '1px solid var(--border-gold)', paddingTop: '40px' }}>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '24px' }}>
+                        <TrendingUpIcon size={24} style={{ color: '#d90429' }} />
+                        <div>
+                          <h2 className="luxury-title" style={{ fontSize: '1.6rem', color: 'var(--text-light)', margin: 0 }}>⚜️ Recently Closed Deals (Wakad & Hinjewadi)</h2>
+                          <p style={{ fontSize: '0.85rem', color: '#ff4d6d', margin: '4px 0 0 0', fontWeight: 600 }}>Opportunity Missed! These premium flats have already been transacted.</p>
+                        </div>
+                      </div>
+
+                      <div className="properties-grid" style={{ opacity: 0.85 }}>
+                        {closedProperties.map(property => {
+                          const scores = getLocationScorecard(property.location);
+                          const isSold = property.status === 'SOLD';
+                          return (
+                            <div key={property.id} className="property-card premium-luxury-card closed-deal-card" style={{ filter: 'grayscale(70%)', border: '1px solid rgba(255, 255, 255, 0.1)', position: 'relative' }}>
+                              
+                              {/* Missed Chance FOMO Ribbon */}
+                              <div style={{
+                                position: 'absolute',
+                                top: '15px',
+                                right: '15px',
+                                zIndex: 10,
+                                background: '#d90429',
+                                color: '#ffffff',
+                                padding: '4px 10px',
+                                borderRadius: '4px',
+                                fontSize: '0.72rem',
+                                fontWeight: 'bold',
+                                boxShadow: '0 2px 10px rgba(217, 4, 41, 0.4)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.5px'
+                              }}>
+                                {isSold ? '❌ SOLD OUT' : '🔑 RENTED OUT'}
+                              </div>
+
+                              <div className="property-image-container" style={{ height: '180px', position: 'relative', overflow: 'hidden' }}>
+                                <img 
+                                   src={property.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'} 
+                                   alt={property.title} 
+                                   loading="lazy" 
+                                   style={{ 
+                                     position: 'absolute', 
+                                     top: 0, 
+                                     left: 0, 
+                                     width: '100%', 
+                                     height: '100%', 
+                                     objectFit: 'cover', 
+                                     zIndex: 0
+                                   }}
+                                 />
+                                 <div style={{
+                                   position: 'absolute',
+                                   top: 0, left: 0, right: 0, bottom: 0,
+                                   background: 'linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(7,15,30,0.9) 100%)',
+                                   zIndex: 1
+                                 }}></div>
+                                <span className="property-price-tag" style={{ background: 'rgba(0, 0, 0, 0.7)', textDecoration: 'line-through' }}>
+                                  {formatPrice(property.price, property.transactionType)}
+                                </span>
+                              </div>
+
+                              <div className="property-info" style={{ padding: '16px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                  <span className="property-location" style={{ fontSize: '0.78rem' }}>
+                                    <MapPin size={11} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                                    {property.location}
+                                  </span>
+                                  <span style={{ fontSize: '0.7rem', color: '#ff4d6d', fontWeight: 'bold' }}>
+                                    Chance Missed
+                                  </span>
+                                </div>
+
+                                <h3 className="property-title" style={{ fontSize: '1.1rem', margin: '4px 0 8px 0', textDecoration: 'line-through', opacity: 0.7 }}>{property.title}</h3>
+                                
+                                {/* Urgent FOMO Alert message */}
+                                <div style={{ background: 'rgba(217, 4, 41, 0.08)', border: '1px solid rgba(217, 4, 41, 0.2)', borderRadius: '4px', padding: '8px 10px', fontSize: '0.76rem', color: '#ff4d6d', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                  <Clock size={12} className="spin-slow" />
+                                  <span>Closed recently! <strong>14 leads missed this opportunity</strong>.</span>
+                                </div>
+
+                                <p className="property-desc" style={{ fontSize: '0.78rem', height: '36px', overflow: 'hidden', marginBottom: '12px', opacity: 0.6 }}>
+                                  {property.description}
+                                </p>
+
+                                <div className="property-specs" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '10px', margin: '10px 0 0 0' }}>
+                                  <span style={{ fontSize: '0.75rem' }}>{property.bedrooms} BHK • {property.areaSquareFeet} sqft</span>
+                                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{property.furnishingStatus ? property.furnishingStatus.replace('_', ' ') : 'FULLY FURNISHED'}</span>
+                                </div>
+
+                                <button 
+                                  onClick={() => {
+                                    setLeadForm(prev => ({
+                                      ...prev,
+                                      notes: `Missed out on: "${property.title}" (ID: ${property.id}). Please notify me if a similar flat in ${property.location} becomes available!`
+                                    }));
+                                    setSelectedProperty(property);
+                                    setIsModalOpen(true);
+                                  }}
+                                  className="btn-gold" 
+                                  style={{ width: '100%', padding: '8px 0', justifyContent: 'center', marginTop: '12px', background: 'none', border: '1px solid var(--gold-primary)', color: 'var(--gold-primary)', fontSize: '0.8rem' }}
+                                >
+                                  Get Similar Alerts
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}
@@ -1376,6 +1688,16 @@ export default function Portal({ onViewChange }) {
         </div>
       </section>
 
+      {/* Floating Pulse Investment Desk Badge */}
+      <button 
+        onClick={handleOpenGeneralInquiry} 
+        className="floating-desk-badge"
+        title="Open Live Advisory Desk Presentation"
+      >
+        <span className="pulse-dot"></span>
+        <span>Live Desk</span>
+      </button>
+
       {/* Sticky Floating WhatsApp */}
       <a 
         href="https://wa.me/919673000053?text=I%20am%20interested%20in%20real%20estate%20consultation%20with%2024K%20Realtors"
@@ -1403,7 +1725,7 @@ export default function Portal({ onViewChange }) {
                   <div className="compare-img" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80')` }} />
                   <h4 style={{ color: 'var(--gold-primary)', margin: '12px 0 6px 0', fontSize: '1.1rem' }}>{p.title}</h4>
                   <div className="compare-field"><strong>Location:</strong> {p.location}</div>
-                  <div className="compare-field"><strong>Price:</strong> {formatPrice(p.price)}</div>
+                  <div className="compare-field"><strong>Price:</strong> {formatPrice(p.price, p.transactionType)}</div>
                   <div className="compare-field"><strong>Size:</strong> {p.areaSquareFeet} sqft</div>
                   <div className="compare-field"><strong>Rooms:</strong> {p.bedrooms > 0 ? `${p.bedrooms} BHK` : 'N/A'}</div>
                   <div className="compare-field"><strong>Baths:</strong> {p.bathrooms}</div>

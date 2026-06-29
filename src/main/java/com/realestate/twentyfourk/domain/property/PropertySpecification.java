@@ -15,7 +15,8 @@ public class PropertySpecification {
             PropertyType propertyType,
             TransactionType transactionType,
             Integer bedrooms,
-            PropertyStatus status
+            PropertyStatus status,
+            FurnishingStatus furnishingStatus
     ) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -40,6 +41,9 @@ public class PropertySpecification {
             }
             if (status != null) {
                 predicates.add(cb.equal(root.get("status"), status));
+            }
+            if (furnishingStatus != null) {
+                predicates.add(cb.equal(root.get("furnishingStatus"), furnishingStatus));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

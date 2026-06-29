@@ -33,6 +33,10 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Username already exists!");
         }
 
+        if (!isPasswordStrong(request.password())) {
+            return ResponseEntity.badRequest().body("Password validation failed: Password must be at least 8 characters long, contain at least one uppercase letter and one digit.");
+        }
+
         User user = User.builder()
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
@@ -41,6 +45,19 @@ public class AuthController {
 
         userRepository.save(user);
         return new ResponseEntity<>("User registered successfully!", HttpStatus.CREATED);
+    }
+
+    private boolean isPasswordStrong(String password) {
+        if (password == null || password.length() < 8) {
+            return false;
+        }
+        boolean hasNum = false;
+        boolean hasUpper = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isDigit(c)) hasNum = true;
+            if (Character.isUpperCase(c)) hasUpper = true;
+        }
+        return hasNum && hasUpper;
     }
 
     @PostMapping("/login")
