@@ -932,3 +932,180 @@
   }
 }
 
+/* --- SECURE CRM LOGIN SCREEN STYLING --- */
+.crm-login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(135deg, rgba(7, 15, 30, 0.9), rgba(7, 15, 30, 0.95)), url('/twentyfourk_pune_banner.png');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.crm-login-wrapper::before {
+  content: "24K REALTORS";
+  position: absolute;
+  top: 12%;
+  left: 6%;
+  font-family: var(--font-title);
+  font-size: 8vw;
+  font-weight: 900;
+  color: rgba(212, 175, 55, 0.03);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.crm-login-wrapper::after {
+  content: "PUNE WEST GATEWAY";
+  position: absolute;
+  bottom: 12%;
+  right: 6%;
+  font-family: var(--font-title);
+  font-size: 5vw;
+  font-weight: 900;
+  color: rgba(212, 175, 55, 0.02);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.login-card {
+  background: rgba(11, 21, 40, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.login-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.login-logo .logo-text {
+  font-family: var(--font-title);
+  color: var(--gold-primary);
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 12px rgba(212, 175, 55, 0.15);
+}
+
+.login-logo .sub-text {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin-top: 4px;
+}
+
+.auth-tab-buttons {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.auth-tab-buttons button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.auth-tab-buttons button:hover {
+  color: var(--text-light);
+}
+
+.auth-tab-buttons button.active {
+  background: var(--gold-primary);
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+.auth-error-msg {
+  color: #ff4d6d;
+  background: rgba(217, 4, 41, 0.08);
+  border: 1px solid rgba(217, 4, 41, 0.2);
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  margin-bottom: 16px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.btn-back-portal {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 24px;
+  transition: color 0.2s;
+  outline: none;
+}
+
+.btn-back-portal:hover {
+  color: var(--gold-light);
+}
+
+/* Light Theme overrides for login screen */
+.light-theme .crm-login-wrapper {
+  background-image: linear-gradient(135deg, rgba(248, 250, 252, 0.88), rgba(248, 250, 252, 0.94)), url('/twentyfourk_pune_banner.png');
+}
+
+.light-theme .crm-login-wrapper::before {
+  color: rgba(15, 23, 42, 0.03);
+}
+
+.light-theme .crm-login-wrapper::after {
+  color: rgba(15, 23, 42, 0.02);
+}
+
+.light-theme .login-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .auth-tab-buttons {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.light-theme .auth-tab-buttons button.active {
+  background: var(--gold-primary);
+  color: #ffffff;
+}
+
