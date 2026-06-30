@@ -12,6 +12,6 @@ COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 
 # Environment variables default setup
-ENV SPRING_PROFILES_ACTIVE=prod
+ENV SPRING_PROFILES_ACTIVE=railway
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
