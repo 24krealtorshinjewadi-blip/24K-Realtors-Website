@@ -988,7 +988,7 @@ export default function Portal({ onViewChange }) {
           </div>
 
           {/* Seller Exclusive Mandate Desk */}
-          <div className="seller-mandate-card" style={{ marginTop: '24px', border: '1px solid var(--border-gold)', borderRadius: '10px', padding: '20px', background: 'rgba(212,175,55,0.02)' }}>
+          <div id="seller-mandate-anchor" className="seller-mandate-card" style={{ marginTop: '24px', border: '1px solid var(--border-gold)', borderRadius: '10px', padding: '20px', background: 'rgba(212,175,55,0.02)' }}>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '10px' }}>
               <Building size={18} />
               <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>Seller Advisory Mandate</h3>
