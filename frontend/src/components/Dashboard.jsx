@@ -6,6 +6,9 @@ import {
 } from 'lucide-react';
 import './Dashboard.css';
 
+// Import Modular Property Form Drawer
+import PropertyFormDrawer from './PropertyFormDrawer';
+
 export default function Dashboard({ onViewChange }) {
   // Authentication state
   const [isLoggedIn, setIsLoggedIn] = useState(apiService.isAuthenticated());
@@ -15,7 +18,7 @@ export default function Dashboard({ onViewChange }) {
   const [authError, setAuthError] = useState('');
 
   // CRM Tab management
-  const [activeTab, setActiveTab] = useState('leads'); // leads | properties
+  const [activeTab, setActiveTab] = useState('leads'); // leads | properties | team
   const [leads, setLeads] = useState([]);
   const [properties, setProperties] = useState([]);
   const [leadsLoading, setLeadsLoading] = useState(true);
@@ -150,147 +153,29 @@ export default function Dashboard({ onViewChange }) {
   useEffect(() => {
     if (isLoggedIn) {
       fetchLeads();
-      fetchStats();
-      fetchAgents(); // Load all leads & agents for Location Analytics Table immediately on mount
-    }
-  }, [isLoggedIn, leadFilters, leadPage]);
-
-  useEffect(() => {
-    if (isLoggedIn && activeTab === 'properties') {
       fetchProperties();
-    }
-  }, [isLoggedIn, activeTab, propPage]);
-
-  useEffect(() => {
-    if (isLoggedIn && activeTab === 'team') {
+      fetchStats();
       fetchAgents();
     }
-  }, [isLoggedIn, activeTab]);
+  }, [isLoggedIn, leadPage, propPage, leadFilters]);
 
-  // Get corridor performance and comparison matrix stats
-  const getCorridorMatrixStats = () => {
-    const locations = ['BANER', 'WAKAD', 'HINJEWADI', 'BALEWADI', 'TATHAWADE', 'MAHALUNGE'];
-    return locations.map(loc => {
-      const locLeads = allLeadsForStats.filter(l => l.preferredLocation === loc);
-      const total = locLeads.length;
-      
-      const newInquiries = locLeads.filter(l => l.status === 'NEW').length;
-      const contacted = locLeads.filter(l => l.status === 'CONTACTED').length;
-      const won = locLeads.filter(l => l.status === 'CONVERTED').length;
-      const lost = locLeads.filter(l => l.status === 'LOST').length;
-      
-      const conversionRate = total > 0 ? Math.round((won / total) * 100) : 0;
-      
-      // Compute average budget min
-      const budgets = locLeads.map(l => Number(l.budgetMin || 0)).filter(b => b > 0);
-      const avgBudget = budgets.length > 0 ? Math.round(budgets.reduce((sum, b) => sum + b, 0) / budgets.length) : 0;
-
-      return {
-        location: loc,
-        total,
-        newInquiries,
-        contacted,
-        won,
-        lost,
-        conversionRate,
-        avgBudget
-      };
-    });
-  };
-
-  // Render visual stars rating for lead hotness score
-  const renderLeadScoreStars = (score) => {
-    let stars = 1;
-    let color = '#ef4444'; // Red (Cold)
-    let label = 'Cold';
-    
-    if (score >= 85) {
-      stars = 5;
-      color = '#e2c044'; // Gold
-      label = 'Immediate HNWI';
-    } else if (score >= 70) {
-      stars = 4;
-      color = '#f5b041'; // Orange (Warm)
-      label = 'High Intent';
-    } else if (score >= 55) {
-      stars = 3;
-      color = '#3498db'; // Blue (Interested)
-      label = 'Interested';
-    } else if (score >= 40) {
-      stars = 2;
-      color = '#2ec4b6'; // Teal (Generic)
-      label = 'Generic';
-    }
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-        <div style={{ display: 'flex', gap: '2px', color }}>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <span key={i} style={{ fontSize: '1.1rem', opacity: i < stars ? 1 : 0.2 }}>★</span>
-          ))}
-        </div>
-        <span style={{ fontSize: '0.7rem', color, fontWeight: 'bold', textTransform: 'uppercase' }}>{label}</span>
-      </div>
-    );
-  };
-
-  // Export leads to CSV file
-  const exportLeadsToCSV = () => {
-    if (leads.length === 0) {
-      alert("No leads available to export.");
-      return;
-    }
-    
-    const headers = ["Name", "Phone", "Email", "Requirement Type", "Min Budget", "Max Budget", "Preferred Location", "Status", "Lead Score", "Assigned Agent", "Created Date"];
-    
-    const rows = leads.map(l => [
-      l.name,
-      l.phone,
-      l.email,
-      l.requirementType,
-      l.budgetMin || "0",
-      l.budgetMax || "0",
-      l.preferredLocation || "N/A",
-      l.status,
-      l.leadScore || 50,
-      l.assignedAgentName || "Unassigned",
-      new Date(l.createdDate).toLocaleDateString()
-    ]);
-    
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + [headers.join(","), ...rows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(","))].join("\n");
-      
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `24k_leads_report_${new Date().toISOString().slice(0,10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // Trigger browser print for PDF report generation
-  const printLeadsReport = () => {
-    window.print();
-  };
-
-  // Auth Handlers
+  // Handle Login & Registration Submit
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setAuthLoading(true);
     setAuthError('');
     try {
       if (authTab === 'login') {
-        await apiService.login(authForm.username, authForm.password);
+        const token = await apiService.login(authForm.username, authForm.password);
+        if (token) {
+          setIsLoggedIn(true);
+          showNotification('Admin Authenticated successfully.');
+        }
       } else {
         await apiService.register(authForm.username, authForm.password);
-        alert('Registration successful! Please login.');
         setAuthTab('login');
-        setAuthLoading(false);
-        return;
+        showNotification('Registration successful! Please login.');
       }
-      setIsLoggedIn(true);
-      setActiveTab('leads');
     } catch (err) {
       setAuthError(err.message || 'Authentication failed. Please verify credentials.');
     } finally {
@@ -301,49 +186,51 @@ export default function Dashboard({ onViewChange }) {
   const handleLogout = () => {
     apiService.logout();
     setIsLoggedIn(false);
-    setLeads([]);
-    setProperties([]);
+    showNotification('Secure Operator Session terminated.');
   };
 
-  // Lead Action Handlers
-  const handleLeadStatusChange = async (leadId, newStatus) => {
+  // Assign agent lead handler
+  const handleAssignAgent = async (leadId, agentId) => {
     try {
-      await apiService.updateLeadStatus(leadId, newStatus);
+      await apiService.assignLead(leadId, agentId);
+      showNotification('Relationship manager assigned.');
       fetchLeads();
       fetchStats();
+    } catch (err) {
+      alert(`Assignment failed: ${err.message}`);
+    }
+  };
+
+  const handleLeadStatusChange = async (leadId, status) => {
+    try {
+      await apiService.updateLeadStatus(leadId, status);
+      showNotification('Lead pipeline status updated.');
+      fetchLeads();
+      fetchStats();
+      fetchAgents();
     } catch (err) {
       alert(`Status update failed: ${err.message}`);
     }
   };
 
-  const handleDeleteProperty = async (propertyId) => {
-    if (!window.confirm('Delete this property permanently?')) return;
-    try {
-      await apiService.deleteProperty(propertyId);
-      fetchProperties();
-      fetchStats();
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
+  // Property addition form handlers
   const handleEditPropertyClick = (property) => {
     setEditingPropertyId(property.id);
     setPropertyForm({
-      title: property.title || '',
-      description: property.description || '',
-      propertyType: property.propertyType || 'RESIDENTIAL',
-      transactionType: property.transactionType || 'BUY',
-      price: property.price ? property.price.toString() : '',
-      areaSquareFeet: property.areaSquareFeet ? property.areaSquareFeet.toString() : '',
-      location: property.location || 'BANER',
-      address: property.address || '',
-      bedrooms: property.bedrooms || 2,
-      bathrooms: property.bathrooms || 2,
-      status: property.status || 'AVAILABLE',
-      verifiedListing: property.verifiedListing || false,
-      exclusiveDeal: property.exclusiveDeal || false,
-      noBrokerage: property.noBrokerage || false,
+      title: property.title,
+      description: property.description,
+      propertyType: property.propertyType,
+      transactionType: property.transactionType,
+      price: property.price,
+      areaSquareFeet: property.areaSquareFeet,
+      location: property.location,
+      address: property.address,
+      bedrooms: property.bedrooms,
+      bathrooms: property.bathrooms,
+      status: property.status,
+      verifiedListing: property.verifiedListing,
+      exclusiveDeal: property.exclusiveDeal,
+      noBrokerage: property.noBrokerage,
       reraNumber: property.reraNumber || '',
       imageUrl: property.imageUrl || '',
       videoUrl: property.videoUrl || '',
@@ -385,1441 +272,746 @@ export default function Dashboard({ onViewChange }) {
     e.preventDefault();
     setFormSubmitLoading(true);
     try {
-      const dataPayload = {
-        ...propertyForm,
-        price: parseFloat(propertyForm.price),
-        areaSquareFeet: parseFloat(propertyForm.areaSquareFeet),
-        bedrooms: parseInt(propertyForm.bedrooms),
-        bathrooms: parseInt(propertyForm.bathrooms),
-        verifiedListing: propertyForm.verifiedListing,
-        exclusiveDeal: propertyForm.exclusiveDeal,
-        noBrokerage: propertyForm.noBrokerage,
-        reraNumber: propertyForm.reraNumber || 'RERA-PUN-PRM-24K' + Math.floor(100 + Math.random() * 900),
-        imageUrl: propertyForm.imageUrl || null,
-        videoUrl: propertyForm.videoUrl || null,
-        threeDTourUrl: propertyForm.threeDTourUrl || null,
-        furnishingStatus: propertyForm.furnishingStatus,
-        gasPipeline: propertyForm.gasPipeline
-      };
-
       if (editingPropertyId) {
-        await apiService.updateProperty(editingPropertyId, dataPayload);
-        alert('Property updated!');
+        await apiService.updateProperty(editingPropertyId, propertyForm);
+        showNotification('Property listing updated.');
       } else {
-        await apiService.createProperty(dataPayload);
-        alert('Property published!');
+        await apiService.createProperty(propertyForm);
+        showNotification('Property listing published successfully.');
       }
       handleClosePropForm();
       fetchProperties();
       fetchStats();
     } catch (err) {
-      alert(`Save error: ${err.message}`);
+      alert(`Property action failed: ${err.message}`);
     } finally {
       setFormSubmitLoading(false);
     }
   };
 
-  // CSV Importer Trigger
-  const handleCsvUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (!window.confirm(`Bulk import properties from CSV file: "${file.name}"?`)) {
-      e.target.value = '';
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', file);
-
+  const handleDeleteProperty = async (id) => {
+    if (!window.confirm('Are you sure you want to permanently delete this listing?')) return;
     try {
-      const token = apiService.getToken();
-      const response = await fetch(`${apiService.getBaseUrl()}/properties/import/csv`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      });
-
-      if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(errText || 'Import failed');
-      }
-
-      const resText = await response.text();
-      alert(resText);
+      await apiService.deleteProperty(id);
+      showNotification('Property listing removed.');
       fetchProperties();
       fetchStats();
     } catch (err) {
-      alert(`Bulk Import failed: ${err.message}`);
-    } finally {
-      e.target.value = '';
+      alert(`Delete action failed: ${err.message}`);
     }
   };
 
-  // Client-Side Regex Parser
+  const handleCsvUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+
+    showNotification('Parsing CSV Bulk Ingest records...');
+    try {
+      await apiService.bulkImportProperties(file);
+      showNotification('Bulk CSV properties imported successfully.');
+      fetchProperties();
+      fetchStats();
+    } catch (err) {
+      alert(`Bulk CSV ingest failed: ${err.message}`);
+    }
+  };
+
   const handleParseListingText = () => {
     const text = document.getElementById('rawParserInput')?.value;
-    if (!text || text.trim() === '') {
-      alert('Please paste raw listing details text first.');
+    if (!text) {
+      alert('Please paste listing text details first.');
       return;
     }
 
-    const lowerText = text.toLowerCase();
-    const updatedForm = { ...propertyForm };
+    let parsed = { ...propertyForm };
 
-    // 1. Title & Description Parsing
-    const lines = text.split(/[.\n]/).filter(l => l.trim().length > 0);
-    if (lines.length > 0) {
-      updatedForm.title = lines[0].trim().substring(0, 80);
-      updatedForm.description = text.trim();
-    }
+    const bhkMatch = text.match(/(\d)\s*(?:BHK|bhk)/i);
+    if (bhkMatch) parsed.bedrooms = parseInt(bhkMatch[1]);
 
-    // 2. Bedrooms (BHK)
-    const bhkRegex = /(\d+)\s*(?:bhk|bed|bedroom|bedrooms)/i;
-    const bhkMatch = text.match(bhkRegex);
-    if (bhkMatch) {
-      updatedForm.bedrooms = parseInt(bhkMatch[1]);
-    }
+    const sizeMatch = text.match(/(\d+)\s*(?:sqft|sq\.ft\.|square\s*feet)/i);
+    if (sizeMatch) parsed.areaSquareFeet = parseInt(sizeMatch[1]);
 
-    // 3. Bathrooms
-    const bathRegex = /(\d+)\s*(?:bath|bathroom|bathrooms|baths)/i;
-    const bathMatch = text.match(bathRegex);
-    if (bathMatch) {
-      updatedForm.bathrooms = parseInt(bathMatch[1]);
-    }
-
-    // 4. Area (Sq Ft)
-    const areaRegex = /(\d+(?:\.\d+)?)\s*(?:sq\s*ft|sqft|square\s*feet|sq\.ft\.)/i;
-    const areaMatch = text.match(areaRegex);
-    if (areaMatch) {
-      updatedForm.areaSquareFeet = areaMatch[1];
-    }
-
-    // 5. Price parsing (Crores / Lakhs / Raw Numbers)
-    const crRegex = /(\d+(?:\.\d+)?)\s*(?:cr|crore|crores)/i;
-    const lakhRegex = /(\d+(?:\.\d+)?)\s*(?:l|lakh|lakhs|lac|lacs)/i;
-    const rawNumRegex = /(?:rs|price|inr|value)?\s*(\d{1,3}(?:,\d{2,3})*(?:\.\d+)?)\s*(?!bhk|sqft|sq\s*ft|bed|bath)/i;
-
-    const crMatch = text.match(crRegex);
-    const lakhMatch = text.match(lakhRegex);
-
-    if (crMatch) {
-      const val = parseFloat(crMatch[1]);
-      updatedForm.price = Math.round(val * 10000000).toString();
-    } else if (lakhMatch) {
-      const val = parseFloat(lakhMatch[1]);
-      updatedForm.price = Math.round(val * 100000).toString();
+    const priceCrMatch = text.match(/([\d\.]+)\s*(?:Cr|cr|Crore)/);
+    if (priceCrMatch) {
+      parsed.price = Math.round(parseFloat(priceCrMatch[1]) * 10000000);
     } else {
-      const rawMatch = text.match(rawNumRegex);
-      if (rawMatch) {
-        const cleanNum = rawMatch[1].replace(/,/g, '');
-        if (parseFloat(cleanNum) > 10000) {
-          updatedForm.price = Math.round(parseFloat(cleanNum)).toString();
-        }
+      const priceLMatch = text.match(/([\d\.]+)\s*(?:L|l|Lakh)/);
+      if (priceLMatch) parsed.price = Math.round(parseFloat(priceLMatch[1]) * 100000);
+    }
+
+    const corridorWords = ['HINJEWADI', 'BANER', 'WAKAD', 'BALEWADI', 'TATHAWADE', 'MAHALUNGE'];
+    for (let word of corridorWords) {
+      if (text.toUpperCase().includes(word)) {
+        parsed.location = word;
+        break;
       }
     }
 
-    // 6. Location Corridor matching
-    if (lowerText.includes('hinjewadi')) {
-      updatedForm.location = 'HINJEWADI';
-    } else if (lowerText.includes('wakad')) {
-      updatedForm.location = 'WAKAD';
-    } else if (lowerText.includes('baner')) {
-      updatedForm.location = 'BANER';
-    } else if (lowerText.includes('balewadi')) {
-      updatedForm.location = 'BALEWADI';
-    } else if (lowerText.includes('tathawade')) {
-      updatedForm.location = 'TATHAWADE';
-    } else if (lowerText.includes('mahalunge')) {
-      updatedForm.location = 'MAHALUNGE';
+    if (text.toLowerCase().includes('no brokerage') || text.toLowerCase().includes('zero brokerage')) {
+      parsed.noBrokerage = true;
     }
 
-    // 7. Transaction Type (BUY or RENT)
-    if (lowerText.includes('rent') || lowerText.includes('lease') || lowerText.includes('month') || lowerText.includes('/mo')) {
-      updatedForm.transactionType = 'RENT';
-      if (lowerText.includes('office') || lowerText.includes('shop') || lowerText.includes('showroom') || lowerText.includes('commercial')) {
-        updatedForm.propertyType = 'COMMERCIAL';
-        if (!bhkMatch) updatedForm.bedrooms = 0;
-      }
-    } else {
-      updatedForm.transactionType = 'BUY';
-    }
+    setPropertyForm(parsed);
+    showNotification('AI Parser auto-filled form values!');
+  };
 
-    // 8. Property Type (RESIDENTIAL or COMMERCIAL)
-    if (lowerText.includes('office') || lowerText.includes('shop') || lowerText.includes('showroom') || lowerText.includes('commercial') || lowerText.includes('retail')) {
-      updatedForm.propertyType = 'COMMERCIAL';
-      if (!bhkMatch) updatedForm.bedrooms = 0;
-    } else {
-      updatedForm.propertyType = 'RESIDENTIAL';
-    }
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setLeadFilters(prev => ({ ...prev, [name]: value }));
+    setLeadPage(0);
+  };
 
-    // 9. Badges
-    if (lowerText.includes('verified')) {
-      updatedForm.verifiedListing = true;
-    }
-    if (lowerText.includes('exclusive') || lowerText.includes('signature') || lowerText.includes('premium') || lowerText.includes('special')) {
-      updatedForm.exclusiveDeal = true;
-    }
-    if (lowerText.includes('no brokerage') || lowerText.includes('zero brokerage') || lowerText.includes('0 brokerage') || lowerText.includes('no commission')) {
-      updatedForm.noBrokerage = true;
-    }
-
-    // Furnishing Status parsing
-    if (lowerText.includes('semi furnished') || lowerText.includes('semi-furnished') || lowerText.includes('half furnished')) {
-      updatedForm.furnishingStatus = 'SEMI_FURNISHED';
-    } else if (lowerText.includes('fully furnished') || lowerText.includes('fully-furnished') || lowerText.includes('furnished')) {
-      updatedForm.furnishingStatus = 'FULLY_FURNISHED';
-    } else if (lowerText.includes('unfurnished') || lowerText.includes('raw')) {
-      updatedForm.furnishingStatus = 'UNFURNISHED';
-    }
-
-    // Gas Pipeline parsing
-    if (lowerText.includes('gas pipe') || lowerText.includes('piped gas') || lowerText.includes('gas pipeline') || lowerText.includes('gas connection')) {
-      updatedForm.gasPipeline = true;
-    }
-
-    // 9.5 RERA Number Match
-    const reraRegex = /rera[-:\s]*(?:pun-prm-|prm\/)?(\d+[\w\/]*)/i;
-    const reraMatch = text.match(reraRegex);
-    if (reraMatch) {
-      updatedForm.reraNumber = `RERA-PUN-PRM-${reraMatch[1].toUpperCase()}`;
-    } else {
-      updatedForm.reraNumber = `RERA-PUN-PRM-24K${Math.floor(100 + Math.random() * 900)}`;
-    }
-
-    // 10. Address fallback
-    if (updatedForm.location) {
-      updatedForm.address = `Prime ${updatedForm.location.charAt(0) + updatedForm.location.slice(1).toLowerCase()} Corridor, Pune`;
-    }
-
-    setPropertyForm(updatedForm);
-    alert('Listing fields successfully parsed and filled!');
+  const showNotification = (message) => {
+    const toast = document.createElement('div');
+    toast.className = 'premium-toast-alert';
+    toast.innerText = message;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => toast.remove(), 400);
+    }, 4000);
   };
 
   const formatPrice = (price) => {
     if (!price) return 'N/A';
     const num = Number(price);
-    if (num >= 10000000) return `₹${(num / 10000000).toFixed(2)} Cr`;
-    if (num >= 100000) return `₹${(num / 100000).toFixed(2)} L`;
+    if (num >= 10000000) {
+      return `₹${(num / 10000000).toFixed(2)} Cr`;
+    } else if (num >= 100000) {
+      return `₹${(num / 100000).toFixed(2)} L`;
+    }
     return `₹${num.toLocaleString('en-IN')}`;
   };
 
-  // --- RENDER UNAUTHENTICATED LOGIN VIEW ---
   if (!isLoggedIn) {
     return (
-      <div className="dashboard-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '70vh' }}>
-        <div className="luxury-card" style={{ width: '100%', maxWidth: '420px', border: '1px solid var(--border-gold)' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', color: 'var(--gold-primary)' }}>
-            <Lock size={40} />
-          </div>
-          <h2 className="luxury-title" style={{ textAlign: 'center', marginBottom: '24px', fontSize: '1.6rem' }}>24K CRM Terminal</h2>
-          
-          <div style={{ display: 'flex', borderBottom: '1px solid var(--border-muted)', marginBottom: '24px' }}>
-            <button 
-              onClick={() => { setAuthTab('login'); setAuthError(''); }} 
-              className="tab-btn" 
-              style={{ flex: 1, paddingBottom: '12px', borderBottom: authTab === 'login' ? '2px solid var(--gold-primary)' : 'none', color: authTab === 'login' ? 'var(--gold-primary)' : 'var(--text-muted)' }}
-            >
-              Sign In
-            </button>
-            <button 
-              onClick={() => { setAuthTab('register'); setAuthError(''); }} 
-              className="tab-btn" 
-              style={{ flex: 1, paddingBottom: '12px', borderBottom: authTab === 'register' ? '2px solid var(--gold-primary)' : 'none', color: authTab === 'register' ? 'var(--gold-primary)' : 'var(--text-muted)' }}
-            >
-              Request Access
-            </button>
+      <div className="crm-login-wrapper">
+        <div className="login-card">
+          <div className="login-logo">
+            <span className="logo-text">24K REALTORS</span>
+            <span className="sub-text">SECURE CRM GATEWAY</span>
           </div>
 
-          <form onSubmit={handleAuthSubmit}>
+          <div className="auth-tab-buttons">
+            <button className={authTab === 'login' ? 'active' : ''} onClick={() => setAuthTab('login')}>LOGIN</button>
+            <button className={authTab === 'register' ? 'active' : ''} onClick={() => setAuthTab('register')}>REGISTER</button>
+          </div>
+
+          <form onSubmit={handleAuthSubmit} style={{ marginTop: '20px' }}>
             <div className="form-group">
               <label className="form-label">Username</label>
               <input 
                 type="text" 
-                required 
-                placeholder="Enter username" 
                 className="form-input" 
-                value={authForm.username}
-                onChange={e => setAuthForm({ ...authForm, username: e.target.value })}
+                required 
+                placeholder="e.g. admin" 
+                value={authForm.username} 
+                onChange={e => setAuthForm({...authForm, username: e.target.value})} 
               />
             </div>
-            <div className="form-group" style={{ marginBottom: '20px' }}>
-              <label className="form-label">Security Password</label>
+            <div className="form-group">
+              <label className="form-label">Password</label>
               <input 
                 type="password" 
-                required 
-                placeholder="Enter password" 
                 className="form-input" 
-                value={authForm.password}
-                onChange={e => setAuthForm({ ...authForm, password: e.target.value })}
+                required 
+                placeholder="••••••••" 
+                value={authForm.password} 
+                onChange={e => setAuthForm({...authForm, password: e.target.value})} 
               />
             </div>
 
-            {authError && <p style={{ color: '#D90429', fontSize: '0.85rem', marginBottom: '15px', textAlign: 'center' }}>{authError}</p>}
+            {authError && <div className="auth-error-msg">⚠️ {authError}</div>}
 
-            <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center' }} disabled={authLoading}>
-              {authLoading ? <Loader className="animate-spin" size={20} /> : (authTab === 'login' ? 'Secure Login' : 'Register Operator')}
+            <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }} disabled={authLoading}>
+              {authLoading ? <Loader className="animate-spin" size={18} /> : (authTab === 'login' ? 'Secure Auth Login' : 'Register Operator')}
             </button>
           </form>
-          <button 
-            type="button" 
-            onClick={() => onViewChange && onViewChange('portal')} 
-            className="btn-outline" 
-            style={{ width: '100%', marginTop: '12px', justifyContent: 'center' }}
-          >
-            ← Return to Portal
-          </button>
 
-          <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid var(--border-muted)', textAlign: 'left' }}>
-            <details style={{ cursor: 'pointer' }}>
-              <summary style={{ fontSize: '0.8rem', color: 'var(--gold-primary)', fontWeight: 'bold', outline: 'none' }}>
-                ⚙️ API Connection Settings
-              </summary>
-              <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Set laptop IP or backend endpoint:</span>
-                <div style={{ display: 'flex', gap: '6px' }}>
-                  <input 
-                    type="text" 
-                    defaultValue={apiService.getApiBaseUrl()} 
-                    id="crm-custom-api-url"
-                    className="form-input"
-                    style={{ 
-                      flex: 1, 
-                      padding: '6px 10px', 
-                      borderRadius: '6px', 
-                      fontSize: '0.8rem',
-                      margin: 0
-                    }} 
-                    placeholder="e.g. http://192.168.1.8:8080/api/v1"
-                  />
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      const val = document.getElementById('crm-custom-api-url').value;
-                      apiService.setApiBaseUrl(val);
-                    }}
-                    className="btn-gold"
-                    style={{ 
-                      padding: '6px 12px', 
-                      borderRadius: '6px', 
-                      fontSize: '0.8rem',
-                      fontWeight: 'bold',
-                      margin: 0
-                    }}
-                  >
-                    Save
-                  </button>
-                </div>
-                <button 
-                  type="button"
-                  onClick={() => {
-                    apiService.setApiBaseUrl('');
-                  }}
-                  style={{
-                    fontSize: '0.75rem',
-                    color: '#aaa',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    textDecoration: 'underline',
-                    alignSelf: 'flex-start',
-                    padding: 0
-                  }}
-                >
-                  Reset to Default
-                </button>
-              </div>
-            </details>
-          </div>
+          <button onClick={() => onViewChange('portal')} className="btn-back-portal">
+            ← Return to Advisory Portal
+          </button>
         </div>
       </div>
     );
   }
 
-  // --- RENDER CRM WORKSPACE VIEW ---
   return (
-    <div className="dashboard-container">
-      {/* Workspace Header */}
-      <header className="dashboard-header">
-        <div>
-          <h1 className="luxury-title" style={{ fontSize: '1.8rem', marginBottom: '4px' }}>24K CRM Dashboard</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Real-time listing pipeline and round-robin lead allocation terminal.</p>
+    <div className="crm-wrapper">
+      {/* Sidebar Navigation */}
+      <aside className="crm-sidebar">
+        <div className="crm-sidebar-logo">
+          <span>24K OPERATOR</span>
+          <span style={{ fontSize: '0.65rem', color: 'var(--gold-primary)', letterSpacing: '0.1em' }}>CONTROL TERMINAL</span>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={() => onViewChange && onViewChange('portal')} className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Home size={16} />
-            View Portal
+        
+        <nav className="sidebar-nav">
+          <button className={activeTab === 'leads' ? 'active' : ''} onClick={() => { setActiveTab('leads'); handleClosePropForm(); }}>
+            <Users size={18} />
+            <span>Lead Pipelines</span>
           </button>
-          <button onClick={handleLogout} className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FF4D6D', borderColor: 'rgba(255,77,109,0.2)' }}>
-            <LogOut size={16} />
-            Sign Out
+          <button className={activeTab === 'properties' ? 'active' : ''} onClick={() => { setActiveTab('properties'); handleClosePropForm(); }}>
+            <Home size={18} />
+            <span>Properties Desk</span>
           </button>
-        </div>
-      </header>
-
-      {/* Metrics Row */}
-      <section className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-icon" style={{ color: 'var(--gold-primary)' }}>
-            <Users size={24} />
-          </div>
-          <div className="stat-info">
-            <span className="stat-num">{stats.totalLeads}</span>
-            <span className="stat-label">Total Enquiries</span>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon" style={{ color: 'var(--gold-primary)' }}>
-            <Home size={24} />
-          </div>
-          <div className="stat-info">
-            <span className="stat-num">{stats.activeProperties}</span>
-            <span className="stat-label">Active Properties</span>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon" style={{ color: 'var(--gold-light)' }}>
-            <TrendingUp size={24} />
-          </div>
-          <div className="stat-info">
-            <span className="stat-num" style={{ color: 'var(--gold-light)' }}>{stats.newLeads}</span>
-            <span className="stat-label">New Leads</span>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon" style={{ color: '#2ec4b6' }}>
-            <Calendar size={24} />
-          </div>
-          <div className="stat-info">
-            <span className="stat-num" style={{ color: '#2ec4b6' }}>{stats.convertedLeads}</span>
-            <span className="stat-label">Converted Deals</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Target Metrics KPI Banner */}
-      <section className="target-metrics-panel">
-        <div className="metrics-panel-header">
-          <h3>🎯 CRM SLA & Conversion Target Metrics</h3>
-          <span className="live-pill animate-pulse">LIVE KPI TRACKING</span>
-        </div>
-        <div className="metrics-panel-grid">
-          <div className="metric-kpi-card">
-            <div className="kpi-meta">
-              <span className="kpi-label">Lead Conversion Rate</span>
-              <span className="kpi-value">
-                {stats.totalLeads > 0 ? ((stats.convertedLeads / stats.totalLeads) * 100).toFixed(1) : '0.0'}% 
-                <span className="kpi-target"> / 15.0% Target</span>
-              </span>
-            </div>
-            <div className="kpi-bar-wrapper">
-              <div 
-                className="kpi-bar-progress" 
-                style={{ 
-                  width: `${Math.min(((stats.totalLeads > 0 ? (stats.convertedLeads / stats.totalLeads) * 100 : 0) / 15) * 100, 100)}%`,
-                  background: 'linear-gradient(90deg, #d4af37, #2ec4b6)'
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="metric-kpi-card">
-            <div className="kpi-meta">
-              <span className="kpi-label">SLA Lead Response Time</span>
-              <span className="kpi-value">
-                2.4 min <span className="kpi-target"> / 5.0 min Max SLA</span>
-              </span>
-            </div>
-            <div className="kpi-bar-wrapper">
-              <div 
-                className="kpi-bar-progress" 
-                style={{ 
-                  width: `${(2.4 / 5.0) * 100}%`,
-                  background: '#2ec4b6'
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="metric-kpi-card">
-            <div className="kpi-meta">
-              <span className="kpi-label">Monthly Closed Deals</span>
-              <span className="kpi-value">
-                {stats.convertedLeads} <span className="kpi-target"> / 10 Deals Goal</span>
-              </span>
-            </div>
-            <div className="kpi-bar-wrapper">
-              <div 
-                className="kpi-bar-progress" 
-                style={{ 
-                  width: `${Math.min((stats.convertedLeads / 10) * 100, 100)}%`,
-                  background: 'linear-gradient(90deg, #d4af37, #FF4D6D)'
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Navigation Tabs */}
-      <nav className="dashboard-tabs">
-        <button 
-          onClick={() => setActiveTab('leads')} 
-          className={`tab-btn ${activeTab === 'leads' ? 'active' : ''}`}
-        >
-          <Users size={16} />
-          Leads Pipeline
-        </button>
-        <button 
-          onClick={() => setActiveTab('properties')} 
-          className={`tab-btn ${activeTab === 'properties' ? 'active' : ''}`}
-        >
-          <Home size={16} />
-          Property Inventory
-        </button>
-        <button 
-          onClick={() => setActiveTab('team')} 
-          className={`tab-btn ${activeTab === 'team' ? 'active' : ''}`}
-        >
-          <TrendingUp size={16} />
-          Team Performance
-        </button>
-      </nav>
-
-      {/* LEADS PIPELINE MANAGER */}
-      {activeTab === 'leads' && (
-        <section>
-          {/* System Match Notifications Ticker */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            background: 'rgba(239, 68, 68, 0.05)',
-            border: '1px dashed rgba(239, 68, 68, 0.3)',
-            borderRadius: '8px',
-            padding: '10px 16px',
-            marginBottom: '20px',
-            animation: 'fadeInUp 0.5s ease forwards'
-          }}>
-            <span style={{ 
-              width: '8px', 
-              height: '8px', 
-              borderRadius: '50%', 
-              background: '#ef4444', 
-              display: 'inline-block',
-              boxShadow: '0 0 8px #ef4444'
-            }} className="animate-pulse" />
-            <div style={{ fontSize: '0.82rem', color: 'var(--text-light)', fontWeight: 500 }}>
-              <strong style={{ color: '#ef4444', textTransform: 'uppercase', marginRight: '6px' }}>[Matching Engine Alert]:</strong>
-              Lead 'Rahul Kumar' matches newly registered mandate listing 'TCG Crown 3BHK' in Hinjewadi (Price: ₹1.25 Cr).
-            </div>
-            <div style={{ marginLeft: 'auto', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              Just Now
-            </div>
-          </div>
-
-          {/* Corridor Performance Comparison Matrix Toggle Banner */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            background: 'rgba(7, 15, 30, 0.6)',
-            border: '1px solid var(--border-gold)',
-            borderRadius: '12px',
-            padding: '16px 24px',
-            marginBottom: '25px',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-            animation: 'fadeInUp 0.6s ease forwards'
-          }}>
-            <div>
-              <h3 className="luxury-title" style={{ fontSize: '1.2rem', margin: '0 0 4px 0', color: 'var(--gold-primary)' }}>
-                ⚜️ Corridor Conversion & Pipeline Comparison Matrix
-              </h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', margin: 0 }}>
-                Dynamic analytical comparison of premium IT/Residential corridors in Pune based on seeder and incoming inquiries.
-              </p>
-            </div>
-            <button 
-              onClick={() => setShowMatrix(!showMatrix)} 
-              className="btn-outline"
-              style={{ padding: '8px 16px', fontSize: '0.85rem' }}
-            >
-              {showMatrix ? 'Hide Performance Matrix' : 'Show Performance Matrix'}
-            </button>
-          </div>
-
-          {showMatrix && (
-            <div className="table-responsive" style={{ marginBottom: '35px', animation: 'slideDown 0.3s forwards' }}>
-              <table className="crm-table" style={{ borderCollapse: 'collapse', width: '100%' }}>
-                <thead>
-                  <tr>
-                    <th>Location Corridor</th>
-                    <th>Total Inquiries</th>
-                    <th>New Inquiries</th>
-                    <th>In Discussion</th>
-                    <th>Closed Won Deals</th>
-                    <th>Lost / Archived</th>
-                    <th>Conversion Rate</th>
-                    <th>Avg Budget Inquired</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {getCorridorMatrixStats().map(row => (
-                    <tr key={row.location} style={{ background: row.total > 0 ? 'rgba(212, 175, 55, 0.03)' : 'transparent' }}>
-                      <td style={{ fontWeight: 'bold', color: 'var(--text-light)' }}>{row.location} Corridor</td>
-                      <td>{row.total}</td>
-                      <td style={{ color: 'var(--gold-light)' }}>{row.newInquiries}</td>
-                      <td>{row.contacted}</td>
-                      <td style={{ color: '#2ec4b6', fontWeight: 600 }}>{row.won}</td>
-                      <td style={{ opacity: 0.6 }}>{row.lost}</td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontWeight: 'bold' }}>{row.conversionRate}%</span>
-                          <div style={{ flexGrow: 1, height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', minWidth: '60px', overflow: 'hidden' }}>
-                            <div style={{ width: `${row.conversionRate}%`, height: '100%', background: 'linear-gradient(90deg, #2ec4b6, #d4af37)', borderRadius: '3px' }}></div>
-                          </div>
-                        </div>
-                      </td>
-                      <td style={{ color: 'var(--gold-primary)' }}>{row.avgBudget > 0 ? formatPrice(row.avgBudget) : 'N/A'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {/* Filters Row */}
-          <div className="filters-row">
-            <div className="form-group" style={{ margin: 0 }}>
-              <select 
-                value={leadFilters.status} 
-                onChange={e => { setLeadFilters({ ...leadFilters, status: e.target.value }); setLeadPage(0); }} 
-                className="form-input"
-                style={{ minWidth: '160px' }}
-              >
-                <option value="">All Lead Statuses</option>
-                <option value="NEW">New Inquiry</option>
-                <option value="CONTACTED">In Discussion</option>
-                <option value="CONVERTED">Closed / Won</option>
-                <option value="LOST">Lost / Archived</option>
-              </select>
-            </div>
-
-            <div className="form-group" style={{ margin: 0 }}>
-              <select 
-                value={leadFilters.preferredLocation} 
-                onChange={e => { setLeadFilters({ ...leadFilters, preferredLocation: e.target.value }); setLeadPage(0); }} 
-                className="form-input"
-                style={{ minWidth: '180px' }}
-              >
-                <option value="">All Locations</option>
-                <option value="BANER">Baner</option>
-                <option value="WAKAD">Wakad</option>
-                <option value="HINJEWADI">Hinjewadi</option>
-                <option value="BALEWADI">Balewadi</option>
-                <option value="TATHAWADE">Tathawade</option>
-                <option value="MAHALUNGE">Mahalunge</option>
-              </select>
-            </div>
-
-            <button onClick={() => { setLeadFilters({ status: '', preferredLocation: '' }); setLeadPage(0); }} className="btn-outline">
-              <RefreshCw size={14} />
-              Reset Filters
-            </button>
-
-            <div style={{ marginLeft: 'auto', display: 'flex', gap: '10px' }} className="no-print">
-              <button onClick={exportLeadsToCSV} className="btn-outline" style={{ borderColor: '#2ec4b6', color: '#2ec4b6' }}>
-                📥 Export CSV
-              </button>
-              <button onClick={printLeadsReport} className="btn-gold" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
-                🖨️ Generate PDF
-              </button>
-            </div>
-          </div>
-
-          {leadsLoading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
-              <Loader className="animate-spin" size={32} color="#D4AF37" />
-            </div>
-          ) : leads.length === 0 ? (
-            <div className="empty-state">No customer inquiries found matching these filters.</div>
-          ) : (
-            <>
-              <div className="table-responsive">
-                <table className="crm-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Contact Info</th>
-                      <th>Requirement</th>
-                      <th>Location</th>
-                      <th>Assigned Agent</th>
-                      <th>Lead Hotness</th>
-                      <th>Pipeline Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {leads.map(lead => (
-                      <tr key={lead.id}>
-                        <td data-label="Name">
-                          <div style={{ fontWeight: 600, color: 'var(--text-light)' }}>{lead.name}</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                            {new Date(lead.createdDate).toLocaleDateString()}
-                          </div>
-                        </td>
-                        <td data-label="Contact">
-                          <div>{lead.phone}</div>
-                          <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>{lead.email}</div>
-                        </td>
-                        <td data-label="Requirement">
-                          <span style={{ fontSize: '0.8rem', background: lead.requirementType === 'BUY' ? 'rgba(197,168,128,0.15)' : 'rgba(255,255,255,0.05)', color: lead.requirementType === 'BUY' ? 'var(--gold-light)' : 'var(--text-light)', padding: '2px 6px', borderRadius: '4px', textTransform: 'uppercase' }}>
-                            {lead.requirementType}
-                          </span>
-                          <div style={{ fontSize: '0.8rem', marginTop: '4px' }}>
-                            {lead.budgetMin ? formatPrice(lead.budgetMin) : 'Any'} - {lead.budgetMax ? formatPrice(lead.budgetMax) : 'Any'}
-                          </div>
-                        </td>
-                        <td data-label="Location">{lead.preferredLocation}</td>
-                        <td data-label="Assigned Agent">
-                          {lead.assignedAgentName ? (
-                            <div>
-                              <div style={{ fontWeight: 500 }}>{lead.assignedAgentName}</div>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{lead.assignedAgentPhone}</div>
-                            </div>
-                          ) : (
-                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Auto-routing...</span>
-                          )}
-                        </td>
-                        <td data-label="Hotness">
-                          {renderLeadScoreStars(lead.leadScore || 50)}
-                        </td>
-                        <td data-label="Status">
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
-                            <span className={`status-pill ${lead.status.toLowerCase()}`}>
-                              {lead.status.replace('_', ' ')}
-                            </span>
-                            <select 
-                              value={lead.status} 
-                              onChange={e => handleLeadStatusChange(lead.id, e.target.value)}
-                              className="status-select-btn"
-                              style={{ width: '130px' }}
-                            >
-                              <option value="NEW">New Inquiry</option>
-                              <option value="CONTACTED">In Discussion</option>
-                              <option value="CONVERTED">Closed / Won</option>
-                              <option value="LOST">Lost / Archived</option>
-                            </select>
-                          </div>
-                        </td>
-                        <td data-label="Actions">
-                          <button 
-                            onClick={() => handleViewLeadDetails(lead)} 
-                            className="btn-outline" 
-                            style={{ 
-                              padding: '6px 12px', 
-                              fontSize: '0.75rem', 
-                              borderColor: 'var(--gold-primary)', 
-                              color: 'var(--gold-primary)' 
-                            }}
-                          >
-                            🔍 View Details
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {leadTotalPages > 1 && (
-                <div className="pagination">
-                  <button onClick={() => setLeadPage(p => Math.max(0, p - 1))} disabled={leadPage === 0} className="pagination-btn">Prev</button>
-                  <span className="pagination-info">Page {leadPage + 1} of {leadTotalPages}</span>
-                  <button onClick={() => setLeadPage(p => Math.min(leadTotalPages - 1, p + 1))} disabled={leadPage === leadTotalPages - 1} className="pagination-btn">Next</button>
-                </div>
-              )}
-            </>
-          )}
-        </section>
-      )}
-
-      {/* PROPERTY MANAGER */}
-      {activeTab === 'properties' && (
-        <section>
-          <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-            <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Properties Inventory</h2>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              
-              {/* CSV Bulk Importer Trigger */}
-              <label className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0, padding: '10px 16px', fontSize: '0.9rem' }}>
-                <Upload size={16} />
-                <span>Bulk Import CSV</span>
-                <input 
-                  type="file" 
-                  accept=".csv" 
-                  onChange={handleCsvUpload} 
-                  style={{ display: 'none' }} 
-                />
-              </label>
-
-              <button onClick={() => setShowPropForm(true)} className="btn-gold" style={{ padding: '10px 16px' }}>
-                <Plus size={16} />
-                Add Listing
-              </button>
-            </div>
-          </div>
-
-          {showPropForm && (
-            <div className="crm-drawer">
-              <div className="drawer-header">
-                <h3 className="drawer-title">{editingPropertyId ? 'Update Property Listing' : 'Publish New Property Listing'}</h3>
-                <button className="btn-outline" style={{ padding: '6px 12px' }} onClick={handleClosePropForm}>
-                  <X size={16} />
-                </button>
-              </div>
-
-              {/* Client-Side Smart Copy-Paste Parser */}
-              {!editingPropertyId && (
-                <div style={{ background: 'rgba(212, 175, 55, 0.04)', border: '1px dashed var(--border-gold)', borderRadius: '8px', padding: '15px', marginBottom: '20px' }}>
-                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--gold-light)', fontWeight: 600 }}>
-                    <Sparkles size={16} />
-                    <span>Smart Listing Auto-Fill Parser</span>
-                  </label>
-                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '10px' }}>
-                    Paste flat listing details text below (e.g. <i>"3 BHK premium flat in Hinjewadi, 1650 sqft, price 1.45 Cr, no brokerage"</i>) and click parse.
-                  </p>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <textarea 
-                      id="rawParserInput"
-                      placeholder="Paste property text details from 99acres or WhatsApp messages..."
-                      className="form-input"
-                      rows="2"
-                      style={{ flexGrow: 1, resize: 'vertical' }}
-                    />
-                    <button 
-                      type="button" 
-                      onClick={handleParseListingText} 
-                      className="btn-gold" 
-                      style={{ alignSelf: 'flex-end', height: '42px', padding: '0 16px' }}
-                    >
-                      Parse
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <form onSubmit={handlePropertySubmit}>
-                <div className="form-group">
-                  <label className="form-label">Property Title</label>
-                  <input type="text" name="title" className="form-input" required placeholder="e.g. 24K Opula 3 BHK Baner" value={propertyForm.title} onChange={e => setPropertyForm({...propertyForm, title: e.target.value})} />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Marketing Description</label>
-                  <textarea name="description" className="form-input" rows="3" placeholder="Description..." value={propertyForm.description} onChange={e => setPropertyForm({...propertyForm, description: e.target.value})} />
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Property Type</label>
-                    <select name="propertyType" value={propertyForm.propertyType} onChange={e => setPropertyForm({...propertyForm, propertyType: e.target.value})} className="form-input">
-                      <option value="RESIDENTIAL">Residential</option>
-                      <option value="COMMERCIAL">Commercial</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Transaction Type</label>
-                    <select name="transactionType" value={propertyForm.transactionType} onChange={e => setPropertyForm({...propertyForm, transactionType: e.target.value})} className="form-input">
-                      <option value="BUY">Buy (Outright)</option>
-                      <option value="RENT">Rent (Lease)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Price (₹)</label>
-                    <input type="number" name="price" className="form-input" required placeholder="e.g. 13500000" value={propertyForm.price} onChange={e => setPropertyForm({...propertyForm, price: e.target.value})} />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Area Size (Sq. Ft.)</label>
-                    <input type="number" name="areaSquareFeet" className="form-input" required placeholder="e.g. 1500" value={propertyForm.areaSquareFeet} onChange={e => setPropertyForm({...propertyForm, areaSquareFeet: e.target.value})} />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Prime Corridor</label>
-                    <select name="location" value={propertyForm.location} onChange={e => setPropertyForm({...propertyForm, location: e.target.value})} className="form-input">
-                      <option value="BANER">Baner Corridor</option>
-                      <option value="WAKAD">Wakad Corridor</option>
-                      <option value="HINJEWADI">Hinjewadi IT Corridor</option>
-                      <option value="BALEWADI">Balewadi High Street</option>
-                      <option value="TATHAWADE">Tathawade Corridor</option>
-                      <option value="MAHALUNGE">Mahalunge Corridor</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Beds (BHK)</label>
-                    <input type="number" name="bedrooms" className="form-input" required value={propertyForm.bedrooms} onChange={e => setPropertyForm({...propertyForm, bedrooms: e.target.value})} />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Bathrooms</label>
-                    <input type="number" name="bathrooms" className="form-input" required value={propertyForm.bathrooms} onChange={e => setPropertyForm({...propertyForm, bathrooms: e.target.value})} />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Listing Status</label>
-                    <select name="status" value={propertyForm.status} onChange={e => setPropertyForm({...propertyForm, status: e.target.value})} className="form-input">
-                      <option value="AVAILABLE">Available</option>
-                      <option value="SOLD">Sold</option>
-                      <option value="RENTED">Rented</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">RERA Permit ID</label>
-                    <input type="text" name="reraNumber" className="form-input" placeholder="e.g. RERA-PUN-PRM-24K123" value={propertyForm.reraNumber} onChange={e => setPropertyForm({...propertyForm, reraNumber: e.target.value})} />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Detailed Address</label>
-                    <input type="text" name="address" className="form-input" required placeholder="Address..." value={propertyForm.address} onChange={e => setPropertyForm({...propertyForm, address: e.target.value})} />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Image URL</label>
-                    <input type="text" name="imageUrl" className="form-input" placeholder="https://images.unsplash.com/... or local url" value={propertyForm.imageUrl} onChange={e => setPropertyForm({...propertyForm, imageUrl: e.target.value})} />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Drone Walkthrough Video URL (embed format)</label>
-                    <input type="text" name="videoUrl" className="form-input" placeholder="e.g. https://www.youtube.com/embed/dQw4w9WgXcQ" value={propertyForm.videoUrl} onChange={e => setPropertyForm({...propertyForm, videoUrl: e.target.value})} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">3D Tour URL (Matterport embed link)</label>
-                    <input type="text" name="threeDTourUrl" className="form-input" placeholder="e.g. https://my.matterport.com/show/?m=JGPmBB6q58g" value={propertyForm.threeDTourUrl} onChange={e => setPropertyForm({...propertyForm, threeDTourUrl: e.target.value})} />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Furnishing Status</label>
-                    <select name="furnishingStatus" value={propertyForm.furnishingStatus} onChange={e => setPropertyForm({...propertyForm, furnishingStatus: e.target.value})} className="form-input">
-                      <option value="FULLY_FURNISHED">Fully Furnished</option>
-                      <option value="SEMI_FURNISHED">Semi Furnished</option>
-                      <option value="UNFURNISHED">Unfurnished</option>
-                    </select>
-                  </div>
-                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: 'var(--text-light)', marginTop: '24px' }}>
-                      <input 
-                        type="checkbox" 
-                        checked={propertyForm.gasPipeline} 
-                        onChange={e => setPropertyForm({...propertyForm, gasPipeline: e.target.checked})} 
-                      />
-                      Piped Gas Connection (Gas Pipe)
-                    </label>
-                  </div>
-                </div>
-
-                {/* Promotional Badges Checkboxes */}
-                <div className="form-group" style={{ display: 'flex', gap: '20px', margin: '15px 0', flexWrap: 'wrap' }}>
-                  <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: 'var(--text-light)' }}>
-                    <input 
-                      type="checkbox" 
-                      checked={propertyForm.verifiedListing} 
-                      onChange={e => setPropertyForm({...propertyForm, verifiedListing: e.target.checked})} 
-                    />
-                    Verified Listing
-                  </label>
-                  <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: 'var(--text-light)' }}>
-                    <input 
-                      type="checkbox" 
-                      checked={propertyForm.exclusiveDeal} 
-                      onChange={e => setPropertyForm({...propertyForm, exclusiveDeal: e.target.checked})} 
-                    />
-                    Exclusive Deal
-                  </label>
-                  <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: 'var(--text-light)' }}>
-                    <input 
-                      type="checkbox" 
-                      checked={propertyForm.noBrokerage} 
-                      onChange={e => setPropertyForm({...propertyForm, noBrokerage: e.target.checked})} 
-                    />
-                    No Brokerage
-                  </label>
-                </div>
-
-                <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center' }} disabled={formSubmitLoading}>
-                  {formSubmitLoading ? <Loader className="animate-spin" size={20} /> : (editingPropertyId ? 'Update Listing' : 'Publish Listing')}
-                </button>
-              </form>
-            </div>
-          )}
-
-          {propsLoading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
-              <Loader className="animate-spin" size={32} color="#D4AF37" />
-            </div>
-          ) : properties.length === 0 ? (
-            <div className="empty-state">No listings published. Click "Add Listing" to publish.</div>
-          ) : (
-            <>
-              <div className="table-responsive">
-                <table className="crm-table">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Location</th>
-                      <th>Type</th>
-                      <th>Price</th>
-                      <th>RERA ID</th>
-                      <th>Promotions</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {properties.map(property => (
-                      <tr key={property.id}>
-                        <td style={{ fontWeight: 600, color: 'var(--text-light)' }}>{property.title}</td>
-                        <td>{property.location}</td>
-                        <td>
-                          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px' }}>
-                            {property.propertyType} / {property.transactionType}
-                          </span>
-                        </td>
-                        <td>{formatPrice(property.price)}</td>
-                        <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{property.reraNumber || 'Pending'}</td>
-                        <td>
-                          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                            {property.verifiedListing && <span style={{ fontSize: '0.65rem', background: 'rgba(46,196,182,0.15)', color: '#2ec4b6', padding: '2px 4px', borderRadius: '2px', border: '1px solid rgba(46,196,182,0.25)' }}>Verified</span>}
-                            {property.exclusiveDeal && <span style={{ fontSize: '0.65rem', background: 'rgba(212,175,55,0.15)', color: 'var(--gold-light)', padding: '2px 4px', borderRadius: '2px', border: '1px solid rgba(212,175,55,0.25)' }}>Exclusive</span>}
-                            {property.noBrokerage && <span style={{ fontSize: '0.65rem', background: 'rgba(58,134,200,0.15)', color: '#3a86c8', padding: '2px 4px', borderRadius: '2px', border: '1px solid rgba(58,134,200,0.25)' }}>No Broker</span>}
-                            {!property.verifiedListing && !property.exclusiveDeal && !property.noBrokerage && <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>None</span>}
-                          </div>
-                        </td>
-                        <td>
-                          <span style={{ 
-                            fontSize: '0.8rem', 
-                            padding: '2px 6px', 
-                            borderRadius: '4px',
-                            background: property.status === 'AVAILABLE' ? 'rgba(46,196,182,0.1)' : 'rgba(217,4,41,0.1)',
-                            color: property.status === 'AVAILABLE' ? '#2ec4b6' : '#d90429'
-                          }}>
-                            {property.status}
-                          </span>
-                        </td>
-                        <td>
-                          <div style={{ display: 'flex', gap: '8px' }}>
-                            <button onClick={() => handleEditPropertyClick(property)} className="btn-outline" style={{ padding: '6px' }}>
-                              <Edit2 size={14} />
-                            </button>
-                            <button onClick={() => handleDeleteProperty(property.id)} className="btn-outline" style={{ padding: '6px', color: '#D90429', borderColor: 'rgba(217,4,41,0.15)' }}>
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {propTotalPages > 1 && (
-                <div className="pagination">
-                  <button onClick={() => setPropPage(p => Math.max(0, p - 1))} disabled={propPage === 0} className="pagination-btn">Prev</button>
-                  <span className="pagination-info">Page {propPage + 1} of {propTotalPages}</span>
-                  <button onClick={() => setPropPage(p => Math.min(propTotalPages - 1, p + 1))} disabled={propPage === propTotalPages - 1} className="pagination-btn">Next</button>
-                </div>
-              )}
-            </>
-          )}
-        </section>
-      )}
-
-      {/* TEAM PERFORMANCE MANAGER */}
-      {activeTab === 'team' && (
-        <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          <button className={activeTab === 'team' ? 'active' : ''} onClick={() => { setActiveTab('team'); handleClosePropForm(); }}>
+            <TrendingUp size={18} />
+            <span>Advisory RMs</span>
+          </button>
           
-          {/* Corridor Valuation Trend Chart Panel */}
-          <div style={{
-            background: 'rgba(7, 15, 30, 0.6)',
-            border: '1px solid var(--border-gold)',
-            borderRadius: '12px',
-            padding: '24px',
-            marginBottom: '35px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-            animation: 'fadeInUp 0.6s ease forwards'
-          }}>
-            <h3 className="luxury-title" style={{ fontSize: '1.2rem', margin: '0 0 8px 0', color: 'var(--gold-primary)' }}>
-              ⚜️ IT Corridor Property Valuation & Price Trend Index (Per Sq.Ft.)
-            </h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '24px' }}>
-              Quarterly price progression trends (INR / Sq.Ft.) across prime Pune growth corridors.
-            </p>
+          <button onClick={() => onViewChange('portal')} style={{ marginTop: 'auto', border: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-muted)' }}>
+            <span>Advisory Website</span>
+          </button>
+          <button onClick={handleLogout} className="btn-logout" style={{ background: 'rgba(217,4,41,0.08)', color: '#FF4D6D', border: '1px solid rgba(217,4,41,0.15)' }}>
+            <LogOut size={16} />
+            <span>Logout Session</span>
+          </button>
+        </nav>
+      </aside>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', alignItems: 'center' }}>
-              
-              {/* Responsive SVG Chart */}
-              <div style={{ background: '#020617', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-muted)', position: 'relative' }}>
-                <svg viewBox="0 0 600 220" width="100%" height="220" style={{ overflow: 'visible' }}>
-                  {/* Grid Lines */}
-                  <line x1="50" y1="20" x2="550" y2="20" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
-                  <line x1="50" y1="70" x2="550" y2="70" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
-                  <line x1="50" y1="120" x2="550" y2="120" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
-                  <line x1="50" y1="170" x2="550" y2="170" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
-                  
-                  {/* Y Axis Labels */}
-                  <text x="40" y="25" fill="var(--text-muted)" fontSize="9" textAnchor="end">10K</text>
-                  <text x="40" y="75" fill="var(--text-muted)" fontSize="9" textAnchor="end">8K</text>
-                  <text x="40" y="125" fill="var(--text-muted)" fontSize="9" textAnchor="end">6K</text>
-                  <text x="40" y="175" fill="var(--text-muted)" fontSize="9" textAnchor="end">4K</text>
-
-                  {/* X Axis Labels */}
-                  <text x="50" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q1 2026</text>
-                  <text x="175" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q2 2026</text>
-                  <text x="300" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q3 2026</text>
-                  <text x="425" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q4 2026</text>
-                  <text x="550" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q1 2027 (Proj)</text>
-
-                  {/* Baner Trend Line (Gold) */}
-                  <polyline
-                    fill="none"
-                    stroke="var(--gold-primary)"
-                    strokeWidth="3"
-                    points="50,130 175,125 300,115 425,100 550,90"
-                    style={{ transition: 'all 0.5s ease' }}
-                  />
-                  <circle cx="50" cy="130" r="4" fill="var(--gold-primary)" />
-                  <circle cx="175" cy="125" r="4" fill="var(--gold-primary)" />
-                  <circle cx="300" cy="115" r="4" fill="var(--gold-primary)" />
-                  <circle cx="425" cy="100" r="4" fill="var(--gold-primary)" />
-                  <circle cx="550" cy="90" r="4" fill="var(--gold-primary)" />
-
-                  {/* Wakad Trend Line (Teal) */}
-                  <polyline
-                    fill="none"
-                    stroke="#2ec4b6"
-                    strokeWidth="3"
-                    points="50,150 175,145 300,135 425,120 550,110"
-                  />
-                  <circle cx="50" cy="150" r="4" fill="#2ec4b6" />
-                  <circle cx="175" cy="145" r="4" fill="#2ec4b6" />
-                  <circle cx="300" cy="135" r="4" fill="#2ec4b6" />
-                  <circle cx="425" cy="120" r="4" fill="#2ec4b6" />
-                  <circle cx="550" cy="110" r="4" fill="#2ec4b6" />
-
-                  {/* Hinjewadi Trend Line (Silver/White) */}
-                  <polyline
-                    fill="none"
-                    stroke="#94a3b8"
-                    strokeWidth="3"
-                    points="50,165 175,160 300,150 425,140 550,130"
-                  />
-                  <circle cx="50" cy="165" r="4" fill="#94a3b8" />
-                  <circle cx="175" cy="160" r="4" fill="#94a3b8" />
-                  <circle cx="300" cy="150" r="4" fill="#94a3b8" />
-                  <circle cx="425" cy="140" r="4" fill="#94a3b8" />
-                  <circle cx="550" cy="130" r="4" fill="#94a3b8" />
-                </svg>
-              </div>
-
-              {/* Legend & Details */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--gold-primary)' }}></div>
-                  <div>
-                    <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-light)' }}>Baner Corridor</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Avg: ₹8,800/sq.ft. (+12% YoY)</div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#2ec4b6' }}></div>
-                  <div>
-                    <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-light)' }}>Wakad Corridor</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Avg: ₹7,400/sq.ft. (+9% YoY)</div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#94a3b8' }}></div>
-                  <div>
-                    <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-light)' }}>Hinjewadi Corridor</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Avg: ₹6,500/sq.ft. (+7% YoY)</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* Main CRM Content Pane */}
+      <main className="crm-main-content">
+        
+        {/* Real-time KPI Statistics panel */}
+        <section className="crm-stats-row">
+          <div className="stats-kpi-card">
+            <span className="kpi-label">TOTAL CAPTURED LEADS</span>
+            <span className="kpi-val">{stats.totalLeads}</span>
+            <span className="kpi-sub">Round-robin Active</span>
           </div>
-
-          <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Relationship Managers & Performance Index</h2>
-            <button onClick={fetchAgents} className="btn-outline" style={{ padding: '10px 16px', fontSize: '0.9rem' }}>
-              <RefreshCw size={14} className={agentsLoading ? "animate-spin" : ""} />
-              Refresh Team Data
-            </button>
+          <div className="stats-kpi-card">
+            <span className="kpi-label">NEW ACTIVE LEADS</span>
+            <span className="kpi-val" style={{ color: 'var(--gold-primary)' }}>{stats.newLeads}</span>
+            <span className="kpi-sub">Pending RM allocation</span>
           </div>
-
-          {agentsLoading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
-              <Loader className="animate-spin" size={32} color="#D4AF37" />
-            </div>
-          ) : agents.length === 0 ? (
-            <div className="empty-state">No relationship managers registered in the system.</div>
-          ) : (
-            <>
-              <div className="agent-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: '35px' }}>
-                {agents.map(agent => {
-                  const agentLeads = allLeadsForStats.filter(lead => lead.assignedAgentPhone === agent.phone);
-                  const totalAssigned = agentLeads.length;
-                  
-                  const activeDeals = agentLeads.filter(lead => 
-                    lead.status === 'NEW' || lead.status === 'IN_PROGRESS' || lead.status === 'CONTACTED' || lead.status === 'VISITED'
-                  ).length;
-                  
-                  const wonDeals = agentLeads.filter(lead => lead.status === 'CONVERTED').length;
-                  const conversionRate = totalAssigned > 0 ? Math.round((wonDeals / totalAssigned) * 100) : 0;
-                  
-                  const initials = agent.name.split(' ').map(n => n[0]).join('').toUpperCase();
-
-                  return (
-                    <div key={agent.id} className="stat-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', padding: '24px', position: 'relative', minHeight: '280px' }}>
-                      
-                      {/* Active Status Ring */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '14px', marginBottom: '14px' }}>
-                        <div style={{ 
-                          width: '44px', 
-                          height: '44px', 
-                          borderRadius: '50%', 
-                          background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', 
-                          color: 'var(--text-dark)', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'center', 
-                          fontWeight: 'bold',
-                          fontSize: '1.1rem'
-                        }}>
-                          {initials}
-                        </div>
-                        <div style={{ flexGrow: 1 }}>
-                          <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-light)' }}>{agent.name}</h4>
-                          <span style={{ fontSize: '0.72rem', color: '#2ec4b6', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#2ec4b6', display: 'inline-block' }}></span>
-                            Active Lead Advisor
-                          </span>
-                        </div>
-                        
-                        {conversionRate >= 33 && (
-                          <span style={{ background: 'rgba(212,175,55,0.12)', color: 'var(--gold-primary)', border: '1px solid var(--border-gold)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.68rem', fontWeight: 'bold' }}>
-                            🏆 Top Performer
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Contact Info */}
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '16px' }}>
-                        <div>📞 {agent.phone}</div>
-                        <div>✉️ {agent.email}</div>
-                      </div>
-
-                      {/* Stats Metrics breakdown */}
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', textAlign: 'center', marginBottom: '18px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
-                        <div>
-                          <strong style={{ fontSize: '1.25rem', color: 'var(--text-light)', display: 'block' }}>{totalAssigned}</strong>
-                          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Assigned</span>
-                        </div>
-                        <div>
-                          <strong style={{ fontSize: '1.25rem', color: 'var(--gold-light)', display: 'block' }}>{activeDeals}</strong>
-                          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Active</span>
-                        </div>
-                        <div>
-                          <strong style={{ fontSize: '1.25rem', color: '#2ec4b6', display: 'block' }}>{wonDeals}</strong>
-                          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Won</span>
-                        </div>
-                      </div>
-
-                      {/* Conversion progress bar */}
-                      <div style={{ marginTop: 'auto' }}>
-                        <div style={{ display: 'flex', justifycontent: 'space-between', fontSize: '0.75rem', marginBottom: '6px', color: 'var(--text-muted)' }}>
-                          <span>Conversion Rate</span>
-                          <strong style={{ color: conversionRate > 30 ? '#2ec4b6' : 'var(--text-light)' }}>{conversionRate}%</strong>
-                        </div>
-                        <div style={{ height: '6px', backgroundColor: 'var(--border-muted)', borderRadius: '3px', overflow: 'hidden' }}>
-                          <div style={{ 
-                            height: '100%', 
-                            width: `${conversionRate}%`, 
-                            backgroundColor: conversionRate > 30 ? '#2ec4b6' : 'var(--gold-primary)',
-                            transition: 'width 0.5s ease-in-out' 
-                          }}></div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Operational Settings panel */}
-              <div className="crm-drawer" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-                <div>
-                  <h4 style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', fontSize: '1.1rem' }}>
-                    🟢 Lead Allocation Engine Rules
-                  </h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '10px' }}>
-                    Our Spring Boot backend employs an event-driven <strong>Round-Robin routing listener</strong>. Leads captured dynamically from client callback requests are automatically routed to the next active agent.
-                  </p>
-                  <ul style={{ fontSize: '0.8rem', color: 'var(--text-muted)', paddingLeft: '20px', lineHeight: 1.6 }}>
-                    <li>Automatic Load Balancing across active relationship managers.</li>
-                    <li>Fail-safe backup ensures no lead is left unassigned.</li>
-                    <li>Lead routing details are saved directly in database logs.</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', fontSize: '1.1rem' }}>
-                    ⚡ CRM Integrations & Gateways
-                  </h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.82rem' }}>
-                    <div style={{ display: 'flex', justifycontent: 'space-between', borderBottom: '1px solid var(--border-muted)', paddingBottom: '6px' }}>
-                      <span>WhatsApp API Gateway</span>
-                      <strong style={{ color: '#2ec4b6' }}>🟢 Connected (Mock)</strong>
-                    </div>
-                    <div style={{ display: 'flex', justifycontent: 'space-between', borderBottom: '1px solid var(--border-muted)', paddingBottom: '6px' }}>
-                      <span>SMS Service Desk</span>
-                      <strong style={{ color: 'var(--gold-primary)' }}>🟢 Standby (Dev mode)</strong>
-                    </div>
-                    <div style={{ display: 'flex', justifycontent: 'space-between', paddingBottom: '6px' }}>
-                      <span>Real-time DB Synchronization</span>
-                      <strong style={{ color: '#2ec4b6' }}>🟢 Active</strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
+          <div className="stats-kpi-card">
+            <span className="kpi-label">IN CONVERSATION</span>
+            <span className="kpi-val">{stats.contactedLeads}</span>
+            <span className="kpi-sub">Discussion/Site Visit</span>
+          </div>
+          <div className="stats-kpi-card">
+            <span className="kpi-label">CONVERTED DEALS</span>
+            <span className="kpi-val" style={{ color: '#2ec4b6' }}>{stats.convertedLeads}</span>
+            <span className="kpi-sub">Won & Registered</span>
+          </div>
+          <div className="stats-kpi-card">
+            <span className="kpi-label">ACTIVE PLATFORM LISTINGS</span>
+            <span className="kpi-val">{stats.activeProperties}</span>
+            <span className="kpi-sub">Verified & Clear</span>
+          </div>
         </section>
-      )}
 
-      {/* Upgraded Premium Lead Details Modal */}
-      {selectedLead && (
-        <div className="crm-modal-overlay">
-          <div className="crm-modal-card animate-fadeInUp">
-            <div className="crm-modal-header">
-              <h3>📋 Lead Intelligence File</h3>
-              <button className="btn-close-modal" onClick={() => setSelectedLead(null)}>
-                <X size={20} />
-              </button>
+        {/* TAB 1: LEADS PIPELINE */}
+        {activeTab === 'leads' && (
+          <section>
+            <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+              <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Lead Management Pipeline</h2>
+              
+              {/* Dynamic Filtering */}
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <select name="status" value={leadFilters.status} onChange={handleFilterChange} className="form-input" style={{ width: '160px', margin: 0 }}>
+                  <option value="">All Statuses</option>
+                  <option value="NEW">New Inquiry</option>
+                  <option value="IN_PROGRESS">In Progress</option>
+                  <option value="CONTACTED">Contacted</option>
+                  <option value="VISITED">Visited</option>
+                  <option value="CONVERTED">Converted</option>
+                  <option value="LOST">Lost</option>
+                </select>
+                
+                <select name="preferredLocation" value={leadFilters.preferredLocation} onChange={handleFilterChange} className="form-input" style={{ width: '180px', margin: 0 }}>
+                  <option value="">All Pune West Areas</option>
+                  <option value="HINJEWADI">Hinjewadi</option>
+                  <option value="WAKAD">Wakad</option>
+                  <option value="BANER">Baner</option>
+                  <option value="BALEWADI">Balewadi</option>
+                  <option value="TATHAWADE">Tathawade</option>
+                  <option value="MAHALUNGE">Mahalunge</option>
+                </select>
+              </div>
             </div>
-            
-            <div className="crm-modal-body">
-              {/* Main Info Grid */}
-              <div className="lead-info-section">
-                <h4 className="section-title-gold">Customer Profile</h4>
-                <div className="info-grid-2col">
-                  <div><strong>Full Name:</strong> {selectedLead.name}</div>
-                  <div><strong>Phone Number:</strong> {selectedLead.phone}</div>
-                  <div><strong>Email Address:</strong> {selectedLead.email}</div>
-                  <div><strong>Inquiry Date:</strong> {new Date(selectedLead.createdDate).toLocaleString()}</div>
-                </div>
-              </div>
 
-              {/* Requirement Section */}
-              <div className="lead-info-section" style={{ marginTop: '20px' }}>
-                <h4 className="section-title-gold">Acquisition Intent</h4>
-                <div className="info-grid-2col">
-                  <div><strong>Transaction:</strong> <span className={`status-pill ${selectedLead.requirementType === 'BUY' ? 'buy' : 'rent'}`}>{selectedLead.requirementType}</span></div>
-                  <div><strong>Preferred Corridor:</strong> {selectedLead.preferredLocation || 'Pune Prime Corridors'}</div>
-                  <div><strong>Budget Bracket:</strong> {selectedLead.budgetMin ? formatPrice(selectedLead.budgetMin) : 'Any'} - {selectedLead.budgetMax ? formatPrice(selectedLead.budgetMax) : 'Any'}</div>
-                  <div><strong>Routing Status:</strong> {selectedLead.assignedAgentName ? `Assigned to ${selectedLead.assignedAgentName}` : 'Auto-routing Queue'}</div>
-                </div>
+            {leadsLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+                <Loader className="animate-spin" size={32} color="#D4AF37" />
               </div>
-
-              {/* Notes History */}
-              <div className="lead-info-section" style={{ marginTop: '20px' }}>
-                <h4 className="section-title-gold">Operator Notes</h4>
-                <div className="notes-display-box">
-                  {selectedLead.notes ? selectedLead.notes : "No special instructions or custom notes recorded for this customer."}
-                </div>
-              </div>
-
-              {/* Meta WhatsApp Webhook Log Auditing Section */}
-              <div className="lead-info-section" style={{ marginTop: '20px' }}>
-                <h4 className="section-title-gold">Meta WhatsApp Cloud API Logs</h4>
-                {logsLoading ? (
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '15px 0', color: 'var(--text-muted)' }}>
-                    <Loader className="animate-spin" size={16} />
-                    <span>Fetching Meta Webhook audit logs...</span>
-                  </div>
-                ) : whatsappLogs.length === 0 ? (
-                  <div className="no-logs-box">
-                    No WhatsApp welcome message logs found for this lead.
-                  </div>
-                ) : (
-                  <div className="logs-timeline">
-                    {whatsappLogs.map(log => (
-                      <div className="log-timeline-item" key={log.id}>
-                        <div className="log-header-row">
-                          <span className={`status-pill ${log.status.toLowerCase()}`}>
-                            {log.status}
-                          </span>
-                          <span className="log-timestamp">{new Date(log.sentTimestamp).toLocaleString()}</span>
-                        </div>
-                        <div className="log-details-content">
-                          <div><strong>Template Name:</strong> <code>{log.templateName}</code></div>
-                          <div><strong>Recipient:</strong> <code>{log.phone}</code></div>
-                          
-                          {/* Parameter details list */}
-                          <div style={{ marginTop: '6px' }}>
-                            <strong>Template Parameters (Meta Variables):</strong>
-                            <ul className="template-param-list">
-                              {JSON.parse(log.parametersJson || '[]').map((param, idx) => (
-                                <li key={idx}>
-                                  <span className="param-var">{"{{" + (idx + 1) + "}}"}</span>: <span className="param-val">{param.text}</span>
-                                </li>
+            ) : leads.length === 0 ? (
+              <div className="empty-state">No customer leads found matching criteria.</div>
+            ) : (
+              <>
+                <div className="table-responsive">
+                  <table className="crm-table">
+                    <thead>
+                      <tr>
+                        <th>Lead Info</th>
+                        <th>Preferred Corridor</th>
+                        <th>Budget Range</th>
+                        <th>Assigned RM</th>
+                        <th>Score</th>
+                        <th>Pipeline Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {leads.map(lead => (
+                        <tr key={lead.id}>
+                          <td data-label="Lead Info">
+                            <div style={{ fontWeight: 600, color: 'var(--text-light)' }}>{lead.name}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{lead.phone} | {lead.email}</div>
+                          </td>
+                          <td data-label="Preferred Corridor">{lead.preferredLocation || 'ANY'}</td>
+                          <td data-label="Budget Range">
+                            {lead.budgetMin ? `${formatPrice(lead.budgetMin)} - ${formatPrice(lead.budgetMax)}` : 'N/A'}
+                          </td>
+                          <td data-label="Assigned RM">
+                            <select 
+                              value={lead.assignedAgentPhone || ''} 
+                              onChange={e => {
+                                const selectedAg = agents.find(ag => ag.phone === e.target.value);
+                                if (selectedAg) handleAssignAgent(lead.id, selectedAg.id);
+                              }}
+                              className="status-select-btn"
+                              style={{ width: '140px' }}
+                            >
+                              <option value="">Unassigned</option>
+                              {agents.map(ag => (
+                                <option key={ag.id} value={ag.phone}>{ag.name}</option>
                               ))}
-                            </ul>
-                          </div>
-
-                          {/* Raw API Payload view */}
-                          <details style={{ marginTop: '10px', cursor: 'pointer' }}>
-                            <summary style={{ fontSize: '0.75rem', color: 'var(--gold-primary)', outline: 'none' }}>
-                              🔍 View Raw Meta Cloud Request JSON Payload
-                            </summary>
-                            <pre className="raw-json-box">
-                              {JSON.stringify(JSON.parse(log.payloadJson || '{}'), null, 2)}
-                            </pre>
-                          </details>
-
-                          {log.errorMessage && (
-                            <div className="log-error-callout">
-                              <strong>Error details:</strong> {log.errorMessage}
+                            </select>
+                          </td>
+                          <td data-label="Score">
+                            <span className="lead-score-pill" style={{ 
+                              background: lead.leadScore >= 70 ? 'rgba(46,196,182,0.1)' : 'rgba(212,175,55,0.1)',
+                              color: lead.leadScore >= 70 ? '#2ec4b6' : 'var(--gold-primary)'
+                            }}>
+                              {lead.leadScore || 50}
+                            </span>
+                          </td>
+                          <td data-label="Pipeline Status">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span className={`status-pill ${lead.status.toLowerCase()}`}>
+                                {lead.status.replace('_', ' ')}
+                              </span>
+                              <select 
+                                value={lead.status} 
+                                onChange={e => handleLeadStatusChange(lead.id, e.target.value)}
+                                className="status-select-btn"
+                                style={{ width: '130px' }}
+                              >
+                                <option value="NEW">New Inquiry</option>
+                                <option value="CONTACTED">In Discussion</option>
+                                <option value="CONVERTED">Closed / Won</option>
+                                <option value="LOST">Lost / Archived</option>
+                              </select>
                             </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                          </td>
+                          <td data-label="Actions">
+                            <button 
+                              onClick={() => handleViewLeadDetails(lead)} 
+                              className="btn-outline" 
+                              style={{ 
+                                padding: '6px 12px', 
+                                fontSize: '0.75rem', 
+                                borderColor: 'var(--gold-primary)', 
+                                color: 'var(--gold-primary)' 
+                              }}
+                            >
+                              🔍 View Details
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {leadTotalPages > 1 && (
+                  <div className="pagination">
+                    <button onClick={() => setLeadPage(p => Math.max(0, p - 1))} disabled={leadPage === 0} className="pagination-btn">Prev</button>
+                    <span className="pagination-info">Page {leadPage + 1} of {leadTotalPages}</span>
+                    <button onClick={() => setLeadPage(p => Math.min(leadTotalPages - 1, p + 1))} disabled={leadPage === leadTotalPages - 1} className="pagination-btn">Next</button>
                   </div>
                 )}
+              </>
+            )}
+          </section>
+        )}
+
+        {/* TAB 2: PROPERTY MANAGER */}
+        {activeTab === 'properties' && (
+          <section>
+            <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+              <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Properties Inventory</h2>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                
+                <label className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0, padding: '10px 16px', fontSize: '0.9rem' }}>
+                  <Upload size={16} />
+                  <span>Bulk Import CSV</span>
+                  <input 
+                    type="file" 
+                    accept=".csv" 
+                    onChange={handleCsvUpload} 
+                    style={{ display: 'none' }} 
+                  />
+                </label>
+
+                <button onClick={() => setShowPropForm(true)} className="btn-gold" style={{ padding: '10px 16px' }}>
+                  <Plus size={16} />
+                  Add Listing
+                </button>
               </div>
             </div>
 
-            <div className="crm-modal-footer">
-              <button className="btn-gold" style={{ margin: 0 }} onClick={() => setSelectedLead(null)}>
-                Close Record File
+            {/* Modular Property Form Drawer Component */}
+            <PropertyFormDrawer 
+              isOpen={showPropForm}
+              onClose={handleClosePropForm}
+              editingPropertyId={editingPropertyId}
+              propertyForm={propertyForm}
+              setPropertyForm={setPropertyForm}
+              formSubmitLoading={formSubmitLoading}
+              onSubmit={handlePropertySubmit}
+              onParseText={handleParseListingText}
+            />
+
+            {propsLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+                <Loader className="animate-spin" size={32} color="#D4AF37" />
+              </div>
+            ) : properties.length === 0 ? (
+              <div className="empty-state">No listings published. Click "Add Listing" to publish.</div>
+            ) : (
+              <>
+                <div className="table-responsive">
+                  <table className="crm-table">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Location</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>RERA ID</th>
+                        <th>Promotions</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {properties.map(property => (
+                        <tr key={property.id}>
+                          <td style={{ fontWeight: 600, color: 'var(--text-light)' }}>{property.title}</td>
+                          <td>{property.location}</td>
+                          <td>
+                            <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px' }}>
+                              {property.propertyType} / {property.transactionType}
+                            </span>
+                          </td>
+                          <td>{formatPrice(property.price)}</td>
+                          <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{property.reraNumber || 'Pending'}</td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                              {property.verifiedListing && <span style={{ fontSize: '0.65rem', background: 'rgba(46,196,182,0.15)', color: '#2ec4b6', padding: '2px 4px', borderRadius: '2px', border: '1px solid rgba(46,196,182,0.25)' }}>Verified</span>}
+                              {property.exclusiveDeal && <span style={{ fontSize: '0.65rem', background: 'rgba(212,175,55,0.15)', color: 'var(--gold-light)', padding: '2px 4px', borderRadius: '2px', border: '1px solid rgba(212,175,55,0.25)' }}>Exclusive</span>}
+                              {property.noBrokerage && <span style={{ fontSize: '0.65rem', background: 'rgba(58,134,200,0.15)', color: '#3a86c8', padding: '2px 4px', borderRadius: '2px', border: '1px solid rgba(58,134,200,0.25)' }}>No Broker</span>}
+                              {!property.verifiedListing && !property.exclusiveDeal && !property.noBrokerage && <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>None</span>}
+                            </div>
+                          </td>
+                          <td>
+                            <span style={{ 
+                              fontSize: '0.8rem', 
+                              padding: '2px 6px', 
+                              borderRadius: '4px',
+                              background: property.status === 'AVAILABLE' ? 'rgba(46,196,182,0.1)' : 'rgba(217,4,41,0.1)',
+                              color: property.status === 'AVAILABLE' ? '#2ec4b6' : '#d90429'
+                            }}>
+                              {property.status}
+                            </span>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <button onClick={() => handleEditPropertyClick(property)} className="btn-outline" style={{ padding: '6px' }}>
+                                <Edit2 size={14} />
+                              </button>
+                              <button onClick={() => handleDeleteProperty(property.id)} className="btn-outline" style={{ padding: '6px', color: '#D90429', borderColor: 'rgba(217,4,41,0.15)' }}>
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {propTotalPages > 1 && (
+                  <div className="pagination">
+                    <button onClick={() => setPropPage(p => Math.max(0, p - 1))} disabled={propPage === 0} className="pagination-btn">Prev</button>
+                    <span className="pagination-info">Page {propPage + 1} of {propTotalPages}</span>
+                    <button onClick={() => setPropPage(p => Math.min(propTotalPages - 1, p + 1))} disabled={propPage === propTotalPages - 1} className="pagination-btn">Next</button>
+                  </div>
+                )}
+              </>
+            )}
+          </section>
+        )}
+
+        {/* TAB 3: RELATIONSHIP MANAGERS */}
+        {activeTab === 'team' && (
+          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+            
+            {/* Corridor Valuation Trend Chart */}
+            <div style={{
+              background: 'rgba(7, 15, 30, 0.6)',
+              border: '1px solid var(--border-gold)',
+              borderRadius: '12px',
+              padding: '24px',
+              marginBottom: '35px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
+            }}>
+              <h3 className="luxury-title" style={{ fontSize: '1.2rem', margin: '0 0 8px 0', color: 'var(--gold-primary)' }}>
+                ⚜️ IT Corridor Property Valuation & Price Trend Index (Per Sq.Ft.)
+              </h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '24px' }}>
+                Quarterly price progression trends (INR / Sq.Ft.) across prime Pune growth corridors.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', alignItems: 'center' }}>
+                <div style={{ background: '#020617', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-muted)', position: 'relative' }}>
+                  <svg viewBox="0 0 600 220" width="100%" height="220" style={{ overflow: 'visible' }}>
+                    <line x1="50" y1="20" x2="550" y2="20" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+                    <line x1="50" y1="70" x2="550" y2="70" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+                    <line x1="50" y1="120" x2="550" y2="120" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+                    <line x1="50" y1="170" x2="550" y2="170" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+                    
+                    <text x="40" y="25" fill="var(--text-muted)" fontSize="9" textAnchor="end">10K</text>
+                    <text x="40" y="75" fill="var(--text-muted)" fontSize="9" textAnchor="end">8K</text>
+                    <text x="40" y="125" fill="var(--text-muted)" fontSize="9" textAnchor="end">6K</text>
+                    <text x="40" y="175" fill="var(--text-muted)" fontSize="9" textAnchor="end">4K</text>
+
+                    <text x="50" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q1 2026</text>
+                    <text x="175" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q2 2026</text>
+                    <text x="300" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q3 2026</text>
+                    <text x="425" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q4 2026</text>
+                    <text x="550" y="195" fill="var(--text-muted)" fontSize="9" textAnchor="middle">Q1 2027 (Proj)</text>
+
+                    <polyline fill="none" stroke="var(--gold-primary)" strokeWidth="3" points="50,130 175,125 300,115 425,100 550,90" />
+                    <circle cx="50" cy="130" r="4" fill="var(--gold-primary)" />
+                    <circle cx="175" cy="125" r="4" fill="var(--gold-primary)" />
+                    <circle cx="300" cy="115" r="4" fill="var(--gold-primary)" />
+                    <circle cx="425" cy="100" r="4" fill="var(--gold-primary)" />
+                    <circle cx="550" cy="90" r="4" fill="var(--gold-primary)" />
+
+                    <polyline fill="none" stroke="#2ec4b6" strokeWidth="3" points="50,150 175,145 300,135 425,120 550,110" />
+                    <circle cx="50" cy="150" r="4" fill="#2ec4b6" />
+                    <circle cx="175" cy="145" r="4" fill="#2ec4b6" />
+                    <circle cx="300" cy="135" r="4" fill="#2ec4b6" />
+                    <circle cx="425" cy="120" r="4" fill="#2ec4b6" />
+                    <circle cx="550" cy="110" r="4" fill="#2ec4b6" />
+
+                    <polyline fill="none" stroke="#94a3b8" strokeWidth="3" points="50,165 175,160 300,150 425,140 550,130" />
+                    <circle cx="50" cy="165" r="4" fill="#94a3b8" />
+                    <circle cx="175" cy="160" r="4" fill="#94a3b8" />
+                    <circle cx="300" cy="150" r="4" fill="#94a3b8" />
+                    <circle cx="425" cy="140" r="4" fill="#94a3b8" />
+                    <circle cx="550" cy="130" r="4" fill="#94a3b8" />
+                  </svg>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--gold-primary)' }}></div>
+                    <div>
+                      <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-light)' }}>Baner Corridor</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Avg: ₹8,800/sq.ft. (+12% YoY)</div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#2ec4b6' }}></div>
+                    <div>
+                      <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-light)' }}>Wakad Corridor</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Avg: ₹7,400/sq.ft. (+9% YoY)</div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#94a3b8' }}></div>
+                    <div>
+                      <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-light)' }}>Hinjewadi Corridor</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Avg: ₹6,500/sq.ft. (+7% YoY)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Relationship Managers & Performance Index</h2>
+              <button onClick={fetchAgents} className="btn-outline" style={{ padding: '10px 16px', fontSize: '0.9rem' }}>
+                <RefreshCw size={14} className={agentsLoading ? "animate-spin" : ""} />
+                Refresh Team Data
               </button>
+            </div>
+
+            {agentsLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+                <Loader className="animate-spin" size={32} color="#D4AF37" />
+              </div>
+            ) : agents.length === 0 ? (
+              <div className="empty-state">No relationship managers registered.</div>
+            ) : (
+              <>
+                <div className="agent-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: '35px' }}>
+                  {agents.map(agent => {
+                    const agentLeads = allLeadsForStats.filter(lead => lead.assignedAgentPhone === agent.phone);
+                    const totalAssigned = agentLeads.length;
+                    const activeDeals = agentLeads.filter(lead => 
+                      lead.status === 'NEW' || lead.status === 'IN_PROGRESS' || lead.status === 'CONTACTED' || lead.status === 'VISITED'
+                    ).length;
+                    const wonDeals = agentLeads.filter(lead => lead.status === 'CONVERTED').length;
+                    const conversionRate = totalAssigned > 0 ? Math.round((wonDeals / totalAssigned) * 100) : 0;
+                    const initials = agent.name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+                    return (
+                      <div key={agent.id} className="stat-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', padding: '24px', position: 'relative', minHeight: '280px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '14px', marginBottom: '14px' }}>
+                          <div style={{ 
+                            width: '44px', 
+                            height: '44px', 
+                            borderRadius: '50%', 
+                            background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', 
+                            color: 'var(--text-dark)', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            fontWeight: 'bold',
+                            fontSize: '1.1rem'
+                          }}>
+                            {initials}
+                          </div>
+                          <div style={{ flexGrow: 1 }}>
+                            <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-light)' }}>{agent.name}</h4>
+                            <span style={{ fontSize: '0.72rem', color: '#2ec4b6', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#2ec4b6', display: 'inline-block' }}></span>
+                              Active Lead Advisor
+                            </span>
+                          </div>
+                          {conversionRate >= 33 && (
+                            <span style={{ background: 'rgba(212,175,55,0.12)', color: 'var(--gold-primary)', border: '1px solid var(--border-gold)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.68rem', fontWeight: 'bold' }}>
+                              🏆 Top Performer
+                            </span>
+                          )}
+                        </div>
+
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '16px' }}>
+                          <div>📞 {agent.phone}</div>
+                          <div>✉️ {agent.email}</div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', textAlign: 'center', marginBottom: '18px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
+                          <div>
+                            <strong style={{ fontSize: '1.25rem', color: 'var(--text-light)', display: 'block' }}>{totalAssigned}</strong>
+                            <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Assigned</span>
+                          </div>
+                          <div>
+                            <strong style={{ fontSize: '1.25rem', color: 'var(--gold-light)', display: 'block' }}>{activeDeals}</strong>
+                            <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Active</span>
+                          </div>
+                          <div>
+                            <strong style={{ fontSize: '1.25rem', color: '#2ec4b6', display: 'block' }}>{wonDeals}</strong>
+                            <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Won</span>
+                          </div>
+                        </div>
+
+                        <div style={{ marginTop: 'auto' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '6px', color: 'var(--text-muted)' }}>
+                            <span>Conversion Rate</span>
+                            <strong style={{ color: conversionRate > 30 ? '#2ec4b6' : 'var(--text-light)' }}>{conversionRate}%</strong>
+                          </div>
+                          <div style={{ height: '6px', backgroundColor: 'var(--border-muted)', borderRadius: '3px', overflow: 'hidden' }}>
+                            <div style={{ 
+                              height: '100%', 
+                              width: `${conversionRate}%`, 
+                              backgroundColor: conversionRate > 30 ? '#2ec4b6' : 'var(--gold-primary)',
+                              transition: 'width 0.5s ease-in-out' 
+                            }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="crm-drawer" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+                  <div>
+                    <h4 style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', fontSize: '1.1rem' }}>
+                      🟢 Lead Allocation Engine Rules
+                    </h4>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '10px' }}>
+                      Our Spring Boot backend employs an event-driven <strong>Round-Robin routing listener</strong>. Leads captured dynamically from client callback requests are automatically routed to the next active agent.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', fontSize: '1.1rem' }}>
+                      ⚡ CRM Integrations & Gateways
+                    </h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.82rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-muted)', paddingBottom: '6px' }}>
+                        <span>WhatsApp API Gateway</span>
+                        <strong style={{ color: '#2ec4b6' }}>🟢 Connected (Mock)</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </section>
+        )}
+      </main>
+
+      {/* Selected Lead Details Modal */}
+      {selectedLead && (
+        <div className="modal-overlay" onClick={() => setSelectedLead(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '650px', background: '#070f1e', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '24px' }}>
+            <button className="modal-close" onClick={() => setSelectedLead(null)}>×</button>
+            <h3 style={{ color: 'var(--gold-primary)', margin: '0 0 6px 0', fontSize: '1.4rem' }}>{selectedLead.name}</h3>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-muted)', paddingBottom: '10px' }}>
+              Lead ID: {selectedLead.id} | Phone: {selectedLead.phone} | Email: {selectedLead.email}
+            </p>
+
+            <div style={{ marginTop: '20px' }}>
+              <h4 style={{ color: '#fff', fontSize: '0.95rem', marginBottom: '8px' }}>Notes & Requirements</h4>
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-muted)', borderRadius: '6px', padding: '12px', fontSize: '0.88rem', color: 'var(--text-light)', minHeight: '80px', lineHeight: 1.5 }}>
+                {selectedLead.notes || 'No notes available.'}
+              </div>
+            </div>
+
+            <div style={{ marginTop: '24px' }}>
+              <h4 style={{ color: '#fff', fontSize: '0.95rem', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>💬 WhatsApp Log History</span>
+                <span style={{ fontSize: '0.72rem', background: '#2ec4b6', color: '#070f1e', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>Live Link</span>
+              </h4>
+
+              {logsLoading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}><Loader className="animate-spin" size={20} color="#D4AF37" /></div>
+              ) : whatsappLogs.length === 0 ? (
+                <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '6px', padding: '15px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                  No WhatsApp logs recorded for this lead.
+                </div>
+              ) : (
+                <div style={{ maxHeight: '180px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {whatsappLogs.map(log => (
+                    <div key={log.id} style={{ background: 'rgba(46,196,182,0.03)', border: '1px solid rgba(46,196,182,0.1)', borderRadius: '6px', padding: '10px', fontSize: '0.8rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#2ec4b6', marginBottom: '4px', fontSize: '0.72rem' }}>
+                        <span>Template: {log.templateName}</span>
+                        <span>{new Date(log.sentTimestamp).toLocaleTimeString()}</span>
+                      </div>
+                      <div style={{ color: 'var(--text-light)', lineHeight: 1.4 }}>{log.messageBody}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

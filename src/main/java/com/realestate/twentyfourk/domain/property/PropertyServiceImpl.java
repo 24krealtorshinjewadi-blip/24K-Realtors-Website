@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.realestate.twentyfourk.domain.audit.AuditLogService;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -21,12 +22,22 @@ public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final AuditLogService auditLogService;
 
     @Override
     @Transactional
     public PropertyResponse createProperty(PropertyRequest request) {
         Property property = mapToEntity(request);
         Property savedProperty = propertyRepository.save(property);
+
+        // Audit Log
+        auditLogService.logAction(
+                "CREATE",
+                "Property",
+                savedProperty.getId(),
+                null,
+                getPropertySummary(savedProperty)
+        );
 
         // Publish event for asynchronous matchmaking check
         eventPublisher.publishEvent(new PropertyCreatedEvent(savedProperty));
@@ -68,18 +79,46 @@ public class PropertyServiceImpl implements PropertyService {
         Property existingProperty = propertyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Property not found with ID: " + id));
 
+        String oldSummary = getPropertySummary(existingProperty);
+
         updateEntityFields(existingProperty, request);
         Property updatedProperty = propertyRepository.save(existingProperty);
+
+        // Audit Log
+        auditLogService.logAction(
+                "UPDATE",
+                "Property",
+                updatedProperty.getId(),
+                oldSummary,
+                getPropertySummary(updatedProperty)
+        );
+
         return mapToResponse(updatedProperty);
     }
 
     @Override
     @Transactional
     public void deleteProperty(UUID id) {
-        if (!propertyRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Property not found with ID: " + id);
-        }
-        propertyRepository.deleteById(id);
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found with ID: " + id));
+        
+        String oldSummary = getPropertySummary(property);
+        propertyRepository.delete(property);
+
+        // Audit Log
+        auditLogService.logAction(
+                "DELETE",
+                "Property",
+                id,
+                oldSummary,
+                null
+        );
+    }
+
+    private String getPropertySummary(Property p) {
+        if (p == null) return null;
+        return String.format("Title: %s, Location: %s, Price: %s, Status: %s, Active: %b",
+                p.getTitle(), p.getLocation(), p.getPrice(), p.getStatus(), p.isActiveFlag());
     }
 
     @Override
