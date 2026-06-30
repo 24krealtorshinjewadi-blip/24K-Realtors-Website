@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import ThemeSelector from '../components/ThemeSelector';
 
-export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, onBookVisitClick }) {
+export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, onBookVisitClick, exclusiveTab, onTabChange }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
@@ -24,6 +24,28 @@ export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, 
               <div className="hnwi-pill-knob"></div>
             </div>
             <span className={isHnwiMode ? 'active-hnwi' : ''} onClick={() => setIsHnwiMode(true)}>Private Office (HNWI)</span>
+          </div>
+
+          {/* BUY / RENT / SELL Selector */}
+          <div className="nav-transaction-tabs">
+            <button 
+              className={exclusiveTab === 'BUY' ? 'active' : ''} 
+              onClick={() => onTabChange && onTabChange('BUY')}
+            >
+              BUY
+            </button>
+            <button 
+              className={exclusiveTab === 'RENT' ? 'active' : ''} 
+              onClick={() => onTabChange && onTabChange('RENT')}
+            >
+              RENT
+            </button>
+            <button 
+              className={exclusiveTab === 'SELL' ? 'active' : ''} 
+              onClick={() => onTabChange && onTabChange('SELL')}
+            >
+              SELL
+            </button>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

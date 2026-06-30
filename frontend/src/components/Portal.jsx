@@ -225,6 +225,25 @@ export default function Portal({ onViewChange }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleTabChange = (tab) => {
+    setExclusiveTab(tab);
+    if (tab === 'SELL') {
+      const element = document.getElementById('seller-mandate-anchor');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    } else {
+      setFilters(prev => ({
+        ...prev,
+        transactionType: tab
+      }));
+      const element = document.getElementById('listings-anchor');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
   const handleSellerFormChange = (e) => {
     const { name, value } = e.target;
     setSellerForm(prev => ({ ...prev, [name]: value }));
@@ -605,6 +624,8 @@ export default function Portal({ onViewChange }) {
         setIsHnwiMode={setIsHnwiMode} 
         onViewChange={onViewChange} 
         onBookVisitClick={() => { setSelectedChauffeurProp(properties[0] || null); setIsChauffeurModalOpen(true); }}
+        exclusiveTab={exclusiveTab}
+        onTabChange={handleTabChange}
       />
 
       {/* Animated Hero Slideshow Section */}
