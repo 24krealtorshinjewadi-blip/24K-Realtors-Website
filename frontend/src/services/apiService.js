@@ -12,8 +12,8 @@ const getApiBaseUrl = () => {
   if (hostname.startsWith('192.168.') || hostname.startsWith('10.') || hostname.startsWith('172.')) {
     return `http://${hostname}:8080/api/v1`;
   }
-  // Fallback for Vercel loading: point directly to local dev laptop IP on Wi-Fi (updated to 192.168.1.8)
-  return 'http://192.168.1.8:8080/api/v1';
+  // Fallback for production hosting: point directly to Railway production API
+  return 'https://twentyfourk-backend-production.up.railway.app/api/v1';
 };
 
 const BASE_URL = getApiBaseUrl();
