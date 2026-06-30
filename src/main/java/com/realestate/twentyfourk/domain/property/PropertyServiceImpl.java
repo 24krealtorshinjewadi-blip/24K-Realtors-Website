@@ -2,8 +2,10 @@ package com.realestate.twentyfourk.domain.property;
 
 import com.realestate.twentyfourk.domain.property.dto.PropertyRequest;
 import com.realestate.twentyfourk.domain.property.dto.PropertyResponse;
+import com.realestate.twentyfourk.domain.property.event.PropertyCreatedEvent;
 import com.realestate.twentyfourk.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,7 +20,7 @@ import java.util.UUID;
 public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
-    private final com.realestate.twentyfourk.domain.lead.LeadRepository leadRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -26,31 +28,8 @@ public class PropertyServiceImpl implements PropertyService {
         Property property = mapToEntity(request);
         Property savedProperty = propertyRepository.save(property);
 
-        // Matching Engine Check
-        try {
-            java.util.List<com.realestate.twentyfourk.domain.lead.Lead> leads = leadRepository.findAll();
-            for (com.realestate.twentyfourk.domain.lead.Lead lead : leads) {
-                if (lead.getPreferredLocation() == savedProperty.getLocation()) {
-                    boolean budgetMatches = true;
-                    if (lead.getBudgetMin() != null && savedProperty.getPrice().compareTo(lead.getBudgetMin()) < 0) {
-                        budgetMatches = false;
-                    }
-                    if (lead.getBudgetMax() != null && savedProperty.getPrice().compareTo(lead.getBudgetMax()) > 0) {
-                        budgetMatches = false;
-                    }
-
-                    if (budgetMatches) {
-                        System.out.println(String.format(
-                            "[MATCHING ENGINE ALERT] Lead '%s' (Phone: %s, Email: %s) matches newly created property '%s' in %s Corridor! Property Price: %s",
-                            lead.getName(), lead.getPhone(), lead.getEmail(), savedProperty.getTitle(),
-                            savedProperty.getLocation(), savedProperty.getPrice()
-                        ));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("[MATCHING ENGINE ERROR] Could not perform matchmaking checklist check: " + e.getMessage());
-        }
+        // Publish event for asynchronous matchmaking check
+        eventPublisher.publishEvent(new PropertyCreatedEvent(savedProperty));
 
         return mapToResponse(savedProperty);
     }
