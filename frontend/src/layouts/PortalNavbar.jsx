@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
-  UserCheck, LayoutDashboard, FileText, Compass 
+  UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Eye
 } from 'lucide-react';
 import ThemeSelector from '../components/ThemeSelector';
 
@@ -25,23 +25,9 @@ export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, 
             </div>
             <span className={isHnwiMode ? 'active-hnwi' : ''} onClick={() => setIsHnwiMode(true)}>Private Office (HNWI)</span>
           </div>
-          
-          <div className="nav-links">
-            <a href="#philosophy">OVERVIEW</a>
-            <a href="#corridors">WHY 24K</a>
-            <a href="#listings-anchor">{isHnwiMode ? 'PORTFOLIOS' : 'PRICE LIST'}</a>
-            <a href="#listings-anchor">FLOOR PLANS</a>
-            <a href="#testimonials">CLIENTS</a>
-          </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {/* Phone Number Pill Button */}
-            <a href="tel:+919673000053" className="nav-pill-phone">
-              <Phone size={13} />
-              <span>+91 96730 00053</span>
-            </a>
-
-            {/* Book Visit Pill Button */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Book Visit CTA Button */}
             <button 
               onClick={onBookVisitClick} 
               className="nav-pill-book"
@@ -53,11 +39,12 @@ export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, 
             {/* Circular Theme Selector */}
             <ThemeSelector />
 
-            {/* Hamburger Menu Button */}
+            {/* Hamburger Menu Toggle Button */}
             <button 
               onClick={() => setIsDrawerOpen(true)} 
               className="btn-hamburger-menu"
               title="Open Navigation Menu"
+              aria-label="Open Navigation Menu"
             >
               <Menu size={18} />
             </button>
@@ -74,14 +61,15 @@ export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, 
       {/* Sliding Navigation Drawer Panel */}
       <div className={`nav-drawer-panel ${isDrawerOpen ? 'open' : ''}`}>
         <div className="drawer-close-row">
-          <span className="drawer-logo-text">24K REALTORS</span>
+          <span className="drawer-logo-text">24K MENU TERMINAL</span>
           <button onClick={() => setIsDrawerOpen(false)} className="btn-drawer-close">
             <X size={18} />
           </button>
         </div>
 
         <div className="drawer-links-section">
-          <div className="drawer-section-title">⚜️ CLIENT PORTAL ACCESS</div>
+          
+          <div className="drawer-section-title">⚜️ PRIVATE CLIENT ACCESS</div>
           
           <button 
             onClick={() => { setIsDrawerOpen(false); onViewChange && onViewChange('dashboard'); }} 
@@ -109,33 +97,62 @@ export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, 
             <ArrowRight size={14} className="arrow-icon" />
           </button>
 
+          <a href="tel:+919673000053" className="drawer-item-link" style={{ textDecoration: 'none' }}>
+            <Phone size={18} color="#2ec4b6" />
+            <div className="drawer-item-text">
+              <strong>Call Director Helpline</strong>
+              <span>+91 96730 00053 (Direct Advisory Line)</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" />
+          </a>
+
+          <div className="drawer-section-title">🏢 EXPLORE PORTFOLIOS</div>
+          
+          <a href="#listings-anchor" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
+            <Compass size={18} color="#d4af37" />
+            <div className="drawer-item-text">
+              <strong>Premium Price Lists</strong>
+              <span>Browse Wakad, Baner & Hinjewadi properties</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" />
+          </a>
+
+          <a href="#listings-anchor" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
+            <Eye size={18} color="#d4af37" />
+            <div className="drawer-item-text">
+              <strong>Interactive Floor Plans</strong>
+              <span>View architectural layouts and spatial plans</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" />
+          </a>
+
+          <a href="#corridors" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
+            <Info size={18} color="#d4af37" />
+            <div className="drawer-item-text">
+              <strong>Why 24K Realtors</strong>
+              <span>Our premium advisory philosophy & corridors</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" />
+          </a>
+
           <div className="drawer-section-title">📄 SELLER DESK SERVICES</div>
           
           <a href="#seller-mandate-anchor" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
             <FileText size={18} color="#d4af37" />
             <div className="drawer-item-text">
               <strong>Seller Advisory Mandate</strong>
-              <span>List property under 24K premium consulting</span>
+              <span>List your flat directly with 24K advisory desk</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </a>
 
-          <a href="#corridors" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
-            <Compass size={18} color="#d4af37" />
-            <div className="drawer-item-text">
-              <strong>Pune Corridor Valuation</strong>
-              <span>View Wakad, Baner & Hinjewadi Price Indices</span>
-            </div>
-            <ArrowRight size={14} className="arrow-icon" />
-          </a>
-
-          <div className="drawer-section-title">🏛️ COMPLIANCE & SAFETY</div>
+          <div className="drawer-section-title">🏛️ TRUST & COMPLIANCE</div>
           
           <a href="#rera-compliance" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
             <ShieldCheck size={18} color="#2ec4b6" />
             <div className="drawer-item-text">
               <strong>MahaRERA Certifications</strong>
-              <span>Verified registration numbers lookup</span>
+              <span>Verify active project registration numbers</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </a>
@@ -143,8 +160,8 @@ export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, 
           <a href="#testimonials" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
             <UserCheck size={18} color="#2ec4b6" />
             <div className="drawer-item-text">
-              <strong>Advisory Team Directory</strong>
-              <span>Meet active relationship managers</span>
+              <strong>Client Testimonials</strong>
+              <span>Read genuine feedback from active buyers</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </a>
