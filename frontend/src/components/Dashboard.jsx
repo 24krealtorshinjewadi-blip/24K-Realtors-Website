@@ -650,6 +650,68 @@ export default function Dashboard({ onViewChange }) {
           >
             ← Return to Portal
           </button>
+
+          <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid var(--border-muted)', textAlign: 'left' }}>
+            <details style={{ cursor: 'pointer' }}>
+              <summary style={{ fontSize: '0.8rem', color: 'var(--gold-primary)', fontWeight: 'bold', outline: 'none' }}>
+                ⚙️ API Connection Settings
+              </summary>
+              <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Set laptop IP or backend endpoint:</span>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <input 
+                    type="text" 
+                    defaultValue={apiService.getApiBaseUrl()} 
+                    id="crm-custom-api-url"
+                    className="form-input"
+                    style={{ 
+                      flex: 1, 
+                      padding: '6px 10px', 
+                      borderRadius: '6px', 
+                      fontSize: '0.8rem',
+                      margin: 0
+                    }} 
+                    placeholder="e.g. http://192.168.1.8:8080/api/v1"
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      const val = document.getElementById('crm-custom-api-url').value;
+                      apiService.setApiBaseUrl(val);
+                    }}
+                    className="btn-gold"
+                    style={{ 
+                      padding: '6px 12px', 
+                      borderRadius: '6px', 
+                      fontSize: '0.8rem',
+                      fontWeight: 'bold',
+                      margin: 0
+                    }}
+                  >
+                    Save
+                  </button>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    apiService.setApiBaseUrl('');
+                  }}
+                  style={{
+                    fontSize: '0.75rem',
+                    color: '#aaa',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    alignSelf: 'flex-start',
+                    padding: 0
+                  }}
+                >
+                  Reset to Default
+                </button>
+              </div>
+            </details>
+          </div>
         </div>
       </div>
     );

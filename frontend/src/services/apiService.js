@@ -1,4 +1,9 @@
 const getApiBaseUrl = () => {
+  // Check if custom API URL is set in localStorage
+  const customUrl = localStorage.getItem('API_BASE_URL');
+  if (customUrl) {
+    return customUrl;
+  }
   const hostname = window.location.hostname;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://localhost:8080/api/v1';
@@ -7,8 +12,8 @@ const getApiBaseUrl = () => {
   if (hostname.startsWith('192.168.') || hostname.startsWith('10.') || hostname.startsWith('172.')) {
     return `http://${hostname}:8080/api/v1`;
   }
-  // Fallback for Vercel loading: point directly to local dev laptop IP on Wi-Fi
-  return 'http://192.168.1.14:8080/api/v1';
+  // Fallback for Vercel loading: point directly to local dev laptop IP on Wi-Fi (updated to 192.168.1.8)
+  return 'http://192.168.1.8:8080/api/v1';
 };
 
 const BASE_URL = getApiBaseUrl();
@@ -20,6 +25,19 @@ const getAuthHeaders = () => {
 };
 
 export const apiService = {
+  // --- UTILITY METHODS ---
+  setApiBaseUrl(url) {
+    if (url && url.trim()) {
+      localStorage.setItem('API_BASE_URL', url.trim());
+    } else {
+      localStorage.removeItem('API_BASE_URL');
+    }
+    window.location.reload();
+  },
+
+  getApiBaseUrl() {
+    return BASE_URL;
+  },
   // --- AUTH ENDPOINTS ---
   
   async login(username, password) {

@@ -1254,8 +1254,71 @@ export default function Portal({ onViewChange }) {
                   <PremiumGoldLoader />
                 </div>
               ) : error ? (
-                <div className="empty-state" style={{ borderColor: '#D90429', color: '#FF4D6D' }}>
-                  <p>{error}</p>
+                <div className="empty-state" style={{ borderColor: '#D90429', color: '#FF4D6D', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', padding: '30px' }}>
+                  <p style={{ fontWeight: 'bold', fontSize: '1.1rem', margin: 0 }}>{error}</p>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxWidth: '400px', textAlign: 'left', marginTop: '10px' }}>
+                    <label style={{ fontSize: '0.8rem', color: '#c8a2c8', fontWeight: '600' }}>Custom Spring Boot API Endpoint:</label>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <input 
+                        type="text" 
+                        defaultValue={apiService.getApiBaseUrl()} 
+                        id="portal-custom-api-url"
+                        className="form-input"
+                        style={{ 
+                          flex: 1, 
+                          padding: '10px 14px', 
+                          borderRadius: '8px', 
+                          border: '1px solid rgba(200, 162, 200, 0.3)', 
+                          background: 'rgba(26, 18, 38, 0.8)', 
+                          color: '#fff',
+                          fontSize: '0.9rem',
+                          outline: 'none',
+                          margin: 0
+                        }} 
+                        placeholder="e.g. http://192.168.1.8:8080/api/v1"
+                      />
+                      <button 
+                        onClick={() => {
+                          const val = document.getElementById('portal-custom-api-url').value;
+                          apiService.setApiBaseUrl(val);
+                        }}
+                        className="btn-gold"
+                        style={{ 
+                          padding: '10px 20px', 
+                          borderRadius: '8px', 
+                          background: 'linear-gradient(135deg, #FFD700, #FFA500)', 
+                          color: '#000', 
+                          fontWeight: 'bold', 
+                          cursor: 'pointer',
+                          border: 'none',
+                          fontSize: '0.9rem',
+                          boxShadow: '0 4px 15px rgba(255, 215, 0, 0.2)',
+                          margin: 0
+                        }}
+                      >
+                        Save & Connect
+                      </button>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        apiService.setApiBaseUrl('');
+                      }}
+                      style={{
+                        fontSize: '0.8rem',
+                        color: '#aaa',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        alignSelf: 'flex-start',
+                        marginTop: '4px',
+                        padding: 0
+                      }}
+                    >
+                      Reset to Default URL
+                    </button>
+                  </div>
                 </div>
               ) : properties.length === 0 ? (
                 <div className="empty-state">
