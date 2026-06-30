@@ -1989,21 +1989,51 @@
 }
 
 /* Premium Light Theme (Ivory & Gold) Specific Layout Overrides */
-.light-theme .luxury-navbar {
-  background: rgba(255, 255, 255, 0.85);
-  border-bottom: 1px solid rgba(154, 123, 28, 0.15);
+.light-theme .luxury-navbar,
+.light-theme .luxury-navbar.scrolled {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-bottom: 1px solid rgba(154, 123, 28, 0.18) !important;
+  box-shadow: 0 4px 20px rgba(154, 123, 28, 0.08) !important;
 }
 
-.light-theme .logo-text {
-  color: #1A2536;
+.light-theme .logo-number {
+  color: #0f172a !important;
 }
 
-.light-theme .nav-links a {
-  color: #5A6A85;
+.light-theme .logo-city-tagline {
+  color: var(--gold-dark) !important;
 }
 
-.light-theme .nav-links a:hover {
-  color: var(--gold-dark);
+/* HNWI switch overrides for light theme */
+.light-theme .hnwi-mode-desk {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(154, 123, 28, 0.25) !important;
+}
+
+.light-theme .hnwi-mode-desk span {
+  color: #64748b !important;
+}
+
+.light-theme .hnwi-mode-desk span.active-label {
+  color: #0f172a !important;
+}
+
+.light-theme .hnwi-mode-desk span.active-hnwi {
+  color: var(--gold-dark) !important;
+  text-shadow: 0 0 8px rgba(154, 123, 28, 0.2) !important;
+}
+
+.light-theme .hnwi-pill-switch {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(154, 123, 28, 0.3) !important;
+}
+
+.light-theme .hnwi-pill-knob {
+  background: #64748b !important;
+}
+
+.light-theme .hnwi-pill-switch.active .hnwi-pill-knob {
+  background: var(--gold-dark) !important;
 }
 
 .light-theme .premium-theme-switch {
