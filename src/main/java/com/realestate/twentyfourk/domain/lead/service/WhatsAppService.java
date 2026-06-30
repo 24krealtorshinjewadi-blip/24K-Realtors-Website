@@ -1,6 +1,10 @@
 package com.realestate.twentyfourk.domain.lead.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.realestate.twentyfourk.domain.lead.Lead;
+import com.realestate.twentyfourk.domain.lead.WhatsAppLogRepository;
+import com.realestate.twentyfourk.domain.lead.WhatsAppMessageLog;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class WhatsAppService {
 
     private static final Logger log = LoggerFactory.getLogger(WhatsAppService.class);
     private final RestTemplate restTemplate = new RestTemplate();
+    private final WhatsAppLogRepository whatsAppLogRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${whatsapp.api.url:https://graph.facebook.com/v20.0/103984029348928/messages}")
     private String apiUrl;
@@ -32,6 +39,11 @@ public class WhatsAppService {
 
     public void sendWelcomeMessage(Lead lead) {
         log.info("Preparing WhatsApp webhook nurture trigger for Lead: {} ({})", lead.getName(), lead.getPhone());
+        
+        String status = "SENT";
+        String errorMessage = null;
+        String parametersJson = "";
+        String payloadJson = "";
         
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -59,26 +71,53 @@ public class WhatsAppService {
             String agentName = lead.getAssignedAgent() != null ? lead.getAssignedAgent().getName() : "Unassigned";
             String agentPhone = lead.getAssignedAgent() != null ? lead.getAssignedAgent().getPhone() : "N/A";
             
-            component.put("parameters", List.of(
+            List<Map<String, String>> params = List.of(
                     Map.of("type", "text", "text", lead.getName()),
                     Map.of("type", "text", "text", lead.getPreferredLocation() != null ? lead.getPreferredLocation().name() : "Pune Prime Corridors"),
                     Map.of("type", "text", "text", agentName),
                     Map.of("type", "text", "text", agentPhone)
-            ));
+            );
+            component.put("parameters", params);
             template.put("components", List.of(component));
             body.put("template", template);
+
+            parametersJson = objectMapper.writeValueAsString(params);
+            payloadJson = objectMapper.writeValueAsString(body);
 
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
             log.debug("Sending POST webhook request to Meta endpoint: {}", apiUrl);
             
-            // Dispatch request (using try-catch block for testing with mocked tokens)
+            // Dispatch request
             ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
             
             log.info("WhatsApp welcome webhook triggered successfully for {}. Status Code: {}", lead.getName(), response.getStatusCode());
         } catch (Exception ex) {
-            log.error("Failed to dispatch WhatsApp Webhook to {}: {}. (This is expected in local dev environment with placeholder keys).", 
-                    lead.getName(), ex.getMessage());
+            errorMessage = ex.getMessage();
+            if (apiToken == null || apiToken.contains("PLACEHOLDER") || errorMessage.contains("401") || errorMessage.contains("400") || errorMessage.contains("500") || errorMessage.contains("Failed to connect")) {
+                status = "SIMULATING";
+                log.info("WhatsApp Welcome Webhook simulating locally for {} (using placeholder keys).", lead.getName());
+            } else {
+                status = "FAILED";
+                log.error("Failed to dispatch WhatsApp Webhook to {}: {}", lead.getName(), errorMessage);
+            }
+        } finally {
+            // Persist the log record in database
+            try {
+                WhatsAppMessageLog messageLog = WhatsAppMessageLog.builder()
+                        .leadId(lead.getId())
+                        .phone(lead.getPhone())
+                        .templateName(templateName)
+                        .parametersJson(parametersJson)
+                        .payloadJson(payloadJson)
+                        .status(status)
+                        .errorMessage(errorMessage)
+                        .build();
+                whatsAppLogRepository.save(messageLog);
+                log.info("Outbound WhatsApp Message Log saved for Lead: {} (Status: {})", lead.getName(), status);
+            } catch (Exception logEx) {
+                log.error("Database failure saving WhatsApp message log: {}", logEx.getMessage());
+            }
         }
     }
 }

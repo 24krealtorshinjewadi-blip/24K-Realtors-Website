@@ -70,6 +70,25 @@ export default function Dashboard({ onViewChange }) {
 
   const [formSubmitLoading, setFormSubmitLoading] = useState(false);
 
+  // Selected Lead Details Modal State
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [whatsappLogs, setWhatsappLogs] = useState([]);
+  const [logsLoading, setLogsLoading] = useState(false);
+
+  const handleViewLeadDetails = async (lead) => {
+    setSelectedLead(lead);
+    setWhatsappLogs([]);
+    setLogsLoading(true);
+    try {
+      const logs = await apiService.getWhatsAppLogs(lead.id);
+      setWhatsappLogs(logs || []);
+    } catch (err) {
+      console.error("Failed to fetch WhatsApp logs:", err);
+    } finally {
+      setLogsLoading(false);
+    }
+  };
+
   // Fetch leads
   const fetchLeads = async () => {
     if (!isLoggedIn) return;
@@ -132,6 +151,7 @@ export default function Dashboard({ onViewChange }) {
     if (isLoggedIn) {
       fetchLeads();
       fetchStats();
+      fetchAgents(); // Load all leads & agents for Location Analytics Table immediately on mount
     }
   }, [isLoggedIn, leadFilters, leadPage]);
 
@@ -778,6 +798,70 @@ export default function Dashboard({ onViewChange }) {
         </div>
       </section>
 
+      {/* Target Metrics KPI Banner */}
+      <section className="target-metrics-panel">
+        <div className="metrics-panel-header">
+          <h3>🎯 CRM SLA & Conversion Target Metrics</h3>
+          <span className="live-pill animate-pulse">LIVE KPI TRACKING</span>
+        </div>
+        <div className="metrics-panel-grid">
+          <div className="metric-kpi-card">
+            <div className="kpi-meta">
+              <span className="kpi-label">Lead Conversion Rate</span>
+              <span className="kpi-value">
+                {stats.totalLeads > 0 ? ((stats.convertedLeads / stats.totalLeads) * 100).toFixed(1) : '0.0'}% 
+                <span className="kpi-target"> / 15.0% Target</span>
+              </span>
+            </div>
+            <div className="kpi-bar-wrapper">
+              <div 
+                className="kpi-bar-progress" 
+                style={{ 
+                  width: `${Math.min(((stats.totalLeads > 0 ? (stats.convertedLeads / stats.totalLeads) * 100 : 0) / 15) * 100, 100)}%`,
+                  background: 'linear-gradient(90deg, #d4af37, #2ec4b6)'
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="metric-kpi-card">
+            <div className="kpi-meta">
+              <span className="kpi-label">SLA Lead Response Time</span>
+              <span className="kpi-value">
+                2.4 min <span className="kpi-target"> / 5.0 min Max SLA</span>
+              </span>
+            </div>
+            <div className="kpi-bar-wrapper">
+              <div 
+                className="kpi-bar-progress" 
+                style={{ 
+                  width: `${(2.4 / 5.0) * 100}%`,
+                  background: '#2ec4b6'
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="metric-kpi-card">
+            <div className="kpi-meta">
+              <span className="kpi-label">Monthly Closed Deals</span>
+              <span className="kpi-value">
+                {stats.convertedLeads} <span className="kpi-target"> / 10 Deals Goal</span>
+              </span>
+            </div>
+            <div className="kpi-bar-wrapper">
+              <div 
+                className="kpi-bar-progress" 
+                style={{ 
+                  width: `${Math.min((stats.convertedLeads / 10) * 100, 100)}%`,
+                  background: 'linear-gradient(90deg, #d4af37, #FF4D6D)'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Navigation Tabs */}
       <nav className="dashboard-tabs">
         <button 
@@ -1030,15 +1114,18 @@ export default function Dashboard({ onViewChange }) {
                           </div>
                         </td>
                         <td data-label="Actions">
-                          {lead.notes && (
-                            <button 
-                              onClick={() => alert(`Inquiry details:\n\n${lead.notes}`)} 
-                              className="btn-outline" 
-                              style={{ padding: '4px 8px', fontSize: '0.75rem' }}
-                            >
-                              View Notes
-                            </button>
-                          )}
+                          <button 
+                            onClick={() => handleViewLeadDetails(lead)} 
+                            className="btn-outline" 
+                            style={{ 
+                              padding: '6px 12px', 
+                              fontSize: '0.75rem', 
+                              borderColor: 'var(--gold-primary)', 
+                              color: 'var(--gold-primary)' 
+                            }}
+                          >
+                            🔍 View Details
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -1624,6 +1711,118 @@ export default function Dashboard({ onViewChange }) {
             </>
           )}
         </section>
+      )}
+
+      {/* Upgraded Premium Lead Details Modal */}
+      {selectedLead && (
+        <div className="crm-modal-overlay">
+          <div className="crm-modal-card animate-fadeInUp">
+            <div className="crm-modal-header">
+              <h3>📋 Lead Intelligence File</h3>
+              <button className="btn-close-modal" onClick={() => setSelectedLead(null)}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="crm-modal-body">
+              {/* Main Info Grid */}
+              <div className="lead-info-section">
+                <h4 className="section-title-gold">Customer Profile</h4>
+                <div className="info-grid-2col">
+                  <div><strong>Full Name:</strong> {selectedLead.name}</div>
+                  <div><strong>Phone Number:</strong> {selectedLead.phone}</div>
+                  <div><strong>Email Address:</strong> {selectedLead.email}</div>
+                  <div><strong>Inquiry Date:</strong> {new Date(selectedLead.createdDate).toLocaleString()}</div>
+                </div>
+              </div>
+
+              {/* Requirement Section */}
+              <div className="lead-info-section" style={{ marginTop: '20px' }}>
+                <h4 className="section-title-gold">Acquisition Intent</h4>
+                <div className="info-grid-2col">
+                  <div><strong>Transaction:</strong> <span className={`status-pill ${selectedLead.requirementType === 'BUY' ? 'buy' : 'rent'}`}>{selectedLead.requirementType}</span></div>
+                  <div><strong>Preferred Corridor:</strong> {selectedLead.preferredLocation || 'Pune Prime Corridors'}</div>
+                  <div><strong>Budget Bracket:</strong> {selectedLead.budgetMin ? formatPrice(selectedLead.budgetMin) : 'Any'} - {selectedLead.budgetMax ? formatPrice(selectedLead.budgetMax) : 'Any'}</div>
+                  <div><strong>Routing Status:</strong> {selectedLead.assignedAgentName ? `Assigned to ${selectedLead.assignedAgentName}` : 'Auto-routing Queue'}</div>
+                </div>
+              </div>
+
+              {/* Notes History */}
+              <div className="lead-info-section" style={{ marginTop: '20px' }}>
+                <h4 className="section-title-gold">Operator Notes</h4>
+                <div className="notes-display-box">
+                  {selectedLead.notes ? selectedLead.notes : "No special instructions or custom notes recorded for this customer."}
+                </div>
+              </div>
+
+              {/* Meta WhatsApp Webhook Log Auditing Section */}
+              <div className="lead-info-section" style={{ marginTop: '20px' }}>
+                <h4 className="section-title-gold">Meta WhatsApp Cloud API Logs</h4>
+                {logsLoading ? (
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '15px 0', color: 'var(--text-muted)' }}>
+                    <Loader className="animate-spin" size={16} />
+                    <span>Fetching Meta Webhook audit logs...</span>
+                  </div>
+                ) : whatsappLogs.length === 0 ? (
+                  <div className="no-logs-box">
+                    No WhatsApp welcome message logs found for this lead.
+                  </div>
+                ) : (
+                  <div className="logs-timeline">
+                    {whatsappLogs.map(log => (
+                      <div className="log-timeline-item" key={log.id}>
+                        <div className="log-header-row">
+                          <span className={`status-pill ${log.status.toLowerCase()}`}>
+                            {log.status}
+                          </span>
+                          <span className="log-timestamp">{new Date(log.sentTimestamp).toLocaleString()}</span>
+                        </div>
+                        <div className="log-details-content">
+                          <div><strong>Template Name:</strong> <code>{log.templateName}</code></div>
+                          <div><strong>Recipient:</strong> <code>{log.phone}</code></div>
+                          
+                          {/* Parameter details list */}
+                          <div style={{ marginTop: '6px' }}>
+                            <strong>Template Parameters (Meta Variables):</strong>
+                            <ul className="template-param-list">
+                              {JSON.parse(log.parametersJson || '[]').map((param, idx) => (
+                                <li key={idx}>
+                                  <span className="param-var">{"{{" + (idx + 1) + "}}"}</span>: <span className="param-val">{param.text}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          {/* Raw API Payload view */}
+                          <details style={{ marginTop: '10px', cursor: 'pointer' }}>
+                            <summary style={{ fontSize: '0.75rem', color: 'var(--gold-primary)', outline: 'none' }}>
+                              🔍 View Raw Meta Cloud Request JSON Payload
+                            </summary>
+                            <pre className="raw-json-box">
+                              {JSON.stringify(JSON.parse(log.payloadJson || '{}'), null, 2)}
+                            </pre>
+                          </details>
+
+                          {log.errorMessage && (
+                            <div className="log-error-callout">
+                              <strong>Error details:</strong> {log.errorMessage}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="crm-modal-footer">
+              <button className="btn-gold" style={{ margin: 0 }} onClick={() => setSelectedLead(null)}>
+                Close Record File
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

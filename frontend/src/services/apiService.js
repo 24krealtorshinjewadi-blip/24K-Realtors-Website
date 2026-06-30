@@ -740,6 +740,46 @@ export const apiService = {
         
         list.push(newLead);
         LocalMockDb.saveLeads(list);
+
+        // Seed mock WhatsApp Webhook Logs for dashboard payload auditing
+        const logs = getLocalStorageItem('mock_whatsapp_logs', []);
+        logs.push({
+          id: Math.floor(Math.random() * 100000),
+          leadId: newLead.id,
+          phone: newLead.phone,
+          templateName: "welcome_lead_intro",
+          parametersJson: JSON.stringify([
+            {type: "text", text: newLead.name},
+            {type: "text", text: newLead.preferredLocation || "PUNE PRIME CORRIDORS"},
+            {type: "text", text: newLead.assignedAgentName},
+            {type: "text", text: newLead.assignedAgentPhone || "N/A"}
+          ]),
+          status: "SIMULATING",
+          errorMessage: null,
+          payloadJson: JSON.stringify({
+            messaging_product: "whatsapp",
+            to: newLead.phone,
+            type: "template",
+            template: {
+              name: "welcome_lead_intro",
+              language: { code: "en_US" },
+              components: [
+                {
+                  type: "body",
+                  parameters: [
+                    {type: "text", text: newLead.name},
+                    {type: "text", text: newLead.preferredLocation || "PUNE PRIME CORRIDORS"},
+                    {type: "text", text: newLead.assignedAgentName},
+                    {type: "text", text: newLead.assignedAgentPhone || "N/A"}
+                  ]
+                }
+              ]
+            }
+          }),
+          sentTimestamp: new Date().toISOString()
+        });
+        saveLocalStorageItem('mock_whatsapp_logs', logs);
+
         return newLead;
       }
     );
@@ -901,6 +941,43 @@ export const apiService = {
       },
       () => {
         return LocalMockDb.getAgents();
+      }
+    );
+  },
+
+  async getWhatsAppLogs(leadId) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/whatsapp/logs/lead/${leadId}`, {
+          headers: {
+            ...getAuthHeaders()
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch WhatsApp logs: ${response.statusText}`);
+        }
+        return response.json();
+      },
+      () => {
+        const logs = getLocalStorageItem('mock_whatsapp_logs', [
+          {
+            id: 1,
+            leadId: "lead-1",
+            phone: "+919876543210",
+            templateName: "welcome_lead_intro",
+            parametersJson: JSON.stringify([
+              {type: "text", text: "Rohan Sharma"},
+              {type: "text", text: "BANER"},
+              {type: "text", text: "Amit Verma"},
+              {type: "text", text: "+919876543201"}
+            ]),
+            status: "SIMULATING",
+            errorMessage: null,
+            payloadJson: '{"messaging_product":"whatsapp","to":"+919876543210","type":"template","template":{"name":"welcome_lead_intro","language":{"code":"en_US"}}}',
+            sentTimestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString()
+          }
+        ]);
+        return logs.filter(l => l.leadId === leadId);
       }
     );
   }
