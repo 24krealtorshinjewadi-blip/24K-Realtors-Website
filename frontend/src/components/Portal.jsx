@@ -197,7 +197,7 @@ export default function Portal({ onViewChange }) {
         queryFilters.transactionType = 'RENT';
       }
 
-      const data = await apiService.getProperties(queryFilters, page, 6);
+      const data = await apiService.getProperties(queryFilters, page, 12);
       setProperties(data.content || []);
       setTotalPages(data.totalPages || 0);
       setTotalElements(data.totalElements || 0);
@@ -846,9 +846,15 @@ export default function Portal({ onViewChange }) {
           </section>
 
           {/* Exclusive Inventory Display */}
-          <div className="properties-header">
-            <h2 className="listings-section-title">{isHnwiMode ? 'HNWI Mandated Assets' : 'Exclusive Inventory'}</h2>
-            <span className="properties-count">{totalElements} Premium listings found</span>
+          <div id="listings-anchor" className="properties-header properties-header-premium">
+            <div className="listings-title-group">
+              <div className="listings-gold-accent"></div>
+              <h2 className="listings-section-title">{isHnwiMode ? 'HNWI Mandated Assets' : 'Exclusive Inventory'}</h2>
+            </div>
+            <span className="properties-count-badge">
+              <span className="count-number">{totalElements}</span>
+              Premium listings found
+            </span>
           </div>
 
           {loading ? (
@@ -1009,64 +1015,76 @@ export default function Portal({ onViewChange }) {
           </div>
 
           {/* Seller Exclusive Mandate Desk */}
-          <div id="seller-mandate-anchor" className="seller-mandate-card" style={{ marginTop: '24px', border: '1px solid var(--border-gold)', borderRadius: '10px', padding: '20px', background: 'rgba(212,175,55,0.02)' }}>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '10px' }}>
-              <Building size={18} />
-              <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>Seller Advisory Mandate</h3>
+          <div id="seller-mandate-anchor" className="seller-mandate-premium">
+            <div className="seller-mandate-header">
+              <div className="seller-mandate-icon-ring">
+                <Building size={22} />
+              </div>
+              <div>
+                <h3 className="seller-mandate-title">Seller Advisory Mandate</h3>
+                <p className="seller-mandate-subtitle">List Your Property • Zero Brokerage • Institutional Buyers</p>
+              </div>
             </div>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.4, marginBottom: '16px' }}>
-              Own a flat in Wakad or Hinjewadi? List directly with 24K Realtors for institutional buyers. Zero brokerages.
+            <p className="seller-mandate-desc">
+              Own a flat in Wakad, Hinjewadi or Baner? List directly with 24K Realtors for access to institutional buyers, NRI investors, and premium HNI clients. Zero brokerage. Maximum returns.
             </p>
-            <form onSubmit={handleSellerSubmit}>
-              <div className="form-group">
-                <input 
-                  type="text" 
-                  name="name"
-                  className="form-input" 
-                  required 
-                  placeholder="Owner Name" 
-                  value={sellerForm.name} 
-                  onChange={handleSellerFormChange} 
-                />
+            <form onSubmit={handleSellerSubmit} className="seller-mandate-form">
+              <div className="seller-form-grid">
+                <div className="form-group">
+                  <label className="seller-form-label">Owner Name</label>
+                  <input 
+                    type="text" 
+                    name="name"
+                    className="form-input seller-input" 
+                    required 
+                    placeholder="Full Name" 
+                    value={sellerForm.name} 
+                    onChange={handleSellerFormChange} 
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="seller-form-label">WhatsApp Mobile</label>
+                  <input 
+                    type="tel" 
+                    name="phone"
+                    className="form-input seller-input" 
+                    required 
+                    placeholder="+91 XXXXX XXXXX" 
+                    value={sellerForm.phone} 
+                    onChange={handleSellerFormChange} 
+                  />
+                </div>
               </div>
               <div className="form-group">
-                <input 
-                  type="tel" 
-                  name="phone"
-                  className="form-input" 
-                  required 
-                  placeholder="WhatsApp Mobile" 
-                  value={sellerForm.phone} 
-                  onChange={handleSellerFormChange} 
-                />
-              </div>
-              <div className="form-group">
+                <label className="seller-form-label">Owner Email</label>
                 <input 
                   type="email" 
                   name="email"
-                  className="form-input" 
+                  className="form-input seller-input" 
                   required 
-                  placeholder="Owner Email" 
+                  placeholder="your@email.com" 
                   value={sellerForm.email} 
                   onChange={handleSellerFormChange} 
                 />
               </div>
-              <div className="form-row">
+              <div className="seller-form-grid">
                 <div className="form-group">
+                  <label className="seller-form-label">Project / BHK</label>
                   <input 
                     type="text" 
                     name="propertyTitle"
-                    className="form-input" 
+                    className="form-input seller-input" 
                     required 
-                    placeholder="Project Name / BHK" 
+                    placeholder="e.g. Blue Ridge 3 BHK" 
                     value={sellerForm.propertyTitle} 
                     onChange={handleSellerFormChange} 
                   />
                 </div>
                 <div className="form-group">
+                  <label className="seller-form-label">Location</label>
                   <select 
                     name="location" 
-                    className="form-input" 
+                    className="form-input seller-input" 
                     value={sellerForm.location} 
                     onChange={handleSellerFormChange}
                   >
@@ -1080,28 +1098,30 @@ export default function Portal({ onViewChange }) {
                 </div>
               </div>
               <div className="form-group">
+                <label className="seller-form-label">Expected Valuation (₹)</label>
                 <input 
                   type="number" 
                   name="expectedPrice" 
-                  className="form-input" 
+                  className="form-input seller-input" 
                   required 
-                  placeholder="Expected Valuation (₹)" 
+                  placeholder="e.g. 85,00,000" 
                   value={sellerForm.expectedPrice} 
                   onChange={handleSellerFormChange} 
                 />
               </div>
               <div className="form-group">
+                <label className="seller-form-label">Property Highlights</label>
                 <textarea 
                   name="description" 
-                  className="form-input" 
+                  className="form-input seller-input" 
                   rows="2" 
-                  placeholder="e.g. 12th floor, modular kitchen, park view..."
+                  placeholder="e.g. 12th floor, modular kitchen, park view, covered parking..."
                   value={sellerForm.description} 
                   onChange={handleSellerFormChange} 
                 />
               </div>
-              <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center' }} disabled={submitLoading}>
-                {submitLoading ? 'Registering...' : 'Register Sale Mandate'}
+              <button type="submit" className="btn-seller-mandate" disabled={submitLoading}>
+                {submitLoading ? 'Registering...' : '📋 Register Sale Mandate'}
               </button>
             </form>
           </div>

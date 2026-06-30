@@ -3028,3 +3028,262 @@
   color: #ffffff !important;
   box-shadow: 0 2px 10px rgba(154, 123, 28, 0.2) !important;
 }
+
+/* =====================================================
+   PREMIUM INVENTORY HEADER STYLING
+   ===================================================== */
+.properties-header-premium {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+  scroll-margin-top: 100px;
+}
+
+.listings-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.listings-gold-accent {
+  width: 4px;
+  height: 32px;
+  background: linear-gradient(180deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+  border-radius: 2px;
+}
+
+.listings-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-title);
+  color: var(--text-light);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.properties-count-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  background: rgba(212, 175, 55, 0.06);
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1px solid rgba(212, 175, 55, 0.12);
+}
+
+.count-number {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--gold-primary);
+}
+
+/* =====================================================
+   SELLER ADVISORY MANDATE - PREMIUM CARD
+   ===================================================== */
+.seller-mandate-premium {
+  margin-top: 28px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.03) 0%, rgba(26, 18, 38, 0.6) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 16px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.seller-mandate-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold-primary), var(--gold-dark), var(--gold-primary));
+}
+
+.seller-mandate-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.seller-mandate-icon-ring {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-primary);
+  flex-shrink: 0;
+}
+
+.seller-mandate-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: var(--font-title);
+  color: var(--gold-primary);
+  letter-spacing: 0.03em;
+}
+
+.seller-mandate-subtitle {
+  margin: 2px 0 0 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.seller-mandate-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.seller-mandate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.seller-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.seller-form-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.seller-input {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(212, 175, 55, 0.12) !important;
+  border-radius: 10px !important;
+  padding: 11px 14px !important;
+  color: var(--text-light) !important;
+  font-size: 0.88rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.seller-input:focus {
+  border-color: var(--gold-primary) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08) !important;
+  outline: none !important;
+}
+
+.btn-seller-mandate {
+  width: 100%;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+  color: #0a0f1c;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-seller-mandate:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+}
+
+.btn-seller-mandate:active {
+  transform: translateY(0);
+}
+
+.btn-seller-mandate:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Light Theme - Inventory Header */
+.light-theme .listings-section-title {
+  color: #0f172a !important;
+}
+
+.light-theme .properties-count-badge {
+  background: rgba(154, 123, 28, 0.06) !important;
+  border-color: rgba(154, 123, 28, 0.15) !important;
+  color: #64748b !important;
+}
+
+.light-theme .count-number {
+  color: var(--gold-dark) !important;
+}
+
+/* Light Theme - Seller Mandate */
+.light-theme .seller-mandate-premium {
+  background: linear-gradient(135deg, rgba(154, 123, 28, 0.03) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
+  border-color: rgba(154, 123, 28, 0.2) !important;
+}
+
+.light-theme .seller-mandate-title {
+  color: var(--gold-dark) !important;
+}
+
+.light-theme .seller-mandate-subtitle {
+  color: #64748b !important;
+}
+
+.light-theme .seller-mandate-desc {
+  color: #475569 !important;
+}
+
+.light-theme .seller-form-label {
+  color: #475569 !important;
+}
+
+.light-theme .seller-input {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(154, 123, 28, 0.15) !important;
+  color: #0f172a !important;
+}
+
+.light-theme .seller-input:focus {
+  border-color: var(--gold-dark) !important;
+  box-shadow: 0 0 0 3px rgba(154, 123, 28, 0.08) !important;
+}
+
+.light-theme .btn-seller-mandate {
+  background: linear-gradient(135deg, var(--gold-dark) 0%, #8B6914 100%) !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 640px) {
+  .seller-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .properties-header-premium {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
