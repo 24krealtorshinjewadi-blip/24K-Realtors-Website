@@ -2610,3 +2610,49 @@
     gap: 30px;
   }
 }
+
+/* Testimonials & Trust Badges Light Theme Overrides */
+.light-theme .testimonial-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(244, 246, 249, 0.95) 100%) !important;
+  border: 1px solid rgba(154, 123, 28, 0.2) !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light-theme .testimonial-card:hover {
+  border-color: var(--gold-dark) !important;
+  box-shadow: 0 15px 40px rgba(154, 123, 28, 0.15) !important;
+}
+
+.light-theme .testimonial-text {
+  color: #2D3748 !important;
+}
+
+.light-theme .testimonial-author strong {
+  color: var(--gold-dark) !important;
+}
+
+.light-theme .testimonial-author span {
+  color: #718096 !important;
+}
+
+.light-theme .quote-mark {
+  color: rgba(154, 123, 28, 0.07) !important;
+}
+
+.light-theme .trust-badge {
+  color: #1A2536 !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(244, 246, 249, 0.8) 100%) !important;
+  border: 1px solid rgba(154, 123, 28, 0.22) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .trust-badge:hover {
+  border-color: var(--gold-dark) !important;
+  background: linear-gradient(135deg, rgba(154, 123, 28, 0.08) 0%, rgba(255, 255, 255, 0) 100%) !important;
+  box-shadow: 0 6px 20px rgba(154, 123, 28, 0.15) !important;
+}
+
+.light-theme .badge-icon {
+  color: var(--gold-dark) !important;
+  filter: drop-shadow(0 0 4px rgba(154, 123, 28, 0.2)) !important;
+}
