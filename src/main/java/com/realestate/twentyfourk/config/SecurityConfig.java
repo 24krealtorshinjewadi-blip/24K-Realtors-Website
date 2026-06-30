@@ -39,11 +39,26 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 // Authentication API
                 .requestMatchers("/api/v1/auth/**").permitAll()
+                
                 // Public Property search lookups
                 .requestMatchers(HttpMethod.GET, "/api/v1/properties/**").permitAll()
+                // Administrative Property updates require ADMIN/CEO/CRM_ADMIN/SALES_MANAGER
+                .requestMatchers(HttpMethod.POST, "/api/v1/properties/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/properties/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/properties/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN", "SALES_MANAGER")
+
                 // Public Customer lead capture hook
                 .requestMatchers(HttpMethod.POST, "/api/v1/leads").permitAll()
-                // Administrative CRM lead tracking and Property CRUD require authentication
+                // Administrative Leads access requires CRM roles
+                .requestMatchers("/api/v1/leads/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN", "SALES_MANAGER", "RELATIONSHIP_MANAGER")
+
+                // Agents management requires admin-level access
+                .requestMatchers("/api/v1/agents/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN")
+
+                // Audit logs lookup requires admin-level access
+                .requestMatchers("/api/v1/audit-logs/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN")
+
+                // All other requests require authentication
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

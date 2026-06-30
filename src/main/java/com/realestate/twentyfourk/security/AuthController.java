@@ -3,6 +3,7 @@ package com.realestate.twentyfourk.security;
 import com.realestate.twentyfourk.domain.user.User;
 import com.realestate.twentyfourk.domain.user.UserRepository;
 import com.realestate.twentyfourk.domain.user.UserRole;
+import com.realestate.twentyfourk.domain.user.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,14 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
 
     // DTO records
-    public record RegisterRequest(String username, String password) {}
+    public record RegisterRequest(String username, String password, UserRole role) {}
     public record LoginRequest(String username, String password) {}
-    public record AuthResponse(String token, String username) {}
+    public record AuthResponse(String token, String refreshToken, String username, String role) {}
+    public record TokenRefreshRequest(String refreshToken) {}
+    public record TokenRefreshResponse(String accessToken, String refreshToken) {}
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
@@ -37,10 +41,12 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Password validation failed: Password must be at least 8 characters long, contain at least one uppercase letter and one digit.");
         }
 
+        UserRole role = request.role() != null ? request.role() : UserRole.CRM_ADMIN;
+
         User user = User.builder()
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
-                .role(UserRole.ADMIN) // Default all registered users as ADMIN for this platform CRM
+                .role(role)
                 .build();
 
         userRepository.save(user);
@@ -69,7 +75,31 @@ public class AuthController {
         User user = userRepository.findByUsername(request.username())
                 .orElseThrow(() -> new RuntimeException("User not found after authentication"));
 
+        // Delete any existing refresh token first to keep DB clean
+        refreshTokenService.deleteByUserId(user.getId());
+
         String token = jwtService.generateToken(user);
-        return ResponseEntity.ok(new AuthResponse(token, user.getUsername()));
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+
+        return ResponseEntity.ok(new AuthResponse(
+                token, 
+                refreshToken.getToken(), 
+                user.getUsername(), 
+                user.getRole().name()
+        ));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.refreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtService.generateToken(user);
+                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                })
+                .orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
     }
 }

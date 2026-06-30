@@ -444,6 +444,8 @@ export const apiService = {
         }
         const data = await response.json();
         localStorage.setItem('token', data.token);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        localStorage.setItem('role', data.role);
         localStorage.setItem('adminUser', data.username);
         return data;
       },
@@ -454,9 +456,12 @@ export const apiService = {
           throw new Error('Authentication failed. Invalid local credentials.');
         }
         const token = "mock-jwt-session-token-xyz-123";
+        const refreshToken = "mock-refresh-token-xyz-123";
         localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('role', 'CRM_ADMIN');
         localStorage.setItem('adminUser', username);
-        return { token, username };
+        return { token, refreshToken, username, role: 'CRM_ADMIN' };
       }
     );
   },
@@ -469,7 +474,7 @@ export const apiService = {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ username, password, role: 'CRM_ADMIN' }),
         });
         if (!response.ok) {
           const errText = await response.text().catch(() => '');
@@ -489,8 +494,32 @@ export const apiService = {
     );
   },
 
+  async refreshToken() {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) return null;
+    try {
+      const response = await fetch(`${BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.accessToken);
+        return data.accessToken;
+      }
+    } catch (err) {
+      console.error("Token refresh failed:", err);
+    }
+    return null;
+  },
+
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('role');
     localStorage.removeItem('adminUser');
   },
 
