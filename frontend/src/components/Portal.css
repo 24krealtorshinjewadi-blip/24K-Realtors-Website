@@ -1032,20 +1032,37 @@
 }
 
 .testimonial-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-muted);
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(16, 23, 41, 0.7) 0%, rgba(26, 18, 38, 0.7) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 35px 30px 30px 30px;
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   display: flex;
   flex-direction: column;
 }
 
 .testimonial-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   border-color: var(--gold-primary);
-  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 15px 40px rgba(212, 175, 55, 0.15);
+}
+
+.quote-mark {
+  position: absolute;
+  top: -15px;
+  right: 20px;
+  font-size: 8rem;
+  font-family: 'Outfit', 'Inter', serif;
+  color: rgba(212, 175, 55, 0.04);
+  line-height: 1;
+  pointer-events: none;
+  font-weight: 900;
+  user-select: none;
 }
 
 .stars-row {
@@ -1526,17 +1543,33 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--text-light);
+  color: #fff;
   font-weight: 600;
-  font-size: 0.95rem;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 0.9rem;
+  padding: 10px 22px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border-radius: 30px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  cursor: default;
+}
+
+.trust-badge:hover {
+  border-color: var(--gold-primary);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.06) 0%, rgba(0, 0, 0, 0) 100%);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.15);
+  transform: translateY(-3px);
 }
 
 .badge-icon {
   color: var(--gold-primary);
+  filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.trust-badge:hover .badge-icon {
+  transform: scale(1.15) rotate(5deg);
 }
 
 /* RERA Side Drawer panel styling */

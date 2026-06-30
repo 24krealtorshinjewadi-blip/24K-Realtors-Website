@@ -1724,6 +1724,7 @@ export default function Portal({ onViewChange }) {
         </div>
         <div className="testimonials-grid">
           <div className="testimonial-card">
+            <span className="quote-mark">“</span>
             <div className="stars-row">
               <Star size={16} fill="#D4AF37" color="#D4AF37" />
               <Star size={16} fill="#D4AF37" color="#D4AF37" />
@@ -1739,6 +1740,7 @@ export default function Portal({ onViewChange }) {
           </div>
 
           <div className="testimonial-card">
+            <span className="quote-mark">“</span>
             <div className="stars-row">
               <Star size={16} fill="#D4AF37" color="#D4AF37" />
               <Star size={16} fill="#D4AF37" color="#D4AF37" />
@@ -1754,6 +1756,7 @@ export default function Portal({ onViewChange }) {
           </div>
 
           <div className="testimonial-card">
+            <span className="quote-mark">“</span>
             <div className="stars-row">
               <Star size={16} fill="#D4AF37" color="#D4AF37" />
               <Star size={16} fill="#D4AF37" color="#D4AF37" />
