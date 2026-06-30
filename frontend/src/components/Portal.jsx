@@ -9,6 +9,114 @@ import {
 } from 'lucide-react';
 import './Portal.css';
 
+const reviewsData = [
+  {
+    author: "Amit & Priyanjali Sharma",
+    role: "VP Engineering at Tech Mahindra & Teacher at Vibgyor",
+    text: "24K Realtors changed our approach completely. Instead of pushing properties, they analyzed our commute times to Hinjewadi Phase 1 IT park and top school distances. The RERA compliance is crystal clear."
+  },
+  {
+    author: "Dr. Sandeep Deshmukh",
+    role: "Chief Cardiologist, Ruby Hall Clinic Pune",
+    text: "Buying in Wakad was seamless. We saved developer brokerage, received fully verified property layouts, and got assistance with mortgage rates directly on the site. Genuine real estate advisors."
+  },
+  {
+    author: "Vikram Malhotra",
+    role: "Managing Director, VM Tech-Ventures",
+    text: "Acquired a commercial retail space on Balewadi High Street. Direct developer pricing, legal due diligence support, and complete transparency on local rental yields. Unbeatable advisory desk."
+  },
+  {
+    author: "Rajesh Nair",
+    role: "Principal Architect, Cognizant",
+    text: "Rented a premium 3 BHK in TCG The Crown Greens, Hinjewadi Phase 2 through 24K Realtors. The entire documentation, society NOC, and tenant verification were handled online in 2 days. Highly professional!"
+  },
+  {
+    author: "Sneha Kulkarni",
+    role: "Senior HR Manager, Wipro",
+    text: "Sold my 2 BHK apartment in Megapolis Splendour Phase 3. 24K Realtors found a buyer within 3 weeks and managed the registry and society transfer smoothly. Got excellent market pricing."
+  },
+  {
+    author: "Rohan & Meera Joshi",
+    role: "Software Directors, Infosys",
+    text: "Bought our dream home in Godrej Elements, Hinjewadi Phase 1. 24K team verified the title clearance and helped us secure a lower interest rate with SBI. The RERA checks were solid."
+  },
+  {
+    author: "Abhishek Goel",
+    role: "Founder, Goel Logistics",
+    text: "Rented our corporate guest house in Megapolis Mystique. The 24K team managed everything from inventory check to rent agreement registration. Zero hassle."
+  },
+  {
+    author: "Priya Ranade",
+    role: "Lead Engineer, TCS",
+    text: "Rented a beautiful 2 BHK in TCG The Crown Greens. Seamless onboarding, no hidden brokerage charges, and direct owner interaction. Extremely satisfied with their Hinjewadi desk."
+  },
+  {
+    author: "Devendra Singh",
+    role: "VP Operations, Barclays Pune",
+    text: "Purchased a luxury 3 BHK in Godrej 24, Hinjewadi. 24K Realtors provided a complete location intelligence report, comparing traffic bottlenecks and future metro connectivity. Superb data-driven advice."
+  },
+  {
+    author: "Ananya Deshpande",
+    role: "Senior Consultant, Deloitte",
+    text: "Rented out my 1 BHK flat in Megapolis Sun. 24K Realtors handled tenant background checks and managed the lease renewal digitally. Excellent rental management service in Pune."
+  },
+  {
+    author: "Kunal Sen",
+    role: "Director of Product, MasterCard",
+    text: "Sold my commercial shop near Hinjewadi Phase 1. Excellent valuation guidance and smooth transaction process. Highly recommend 24K Realtors for commercial deals."
+  },
+  {
+    author: "Rahul & Pooja Mehta",
+    role: "IT Consultants",
+    text: "Bought a spacious 3 BHK in TCG The Crown Greens. 24K team did a thorough legal audit of the builder documents. Their transparency is unmatched in Pune real estate."
+  },
+  {
+    author: "Shalini Iyer",
+    role: "VP, BNY Mellon Pune",
+    text: "Rented a luxury penthouse in Godrej Elements. The concierge team at 24K Realtors set up everything from deep cleaning to Internet setup before we moved in. Ultra-premium service!"
+  },
+  {
+    author: "Vikrant Patil",
+    role: "Partner, Patil Developers",
+    text: "Sold a plot in Hinjewadi Phase 3 through 24K's private mandate desk. The confidentiality and efficiency they maintained during the institutional bidding were top class."
+  },
+  {
+    author: "Meenakshi & Suresh Rao",
+    role: "Retired Bankers",
+    text: "Bought a 2 BHK in Megapolis Splendour for rental income. 24K Realtors not only closed the purchase but also found an IT professional tenant within a week of registry. Excellent end-to-end support."
+  },
+  {
+    author: "Aditya Handa",
+    role: "Director, Handa Group",
+    text: "Leased out our commercial showroom space on main Hinjewadi-Wakad link road. Direct developer negotiations and fair market yield calculations. Highly professional team."
+  },
+  {
+    author: "Divya Gupta",
+    role: "VP Engineering, Nvidia Pune",
+    text: "Purchased a premium apartment in Godrej Elements. 24K advisory desk analyzed school distances for our kids and traffic heatmaps to our office. Location intelligence at its best!"
+  },
+  {
+    author: "Siddharth Roy",
+    role: "Senior Architect, Capgemini",
+    text: "Rented a 3 BHK in TCG The Crown Greens. The society amenities are fantastic and the rent agreement was processed in a day. Super fast execution by the team."
+  },
+  {
+    author: "Neha Shah",
+    role: "IT Manager, Tech Mahindra",
+    text: "Sold my 2 BHK in Megapolis Sun. The buyer was verified, and the digital registry assistance from 24K Realtors made it a breeze. Saved me weeks of running around."
+  },
+  {
+    author: "Pranav & Ritu Deshmukh",
+    role: "Software Leads, Microsoft",
+    text: "Bought a premium smart home in Godrej Elements, Hinjewadi. 24K team verified the project layouts and PMRDA development plan road widening status before we signed. Absolute peace of mind."
+  },
+  {
+    author: "Manoj Kulkarni",
+    role: "Director, Kulkarni Associate",
+    text: "Rented out 10 commercial cabins in Hinjewadi IT Park to a startup. The lease agreement and security deposit escrow were managed professionally by 24K. Highly recommended for corporate leasing."
+  }
+];
+
 export default function Portal({ onViewChange }) {
   // Theme State (light / dark / system)
   const [themeMode, setThemeMode] = useState(localStorage.getItem('crm-theme-mode') || 'dark');
@@ -1722,53 +1830,44 @@ export default function Portal({ onViewChange }) {
           <h2 className="luxury-title">Trusted By 150+ Pune Families</h2>
           <p className="section-subtitle">Real feedback from clients guided to the right location in Baner, Hinjewadi & Wakad</p>
         </div>
-        <div className="testimonials-grid">
-          <div className="testimonial-card">
-            <span className="quote-mark">“</span>
-            <div className="stars-row">
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-            </div>
-            <p className="testimonial-text">"24K Realtors changed our approach completely. Instead of pushing properties, they analyzed our commute times to Hinjewadi Phase 1 IT park and top school distances. The RERA compliance is crystal clear."</p>
-            <div className="testimonial-author">
-              <strong>Amit & Priyanjali Sharma</strong>
-              <span>VP Engineering at Tech Mahindra & Teacher at Vibgyor</span>
-            </div>
-          </div>
-
-          <div className="testimonial-card">
-            <span className="quote-mark">“</span>
-            <div className="stars-row">
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-            </div>
-            <p className="testimonial-text">"Buying in Wakad was seamless. We saved developer brokerage, received fully verified property layouts, and got assistance with mortgage rates directly on the site. Genuine real estate advisors."</p>
-            <div className="testimonial-author">
-              <strong>Dr. Sandeep Deshmukh</strong>
-              <span>Chief Cardiologist, Ruby Hall Clinic Pune</span>
-            </div>
-          </div>
-
-          <div className="testimonial-card">
-            <span className="quote-mark">“</span>
-            <div className="stars-row">
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-              <Star size={16} fill="#D4AF37" color="#D4AF37" />
-            </div>
-            <p className="testimonial-text">"Acquired a commercial retail space on Balewadi High Street. Direct developer pricing, legal due diligence support, and complete transparency on local rental yields. Unbeatable advisory desk."</p>
-            <div className="testimonial-author">
-              <strong>Vikram Malhotra</strong>
-              <span>Managing Director, VM Tech-Ventures</span>
-            </div>
+        <div className="testimonials-marquee-container">
+          <div className="testimonials-marquee-track">
+            {/* First list of reviews */}
+            {reviewsData.map((rev, index) => (
+              <div className="testimonial-card" key={`rev-1-${index}`}>
+                <span className="quote-mark">“</span>
+                <div className="stars-row">
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                </div>
+                <p className="testimonial-text">"{rev.text}"</p>
+                <div className="testimonial-author">
+                  <strong>{rev.author}</strong>
+                  <span>{rev.role}</span>
+                </div>
+              </div>
+            ))}
+            {/* Duplicate list of reviews for seamless infinite loop */}
+            {reviewsData.map((rev, index) => (
+              <div className="testimonial-card" key={`rev-2-${index}`}>
+                <span className="quote-mark">“</span>
+                <div className="stars-row">
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                  <Star size={16} fill="#D4AF37" color="#D4AF37" />
+                </div>
+                <p className="testimonial-text">"{rev.text}"</p>
+                <div className="testimonial-author">
+                  <strong>{rev.author}</strong>
+                  <span>{rev.role}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

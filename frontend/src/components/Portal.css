@@ -2641,18 +2641,64 @@
 
 .light-theme .trust-badge {
   color: #1A2536 !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(244, 246, 249, 0.8) 100%) !important;
-  border: 1px solid rgba(154, 123, 28, 0.22) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
+  background: #FFFFFF !important; /* Solid white background as requested */
+  border: 1px solid rgba(154, 123, 28, 0.35) !important; /* Clear gold border outline */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
 }
 
 .light-theme .trust-badge:hover {
   border-color: var(--gold-dark) !important;
-  background: linear-gradient(135deg, rgba(154, 123, 28, 0.08) 0%, rgba(255, 255, 255, 0) 100%) !important;
+  background: rgba(154, 123, 28, 0.05) !important;
   box-shadow: 0 6px 20px rgba(154, 123, 28, 0.15) !important;
 }
 
 .light-theme .badge-icon {
   color: var(--gold-dark) !important;
   filter: drop-shadow(0 0 4px rgba(154, 123, 28, 0.2)) !important;
+}
+
+.light-theme .seller-form-side {
+  background: #FFFFFF !important; /* Form fill wrapper white in light theme */
+  border-color: rgba(154, 123, 28, 0.25) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light-theme .seller-form-side h3 {
+  color: var(--gold-dark) !important;
+}
+
+/* Testimonials Infinite Marquee Layout */
+.testimonials-marquee-container {
+  overflow: hidden;
+  width: 100%;
+  padding: 25px 0;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+.testimonials-marquee-track {
+  display: flex;
+  gap: 30px;
+  width: max-content;
+  animation: scrollMarquee 90s linear infinite;
+}
+
+.testimonials-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.testimonials-marquee-track .testimonial-card {
+  width: 380px;
+  flex-shrink: 0;
+}
+
+@keyframes scrollMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* Seamless translation to half track width */
+    transform: translateX(-50%);
+  }
 }
