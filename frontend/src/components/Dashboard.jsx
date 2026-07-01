@@ -78,15 +78,95 @@ export default function Dashboard({ onViewChange }) {
   const [whatsappLogs, setWhatsappLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(false);
 
+  // Follow-up Task States
+  const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(true);
+  const [taskStats, setTaskStats] = useState({ totalTasks: 0, pendingTasks: 0, completedTasks: 0, overdueTasks: 0 });
+  const [showTaskForm, setShowTaskForm] = useState(false);
+  const [taskFilters, setTaskFilters] = useState({ agentId: '', status: '', priority: '' });
+  const [taskForm, setTaskForm] = useState({
+    leadId: '',
+    agentId: '',
+    title: '',
+    description: '',
+    taskType: 'CALL',
+    dueDate: '',
+    priority: 'MEDIUM'
+  });
+  
+  const [leadTasks, setLeadTasks] = useState([]);
+  const [leadTasksLoading, setLeadTasksLoading] = useState(false);
+  const [showInlineTaskForm, setShowInlineTaskForm] = useState(false);
+  const [inlineTaskForm, setInlineTaskForm] = useState({
+    title: '',
+    description: '',
+    taskType: 'CALL',
+    dueDate: '',
+    priority: 'MEDIUM'
+  });
+
+  const fetchTasks = async () => {
+    if (!isLoggedIn) return;
+    setTasksLoading(true);
+    try {
+      const data = await apiService.getTasks();
+      setTasks(data || []);
+    } catch (err) {
+      console.error("Failed to fetch tasks:", err);
+    } finally {
+      setTasksLoading(false);
+    }
+  };
+
+  const fetchTaskStats = async () => {
+    if (!isLoggedIn) return;
+    try {
+      const data = await apiService.getTaskStats();
+      setTaskStats(data || { totalTasks: 0, pendingTasks: 0, completedTasks: 0, overdueTasks: 0 });
+    } catch (err) {
+      console.error("Failed to fetch task stats:", err);
+    }
+  };
+
+  const fetchLeadTasks = async (leadId) => {
+    setLeadTasksLoading(true);
+    try {
+      const data = await apiService.getTasks();
+      const filtered = (data || []).filter(t => t.lead && t.lead.id === leadId);
+      setLeadTasks(filtered);
+    } catch (err) {
+      console.error("Failed to fetch tasks for lead:", err);
+    } finally {
+      setLeadTasksLoading(false);
+    }
+  };
+
   const handleViewLeadDetails = async (lead) => {
     setSelectedLead(lead);
     setWhatsappLogs([]);
     setLogsLoading(true);
+    setLeadTasks([]);
+    setShowInlineTaskForm(false);
+    
+    // Set default inline form due date to tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(10, 0, 0, 0);
+    const tomorrowStr = tomorrow.toISOString().slice(0, 16);
+    setInlineTaskForm({
+      title: '',
+      description: '',
+      taskType: 'CALL',
+      dueDate: tomorrowStr,
+      priority: 'MEDIUM'
+    });
+
     try {
       const logs = await apiService.getWhatsAppLogs(lead.id);
       setWhatsappLogs(logs || []);
+      await fetchLeadTasks(lead.id);
     } catch (err) {
-      console.error("Failed to fetch WhatsApp logs:", err);
+      console.error("Failed to fetch WhatsApp logs / lead tasks:", err);
     } finally {
       setLogsLoading(false);
     }
@@ -156,8 +236,103 @@ export default function Dashboard({ onViewChange }) {
       fetchProperties();
       fetchStats();
       fetchAgents();
+      fetchTasks();
+      fetchTaskStats();
     }
-  }, [isLoggedIn, leadPage, propPage, leadFilters]);
+  }, [isLoggedIn, leadPage, propPage, leadFilters, activeTab]);
+
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        ...taskForm,
+        dueDate: taskForm.dueDate ? new Date(taskForm.dueDate).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16)
+      };
+      await apiService.createTask(payload);
+      showNotification('Task scheduled successfully.');
+      setShowTaskForm(false);
+      
+      setTaskForm({
+        leadId: '',
+        agentId: '',
+        title: '',
+        description: '',
+        taskType: 'CALL',
+        dueDate: '',
+        priority: 'MEDIUM'
+      });
+      
+      fetchTasks();
+      fetchTaskStats();
+      fetchAgents();
+    } catch (err) {
+      alert(`Failed to create task: ${err.message}`);
+    }
+  };
+
+  const handleCreateInlineTask = async (e) => {
+    e.preventDefault();
+    if (!selectedLead) return;
+    
+    const agent = agents.find(a => a.phone === selectedLead.assignedAgentPhone || a.name === selectedLead.assignedAgentName) || agents[0];
+    if (!agent) {
+      alert("No agent assigned to this lead. Please assign an agent first.");
+      return;
+    }
+    
+    try {
+      const payload = {
+        leadId: selectedLead.id,
+        agentId: agent.id,
+        title: inlineTaskForm.title,
+        description: inlineTaskForm.description,
+        taskType: inlineTaskForm.taskType,
+        dueDate: inlineTaskForm.dueDate ? new Date(inlineTaskForm.dueDate).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
+        priority: inlineTaskForm.priority
+      };
+      await apiService.createTask(payload);
+      showNotification('Task scheduled for lead.');
+      setShowInlineTaskForm(false);
+      fetchLeadTasks(selectedLead.id);
+      fetchTasks();
+      fetchTaskStats();
+      fetchAgents();
+    } catch (err) {
+      alert(`Failed to create task: ${err.message}`);
+    }
+  };
+
+  const handleToggleTaskStatus = async (taskId, currentStatus) => {
+    const nextStatus = currentStatus === 'PENDING' ? 'COMPLETED' : 'PENDING';
+    try {
+      await apiService.updateTaskStatus(taskId, nextStatus);
+      showNotification(`Task marked as ${nextStatus.toLowerCase()}.`);
+      fetchTasks();
+      fetchTaskStats();
+      fetchAgents();
+      if (selectedLead) {
+        fetchLeadTasks(selectedLead.id);
+      }
+    } catch (err) {
+      alert(`Failed to update task: ${err.message}`);
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    if (!window.confirm("Are you sure you want to delete this task?")) return;
+    try {
+      await apiService.deleteTask(taskId);
+      showNotification('Task removed.');
+      fetchTasks();
+      fetchTaskStats();
+      fetchAgents();
+      if (selectedLead) {
+        fetchLeadTasks(selectedLead.id);
+      }
+    } catch (err) {
+      alert(`Failed to delete task: ${err.message}`);
+    }
+  };
 
   // Handle Login & Registration Submit
   const handleAuthSubmit = async (e) => {
@@ -461,6 +636,11 @@ export default function Dashboard({ onViewChange }) {
             <TrendingUp size={18} />
             <span>Advisory RMs</span>
           </button>
+          <button className={activeTab === 'tasks' ? 'active' : ''} onClick={() => { setActiveTab('tasks'); handleClosePropForm(); }}>
+            <Calendar size={18} />
+            <span>Follow-up Tasks</span>
+          </button>
+          
           
           <button onClick={() => onViewChange('portal')} style={{ marginTop: 'auto', border: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-muted)' }}>
             <span>Advisory Website</span>
@@ -909,7 +1089,7 @@ export default function Dashboard({ onViewChange }) {
                           <div>✉️ {agent.email}</div>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', textAlign: 'center', marginBottom: '18px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', textAlign: 'center', marginBottom: '12px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
                           <div>
                             <strong style={{ fontSize: '1.25rem', color: 'var(--text-light)', display: 'block' }}>{totalAssigned}</strong>
                             <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Assigned</span>
@@ -923,6 +1103,25 @@ export default function Dashboard({ onViewChange }) {
                             <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Won</span>
                           </div>
                         </div>
+
+                        {/* Task Performance Metrics */}
+                        {(() => {
+                          const agentTasks = tasks.filter(t => t.agent && (t.agent.id === agent.id || t.agent.name === agent.name));
+                          const pendingAgentTasks = agentTasks.filter(t => t.status === 'PENDING').length;
+                          const completedAgentTasks = agentTasks.filter(t => t.status === 'COMPLETED').length;
+                          return (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', textAlign: 'center', marginBottom: '18px', background: 'rgba(46,196,182,0.02)', padding: '8px', borderRadius: '6px', border: '1px solid rgba(46,196,182,0.1)' }}>
+                              <div>
+                                <strong style={{ fontSize: '1.1rem', color: 'var(--text-light)', display: 'block' }}>{pendingAgentTasks}</strong>
+                                <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Pending Tasks</span>
+                              </div>
+                              <div>
+                                <strong style={{ fontSize: '1.1rem', color: '#2ec4b6', display: 'block' }}>{completedAgentTasks}</strong>
+                                <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Completed</span>
+                              </div>
+                            </div>
+                          );
+                        })()}
 
                         <div style={{ marginTop: 'auto' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '6px', color: 'var(--text-muted)' }}>
@@ -968,6 +1167,229 @@ export default function Dashboard({ onViewChange }) {
             )}
           </section>
         )}
+
+        {/* TAB 4: TASKS & FOLLOW-UPS */}
+        {activeTab === 'tasks' && (
+          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+            
+            {/* Task Stats Row */}
+            <div className="crm-stats-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '25px' }}>
+              <div className="stats-kpi-card" style={{ padding: '16px' }}>
+                <span className="kpi-label" style={{ fontSize: '0.62rem' }}>TOTAL FOLLOW-UPS</span>
+                <span className="kpi-val" style={{ fontSize: '1.8rem' }}>{taskStats.totalTasks}</span>
+                <span className="kpi-sub" style={{ fontSize: '0.65rem' }}>All Scheduled Tasks</span>
+              </div>
+              <div className="stats-kpi-card" style={{ padding: '16px' }}>
+                <span className="kpi-label" style={{ fontSize: '0.62rem' }}>PENDING TASKS</span>
+                <span className="kpi-val" style={{ fontSize: '1.8rem', color: 'var(--gold-primary)' }}>{taskStats.pendingTasks}</span>
+                <span className="kpi-sub" style={{ fontSize: '0.65rem' }}>Awaiting Action</span>
+              </div>
+              <div className="stats-kpi-card" style={{ padding: '16px' }}>
+                <span className="kpi-label" style={{ fontSize: '0.62rem' }}>OVERDUE TASKS</span>
+                <span className="kpi-val" style={{ fontSize: '1.8rem', color: '#ff4d6d' }}>{taskStats.overdueTasks}</span>
+                <span className="kpi-sub" style={{ fontSize: '0.65rem' }}>Missed Deadlines</span>
+              </div>
+              <div className="stats-kpi-card" style={{ padding: '16px' }}>
+                <span className="kpi-label" style={{ fontSize: '0.62rem' }}>COMPLETED TASKS</span>
+                <span className="kpi-val" style={{ fontSize: '1.8rem', color: '#2ec4b6' }}>{taskStats.completedTasks}</span>
+                <span className="kpi-sub" style={{ fontSize: '0.65rem' }}>Resolved Follow-ups</span>
+              </div>
+            </div>
+
+            <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+              <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Follow-up Tasks Desk</h2>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button onClick={() => {
+                  // Set default due date to tomorrow
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  tomorrow.setHours(10, 0, 0, 0);
+                  const tomorrowStr = tomorrow.toISOString().slice(0, 16);
+                  setTaskForm({...taskForm, dueDate: tomorrowStr});
+                  setShowTaskForm(!showTaskForm);
+                }} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Plus size={16} />
+                  Schedule Task
+                </button>
+                <button onClick={() => { fetchTasks(); fetchTaskStats(); }} className="btn-outline" style={{ padding: '10px 16px', fontSize: '0.9rem' }}>
+                  <RefreshCw size={14} className={tasksLoading ? "animate-spin" : ""} />
+                  Refresh Tasks
+                </button>
+              </div>
+            </div>
+
+            {/* Task Creation Form Panel */}
+            {showTaskForm && (
+              <div className="form-drawer-overlay" style={{ background: 'rgba(7, 15, 30, 0.6)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border-gold)', marginBottom: '25px', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '10px' }}>
+                  <h3 style={{ color: 'var(--gold-primary)', margin: 0, fontSize: '1.25rem' }}>⚜️ Schedule New Task</h3>
+                  <button onClick={() => setShowTaskForm(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+                </div>
+                <form onSubmit={handleCreateTask} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+                  
+                  <div className="form-group">
+                    <label style={{ color: 'var(--text-light)', fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Select Lead *</label>
+                    <select required value={taskForm.leadId} onChange={e => setTaskForm({...taskForm, leadId: e.target.value})} className="form-input" style={{ width: '100%' }}>
+                      <option value="">-- Choose Lead --</option>
+                      {leads.map(l => (
+                        <option key={l.id} value={l.id}>{l.name} ({l.preferredLocation || 'General'})</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ color: 'var(--text-light)', fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Select Assignee *</label>
+                    <select required value={taskForm.agentId} onChange={e => setTaskForm({...taskForm, agentId: e.target.value})} className="form-input" style={{ width: '100%' }}>
+                      <option value="">-- Choose Employee --</option>
+                      {agents.map(a => (
+                        <option key={a.id} value={a.id}>{a.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ color: 'var(--text-light)', fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Task Title *</label>
+                    <input required type="text" placeholder="e.g. Call Client, Site Visit" value={taskForm.title} onChange={e => setTaskForm({...taskForm, title: e.target.value})} className="form-input" style={{ width: '100%' }} />
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ color: 'var(--text-light)', fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Task Type</label>
+                    <select value={taskForm.taskType} onChange={e => setTaskForm({...taskForm, taskType: e.target.value})} className="form-input" style={{ width: '100%' }}>
+                      <option value="CALL">📞 Call</option>
+                      <option value="EMAIL">✉️ Email</option>
+                      <option value="SITE_VISIT">🏡 Site Visit</option>
+                      <option value="MEETING">🤝 Meeting</option>
+                      <option value="OTHER">🗓️ Other</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ color: 'var(--text-light)', fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Due Date & Time *</label>
+                    <input required type="datetime-local" value={taskForm.dueDate} onChange={e => setTaskForm({...taskForm, dueDate: e.target.value})} className="form-input" style={{ width: '100%' }} />
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ color: 'var(--text-light)', fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Priority</label>
+                    <select value={taskForm.priority} onChange={e => setTaskForm({...taskForm, priority: e.target.value})} className="form-input" style={{ width: '100%' }}>
+                      <option value="HIGH">🔴 High</option>
+                      <option value="MEDIUM">🟡 Medium</option>
+                      <option value="LOW">🟢 Low</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ color: 'var(--text-light)', fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Description / Notes</label>
+                    <textarea placeholder="Write task instructions here..." value={taskForm.description} onChange={e => setTaskForm({...taskForm, description: e.target.value})} className="form-input" style={{ minHeight: '60px', width: '100%' }} />
+                  </div>
+
+                  <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '10px' }}>
+                    <button type="button" onClick={() => setShowTaskForm(false)} className="btn-outline">Cancel</button>
+                    <button type="submit" className="btn-primary">Schedule Task</button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Task Filters */}
+            <div className="action-row" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '25px', background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>Filters:</span>
+              <select value={taskFilters.agentId} onChange={e => setTaskFilters({...taskFilters, agentId: e.target.value})} className="form-input" style={{ width: '180px', margin: 0, padding: '6px 12px', fontSize: '0.8rem' }}>
+                <option value="">All Employees</option>
+                {agents.map(a => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </select>
+              <select value={taskFilters.status} onChange={e => setTaskFilters({...taskFilters, status: e.target.value})} className="form-input" style={{ width: '150px', margin: 0, padding: '6px 12px', fontSize: '0.8rem' }}>
+                <option value="">All Statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+              <select value={taskFilters.priority} onChange={e => setTaskFilters({...taskFilters, priority: e.target.value})} className="form-input" style={{ width: '140px', margin: 0, padding: '6px 12px', fontSize: '0.8rem' }}>
+                <option value="">All Priorities</option>
+                <option value="HIGH">High</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="LOW">Low</option>
+              </select>
+            </div>
+
+            {/* Tasks Grid List */}
+            {tasksLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+                <Loader className="animate-spin" size={32} color="#D4AF37" />
+              </div>
+            ) : tasks.length === 0 ? (
+              <div className="empty-state">No follow-up tasks scheduled. Click 'Schedule Task' to start.</div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '20px' }}>
+                {tasks
+                  .filter(t => !taskFilters.agentId || (t.agent && t.agent.id === taskFilters.agentId))
+                  .filter(t => !taskFilters.status || t.status === taskFilters.status)
+                  .filter(t => !taskFilters.priority || t.priority === taskFilters.priority)
+                  .map(task => {
+                    const isOverdue = task.status === 'PENDING' && new Date(task.dueDate) < new Date();
+                    const initials = task.agent ? task.agent.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'RM';
+                    
+                    let taskIcon = "🗓️";
+                    if (task.taskType === 'CALL') taskIcon = "📞";
+                    else if (task.taskType === 'EMAIL') taskIcon = "✉️";
+                    else if (task.taskType === 'SITE_VISIT') taskIcon = "🏡";
+                    else if (task.taskType === 'MEETING') taskIcon = "🤝";
+
+                    return (
+                      <div key={task.id} className="stat-card" style={{ display: 'flex', flexDirection: 'column', padding: '20px', border: isOverdue ? '1px solid rgba(255, 77, 109, 0.4)' : '1px solid var(--border-muted)', background: isOverdue ? 'linear-gradient(to bottom right, rgba(255, 77, 109, 0.02), rgba(0, 0, 0, 0.4))' : 'rgba(7, 15, 30, 0.4)', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.15)', minHeight: '260px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                          <span style={{ fontSize: '0.72rem', background: task.priority === 'HIGH' ? 'rgba(255, 77, 109, 0.12)' : task.priority === 'MEDIUM' ? 'rgba(212,175,55,0.12)' : 'rgba(46,196,182,0.12)', color: task.priority === 'HIGH' ? '#ff4d6d' : task.priority === 'MEDIUM' ? 'var(--gold-primary)' : '#2ec4b6', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
+                            {task.priority} Priority
+                          </span>
+                          <span style={{ fontSize: '0.8rem', color: task.status === 'COMPLETED' ? '#2ec4b6' : isOverdue ? '#ff4d6d' : 'var(--text-muted)', fontWeight: 'bold' }}>
+                            {task.status === 'COMPLETED' ? '✓ Completed' : isOverdue ? '⚠️ Overdue' : '⏰ Pending'}
+                          </span>
+                        </div>
+
+                        <h4 style={{ margin: '0 0 6px 0', fontSize: '1.05rem', color: 'var(--text-light)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span>{taskIcon}</span>
+                          <span>{task.title}</span>
+                        </h4>
+
+                        <p style={{ margin: '0 0 14px 0', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                          {task.description || 'No description provided.'}
+                        </p>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '1px solid var(--border-muted)', paddingTop: '10px', marginTop: 'auto', fontSize: '0.78rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>Lead Account:</span>
+                            <strong style={{ color: 'var(--text-light)' }}>{task.lead ? task.lead.name : 'Unknown Lead'}</strong>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>Assigned RM:</span>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                              <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--gold-primary)', color: 'var(--text-dark)', fontSize: '0.6rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>{initials}</span>
+                              <strong style={{ color: 'var(--text-light)' }}>{task.agent ? task.agent.name : 'Unknown Agent'}</strong>
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>Follow-up Due:</span>
+                            <strong style={{ color: isOverdue ? '#ff4d6d' : 'var(--text-light)' }}>
+                              {new Date(task.dueDate).toLocaleString()}
+                            </strong>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '15px', paddingTop: '10px', borderTop: '1px dashed var(--border-muted)' }}>
+                          <button onClick={() => handleToggleTaskStatus(task.id, task.status)} className="btn-outline" style={{ flexGrow: 1, padding: '6px 12px', fontSize: '0.75rem', borderColor: task.status === 'COMPLETED' ? 'var(--border-muted)' : '#2ec4b6', color: task.status === 'COMPLETED' ? 'var(--text-muted)' : '#2ec4b6', background: 'none', cursor: 'pointer' }}>
+                            {task.status === 'COMPLETED' ? 'Mark Pending' : 'Mark Completed'}
+                          </button>
+                          <button onClick={() => handleDeleteTask(task.id)} className="btn-outline" style={{ padding: '6px 10px', borderColor: 'rgba(255, 77, 109, 0.2)', color: '#ff4d6d', background: 'none', cursor: 'pointer' }}>
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
+          </section>
+        )}
       </main>
 
       {/* Selected Lead Details Modal */}
@@ -985,6 +1407,89 @@ export default function Dashboard({ onViewChange }) {
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-muted)', borderRadius: '6px', padding: '12px', fontSize: '0.88rem', color: 'var(--text-light)', minHeight: '80px', lineHeight: 1.5 }}>
                 {selectedLead.notes || 'No notes available.'}
               </div>
+            </div>
+
+            <div style={{ marginTop: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <h4 style={{ color: '#fff', fontSize: '0.95rem', margin: 0 }}>📋 Scheduled Follow-up Tasks</h4>
+                <button onClick={() => setShowInlineTaskForm(!showInlineTaskForm)} className="btn-outline" style={{ fontSize: '0.72rem', padding: '4px 10px', background: 'none', border: '1px solid var(--border-gold)', color: 'var(--gold-primary)', cursor: 'pointer', borderRadius: '4px' }}>
+                  {showInlineTaskForm ? 'Cancel' : '+ Add Task'}
+                </button>
+              </div>
+
+              {showInlineTaskForm ? (
+                <form onSubmit={handleCreateInlineTask} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-muted)', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '12px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div className="form-group">
+                      <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Task Title *</label>
+                      <input required type="text" placeholder="e.g. Call back, Site visit" value={inlineTaskForm.title} onChange={e => setInlineTaskForm({...inlineTaskForm, title: e.target.value})} className="form-input" style={{ width: '100%', padding: '6px 10px', fontSize: '0.78rem' }} />
+                    </div>
+                    <div className="form-group">
+                      <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Task Type</label>
+                      <select value={inlineTaskForm.taskType} onChange={e => setInlineTaskForm({...inlineTaskForm, taskType: e.target.value})} className="form-input" style={{ width: '100%', padding: '6px 10px', fontSize: '0.78rem' }}>
+                        <option value="CALL">📞 Call</option>
+                        <option value="EMAIL">✉️ Email</option>
+                        <option value="SITE_VISIT">🏡 Site Visit</option>
+                        <option value="MEETING">🤝 Meeting</option>
+                        <option value="OTHER">🗓️ Other</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Due Date *</label>
+                      <input required type="datetime-local" value={inlineTaskForm.dueDate} onChange={e => setInlineTaskForm({...inlineTaskForm, dueDate: e.target.value})} className="form-input" style={{ width: '100%', padding: '6px 10px', fontSize: '0.78rem' }} />
+                    </div>
+                    <div className="form-group">
+                      <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Priority</label>
+                      <select value={inlineTaskForm.priority} onChange={e => setInlineTaskForm({...inlineTaskForm, priority: e.target.value})} className="form-input" style={{ width: '100%', padding: '6px 10px', fontSize: '0.78rem' }}>
+                        <option value="HIGH">🔴 High</option>
+                        <option value="MEDIUM">🟡 Medium</option>
+                        <option value="LOW">🟢 Low</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Instructions</label>
+                    <textarea placeholder="Instructions..." value={inlineTaskForm.description} onChange={e => setInlineTaskForm({...inlineTaskForm, description: e.target.value})} className="form-input" style={{ width: '100%', minHeight: '40px', padding: '6px 10px', fontSize: '0.78rem' }} />
+                  </div>
+                  <button type="submit" className="btn-primary" style={{ padding: '6px 12px', fontSize: '0.78rem', alignSelf: 'flex-end', cursor: 'pointer' }}>Schedule Task</button>
+                </form>
+              ) : null}
+
+              {leadTasksLoading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0' }}><Loader className="animate-spin" size={16} color="#D4AF37" /></div>
+              ) : leadTasks.length === 0 ? (
+                <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '6px', padding: '12px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
+                  No tasks scheduled.
+                </div>
+              ) : (
+                <div style={{ maxHeight: '150px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                  {leadTasks.map(task => {
+                    const isOverdue = task.status === 'PENDING' && new Date(task.dueDate) < new Date();
+                    return (
+                      <div key={task.id} style={{ background: 'rgba(255,255,255,0.02)', border: isOverdue ? '1px solid rgba(255,77,109,0.3)' : '1px solid var(--border-muted)', borderRadius: '6px', padding: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <div style={{ fontWeight: 'bold', fontSize: '0.82rem', color: 'var(--text-light)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span>{task.taskType === 'CALL' ? '📞' : task.taskType === 'EMAIL' ? '✉️' : task.taskType === 'SITE_VISIT' ? '🏡' : task.taskType === 'MEETING' ? '🤝' : '🗓️'}</span>
+                            <span>{task.title}</span>
+                            <span style={{ fontSize: '0.65rem', background: task.priority === 'HIGH' ? 'rgba(255,77,109,0.1)' : 'rgba(255,255,255,0.05)', color: task.priority === 'HIGH' ? '#ff4d6d' : 'var(--text-muted)', padding: '1px 4px', borderRadius: '3px' }}>{task.priority}</span>
+                          </div>
+                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            Due: {new Date(task.dueDate).toLocaleString()} {isOverdue && <span style={{ color: '#ff4d6d', marginLeft: '4px' }}>(Overdue)</span>}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          <button onClick={() => handleToggleTaskStatus(task.id, task.status)} style={{ background: 'none', border: 'none', color: task.status === 'COMPLETED' ? '#2ec4b6' : 'var(--text-muted)', cursor: 'pointer', fontSize: '1.25rem' }} title={task.status === 'COMPLETED' ? 'Mark Pending' : 'Mark Completed'}>
+                            {task.status === 'COMPLETED' ? '☑' : '☐'}
+                          </button>
+                          <button onClick={() => handleDeleteTask(task.id)} style={{ background: 'none', border: 'none', color: '#ff4d6d', cursor: 'pointer', fontSize: '0.9rem' }} title="Delete task">
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             <div style={{ marginTop: '24px' }}>
