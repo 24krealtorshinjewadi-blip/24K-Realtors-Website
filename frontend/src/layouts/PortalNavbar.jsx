@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
   UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Eye
@@ -8,7 +7,6 @@ import ThemeSelector from '../components/ThemeSelector';
 
 export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, onBookVisitClick, exclusiveTab, onTabChange }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <>
@@ -96,7 +94,7 @@ export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, 
           <div className="drawer-section-title">⚜️ PRIVATE CLIENT ACCESS</div>
           
           <button 
-            onClick={() => { setIsDrawerOpen(false); navigate('/login'); }} 
+            onClick={() => { setIsDrawerOpen(false); onViewChange && onViewChange('dashboard'); }} 
             className="drawer-item-link"
             style={{ width: '100%', border: 'none', background: 'rgba(255, 255, 255, 0.02)' }}
           >

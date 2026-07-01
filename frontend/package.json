@@ -1,36 +1,22 @@
 {
-  "name": "frontend-v2",
+  "name": "frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "oxlint",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.101.2",
-    "axios": "^1.18.1",
-    "framer-motion": "^12.42.2",
-    "lucide-react": "^1.22.0",
+    "lucide-react": "^1.21.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "react-hook-form": "^7.80.0",
-    "react-router-dom": "^7.18.1",
-    "recharts": "^3.9.1",
-    "zod": "^4.4.3",
-    "zustand": "^5.0.14"
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.2",
-    "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^4.3.4",
-    "oxlint": "^1.71.0",
-    "tailwindcss": "^4.3.2",
-    "typescript": "~6.0.2",
-    "vite": "^5.4.15"
+    "@vitejs/plugin-react": "^5.1.1",
+    "vite": "^5.4.11"
   }
 }
