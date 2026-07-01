@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.realestate.twentyfourk.domain.audit.AuditLogService;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ public class LeadServiceImpl implements LeadService {
     private final LeadRepository leadRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final LeadRoutingService leadRoutingService;
+    private final AuditLogService auditLogService;
 
     @Override
     @Transactional
@@ -44,6 +46,15 @@ public class LeadServiceImpl implements LeadService {
 
         Lead savedLead = leadRepository.save(lead);
         
+        // Audit Log
+        auditLogService.logAction(
+                "CREATE",
+                "Lead",
+                savedLead.getId(),
+                null,
+                getLeadSummary(savedLead)
+        );
+
         // Publish LeadCreatedEvent for async WhatsApp Webhook triggering
         eventPublisher.publishEvent(new LeadCreatedEvent(savedLead));
         
@@ -72,19 +83,47 @@ public class LeadServiceImpl implements LeadService {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead not found with ID: " + id));
         
+        String oldSummary = getLeadSummary(lead);
+
         lead.setStatus(status);
         lead.setLeadScore(calculateLeadScore(lead));
         Lead updatedLead = leadRepository.save(lead);
+
+        // Audit Log
+        auditLogService.logAction(
+                "UPDATE",
+                "Lead",
+                updatedLead.getId(),
+                oldSummary,
+                getLeadSummary(updatedLead)
+        );
+
         return mapToResponse(updatedLead);
     }
 
     @Override
     @Transactional
     public void deleteLead(UUID id) {
-        if (!leadRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Lead not found with ID: " + id);
-        }
-        leadRepository.deleteById(id);
+        Lead lead = leadRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lead not found with ID: " + id));
+        
+        String oldSummary = getLeadSummary(lead);
+        leadRepository.delete(lead);
+
+        // Audit Log
+        auditLogService.logAction(
+                "DELETE",
+                "Lead",
+                id,
+                oldSummary,
+                null
+        );
+    }
+
+    private String getLeadSummary(Lead l) {
+        if (l == null) return null;
+        return String.format("Name: %s, Phone: %s, Location: %s, Status: %s, Score: %d, Active: %b",
+                l.getName(), l.getPhone(), l.getPreferredLocation(), l.getStatus(), l.getLeadScore(), l.isActiveFlag());
     }
 
     private int calculateLeadScore(Lead lead) {

@@ -39,10 +39,23 @@
   
   --text-light: #1A2536;
   --text-muted: #5A6A85;
-  --text-dark: #FFFFFF;
+  --text-dark: #0D1B2A;
   
   --border-gold: rgba(154, 123, 28, 0.3);
   --border-muted: rgba(0, 0, 0, 0.08);
+  
+  --gold-light: #9A7B1C;
+}
+
+.light-theme .form-input {
+  background-color: #FFFFFF !important;
+  color: #1A2536 !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+.light-theme .form-input option {
+  background-color: #FFFFFF !important;
+  color: #1A2536 !important;
 }
 
 body {

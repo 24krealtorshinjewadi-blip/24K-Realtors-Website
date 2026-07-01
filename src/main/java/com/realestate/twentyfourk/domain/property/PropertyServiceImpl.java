@@ -2,14 +2,17 @@ package com.realestate.twentyfourk.domain.property;
 
 import com.realestate.twentyfourk.domain.property.dto.PropertyRequest;
 import com.realestate.twentyfourk.domain.property.dto.PropertyResponse;
+import com.realestate.twentyfourk.domain.property.event.PropertyCreatedEvent;
 import com.realestate.twentyfourk.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.realestate.twentyfourk.domain.audit.AuditLogService;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -18,7 +21,8 @@ import java.util.UUID;
 public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
-    private final com.realestate.twentyfourk.domain.lead.LeadRepository leadRepository;
+    private final ApplicationEventPublisher eventPublisher;
+    private final AuditLogService auditLogService;
 
     @Override
     @Transactional
@@ -26,31 +30,17 @@ public class PropertyServiceImpl implements PropertyService {
         Property property = mapToEntity(request);
         Property savedProperty = propertyRepository.save(property);
 
-        // Matching Engine Check
-        try {
-            java.util.List<com.realestate.twentyfourk.domain.lead.Lead> leads = leadRepository.findAll();
-            for (com.realestate.twentyfourk.domain.lead.Lead lead : leads) {
-                if (lead.getPreferredLocation() == savedProperty.getLocation()) {
-                    boolean budgetMatches = true;
-                    if (lead.getBudgetMin() != null && savedProperty.getPrice().compareTo(lead.getBudgetMin()) < 0) {
-                        budgetMatches = false;
-                    }
-                    if (lead.getBudgetMax() != null && savedProperty.getPrice().compareTo(lead.getBudgetMax()) > 0) {
-                        budgetMatches = false;
-                    }
+        // Audit Log
+        auditLogService.logAction(
+                "CREATE",
+                "Property",
+                savedProperty.getId(),
+                null,
+                getPropertySummary(savedProperty)
+        );
 
-                    if (budgetMatches) {
-                        System.out.println(String.format(
-                            "[MATCHING ENGINE ALERT] Lead '%s' (Phone: %s, Email: %s) matches newly created property '%s' in %s Corridor! Property Price: %s",
-                            lead.getName(), lead.getPhone(), lead.getEmail(), savedProperty.getTitle(),
-                            savedProperty.getLocation(), savedProperty.getPrice()
-                        ));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("[MATCHING ENGINE ERROR] Could not perform matchmaking checklist check: " + e.getMessage());
-        }
+        // Publish event for asynchronous matchmaking check
+        eventPublisher.publishEvent(new PropertyCreatedEvent(savedProperty));
 
         return mapToResponse(savedProperty);
     }
@@ -89,18 +79,46 @@ public class PropertyServiceImpl implements PropertyService {
         Property existingProperty = propertyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Property not found with ID: " + id));
 
+        String oldSummary = getPropertySummary(existingProperty);
+
         updateEntityFields(existingProperty, request);
         Property updatedProperty = propertyRepository.save(existingProperty);
+
+        // Audit Log
+        auditLogService.logAction(
+                "UPDATE",
+                "Property",
+                updatedProperty.getId(),
+                oldSummary,
+                getPropertySummary(updatedProperty)
+        );
+
         return mapToResponse(updatedProperty);
     }
 
     @Override
     @Transactional
     public void deleteProperty(UUID id) {
-        if (!propertyRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Property not found with ID: " + id);
-        }
-        propertyRepository.deleteById(id);
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found with ID: " + id));
+        
+        String oldSummary = getPropertySummary(property);
+        propertyRepository.delete(property);
+
+        // Audit Log
+        auditLogService.logAction(
+                "DELETE",
+                "Property",
+                id,
+                oldSummary,
+                null
+        );
+    }
+
+    private String getPropertySummary(Property p) {
+        if (p == null) return null;
+        return String.format("Title: %s, Location: %s, Price: %s, Status: %s, Active: %b",
+                p.getTitle(), p.getLocation(), p.getPrice(), p.getStatus(), p.isActiveFlag());
     }
 
     @Override
