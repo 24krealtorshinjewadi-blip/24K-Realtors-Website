@@ -1,22 +1,45 @@
+const RAILWAY_API = 'https://twentyfourk-backend-production.up.railway.app/api/v1';
+
 const getApiBaseUrl = () => {
-  // Check if custom API URL is set in localStorage
-  const customUrl = localStorage.getItem('API_BASE_URL');
-  if (customUrl) {
-    return customUrl;
-  }
   const hostname = window.location.hostname;
+  const isProduction = !hostname.includes('localhost') && 
+                       !hostname.includes('127.0.0.1') &&
+                       !hostname.startsWith('192.168.') &&
+                       !hostname.startsWith('10.') &&
+                       !hostname.startsWith('172.');
+
+  // Auto-clear stale LAN/localhost saved API URLs when on production
+  const customUrl = localStorage.getItem('API_BASE_URL');
+  if (customUrl && isProduction) {
+    const isStale = customUrl.includes('192.168.') || 
+                    customUrl.includes('localhost') || 
+                    customUrl.includes('127.0.0.1') ||
+                    customUrl.includes('10.0.') ||
+                    customUrl.includes('172.');
+    if (isStale) {
+      console.info('[API] Clearing stale LAN API URL from localStorage. Using Railway production API.');
+      localStorage.removeItem('API_BASE_URL');
+    } else {
+      return customUrl; // Valid custom production URL override
+    }
+  } else if (customUrl && !isProduction) {
+    return customUrl; // Respect custom URL in local dev
+  }
+
+  // Local dev: use localhost Spring Boot
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://localhost:8080/api/v1';
   }
-  // If loaded via local IP (192.168.x.x), use that hostname
+  // Local network IP: derive from hostname
   if (hostname.startsWith('192.168.') || hostname.startsWith('10.') || hostname.startsWith('172.')) {
     return `http://${hostname}:8080/api/v1`;
   }
-  // Fallback for production hosting: point directly to Railway production API
-  return 'https://twentyfourk-backend-production.up.railway.app/api/v1';
+  // Production (Vercel): always use Railway cloud API
+  return RAILWAY_API;
 };
 
 const BASE_URL = getApiBaseUrl();
+
 
 // Helper to retrieve JWT token and construct authentication headers
 const getAuthHeaders = () => {
