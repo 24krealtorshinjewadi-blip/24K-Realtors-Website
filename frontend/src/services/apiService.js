@@ -580,7 +580,7 @@ const initialLeads = [
     preferredLocation: "BANER",
     status: "NEW",
     notes: "Enquired for 24K Opula. Prefers higher floor, Vaastu compliant.",
-    assignedAgentName: "Amit Verma",
+    assignedAgentName: "Jyoti Dhale",
     assignedAgentPhone: "+919876543201",
     leadScore: 85,
     createdDate: new Date().toISOString()
@@ -596,7 +596,7 @@ const initialLeads = [
     preferredLocation: "WAKAD",
     status: "IN_PROGRESS",
     notes: "Interested in 24K Altura. Needs details on home loan tie-ups.",
-    assignedAgentName: "Neha Kulkarni",
+    assignedAgentName: "Jyoti Jagtap",
     assignedAgentPhone: "+919876543202",
     leadScore: 65,
     createdDate: new Date().toISOString()
@@ -612,7 +612,7 @@ const initialLeads = [
     preferredLocation: "HINJEWADI",
     status: "VISITED",
     notes: "Requires commercial workspace for IT team. Visited Tech Center, likes office layout.",
-    assignedAgentName: "Rahul Patil",
+    assignedAgentName: "Yash Murkute",
     assignedAgentPhone: "+919876543203",
     leadScore: 90,
     createdDate: new Date().toISOString()
@@ -620,9 +620,51 @@ const initialLeads = [
 ];
 
 const initialAgents = [
-  { id: "agent-1", name: "Amit Verma", phone: "+919876543201", email: "amit.verma@24krealtors.com", active: true },
-  { id: "agent-2", name: "Neha Kulkarni", phone: "+919876543202", email: "neha.kulkarni@24krealtors.com", active: true },
-  { id: "agent-3", name: "Rahul Patil", phone: "+919876543203", email: "rahul.patil@24krealtors.com", active: true }
+  { id: "agent-1", name: "Jyoti Dhale", phone: "+919876543201", email: "jyoti.dhale@24krealtors.com", active: true },
+  { id: "agent-2", name: "Jyoti Jagtap", phone: "+919876543202", email: "jyoti.jagtap@24krealtors.com", active: true },
+  { id: "agent-3", name: "Yash Murkute", phone: "+919876543203", email: "yash.murkute@24krealtors.com", active: true },
+  { id: "agent-4", name: "Nilesh Rai", phone: "+919876543204", email: "nilesh.rai@24krealtors.com", active: true },
+  { id: "agent-5", name: "Atharva Kulkarni", phone: "+919876543205", email: "atharva.kulkarni@24krealtors.com", active: true },
+  { id: "agent-6", name: "Manish Kumar Rai", phone: "+919876543206", email: "manish.rai@24krealtors.com", active: true }
+];
+
+const initialTasks = [
+  {
+    id: "task-1",
+    lead: { id: "lead-1", name: "Rohan Sharma" },
+    agent: { id: "agent-1", name: "Jyoti Dhale" },
+    title: "Initial Discovery Call",
+    description: "Call Rohan to understand budget expectations and floor choice.",
+    taskType: "CALL",
+    dueDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2 days ago
+    status: "PENDING",
+    priority: "HIGH",
+    createdDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString()
+  },
+  {
+    id: "task-2",
+    lead: { id: "lead-2", name: "Priya Patel" },
+    agent: { id: "agent-2", name: "Jyoti Jagtap" },
+    title: "Home Loan Documents Follow-up",
+    description: "Collect salary slips and bank statements from Priya for SBI pre-approval.",
+    taskType: "EMAIL",
+    dueDate: new Date(Date.now() + 1000 * 60 * 60 * 4).toISOString(), // in 4 hours
+    status: "PENDING",
+    priority: "MEDIUM",
+    createdDate: new Date().toISOString()
+  },
+  {
+    id: "task-3",
+    lead: { id: "lead-3", name: "Vikram Malhotra" },
+    agent: { id: "agent-3", name: "Yash Murkute" },
+    title: "Showroom Site Visit",
+    description: "Accompany Vikram for physical walkthrough of Hinjewadi commercial space.",
+    taskType: "SITE_VISIT",
+    dueDate: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
+    status: "COMPLETED",
+    priority: "HIGH",
+    createdDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString()
+  }
 ];
 
 const getLocalStorageItem = (key, initial) => {
@@ -658,8 +700,14 @@ const LocalMockDb = {
   getAgents() {
     return getLocalStorageItem('mock_agents', initialAgents);
   },
+  getTasks() {
+    return getLocalStorageItem('mock_tasks', initialTasks);
+  },
+  saveTasks(tasks) {
+    saveLocalStorageItem('mock_tasks', tasks);
+  },
   getUsers() {
-    return getLocalStorageItem('mock_users', [{ username: 'admin', password: 'adminpassword' }]);
+    return getLocalStorageItem('mock_users', [{ username: 'admin24k', password: '24KRealtors@Pune2026!' }]);
   },
   saveUsers(users) {
     saveLocalStorageItem('mock_users', users);
@@ -1204,6 +1252,40 @@ export const apiService = {
     );
   },
 
+  async assignLead(leadId, agentId) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/leads/${leadId}/assign/${agentId}`, {
+          method: 'PATCH',
+          headers: {
+            ...getAuthHeaders()
+          }
+        });
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            throw new Error('Access denied. Please log in as an administrator.');
+          }
+          throw new Error(`Failed to assign agent: ${response.statusText}`);
+        }
+        return response.json();
+      },
+      () => {
+        const leads = LocalMockDb.getLeads();
+        const agents = LocalMockDb.getAgents();
+        const leadIdx = leads.findIndex(l => l.id === leadId);
+        const agent = agents.find(a => a.id === agentId);
+        if (leadIdx === -1) throw new Error('Lead not found in local database');
+        if (!agent) throw new Error('Agent not found in local database');
+        
+        leads[leadIdx].assignedAgentName = agent.name;
+        leads[leadIdx].assignedAgentPhone = agent.phone;
+        LocalMockDb.saveLeads(leads);
+        return leads[leadIdx];
+      }
+    );
+  },
+
+
   async getStats() {
     return runWithFallback(
       async () => {
@@ -1280,7 +1362,7 @@ export const apiService = {
             parametersJson: JSON.stringify([
               {type: "text", text: "Rohan Sharma"},
               {type: "text", text: "BANER"},
-              {type: "text", text: "Amit Verma"},
+              {type: "text", text: "Jyoti Dhale"},
               {type: "text", text: "+919876543201"}
             ]),
             status: "SIMULATING",
@@ -1290,6 +1372,150 @@ export const apiService = {
           }
         ]);
         return logs.filter(l => l.leadId === leadId);
+      }
+    );
+  },
+
+  async getTasks() {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/tasks`, {
+          headers: {
+            ...getAuthHeaders()
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch tasks: ${response.statusText}`);
+        }
+        return response.json();
+      },
+      () => {
+        return LocalMockDb.getTasks();
+      }
+    );
+  },
+
+  async createTask(taskData) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/tasks`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify(taskData)
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to create task: ${response.statusText}`);
+        }
+        return response.json();
+      },
+      () => {
+        const tasks = LocalMockDb.getTasks();
+        const leads = LocalMockDb.getLeads();
+        const agents = LocalMockDb.getAgents();
+
+        const lead = leads.find(l => l.id === taskData.leadId) || { id: taskData.leadId, name: 'Unknown Lead' };
+        const agent = agents.find(a => a.id === taskData.agentId) || { id: taskData.agentId, name: 'Unknown Agent' };
+
+        const newTask = {
+          id: `task-${Date.now()}`,
+          lead,
+          agent,
+          title: taskData.title,
+          description: taskData.description,
+          taskType: taskData.taskType,
+          dueDate: taskData.dueDate,
+          status: 'PENDING',
+          priority: taskData.priority,
+          createdDate: new Date().toISOString()
+        };
+
+        tasks.push(newTask);
+        LocalMockDb.saveTasks(tasks);
+        return newTask;
+      }
+    );
+  },
+
+  async updateTaskStatus(id, status) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/tasks/${id}/status?status=${status}`, {
+          method: 'PATCH',
+          headers: {
+            ...getAuthHeaders()
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to update task status: ${response.statusText}`);
+        }
+        return response.json();
+      },
+      () => {
+        const tasks = LocalMockDb.getTasks();
+        const idx = tasks.findIndex(t => t.id === id);
+        if (idx === -1) throw new Error('Task not found in local database');
+        
+        tasks[idx].status = status;
+        LocalMockDb.saveTasks(tasks);
+        return tasks[idx];
+      }
+    );
+  },
+
+  async deleteTask(id) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+          method: 'DELETE',
+          headers: {
+            ...getAuthHeaders()
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to delete task: ${response.statusText}`);
+        }
+        return true;
+      },
+      () => {
+        let tasks = LocalMockDb.getTasks();
+        tasks = tasks.filter(t => t.id !== id);
+        LocalMockDb.saveTasks(tasks);
+        return true;
+      }
+    );
+  },
+
+  async getTaskStats() {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/tasks/stats`, {
+          headers: {
+            ...getAuthHeaders()
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch task stats: ${response.statusText}`);
+        }
+        return response.json();
+      },
+      () => {
+        const tasks = LocalMockDb.getTasks();
+        const totalTasks = tasks.length;
+        const pendingTasks = tasks.filter(t => t.status === 'PENDING').length;
+        const completedTasks = tasks.filter(t => t.status === 'COMPLETED').length;
+        
+        const now = new Date();
+        const overdueTasks = tasks.filter(t => t.status === 'PENDING' && new Date(t.dueDate) < now).length;
+
+        return {
+          totalTasks,
+          pendingTasks,
+          completedTasks,
+          overdueTasks
+        };
       }
     );
   }

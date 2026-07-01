@@ -7,6 +7,7 @@ import com.realestate.twentyfourk.domain.lead.LeadRepository;
 import com.realestate.twentyfourk.domain.lead.LeadRequirementType;
 import com.realestate.twentyfourk.domain.lead.LeadStatus;
 import com.realestate.twentyfourk.domain.property.*;
+import com.realestate.twentyfourk.domain.task.FollowUpTaskRepository;
 import com.realestate.twentyfourk.domain.user.User;
 import com.realestate.twentyfourk.domain.user.UserRepository;
 import com.realestate.twentyfourk.domain.user.UserRole;
@@ -31,6 +32,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final LeadRepository leadRepository;
     private final PasswordEncoder passwordEncoder;
     private final AgentRepository agentRepository;
+    private final FollowUpTaskRepository taskRepository;
 
     @Value("${admin.username}")
     private String adminUsername;
@@ -86,28 +88,51 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedAgents() {
-        if (agentRepository.count() == 0) {
-            log.info("Seeding relationship managers (agents)...");
+        if (agentRepository.count() < 6) {
+            log.info("Cleaning up old agents, leads and tasks to seed real employees...");
+            taskRepository.deleteAll();
+            leadRepository.deleteAll();
+            agentRepository.deleteAll();
+
             Agent agent1 = Agent.builder()
-                    .name("Amit Verma")
+                    .name("Jyoti Dhale")
                     .phone("+919876543201")
-                    .email("amit.verma@24krealtors.com")
+                    .email("jyoti.dhale@24krealtors.com")
                     .active(true)
                     .build();
             Agent agent2 = Agent.builder()
-                    .name("Neha Kulkarni")
+                    .name("Jyoti Jagtap")
                     .phone("+919876543202")
-                    .email("neha.kulkarni@24krealtors.com")
+                    .email("jyoti.jagtap@24krealtors.com")
                     .active(true)
                     .build();
             Agent agent3 = Agent.builder()
-                    .name("Rahul Patil")
+                    .name("Yash Murkute")
                     .phone("+919876543203")
-                    .email("rahul.patil@24krealtors.com")
+                    .email("yash.murkute@24krealtors.com")
                     .active(true)
                     .build();
-            agentRepository.saveAll(List.of(agent1, agent2, agent3));
-            log.info("Seeded 3 active relationship managers.");
+            Agent agent4 = Agent.builder()
+                    .name("Nilesh Rai")
+                    .phone("+919876543204")
+                    .email("nilesh.rai@24krealtors.com")
+                    .active(true)
+                    .build();
+            Agent agent5 = Agent.builder()
+                    .name("Atharva Kulkarni")
+                    .phone("+919876543205")
+                    .email("atharva.kulkarni@24krealtors.com")
+                    .active(true)
+                    .build();
+            Agent agent6 = Agent.builder()
+                    .name("Manish Kumar Rai")
+                    .phone("+919876543206")
+                    .email("manish.rai@24krealtors.com")
+                    .active(true)
+                    .build();
+
+            agentRepository.saveAll(List.of(agent1, agent2, agent3, agent4, agent5, agent6));
+            log.info("Seeded 6 active relationship managers.");
         }
     }
 
@@ -608,6 +633,9 @@ public class DatabaseSeeder implements CommandLineRunner {
             Agent a1 = !agents.isEmpty() ? agents.get(0) : null;
             Agent a2 = agents.size() > 1 ? agents.get(1) : null;
             Agent a3 = agents.size() > 2 ? agents.get(2) : null;
+            Agent a4 = agents.size() > 3 ? agents.get(3) : null;
+            Agent a5 = agents.size() > 4 ? agents.get(4) : null;
+            Agent a6 = agents.size() > 5 ? agents.get(5) : null;
 
             Lead lead1 = Lead.builder()
                     .name("Rohan Sharma")
@@ -648,8 +676,107 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .assignedAgent(a3)
                     .build();
 
-            leadRepository.saveAll(List.of(lead1, lead2, lead3));
-            log.info("Seeded 3 leads successfully.");
+            Lead lead4 = Lead.builder()
+                    .name("Anjali Desai")
+                    .phone("+919823456789")
+                    .email("anjali.desai@yahoo.com")
+                    .requirementType(LeadRequirementType.RENT)
+                    .budgetMin(new BigDecimal("40000"))
+                    .budgetMax(new BigDecimal("55000"))
+                    .preferredLocation(PrimeCorridor.BANER)
+                    .status(LeadStatus.CONTACTED)
+                    .notes("Looking for fully furnished 3 BHK on rent close to Balewadi High Street.")
+                    .assignedAgent(a4)
+                    .build();
+
+            Lead lead5 = Lead.builder()
+                    .name("Sanjay Joshi")
+                    .phone("+919890123456")
+                    .email("sanjay.joshi@gmail.com")
+                    .requirementType(LeadRequirementType.BUY)
+                    .budgetMin(new BigDecimal("21000000"))
+                    .budgetMax(new BigDecimal("26000000"))
+                    .preferredLocation(PrimeCorridor.TATHAWADE)
+                    .status(LeadStatus.CONVERTED)
+                    .notes("Interested in premium golf view villa at Lodha Belmondo. Booking confirmed.")
+                    .assignedAgent(a5)
+                    .build();
+
+            Lead lead6 = Lead.builder()
+                    .name("Meera Nair")
+                    .phone("+919765432109")
+                    .email("meera.nair@hotmail.com")
+                    .requirementType(LeadRequirementType.BUY)
+                    .budgetMin(new BigDecimal("9500000"))
+                    .budgetMax(new BigDecimal("11000000"))
+                    .preferredLocation(PrimeCorridor.WAKAD)
+                    .status(LeadStatus.NEW)
+                    .notes("Enquired for 24K Glitterati. Prefers mid-rise floor, early possession.")
+                    .assignedAgent(a6)
+                    .build();
+
+            List<Lead> savedLeads = leadRepository.saveAll(List.of(lead1, lead2, lead3, lead4, lead5, lead6));
+            log.info("Seeded 6 leads successfully.");
+
+            // Seed tasks associated with these leads
+            seedTasks(savedLeads, agents);
         }
+    }
+
+    private void seedTasks(List<Lead> leads, List<Agent> agents) {
+        log.info("Seeding follow-up tasks...");
+        
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+
+        // Task 1: Overdue Task for Jyoti Dhale (lead 1)
+        com.realestate.twentyfourk.domain.task.FollowUpTask t1 = com.realestate.twentyfourk.domain.task.FollowUpTask.builder()
+                .lead(leads.get(0))
+                .agent(agents.get(0))
+                .title("Initial Discovery Call")
+                .description("Call Rohan to understand budget expectations and floor choice.")
+                .taskType(com.realestate.twentyfourk.domain.task.TaskType.CALL)
+                .dueDate(now.minusDays(2))
+                .status(com.realestate.twentyfourk.domain.task.TaskStatus.PENDING)
+                .priority(com.realestate.twentyfourk.domain.task.TaskPriority.HIGH)
+                .build();
+
+        // Task 2: Task due today for Jyoti Jagtap (lead 2)
+        com.realestate.twentyfourk.domain.task.FollowUpTask t2 = com.realestate.twentyfourk.domain.task.FollowUpTask.builder()
+                .lead(leads.get(1))
+                .agent(agents.get(1))
+                .title("Home Loan Documents Follow-up")
+                .description("Collect salary slips and bank statements from Priya for SBI pre-approval.")
+                .taskType(com.realestate.twentyfourk.domain.task.TaskType.EMAIL)
+                .dueDate(now.plusHours(4))
+                .status(com.realestate.twentyfourk.domain.task.TaskStatus.PENDING)
+                .priority(com.realestate.twentyfourk.domain.task.TaskPriority.MEDIUM)
+                .build();
+
+        // Task 3: Task completed for Yash Murkute (lead 3)
+        com.realestate.twentyfourk.domain.task.FollowUpTask t3 = com.realestate.twentyfourk.domain.task.FollowUpTask.builder()
+                .lead(leads.get(2))
+                .agent(agents.get(2))
+                .title("Showroom Site Visit")
+                .description("Accompany Vikram for physical walkthrough of Hinjewadi commercial space.")
+                .taskType(com.realestate.twentyfourk.domain.task.TaskType.SITE_VISIT)
+                .dueDate(now.minusDays(1))
+                .status(com.realestate.twentyfourk.domain.task.TaskStatus.COMPLETED)
+                .priority(com.realestate.twentyfourk.domain.task.TaskPriority.HIGH)
+                .build();
+
+        // Task 4: Future Task for Nilesh Rai (lead 4)
+        com.realestate.twentyfourk.domain.task.FollowUpTask t4 = com.realestate.twentyfourk.domain.task.FollowUpTask.builder()
+                .lead(leads.get(3))
+                .agent(agents.get(3))
+                .title("Arrange 3D Virtual Meeting")
+                .description("Host Zoom call to show Anjali 3D layout rendering for Baner rental options.")
+                .taskType(com.realestate.twentyfourk.domain.task.TaskType.MEETING)
+                .dueDate(now.plusDays(3))
+                .status(com.realestate.twentyfourk.domain.task.TaskStatus.PENDING)
+                .priority(com.realestate.twentyfourk.domain.task.TaskPriority.LOW)
+                .build();
+
+        taskRepository.saveAll(List.of(t1, t2, t3, t4));
+        log.info("Seeded 4 sample tasks.");
     }
 }

@@ -1,6 +1,7 @@
 package com.realestate.twentyfourk.domain.lead;
 
 import com.realestate.twentyfourk.domain.agent.Agent;
+import com.realestate.twentyfourk.domain.agent.AgentRepository;
 import com.realestate.twentyfourk.domain.agent.service.LeadRoutingService;
 import com.realestate.twentyfourk.domain.lead.dto.LeadRequest;
 import com.realestate.twentyfourk.domain.lead.dto.LeadResponse;
@@ -27,6 +28,7 @@ public class LeadServiceImpl implements LeadService {
     private final ApplicationEventPublisher eventPublisher;
     private final LeadRoutingService leadRoutingService;
     private final AuditLogService auditLogService;
+    private final AgentRepository agentRepository;
 
     @Override
     @Transactional
@@ -184,6 +186,29 @@ public class LeadServiceImpl implements LeadService {
                 .status(request.status())
                 .notes(request.notes())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public LeadResponse assignAgent(UUID id, UUID agentId) {
+        Lead lead = leadRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lead not found with ID: " + id));
+        Agent agent = agentRepository.findById(agentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agent not found with ID: " + agentId));
+
+        String oldAgentName = lead.getAssignedAgent() != null ? lead.getAssignedAgent().getName() : "Unassigned";
+        lead.setAssignedAgent(agent);
+        Lead savedLead = leadRepository.save(lead);
+
+        auditLogService.logAction(
+                "ASSIGN_AGENT",
+                "Lead",
+                savedLead.getId(),
+                oldAgentName,
+                agent.getName()
+        );
+
+        return mapToResponse(savedLead);
     }
 
     private LeadResponse mapToResponse(Lead lead) {

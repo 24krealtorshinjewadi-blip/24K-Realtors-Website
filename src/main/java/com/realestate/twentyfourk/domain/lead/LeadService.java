@@ -13,5 +13,6 @@ public interface LeadService {
     LeadResponse getLeadById(UUID id);
     Page<LeadResponse> getAllLeads(LeadStatus status, PrimeCorridor preferredLocation, Pageable pageable);
     LeadResponse updateLeadStatus(UUID id, LeadStatus status);
+    LeadResponse assignAgent(UUID id, UUID agentId);
     void deleteLead(UUID id);
 }

@@ -60,6 +60,15 @@ public class LeadController {
         return ResponseEntity.ok(updated);
     }
 
+    @PatchMapping("/{id}/assign/{agentId}")
+    public ResponseEntity<LeadResponse> assignAgent(
+            @PathVariable UUID id,
+            @PathVariable UUID agentId
+    ) {
+        LeadResponse updated = leadService.assignAgent(id, agentId);
+        return ResponseEntity.ok(updated);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLead(@PathVariable UUID id) {
         leadService.deleteLead(id);
