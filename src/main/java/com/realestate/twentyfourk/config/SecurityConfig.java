@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -42,21 +44,21 @@ public class SecurityConfig {
                 
                 // Public Property search lookups
                 .requestMatchers(HttpMethod.GET, "/api/v1/properties/**").permitAll()
-                // Administrative Property updates require ADMIN/CEO/CRM_ADMIN/SALES_MANAGER
-                .requestMatchers(HttpMethod.POST, "/api/v1/properties/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN", "SALES_MANAGER")
-                .requestMatchers(HttpMethod.PUT, "/api/v1/properties/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN", "SALES_MANAGER")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/properties/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN", "SALES_MANAGER")
+                // Administrative Property updates require SUPER_ADMIN/ADMIN/SALES_MANAGER
+                .requestMatchers(HttpMethod.POST, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
 
                 // Public Customer lead capture hook
                 .requestMatchers(HttpMethod.POST, "/api/v1/leads").permitAll()
-                // Administrative Leads access requires CRM roles
-                .requestMatchers("/api/v1/leads/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN", "SALES_MANAGER", "RELATIONSHIP_MANAGER")
+                // Administrative Leads access requires sales roles
+                .requestMatchers("/api/v1/leads/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER", "RELATIONSHIP_MANAGER", "TELECALLER")
 
                 // Agents management requires admin-level access
-                .requestMatchers("/api/v1/agents/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN")
+                .requestMatchers("/api/v1/agents/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
                 // Audit logs lookup requires admin-level access
-                .requestMatchers("/api/v1/audit-logs/**").hasAnyRole("ADMIN", "CEO", "CRM_ADMIN")
+                .requestMatchers("/api/v1/audit-logs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
                 // All other requests require authentication
                 .anyRequest().authenticated()

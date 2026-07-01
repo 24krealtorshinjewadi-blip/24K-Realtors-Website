@@ -43,47 +43,99 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
         log.info("Running platform seeder checks...");
-        seedAdminUser();
+        seedSystemUsers();
         seedAgents();
         seedProperties();
         seedLeads();
     }
 
-    private void seedAdminUser() {
-        // Upsert: always ensure admin exists with current env-var credentials
+    private void seedSystemUsers() {
+        // 1. Super Admin
         var existingAdmin = userRepository.findByUsername(adminUsername);
         if (existingAdmin.isEmpty()) {
-            // Check if any admin exists under a different username (credential rotation)
-            var anyAdmin = userRepository.findAll().stream()
-                    .filter(u -> u.getRole() == UserRole.ADMIN)
-                    .findFirst();
-            if (anyAdmin.isPresent()) {
-                // Update existing admin to match new env-var credentials
-                User admin = anyAdmin.get();
-                log.info("Updating admin credentials from '{}' to '{}'...", admin.getUsername(), adminUsername);
-                admin.setUsername(adminUsername);
-                admin.setPassword(passwordEncoder.encode(adminPassword));
-                userRepository.save(admin);
-                log.info("Admin credentials updated successfully (username: '{}')", adminUsername);
-            } else {
-                log.info("Seeding default administrator credentials...");
-                User admin = User.builder()
-                        .username(adminUsername)
-                        .password(passwordEncoder.encode(adminPassword))
-                        .role(UserRole.ADMIN)
-                        .build();
-                userRepository.save(admin);
-                log.info("Admin user created successfully (username: '{}')", adminUsername);
-            }
+            User admin = User.builder()
+                    .username(adminUsername)
+                    .password(passwordEncoder.encode(adminPassword))
+                    .role(UserRole.SUPER_ADMIN)
+                    .fullName("Manish Kumar Rai")
+                    .email("manish.rai@24krealtors.com")
+                    .phone("+919876543206")
+                    .designation("CEO & Principal Partner")
+                    .department("Management")
+                    .dateOfJoining(java.time.LocalDate.of(2026, 1, 1))
+                    .salaryBase(new BigDecimal("250000.00"))
+                    .build();
+            userRepository.save(admin);
+            log.info("Super Admin user created successfully (username: '{}')", adminUsername);
         } else {
-            // Admin with this username exists — ensure password matches env var
             User admin = existingAdmin.get();
+            admin.setRole(UserRole.SUPER_ADMIN);
             if (!passwordEncoder.matches(adminPassword, admin.getPassword())) {
-                log.info("Admin password mismatch detected — rotating password for '{}'...", adminUsername);
+                log.info("Super Admin password mismatch detected — rotating password for '{}'...", adminUsername);
                 admin.setPassword(passwordEncoder.encode(adminPassword));
                 userRepository.save(admin);
-                log.info("Admin password rotated successfully.");
+                log.info("Super Admin password rotated successfully.");
             }
+        }
+
+        // 2. HR Manager
+        if (userRepository.findByUsername("hr24k").isEmpty()) {
+            User hr = User.builder()
+                    .username("hr24k")
+                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
+                    .role(UserRole.HR)
+                    .fullName("Jyoti Dhale")
+                    .email("jyoti.dhale@24krealtors.com")
+                    .phone("+919876543201")
+                    .designation("HR & Operations Head")
+                    .department("Human Resources")
+                    .dateOfJoining(java.time.LocalDate.of(2026, 2, 1))
+                    .salaryBase(new BigDecimal("85000.00"))
+                    .build();
+            userRepository.save(hr);
+            log.info("HR user created successfully");
+        }
+
+        // 3. Sales Manager
+        if (userRepository.findByUsername("salesmanager24k").isEmpty()) {
+            User sm = User.builder()
+                    .username("salesmanager24k")
+                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
+                    .role(UserRole.SALES_MANAGER)
+                    .fullName("Nilesh Rai")
+                    .email("nilesh.rai@24krealtors.com")
+                    .phone("+919876543204")
+                    .designation("Sales & Revenue Manager")
+                    .department("Sales")
+                    .dateOfJoining(java.time.LocalDate.of(2026, 1, 15))
+                    .salaryBase(new BigDecimal("120000.00"))
+                    .build();
+            userRepository.save(sm);
+            log.info("Sales Manager user created successfully");
+        }
+
+        // 4. Relationship Managers / Advisory RMs
+        seedRelationshipManagerUser("jyoti.jagtap", "Jyoti Jagtap", "+919876543202", "jyoti.jagtap@24krealtors.com", "Senior RM", "60000.00");
+        seedRelationshipManagerUser("yash.murkute", "Yash Murkute", "+919876543203", "yash.murkute@24krealtors.com", "Associate RM", "45000.00");
+        seedRelationshipManagerUser("atharva.kulkarni", "Atharva Kulkarni", "+919876543205", "atharva.kulkarni@24krealtors.com", "Junior RM", "40000.00");
+    }
+
+    private void seedRelationshipManagerUser(String username, String fullName, String phone, String email, String designation, String salary) {
+        if (userRepository.findByUsername(username).isEmpty()) {
+            User rm = User.builder()
+                    .username(username)
+                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
+                    .role(UserRole.RELATIONSHIP_MANAGER)
+                    .fullName(fullName)
+                    .email(email)
+                    .phone(phone)
+                    .designation(designation)
+                    .department("Advisory Sales")
+                    .dateOfJoining(java.time.LocalDate.of(2026, 3, 1))
+                    .salaryBase(new BigDecimal(salary))
+                    .build();
+            userRepository.save(rm);
+            log.info("RM user seeded: {}", username);
         }
     }
 

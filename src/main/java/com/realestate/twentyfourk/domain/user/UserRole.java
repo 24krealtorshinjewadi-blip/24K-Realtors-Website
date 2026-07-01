@@ -1,15 +1,14 @@
 package com.realestate.twentyfourk.domain.user;
 
 public enum UserRole {
-    CEO,
+    SUPER_ADMIN,
     ADMIN,
-    CRM_ADMIN,
+    HR,
+    ACCOUNTS,
     SALES_MANAGER,
     RELATIONSHIP_MANAGER,
-    MARKETING_MANAGER,
-    HR_MANAGER,
-    BUILDER,
-    BROKER,
-    OWNER,
-    CUSTOMER
+    TELECALLER,
+    MARKETING,
+    EMPLOYEE,
+    GUEST
 }
