@@ -7,6 +7,8 @@ import { Overview } from './pages/Overview';
 import { Employees } from './pages/Employees';
 import { Attendance } from './pages/Attendance';
 import { Leaves } from './pages/Leaves';
+import { Leads } from './pages/Leads';
+import { Payroll } from './pages/Payroll';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { DashboardLayout } from './layouts/DashboardLayout';
 
@@ -37,6 +39,8 @@ const App: React.FC = () => {
               <Route path="/dashboard/employees" element={<Employees />} />
               <Route path="/dashboard/attendance" element={<Attendance />} />
               <Route path="/dashboard/leaves" element={<Leaves />} />
+              <Route path="/dashboard/leads" element={<Leads />} />
+              <Route path="/dashboard/payroll" element={<Payroll />} />
               {/* Other modules will be routed here */}
               <Route path="/dashboard/*" element={<Navigate to="/dashboard" replace />} />
             </Route>
