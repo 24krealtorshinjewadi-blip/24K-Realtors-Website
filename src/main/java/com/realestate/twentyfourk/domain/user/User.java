@@ -46,6 +46,45 @@ public class User implements UserDetails {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
+    @Column(name = "full_name", length = 100)
+    private String fullName;
+
+    @Column(name = "email", length = 100)
+    private String email;
+
+    @Column(name = "phone", length = 20)
+    private String phone;
+
+    @Column(name = "designation", length = 100)
+    private String designation;
+
+    @Column(name = "department", length = 100)
+    private String department;
+
+    @Column(name = "date_of_joining")
+    private java.time.LocalDate dateOfJoining;
+
+    @Column(name = "date_of_relieving")
+    private java.time.LocalDate dateOfRelieving;
+
+    @Column(name = "salary_base")
+    private java.math.BigDecimal salaryBase;
+
+    @Column(name = "pan_number", length = 20)
+    private String panNumber;
+
+    @Column(name = "aadhar_number", length = 20)
+    private String aadharNumber;
+
+    @Column(name = "bank_name", length = 100)
+    private String bankName;
+
+    @Column(name = "bank_account_number", length = 50)
+    private String bankAccountNumber;
+
+    @Column(name = "bank_ifsc_code", length = 20)
+    private String bankIfscCode;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

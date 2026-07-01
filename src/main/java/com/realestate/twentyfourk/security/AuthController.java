@@ -41,7 +41,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Password validation failed: Password must be at least 8 characters long, contain at least one uppercase letter and one digit.");
         }
 
-        UserRole role = request.role() != null ? request.role() : UserRole.CRM_ADMIN;
+        UserRole role = request.role() != null ? request.role() : UserRole.GUEST;
 
         User user = User.builder()
                 .username(request.username())
