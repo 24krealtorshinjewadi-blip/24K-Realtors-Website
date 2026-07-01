@@ -1,3 +1,16 @@
+// Auto-clear stale mock database from localStorage if it contains old demo agent names (e.g. "Amit Verma")
+try {
+  const mockAgentsStr = localStorage.getItem('mock_agents');
+  if (mockAgentsStr && mockAgentsStr.includes('Amit Verma')) {
+    console.info('[Cache Bust] Stale mock database detected. Resetting localStorage keys...');
+    localStorage.removeItem('mock_agents');
+    localStorage.removeItem('mock_leads');
+    localStorage.removeItem('mock_tasks');
+  }
+} catch (e) {
+  console.error('[Cache Bust] Failed to inspect/clear localStorage', e);
+}
+
 const RAILWAY_API = 'https://twentyfourk-backend-production.up.railway.app/api/v1';
 
 const getApiBaseUrl = () => {

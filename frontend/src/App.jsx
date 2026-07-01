@@ -17,14 +17,6 @@ export default function App() {
           <Dashboard onViewChange={setCurrentView} />
         )}
       </main>
-
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <p>© 2026 24K Realtors Pune. All rights reserved.</p>
-          <p className="footer-tagline">Premium residential and commercial properties in Hinjewadi, Wakad, Baner, Balewadi, and Tathawade.</p>
-        </div>
-      </footer>
     </div>
   );
 }
