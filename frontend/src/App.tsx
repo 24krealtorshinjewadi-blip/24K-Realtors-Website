@@ -27,7 +27,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           {/* Public Website */}
-          <Route path="/" element={<Portal />} />
+          <Route path="/" element={<Portal onViewChange={() => {}} />} />
           
           {/* Operator Login */}
           <Route path="/login" element={<Login />} />
