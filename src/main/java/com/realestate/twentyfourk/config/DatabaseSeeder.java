@@ -48,15 +48,40 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedAdminUser() {
-        if (userRepository.count() == 0) {
-            log.info("Seeding default administrator credentials...");
-            User admin = User.builder()
-                    .username(adminUsername)
-                    .password(passwordEncoder.encode(adminPassword))
-                    .role(UserRole.ADMIN)
-                    .build();
-            userRepository.save(admin);
-            log.info("Admin user created successfully (username: '{}')", adminUsername);
+        // Upsert: always ensure admin exists with current env-var credentials
+        var existingAdmin = userRepository.findByUsername(adminUsername);
+        if (existingAdmin.isEmpty()) {
+            // Check if any admin exists under a different username (credential rotation)
+            var anyAdmin = userRepository.findAll().stream()
+                    .filter(u -> u.getRole() == UserRole.ADMIN)
+                    .findFirst();
+            if (anyAdmin.isPresent()) {
+                // Update existing admin to match new env-var credentials
+                User admin = anyAdmin.get();
+                log.info("Updating admin credentials from '{}' to '{}'...", admin.getUsername(), adminUsername);
+                admin.setUsername(adminUsername);
+                admin.setPassword(passwordEncoder.encode(adminPassword));
+                userRepository.save(admin);
+                log.info("Admin credentials updated successfully (username: '{}')", adminUsername);
+            } else {
+                log.info("Seeding default administrator credentials...");
+                User admin = User.builder()
+                        .username(adminUsername)
+                        .password(passwordEncoder.encode(adminPassword))
+                        .role(UserRole.ADMIN)
+                        .build();
+                userRepository.save(admin);
+                log.info("Admin user created successfully (username: '{}')", adminUsername);
+            }
+        } else {
+            // Admin with this username exists — ensure password matches env var
+            User admin = existingAdmin.get();
+            if (!passwordEncoder.matches(adminPassword, admin.getPassword())) {
+                log.info("Admin password mismatch detected — rotating password for '{}'...", adminUsername);
+                admin.setPassword(passwordEncoder.encode(adminPassword));
+                userRepository.save(admin);
+                log.info("Admin password rotated successfully.");
+            }
         }
     }
 
