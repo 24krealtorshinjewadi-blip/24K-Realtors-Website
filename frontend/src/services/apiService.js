@@ -1531,5 +1531,245 @@ export const apiService = {
         };
       }
     );
+  },
+
+  // --- EMPLOYEES ENDPOINTS ---
+  async getEmployees() {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/employees`, { headers: getAuthHeaders() });
+        return res.ok ? res.json() : [];
+      },
+      () => LocalMockDb.getAgents()
+    );
+  },
+
+  async createEmployee(data) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/employees`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(data)
+        });
+        return res.json();
+      },
+      () => {
+        const agents = LocalMockDb.getAgents();
+        const newAg = { id: 'agent-' + (agents.length + 1), ...data, active: true };
+        agents.push(newAg);
+        localStorage.setItem('mock_agents', JSON.stringify(agents));
+        return newAg;
+      }
+    );
+  },
+
+  // --- ATTENDANCE ENDPOINTS ---
+  async getAttendanceLogs() {
+    const res = await fetch(`${BASE_URL}/attendance/my-logs`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async checkIn(lat, lon) {
+    const res = await fetch(`${BASE_URL}/attendance/check-in`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify({ latitude: lat, longitude: lon })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async checkOut() {
+    const res = await fetch(`${BASE_URL}/attendance/check-out`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async startBreak() {
+    const res = await fetch(`${BASE_URL}/attendance/break/start`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
+  async endBreak() {
+    const res = await fetch(`${BASE_URL}/attendance/break/end`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
+  // --- LEAVES ENDPOINTS ---
+  async getLeaveBalance() {
+    const res = await fetch(`${BASE_URL}/leaves/balance`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : { casualLeaves: 0, sickLeaves: 0, earnedLeaves: 0 };
+  },
+
+  async getMyLeaveRequests() {
+    const res = await fetch(`${BASE_URL}/leaves/my-requests`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async getPendingLeaveRequests() {
+    const res = await fetch(`${BASE_URL}/leaves/pending`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async applyLeave(data) {
+    const res = await fetch(`${BASE_URL}/leaves/apply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async approveLeave(id) {
+    const res = await fetch(`${BASE_URL}/leaves/${id}/approve`, {
+      method: 'PATCH',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
+  async rejectLeave(id) {
+    const res = await fetch(`${BASE_URL}/leaves/${id}/reject`, {
+      method: 'PATCH',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
+  // --- CRM & SALES ENDPOINTS ---
+  async getLeadTimeline(leadId) {
+    const res = await fetch(`${BASE_URL}/leads/${leadId}/timeline`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async logLeadActivity(leadId, data) {
+    const res = await fetch(`${BASE_URL}/leads/${leadId}/timeline`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+    return res.json();
+  },
+
+  async scheduleSiteVisit(data) {
+    const res = await fetch(`${BASE_URL}/site-visits`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async getMySiteVisits() {
+    const res = await fetch(`${BASE_URL}/site-visits/my-visits`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async getAllSiteVisits() {
+    const res = await fetch(`${BASE_URL}/site-visits/all`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async createBooking(data) {
+    const res = await fetch(`${BASE_URL}/bookings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async confirmBooking(id) {
+    const res = await fetch(`${BASE_URL}/bookings/${id}/confirm`, {
+      method: 'PATCH',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
+  async getMyBookings() {
+    const res = await fetch(`${BASE_URL}/bookings/my-bookings`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async getAllBookings() {
+    const res = await fetch(`${BASE_URL}/bookings/all`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  // --- PAYROLL & ERP ENDPOINTS ---
+  async generatePayslip(data) {
+    const res = await fetch(`${BASE_URL}/payroll/payslips/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async payPayslip(id) {
+    const res = await fetch(`${BASE_URL}/payroll/payslips/${id}/pay`, {
+      method: 'PATCH',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
+  async getMyPayslips() {
+    const res = await fetch(`${BASE_URL}/payroll/payslips/my-payslips`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async getAllPayslips() {
+    const res = await fetch(`${BASE_URL}/payroll/payslips/all`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async submitExpense(data) {
+    const res = await fetch(`${BASE_URL}/payroll/expenses/submit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async processExpense(id, status) {
+    const res = await fetch(`${BASE_URL}/payroll/expenses/${id}/process`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify({ status })
+    });
+    return res.json();
+  },
+
+  async getMyExpenses() {
+    const res = await fetch(`${BASE_URL}/payroll/expenses/my-expenses`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async getPendingExpenses() {
+    const res = await fetch(`${BASE_URL}/payroll/expenses/pending`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
+  },
+
+  async getAllExpenses() {
+    const res = await fetch(`${BASE_URL}/payroll/expenses/all`, { headers: getAuthHeaders() });
+    return res.ok ? res.json() : [];
   }
 };

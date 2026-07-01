@@ -12,11 +12,11 @@ import './Portal.css';
 // Import Modular Components
 import PortalNavbar from '../layouts/PortalNavbar';
 import PortalFooter from '../layouts/PortalFooter';
-import PropertyCard from '../components/PropertyCard';
-import CompareOverlay from '../components/CompareOverlay';
-import ReraDrawer from '../components/ReraDrawer';
-import ChauffeurModal from '../components/ChauffeurModal';
-import ChatWidget from '../components/ChatWidget';
+import PropertyCard from './PropertyCard';
+import CompareOverlay from './CompareOverlay';
+import ReraDrawer from './ReraDrawer';
+import ChauffeurModal from './ChauffeurModal';
+import ChatWidget from './ChatWidget';
 
 const reviewsData = [
   {
@@ -46,7 +46,7 @@ const reviewsData = [
   }
 ];
 
-export function Portal({ onViewChange }) {
+export default function Portal({ onViewChange }) {
   const [isHnwiMode, setIsHnwiMode] = useState(false);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
