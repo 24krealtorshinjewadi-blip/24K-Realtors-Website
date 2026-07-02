@@ -928,8 +928,30 @@ const LocalMockDb = {
   }
 };
 
+const isMockId = (id) => {
+  if (!id) return false;
+  return typeof id === 'string' && (
+    id.startsWith('blog-') || 
+    id.startsWith('lead-') || 
+    id.startsWith('agent-') || 
+    id.startsWith('soc-') || 
+    id.startsWith('builder-') || 
+    id.startsWith('task-') || 
+    id.startsWith('emp-')
+  );
+};
+
+const isMockToken = () => {
+  const token = localStorage.getItem('token');
+  return token && token.startsWith('mock-');
+};
+
 // Generic runner that automatically falls back to client database on network errors
-const runWithFallback = async (apiFn, fallbackFn) => {
+const runWithFallback = async (apiFn, fallbackFn, bypassMockCheck = false) => {
+  if (isMockToken() && !bypassMockCheck) {
+    console.info('[OFFLINE SYNC] Active session is mock. Bypassing backend API.');
+    return fallbackFn();
+  }
   try {
     const result = await apiFn();
     localStorage.setItem('OFFLINE_MODE_ACTIVE', 'false');
@@ -950,6 +972,7 @@ const runWithFallback = async (apiFn, fallbackFn) => {
     throw err;
   }
 };
+
 
 // --- EXPORTED SERVICE ENDPOINTS ---
 export const apiService = {
@@ -1007,7 +1030,8 @@ export const apiService = {
         localStorage.setItem('role', 'CRM_ADMIN');
         localStorage.setItem('adminUser', username);
         return { token, refreshToken, username, role: 'CRM_ADMIN' };
-      }
+      },
+      true
     );
   },
 
@@ -1035,7 +1059,8 @@ export const apiService = {
         users.push({ username, password });
         LocalMockDb.saveUsers(users);
         return { status: 'created' };
-      }
+      },
+      true
     );
   },
 
@@ -1137,6 +1162,7 @@ export const apiService = {
   async getPropertyById(id) {
     return runWithFallback(
       async () => {
+        if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const response = await fetch(`${BASE_URL}/properties/${id}`);
         if (!response.ok) {
           throw new Error(`Property lookup failed: ${response.statusText}`);
@@ -1203,6 +1229,7 @@ export const apiService = {
   async updateProperty(id, propertyData) {
     return runWithFallback(
       async () => {
+        if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const response = await fetch(`${BASE_URL}/properties/${id}`, {
           method: 'PUT',
           headers: {
@@ -1240,6 +1267,7 @@ export const apiService = {
   async deleteProperty(id) {
     return runWithFallback(
       async () => {
+        if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const response = await fetch(`${BASE_URL}/properties/${id}`, {
           method: 'DELETE',
           headers: {
@@ -1414,6 +1442,7 @@ export const apiService = {
   async updateLeadStatus(id, status) {
     return runWithFallback(
       async () => {
+        if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const response = await fetch(`${BASE_URL}/leads/${id}/status?status=${status}`, {
           method: 'PATCH',
           headers: {
@@ -1443,6 +1472,7 @@ export const apiService = {
   async deleteLead(id) {
     return runWithFallback(
       async () => {
+        if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const response = await fetch(`${BASE_URL}/leads/${id}`, {
           method: 'DELETE',
           headers: {
@@ -1469,6 +1499,7 @@ export const apiService = {
   async assignLead(leadId, agentId) {
     return runWithFallback(
       async () => {
+        if (isMockId(leadId) || isMockId(agentId)) throw new TypeError('Mock ID bypass');
         const response = await fetch(`${BASE_URL}/leads/${leadId}/assign/${agentId}`, {
           method: 'PATCH',
           headers: {
@@ -2034,6 +2065,7 @@ export const apiService = {
   async updateSociety(id, data) {
     return runWithFallback(
       async () => {
+        if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const res = await fetch(`${BASE_URL}/societies/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
@@ -2057,6 +2089,7 @@ export const apiService = {
   async deleteSociety(id) {
     return runWithFallback(
       async () => {
+        if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const res = await fetch(`${BASE_URL}/societies/${id}`, {
           method: 'DELETE',
           headers: getAuthHeaders()
@@ -2218,6 +2251,7 @@ export const apiService = {
   async updateBlog(id, data) {
     return runWithFallback(
       async () => {
+        if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const res = await fetch(`${BASE_URL}/blogs/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
@@ -2241,6 +2275,7 @@ export const apiService = {
   async deleteBlog(id) {
     return runWithFallback(
       async () => {
+        if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const res = await fetch(`${BASE_URL}/blogs/${id}`, {
           method: 'DELETE',
           headers: getAuthHeaders()
