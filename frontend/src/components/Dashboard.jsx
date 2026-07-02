@@ -648,39 +648,39 @@ export default function Dashboard({ onViewChange }) {
         </div>
         
         <nav className="sidebar-nav">
-          <button className={activeTab === 'leads' ? 'active' : ''} onClick={() => { setActiveTab('leads'); handleClosePropForm(); }}>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'leads' ? 'active' : ''}`} onClick={() => { setActiveTab('leads'); handleClosePropForm(); }}>
             <Users size={18} />
             <span>Lead Pipelines</span>
           </button>
-          <button className={activeTab === 'properties' ? 'active' : ''} onClick={() => { setActiveTab('properties'); handleClosePropForm(); }}>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'properties' ? 'active' : ''}`} onClick={() => { setActiveTab('properties'); handleClosePropForm(); }}>
             <Home size={18} />
             <span>Properties Desk</span>
           </button>
-          <button className={activeTab === 'societies' ? 'active' : ''} onClick={() => { setActiveTab('societies'); handleClosePropForm(); }}>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'societies' ? 'active' : ''}`} onClick={() => { setActiveTab('societies'); handleClosePropForm(); }}>
             <Building size={18} />
             <span>Societies & Devs</span>
           </button>
-          <button className={activeTab === 'team' ? 'active' : ''} onClick={() => { setActiveTab('team'); handleClosePropForm(); }}>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'team' ? 'active' : ''}`} onClick={() => { setActiveTab('team'); handleClosePropForm(); }}>
             <TrendingUp size={18} />
             <span>Advisory RMs</span>
           </button>
-          <button className={activeTab === 'tasks' ? 'active' : ''} onClick={() => { setActiveTab('tasks'); handleClosePropForm(); }}>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'tasks' ? 'active' : ''}`} onClick={() => { setActiveTab('tasks'); handleClosePropForm(); }}>
             <Calendar size={18} />
             <span>Follow-up Tasks</span>
           </button>
-          <button className={activeTab === 'employees' ? 'active' : ''} onClick={() => { setActiveTab('employees'); handleClosePropForm(); }}>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'employees' ? 'active' : ''}`} onClick={() => { setActiveTab('employees'); handleClosePropForm(); }}>
             <Users size={18} />
             <span>Employees (HR)</span>
           </button>
-          <button className={activeTab === 'attendance' ? 'active' : ''} onClick={() => { setActiveTab('attendance'); handleClosePropForm(); }}>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'attendance' ? 'active' : ''}`} onClick={() => { setActiveTab('attendance'); handleClosePropForm(); }}>
             <Clock size={18} />
             <span>Attendance</span>
           </button>
-          <button className={activeTab === 'leaves' ? 'active' : ''} onClick={() => { setActiveTab('leaves'); handleClosePropForm(); }}>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'leaves' ? 'active' : ''}`} onClick={() => { setActiveTab('leaves'); handleClosePropForm(); }}>
             <Calendar size={18} />
             <span>Leaves Portal</span>
           </button>
-          <button className={activeTab === 'payroll' ? 'active' : ''} onClick={() => { setActiveTab('payroll'); handleClosePropForm(); }}>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'payroll' ? 'active' : ''}`} onClick={() => { setActiveTab('payroll'); handleClosePropForm(); }}>
             <FileText size={18} />
             <span>Payroll & ERP</span>
           </button>
@@ -807,12 +807,22 @@ export default function Dashboard({ onViewChange }) {
                             </select>
                           </td>
                           <td data-label="Score">
-                            <span className="lead-score-pill" style={{ 
-                              background: lead.leadScore >= 70 ? 'rgba(46,196,182,0.1)' : 'rgba(212,175,55,0.1)',
-                              color: lead.leadScore >= 70 ? '#2ec4b6' : 'var(--gold-primary)'
-                            }}>
-                              {lead.leadScore || 50}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <svg width="24" height="24" viewBox="0 0 30 30" style={{ transform: 'rotate(-90deg)', display: 'inline-block', verticalAlign: 'middle' }}>
+                                <circle cx="15" cy="15" r="12" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="2.5" />
+                                <circle 
+                                  cx="15" cy="15" r="12" 
+                                  fill="none" 
+                                  stroke={lead.leadScore >= 70 ? '#2ec4b6' : 'var(--gold-primary)'} 
+                                  strokeWidth="2.5" 
+                                  strokeDasharray={2 * Math.PI * 12}
+                                  strokeDashoffset={(2 * Math.PI * 12) * (1 - (lead.leadScore || 50) / 100)}
+                                />
+                              </svg>
+                              <strong style={{ fontSize: '0.85rem', color: lead.leadScore >= 70 ? '#2ec4b6' : 'var(--gold-primary)' }}>
+                                {lead.leadScore || 50}%
+                              </strong>
+                            </div>
                           </td>
                           <td data-label="Pipeline Status">
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

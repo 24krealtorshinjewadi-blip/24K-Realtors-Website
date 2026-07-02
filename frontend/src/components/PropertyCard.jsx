@@ -18,8 +18,16 @@ export default function PropertyCard({
   const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
   const waLink = `https://wa.me/919673000053?text=Hi%2024K%20Realtors,%20I%20am%20interested%20in%20"${property.title}"%20located%20at%20${property.address}%20for%20₹${property.price}`;
 
+  const handleCardMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.currentTarget.style.setProperty('--mouse-x', `${x}px`);
+    e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
+  };
+
   return (
-    <div className="property-card premium-luxury-card">
+    <div className="property-card premium-luxury-card radial-glow-card" onMouseMove={handleCardMouseMove}>
       <div className="property-image-container premium-hover-tint" style={{ position: 'relative', overflow: 'hidden' }}>
         <img 
           src={property.imageUrl || defaultImg} 
@@ -46,6 +54,8 @@ export default function PropertyCard({
           {property.verifiedListing && <span className="p-badge p-badge-verified">✓ Verified</span>}
           {property.exclusiveDeal && <span className="p-badge p-badge-exclusive">★ Exclusive</span>}
           {property.noBrokerage && <span className="p-badge p-badge-nobroker">No Brokerage</span>}
+          {property.threeDTourUrl && <span className="p-badge p-badge-tour-glow">📐 3D Tour</span>}
+          {property.videoUrl && <span className="p-badge p-badge-video-glow">📹 Drone Tour</span>}
         </div>
         
         <button 

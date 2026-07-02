@@ -129,6 +129,44 @@ export default function Portal({ onViewChange }) {
   const [mediaConsoleTab, setMediaConsoleTab] = useState('3d');
 
   const [isChatWidgetOpen, setIsChatWidgetOpen] = useState(false);
+
+  const getAmenityIcon = (name) => {
+    const lowercase = name.toLowerCase();
+    if (lowercase.includes('club') || lowercase.includes('hall') || lowercase.includes('lounge')) return <Users size={12} color="var(--gold-primary)" style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }} />;
+    if (lowercase.includes('gym') || lowercase.includes('fitness') || lowercase.includes('health') || lowercase.includes('sports')) return <Activity size={12} color="var(--gold-primary)" style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }} />;
+    if (lowercase.includes('pool') || lowercase.includes('swim') || lowercase.includes('water')) return <Activity size={12} color="var(--gold-primary)" style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }} />;
+    if (lowercase.includes('security') || lowercase.includes('cctv') || lowercase.includes('guard')) return <ShieldCheck size={12} color="var(--gold-primary)" style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }} />;
+    if (lowercase.includes('garden') || lowercase.includes('park') || lowercase.includes('lawn') || lowercase.includes('green') || lowercase.includes('play')) return <Compass size={12} color="var(--gold-primary)" style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }} />;
+    if (lowercase.includes('gas') || lowercase.includes('pipe')) return <TrendingUp size={12} color="var(--gold-primary)" style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }} />;
+    return <Sparkles size={12} color="var(--gold-primary)" style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }} />;
+  };
+
+  const renderScoreCircle = (label, score, maxScore = 10, color = 'var(--gold-primary)') => {
+    const radius = 22;
+    const circumference = 2 * Math.PI * radius;
+    const value = parseFloat(score || 8.0);
+    const strokeDashoffset = circumference - (value / maxScore) * circumference;
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-muted)', textAlign: 'center', flex: 1, minWidth: '100px' }}>
+        <svg width="50" height="50" viewBox="0 0 50 50">
+          <circle cx="25" cy="25" r={radius} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="3" />
+          <circle 
+            cx="25" cy="25" r={radius} 
+            fill="none" 
+            stroke={color} 
+            strokeWidth="3" 
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            className="progress-ring-circle"
+          />
+          <text x="25" y="29" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">
+            {score}
+          </text>
+        </svg>
+        <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</span>
+      </div>
+    );
+  };
   const [chatInput, setChatInput] = useState('');
   const [chatMessages, setChatMessages] = useState([
     { sender: 'bot', text: 'Welcome to 24K Realtors. How can we assist you with Wakad or Baner properties today?' }
@@ -160,6 +198,46 @@ export default function Portal({ onViewChange }) {
     loanTermYears: 20,
     monthlyEMI: 0
   });
+
+  const [stats, setStats] = useState({ inventory: 0, verified: 0, families: 0 });
+
+  useEffect(() => {
+    let invInterval = setInterval(() => {
+      setStats(prev => {
+        if (prev.inventory >= 800) {
+          clearInterval(invInterval);
+          return prev;
+        }
+        return { ...prev, inventory: Math.min(800, prev.inventory + 40) };
+      });
+    }, 50);
+
+    let verInterval = setInterval(() => {
+      setStats(prev => {
+        if (prev.verified >= 100) {
+          clearInterval(verInterval);
+          return prev;
+        }
+        return { ...prev, verified: Math.min(100, prev.verified + 5) };
+      });
+    }, 50);
+
+    let famInterval = setInterval(() => {
+      setStats(prev => {
+        if (prev.families >= 150) {
+          clearInterval(famInterval);
+          return prev;
+        }
+        return { ...prev, families: Math.min(150, prev.families + 10) };
+      });
+    }, 50);
+
+    return () => {
+      clearInterval(invInterval);
+      clearInterval(verInterval);
+      clearInterval(famInterval);
+    };
+  }, []);
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -283,6 +361,16 @@ export default function Portal({ onViewChange }) {
 
   const handleSellerSubmit = async (e) => {
     e.preventDefault();
+    const phonePattern = /^(?:\+91|0)?[6789]\d{9}$/;
+    if (!phonePattern.test(sellerForm.phone)) {
+      showNotification('⚠️ Invalid Phone: Enter a valid 10-digit Indian mobile number.');
+      return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(sellerForm.email)) {
+      showNotification('⚠️ Invalid Email: Enter a valid email address.');
+      return;
+    }
     setSubmitLoading(true);
     try {
       const notes = `[SELLER EXCLUSIVE REGISTRY] Asset: "${sellerForm.propertyTitle}", Corridor: ${sellerForm.location}, Expected Valuation: ₹${sellerForm.expectedPrice}. Owner description: ${sellerForm.description}`;
@@ -415,6 +503,16 @@ export default function Portal({ onViewChange }) {
 
   const handleLeadSubmit = async (e) => {
     e.preventDefault();
+    const phonePattern = /^(?:\+91|0)?[6789]\d{9}$/;
+    if (!phonePattern.test(leadForm.phone)) {
+      showNotification('⚠️ Invalid Phone: Enter a valid 10-digit Indian mobile number.');
+      return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(leadForm.email)) {
+      showNotification('⚠️ Invalid Email: Enter a valid email address.');
+      return;
+    }
     setSubmitLoading(true);
     try {
       await apiService.submitLead(leadForm);
@@ -429,14 +527,19 @@ export default function Portal({ onViewChange }) {
 
   const handleChauffeurSubmit = async (e) => {
     e.preventDefault();
+    const phonePattern = /^(?:\+91|0)?[6789]\d{9}$/;
+    if (!phonePattern.test(chauffeurForm.phone)) {
+      showNotification('⚠️ Invalid Phone: Enter a valid 10-digit Indian mobile number.');
+      return;
+    }
     setChauffeurSubmitting(true);
     try {
-      const notesMsg = `VIP SITE VISIT SCHEDULER: Scheduled viewing for "${selectedChauffeurProp.title}" (ID: ${selectedChauffeurProp.id}). Date: ${chauffeurForm.visitDate}, Time slot: ${chauffeurForm.timeSlot}. Executive pickup service: ${chauffeurForm.includeExecutiveChauffeur ? 'REQUIRED' : 'NOT REQUIRED'}. Pickup address: "${chauffeurForm.pickupAddress}"`;
+      const notesMsg = `VIP SITE VISIT SCHEDULER: Scheduled viewing for "${selectedChauffeurProp.title}" (ID: ${selectedChauffeurProp.id}). Date: ${chauffeurForm.visitDate}, Time slot: ${chauffeurForm.timeSlot}. Executive pickup service: ${chauffeurForm.includeExecutiveChauffeur ? 'REQUIRED' : 'NOT REQUIRED'}. Pickup address: "${chauffeurForm.pickupAddress || 'Direct site visit'}". Fleet Selected: ${chauffeurForm.luxuryCarModel || 'MAYBACH'}`;
       
       await apiService.submitLead({
         name: chauffeurForm.name,
         phone: chauffeurForm.phone,
-        email: chauffeurForm.email,
+        email: chauffeurForm.email || 'site.visit@24krealtors.com',
         requirementType: 'BUY',
         budgetMin: selectedChauffeurProp.price ? selectedChauffeurProp.price.toString() : '10000000',
         budgetMax: selectedChauffeurProp.price ? (Number(selectedChauffeurProp.price) * 1.1).toString() : '20000000',
@@ -452,7 +555,8 @@ export default function Portal({ onViewChange }) {
         visitDate: '',
         timeSlot: 'MORNING',
         pickupAddress: '',
-        includeExecutiveChauffeur: true
+        includeExecutiveChauffeur: true,
+        luxuryCarModel: 'MAYBACH'
       });
       showNotification('VIP Site Visit Booked! Chauffeur confirmation sent on WhatsApp.');
     } catch (err) {
@@ -464,6 +568,11 @@ export default function Portal({ onViewChange }) {
 
   const handleVipSubmit = async (e) => {
     e.preventDefault();
+    const phonePattern = /^(?:\+91|0)?[6789]\d{9}$/;
+    if (!phonePattern.test(vipForm.phone)) {
+      showNotification('⚠️ Invalid Phone: Enter a valid 10-digit Indian mobile number.');
+      return;
+    }
     setVipSubmitting(true);
     try {
       const notesMsg = "VIP 60-Second Callback Request. Urgently contact customer for property guidance.";
@@ -698,12 +807,14 @@ export default function Portal({ onViewChange }) {
       </section>
 
       {/* MahaRERA Authorized Trust Banner */}
-      <div className="maharera-trust-banner">
-        <div className="maharera-content">
-          <ShieldCheck size={32} className="trust-shield-icon" />
-          <div>
-            <h4>MahaRERA Registered Advisory Portal</h4>
-            <p>Authorized Broker License Registration Number: <strong>A52100028461</strong>. 24K Realtors strictly complies with Maharashtra Real Estate Regulatory Authority guidelines. All pricing, layout structures, and inventories are verified directly with builder RERA registries.</p>
+      <div className="maharera-trust-banner" style={{ border: '2px solid rgba(212,175,55,0.4)', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', borderRadius: '12px', padding: '24px 30px', margin: '30px auto', maxWidth: '1410px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+        <div className="maharera-content" style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+          <div style={{ background: 'rgba(212,175,55,0.1)', padding: '15px', borderRadius: '50%', border: '1px solid var(--gold-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ShieldCheck size={36} color="var(--gold-primary)" className="trust-shield-icon" style={{ filter: 'drop-shadow(0 0 8px var(--gold-primary))' }} />
+          </div>
+          <div style={{ flex: 1, minWidth: '280px' }}>
+            <h4 style={{ margin: '0 0 6px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)', color: 'var(--text-light)', letterSpacing: '0.04em' }}>⚜️ MahaRERA Registered Authorized Portfolio Advisory</h4>
+            <p style={{ margin: 0, fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Authorized Broker License Registration Number: <strong style={{ color: 'var(--gold-primary)' }}>A52100028461</strong>. 24K Realtors strictly complies with Maharashtra Real Estate Regulatory Authority guidelines. All pricing, layout structures, and inventories are verified directly with builder RERA registries prior to listing onboarding.</p>
           </div>
         </div>
       </div>
@@ -711,21 +822,21 @@ export default function Portal({ onViewChange }) {
       {/* Corporate Statistics Showcase */}
       <section className="stats-showcase">
         <div className="stats-grid">
-          <div className="stat-item">
-            <h4>₹800+ Cr</h4>
-            <p>Curated Inventory</p>
+          <div className="stat-item" style={{ transform: 'none', transition: 'all 0.3s ease' }}>
+            <h4 style={{ fontSize: '2.2rem', color: 'var(--gold-primary)', textShadow: '0 0 10px rgba(212,175,55,0.15)' }}>₹{stats.inventory}+ Cr</h4>
+            <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Curated Inventory</p>
           </div>
           <div className="stat-item">
-            <h4>100%</h4>
-            <p>Verified Availability</p>
+            <h4 style={{ fontSize: '2.2rem', color: 'var(--gold-primary)', textShadow: '0 0 10px rgba(212,175,55,0.15)' }}>{stats.verified}%</h4>
+            <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Verified Availability</p>
           </div>
           <div className="stat-item">
-            <h4>150+</h4>
-            <p>Pune Families Guided</p>
+            <h4 style={{ fontSize: '2.2rem', color: 'var(--gold-primary)', textShadow: '0 0 10px rgba(212,175,55,0.15)' }}>{stats.families}+</h4>
+            <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Pune Families Guided</p>
           </div>
           <div className="stat-item">
-            <h4>0%</h4>
-            <p>Developer Brokerage</p>
+            <h4 style={{ fontSize: '2.2rem', color: '#2ec4b6', textShadow: '0 0 10px rgba(46,196,182,0.15)' }}>0%</h4>
+            <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Developer Brokerage</p>
           </div>
         </div>
       </section>
@@ -928,89 +1039,25 @@ export default function Portal({ onViewChange }) {
                   <button onClick={handleResetFilters} className="btn-gold" style={{ marginTop: '10px' }}>Reset Filters</button>
                 </div>
               ) : (
-                <>
-                  <div className="properties-grid">
-                    {properties.map((property) => {
-                      const inCompare = selectedForCompare.some(p => p.id === property.id);
-                      return (
-                        <div 
-                          key={property.id} 
-                          className="property-card"
-                          onClick={() => handlePropertyClick(property)}
-                        >
-                          <div 
-                            className="property-card-image"
-                            style={{ backgroundImage: `url('${property.imageUrl || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80"}')` }}
-                          >
-                            <div className="card-top-badges">
-                              <span className="location-badge">{property.location}</span>
-                              <span className="type-badge">{property.propertyType}</span>
-                            </div>
-
-                            <div className="card-bottom-badges">
-                              {property.verifiedListing && <span className="premium-badge-v"><ShieldCheck size={11} /> Verified</span>}
-                              {property.exclusiveDeal && <span className="premium-badge-e"><Award size={11} /> Exclusive</span>}
-                            </div>
-                          </div>
-
-                          <div className="property-card-content">
-                            <h3 className="property-title">{property.title}</h3>
-                            <p className="property-address">{property.address}</p>
-
-                            <div className="property-specs">
-                              <span>🛏️ {property.bedrooms} BHK</span>
-                              <span>🛁 {property.bathrooms} Baths</span>
-                              <span>📐 {property.areaSquareFeet} sqft</span>
-                            </div>
-
-                            <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', margin: '10px 0' }}>
-                              <span style={{ fontSize: '0.68rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '2px 6px', borderRadius: '4px' }}>
-                                {property.furnishingStatus?.replace('_', ' ')}
-                              </span>
-                              {property.gasPipeline && (
-                                <span style={{ fontSize: '0.68rem', background: 'rgba(46,196,182,0.1)', color: '#2ec4b6', padding: '2px 6px', borderRadius: '4px' }}>
-                                  Gas Pipeline
-                                </span>
-                              )}
-                            </div>
-
-                            {property.society && (
-                              <div style={{ fontSize: '0.75rem', color: 'var(--gold-primary)', margin: '4px 0 8px 0', fontWeight: 600 }}>
-                                🏢 Society: {property.society.name}
-                              </div>
-                            )}
-
-                            <div className="property-price-row">
-                              <span className="price-tag">{formatPrice(property.price, property.transactionType)}</span>
-                              <div style={{ display: 'flex', gap: '8px' }}>
-                                <button 
-                                  onClick={(e) => { e.stopPropagation(); handleToggleCompare(property); }}
-                                  className={`btn-icon-action ${inCompare ? 'active' : ''}`}
-                                  title="Add to Compare List"
-                                >
-                                  ⚖️
-                                </button>
-                                <button 
-                                  onClick={(e) => { e.stopPropagation(); handleOpen3DTour(property); }}
-                                  className="btn-icon-action"
-                                  title="Launch 3D Virtual Tour"
-                                >
-                                  👓
-                                </button>
-                                <button 
-                                  onClick={(e) => { e.stopPropagation(); handleOpenWalkthrough(property); }}
-                                  className="btn-icon-action"
-                                  title="Watch Video Tour"
-                                >
-                                  🎥
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                <div className="properties-grid">
+                  {properties.map((property) => (
+                    <PropertyCard 
+                      key={property.id} 
+                      property={property} 
+                      isHnwiMode={isHnwiMode} 
+                      isCompared={selectedForCompare.some(p => p.id === property.id)} 
+                      formatPrice={formatPrice} 
+                      onToggleCompare={handleToggleCompare} 
+                      onOpenRera={handleOpenReraDrawer} 
+                      onOpenWalkthrough={handleOpenWalkthrough} 
+                      onOpen3DTour={handleOpen3DTour} 
+                      onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
+                      getLocationScorecard={getLocationScorecard}
+                      getLandmarks={getLandmarks} 
+                    />
+                  ))}
+                </div>
+              )}
 
                   {totalPages > 1 && (
                     <div className="pagination" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '30px' }}>
@@ -1035,8 +1082,6 @@ export default function Portal({ onViewChange }) {
                       </button>
                     </div>
                   )}
-                </>
-              )}
 
               {/* Grayscale Closed Deals FOMO Section */}
               <section className="closed-deals-section" style={{ marginTop: '50px', borderTop: '1px solid var(--border-muted)', paddingTop: '40px' }}>
@@ -1055,10 +1100,15 @@ export default function Portal({ onViewChange }) {
                 ) : (
                   <div className="closed-deals-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
                     {closedProperties.map(p => (
-                      <div key={p.id} className="closed-deal-card" style={{ filter: 'grayscale(100%)', opacity: 0.6, border: '1px solid var(--border-muted)', borderRadius: '8px', overflow: 'hidden', background: 'rgba(255,255,255,0.02)' }}>
+                      <div key={p.id} className="closed-deal-card" style={{ filter: 'grayscale(100%)', opacity: 0.65, border: '1px solid var(--border-muted)', borderRadius: '8px', overflow: 'hidden', background: 'rgba(255,255,255,0.02)', position: 'relative' }}>
                         <div style={{ height: '140px', backgroundImage: `url('${p.imageUrl || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80"}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ background: 'rgba(0,0,0,0.7)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <Lock size={14} color="var(--gold-primary)" />
+                            </div>
+                          </div>
                           <span style={{ position: 'absolute', bottom: '10px', left: '10px', background: '#000', color: '#fff', fontSize: '0.65rem', padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>
-                            {p.status}
+                            Acquired under private mandate
                           </span>
                         </div>
                         <div style={{ padding: '12px' }}>
@@ -1126,8 +1176,8 @@ export default function Portal({ onViewChange }) {
                       <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', marginBottom: '8px' }}>Exclusive Club Amenities</span>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                         {selectedSocietyDetail.amenities.split(',').map(am => (
-                          <span key={am} style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.04)', color: 'var(--text-light)', padding: '4px 10px', borderRadius: '4px', border: '1px solid var(--border-muted)' }}>
-                            ✨ {am.trim()}
+                          <span key={am} style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.04)', color: 'var(--text-light)', padding: '4px 10px', borderRadius: '4px', border: '1px solid var(--border-muted)', display: 'flex', alignItems: 'center' }}>
+                            {getAmenityIcon(am)} {am.trim()}
                           </span>
                         ))}
                       </div>
@@ -1352,6 +1402,31 @@ export default function Portal({ onViewChange }) {
                     </div>
                   </div>
 
+                  {/* Timeline of Delivered Projects */}
+                  <div style={{ marginBottom: '30px' }}>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.05em' }}>⚜️ Construction Milestones & Delivered Portfolios</span>
+                    <div style={{ display: 'flex', gap: '20px', overflowX: 'auto', padding: '15px 0', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+                      <div style={{ minWidth: '160px', flex: 1, background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-muted)', borderRadius: '8px', padding: '12px', position: 'relative' }}>
+                        <div style={{ width: '8px', height: '8px', background: 'var(--gold-primary)', borderRadius: '50%', position: 'absolute', top: '-4px', left: '15px', boxShadow: '0 0 8px var(--gold-primary)' }} />
+                        <span style={{ fontSize: '0.9rem', color: 'var(--gold-primary)', fontWeight: 'bold', display: 'block' }}>2018 - 2020</span>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-light)', fontWeight: 600, display: 'block', margin: '4px 0' }}>Launch Epoch</span>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0 }}>Delivered 1200+ units in Wakad and Baner Corridors.</p>
+                      </div>
+                      <div style={{ minWidth: '160px', flex: 1, background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-muted)', borderRadius: '8px', padding: '12px', position: 'relative' }}>
+                        <div style={{ width: '8px', height: '8px', background: 'var(--gold-primary)', borderRadius: '50%', position: 'absolute', top: '-4px', left: '15px', boxShadow: '0 0 8px var(--gold-primary)' }} />
+                        <span style={{ fontSize: '0.9rem', color: 'var(--gold-primary)', fontWeight: 'bold', display: 'block' }}>2021 - 2023</span>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-light)', fontWeight: 600, display: 'block', margin: '4px 0' }}>IT Hub Integration</span>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0 }}>Completed Phase 1 & 2 corporate housing in Hinjewadi.</p>
+                      </div>
+                      <div style={{ minWidth: '160px', flex: 1, background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-muted)', borderRadius: '8px', padding: '12px', position: 'relative' }}>
+                        <div style={{ width: '8px', height: '8px', background: '#2ec4b6', borderRadius: '50%', position: 'absolute', top: '-4px', left: '15px', boxShadow: '0 0 8px #2ec4b6' }} />
+                        <span style={{ fontSize: '0.9rem', color: '#2ec4b6', fontWeight: 'bold', display: 'block' }}>2024 - 2026</span>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-light)', fontWeight: 600, display: 'block', margin: '4px 0' }}>Smart Townships</span>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0 }}>Mahalunge and Balewadi high-rise luxury units possession.</p>
+                      </div>
+                    </div>
+                  </div>
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                       Active projects developed: <strong>{societies.filter(s => s.developer === selectedBuilderDetail.name || s.builder?.name === selectedBuilderDetail.name).length} Gated Communities</strong>
@@ -1502,20 +1577,27 @@ export default function Portal({ onViewChange }) {
                     {selectedLocalityDetail.overview}
                   </p>
 
+                  <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '25px' }}>
+                    {renderScoreCircle("Commute Index", selectedLocalityDetail.commuteIndex || '8.8', 10, '#2ec4b6')}
+                    {renderScoreCircle("Civic Infra", selectedLocalityDetail.civicInfraScore || '9.0', 10, 'var(--gold-primary)')}
+                    {renderScoreCircle("Safety Rating", selectedLocalityDetail.safetyScore || '9.2', 10, '#2ec4b6')}
+                    {renderScoreCircle("CAGR Growth", selectedLocalityDetail.cagrAppreciation || '8.5', 10, 'var(--gold-primary)')}
+                  </div>
+
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '25px' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
                       <strong style={{ color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '6px' }}>🚗 Connectivity</strong>
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.connectivityInfo}</span>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
                       <strong style={{ color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '6px' }}>🎓 Schools</strong>
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.schools}</span>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
                       <strong style={{ color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '6px' }}>🏥 Healthcare</strong>
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.hospitals}</span>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
                       <strong style={{ color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '6px' }}>📈 Investment</strong>
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.investmentAnalysis} (Demand: {selectedLocalityDetail.rentalDemand})</span>
                     </div>
@@ -1659,25 +1741,29 @@ export default function Portal({ onViewChange }) {
               Submit your mobile number. Our regional tech-corridor specialist will dial your line within 60 seconds.
             </p>
             <form onSubmit={handleVipSubmit}>
-              <div className="form-group">
+              <div className="form-group-floating">
                 <input 
                   type="text" 
-                  className="form-input" 
+                  id="callbackName"
+                  className="form-input-floating" 
                   required 
-                  placeholder="Your Name" 
+                  placeholder=" " 
                   value={vipForm.name} 
                   onChange={e => setVipForm({ ...vipForm, name: e.target.value })} 
                 />
+                <label htmlFor="callbackName" className="form-label-floating">Your Name</label>
               </div>
-              <div className="form-group">
+              <div className="form-group-floating">
                 <input 
                   type="tel" 
-                  className="form-input" 
+                  id="callbackPhone"
+                  className="form-input-floating" 
                   required 
-                  placeholder="WhatsApp Mobile (+91)" 
+                  placeholder=" " 
                   value={vipForm.phone} 
                   onChange={e => setVipForm({ ...vipForm, phone: e.target.value })} 
                 />
+                <label htmlFor="callbackPhone" className="form-label-floating">WhatsApp Mobile (+91)</label>
               </div>
               <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center' }} disabled={vipSubmitting}>
                 {vipSubmitting ? <Loader className="animate-spin" size={16} /> : 'Connect Priority Advisor'}

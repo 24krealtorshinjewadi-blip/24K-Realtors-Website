@@ -16,10 +16,23 @@ export default function PortalNavbar({
   onSectionChange
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
-      <nav className="luxury-navbar scrolled">
+      <nav className={`luxury-navbar ${scrolled ? 'scrolled-active' : ''}`}>
         <div className="nav-container">
           <a href="#" onClick={(e) => { e.preventDefault(); onSectionChange && onSectionChange('listings'); }} className="nav-logo">
             <span className="logo-number">24K REALTORS</span>

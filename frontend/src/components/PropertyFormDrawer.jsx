@@ -12,6 +12,9 @@ export default function PropertyFormDrawer({
   onParseText,
   societies
 }) {
+  const [societySearch, setSocietySearch] = React.useState('');
+  const [dropdownOpen, setDropdownOpen] = React.useState(false);
+
   if (!isOpen) return null;
 
   return (
@@ -130,14 +133,72 @@ export default function PropertyFormDrawer({
         </div>
 
         <div className="form-row">
-          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+          <div className="form-group" style={{ gridColumn: '1 / -1', position: 'relative' }}>
             <label className="form-label">Linked Parent Society</label>
-            <select name="societyId" value={propertyForm.societyId || ''} onChange={e => setPropertyForm({...propertyForm, societyId: e.target.value})} className="form-input" style={{ width: '100%' }}>
-              <option value="">None (Resale Standalone Property)</option>
-              {societies && societies.map(soc => (
-                <option key={soc.id} value={soc.id}>{soc.name} ({soc.location})</option>
-              ))}
-            </select>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ flex: 1, position: 'relative' }}>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="🔍 Type to search society..." 
+                  value={societySearch || (societies && societies.find(s => s.id === propertyForm.societyId) ? societies.find(s => s.id === propertyForm.societyId).name : '')}
+                  onChange={e => {
+                    setSocietySearch(e.target.value);
+                    setDropdownOpen(true);
+                  }}
+                  onFocus={() => setDropdownOpen(true)}
+                />
+                {dropdownOpen && (
+                  <div className="searchable-select-popup">
+                    <div 
+                      className="searchable-select-option" 
+                      onClick={() => {
+                        setPropertyForm({ ...propertyForm, societyId: '' });
+                        setSocietySearch('');
+                        setDropdownOpen(false);
+                      }}
+                      style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', fontWeight: 'bold', color: 'var(--gold-primary)' }}
+                    >
+                      None (Resale Standalone Property)
+                    </div>
+                    {societies && societies.filter(soc => 
+                      soc.name.toLowerCase().includes(societySearch.toLowerCase()) || 
+                      soc.location.toLowerCase().includes(societySearch.toLowerCase())
+                    ).map(soc => (
+                      <div 
+                        key={soc.id} 
+                        className="searchable-select-option" 
+                        onClick={() => {
+                          setPropertyForm({ ...propertyForm, societyId: soc.id });
+                          setSocietySearch(soc.name);
+                          setDropdownOpen(false);
+                        }}
+                      >
+                        🏢 {soc.name} ({soc.location})
+                      </div>
+                    ))}
+                    {societies && societies.filter(soc => 
+                      soc.name.toLowerCase().includes(societySearch.toLowerCase()) || 
+                      soc.location.toLowerCase().includes(societySearch.toLowerCase())
+                    ).length === 0 && (
+                      <div style={{ padding: '10px', fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+                        No matching societies found.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              {dropdownOpen && (
+                <button 
+                  type="button" 
+                  className="btn-outline" 
+                  onClick={() => setDropdownOpen(false)}
+                  style={{ padding: '0 12px', height: '42px' }}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
         </div>
 

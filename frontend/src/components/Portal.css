@@ -3287,3 +3287,373 @@
   }
 }
 
+/* --- 20 Premium Upgrades Addition --- */
+
+/* 4. Ken Burns Slide Effect */
+@keyframes kenBurnsEffect {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.08) translate(-1%, 0.5%);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+.hero-slide-bg.active {
+  animation: kenBurnsEffect 24s infinite alternate ease-in-out;
+}
+
+/* 7. Radial Cursor Hover Glow Card */
+.radial-glow-card {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.radial-glow-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(212, 175, 55, 0.15), transparent 40%);
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.radial-glow-card:hover::before {
+  opacity: 1;
+}
+
+.radial-glow-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: var(--gold-primary) !important;
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.12) !important;
+}
+
+/* 8. Closed Deals Fomo Lock */
+.fomo-lock-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(7, 15, 30, 0.55);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+}
+
+.closed-deal-card:hover .fomo-lock-overlay {
+  opacity: 1;
+}
+
+.lock-badge-icon {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--border-gold);
+  border-radius: 50%;
+  padding: 8px;
+  color: var(--gold-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px var(--gold-primary);
+}
+
+/* 14. SVG Locality Score Progress Ring */
+.progress-ring-circle {
+  transition: stroke-dashoffset 0.8s ease-in-out;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* 15. Concierge Callback Form Input Float */
+.concierge-input-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.concierge-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 6px !important;
+  color: #fff !important;
+  font-size: 0.85rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.concierge-input:focus {
+  border-color: var(--gold-primary) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+  background: rgba(212, 175, 55, 0.03) !important;
+}
+
+/* 19. CRM Sidebar Transitions */
+.crm-sidebar-glide-item {
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.crm-sidebar-glide-item:hover {
+  background: rgba(212, 175, 55, 0.05) !important;
+  padding-left: 14px !important;
+}
+.crm-sidebar-glide-item.active {
+  background: rgba(212, 175, 55, 0.12) !important;
+  border-left: 4px solid var(--gold-primary) !important;
+}
+
+/* 20. Searchable Society dropdown enhancements */
+.searchable-select-popup {
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  background: #0f1c3f;
+  border: 1px solid var(--border-gold);
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+.searchable-select-option {
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.searchable-select-option:hover {
+  background: rgba(212, 175, 55, 0.15);
+}
+
+/* Premium Gold Range Slider styling */
+.calculator-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  outline: none;
+  margin: 10px 0;
+  transition: background 0.3s ease;
+}
+
+.calculator-slider:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.calculator-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--gold-primary);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calculator-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+}
+
+.calculator-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--gold-primary);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calculator-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+}
+
+.slider-group {
+  margin-bottom: 18px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+/* Dynamic Glassmorphism Navbar active state styling */
+.scrolled-active {
+  background: rgba(8, 15, 30, 0.88) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Floating Labels for Concierge Forms */
+.form-group-floating {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.form-input-floating {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input-floating:focus {
+  border-color: var(--gold-primary) !important;
+  background: rgba(212, 175, 55, 0.04) !important;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.25) !important;
+}
+
+.form-label-floating {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+/* Floating behavior when input is focused or not empty */
+.form-input-floating:focus ~ .form-label-floating,
+.form-input-floating:not(:placeholder-shown) ~ .form-label-floating {
+  top: 0;
+  font-size: 0.72rem;
+  color: var(--gold-primary);
+  background: #080f1e;
+  padding: 0 6px;
+  transform: translateY(-50%) translateX(-4px);
+}
+
+/* Tactile Haptic HNWI Pill Switch styling overrides */
+.hnwi-pill-switch {
+  position: relative;
+  width: 50px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 0 rgba(212, 175, 55, 0);
+}
+.hnwi-pill-switch.active {
+  background: rgba(212, 175, 55, 0.1) !important;
+  border-color: var(--gold-primary) !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3) !important;
+}
+.hnwi-pill-switch:hover {
+  transform: scale(1.05);
+  border-color: var(--gold-primary);
+}
+.hnwi-pill-switch:active {
+  transform: scale(0.95);
+}
+.hnwi-pill-knob {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hnwi-pill-switch.active .hnwi-pill-knob {
+  left: 27px;
+  background: var(--gold-primary);
+  box-shadow: 0 0 8px var(--gold-primary);
+}
+
+/* Luxury Typography & Spacing Overrides */
+.luxury-title,
+.modal-title,
+.section-header h2,
+.nav-logo,
+.drawer-logo-text {
+  font-family: 'Cinzel', serif !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+}
+
+.searchable-select-popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #0f1c3f;
+  border: 1px solid var(--border-gold);
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 2000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.searchable-select-option {
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.searchable-select-option:hover {
+  background: rgba(212, 175, 55, 0.15);
+}
+
+.p-badge-tour-glow {
+  background: rgba(212,175,55,0.15) !important;
+  color: var(--gold-primary) !important;
+  border: 1px solid var(--gold-primary) !important;
+  box-shadow: 0 0 8px var(--gold-primary) !important;
+  animation: pulse-glow 2s infinite alternate;
+}
+
+.p-badge-video-glow {
+  background: rgba(46,196,182,0.15) !important;
+  color: #2ec4b6 !important;
+  border: 1px solid #2ec4b6 !important;
+  box-shadow: 0 0 8px #2ec4b6 !important;
+  animation: pulse-glow-teal 2s infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 2px rgba(212,175,55,0.2); }
+  100% { box-shadow: 0 0 10px rgba(212,175,55,0.6); }
+}
+
+@keyframes pulse-glow-teal {
+  0% { box-shadow: 0 0 2px rgba(46,196,182,0.2); }
+  100% { box-shadow: 0 0 10px rgba(46,196,182,0.6); }
+}
+
+
+
+
+

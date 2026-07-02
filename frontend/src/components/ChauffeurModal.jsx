@@ -84,26 +84,47 @@ export default function ChauffeurModal({ isOpen, property, onClose, onSubmit, ch
           </div>
 
           {chauffeurForm.includeExecutiveChauffeur && (
-            <div className="form-group" style={{ animation: 'fadeIn 0.3s forwards' }}>
-              <label className="form-label">Pickup Address (Pune only)</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                required 
-                placeholder="Enter pickup residency/office address..."
-                value={chauffeurForm.pickupAddress}
-                onChange={e => setChauffeurForm({ ...chauffeurForm, pickupAddress: e.target.value })}
-              />
+            <div style={{ animation: 'fadeIn 0.3s forwards', display: 'flex', flexDirection: 'column', gap: '15px', background: 'rgba(212,175,55,0.03)', padding: '15px', borderRadius: '8px', border: '1px solid rgba(212,175,55,0.15)', marginBottom: '15px' }}>
+              <div className="form-group">
+                <label className="form-label" style={{ color: 'var(--gold-primary)' }}>Luxury Fleet Selection</label>
+                <select 
+                  value={chauffeurForm.luxuryCarModel || 'MAYBACH'} 
+                  onChange={e => setChauffeurForm({ ...chauffeurForm, luxuryCarModel: e.target.value })} 
+                  className="form-input"
+                  style={{ background: '#070f1e', borderColor: 'var(--border-gold)' }}
+                >
+                  <option value="MAYBACH">Mercedes-Maybach S-Class (VIP default)</option>
+                  <option value="BMW7">BMW 7 Series 740Li M-Sport</option>
+                  <option value="AUDIA8">Audi A8 L (Executive Edition)</option>
+                  <option value="TESLAX">Tesla Model X (Private HNWI Office)</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Pickup Address (Pune Corridor Only)</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  required 
+                  placeholder="Enter pickup residency/office address..."
+                  value={chauffeurForm.pickupAddress}
+                  onChange={e => setChauffeurForm({ ...chauffeurForm, pickupAddress: e.target.value })}
+                />
+              </div>
+
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                ℹ️ Commute times: Hinjewadi/Baner pickups take approx. 20-30 mins to site locations via the prime corridor bypass highway.
+              </div>
             </div>
           )}
 
           <button 
             type="submit" 
             className="btn-gold" 
-            style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }}
+            style={{ width: '100%', justifyContent: 'center', marginTop: '10px', fontSize: '0.9rem', padding: '12px' }}
             disabled={chauffeurSubmitting}
           >
-            {chauffeurSubmitting ? <Loader className="animate-spin" size={20} /> : 'Schedule Private Viewing'}
+            {chauffeurSubmitting ? <Loader className="animate-spin" size={20} /> : 'Book VIP Maybach Viewing'}
           </button>
         </form>
       </div>
