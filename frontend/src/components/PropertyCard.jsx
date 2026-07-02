@@ -18,16 +18,45 @@ export default function PropertyCard({
   const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
   const waLink = `https://wa.me/919673000053?text=Hi%2024K%20Realtors,%20I%20am%20interested%20in%20"${property.title}"%20located%20at%20${property.address}%20for%20₹${property.price}`;
 
+  const [tiltStyle, setTiltStyle] = React.useState({});
+
   const handleCardMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    e.currentTarget.style.setProperty('--mouse-x', `${x}px`);
-    e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -6;
+    const rotateY = ((x - centerX) / centerX) * 6;
+    
+    setTiltStyle({
+      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
+      transition: 'transform 0.1s ease, box-shadow 0.3s ease, border-color 0.3s ease',
+      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 15px rgba(212, 175, 55, 0.15)',
+      borderColor: 'var(--gold-primary)',
+      '--mouse-x': `${x}px`,
+      '--mouse-y': `${y}px`
+    });
+  };
+
+  const handleCardMouseLeave = () => {
+    setTiltStyle({
+      transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+      transition: 'transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease',
+      boxShadow: 'none',
+      borderColor: 'rgba(255, 255, 255, 0.06)'
+    });
   };
 
   return (
-    <div className="property-card premium-luxury-card radial-glow-card" onMouseMove={handleCardMouseMove}>
+    <div 
+      className="property-card premium-luxury-card radial-glow-card" 
+      style={tiltStyle}
+      onMouseMove={handleCardMouseMove}
+      onMouseLeave={handleCardMouseLeave}
+    >
       <div className="property-image-container premium-hover-tint" style={{ position: 'relative', overflow: 'hidden' }}>
         <img 
           src={property.imageUrl || defaultImg} 

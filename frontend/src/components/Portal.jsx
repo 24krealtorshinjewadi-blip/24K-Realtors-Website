@@ -201,6 +201,13 @@ export default function Portal({ onViewChange }) {
 
   const [stats, setStats] = useState({ inventory: 0, verified: 0, families: 0 });
 
+  const [aiBudget, setAiBudget] = useState('80L-1.5Cr');
+  const [aiPriority, setAiPriority] = useState('appreciation');
+  const [aiCorridor, setAiCorridor] = useState('all');
+  const [aiAnalyzing, setAiAnalyzing] = useState(false);
+  const [aiProgress, setAiProgress] = useState(0);
+  const [aiReport, setAiReport] = useState(null);
+
   useEffect(() => {
     let invInterval = setInterval(() => {
       setStats(prev => {
@@ -407,11 +414,28 @@ export default function Portal({ onViewChange }) {
     
     const userMsg = { sender: 'user', text: chatInput };
     setChatMessages(prev => [...prev, userMsg]);
-    const currentInput = chatInput;
+    const currentInput = chatInput.toLowerCase();
+    const rawInput = chatInput;
     setChatInput('');
     
     setTimeout(async () => {
-      const botMsg = { sender: 'bot', text: 'Thank you for reaching out! A relationship manager has been notified.' };
+      let replyText = 'Thank you for reaching out! A senior portfolio advisor is being notified to connect with you regarding this.';
+      
+      if (currentInput.includes('wakad')) {
+        replyText = 'Wakad Corridor holds a +14% annual appreciation rate driven by multi-lane transit connectivity. Tier-1 societies like 24K Opula starting at ₹1.2 Cr offer excellent inventory. Would you like to schedule a private site visit?';
+      } else if (currentInput.includes('baner')) {
+        replyText = 'Baner Corridor is Pune West\'s premium segment, showing a +16% YoY price rise. Excellent lifestyle avenues near Balewadi High Street. We have 3 gated luxury options available now.';
+      } else if (currentInput.includes('hinjewadi')) {
+        replyText = 'Hinjewadi IT Corridor is the rental yield leader at 5.2%. Excellent for corporate professionals seeking high capital growth with stable tenants. Type "maybach" to schedule a premium chauffeur site tour!';
+      } else if (currentInput.includes('price') || currentInput.includes('cost') || currentInput.includes('budget')) {
+        replyText = 'Our portfolio ranges from ₹65 Lakhs for entry IT apartments up to ₹3.8 Crore+ for exclusive whole-floor mandates and luxury penthouses. What budget range are you evaluating?';
+      } else if (currentInput.includes('maybach') || currentInput.includes('chauffeur') || currentInput.includes('car')) {
+        replyText = 'We provide complimentary Mercedes-Maybach / BMW 7 Series chauffeured transport for qualified site inspections. Click the "VIP Chauffeur" option in any property listing to book your slot!';
+      } else if (currentInput.includes('rera') || currentInput.includes('license') || currentInput.includes('verify')) {
+        replyText = 'All properties listed on 24K Realtors are registered with MahaRERA (our license: A52100028461) and have certified title-clear registry dossiers. You can explore the RERA compliance stamp on any card!';
+      }
+      
+      const botMsg = { sender: 'bot', text: replyText };
       setChatMessages(prev => [...prev, botMsg]);
       try {
         await apiService.submitLead({
@@ -422,12 +446,70 @@ export default function Portal({ onViewChange }) {
           budgetMin: '0',
           budgetMax: '0',
           preferredLocation: 'HINJEWADI',
-          notes: `[LIVE SUPPORT CHAT] User inquiry: "${currentInput}"`
+          notes: `[LIVE SUPPORT CHAT] User inquiry: "${rawInput}"`
         });
       } catch (err) {
         console.error("Failed to register live chat lead:", err);
       }
-    }, 1000);
+    }, 800);
+  };
+
+  const handleAiAnalyze = () => {
+    setAiAnalyzing(true);
+    setAiProgress(0);
+    setAiReport(null);
+    
+    let current = 0;
+    const interval = setInterval(() => {
+      current += 10;
+      setAiProgress(current);
+      if (current >= 100) {
+        clearInterval(interval);
+        setAiAnalyzing(false);
+        
+        let recommendedCorridor = 'WAKAD';
+        let explanation = '';
+        let appreciationIndex = '14.2%';
+        let rentalYield = '4.5%';
+        let connectivityScore = '9.2/10';
+        
+        if (aiPriority === 'yield') {
+          recommendedCorridor = 'HINJEWADI';
+          appreciationIndex = '11.8%';
+          rentalYield = '5.2%';
+          connectivityScore = '8.8/10';
+          explanation = 'Based on your preference for High Rental Yields, Hinjewadi IT Corridor is recommended. The tech hubs generate stable corporate tenant demand, pushing yields to 5.2%—the highest in Pune West.';
+        } else if (aiPriority === 'commute') {
+          recommendedCorridor = 'BANER';
+          appreciationIndex = '16.5%';
+          rentalYield = '3.8%';
+          connectivityScore = '9.5/10';
+          explanation = 'For optimized commute time and high appreciation, Baner Corridor is recommended. It lies adjacent to Balewadi High Street with excellent transit routes to IT offices.';
+        } else {
+          if (aiBudget === 'under-80L') {
+            recommendedCorridor = 'MAHALUNGE';
+            appreciationIndex = '18.1%';
+            rentalYield = '4.8%';
+            connectivityScore = '8.0/10';
+            explanation = 'For maximum capital appreciation on an entry budget, Mahalunge smart city township is the optimal choice. It exhibits a high 18% YoY growth profile.';
+          } else {
+            recommendedCorridor = 'WAKAD';
+            appreciationIndex = '14.2%';
+            rentalYield = '4.5%';
+            connectivityScore = '9.2/10';
+            explanation = 'Wakad Corridor offers the most balanced profile. Excellent 14% capital appreciation combined with a solid 4.5% yield and multi-lane highway transit.';
+          }
+        }
+        
+        setAiReport({
+          corridor: recommendedCorridor,
+          appreciationIndex,
+          rentalYield,
+          connectivityScore,
+          explanation
+        });
+      }
+    }, 150);
   };
 
   const handleFilterChange = (e) => {
@@ -817,6 +899,110 @@ export default function Portal({ onViewChange }) {
             <p style={{ margin: 0, fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Authorized Broker License Registration Number: <strong style={{ color: 'var(--gold-primary)' }}>A52100028461</strong>. 24K Realtors strictly complies with Maharashtra Real Estate Regulatory Authority guidelines. All pricing, layout structures, and inventories are verified directly with builder RERA registries prior to listing onboarding.</p>
           </div>
         </div>
+      </div>
+
+      {/* 24K AI Location Advisor Panel */}
+      <div className="ai-advisor-panel">
+        <div className="ai-advisor-header">
+          <div className="ai-advisor-icon-pulse">
+            <Sparkles size={28} color="var(--gold-primary)" />
+          </div>
+          <div>
+            <h3 style={{ margin: 0, fontSize: '1.4rem', fontFamily: 'var(--font-title)', color: 'var(--text-light)', letterSpacing: '0.04em' }}>
+              ⚜️ 24K AI LOCATION ADVISOR
+            </h3>
+            <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+              Real-time multi-metric optimization engine for Pune's high-growth corridors.
+            </p>
+          </div>
+        </div>
+
+        <div className="ai-advisor-grid">
+          <div className="ai-select-wrapper">
+            <label className="ai-select-label">Investment Budget</label>
+            <select 
+              value={aiBudget} 
+              onChange={e => setAiBudget(e.target.value)} 
+              className="ai-select-input"
+            >
+              <option value="under-80L">Under ₹80 Lakhs</option>
+              <option value="80L-1.5Cr">₹80 Lakhs - ₹1.5 Crore</option>
+              <option value="1.5Cr-3Cr">₹1.5 Crore - ₹3.0 Crore</option>
+              <option value="above-3Cr">Above ₹3.0 Crore (Luxury Mandate)</option>
+            </select>
+          </div>
+
+          <div className="ai-select-wrapper">
+            <label className="ai-select-label">Primary Driver</label>
+            <select 
+              value={aiPriority} 
+              onChange={e => setAiPriority(e.target.value)} 
+              className="ai-select-input"
+            >
+              <option value="appreciation">Capital Appreciation Index</option>
+              <option value="yield">High Rental Yield %</option>
+              <option value="commute">Commute Time & Proximity</option>
+            </select>
+          </div>
+
+          <div className="ai-select-wrapper">
+            <label className="ai-select-label">Corridor Interest</label>
+            <select 
+              value={aiCorridor} 
+              onChange={e => setAiCorridor(e.target.value)} 
+              className="ai-select-input"
+            >
+              <option value="all">All Growth Corridors</option>
+              <option value="WAKAD">Wakad Corridor</option>
+              <option value="BANER">Baner Corridor</option>
+              <option value="HINJEWADI">Hinjewadi IT Corridor</option>
+            </select>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+            <button 
+              onClick={handleAiAnalyze} 
+              className="ai-btn-analyze" 
+              style={{ width: '100%', height: '42px' }}
+              disabled={aiAnalyzing}
+            >
+              {aiAnalyzing ? 'Analyzing Location Metrics...' : 'Compute AI Recommendation'}
+            </button>
+          </div>
+        </div>
+
+        {aiAnalyzing && (
+          <div className="ai-diagnostic-bar">
+            <div className="ai-diagnostic-fill" style={{ width: `${aiProgress}%` }}></div>
+          </div>
+        )}
+
+        {aiReport && (
+          <div className="ai-report-box">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.1rem', color: '#fff' }}>Recommended Corridor:</span>
+                <strong style={{ fontSize: '1.25rem', color: 'var(--gold-primary)', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => handleCorridorClick(aiReport.corridor)}>
+                  {aiReport.corridor} CORRIDOR
+                </strong>
+              </div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <span className="society-metric-badge" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', border: '1px solid rgba(212,175,55,0.2)' }}>
+                  Appreciation: {aiReport.appreciationIndex}
+                </span>
+                <span className="society-metric-badge" style={{ background: 'rgba(46,196,182,0.1)', color: '#2ec4b6', border: '1px solid rgba(46,196,182,0.2)' }}>
+                  Yield: {aiReport.rentalYield}
+                </span>
+                <span className="society-metric-badge" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  Transit: {aiReport.connectivityScore}
+                </span>
+              </div>
+            </div>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+              {aiReport.explanation} <strong style={{ color: 'var(--gold-primary)', cursor: 'pointer' }} onClick={() => handleCorridorClick(aiReport.corridor)}>Click here to filter verified properties in this sector.</strong>
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Corporate Statistics Showcase */}
@@ -1277,67 +1463,54 @@ export default function Portal({ onViewChange }) {
                 ) : societies.length === 0 ? (
                   <div className="empty-state">No societies data loaded. Check connection.</div>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                  <div className="societies-grid">
                     {societies.map(soc => (
-                      <div key={soc.id} className="exclusive-details-card" style={{ border: '1px solid var(--border-gold)', background: 'rgba(7,15,30,0.7)', borderRadius: '12px', padding: '24px', position: 'relative' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '15px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '16px', marginBottom: '16px' }}>
-                          <div>
+                      <div key={soc.id} className="society-grid-card">
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '14px' }}>
                             <h3 
                               onClick={() => setSelectedSocietyDetail(soc)}
-                              style={{ margin: '0 0 4px 0', fontSize: '1.3rem', color: 'var(--text-light)', cursor: 'pointer', textDecoration: 'underline' }}
+                              style={{ margin: 0, fontSize: '1.25rem', color: 'var(--text-light)', cursor: 'pointer', fontFamily: 'var(--font-title)', textDecoration: 'underline' }}
                             >
                               {soc.name}
                             </h3>
-                            <span style={{ fontSize: '0.78rem', background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>{soc.location} Corridor</span>
+                            <span className="society-metric-badge" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', border: '1px solid rgba(212,175,55,0.2)' }}>
+                              {soc.location}
+                            </span>
                           </div>
-                          <div style={{ textAlign: 'right' }}>
-                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block' }}>Valuation Starts At</span>
-                            <strong style={{ fontSize: '1.25rem', color: 'var(--gold-primary)' }}>{formatPrice(soc.startingPrice)}</strong>
+
+                          <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', lineHeight: 1.5, marginBottom: '16px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            {soc.overview}
+                          </p>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 15px', marginBottom: '16px', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '12px' }}>
+                            <div>
+                              <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>RERA Registration</span>
+                              <strong style={{ color: 'var(--text-light)', fontSize: '0.78rem', wordBreak: 'break-all' }}>{soc.reraNumber}</strong>
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Possession</span>
+                              <strong style={{ color: 'var(--text-light)', fontSize: '0.78rem' }}>{soc.possessionDate || 'Immediate'}</strong>
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Configurations</span>
+                              <strong style={{ color: 'var(--text-light)', fontSize: '0.78rem' }}>{soc.configuration || '2 & 3 BHK'}</strong>
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Starting Val.</span>
+                              <strong style={{ color: 'var(--gold-primary)', fontSize: '0.82rem' }}>{formatPrice(soc.startingPrice)}</strong>
+                            </div>
                           </div>
                         </div>
 
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '20px' }}>
-                          {soc.overview}
-                        </p>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '20px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
-                          <div>
-                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>RERA Index ID</span>
-                            <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{soc.reraNumber}</strong>
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Project Status</span>
-                            <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{soc.projectStatus?.replace(/_/g, ' ')}</strong>
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Possession Date</span>
-                            <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{soc.possessionDate || 'Immediate'}</strong>
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Configurations</span>
-                            <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{soc.configuration || '2 & 3 BHK'}</strong>
-                          </div>
-                        </div>
-
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-                          <div style={{ display: 'flex', gap: '15px' }}>
-                            <div style={{ background: 'rgba(46,196,182,0.06)', border: '1px solid rgba(46,196,182,0.15)', borderRadius: '6px', padding: '8px 12px', textAlign: 'center' }}>
-                              <span style={{ fontSize: '0.62rem', color: '#2ec4b6', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Investment Score</span>
-                              <strong style={{ fontSize: '1.1rem', color: '#2ec4b6' }}>{soc.investmentScore || 85}/100</strong>
-                            </div>
-                            <div style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '6px', padding: '8px 12px', textAlign: 'center' }}>
-                              <span style={{ fontSize: '0.62rem', color: 'var(--gold-primary)', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Avg Rental Yield</span>
-                              <strong style={{ fontSize: '1.1rem', color: 'var(--gold-primary)' }}>{soc.rentalYield || '4.0'}%</strong>
-                            </div>
-                          </div>
-
-                          <div style={{ display: 'flex', gap: '10px' }}>
+                        <div>
+                          <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '14px', marginTop: '10px' }}>
                             <button 
                               onClick={() => setSelectedSocietyDetail(soc)} 
                               className="btn-outline" 
-                              style={{ padding: '10px 20px', fontSize: '0.85rem' }}
+                              style={{ flex: 1, padding: '8px 0', fontSize: '0.78rem', justifyContent: 'center' }}
                             >
-                              Explore Details & Inventory
+                              Explore
                             </button>
                             <button 
                               onClick={() => {
@@ -1345,7 +1518,7 @@ export default function Portal({ onViewChange }) {
                                 setIsChauffeurModalOpen(true);
                               }} 
                               className="btn-gold" 
-                              style={{ padding: '10px 20px', fontSize: '0.85rem' }}
+                              style={{ flex: 1, padding: '8px 0', fontSize: '0.78rem', justifyContent: 'center' }}
                             >
                               Enquire
                             </button>
