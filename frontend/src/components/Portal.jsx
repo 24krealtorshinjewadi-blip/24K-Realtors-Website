@@ -103,11 +103,14 @@ export default function Portal({ onViewChange }) {
   const [selectedSocietyDetail, setSelectedSocietyDetail] = useState(null);
   const [selectedBuilderDetail, setSelectedBuilderDetail] = useState(null);
   const [selectedLocalityDetail, setSelectedLocalityDetail] = useState(null);
+  const [blogs, setBlogs] = useState([]);
+  const [selectedBlogDetail, setSelectedBlogDetail] = useState(null);
 
   useEffect(() => {
     setSelectedSocietyDetail(null);
     setSelectedBuilderDetail(null);
     setSelectedLocalityDetail(null);
+    setSelectedBlogDetail(null);
   }, [activeSection]);
 
   const [sellerForm, setSellerForm] = useState({
@@ -277,6 +280,8 @@ export default function Portal({ onViewChange }) {
         setBuilders(blds || []);
         const locs = await apiService.getLocalities();
         setLocalities(locs || []);
+        const blgs = await apiService.getBlogs(0, 100);
+        setBlogs(blgs.content || []);
       } catch (err) {
         console.error("Failed to load directories:", err);
       } finally {
@@ -1893,6 +1898,135 @@ export default function Portal({ onViewChange }) {
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+              </div>
+            )
+          )}
+
+          {activeSection === 'blogs' && (
+            selectedBlogDetail ? (
+              // Blog Reader View
+              <div style={{ animation: 'fadeIn 0.3s forwards' }}>
+                <button 
+                  onClick={() => setSelectedBlogDetail(null)} 
+                  className="btn-outline" 
+                  style={{ marginBottom: '20px', padding: '8px 16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', border: '1px solid var(--border-gold)', borderRadius: '4px', background: 'rgba(255,255,255,0.02)', color: 'var(--text-light)' }}
+                >
+                  ← Back to Articles
+                </button>
+
+                <article className="exclusive-details-card" style={{ border: '1px solid var(--border-gold)', background: 'rgba(7,15,30,0.85)', borderRadius: '12px', padding: '0', overflow: 'hidden', marginBottom: '30px' }}>
+                  {selectedBlogDetail.coverImageUrl && (
+                    <div style={{ width: '100%', height: '350px', backgroundImage: `url(${selectedBlogDetail.coverImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', borderBottom: '1px solid var(--border-gold)' }} />
+                  )}
+                  <div style={{ padding: '30px' }}>
+                    <h1 style={{ margin: '0 0 15px 0', fontSize: '2rem', color: 'var(--text-light)', fontFamily: 'var(--font-title)', lineHeight: 1.3 }}>
+                      {selectedBlogDetail.title}
+                    </h1>
+
+                    <div style={{ display: 'flex', gap: '20px', color: 'var(--text-muted)', fontSize: '0.82rem', marginBottom: '25px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '15px' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        ✍️ Written by: <strong style={{ color: 'var(--gold-primary)' }}>{selectedBlogDetail.author || 'Admin'}</strong>
+                      </span>
+                      <span>
+                        📅 Published: <strong>{new Date(selectedBlogDetail.createdDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</strong>
+                      </span>
+                    </div>
+
+                    <div 
+                      className="blog-rich-content" 
+                      style={{ color: 'var(--text-light)', fontSize: '1rem', lineHeight: 1.8, marginBottom: '30px' }}
+                      dangerouslySetInnerHTML={{ __html: selectedBlogDetail.content }}
+                    />
+                    
+                    <div style={{ background: 'rgba(212, 175, 55, 0.05)', border: '1px solid var(--border-gold)', borderRadius: '8px', padding: '20px', marginTop: '40px' }}>
+                      <h4 style={{ margin: '0 0 10px 0', color: 'var(--gold-primary)', fontSize: '1.1rem' }}>Interested in this Location?</h4>
+                      <p style={{ margin: '0 0 15px 0', fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                        Get personalized investment advisory reports regarding {selectedBlogDetail.title.includes('Wakad') ? 'Wakad' : selectedBlogDetail.title.includes('Hinjewadi') ? 'Hinjewadi' : selectedBlogDetail.title.includes('Baner') ? 'Baner' : 'West Pune'} directly in your inbox.
+                      </p>
+                      <button 
+                        onClick={() => {
+                          setVipForm({ name: '', phone: '' });
+                          setCountdown(60);
+                          showNotification(`Priority Callback requested for article: ${selectedBlogDetail.title}`);
+                        }}
+                        className="btn-gold"
+                        style={{ padding: '10px 20px', fontSize: '0.85rem' }}
+                      >
+                        Request Expert Locality Consultation
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            ) : (
+              // Blogs Listing Grid View
+              <div style={{ animation: 'fadeIn 0.3s forwards' }}>
+                <h2 className="luxury-title" style={{ fontSize: '1.6rem', marginBottom: '8px' }}>⚜️ Premium Real Estate Insights & Market Analysis</h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.5 }}>
+                  Expert editorials, upcoming township insights, infrastructure connectivity analyses, and investment guides from 24K Realtors.
+                </p>
+
+                {directoriesLoading ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+                    <Loader className="animate-spin" size={32} color="#D4AF37" />
+                  </div>
+                ) : blogs.length === 0 ? (
+                  <div className="empty-state" style={{ padding: '60px 20px', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-muted)', borderRadius: '8px' }}>
+                    No editorial articles currently published. Check back soon for premium updates.
+                  </div>
+                ) : (
+                  <div>
+                    {/* Featured Blog (First post) */}
+                    {blogs[0] && (
+                      <div 
+                        onClick={() => setSelectedBlogDetail(blogs[0])}
+                        className="exclusive-details-card featured-blog-card" 
+                        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '25px', padding: '0', overflow: 'hidden', border: '1px solid var(--border-gold)', background: 'rgba(7,15,30,0.85)', borderRadius: '12px', cursor: 'pointer', marginBottom: '40px' }}
+                      >
+                        <div style={{ height: '300px', backgroundImage: `url(${blogs[0].coverImageUrl || 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80'})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                        <div style={{ padding: '25px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                          <span style={{ color: 'var(--gold-primary)', fontSize: '0.72rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', display: 'block' }}>★ FEATURED ARTICLE</span>
+                          <h3 style={{ margin: '0 0 12px 0', fontSize: '1.5rem', color: '#fff', fontFamily: 'var(--font-title)', lineHeight: 1.3 }}>{blogs[0].title}</h3>
+                          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.5, margin: '0 0 15px 0' }}>
+                            {blogs[0].content ? blogs[0].content.replace(/<[^>]*>/g, '').substring(0, 180) + '...' : ''}
+                          </p>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                            <span>By <strong>{blogs[0].author || 'Admin'}</strong></span>
+                            <span>{new Date(blogs[0].createdDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Regular Blogs Grid */}
+                    {blogs.length > 1 && (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '25px' }}>
+                        {blogs.slice(1).map(blog => (
+                          <div 
+                            key={blog.id} 
+                            onClick={() => setSelectedBlogDetail(blog)}
+                            className="exclusive-details-card blog-grid-card" 
+                            style={{ display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden', border: '1px solid var(--border-muted)', background: 'rgba(7,15,30,0.6)', borderRadius: '10px', cursor: 'pointer', transition: 'all 0.3s ease' }}
+                          >
+                            <div style={{ height: '180px', backgroundImage: `url(${blog.coverImageUrl || 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80'})`, backgroundSize: 'cover', backgroundPosition: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)' }} />
+                            <div style={{ padding: '20px', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                              <div>
+                                <h4 style={{ margin: '0 0 10px 0', fontSize: '1.15rem', color: '#fff', fontFamily: 'var(--font-title)', lineHeight: 1.4 }}>{blog.title}</h4>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', lineHeight: 1.4, margin: '0 0 15px 0' }}>
+                                  {blog.content ? blog.content.replace(/<[^>]*>/g, '').substring(0, 110) + '...' : ''}
+                                </p>
+                              </div>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: 'var(--text-muted)', borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '10px' }}>
+                                <span>By <strong>{blog.author || 'Admin'}</strong></span>
+                                <span>{new Date(blog.createdDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
