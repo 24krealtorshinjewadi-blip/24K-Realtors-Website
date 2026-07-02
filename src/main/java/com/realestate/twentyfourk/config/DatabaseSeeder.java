@@ -33,6 +33,8 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final AgentRepository agentRepository;
     private final FollowUpTaskRepository taskRepository;
+    private final com.realestate.twentyfourk.domain.builder.BuilderRepository builderRepository;
+    private final com.realestate.twentyfourk.domain.society.SocietyRepository societyRepository;
 
     @Value("${admin.username}")
     private String adminUsername;
@@ -45,6 +47,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         log.info("Running platform seeder checks...");
         seedSystemUsers();
         seedAgents();
+        seedBuilders();
+        seedSocieties();
         seedProperties();
         seedLeads();
     }
@@ -192,6 +196,11 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (propertyRepository.count() < 20) {
             log.info("Cleaning and seeding 20 premium real estate listings in Hinjewadi/Baner/Wakad...");
             propertyRepository.deleteAll();
+
+            var sOpula = societyRepository.findBySlug("24k-opula-baner").orElse(null);
+            var sAltura = societyRepository.findBySlug("24k-altura-wakad").orElse(null);
+            var sRepublic = societyRepository.findBySlug("kolte-patil-life-republic-hinjewadi").orElse(null);
+            var sJoy = societyRepository.findBySlug("gera-joy-on-the-banks-wakad").orElse(null);
             
             Property prop1 = Property.builder()
                     .title("24K Opula Premium 3 BHK")
@@ -215,6 +224,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
                     .furnishingStatus(FurnishingStatus.FULLY_FURNISHED)
                     .gasPipeline(true)
+                    .society(sOpula)
                     .build();
 
             Property prop2 = Property.builder()
@@ -238,6 +248,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
                     .furnishingStatus(FurnishingStatus.SEMI_FURNISHED)
                     .gasPipeline(true)
+                    .society(sAltura)
                     .build();
 
             Property prop3 = Property.builder()
@@ -476,6 +487,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
                     .furnishingStatus(FurnishingStatus.SEMI_FURNISHED)
                     .gasPipeline(true)
+                    .society(sRepublic)
                     .build();
 
             Property prop13 = Property.builder()
@@ -500,6 +512,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
                     .furnishingStatus(FurnishingStatus.UNFURNISHED)
                     .gasPipeline(true)
+                    .society(sJoy)
                     .build();
 
             Property prop14 = Property.builder()
@@ -830,5 +843,128 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         taskRepository.saveAll(List.of(t1, t2, t3, t4));
         log.info("Seeded 4 sample tasks.");
+    }
+
+    private void seedBuilders() {
+        if (builderRepository.count() == 0) {
+            log.info("Seeding initial Builders...");
+            var b1 = com.realestate.twentyfourk.domain.builder.Builder.builder()
+                    .name("Pride Purple Group")
+                    .slug("pride-purple-group")
+                    .logoUrl("https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=100&h=100&q=80")
+                    .description("Pride Purple Group has been a leader in premium real estate across Pune, Baner, and Wakad for over 20 years.")
+                    .experienceYears(20)
+                    .completedProjectsCount(35)
+                    .ongoingProjectsCount(8)
+                    .awards("Best Luxury Developer Pune 2025")
+                    .build();
+
+            var b2 = com.realestate.twentyfourk.domain.builder.Builder.builder()
+                    .name("Kolte Patil Developers")
+                    .slug("kolte-patil-developers")
+                    .logoUrl("https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=100&h=100&q=80")
+                    .description("Kolte-Patil Developers is a leading public-listed real estate company with a strong presence in Pune.")
+                    .experienceYears(30)
+                    .completedProjectsCount(60)
+                    .ongoingProjectsCount(15)
+                    .awards("RERA Certified Quality Builder 2024")
+                    .build();
+
+            var b3 = com.realestate.twentyfourk.domain.builder.Builder.builder()
+                    .name("Gera Developments")
+                    .slug("gera-developments")
+                    .logoUrl("https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=100&h=100&q=80")
+                    .description("Gera Developments is known for premium residential and commercial projects with customer-centric innovation.")
+                    .experienceYears(50)
+                    .completedProjectsCount(80)
+                    .ongoingProjectsCount(12)
+                    .awards("Developer of the Year 2026")
+                    .build();
+
+            builderRepository.saveAll(List.of(b1, b2, b3));
+        }
+    }
+
+    private void seedSocieties() {
+        if (societyRepository.count() == 0) {
+            log.info("Seeding initial Societies...");
+            var pridePurple = builderRepository.findBySlug("pride-purple-group").orElse(null);
+            var koltePatil = builderRepository.findBySlug("kolte-patil-developers").orElse(null);
+            var gera = builderRepository.findBySlug("gera-developments").orElse(null);
+
+            var s1 = com.realestate.twentyfourk.domain.society.Society.builder()
+                    .name("24K Opula")
+                    .slug("24k-opula-baner")
+                    .location(PrimeCorridor.BANER)
+                    .developer("Pride Purple Group")
+                    .reraNumber("RERA-PUN-PRM-24K091")
+                    .projectStatus("READY_TO_MOVE")
+                    .startingPrice(new BigDecimal("14500000"))
+                    .possessionDate("December 2025")
+                    .overview("Ultra-luxury residential community situated on the Baner-Balewadi Link Road, close to high streets.")
+                    .amenities("Infinity Pool, High-tech Gymnasium, Grand Clubhouse, Concierge Lobby, Italian Marble Finish")
+                    .configuration("3 BHK, 4 BHK Penthouse")
+                    .googleMapsIframe("<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.33333333333!2d73.7868!3d18.5590!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bec!2sBalewadi%20High%20Street!5e0!3m2!1sen!2sin!4v1625118\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>")
+                    .investmentScore(88)
+                    .rentalYield(4.2)
+                    .builder(pridePurple)
+                    .build();
+
+            var s2 = com.realestate.twentyfourk.domain.society.Society.builder()
+                    .name("24K Altura")
+                    .slug("24k-altura-wakad")
+                    .location(PrimeCorridor.WAKAD)
+                    .developer("Kolte Patil Developers")
+                    .reraNumber("RERA-PUN-PRM-24K074")
+                    .projectStatus("UNDER_CONSTRUCTION")
+                    .startingPrice(new BigDecimal("8200000"))
+                    .possessionDate("June 2027")
+                    .overview("Smart high-rise residences with automated temperature, mood lighting controls and skydecks in Wakad.")
+                    .amenities("Sky Lounge, Smart Home Automation, Reflexology Path, Jogging Track, EV Charging Stations")
+                    .configuration("2 BHK, 3 BHK")
+                    .googleMapsIframe("<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.44444444444!2d73.7707!3d18.5987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bef!2sWakad!5e0!3m2!1sen!2sin!4v1625118\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>")
+                    .investmentScore(82)
+                    .rentalYield(3.8)
+                    .builder(koltePatil)
+                    .build();
+
+            var s3 = com.realestate.twentyfourk.domain.society.Society.builder()
+                    .name("Kolte Patil Life Republic")
+                    .slug("kolte-patil-life-republic-hinjewadi")
+                    .location(PrimeCorridor.HINJEWADI)
+                    .developer("Kolte Patil Developers")
+                    .reraNumber("RERA-PUN-PRM-24K305")
+                    .projectStatus("UNDER_CONSTRUCTION")
+                    .startingPrice(new BigDecimal("10500000"))
+                    .possessionDate("December 2028")
+                    .overview("Sprawling township community in Hinjewadi, offering multi-phase premium housing & state-of-the-art infrastructure.")
+                    .amenities("Acres of Greenery, Multi-sport Arena, International School, Retail Plaza, Dedicated Fire Station")
+                    .configuration("1 BHK, 2 BHK, 3 BHK, Villas")
+                    .googleMapsIframe("<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.55555555555!2d73.7120!3d18.6015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c00!2sHinjewadi!5e0!3m2!1sen!2sin!4v1625118\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>")
+                    .investmentScore(91)
+                    .rentalYield(4.5)
+                    .builder(koltePatil)
+                    .build();
+
+            var s4 = com.realestate.twentyfourk.domain.society.Society.builder()
+                    .name("Gera Joy on the Banks")
+                    .slug("gera-joy-on-the-banks-wakad")
+                    .location(PrimeCorridor.WAKAD)
+                    .developer("Gera Developments")
+                    .reraNumber("RERA-PUN-PRM-24K306")
+                    .projectStatus("READY_TO_MOVE")
+                    .startingPrice(new BigDecimal("8800000"))
+                    .possessionDate("Immediate")
+                    .overview("Premium child-centric homes on the river banks, with direct access to academies and coaching centers.")
+                    .amenities("Riverview Deck, Child Academy, Olympic Swimming Coach, Tennis Court, Organic Garden")
+                    .configuration("2 BHK, 3 BHK Duplex")
+                    .googleMapsIframe("<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.44444444444!2d73.7660!3d18.5970!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bef!2sWakad!5e0!3m2!1sen!2sin!4v1625118\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>")
+                    .investmentScore(85)
+                    .rentalYield(4.1)
+                    .builder(gera)
+                    .build();
+
+            societyRepository.saveAll(List.of(s1, s2, s3, s4));
+        }
     }
 }

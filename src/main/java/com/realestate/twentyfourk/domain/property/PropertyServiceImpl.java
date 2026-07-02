@@ -23,6 +23,7 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyRepository propertyRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final AuditLogService auditLogService;
+    private final com.realestate.twentyfourk.domain.society.SocietyRepository societyRepository;
 
     @Override
     @Transactional
@@ -130,6 +131,10 @@ public class PropertyServiceImpl implements PropertyService {
 
     // Helper mapping methods
     private Property mapToEntity(PropertyRequest request) {
+        com.realestate.twentyfourk.domain.society.Society society = null;
+        if (request.societyId() != null) {
+            society = societyRepository.findById(request.societyId()).orElse(null);
+        }
         return Property.builder()
                 .title(request.title())
                 .description(request.description())
@@ -153,6 +158,7 @@ public class PropertyServiceImpl implements PropertyService {
                 .threeDTourUrl(request.threeDTourUrl())
                 .furnishingStatus(request.furnishingStatus())
                 .gasPipeline(request.gasPipeline())
+                .society(society)
                 .build();
     }
 
@@ -179,6 +185,11 @@ public class PropertyServiceImpl implements PropertyService {
         existingProperty.setThreeDTourUrl(request.threeDTourUrl());
         existingProperty.setFurnishingStatus(request.furnishingStatus());
         existingProperty.setGasPipeline(request.gasPipeline());
+        if (request.societyId() != null) {
+            existingProperty.setSociety(societyRepository.findById(request.societyId()).orElse(null));
+        } else {
+            existingProperty.setSociety(null);
+        }
     }
 
     private PropertyResponse mapToResponse(Property property) {
@@ -207,7 +218,9 @@ public class PropertyServiceImpl implements PropertyService {
                 property.getFurnishingStatus(),
                 property.isGasPipeline(),
                 property.getCreatedDate(),
-                property.getUpdatedDate()
+                property.getUpdatedDate(),
+                property.getSociety() != null ? property.getSociety().getId() : null,
+                property.getSociety() != null ? property.getSociety().getName() : null
         );
     }
 

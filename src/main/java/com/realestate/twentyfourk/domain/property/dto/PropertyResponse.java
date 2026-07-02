@@ -35,5 +35,7 @@ public record PropertyResponse(
         FurnishingStatus furnishingStatus,
         boolean gasPipeline,
         LocalDateTime createdDate,
-        LocalDateTime updatedDate
+        LocalDateTime updatedDate,
+        UUID societyId,
+        String societyName
 ) {}

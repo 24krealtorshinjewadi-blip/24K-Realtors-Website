@@ -60,5 +60,6 @@ public record PropertyRequest(
         String videoUrl,
         String threeDTourUrl,
         FurnishingStatus furnishingStatus,
-        boolean gasPipeline
+        boolean gasPipeline,
+        java.util.UUID societyId
 ) {}

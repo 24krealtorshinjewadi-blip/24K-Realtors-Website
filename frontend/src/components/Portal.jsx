@@ -95,6 +95,20 @@ export default function Portal({ onViewChange }) {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [notification, setNotification] = useState(null);
   const [exclusiveTab, setExclusiveTab] = useState('BUY');
+  const [activeSection, setActiveSection] = useState('listings');
+  const [societies, setSocieties] = useState([]);
+  const [builders, setBuilders] = useState([]);
+  const [localities, setLocalities] = useState([]);
+  const [directoriesLoading, setDirectoriesLoading] = useState(false);
+  const [selectedSocietyDetail, setSelectedSocietyDetail] = useState(null);
+  const [selectedBuilderDetail, setSelectedBuilderDetail] = useState(null);
+  const [selectedLocalityDetail, setSelectedLocalityDetail] = useState(null);
+
+  useEffect(() => {
+    setSelectedSocietyDetail(null);
+    setSelectedBuilderDetail(null);
+    setSelectedLocalityDetail(null);
+  }, [activeSection]);
 
   const [sellerForm, setSellerForm] = useState({
     name: '',
@@ -168,7 +182,25 @@ export default function Portal({ onViewChange }) {
         setClosedLoading(false);
       }
     };
+
+    const fetchDirectories = async () => {
+      setDirectoriesLoading(true);
+      try {
+        const socs = await apiService.getSocieties(0, 100);
+        setSocieties(socs.content || []);
+        const blds = await apiService.getBuilders();
+        setBuilders(blds || []);
+        const locs = await apiService.getLocalities();
+        setLocalities(locs || []);
+      } catch (err) {
+        console.error("Failed to load directories:", err);
+      } finally {
+        setDirectoriesLoading(false);
+      }
+    };
+
     fetchClosedProperties();
+    fetchDirectories();
   }, []);
 
   useEffect(() => {
@@ -626,6 +658,8 @@ export default function Portal({ onViewChange }) {
         onBookVisitClick={() => { setSelectedChauffeurProp(properties[0] || null); setIsChauffeurModalOpen(true); }}
         exclusiveTab={exclusiveTab}
         onTabChange={handleTabChange}
+        activeSection={activeSection}
+        onSectionChange={setActiveSection}
       />
 
       {/* Animated Hero Slideshow Section */}
@@ -775,204 +809,841 @@ export default function Portal({ onViewChange }) {
       <div className="dual-listings-layout">
         <div className="left-properties-container">
           
-          {/* Dynamic Advanced Filtering */}
-          <section className="filter-section" id="listings-anchor">
-            <h2 className="filter-title">
-              <Search size={18} />
-              Refine Your Property Search
-            </h2>
-            <form onSubmit={handleApplyFilters} className="filter-grid">
-              <div className="form-group">
-                <label className="form-label">Location Corridor</label>
-                <select name="location" value={filters.location} onChange={handleFilterChange} className="form-input">
-                  <option value="">All Pune West Corridors</option>
-                  <option value="HINJEWADI">Hinjewadi IT Zone</option>
-                  <option value="WAKAD">Wakad Junction</option>
-                  <option value="BANER">Baner Tech Corridor</option>
-                  <option value="BALEWADI">Balewadi High Street</option>
-                  <option value="TATHAWADE">Tathawade Hub</option>
-                  <option value="MAHALUNGE">Mahalunge Township</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Property Typology</label>
-                <select name="propertyType" value={filters.propertyType} onChange={handleFilterChange} className="form-input">
-                  <option value="">All Types (Res. & Com.)</option>
-                  <option value="RESIDENTIAL">Residential Apartments</option>
-                  <option value="COMMERCIAL">Commercial Workspaces</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Transaction</label>
-                <select name="transactionType" value={filters.transactionType} onChange={handleFilterChange} className="form-input">
-                  <option value="">Buy & Rent Inventory</option>
-                  <option value="BUY">For Sale (Direct Purchase)</option>
-                  <option value="RENT">To Rent (Monthly Yield)</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Bedrooms (BHK)</label>
-                <select name="bedrooms" value={filters.bedrooms} onChange={handleFilterChange} className="form-input">
-                  <option value="">Any Layout</option>
-                  <option value="1">1 BHK Layout</option>
-                  <option value="2">2 BHK Smart layout</option>
-                  <option value="3">3 BHK Premium layout</option>
-                  <option value="4">4 BHK Penthouse/Elite</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Furnishing Status</label>
-                <select name="furnishingStatus" value={filters.furnishingStatus} onChange={handleFilterChange} className="form-input">
-                  <option value="">Any furnishing</option>
-                  <option value="FULLY_FURNISHED">Fully Furnished</option>
-                  <option value="SEMI_FURNISHED">Semi Furnished</option>
-                  <option value="UNFURNISHED">Unfurnished</option>
-                </select>
-              </div>
-
-              <div className="form-group" style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
-                <button type="submit" className="btn-gold" style={{ flexGrow: 1, justifyContent: 'center' }}>
-                  Filter Registry
-                </button>
-                <button type="button" onClick={handleResetFilters} className="btn-outline" style={{ padding: '12px' }} title="Reset Filters">
-                  <RefreshCwIcon size={16} />
-                </button>
-              </div>
-            </form>
-          </section>
-
-          {/* Exclusive Inventory Display */}
-          <div id="listings-anchor" className="properties-header properties-header-premium">
-            <div className="listings-title-group">
-              <div className="listings-gold-accent"></div>
-              <h2 className="listings-section-title">{isHnwiMode ? 'HNWI Mandated Assets' : 'Exclusive Inventory'}</h2>
-            </div>
-            <span className="properties-count-badge">
-              <span className="count-number">{totalElements}</span>
-              Premium listings found
-            </span>
-          </div>
-
-          {loading ? (
-            <div className="premium-loader-box">
-              <PremiumGoldLoader />
-            </div>
-          ) : error ? (
-            <div className="empty-state" style={{ borderColor: '#D90429', color: '#FF4D6D', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', padding: '30px' }}>
-              <p style={{ fontWeight: 'bold', fontSize: '1.1rem', margin: 0 }}>{error}</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxWidth: '400px', textAlign: 'left', marginTop: '10px' }}>
-                <label style={{ fontSize: '0.8rem', color: '#c8a2c8', fontWeight: '600' }}>Custom Spring Boot API Endpoint:</label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <input 
-                    type="text" 
-                    defaultValue={apiService.getApiBaseUrl()} 
-                    id="portal-custom-api-url"
-                    className="form-input"
-                    style={{ flex: 1, padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(200,162,200,0.3)', background: 'rgba(26,18,38,0.8)', color: '#fff', fontSize: '0.9rem', outline: 'none', margin: 0 }}
-                  />
-                  <button 
-                    onClick={() => {
-                      const val = document.getElementById('portal-custom-api-url').value;
-                      apiService.setApiBaseUrl(val);
-                      fetchProperties();
-                    }}
-                    className="btn-gold"
-                    style={{ padding: '10px 20px', borderRadius: '8px', background: 'linear-gradient(135deg, #FFD700, #FFA500)', color: '#000', fontWeight: 'bold', cursor: 'pointer', border: 'none', fontSize: '0.9rem', margin: 0 }}
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : properties.length === 0 ? (
-            <div className="empty-state">
-              <p>No premium properties match your criteria at this moment. Adjust your filters or click a corridor card.</p>
-            </div>
-          ) : (
+          {activeSection === 'listings' && (
             <>
-              <div className="properties-grid">
-                {properties.map(property => (
-                  <PropertyCard 
-                    key={property.id}
-                    property={property}
-                    isHnwiMode={isHnwiMode}
-                    isCompared={selectedForCompare.some(p => p.id === property.id)}
-                    formatPrice={formatPrice}
-                    onToggleCompare={handleToggleCompare}
-                    onOpenRera={handleOpenReraDrawer}
-                    onOpenWalkthrough={handleOpenWalkthrough}
-                    onOpen3DTour={handleOpen3DTour}
-                    onOpenChauffeur={(p) => { setSelectedChauffeurProp(p); setIsChauffeurModalOpen(true); }}
-                    getLocationScorecard={getLocationScorecard}
-                    getLandmarks={getLandmarks}
-                  />
-                ))}
-              </div>
+              {/* Dynamic Advanced Filtering */}
+              <section className="filter-section" id="listings-anchor">
+                <h2 className="filter-title">
+                  <Search size={18} />
+                  Refine Your Property Search
+                </h2>
+                <form onSubmit={handleApplyFilters} className="filter-grid">
+                  <div className="form-group">
+                    <label className="form-label">Location Corridor</label>
+                    <select name="location" value={filters.location} onChange={handleFilterChange} className="form-input">
+                      <option value="">All Pune West Corridors</option>
+                      <option value="HINJEWADI">Hinjewadi IT Zone</option>
+                      <option value="WAKAD">Wakad Junction</option>
+                      <option value="BANER">Baner Tech Corridor</option>
+                      <option value="BALEWADI">Balewadi High Street</option>
+                      <option value="TATHAWADE">Tathawade Hub</option>
+                      <option value="MAHALUNGE">Mahalunge Township</option>
+                    </select>
+                  </div>
 
-              {/* Pagination controls */}
-              {totalPages > 1 && (
-                <div className="pagination-wrapper" style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '30px' }}>
+                  <div className="form-group">
+                    <label className="form-label">Property Typology</label>
+                    <select name="propertyType" value={filters.propertyType} onChange={handleFilterChange} className="form-input">
+                      <option value="">All Types (Res. & Com.)</option>
+                      <option value="RESIDENTIAL">Residential Apartments</option>
+                      <option value="COMMERCIAL">Commercial Workspaces</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Transaction</label>
+                    <select name="transactionType" value={filters.transactionType} onChange={handleFilterChange} className="form-input">
+                      <option value="">Buy & Rent Inventory</option>
+                      <option value="BUY">For Sale (Direct Purchase)</option>
+                      <option value="RENT">To Rent (Monthly Yield)</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Bedrooms (BHK)</label>
+                    <select name="bedrooms" value={filters.bedrooms} onChange={handleFilterChange} className="form-input">
+                      <option value="">Any Layout</option>
+                      <option value="1">1 BHK Layout</option>
+                      <option value="2">2 BHK Smart layout</option>
+                      <option value="3">3 BHK Premium layout</option>
+                      <option value="4">4 BHK Penthouse/Elite</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Furnishing</label>
+                    <select name="furnishingStatus" value={filters.furnishingStatus} onChange={handleFilterChange} className="form-input">
+                      <option value="">Any furnishing</option>
+                      <option value="FULLY_FURNISHED">Fully Furnished</option>
+                      <option value="SEMI_FURNISHED">Semi Furnished</option>
+                      <option value="UNFURNISHED">Unfurnished</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group" style={{ display: 'flex', gap: '10px', alignItems: 'end' }}>
+                    <button type="submit" className="btn-gold" style={{ flexGrow: 1, height: '42px', justifyContent: 'center' }}>
+                      Apply Filter
+                    </button>
+                    <button type="button" onClick={handleResetFilters} className="btn-outline" style={{ height: '42px', padding: '0 15px' }} title="Reset Filters">
+                      Reset
+                    </button>
+                  </div>
+                </form>
+              </section>
+
+              {/* Listings Header Row */}
+              <div className="listings-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+                <span className="total-found-badge">
+                  🏢 {totalElements} Verified listings found in {filters.location || 'Pune West'}
+                </span>
+                
+                {/* Horizontal Transaction Subtabs */}
+                <div style={{ display: 'flex', gap: '5px' }}>
                   <button 
-                    disabled={page === 0} 
-                    onClick={() => setPage(prev => Math.max(0, prev - 1))}
-                    className="btn-outline"
-                    style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                    onClick={() => handleCollectionChange('ALL')} 
+                    className={`btn-subtab ${activeCollection === 'ALL' ? 'active' : ''}`}
                   >
-                    Previous
+                    All Luxury
                   </button>
-                  <span style={{ color: 'var(--text-light)', display: 'flex', alignItems: 'center', fontSize: '0.9rem' }}>
-                    Page {page + 1} of {totalPages}
-                  </span>
                   <button 
-                    disabled={page >= totalPages - 1} 
-                    onClick={() => setPage(prev => prev + 1)}
-                    className="btn-outline"
-                    style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                    onClick={() => handleCollectionChange('SKY_PENTHOUSE')} 
+                    className={`btn-subtab ${activeCollection === 'SKY_PENTHOUSE' ? 'active' : ''}`}
                   >
-                    Next
+                    Penthouse Portfolio
+                  </button>
+                  <button 
+                    onClick={() => handleCollectionChange('READY_TO_MOVE')} 
+                    className={`btn-subtab ${activeCollection === 'READY_TO_MOVE' ? 'active' : ''}`}
+                  >
+                    Ready-To-Move
+                  </button>
+                  <button 
+                    onClick={() => handleCollectionChange('TECH_OFFICE')} 
+                    className={`btn-subtab ${activeCollection === 'TECH_OFFICE' ? 'active' : ''}`}
+                  >
+                    Commercial Assets
                   </button>
                 </div>
+              </div>
+
+              {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
+                  <Loader className="animate-spin" size={40} color="#D4AF37" />
+                </div>
+              ) : error ? (
+                <div className="error-card">{error}</div>
+              ) : properties.length === 0 ? (
+                <div className="empty-state">
+                  <p>No premium properties match the filter configuration.</p>
+                  <button onClick={handleResetFilters} className="btn-gold" style={{ marginTop: '10px' }}>Reset Filters</button>
+                </div>
+              ) : (
+                <>
+                  <div className="properties-grid">
+                    {properties.map((property) => {
+                      const inCompare = selectedForCompare.some(p => p.id === property.id);
+                      return (
+                        <div 
+                          key={property.id} 
+                          className="property-card"
+                          onClick={() => handlePropertyClick(property)}
+                        >
+                          <div 
+                            className="property-card-image"
+                            style={{ backgroundImage: `url('${property.imageUrl || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80"}')` }}
+                          >
+                            <div className="card-top-badges">
+                              <span className="location-badge">{property.location}</span>
+                              <span className="type-badge">{property.propertyType}</span>
+                            </div>
+
+                            <div className="card-bottom-badges">
+                              {property.verifiedListing && <span className="premium-badge-v"><ShieldCheck size={11} /> Verified</span>}
+                              {property.exclusiveDeal && <span className="premium-badge-e"><Award size={11} /> Exclusive</span>}
+                            </div>
+                          </div>
+
+                          <div className="property-card-content">
+                            <h3 className="property-title">{property.title}</h3>
+                            <p className="property-address">{property.address}</p>
+
+                            <div className="property-specs">
+                              <span>🛏️ {property.bedrooms} BHK</span>
+                              <span>🛁 {property.bathrooms} Baths</span>
+                              <span>📐 {property.areaSquareFeet} sqft</span>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', margin: '10px 0' }}>
+                              <span style={{ fontSize: '0.68rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '2px 6px', borderRadius: '4px' }}>
+                                {property.furnishingStatus?.replace('_', ' ')}
+                              </span>
+                              {property.gasPipeline && (
+                                <span style={{ fontSize: '0.68rem', background: 'rgba(46,196,182,0.1)', color: '#2ec4b6', padding: '2px 6px', borderRadius: '4px' }}>
+                                  Gas Pipeline
+                                </span>
+                              )}
+                            </div>
+
+                            {property.society && (
+                              <div style={{ fontSize: '0.75rem', color: 'var(--gold-primary)', margin: '4px 0 8px 0', fontWeight: 600 }}>
+                                🏢 Society: {property.society.name}
+                              </div>
+                            )}
+
+                            <div className="property-price-row">
+                              <span className="price-tag">{formatPrice(property.price, property.transactionType)}</span>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button 
+                                  onClick={(e) => { e.stopPropagation(); handleToggleCompare(property); }}
+                                  className={`btn-icon-action ${inCompare ? 'active' : ''}`}
+                                  title="Add to Compare List"
+                                >
+                                  ⚖️
+                                </button>
+                                <button 
+                                  onClick={(e) => { e.stopPropagation(); handleOpen3DTour(property); }}
+                                  className="btn-icon-action"
+                                  title="Launch 3D Virtual Tour"
+                                >
+                                  👓
+                                </button>
+                                <button 
+                                  onClick={(e) => { e.stopPropagation(); handleOpenWalkthrough(property); }}
+                                  className="btn-icon-action"
+                                  title="Watch Video Tour"
+                                >
+                                  🎥
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {totalPages > 1 && (
+                    <div className="pagination" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '30px' }}>
+                      <button 
+                        disabled={page === 0} 
+                        onClick={() => setPage(prev => Math.max(0, prev - 1))}
+                        className="btn-outline"
+                        style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                      >
+                        Previous
+                      </button>
+                      <span style={{ color: 'var(--text-light)', display: 'flex', alignItems: 'center', fontSize: '0.9rem' }}>
+                        Page {page + 1} of {totalPages}
+                      </span>
+                      <button 
+                        disabled={page >= totalPages - 1} 
+                        onClick={() => setPage(prev => prev + 1)}
+                        className="btn-outline"
+                        style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
+
+              {/* Grayscale Closed Deals FOMO Section */}
+              <section className="closed-deals-section" style={{ marginTop: '50px', borderTop: '1px solid var(--border-muted)', paddingTop: '40px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#888', marginBottom: '16px' }}>
+                  <Lock size={18} />
+                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, letterSpacing: '0.05em' }}>RECENTLY CLOSED TRANSACTIONS</h3>
+                </div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '24px', lineHeight: 1.5 }}>
+                  Advisory records of successfully completed property assignments. Grayscale display signifies unavailable listings. Enquire for similar configurations.
+                </p>
+
+                {closedLoading ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}><Loader className="animate-spin" size={24} color="#888" /></div>
+                ) : closedProperties.length === 0 ? (
+                  <div className="empty-state" style={{ color: '#888', borderStyle: 'dashed' }}><p>No recently closed records loaded.</p></div>
+                ) : (
+                  <div className="closed-deals-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
+                    {closedProperties.map(p => (
+                      <div key={p.id} className="closed-deal-card" style={{ filter: 'grayscale(100%)', opacity: 0.6, border: '1px solid var(--border-muted)', borderRadius: '8px', overflow: 'hidden', background: 'rgba(255,255,255,0.02)' }}>
+                        <div style={{ height: '140px', backgroundImage: `url('${p.imageUrl || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80"}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                          <span style={{ position: 'absolute', bottom: '10px', left: '10px', background: '#000', color: '#fff', fontSize: '0.65rem', padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>
+                            {p.status}
+                          </span>
+                        </div>
+                        <div style={{ padding: '12px' }}>
+                          <h4 style={{ margin: '0 0 6px 0', fontSize: '0.9rem', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</h4>
+                          <p style={{ margin: 0, fontSize: '0.75rem', color: '#888' }}>Location: {p.location} Corridor</p>
+                          <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', fontWeight: 600, color: 'var(--gold-primary)' }}>{formatPrice(p.price, p.transactionType)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
             </>
           )}
 
-          {/* Grayscale Closed Deals FOMO Section */}
-          <section className="closed-deals-section" style={{ marginTop: '50px', borderTop: '1px solid var(--border-muted)', paddingTop: '40px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#888', marginBottom: '16px' }}>
-              <Lock size={18} />
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, letterSpacing: '0.05em' }}>RECENTLY CLOSED TRANSACTIONS</h3>
-            </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '24px', lineHeight: 1.5 }}>
-              Advisory records of successfully completed property assignments. Grayscale display signifies unavailable listings. Enquire for similar configurations.
-            </p>
+          {activeSection === 'societies' && (
+            selectedSocietyDetail ? (
+              <div style={{ animation: 'fadeIn 0.3s forwards' }}>
+                <button 
+                  onClick={() => setSelectedSocietyDetail(null)} 
+                  className="btn-outline" 
+                  style={{ marginBottom: '20px', padding: '8px 16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', border: '1px solid var(--border-gold)', borderRadius: '4px', background: 'rgba(255,255,255,0.02)', color: 'var(--text-light)' }}
+                >
+                  ← Back to Societies
+                </button>
 
-            {closedLoading ? (
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}><Loader className="animate-spin" size={24} color="#888" /></div>
-            ) : closedProperties.length === 0 ? (
-              <div className="empty-state" style={{ color: '#888', borderStyle: 'dashed' }}><p>No recently closed records loaded.</p></div>
-            ) : (
-              <div className="closed-deals-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
-                {closedProperties.map(p => (
-                  <div key={p.id} className="closed-deal-card" style={{ filter: 'grayscale(100%)', opacity: 0.6, border: '1px solid var(--border-muted)', borderRadius: '8px', overflow: 'hidden', background: 'rgba(255,255,255,0.02)' }}>
-                    <div style={{ height: '140px', backgroundImage: `url('${p.imageUrl || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80"}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                      <span style={{ position: 'absolute', bottom: '10px', left: '10px', background: '#000', color: '#fff', fontSize: '0.65rem', padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>
-                        {p.status}
-                      </span>
+                <div className="exclusive-details-card" style={{ border: '1px solid var(--border-gold)', background: 'radial-gradient(circle at top left, rgba(21, 34, 56, 0.9) 0%, rgba(7, 15, 30, 0.95) 100%)', borderRadius: '12px', padding: '24px', marginBottom: '30px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '15px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <h3 style={{ margin: '0 0 4px 0', fontSize: '1.6rem', color: 'var(--text-light)' }}>{selectedSocietyDetail.name}</h3>
+                      <span style={{ fontSize: '0.78rem', background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>{selectedSocietyDetail.location} Corridor</span>
+                      <p style={{ margin: '6px 0 0 0', fontSize: '0.9rem', color: 'var(--gold-primary)' }}>Developer: {selectedSocietyDetail.developer}</p>
                     </div>
-                    <div style={{ padding: '12px' }}>
-                      <h4 style={{ margin: '0 0 6px 0', fontSize: '0.9rem', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</h4>
-                      <p style={{ margin: 0, fontSize: '0.75rem', color: '#888' }}>Location: {p.location} Corridor</p>
-                      <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', fontWeight: 600, color: 'var(--gold-primary)' }}>{formatPrice(p.price, p.transactionType)}</p>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block' }}>Valuation Starts At</span>
+                      <strong style={{ fontSize: '1.5rem', color: 'var(--gold-primary)' }}>{formatPrice(selectedSocietyDetail.startingPrice)}</strong>
                     </div>
                   </div>
-                ))}
+
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '20px' }}>
+                    {selectedSocietyDetail.overview}
+                  </p>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '20px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>RERA Index ID</span>
+                      <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{selectedSocietyDetail.reraNumber}</strong>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Project Status</span>
+                      <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{selectedSocietyDetail.projectStatus?.replace(/_/g, ' ')}</strong>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Possession Date</span>
+                      <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{selectedSocietyDetail.possessionDate || 'Immediate'}</strong>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Configurations</span>
+                      <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{selectedSocietyDetail.configuration || '2 & 3 BHK'}</strong>
+                    </div>
+                  </div>
+
+                  {selectedSocietyDetail.amenities && (
+                    <div style={{ marginBottom: '20px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', marginBottom: '8px' }}>Exclusive Club Amenities</span>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {selectedSocietyDetail.amenities.split(',').map(am => (
+                          <span key={am} style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.04)', color: 'var(--text-light)', padding: '4px 10px', borderRadius: '4px', border: '1px solid var(--border-muted)' }}>
+                            ✨ {am.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '20px' }}>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>IT Parks Commute</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{selectedSocietyDetail.nearbyItParks || 'Nearby Hinjewadi IT Corridors'}</span>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Transit & Metro</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{selectedSocietyDetail.nearbyMetro || 'Wakad/Hinjewadi Metro lines'}</span>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Elite Academies</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{selectedSocietyDetail.nearbySchools || 'Top schools and academies'}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', borderTop: '1px solid var(--border-muted)', paddingTop: '15px' }}>
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                      <div style={{ background: 'rgba(46,196,182,0.06)', border: '1px solid rgba(46,196,182,0.15)', borderRadius: '6px', padding: '8px 12px', textAlign: 'center' }}>
+                        <span style={{ fontSize: '0.62rem', color: '#2ec4b6', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Investment Score</span>
+                        <strong style={{ fontSize: '1.1rem', color: '#2ec4b6' }}>{selectedSocietyDetail.investmentScore || 85}/100</strong>
+                      </div>
+                      <div style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '6px', padding: '8px 12px', textAlign: 'center' }}>
+                        <span style={{ fontSize: '0.62rem', color: 'var(--gold-primary)', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Avg Rental Yield</span>
+                        <strong style={{ fontSize: '1.1rem', color: 'var(--gold-primary)' }}>{selectedSocietyDetail.rentalYield || '4.0'}%</strong>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={() => {
+                        setSelectedChauffeurProp({ title: `${selectedSocietyDetail.name} Site Inspection`, id: selectedSocietyDetail.id, price: selectedSocietyDetail.startingPrice, location: selectedSocietyDetail.location });
+                        setIsChauffeurModalOpen(true);
+                      }} 
+                      className="btn-gold" 
+                      style={{ padding: '10px 20px', fontSize: '0.85rem' }}
+                    >
+                      Enquire About Society Listings
+                    </button>
+                  </div>
+                </div>
+
+                {/* Society Listings */}
+                <div style={{ marginTop: '30px' }}>
+                  <h4 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', marginBottom: '15px', borderBottom: '1px solid var(--border-gold)', paddingBottom: '6px' }}>
+                    🏢 Active Inventory in {selectedSocietyDetail.name}
+                  </h4>
+                  {properties.filter(p => p.society && p.society.id === selectedSocietyDetail.id).length === 0 ? (
+                    <div className="empty-state" style={{ padding: '30px', borderStyle: 'dashed' }}>
+                      <p style={{ margin: 0 }}>Currently no active listings are registered for this society. Contact our desk for off-market units.</p>
+                      <button 
+                        onClick={() => {
+                          setSelectedChauffeurProp({ title: `${selectedSocietyDetail.name} Off-Market Listings`, id: selectedSocietyDetail.id, price: selectedSocietyDetail.startingPrice, location: selectedSocietyDetail.location });
+                          setIsChauffeurModalOpen(true);
+                        }}
+                        className="btn-gold" 
+                        style={{ marginTop: '10px', padding: '6px 12px', fontSize: '0.75rem' }}
+                      >
+                        Request Off-Market Info
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="properties-grid">
+                      {properties.filter(p => p.society && p.society.id === selectedSocietyDetail.id).map(property => (
+                        <div key={property.id} className="property-card" onClick={() => handlePropertyClick(property)}>
+                          <div className="property-card-image" style={{ height: '140px', backgroundImage: `url('${property.imageUrl || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80"}')` }}>
+                            <div className="card-top-badges">
+                              <span className="location-badge" style={{ fontSize: '0.65rem' }}>{property.location}</span>
+                            </div>
+                          </div>
+                          <div style={{ padding: '10px' }}>
+                            <h5 style={{ margin: '0 0 4px 0', fontSize: '0.85rem', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{property.title}</h5>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>{property.bedrooms} BHK | {property.areaSquareFeet} SqFt</p>
+                            <strong style={{ display: 'block', margin: '4px 0 0 0', fontSize: '0.85rem', color: 'var(--gold-primary)' }}>{formatPrice(property.price, property.transactionType)}</strong>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </section>
+            ) : (
+              <div style={{ animation: 'fadeIn 0.3s forwards' }}>
+                <h2 className="luxury-title" style={{ fontSize: '1.6rem', marginBottom: '8px' }}>⚜️ Premium Societies & Townships Index</h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.5 }}>
+                  Discover tier-1 residential developments, integrated smart townships, and luxury high-rise communities across Pune West's growth corridors. Direct developer mandates with 0% brokerage.
+                </p>
+
+                {directoriesLoading ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+                    <Loader className="animate-spin" size={32} color="#D4AF37" />
+                  </div>
+                ) : societies.length === 0 ? (
+                  <div className="empty-state">No societies data loaded. Check connection.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                    {societies.map(soc => (
+                      <div key={soc.id} className="exclusive-details-card" style={{ border: '1px solid var(--border-gold)', background: 'rgba(7,15,30,0.7)', borderRadius: '12px', padding: '24px', position: 'relative' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '15px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '16px', marginBottom: '16px' }}>
+                          <div>
+                            <h3 
+                              onClick={() => setSelectedSocietyDetail(soc)}
+                              style={{ margin: '0 0 4px 0', fontSize: '1.3rem', color: 'var(--text-light)', cursor: 'pointer', textDecoration: 'underline' }}
+                            >
+                              {soc.name}
+                            </h3>
+                            <span style={{ fontSize: '0.78rem', background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>{soc.location} Corridor</span>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block' }}>Valuation Starts At</span>
+                            <strong style={{ fontSize: '1.25rem', color: 'var(--gold-primary)' }}>{formatPrice(soc.startingPrice)}</strong>
+                          </div>
+                        </div>
+
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '20px' }}>
+                          {soc.overview}
+                        </p>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '20px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                          <div>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>RERA Index ID</span>
+                            <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{soc.reraNumber}</strong>
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Project Status</span>
+                            <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{soc.projectStatus?.replace(/_/g, ' ')}</strong>
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Possession Date</span>
+                            <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{soc.possessionDate || 'Immediate'}</strong>
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Configurations</span>
+                            <strong style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{soc.configuration || '2 & 3 BHK'}</strong>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+                          <div style={{ display: 'flex', gap: '15px' }}>
+                            <div style={{ background: 'rgba(46,196,182,0.06)', border: '1px solid rgba(46,196,182,0.15)', borderRadius: '6px', padding: '8px 12px', textAlign: 'center' }}>
+                              <span style={{ fontSize: '0.62rem', color: '#2ec4b6', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Investment Score</span>
+                              <strong style={{ fontSize: '1.1rem', color: '#2ec4b6' }}>{soc.investmentScore || 85}/100</strong>
+                            </div>
+                            <div style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '6px', padding: '8px 12px', textAlign: 'center' }}>
+                              <span style={{ fontSize: '0.62rem', color: 'var(--gold-primary)', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Avg Rental Yield</span>
+                              <strong style={{ fontSize: '1.1rem', color: 'var(--gold-primary)' }}>{soc.rentalYield || '4.0'}%</strong>
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <button 
+                              onClick={() => setSelectedSocietyDetail(soc)} 
+                              className="btn-outline" 
+                              style={{ padding: '10px 20px', fontSize: '0.85rem' }}
+                            >
+                              Explore Details & Inventory
+                            </button>
+                            <button 
+                              onClick={() => {
+                                setSelectedChauffeurProp({ title: `${soc.name} Site Inspection`, id: soc.id, price: soc.startingPrice, location: soc.location });
+                                setIsChauffeurModalOpen(true);
+                              }} 
+                              className="btn-gold" 
+                              style={{ padding: '10px 20px', fontSize: '0.85rem' }}
+                            >
+                              Enquire
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          )}
+
+          {activeSection === 'builders' && (
+            selectedBuilderDetail ? (
+              <div style={{ animation: 'fadeIn 0.3s forwards' }}>
+                <button 
+                  onClick={() => setSelectedBuilderDetail(null)} 
+                  className="btn-outline" 
+                  style={{ marginBottom: '20px', padding: '8px 16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', border: '1px solid var(--border-gold)', borderRadius: '4px', background: 'rgba(255,255,255,0.02)', color: 'var(--text-light)' }}
+                >
+                  ← Back to Developers
+                </button>
+
+                <div className="exclusive-details-card" style={{ border: '1px solid var(--border-gold)', background: 'rgba(7,15,30,0.85)', borderRadius: '12px', padding: '24px', marginBottom: '30px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-gold)', paddingBottom: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: '1.6rem', color: 'var(--text-light)', fontFamily: 'var(--font-title)' }}>{selectedBuilderDetail.name}</h3>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--gold-primary)', fontWeight: 'bold' }}>⚜️ Preferred Partner Developer</span>
+                    </div>
+                    {selectedBuilderDetail.awards && (
+                      <div style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid var(--gold-primary)', color: 'var(--gold-primary)', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600 }}>
+                        🏆 {selectedBuilderDetail.awards}
+                      </div>
+                    )}
+                  </div>
+
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: '20px' }}>
+                    {selectedBuilderDetail.description}
+                  </p>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', textAlign: 'center', marginBottom: '25px', padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                    <div>
+                      <strong style={{ fontSize: '1.4rem', color: 'var(--gold-primary)', display: 'block' }}>{selectedBuilderDetail.experienceYears || '20'}+</strong>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Years Experience</span>
+                    </div>
+                    <div>
+                      <strong style={{ fontSize: '1.4rem', color: 'var(--text-light)', display: 'block' }}>{selectedBuilderDetail.completedProjectsCount || '40'}+</strong>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Projects Delivered</span>
+                    </div>
+                    <div>
+                      <strong style={{ fontSize: '1.4rem', color: 'var(--text-light)', display: 'block' }}>{selectedBuilderDetail.ongoingProjectsCount || '6'} Active</strong>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Ongoing</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                      Active projects developed: <strong>{societies.filter(s => s.developer === selectedBuilderDetail.name || s.builder?.name === selectedBuilderDetail.name).length} Gated Communities</strong>
+                    </span>
+                    <button 
+                      onClick={() => {
+                        setVipForm({ name: '', phone: '' });
+                        setCountdown(60);
+                        showNotification(`Consultation scheduled for developer ${selectedBuilderDetail.name}. Relationship Manager is connecting.`);
+                      }} 
+                      className="btn-gold"
+                      style={{ padding: '8px 16px', fontSize: '0.82rem' }}
+                    >
+                      Request Developer Consultation
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '30px' }}>
+                  <h4 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', marginBottom: '15px', borderBottom: '1px solid var(--border-gold)', paddingBottom: '6px' }}>
+                    🏢 Townships Developed by {selectedBuilderDetail.name}
+                  </h4>
+                  {societies.filter(s => s.developer === selectedBuilderDetail.name || s.builder?.name === selectedBuilderDetail.name).length === 0 ? (
+                    <div className="empty-state">No gated townships currently listed for this developer.</div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                      {societies.filter(s => s.developer === selectedBuilderDetail.name || s.builder?.name === selectedBuilderDetail.name).map(soc => (
+                        <div key={soc.id} className="exclusive-details-card" style={{ border: '1px solid var(--border-muted)', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+                          <div>
+                            <h5 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', color: '#fff' }}>{soc.name}</h5>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>📍 Location: {soc.location} Corridor</span>
+                          </div>
+                          <button 
+                            onClick={() => { setSelectedSocietyDetail(soc); setActiveSection('societies'); }}
+                            className="btn-gold" 
+                            style={{ padding: '8px 16px', fontSize: '0.8rem' }}
+                          >
+                            Explore Society
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div style={{ animation: 'fadeIn 0.3s forwards' }}>
+                <h2 className="luxury-title" style={{ fontSize: '1.6rem', marginBottom: '8px' }}>⚜️ Tier-1 Authorized Developers</h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.5 }}>
+                  Partnered developer profiles. We coordinate directly with developer core offices to negotiate institutional prices, priority allotments, and zero brokerage terms.
+                </p>
+
+                {directoriesLoading ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+                    <Loader className="animate-spin" size={32} color="#D4AF37" />
+                  </div>
+                ) : builders.length === 0 ? (
+                  <div className="empty-state">No developer profiles loaded. Check connection.</div>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '25px' }}>
+                    {builders.map(bld => (
+                      <div key={bld.id} className="exclusive-details-card" style={{ border: '1px solid var(--border-gold)', background: 'rgba(7,15,30,0.7)', borderRadius: '12px', padding: '24px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-muted)', paddingBottom: '16px', marginBottom: '16px' }}>
+                          <h3 
+                            onClick={() => setSelectedBuilderDetail(bld)}
+                            style={{ margin: 0, fontSize: '1.25rem', color: 'var(--text-light)', cursor: 'pointer', textDecoration: 'underline' }}
+                          >
+                            {bld.name}
+                          </h3>
+                          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px' }}>Est. Partner</span>
+                        </div>
+
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '20px' }}>
+                          {bld.description}
+                        </p>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', textAlign: 'center', marginBottom: '20px', padding: '12px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+                          <div>
+                            <strong style={{ fontSize: '1.2rem', color: 'var(--gold-primary)', display: 'block' }}>{bld.experienceYears || '20'}+</strong>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Years Experience</span>
+                          </div>
+                          <div>
+                            <strong style={{ fontSize: '1.2rem', color: 'var(--text-light)', display: 'block' }}>{bld.completedProjectsCount || '35'}+</strong>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Projects Delivered</span>
+                          </div>
+                          <div>
+                            <strong style={{ fontSize: '1.2rem', color: 'var(--text-light)', display: 'block' }}>{bld.ongoingProjectsCount || '8'} Active</strong>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Under Construction</span>
+                          </div>
+                        </div>
+
+                        {bld.awards && (
+                          <div style={{ fontSize: '0.8rem', color: 'var(--gold-primary)', marginBottom: '20px', background: 'rgba(212,175,55,0.05)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid var(--gold-primary)' }}>
+                            🏆 {bld.awards}
+                          </div>
+                        )}
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                            Active Projects: <strong>{societies.filter(s => s.developer === bld.name || s.builder?.name === bld.name).length} Listed</strong>
+                          </span>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <button 
+                              onClick={() => setSelectedBuilderDetail(bld)} 
+                              className="btn-outline" 
+                              style={{ padding: '8px 16px', fontSize: '0.82rem' }}
+                            >
+                              Explore Projects
+                            </button>
+                            <button 
+                              onClick={() => {
+                                setVipForm({ name: '', phone: '' });
+                                setCountdown(60);
+                                showNotification(`Advisory session requested for developer ${bld.name}. RM connecting.`);
+                              }} 
+                              className="btn-gold" 
+                              style={{ padding: '8px 16px', fontSize: '0.82rem' }}
+                            >
+                              Consult
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          )}
+
+          {activeSection === 'localities' && (
+            selectedLocalityDetail ? (
+              <div style={{ animation: 'fadeIn 0.3s forwards' }}>
+                <button 
+                  onClick={() => setSelectedLocalityDetail(null)} 
+                  className="btn-outline" 
+                  style={{ marginBottom: '20px', padding: '8px 16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', border: '1px solid var(--border-gold)', borderRadius: '4px', background: 'rgba(255,255,255,0.02)', color: 'var(--text-light)' }}
+                >
+                  ← Back to Locality Guides
+                </button>
+
+                <div className="exclusive-details-card" style={{ border: '1px solid var(--border-gold)', background: 'rgba(7,15,30,0.85)', borderRadius: '12px', padding: '24px', marginBottom: '30px' }}>
+                  <div style={{ borderBottom: '1px solid var(--border-gold)', paddingBottom: '16px', marginBottom: '16px' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.6rem', color: 'var(--text-light)', fontFamily: 'var(--font-title)' }}>{selectedLocalityDetail.name} Corridor Guide</h3>
+                  </div>
+
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: '20px' }}>
+                    {selectedLocalityDetail.overview}
+                  </p>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '25px' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                      <strong style={{ color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '6px' }}>🚗 Connectivity</strong>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.connectivityInfo}</span>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                      <strong style={{ color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '6px' }}>🎓 Schools</strong>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.schools}</span>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                      <strong style={{ color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '6px' }}>🏥 Healthcare</strong>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.hospitals}</span>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
+                      <strong style={{ color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '6px' }}>📈 Investment</strong>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.investmentAnalysis} (Demand: {selectedLocalityDetail.rentalDemand})</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#2ec4b6' }}>
+                      🚇 Metro Lines: <strong>{selectedLocalityDetail.metroConnectivity || 'Active planning'}</strong>
+                    </span>
+                    <button 
+                      onClick={() => {
+                        setVipForm({ name: '', phone: '' });
+                        setCountdown(60);
+                        showNotification(`Locality investment report requested for ${selectedLocalityDetail.name}. Connecting Director.`);
+                      }} 
+                      className="btn-gold"
+                      style={{ padding: '8px 16px', fontSize: '0.82rem' }}
+                    >
+                      Request Locality Advisory Report
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '30px' }}>
+                  <h4 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', marginBottom: '15px', borderBottom: '1px solid var(--border-gold)', paddingBottom: '6px' }}>
+                    🏢 Premium Townships in {selectedLocalityDetail.name}
+                  </h4>
+                  {societies.filter(s => s.location?.toString().toUpperCase() === selectedLocalityDetail.slug?.toUpperCase() || s.location?.toString().toUpperCase() === selectedLocalityDetail.name?.toUpperCase()).length === 0 ? (
+                    <div className="empty-state">No gated townships currently listed in this corridor.</div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                      {societies.filter(s => s.location?.toString().toUpperCase() === selectedLocalityDetail.slug?.toUpperCase() || s.location?.toString().toUpperCase() === selectedLocalityDetail.name?.toUpperCase()).map(soc => (
+                        <div key={soc.id} className="exclusive-details-card" style={{ border: '1px solid var(--border-muted)', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+                          <div>
+                            <h5 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', color: '#fff' }}>{soc.name}</h5>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Developed by {soc.developer}</span>
+                          </div>
+                          <button 
+                            onClick={() => { setSelectedSocietyDetail(soc); setActiveSection('societies'); }}
+                            className="btn-gold" 
+                            style={{ padding: '8px 16px', fontSize: '0.8rem' }}
+                          >
+                            Explore Society
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div style={{ animation: 'fadeIn 0.3s forwards' }}>
+                <h2 className="luxury-title" style={{ fontSize: '1.6rem', marginBottom: '8px' }}>⚜️ Pune West Corridor Connectivity & Locality Guides</h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.5 }}>
+                  Understand connectivity indexes, civic infrastructure, upcoming metro networks, and investment appreciation cagrs before buying or renting.
+                </p>
+
+                {directoriesLoading ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+                    <Loader className="animate-spin" size={32} color="#D4AF37" />
+                  </div>
+                ) : localities.length === 0 ? (
+                  <div className="empty-state">No locality guides data loaded. Check connection.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                    {localities.map(loc => (
+                      <div key={loc.id} className="exclusive-details-card" style={{ border: '1px solid var(--border-gold)', background: 'rgba(7,15,30,0.7)', borderRadius: '12px', padding: '24px' }}>
+                        <h3 
+                          onClick={() => setSelectedLocalityDetail(loc)}
+                          style={{ margin: '0 0 10px 0', fontSize: '1.3rem', color: 'var(--text-light)', borderBottom: '1px solid var(--border-muted)', paddingBottom: '10px', cursor: 'pointer', textDecoration: 'underline' }}
+                        >
+                          {loc.name} Locality Profile
+                        </h3>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '20px' }}>
+                          {loc.overview}
+                        </p>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '20px' }}>
+                          <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
+                            <span style={{ fontWeight: 'bold', color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>🚗 Connectivity & Transit</span>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{loc.connectivityInfo}</span>
+                          </div>
+                          <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
+                            <span style={{ fontWeight: 'bold', color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>🎓 Elite Educational Academies</span>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{loc.schools}</span>
+                          </div>
+                          <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
+                            <span style={{ fontWeight: 'bold', color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>🏥 Healthcare Establishments</span>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{loc.hospitals}</span>
+                          </div>
+                          <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
+                            <span style={{ fontWeight: 'bold', color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>📈 Investment Analysis & Yields</span>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{loc.investmentAnalysis} ({loc.rentalDemand})</span>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+                          <span style={{ fontSize: '0.8rem', color: '#2ec4b6' }}>
+                            🚇 Metro Lines: <strong>{loc.metroConnectivity || 'Under active layout planning'}</strong>
+                          </span>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <button 
+                              onClick={() => setSelectedLocalityDetail(loc)} 
+                              className="btn-outline" 
+                              style={{ padding: '8px 16px', fontSize: '0.82rem' }}
+                            >
+                              Explore Locality
+                            </button>
+                            <button 
+                              onClick={() => {
+                                setVipForm({ name: '', phone: '' });
+                                setCountdown(60);
+                                showNotification(`Locality investment report requested for ${loc.name}. Connecting Director...`);
+                              }} 
+                              className="btn-gold" 
+                              style={{ padding: '8px 16px', fontSize: '0.82rem' }}
+                            >
+                              Request Report
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          )}
 
         </div>
 

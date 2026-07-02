@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
 import { 
   Users, Home, TrendingUp, Calendar, Trash2, Edit2, Plus, X, 
-  Loader, RefreshCw, Lock, LogOut, Upload, Sparkles, Clock, FileText
+  Loader, RefreshCw, Lock, LogOut, Upload, Sparkles, Clock, FileText, Building
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -15,6 +15,7 @@ import AttendanceTab from './AttendanceTab';
 import LeavesTab from './LeavesTab';
 import PayrollTab from './PayrollTab';
 import LeadDetailsEx from './LeadDetailsEx';
+import SocietiesTab from './SocietiesTab';
 
 export default function Dashboard({ onViewChange }) {
   // Authentication state
@@ -55,6 +56,7 @@ export default function Dashboard({ onViewChange }) {
   const [agentsLoading, setAgentsLoading] = useState(true);
   const [allLeadsForStats, setAllLeadsForStats] = useState([]);
   const [showMatrix, setShowMatrix] = useState(true);
+  const [societies, setSocieties] = useState([]);
   const [propertyForm, setPropertyForm] = useState({
     title: '',
     description: '',
@@ -75,7 +77,8 @@ export default function Dashboard({ onViewChange }) {
     videoUrl: '',
     threeDTourUrl: '',
     furnishingStatus: 'FULLY_FURNISHED',
-    gasPipeline: false
+    gasPipeline: false,
+    societyId: ''
   });
 
   const [formSubmitLoading, setFormSubmitLoading] = useState(false);
@@ -220,6 +223,17 @@ export default function Dashboard({ onViewChange }) {
     }
   };
 
+  // Fetch Societies
+  const fetchSocieties = async () => {
+    if (!isLoggedIn) return;
+    try {
+      const data = await apiService.getSocieties(0, 100);
+      setSocieties(data.content || []);
+    } catch (err) {
+      console.error("Failed to fetch societies list:", err);
+    }
+  };
+
   // Fetch Relationship Managers (Agents)
   const fetchAgents = async () => {
     if (!isLoggedIn) return;
@@ -245,6 +259,7 @@ export default function Dashboard({ onViewChange }) {
       fetchAgents();
       fetchTasks();
       fetchTaskStats();
+      fetchSocieties();
     }
   }, [isLoggedIn, leadPage, propPage, leadFilters, activeTab]);
 
@@ -418,7 +433,8 @@ export default function Dashboard({ onViewChange }) {
       videoUrl: property.videoUrl || '',
       threeDTourUrl: property.threeDTourUrl || '',
       furnishingStatus: property.furnishingStatus || 'FULLY_FURNISHED',
-      gasPipeline: property.gasPipeline || false
+      gasPipeline: property.gasPipeline || false,
+      societyId: property.societyId || ''
     });
     setShowPropForm(true);
   };
@@ -446,7 +462,8 @@ export default function Dashboard({ onViewChange }) {
       videoUrl: '',
       threeDTourUrl: '',
       furnishingStatus: 'FULLY_FURNISHED',
-      gasPipeline: false
+      gasPipeline: false,
+      societyId: ''
     });
   };
 
@@ -638,6 +655,10 @@ export default function Dashboard({ onViewChange }) {
           <button className={activeTab === 'properties' ? 'active' : ''} onClick={() => { setActiveTab('properties'); handleClosePropForm(); }}>
             <Home size={18} />
             <span>Properties Desk</span>
+          </button>
+          <button className={activeTab === 'societies' ? 'active' : ''} onClick={() => { setActiveTab('societies'); handleClosePropForm(); }}>
+            <Building size={18} />
+            <span>Societies & Devs</span>
           </button>
           <button className={activeTab === 'team' ? 'active' : ''} onClick={() => { setActiveTab('team'); handleClosePropForm(); }}>
             <TrendingUp size={18} />
@@ -878,6 +899,7 @@ export default function Dashboard({ onViewChange }) {
               formSubmitLoading={formSubmitLoading}
               onSubmit={handlePropertySubmit}
               onParseText={handleParseListingText}
+              societies={societies}
             />
 
             {propsLoading ? (
@@ -1439,6 +1461,13 @@ export default function Dashboard({ onViewChange }) {
         {activeTab === 'payroll' && (
           <section style={{ animation: 'slideDown 0.3s forwards' }}>
             <PayrollTab />
+          </section>
+        )}
+
+        {/* TAB 9: SOCIETIES & DEVS */}
+        {activeTab === 'societies' && (
+          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+            <SocietiesTab />
           </section>
         )}
       </main>

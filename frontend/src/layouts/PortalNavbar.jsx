@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
-  UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Eye
+  UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Eye, Building
 } from 'lucide-react';
 import ThemeSelector from '../components/ThemeSelector';
 
-export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, onBookVisitClick, exclusiveTab, onTabChange }) {
+export default function PortalNavbar({ 
+  isHnwiMode, 
+  setIsHnwiMode, 
+  onViewChange, 
+  onBookVisitClick, 
+  exclusiveTab, 
+  onTabChange,
+  activeSection,
+  onSectionChange
+}) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <>
       <nav className="luxury-navbar scrolled">
         <div className="nav-container">
-          <a href="#" className="nav-logo">
+          <a href="#" onClick={(e) => { e.preventDefault(); onSectionChange && onSectionChange('listings'); }} className="nav-logo">
             <span className="logo-number">24K REALTORS</span>
             <span className="logo-city-tagline">PUNE • PREMIUM ADVISORY</span>
           </a>
@@ -26,25 +35,55 @@ export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, 
             <span className={isHnwiMode ? 'active-hnwi' : ''} onClick={() => setIsHnwiMode(true)}>Private Office (HNWI)</span>
           </div>
 
-          {/* BUY / RENT / SELL Selector */}
-          <div className="nav-transaction-tabs">
+          {/* Desktop Navigation Links */}
+          <div className="nav-transaction-tabs" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <button 
-              className={exclusiveTab === 'BUY' ? 'active' : ''} 
-              onClick={() => onTabChange && onTabChange('BUY')}
+              className={activeSection === 'listings' && exclusiveTab === 'BUY' ? 'active' : ''} 
+              onClick={() => {
+                onSectionChange && onSectionChange('listings');
+                onTabChange && onTabChange('BUY');
+              }}
             >
               BUY
             </button>
             <button 
-              className={exclusiveTab === 'RENT' ? 'active' : ''} 
-              onClick={() => onTabChange && onTabChange('RENT')}
+              className={activeSection === 'listings' && exclusiveTab === 'RENT' ? 'active' : ''} 
+              onClick={() => {
+                onSectionChange && onSectionChange('listings');
+                onTabChange && onTabChange('RENT');
+              }}
             >
               RENT
             </button>
             <button 
-              className={exclusiveTab === 'SELL' ? 'active' : ''} 
-              onClick={() => onTabChange && onTabChange('SELL')}
+              className={activeSection === 'listings' && exclusiveTab === 'SELL' ? 'active' : ''} 
+              onClick={() => {
+                onSectionChange && onSectionChange('listings');
+                onTabChange && onTabChange('SELL');
+              }}
             >
               SELL
+            </button>
+
+            <span style={{ width: '1px', height: '18px', background: 'rgba(255,255,255,0.15)', margin: '0 4px' }}></span>
+
+            <button 
+              className={activeSection === 'societies' ? 'active' : ''} 
+              onClick={() => onSectionChange && onSectionChange('societies')}
+            >
+              SOCIETIES
+            </button>
+            <button 
+              className={activeSection === 'builders' ? 'active' : ''} 
+              onClick={() => onSectionChange && onSectionChange('builders')}
+            >
+              BUILDERS
+            </button>
+            <button 
+              className={activeSection === 'localities' ? 'active' : ''} 
+              onClick={() => onSectionChange && onSectionChange('localities')}
+            >
+              LOCALITIES
             </button>
           </div>
 
@@ -130,32 +169,57 @@ export default function PortalNavbar({ isHnwiMode, setIsHnwiMode, onViewChange, 
 
           <div className="drawer-section-title">🏢 EXPLORE PORTFOLIOS</div>
           
-          <a href="#listings-anchor" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('listings'); }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
+          >
             <Compass size={18} color="#d4af37" />
             <div className="drawer-item-text">
               <strong>Premium Price Lists</strong>
               <span>Browse Wakad, Baner & Hinjewadi properties</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
-          </a>
+          </button>
 
-          <a href="#listings-anchor" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
-            <Eye size={18} color="#d4af37" />
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('societies'); }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
+          >
+            <Building size={18} color="#d4af37" />
             <div className="drawer-item-text">
-              <strong>Interactive Floor Plans</strong>
-              <span>View architectural layouts and spatial plans</span>
+              <strong>Browse Societies</strong>
+              <span>Check 24K Opula, Altura, township lists</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
-          </a>
+          </button>
 
-          <a href="#corridors" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('builders'); }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
+          >
+            <Award size={18} color="#d4af37" />
+            <div className="drawer-item-text">
+              <strong>Premium Builders</strong>
+              <span>Kolte Patil, Gera developments directory</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" />
+          </button>
+
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('localities'); }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
+          >
             <Info size={18} color="#d4af37" />
             <div className="drawer-item-text">
-              <strong>Why 24K Realtors</strong>
-              <span>Our premium advisory philosophy & corridors</span>
+              <strong>Locality Guides</strong>
+              <span>Hinjewadi, Baner, Wakad connectivity index</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
-          </a>
+          </button>
 
           <div className="drawer-section-title">📄 SELLER DESK SERVICES</div>
           

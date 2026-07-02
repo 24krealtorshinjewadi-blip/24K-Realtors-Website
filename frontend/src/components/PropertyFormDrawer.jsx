@@ -9,7 +9,8 @@ export default function PropertyFormDrawer({
   setPropertyForm,
   formSubmitLoading,
   onSubmit,
-  onParseText
+  onParseText,
+  societies
 }) {
   if (!isOpen) return null;
 
@@ -124,6 +125,18 @@ export default function PropertyFormDrawer({
               <option value="AVAILABLE">Available</option>
               <option value="SOLD">Sold</option>
               <option value="RENTED">Rented</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <label className="form-label">Linked Parent Society</label>
+            <select name="societyId" value={propertyForm.societyId || ''} onChange={e => setPropertyForm({...propertyForm, societyId: e.target.value})} className="form-input" style={{ width: '100%' }}>
+              <option value="">None (Resale Standalone Property)</option>
+              {societies && societies.map(soc => (
+                <option key={soc.id} value={soc.id}>{soc.name} ({soc.location})</option>
+              ))}
             </select>
           </div>
         </div>

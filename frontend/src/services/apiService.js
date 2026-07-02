@@ -627,8 +627,169 @@ const initialLeads = [
     notes: "Requires commercial workspace for IT team. Visited Tech Center, likes office layout.",
     assignedAgentName: "Yash Murkute",
     assignedAgentPhone: "+919876543203",
-    leadScore: 90,
     createdDate: new Date().toISOString()
+  }
+];
+
+const initialBuilders = [
+  { id: "builder-1", name: "Pride Purple Group", slug: "pride-purple-group", experienceYears: 20, completedProjectsCount: 35, ongoingProjectsCount: 8, awards: "Best Luxury Developer Pune 2025" },
+  { id: "builder-2", name: "Kolte Patil Developers", slug: "kolte-patil-developers", experienceYears: 30, completedProjectsCount: 60, ongoingProjectsCount: 15, awards: "RERA Certified Quality Builder 2024" },
+  { id: "builder-3", name: "Gera Developments", slug: "gera-developments", experienceYears: 50, completedProjectsCount: 80, ongoingProjectsCount: 12, awards: "Developer of the Year 2026" }
+];
+
+const initialSocieties = [
+  {
+    id: "soc-1",
+    name: "24K Opula",
+    slug: "24k-opula-baner",
+    location: "BANER",
+    developer: "Pride Purple Group",
+    reraNumber: "RERA-PUN-PRM-24K091",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 14500000,
+    possessionDate: "December 2025",
+    overview: "Ultra-luxury residential community situated on the Baner-Balewadi Link Road, close to high streets. Designed for prime lifestyles, it features imported marble flooring, custom ceilings, premium bath fixtures, and extensive high-tech security controls.",
+    amenities: "Infinity Pool, High-tech Gymnasium, Grand Clubhouse, Concierge Lobby, Italian Marble Finish",
+    priceRange: "₹1.45 Cr - ₹3.20 Cr",
+    configuration: "3 BHK, 4 BHK Penthouse",
+    nearbySchools: "The Orchid School (1.2 km), VIBGYOR High (2.5 km)",
+    nearbyHospitals: "Jupiter Hospital (2.0 km), Medipoint Hospital (1.5 km)",
+    nearbyItParks: "Hinjewadi Phase 1 (5.0 km), Embassy Tech Zone (8.0 km)",
+    nearbyMetro: "Balewadi Metro Station (0.8 km)",
+    nearbyMalls: "Westend Mall (3.5 km), Balewadi High Street (0.5 km)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.33333333333!2d73.7868!3d18.5590!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bec!2sBalewadi%20High%20Street!5e0!3m2!1sen!2sin!4v1625118",
+    travelTimeInfo: "Balewadi High Street: 2 mins | Baner Hill: 8 mins | Hinjewadi IT Park: 12 mins | Pune Airport: 40 mins",
+    investmentScore: 88,
+    rentalYield: 4.2,
+    faqs: "Q: Is 24K Opula RERA registered?\nA: Yes, it is fully registered under number RERA-PUN-PRM-24K091.\n\nQ: What is the possession date?\nA: Possession starts in December 2025.",
+    seoTitle: "24K Opula Baner - Luxury 3 & 4 BHK Apartments by Pride Purple",
+    seoDescription: "Explore 24K Opula on Baner-Balewadi Link Road, Pune. Premium 3 & 4 BHK luxury residences starting from ₹1.45 Cr. View price, configurations, and amenities."
+  },
+  {
+    id: "soc-2",
+    name: "24K Altura",
+    slug: "24k-altura-wakad",
+    location: "WAKAD",
+    developer: "Kolte Patil Developers",
+    reraNumber: "RERA-PUN-PRM-24K074",
+    projectStatus: "UNDER_CONSTRUCTION",
+    startingPrice: 8200000,
+    possessionDate: "June 2027",
+    overview: "Smart high-rise residences with automated temperature, mood lighting controls and skydecks in Wakad. Positioned perfectly near Datta Mandir Road with excellent highway access.",
+    amenities: "Sky Lounge, Smart Home Automation, Reflexology Path, Jogging Track, EV Charging Stations",
+    priceRange: "₹82 Lakhs - ₹1.40 Cr",
+    configuration: "2 BHK, 3 BHK",
+    nearbySchools: "EuroSchool Wakad (1.0 km), Akshara International School (1.8 km)",
+    nearbyHospitals: "Lifepoint Multispecialty Hospital (2.2 km)",
+    nearbyItParks: "Rajiv Gandhi IT Park (4.0 km)",
+    nearbyMetro: "Wakad Chowk Metro (1.2 km)",
+    nearbyMalls: "Phoenix Mall of the Millennium (1.5 km)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.44444444444!2d73.7707!3d18.5987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bef!2sWakad!5e0!3m2!1sen!2sin!4v1625118",
+    travelTimeInfo: "Phoenix Mall: 5 mins | Hinjewadi Phase 1: 10 mins | Balewadi High Street: 12 mins",
+    investmentScore: 82,
+    rentalYield: 3.8,
+    faqs: "Q: When is the possession of 24K Altura?\nA: The possession is scheduled for June 2027.\n\nQ: Are there EV charging points?\nA: Yes, dedicated EV points are available in visitor and owner parkings.",
+    seoTitle: "24K Altura Wakad - Smart 2 & 3 BHK Apartments by Kolte Patil",
+    seoDescription: "Book smart 2 & 3 BHK homes at 24K Altura Wakad, Pune. RERA registered high-rise apartments starting from ₹82 Lakhs. Check amenities and floor plans."
+  },
+  {
+    id: "soc-3",
+    name: "Kolte Patil Life Republic",
+    slug: "kolte-patil-life-republic-hinjewadi",
+    location: "HINJEWADI",
+    developer: "Kolte Patil Developers",
+    reraNumber: "RERA-PUN-PRM-24K305",
+    projectStatus: "UNDER_CONSTRUCTION",
+    startingPrice: 10500000,
+    possessionDate: "December 2028",
+    overview: "Sprawling township community in Hinjewadi-Marunji, offering multi-phase premium housing, state-of-the-art sports academies, and scenic green belts.",
+    amenities: "Acres of Greenery, Multi-sport Arena, International School, Retail Plaza, Dedicated Fire Station",
+    priceRange: "₹1.05 Cr - ₹2.50 Cr",
+    configuration: "1 BHK, 2 BHK, 3 BHK, Villas",
+    nearbySchools: "Anisha Global School (Township), Crimson Anisha (2.0 km)",
+    nearbyHospitals: "Ruby Hall Clinic Hinjewadi (3.5 km)",
+    nearbyItParks: "Embassy Techzone (2.0 km), Hinjewadi Phase 2 (3.0 km)",
+    nearbyMetro: "Hinjewadi Phase 2 Metro (2.5 km)",
+    nearbyMalls: "Grand Highstreet Hinjewadi (2.0 km)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.55555555555!2d73.7120!3d18.6015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c00!2sHinjewadi!5e0!3m2!1sen!2sin!4v1625118",
+    travelTimeInfo: "Embassy Tech Zone: 5 mins | Hinjewadi Phase 3: 10 mins | Wakad highway: 15 mins",
+    investmentScore: 91,
+    rentalYield: 4.5,
+    faqs: "Q: Is it a township?\nA: Yes, it is a fully integrated township spread over 150+ acres.",
+    seoTitle: "Kolte Patil Life Republic Hinjewadi - Township Residences",
+    seoDescription: "Explore premium 2 & 3 BHK homes at Kolte Patil Life Republic township in Hinjewadi, Pune. High rental demand, starting at ₹1.05 Cr."
+  },
+  {
+    id: "soc-4",
+    name: "Gera Joy on the Banks",
+    slug: "gera-joy-on-the-banks-wakad",
+    location: "WAKAD",
+    developer: "Gera Developments",
+    reraNumber: "RERA-PUN-PRM-24K306",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 8800000,
+    possessionDate: "Immediate",
+    overview: "Premium child-centric homes on the river banks, with direct access to physical training academies and custom learning centers.",
+    amenities: "Riverview Deck, Child Academy, Olympic Swimming Coach, Tennis Court, Organic Garden",
+    priceRange: "₹88 Lakhs - ₹1.75 Cr",
+    configuration: "2 BHK, 3 BHK Duplex",
+    nearbySchools: "EuroSchool Wakad (0.8 km)",
+    nearbyHospitals: "Jupiter Hospital (3.0 km)",
+    nearbyItParks: "Hinjewadi Phase 1 (3.5 km)",
+    nearbyMetro: "Wakad Metro Station (1.0 km)",
+    nearbyMalls: "Phoenix Mall: 1.0 km",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.44444444444!2d73.7660!3d18.5970!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bef!2sWakad!5e0!3m2!1sen!2sin!4v1625118",
+    travelTimeInfo: "Phoenix Mall: 3 mins | Balewadi High Street: 10 mins | Hinjewadi IT Park: 8 mins",
+    investmentScore: 85,
+    rentalYield: 4.1,
+    faqs: "Q: What does child-centric mean?\nA: It includes professional coaching for sports, music, and arts inside the gated community.",
+    seoTitle: "Gera Joy on the Banks Wakad - Child-Centric Homes by Gera",
+    seoDescription: "Book 2 & 3 BHK homes at Gera Joy on the Banks, Wakad. Riverview apartments starting from ₹88 Lakhs with active sports training programs."
+  }
+];
+
+const initialLocalities = [
+  {
+    id: "loc-1",
+    name: "Hinjewadi",
+    slug: "hinjewadi-pune",
+    overview: "Hinjewadi is Pune's leading IT hub, housing the Rajiv Gandhi Infotech Park. It sees huge demand for residential rentals from tech professionals.",
+    connectivityInfo: "Directly linked to the Pune-Mumbai Highway. The upcoming Hinjewadi-Shivajinagar Metro Line 3 will enhance public transit connectivity.",
+    schools: "Mercedes-Benz International School, Blue Ridge Public School, Anisha Global",
+    hospitals: "Ruby Hall Clinic Hinjewadi, Hinjawadi Hospital, Sahyadri Hospital",
+    markets: "Grand Highstreet Hinjewadi, D-Mart Hinjewadi",
+    metroConnectivity: "Metro Line 3 under active construction, stations located at Phase 1, Phase 2, Phase 3.",
+    investmentAnalysis: "IT hub expansion drives high capital appreciation. Average price per sq ft ranges between ₹6,500 and ₹9,500.",
+    rentalDemand: "Extremely high rental demand due to thousands of IT employees working nearby.",
+    futureGrowth: "Ongoing infrastructure projects including the metro and new ring roads ensure long-term value appreciation."
+  },
+  {
+    id: "loc-2",
+    name: "Wakad",
+    slug: "wakad-pune",
+    overview: "Wakad is a premium residential corridor in West Pune, offering proximity to both Hinjewadi IT parks and Balewadi High Street entertainment hubs.",
+    connectivityInfo: "Bordering the Bangalore-Mumbai bypass. Connected well via BRT routes and upcoming Metro stations.",
+    schools: "EuroSchool Wakad, Indira Group of Institutes, Mount Litera School",
+    hospitals: "Lifepoint Multispecialty Hospital, Surya Mother & Child Care",
+    markets: "Phoenix Mall of the Millennium, Wakad Market",
+    metroConnectivity: "Connected through Hinjewadi Metro bypass line stations.",
+    investmentAnalysis: "Strong price growth following the launch of Phoenix Mall. Prices range between ₹7,500 and ₹10,500 per sq ft.",
+    rentalDemand: "High demand for semi and fully-furnished 2 & 3 BHK flats.",
+    futureGrowth: "New road expansions and proximity to premium IT corridors keep Wakad as Pune's top real estate investment hotspot."
+  },
+  {
+    id: "loc-3",
+    name: "Baner",
+    slug: "baner-pune",
+    overview: "Baner is an upscale residential-cum-commercial suburb, known for high-end dining, high streets, and premium residential towers like 24K Opula.",
+    connectivityInfo: "Well-connected to Pune University, Aundh, and Mumbai Highway. Easy travel access to downtown Pune.",
+    schools: "The Orchid School, VIBGYOR High School",
+    hospitals: "Jupiter Hospital, Elite Healthcare",
+    markets: "Balewadi High Street retail blocks, Westend Mall",
+    metroConnectivity: "Metro stations at Baner Road under construction.",
+    investmentAnalysis: "Elite residential market with high pricing stability. Premium properties average ₹10,000 - ₹14,000 per sq ft.",
+    rentalDemand: "Sought after by senior executives and families preferring premium lifestyle apartments.",
+    futureGrowth: "High commercial demand from corporate offices keeps residential appreciation robust."
   }
 ];
 
@@ -724,6 +885,24 @@ const LocalMockDb = {
   },
   saveUsers(users) {
     saveLocalStorageItem('mock_users', users);
+  },
+  getSocieties() {
+    return getLocalStorageItem('mock_societies', initialSocieties);
+  },
+  saveSocieties(societies) {
+    saveLocalStorageItem('mock_societies', societies);
+  },
+  getBuilders() {
+    return getLocalStorageItem('mock_builders', initialBuilders);
+  },
+  saveBuilders(builders) {
+    saveLocalStorageItem('mock_builders', builders);
+  },
+  getLocalities() {
+    return getLocalStorageItem('mock_localities', initialLocalities);
+  },
+  saveLocalities(localities) {
+    saveLocalStorageItem('mock_localities', localities);
   }
 };
 
@@ -1771,5 +1950,124 @@ export const apiService = {
   async getAllExpenses() {
     const res = await fetch(`${BASE_URL}/payroll/expenses/all`, { headers: getAuthHeaders() });
     return res.ok ? res.json() : [];
+  },
+
+  async getSocieties(page = 0, size = 10) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/societies?page=${page}&size=${size}`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error("Failed to fetch societies");
+        return res.json();
+      },
+      () => {
+        const socs = LocalMockDb.getSocieties();
+        const start = page * size;
+        const pageContent = socs.slice(start, start + size);
+        return {
+          content: pageContent,
+          totalPages: Math.ceil(socs.length / size),
+          totalElements: socs.length
+        };
+      }
+    );
+  },
+
+  async getSocietyBySlug(slug) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/societies/slug/${slug}`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error("Society not found");
+        return res.json();
+      },
+      () => {
+        const socs = LocalMockDb.getSocieties();
+        const found = socs.find(s => s.slug === slug);
+        if (!found) throw new Error("Society not found");
+        return found;
+      }
+    );
+  },
+
+  async createSociety(data) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/societies`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error("Failed to create society");
+        return res.json();
+      },
+      () => {
+        const socs = LocalMockDb.getSocieties();
+        const newSoc = { id: 'soc-' + (socs.length + 1), slug: data.name.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-"), ...data };
+        socs.push(newSoc);
+        LocalMockDb.saveSocieties(socs);
+        return newSoc;
+      }
+    );
+  },
+
+  async getBuilders() {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/builders`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error("Failed to fetch builders");
+        return res.json();
+      },
+      () => LocalMockDb.getBuilders()
+    );
+  },
+
+  async createBuilder(data) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/builders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(data)
+        });
+        return res.json();
+      },
+      () => {
+        const builders = LocalMockDb.getBuilders();
+        const newBuilder = { id: 'builder-' + (builders.length + 1), slug: data.name.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-"), ...data };
+        builders.push(newBuilder);
+        LocalMockDb.saveBuilders(builders);
+        return newBuilder;
+      }
+    );
+  },
+
+  async getLocalities() {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/localities`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error("Failed to fetch localities");
+        return res.json();
+      },
+      () => LocalMockDb.getLocalities()
+    );
+  },
+
+  async createLocality(data) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/localities`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(data)
+        });
+        return res.json();
+      },
+      () => {
+        const localities = LocalMockDb.getLocalities();
+        const newLoc = { id: 'loc-' + (localities.length + 1), slug: data.name.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-"), ...data };
+        localities.push(newLoc);
+        LocalMockDb.saveLocalities(localities);
+        return newLoc;
+      }
+    );
   }
 };
