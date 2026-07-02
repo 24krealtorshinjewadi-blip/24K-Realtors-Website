@@ -1102,9 +1102,8 @@ export default function Portal({ onViewChange }) {
         </div>
       </section>
 
-      {/* Main Listing & VIP Callback Container */}
-      <div className="dual-listings-layout">
-        <div className="left-properties-container">
+      {/* Main Listings and Directories Container */}
+      <div className="main-portal-listings-section" style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px' }}>
           
           {activeSection === 'listings' && (
             <>
@@ -1899,13 +1898,18 @@ export default function Portal({ onViewChange }) {
               </div>
             )
           )}
-
         </div>
 
-        {/* Right Side: Priority Callback & Seller Mandate Desk */}
-        <div className="right-callback-sidebar">
+      {/* Portfolio Transaction Desk (Callback & Seller Mandate) */}
+      <section className="portfolio-transaction-section" style={{ maxWidth: '1410px', margin: '60px auto 30px auto', padding: '0 20px' }}>
+        <div className="section-header" style={{ marginBottom: '35px', textAlign: 'center' }}>
+          <h2 className="luxury-title" style={{ fontSize: '1.5rem', color: 'var(--gold-primary)' }}>⚜️ Private Client & Seller Advisory Desk</h2>
+          <p className="section-subtitle">Request instant advisory callbacks or register your property mandate directly with our West Pune locality directors</p>
+        </div>
+        <div className="transaction-desk-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '30px', alignItems: 'start' }}>
+          
           {/* Priority Callback Desk */}
-          <div className="callback-card">
+          <div className="callback-card" style={{ margin: 0, height: '100%' }}>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '10px' }}>
               <Clock size={18} className="animate-pulse" />
               <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>60-Second Priority Callback</h3>
@@ -1945,33 +1949,33 @@ export default function Portal({ onViewChange }) {
           </div>
 
           {/* Seller Exclusive Mandate Desk */}
-          <div id="seller-mandate-anchor" className="seller-mandate-premium">
+          <div id="seller-mandate-anchor" className="seller-mandate-premium" style={{ margin: 0, height: '100%' }}>
             <div className="seller-mandate-header">
               <div className="seller-mandate-icon-ring">
-                <Building size={22} />
+                <Building size={20} />
               </div>
               <div>
                 <h3 className="seller-mandate-title">Seller Advisory Mandate</h3>
-                <p className="seller-mandate-subtitle">List Your Property • Zero Brokerage • Institutional Buyers</p>
+                <p className="seller-mandate-subtitle">List Your Property • 0% Brokerage</p>
               </div>
             </div>
             <p className="seller-mandate-desc">
-              Own a flat in Wakad, Hinjewadi or Baner? List directly with 24K Realtors for access to institutional buyers, NRI investors, and premium HNI clients. Zero brokerage. Maximum returns.
+              Direct access to premium verified buyers, institutional property funds, and HNWI investors in Baner, Wakad, and Hinjewadi.
             </p>
             <form onSubmit={handleSellerSubmit} className="seller-mandate-form">
+              <div className="form-group">
+                <label className="seller-form-label">Owner Name</label>
+                <input 
+                  type="text" 
+                  name="name"
+                  className="form-input seller-input" 
+                  required 
+                  placeholder="Full Name" 
+                  value={sellerForm.name} 
+                  onChange={handleSellerFormChange} 
+                />
+              </div>
               <div className="seller-form-grid">
-                <div className="form-group">
-                  <label className="seller-form-label">Owner Name</label>
-                  <input 
-                    type="text" 
-                    name="name"
-                    className="form-input seller-input" 
-                    required 
-                    placeholder="Full Name" 
-                    value={sellerForm.name} 
-                    onChange={handleSellerFormChange} 
-                  />
-                </div>
                 <div className="form-group">
                   <label className="seller-form-label">WhatsApp Mobile</label>
                   <input 
@@ -1984,18 +1988,18 @@ export default function Portal({ onViewChange }) {
                     onChange={handleSellerFormChange} 
                   />
                 </div>
-              </div>
-              <div className="form-group">
-                <label className="seller-form-label">Owner Email</label>
-                <input 
-                  type="email" 
-                  name="email"
-                  className="form-input seller-input" 
-                  required 
-                  placeholder="your@email.com" 
-                  value={sellerForm.email} 
-                  onChange={handleSellerFormChange} 
-                />
+                <div className="form-group">
+                  <label className="seller-form-label">Owner Email</label>
+                  <input 
+                    type="email" 
+                    name="email"
+                    className="form-input seller-input" 
+                    required 
+                    placeholder="your@email.com" 
+                    value={sellerForm.email} 
+                    onChange={handleSellerFormChange} 
+                  />
+                </div>
               </div>
               <div className="seller-form-grid">
                 <div className="form-group">
@@ -2056,7 +2060,7 @@ export default function Portal({ onViewChange }) {
             </form>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Modular Comparison Overlay Modal */}
       <CompareOverlay 
