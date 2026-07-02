@@ -21,3 +21,7 @@ frontend/dist/
 *.log
 Thumbs.db
 .DS_Store
+
+# Local Media Uploads
+uploads/
+

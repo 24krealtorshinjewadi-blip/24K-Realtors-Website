@@ -16,6 +16,7 @@ import LeavesTab from './LeavesTab';
 import PayrollTab from './PayrollTab';
 import LeadDetailsEx from './LeadDetailsEx';
 import SocietiesTab from './SocietiesTab';
+import BlogsTab from './BlogsTab';
 
 export default function Dashboard({ onViewChange }) {
   // Authentication state
@@ -659,6 +660,10 @@ export default function Dashboard({ onViewChange }) {
           <button className={`crm-sidebar-glide-item ${activeTab === 'societies' ? 'active' : ''}`} onClick={() => { setActiveTab('societies'); handleClosePropForm(); }}>
             <Building size={18} />
             <span>Societies & Devs</span>
+          </button>
+          <button className={`crm-sidebar-glide-item ${activeTab === 'blogs' ? 'active' : ''}`} onClick={() => { setActiveTab('blogs'); handleClosePropForm(); }}>
+            <FileText size={18} />
+            <span>Blogs CMS</span>
           </button>
           <button className={`crm-sidebar-glide-item ${activeTab === 'team' ? 'active' : ''}`} onClick={() => { setActiveTab('team'); handleClosePropForm(); }}>
             <TrendingUp size={18} />
@@ -1478,6 +1483,13 @@ export default function Dashboard({ onViewChange }) {
         {activeTab === 'societies' && (
           <section className="module-content-transition">
             <SocietiesTab />
+          </section>
+        )}
+
+        {/* TAB 10: BLOGS */}
+        {activeTab === 'blogs' && (
+          <section className="module-content-transition">
+            <BlogsTab />
           </section>
         )}
       </main>
