@@ -98,6 +98,12 @@ export default function PortalNavbar({
             >
               LOCALITIES
             </button>
+            <button 
+              className={activeSection === 'blogs' ? 'active' : ''} 
+              onClick={() => onSectionChange && onSectionChange('blogs')}
+            >
+              BLOGS
+            </button>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -230,6 +236,19 @@ export default function PortalNavbar({
             <div className="drawer-item-text">
               <strong>Locality Guides</strong>
               <span>Hinjewadi, Baner, Wakad connectivity index</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" />
+          </button>
+
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('blogs'); }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
+          >
+            <FileText size={18} color="#d4af37" />
+            <div className="drawer-item-text">
+              <strong>Premium Blogs</strong>
+              <span>Market insights & real estate trends</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </button>
