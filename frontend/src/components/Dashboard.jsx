@@ -730,7 +730,7 @@ export default function Dashboard({ onViewChange }) {
 
         {/* TAB 1: LEADS PIPELINE */}
         {activeTab === 'leads' && (
-          <section>
+          <section className="module-content-transition">
             <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
               <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Lead Management Pipeline</h2>
               
@@ -876,7 +876,7 @@ export default function Dashboard({ onViewChange }) {
 
         {/* TAB 2: PROPERTY MANAGER */}
         {activeTab === 'properties' && (
-          <section>
+          <section className="module-content-transition">
             <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
               <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Properties Inventory</h2>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -995,7 +995,7 @@ export default function Dashboard({ onViewChange }) {
 
         {/* TAB 3: RELATIONSHIP MANAGERS */}
         {activeTab === 'team' && (
-          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          <section className="module-content-transition">
             
             {/* Corridor Valuation Trend Chart */}
             <div style={{
@@ -1225,7 +1225,7 @@ export default function Dashboard({ onViewChange }) {
 
         {/* TAB 4: TASKS & FOLLOW-UPS */}
         {activeTab === 'tasks' && (
-          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          <section className="module-content-transition">
             
             {/* Task Stats Row */}
             <div className="crm-stats-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '25px' }}>
@@ -1448,35 +1448,35 @@ export default function Dashboard({ onViewChange }) {
 
         {/* TAB 5: EMPLOYEES (HR) */}
         {activeTab === 'employees' && (
-          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          <section className="module-content-transition">
             <EmployeesTab />
           </section>
         )}
 
         {/* TAB 6: ATTENDANCE */}
         {activeTab === 'attendance' && (
-          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          <section className="module-content-transition">
             <AttendanceTab />
           </section>
         )}
 
         {/* TAB 7: LEAVES */}
         {activeTab === 'leaves' && (
-          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          <section className="module-content-transition">
             <LeavesTab />
           </section>
         )}
 
         {/* TAB 8: PAYROLL */}
         {activeTab === 'payroll' && (
-          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          <section className="module-content-transition">
             <PayrollTab />
           </section>
         )}
 
         {/* TAB 9: SOCIETIES & DEVS */}
         {activeTab === 'societies' && (
-          <section style={{ animation: 'slideDown 0.3s forwards' }}>
+          <section className="module-content-transition">
             <SocietiesTab />
           </section>
         )}

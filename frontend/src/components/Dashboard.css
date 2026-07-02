@@ -1109,3 +1109,149 @@
   color: #ffffff;
 }
 
+/* ==========================================================================
+   PREMIUM MOTION SYSTEMS & MICRO-INTERACTIONS (GOOGLE/OPENAI ERA ADAPTERS)
+   ========================================================================== */
+
+/* 1. Module Content Transition (Smooth spring-back slide & fade) */
+.module-content-transition {
+  animation: springSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes springSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 2. Staggered Stat Cards loading delays */
+.stats-grid .stat-card {
+  opacity: 0;
+  animation: springSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.stats-grid .stat-card:nth-child(1) { animation-delay: 0.04s; }
+.stats-grid .stat-card:nth-child(2) { animation-delay: 0.08s; }
+.stats-grid .stat-card:nth-child(3) { animation-delay: 0.12s; }
+.stats-grid .stat-card:nth-child(4) { animation-delay: 0.16s; }
+
+/* 3. Table Row Spring Hover Highlights */
+.crm-table tbody tr {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+}
+
+.crm-table tbody tr:hover {
+  transform: translateX(4px) scale(1.004);
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  box-shadow: -4px 0 0 var(--gold-primary), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .crm-table tbody tr:hover {
+  background-color: rgba(212, 175, 55, 0.03) !important;
+}
+
+/* 4. Active Live Pulsar Ring */
+.live-pill {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.4);
+  animation: pulseLiveRing 2s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@keyframes pulseLiveRing {
+  0% {
+    box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(46, 196, 182, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(46, 196, 182, 0);
+  }
+}
+
+/* 5. Moving Diagonal Scan stripes on KPI target indicators */
+.kpi-bar-progress {
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-bar-progress::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background-image: linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 20px 20px;
+  animation: moveStripes 1.5s linear infinite;
+  z-index: 1;
+}
+
+@keyframes moveStripes {
+  0% { background-position: 0 0; }
+  100% { background-position: 20px 0; }
+}
+
+/* 6. Spring-loaded Modal Inward zoom */
+.crm-modal-card {
+  animation: springZoomIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes springZoomIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 7. Hover scales for navigation buttons */
+.tab-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.tab-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(212, 175, 55, 0.08);
+}
+
+.tab-btn:active {
+  transform: translateY(0);
+}
+
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--gold-primary);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.tab-btn.active::after {
+  width: 80%;
+}
+
+
