@@ -637,6 +637,22 @@ const initialBuilders = [
   { id: "builder-3", name: "Gera Developments", slug: "gera-developments", experienceYears: 50, completedProjectsCount: 80, ongoingProjectsCount: 12, awards: "Developer of the Year 2026" }
 ];
 
+const initialBlogs = [
+  {
+    id: "blog-1",
+    title: "Top 5 Reasons to Invest in Wakad Real Estate",
+    slug: "top-5-reasons-to-invest-in-wakad",
+    content: "Wakad is rapidly emerging as one of Pune's premier residential corridors. With direct connectivity to the Hinjewadi IT Park, Wakad offers excellent rental yields and steady capital appreciation. In this article, we analyze five major infrastructure projects that will boost Wakad in 2026...",
+    coverImageUrl: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80",
+    author: "Prasad Kulkarni",
+    seoTitle: "Invest in Wakad Real Estate - Top 5 Reasons",
+    seoDescription: "Discover why Wakad, Pune is the ideal location for property investment in 2026. Insights on rental yields, IT park proximity, and capital growth.",
+    published: true,
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  }
+];
+
 const initialSocieties = [
   {
     id: "soc-1",
@@ -903,6 +919,12 @@ const LocalMockDb = {
   },
   saveLocalities(localities) {
     saveLocalStorageItem('mock_localities', localities);
+  },
+  getBlogs() {
+    return getLocalStorageItem('mock_blogs', initialBlogs);
+  },
+  saveBlogs(blogs) {
+    saveLocalStorageItem('mock_blogs', blogs);
   }
 };
 
@@ -2009,6 +2031,48 @@ export const apiService = {
     );
   },
 
+  async updateSociety(id, data) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/societies/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error("Failed to update society");
+        return res.json();
+      },
+      () => {
+        const socs = LocalMockDb.getSocieties();
+        const idx = socs.findIndex(s => s.id === id);
+        if (idx === -1) throw new Error("Society not found");
+        const updated = { ...socs[idx], ...data };
+        socs[idx] = updated;
+        LocalMockDb.saveSocieties(socs);
+        return updated;
+      }
+    );
+  },
+
+  async deleteSociety(id) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/societies/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to delete society");
+        return true;
+      },
+      () => {
+        const socs = LocalMockDb.getSocieties();
+        const filtered = socs.filter(s => s.id !== id);
+        LocalMockDb.saveSocieties(filtered);
+        return true;
+      }
+    );
+  },
+
   async getBuilders() {
     return runWithFallback(
       async () => {
@@ -2067,6 +2131,151 @@ export const apiService = {
         localities.push(newLoc);
         LocalMockDb.saveLocalities(localities);
         return newLoc;
+      }
+    );
+  },
+
+  async getBlogs(page = 0, size = 10) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/blogs?page=${page}&size=${size}`);
+        if (!res.ok) throw new Error("Failed to fetch blogs");
+        return res.json();
+      },
+      () => {
+        const blogs = LocalMockDb.getBlogs().filter(b => b.published);
+        const start = page * size;
+        return {
+          content: blogs.slice(start, start + size),
+          totalElements: blogs.length,
+          totalPages: Math.ceil(blogs.length / size)
+        };
+      }
+    );
+  },
+
+  async getBlogsAdmin(page = 0, size = 10) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/blogs/admin?page=${page}&size=${size}`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error("Failed to fetch admin blogs");
+        return res.json();
+      },
+      () => {
+        const blogs = LocalMockDb.getBlogs();
+        const start = page * size;
+        return {
+          content: blogs.slice(start, start + size),
+          totalElements: blogs.length,
+          totalPages: Math.ceil(blogs.length / size)
+        };
+      }
+    );
+  },
+
+  async getBlogBySlug(slug) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/blogs/slug/${slug}`);
+        if (!res.ok) throw new Error("Failed to fetch blog by slug");
+        return res.json();
+      },
+      () => {
+        const blog = LocalMockDb.getBlogs().find(b => b.slug === slug);
+        if (!blog) throw new Error("Blog not found");
+        return blog;
+      }
+    );
+  },
+
+  async createBlog(data) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/blogs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error("Failed to create blog");
+        return res.json();
+      },
+      () => {
+        const blogs = LocalMockDb.getBlogs();
+        const newBlog = {
+          id: 'blog-' + (blogs.length + 1),
+          slug: data.slug || data.title.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-"),
+          createdDate: new Date().toISOString(),
+          updatedDate: new Date().toISOString(),
+          ...data
+        };
+        blogs.push(newBlog);
+        LocalMockDb.saveBlogs(blogs);
+        return newBlog;
+      }
+    );
+  },
+
+  async updateBlog(id, data) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/blogs/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error("Failed to update blog");
+        return res.json();
+      },
+      () => {
+        const blogs = LocalMockDb.getBlogs();
+        const idx = blogs.findIndex(b => b.id === id);
+        if (idx === -1) throw new Error("Blog not found");
+        const updated = { ...blogs[idx], ...data, updatedDate: new Date().toISOString() };
+        blogs[idx] = updated;
+        LocalMockDb.saveBlogs(blogs);
+        return updated;
+      }
+    );
+  },
+
+  async deleteBlog(id) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/blogs/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to delete blog");
+        return true;
+      },
+      () => {
+        const blogs = LocalMockDb.getBlogs();
+        const filtered = blogs.filter(b => b.id !== id);
+        LocalMockDb.saveBlogs(filtered);
+        return true;
+      }
+    );
+  },
+
+  async uploadMedia(file) {
+    return runWithFallback(
+      async () => {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch(`${BASE_URL}/media/upload`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: formData
+        });
+        if (!res.ok) throw new Error("Failed to upload media");
+        return res.json();
+      },
+      () => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({ url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80" });
+          }, 1000);
+        });
       }
     );
   }

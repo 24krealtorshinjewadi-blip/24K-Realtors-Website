@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Sparkles, Loader } from 'lucide-react';
+import ImageUploader from './ImageUploader';
 
 export default function PropertyFormDrawer({
   isOpen,
@@ -215,10 +216,11 @@ export default function PropertyFormDrawer({
         </div>
 
         <div className="form-row">
-          <div className="form-group">
-            <label className="form-label">Image URL</label>
-            <input type="text" name="imageUrl" className="form-input" placeholder="https://images.unsplash.com/... or local url" value={propertyForm.imageUrl} onChange={e => setPropertyForm({...propertyForm, imageUrl: e.target.value})} />
-          </div>
+          <ImageUploader 
+            label="Property Listing Image" 
+            currentValue={propertyForm.imageUrl} 
+            onUploadSuccess={(url) => setPropertyForm({ ...propertyForm, imageUrl: url })} 
+          />
         </div>
 
         <div className="form-row">

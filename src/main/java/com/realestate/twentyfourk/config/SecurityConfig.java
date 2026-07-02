@@ -47,6 +47,17 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
 
+                // Public Blogs access
+                .requestMatchers(HttpMethod.GET, "/api/v1/blogs/**").permitAll()
+                // Administrative Blogs access
+                .requestMatchers(HttpMethod.POST, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                // Media Upload & Download access
+                .requestMatchers(HttpMethod.GET, "/api/v1/media/files/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/media/upload").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+
                 // Public Customer lead capture hook
                 .requestMatchers(HttpMethod.POST, "/api/v1/leads").permitAll()
                 // Administrative Leads access requires sales roles
