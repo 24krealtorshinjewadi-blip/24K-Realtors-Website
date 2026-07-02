@@ -127,7 +127,7 @@ public class PropertyController {
                     PropertyRequest request = new PropertyRequest(
                         title, description, type, tx, price, area, corridor, address, 
                         lat, lon, beds, baths, PropertyStatus.AVAILABLE, verified, exclusive, noBroker, rera,
-                        null, null, null, null, false
+                        null, null, null, null, false, null
                     );
                     propertyService.createProperty(request);
                     count++;

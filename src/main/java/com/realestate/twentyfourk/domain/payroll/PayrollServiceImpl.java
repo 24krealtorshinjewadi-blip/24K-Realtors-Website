@@ -153,8 +153,8 @@ public class PayrollServiceImpl implements PayrollService {
                     .filter(b -> b.isPaymentReceived() && 
                                  b.getCreatedDate().isAfter(start) && 
                                  b.getCreatedDate().isBefore(end))
-                    .map(Booking::getCommissionEarned)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    .map(b -> b.getCommissionEarned())
+                    .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
         } catch (Exception e) {
             return BigDecimal.ZERO;
         }
