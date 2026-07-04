@@ -3,6 +3,7 @@ package com.realestate.twentyfourk.domain.attendance;
 import com.realestate.twentyfourk.domain.user.User;
 import com.realestate.twentyfourk.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AttendanceServiceImpl implements AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
@@ -27,10 +29,36 @@ public class AttendanceServiceImpl implements AttendanceService {
     private static final LocalTime EARLY_EXIT_THRESHOLD = LocalTime.of(17, 30);
     private static final int REGULAR_WORK_HOURS = 9;
 
+    private static final double OFFICE_LAT = 18.583418;
+    private static final double OFFICE_LON = 73.727354;
+    private static final double GEOFENCE_RADIUS_METERS = 500.0;
+
+    private double calculateDistanceInMeters(double lat1, double lon1, double lat2, double lon2) {
+        double earthRadius = 6371000; // meters
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                   Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                   Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return earthRadius * c;
+    }
+
     @Override
     public Attendance checkIn(UUID userId, Double latitude, Double longitude) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
+        if (latitude == null || longitude == null) {
+            throw new IllegalArgumentException("GPS coordinates are required to log attendance.");
+        }
+        double distance = calculateDistanceInMeters(latitude, longitude, OFFICE_LAT, OFFICE_LON);
+        log.info("[ATTENDANCE] User {} is checking in. Coordinates: ({}, {}). Distance from office: {} meters. Limit: {} meters.", 
+                user.getUsername(), latitude, longitude, Math.round(distance), GEOFENCE_RADIUS_METERS);
+        
+        if (distance > GEOFENCE_RADIUS_METERS) {
+            throw new IllegalArgumentException(String.format("Outside office geofence. Distance: %.1fm. Check-in restricted to 500m.", distance));
+        }
 
         LocalDate today = LocalDate.now();
         Optional<Attendance> existing = attendanceRepository.findByUserIdAndDate(userId, today);
@@ -56,6 +84,17 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance checkOut(UUID userId, Double latitude, Double longitude) {
+        if (latitude == null || longitude == null) {
+            throw new IllegalArgumentException("GPS coordinates are required to check out.");
+        }
+        double distance = calculateDistanceInMeters(latitude, longitude, OFFICE_LAT, OFFICE_LON);
+        log.info("[ATTENDANCE] User ID {} is checking out. Coordinates: ({}, {}). Distance: {} meters.", 
+                userId, latitude, longitude, Math.round(distance));
+        
+        if (distance > GEOFENCE_RADIUS_METERS) {
+            throw new IllegalArgumentException(String.format("Outside office geofence. Distance: %.1fm. Check-out restricted to 500m.", distance));
+        }
+
         LocalDate today = LocalDate.now();
         Attendance attendance = attendanceRepository.findByUserIdAndDate(userId, today)
                 .orElseThrow(() -> new IllegalStateException("No active check-in record found for today. Please check-in first."));

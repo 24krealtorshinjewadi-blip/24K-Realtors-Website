@@ -121,7 +121,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         // 4. Relationship Managers / Advisory RMs
         seedRelationshipManagerUser("jyoti.jagtap", "Jyoti Jagtap", "+919876543202", "jyoti.jagtap@24krealtors.com", "Senior RM", "60000.00");
         seedRelationshipManagerUser("yash.murkute", "Yash Murkute", "+919876543203", "yash.murkute@24krealtors.com", "Associate RM", "45000.00");
-        seedRelationshipManagerUser("atharva.kulkarni", "Atharva Kulkarni", "+919876543205", "atharva.kulkarni@24krealtors.com", "Junior RM", "40000.00");
     }
 
     private void seedRelationshipManagerUser(String username, String fullName, String phone, String email, String designation, String salary) {
@@ -144,7 +143,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedAgents() {
-        if (agentRepository.count() < 6) {
+        if (agentRepository.count() < 5) {
             log.info("Cleaning up old agents, leads and tasks to seed real employees...");
             taskRepository.deleteAll();
             leadRepository.deleteAll();
@@ -174,12 +173,6 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .email("nilesh.rai@24krealtors.com")
                     .active(true)
                     .build();
-            Agent agent5 = Agent.builder()
-                    .name("Atharva Kulkarni")
-                    .phone("+919876543205")
-                    .email("atharva.kulkarni@24krealtors.com")
-                    .active(true)
-                    .build();
             Agent agent6 = Agent.builder()
                     .name("Manish Kumar Rai")
                     .phone("+919876543206")
@@ -187,8 +180,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .active(true)
                     .build();
 
-            agentRepository.saveAll(List.of(agent1, agent2, agent3, agent4, agent5, agent6));
-            log.info("Seeded 6 active relationship managers.");
+            agentRepository.saveAll(List.of(agent1, agent2, agent3, agent4, agent6));
+            log.info("Seeded 5 active relationship managers.");
         }
     }
 
@@ -700,7 +693,6 @@ public class DatabaseSeeder implements CommandLineRunner {
             Agent a3 = agents.size() > 2 ? agents.get(2) : null;
             Agent a4 = agents.size() > 3 ? agents.get(3) : null;
             Agent a5 = agents.size() > 4 ? agents.get(4) : null;
-            Agent a6 = agents.size() > 5 ? agents.get(5) : null;
 
             Lead lead1 = Lead.builder()
                     .name("Rohan Sharma")
@@ -777,7 +769,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .preferredLocation(PrimeCorridor.WAKAD)
                     .status(LeadStatus.NEW)
                     .notes("Enquired for 24K Glitterati. Prefers mid-rise floor, early possession.")
-                    .assignedAgent(a6)
+                    .assignedAgent(a5)
                     .build();
 
             List<Lead> savedLeads = leadRepository.saveAll(List.of(lead1, lead2, lead3, lead4, lead5, lead6));
