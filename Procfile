@@ -1,1 +1,1 @@
-web: java -jar backend/target/*.jar --spring.profiles.active=railway
+web: java -jar target/*.jar --spring.profiles.active=railway
