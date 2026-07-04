@@ -81,6 +81,9 @@ public class SecurityConfig {
                 // Audit logs lookup requires admin-level access
                 .requestMatchers("/api/v1/audit-logs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                // Work From Home requests require authentication
+                .requestMatchers("/api/v1/wfh/**").authenticated()
+
                 // All other requests require authentication
                 .anyRequest().authenticated()
             )

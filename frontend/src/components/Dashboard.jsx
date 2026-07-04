@@ -18,6 +18,173 @@ import LeadDetailsEx from './LeadDetailsEx';
 import SocietiesTab from './SocietiesTab';
 import BlogsTab from './BlogsTab';
 
+// PropertiesMap Leaflet Component
+function PropertiesMap({ properties }) {
+  const mapRef = React.useRef(null);
+  const mapInstance = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!window.L || !mapRef.current) return;
+
+    const centerLat = 18.583418;
+    const centerLon = 73.727354;
+
+    if (mapInstance.current) {
+      mapInstance.current.remove();
+    }
+
+    const L = window.L;
+    const map = L.map(mapRef.current).setView([centerLat, centerLon], 13);
+    mapInstance.current = map;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const goldIcon = L.divIcon({
+      className: 'custom-leaflet-marker',
+      html: `<div style="background: var(--gold-primary); width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 8px rgba(0,0,0,0.5)"></div>`,
+      iconSize: [12, 12],
+      iconAnchor: [6, 6]
+    });
+
+    properties.forEach(prop => {
+      if (prop.latitude && prop.longitude) {
+        const marker = L.marker([prop.latitude, prop.longitude], { icon: goldIcon }).addTo(map);
+        
+        const priceText = new Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+          maximumFractionDigits: 0
+        }).format(prop.price);
+
+        const popupContent = `
+          <div style="color: #070f1e; font-family: sans-serif; padding: 5px;">
+            <div style="font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; color: #1a202c;">${prop.title}</div>
+            <div style="font-size: 0.75rem; color: #718096; margin-bottom: 6px;">${prop.location} | ${prop.propertyType}</div>
+            <div style="font-weight: bold; color: #b7791f; font-size: 0.85rem; margin-bottom: 8px;">${priceText}</div>
+            <div style="font-size: 0.7rem; color: #4a5568; max-width: 180px; margin-bottom: 8px; line-height: 1.3;">${prop.description || ''}</div>
+          </div>
+        `;
+        marker.bindPopup(popupContent);
+      }
+    });
+
+    return () => {
+      if (mapInstance.current) {
+        mapInstance.current.remove();
+        mapInstance.current = null;
+      }
+    };
+  }, [properties]);
+
+  return (
+    <div 
+      ref={mapRef} 
+      style={{ 
+        height: '500px', 
+        width: '100%', 
+        borderRadius: '12px', 
+        border: '1px solid var(--border-gold)',
+        background: '#070f1e',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        marginTop: '15px'
+      }} 
+    />
+  );
+}
+
+// KanbanBoard Lead Component
+const KanbanBoard = ({ leads, onStatusChange, onViewDetails, formatPrice }) => {
+  const columns = [
+    { key: 'NEW', label: 'New Inquiry', borderColor: '#3182ce' },
+    { key: 'CONTACTED', label: 'Contacted', borderColor: '#dd6b20' },
+    { key: 'IN_PROGRESS', label: 'In Progress', borderColor: '#319795' },
+    { key: 'VISITED', label: 'Visited', borderColor: '#805ad5' },
+    { key: 'CONVERTED', label: 'Converted', borderColor: '#38a169' },
+    { key: 'LOST', label: 'Lost', borderColor: '#e53e3e' }
+  ];
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginTop: '20px', overflowX: 'auto', paddingBottom: '20px' }}>
+      {columns.map(col => {
+        const colLeads = leads.filter(l => l.status === col.key);
+        return (
+          <div 
+            key={col.key}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              const id = e.dataTransfer.getData('text/plain');
+              if (id) onStatusChange(id, col.key);
+            }}
+            style={{ 
+              background: 'rgba(7, 15, 30, 0.7)', 
+              border: `1px solid ${col.borderColor}`, 
+              borderRadius: '8px', 
+              padding: '12px',
+              minHeight: '450px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${col.borderColor}`, paddingBottom: '8px', marginBottom: '8px' }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-light)' }}>{col.label}</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '10px' }}>{colLeads.length}</span>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flexGrow: 1 }}>
+              {colLeads.map(lead => (
+                <div 
+                  key={lead.id}
+                  draggable
+                  onDragStart={(e) => e.dataTransfer.setData('text/plain', lead.id)}
+                  style={{ 
+                    background: 'rgba(255, 255, 255, 0.02)', 
+                    border: '1px solid var(--border-muted)', 
+                    borderRadius: '6px', 
+                    padding: '10px',
+                    cursor: 'grab',
+                    transition: 'all 0.2s'
+                  }}
+                  onDragOver={(e) => e.currentTarget.style.borderColor = 'var(--gold-primary)'}
+                  onDragLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-muted)'}
+                >
+                  <div style={{ fontWeight: 600, color: 'var(--text-light)', fontSize: '0.85rem' }}>{lead.name}</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>Loc: {lead.preferredLocation || 'Any'}</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Budget: {lead.budgetMin ? `${formatPrice(lead.budgetMin)} - ${formatPrice(lead.budgetMax)}` : 'N/A'}</div>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', paddingTop: '6px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                    <span style={{ fontSize: '0.65rem', color: 'var(--gold-primary)', fontWeight: 'bold' }}>Score: {lead.leadScore || 50}%</span>
+                    <button 
+                      onClick={() => onViewDetails(lead)} 
+                      style={{ 
+                        background: 'none', 
+                        border: 'none', 
+                        color: 'var(--gold-light)', 
+                        fontSize: '0.7rem', 
+                        cursor: 'pointer',
+                        padding: 0
+                      }}
+                    >
+                      Audit 🔍
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {colLeads.length === 0 && (
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textAlign: 'center', padding: '20px 0', border: '1px dashed rgba(255,255,255,0.05)', borderRadius: '4px', flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  Drag leads here
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export default function Dashboard({ onViewChange }) {
   // Authentication state
   const [isLoggedIn, setIsLoggedIn] = useState(apiService.isAuthenticated());
@@ -29,6 +196,9 @@ export default function Dashboard({ onViewChange }) {
   // CRM Tab management
   const [activeTab, setActiveTab] = useState('leads'); // leads | properties | team
   const [leads, setLeads] = useState([]);
+  const [leadViewMode, setLeadViewMode] = useState('table'); // table | kanban
+  const [propViewMode, setPropViewMode] = useState('list'); // list | map
+  const [mapInitialized, setMapInitialized] = useState(false);
   const [properties, setProperties] = useState([]);
   const [leadsLoading, setLeadsLoading] = useState(true);
   const [propsLoading, setPropsLoading] = useState(true);
@@ -263,6 +433,37 @@ export default function Dashboard({ onViewChange }) {
       fetchSocieties();
     }
   }, [isLoggedIn, leadPage, propPage, leadFilters, activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 'properties' && propViewMode === 'map') {
+      if (window.L) {
+        setMapInitialized(true);
+        return;
+      }
+      
+      // Inject Leaflet CSS
+      if (!document.getElementById('leaflet-css')) {
+        const link = document.createElement('link');
+        link.id = 'leaflet-css';
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(link);
+      }
+      
+      // Inject Leaflet JS
+      if (!document.getElementById('leaflet-js')) {
+        const script = document.createElement('script');
+        script.id = 'leaflet-js';
+        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        script.onload = () => {
+          setMapInitialized(true);
+        };
+        document.head.appendChild(script);
+      } else {
+        setMapInitialized(true);
+      }
+    }
+  }, [activeTab, propViewMode]);
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
@@ -740,7 +941,42 @@ export default function Dashboard({ onViewChange }) {
               <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Lead Management Pipeline</h2>
               
               {/* Dynamic Filtering */}
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <div style={{ display: 'flex', background: 'rgba(255,255,255,0.03)', padding: '2px', borderRadius: '6px', border: '1px solid var(--border-gold)', marginRight: '5px' }}>
+                  <button 
+                    onClick={() => setLeadViewMode('table')} 
+                    style={{ 
+                      padding: '6px 12px', 
+                      fontSize: '0.75rem', 
+                      background: leadViewMode === 'table' ? 'var(--gold-primary)' : 'transparent',
+                      color: leadViewMode === 'table' ? '#070f1e' : 'var(--text-light)',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Table
+                  </button>
+                  <button 
+                    onClick={() => setLeadViewMode('kanban')} 
+                    style={{ 
+                      padding: '6px 12px', 
+                      fontSize: '0.75rem', 
+                      background: leadViewMode === 'kanban' ? 'var(--gold-primary)' : 'transparent',
+                      color: leadViewMode === 'kanban' ? '#070f1e' : 'var(--text-light)',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Kanban
+                  </button>
+                </div>
+
                 <select name="status" value={leadFilters.status} onChange={handleFilterChange} className="form-input" style={{ width: '160px', margin: 0 }}>
                   <option value="">All Statuses</option>
                   <option value="NEW">New Inquiry</option>
@@ -767,8 +1003,15 @@ export default function Dashboard({ onViewChange }) {
               <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
                 <Loader className="animate-spin" size={32} color="#D4AF37" />
               </div>
-            ) : leads.length === 0 ? (
+                        ) : leads.length === 0 ? (
               <div className="empty-state">No customer leads found matching criteria.</div>
+            ) : leadViewMode === 'kanban' ? (
+              <KanbanBoard 
+                leads={leads} 
+                onStatusChange={handleLeadStatusChange} 
+                onViewDetails={handleViewLeadDetails} 
+                formatPrice={formatPrice} 
+              />
             ) : (
               <>
                 <div className="table-responsive">
@@ -885,6 +1128,40 @@ export default function Dashboard({ onViewChange }) {
             <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
               <h2 className="luxury-title" style={{ fontSize: '1.4rem', margin: 0 }}>Properties Inventory</h2>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', background: 'rgba(255,255,255,0.03)', padding: '2px', borderRadius: '6px', border: '1px solid var(--border-gold)', marginRight: '5px' }}>
+                  <button 
+                    onClick={() => setPropViewMode('list')} 
+                    style={{ 
+                      padding: '6px 12px', 
+                      fontSize: '0.75rem', 
+                      background: propViewMode === 'list' ? 'var(--gold-primary)' : 'transparent',
+                      color: propViewMode === 'list' ? '#070f1e' : 'var(--text-light)',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    List
+                  </button>
+                  <button 
+                    onClick={() => setPropViewMode('map')} 
+                    style={{ 
+                      padding: '6px 12px', 
+                      fontSize: '0.75rem', 
+                      background: propViewMode === 'map' ? 'var(--gold-primary)' : 'transparent',
+                      color: propViewMode === 'map' ? '#070f1e' : 'var(--text-light)',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Map
+                  </button>
+                </div>
                 
                 <label className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0, padding: '10px 16px', fontSize: '0.9rem' }}>
                   <Upload size={16} />
@@ -923,6 +1200,15 @@ export default function Dashboard({ onViewChange }) {
               </div>
             ) : properties.length === 0 ? (
               <div className="empty-state">No listings published. Click "Add Listing" to publish.</div>
+            ) : propViewMode === 'map' ? (
+              mapInitialized ? (
+                <PropertiesMap properties={properties} />
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '400px', gap: '15px' }}>
+                  <Loader className="animate-spin" size={32} color="#D4AF37" />
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Loading Leaflet Maps...</span>
+                </div>
+              )
             ) : (
               <>
                 <div className="table-responsive">
@@ -942,30 +1228,35 @@ export default function Dashboard({ onViewChange }) {
                     <tbody>
                       {properties.map(property => (
                         <tr key={property.id}>
-                          <td style={{ fontWeight: 600, color: 'var(--text-light)' }}>{property.title}</td>
-                          <td>{property.location}</td>
-                          <td>
-                            <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px' }}>
-                              {property.propertyType} / {property.transactionType}
+                          <td data-label="Title">
+                            <div style={{ fontWeight: 600, color: 'var(--text-light)' }}>{property.title}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{property.address || 'Pune'}</div>
+                          </td>
+                          <td data-label="Location">{property.location}</td>
+                          <td data-label="Type">
+                            <span style={{ fontSize: '0.75rem', textTransform: 'capitalize' }}>
+                              {property.bedrooms ? `${property.bedrooms} BHK ` : ''}{property.propertyType.toLowerCase()} / {property.transactionType.toLowerCase()}
                             </span>
                           </td>
-                          <td>{formatPrice(property.price)}</td>
-                          <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{property.reraNumber || 'Pending'}</td>
-                          <td>
-                            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                              {property.verifiedListing && <span style={{ fontSize: '0.65rem', background: 'rgba(46,196,182,0.15)', color: '#2ec4b6', padding: '2px 4px', borderRadius: '2px', border: '1px solid rgba(46,196,182,0.25)' }}>Verified</span>}
-                              {property.exclusiveDeal && <span style={{ fontSize: '0.65rem', background: 'rgba(212,175,55,0.15)', color: 'var(--gold-light)', padding: '2px 4px', borderRadius: '2px', border: '1px solid rgba(212,175,55,0.25)' }}>Exclusive</span>}
-                              {property.noBrokerage && <span style={{ fontSize: '0.65rem', background: 'rgba(58,134,200,0.15)', color: '#3a86c8', padding: '2px 4px', borderRadius: '2px', border: '1px solid rgba(58,134,200,0.25)' }}>No Broker</span>}
-                              {!property.verifiedListing && !property.exclusiveDeal && !property.noBrokerage && <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>None</span>}
+                          <td data-label="Price" style={{ fontWeight: 600, color: 'var(--gold-primary)' }}>
+                            {formatPrice(property.price)}
+                          </td>
+                          <td data-label="RERA ID">
+                            <code style={{ fontSize: '0.75rem', color: 'var(--gold-light)' }}>{property.reraNumber || 'EXEMPT'}</code>
+                          </td>
+                          <td data-label="Promotions">
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                              {property.exclusiveDeal && <span style={{ fontSize: '0.65rem', padding: '2px 6px', background: 'rgba(212,175,55,0.1)', color: 'var(--gold-light)', borderRadius: '3px' }}>Exclusive</span>}
+                              {property.noBrokerage && <span style={{ fontSize: '0.65rem', padding: '2px 6px', background: 'rgba(46,196,182,0.1)', color: '#2ec4b6', borderRadius: '3px' }}>0% Fee</span>}
                             </div>
                           </td>
-                          <td>
+                          <td data-label="Status">
                             <span style={{ 
-                              fontSize: '0.8rem', 
+                              fontSize: '0.7rem', 
                               padding: '2px 6px', 
                               borderRadius: '4px',
-                              background: property.status === 'AVAILABLE' ? 'rgba(46,196,182,0.1)' : 'rgba(217,4,41,0.1)',
-                              color: property.status === 'AVAILABLE' ? '#2ec4b6' : '#d90429'
+                              background: property.status === 'ACTIVE' || property.status === 'AVAILABLE' ? 'rgba(46,196,182,0.1)' : 'rgba(217,4,41,0.1)',
+                              color: property.status === 'ACTIVE' || property.status === 'AVAILABLE' ? '#2ec4b6' : '#ff4d6d'
                             }}>
                               {property.status}
                             </span>

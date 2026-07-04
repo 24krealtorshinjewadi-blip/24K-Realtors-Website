@@ -29,10 +29,17 @@ export default function AttendanceTab() {
   const [geofenceStatus, setGeofenceStatus] = useState('checking'); // checking | authorized | restricted
   
   // Tabs & HR dashboard states
-  const [activeSubTab, setActiveSubTab] = useState('shift'); // shift | dashboard
+  const [activeSubTab, setActiveSubTab] = useState('shift'); // shift | wfh | dashboard
   const [dashboardLogs, setDashboardLogs] = useState([]);
   const [dashboardDate, setDashboardDate] = useState(new Date().toISOString().split('T')[0]);
   const [dashboardLoading, setDashboardLoading] = useState(false);
+
+  // WFH States
+  const [wfhActive, setWfhActive] = useState(false);
+  const [myWfhRequests, setMyWfhRequests] = useState([]);
+  const [pendingWfhRequests, setPendingWfhRequests] = useState([]);
+  const [wfhLoading, setWfhLoading] = useState(false);
+  const [wfhForm, setWfhForm] = useState({ startDate: '', endDate: '', reason: '' });
 
   const timerRef = useRef(null);
   const role = localStorage.getItem('role') || 'CRM_AGENT';
@@ -40,6 +47,10 @@ export default function AttendanceTab() {
 
   // Live geofence check
   const checkGeofence = () => {
+    if (wfhActive) {
+      setGeofenceStatus('authorized');
+      return;
+    }
     if (!navigator.geolocation) {
       setGeofenceStatus('restricted');
       return;
@@ -113,12 +124,47 @@ export default function AttendanceTab() {
     }
   };
 
+  const fetchWfhStatus = async () => {
+    try {
+      const active = await apiService.isWfhActiveToday();
+      setWfhActive(active);
+      if (active) {
+        setGeofenceStatus('authorized');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchWfhRequests = async () => {
+    setWfhLoading(true);
+    try {
+      const own = await apiService.getMyWfhRequests();
+      setMyWfhRequests(own || []);
+      if (isManagerOrHr) {
+        const pending = await apiService.getPendingWfhRequests();
+        setPendingWfhRequests(pending || []);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setWfhLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchLogs();
+    fetchWfhStatus();
     checkGeofence();
     const interval = setInterval(checkGeofence, 15000); // Refresh geofence status every 15s
     return () => clearInterval(interval);
-  }, []);
+  }, [wfhActive]);
+
+  useEffect(() => {
+    if (activeSubTab === 'wfh') {
+      fetchWfhRequests();
+    }
+  }, [activeSubTab]);
 
   useEffect(() => {
     if (activeBreak) {
@@ -146,7 +192,7 @@ export default function AttendanceTab() {
 
     // Direct frontend boundary check
     const dist = calculateDistance(lat, lon, OFFICE_LAT, OFFICE_LON);
-    if (dist > 500) {
+    if (dist > 500 && !wfhActive) {
       alert(`Check-in Locked: You are ${dist.toFixed(1)}m away. Must be within 500m of office.`);
       setActionLoading(false);
       return;
@@ -171,7 +217,7 @@ export default function AttendanceTab() {
 
     // Geofencing verification
     const dist = calculateDistance(lat, lon, OFFICE_LAT, OFFICE_LON);
-    if (dist > 500) {
+    if (dist > 500 && !wfhActive) {
       alert(`Check-out Locked: You are ${dist.toFixed(1)}m away. Must be within 500m of office.`);
       setActionLoading(false);
       return;
@@ -227,24 +273,42 @@ export default function AttendanceTab() {
     <div style={{ animation: 'slideDown 0.3s forwards', display: 'flex', flexDirection: 'column', gap: '25px' }}>
       
       {/* Tab Navigation for HR/Managers */}
-      {isManagerOrHr && (
-        <div style={{ display: 'flex', gap: '15px', borderBottom: '1px solid var(--border-gold)', paddingBottom: '10px' }}>
-          <button 
-            onClick={() => setActiveSubTab('shift')}
-            className={`btn-tab ${activeSubTab === 'shift' ? 'active' : ''}`}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: activeSubTab === 'shift' ? 'var(--gold-primary)' : 'var(--text-muted)',
-              fontSize: '1rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              padding: '8px 16px',
-              borderBottom: activeSubTab === 'shift' ? '2px solid var(--gold-primary)' : 'none'
-            }}
-          >
-            ⚜️ My Shift Console
-          </button>
+      <div style={{ display: 'flex', gap: '15px', borderBottom: '1px solid var(--border-gold)', paddingBottom: '10px' }}>
+        <button 
+          onClick={() => setActiveSubTab('shift')}
+          className={`btn-tab ${activeSubTab === 'shift' ? 'active' : ''}`}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: activeSubTab === 'shift' ? 'var(--gold-primary)' : 'var(--text-muted)',
+            fontSize: '1rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            padding: '8px 16px',
+            borderBottom: activeSubTab === 'shift' ? '2px solid var(--gold-primary)' : 'none'
+          }}
+        >
+          ⚜️ My Shift Console
+        </button>
+
+        <button 
+          onClick={() => setActiveSubTab('wfh')}
+          className={`btn-tab ${activeSubTab === 'wfh' ? 'active' : ''}`}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: activeSubTab === 'wfh' ? 'var(--gold-primary)' : 'var(--text-muted)',
+            fontSize: '1rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            padding: '8px 16px',
+            borderBottom: activeSubTab === 'wfh' ? '2px solid var(--gold-primary)' : 'none'
+          }}
+        >
+          🏠 Work From Home (WFH)
+        </button>
+
+        {isManagerOrHr && (
           <button 
             onClick={() => setActiveSubTab('dashboard')}
             className={`btn-tab ${activeSubTab === 'dashboard' ? 'active' : ''}`}
@@ -261,8 +325,8 @@ export default function AttendanceTab() {
           >
             📊 Company Attendance Overview
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       {activeSubTab === 'shift' ? (
         <>
@@ -280,17 +344,19 @@ export default function AttendanceTab() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', border: '1px solid rgba(212,175,55,0.1)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Status:</span>
-                  {geofenceStatus === 'checking' && (
+                  {wfhActive ? (
+                    <span style={{ fontSize: '0.75rem', background: 'rgba(46,196,182,0.15)', color: '#2ec4b6', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>
+                      🏠 WFH (Bypass Active)
+                    </span>
+                  ) : geofenceStatus === 'checking' ? (
                     <span style={{ fontSize: '0.75rem', background: 'rgba(212,175,55,0.1)', color: 'var(--gold-light)', padding: '2px 8px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <Loader size={12} className="animate-spin" /> Checking GPS...
                     </span>
-                  )}
-                  {geofenceStatus === 'authorized' && (
+                  ) : geofenceStatus === 'authorized' ? (
                     <span style={{ fontSize: '0.75rem', background: 'rgba(46,196,182,0.15)', color: '#2ec4b6', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>
                       ✓ Within Geofence
                     </span>
-                  )}
-                  {geofenceStatus === 'restricted' && (
+                  ) : (
                     <span style={{ fontSize: '0.75rem', background: 'rgba(217,4,41,0.15)', color: '#ff4d6d', padding: '2px 8px', borderRadius: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <ShieldAlert size={12} /> Outside Range
                     </span>
@@ -455,8 +521,205 @@ export default function AttendanceTab() {
             )}
           </div>
         </>
-      ) : (
-        /* HR daily overview dashboard */
+      )}
+
+      {activeSubTab === 'wfh' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+            
+            {/* WFH Request Form */}
+            <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: 'var(--gold-primary)', margin: '0 0 20px 0', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Calendar size={18} />
+                <span>Apply for Work From Home</span>
+              </h3>
+              
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                if (!wfhForm.startDate || !wfhForm.endDate || !wfhForm.reason) {
+                  alert("Please fill all fields.");
+                  return;
+                }
+                setActionLoading(true);
+                try {
+                  await apiService.applyWfh(wfhForm);
+                  setWfhForm({ startDate: '', endDate: '', reason: '' });
+                  alert("WFH request submitted successfully!");
+                  fetchWfhRequests();
+                  fetchWfhStatus();
+                } catch (err) {
+                  alert("Failed to submit request: " + err.message);
+                } finally {
+                  setActionLoading(false);
+                }
+              }} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '5px' }}>Start Date</label>
+                  <input 
+                    type="date" 
+                    value={wfhForm.startDate} 
+                    onChange={e => setWfhForm({ ...wfhForm, startDate: e.target.value })} 
+                    className="form-input" 
+                    required 
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '5px' }}>End Date</label>
+                  <input 
+                    type="date" 
+                    value={wfhForm.endDate} 
+                    onChange={e => setWfhForm({ ...wfhForm, endDate: e.target.value })} 
+                    className="form-input" 
+                    required 
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '5px' }}>Reason / Project details</label>
+                  <textarea 
+                    value={wfhForm.reason} 
+                    onChange={e => setWfhForm({ ...wfhForm, reason: e.target.value })} 
+                    className="form-input" 
+                    rows="3" 
+                    placeholder="Describe tasks to do remotely..." 
+                    required 
+                    style={{ resize: 'vertical' }}
+                  />
+                </div>
+                <button type="submit" disabled={actionLoading} className="btn-gold" style={{ padding: '10px 16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+                  {actionLoading ? <Loader size={16} className="animate-spin" /> : null}
+                  <span>Submit Request</span>
+                </button>
+              </form>
+            </div>
+
+            {/* My Requests List */}
+            <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: 'var(--gold-primary)', margin: '0 0 20px 0', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Clock size={18} />
+                <span>My Request History</span>
+              </h3>
+              
+              {wfhLoading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+                  <Loader className="animate-spin" size={24} color="#D4AF37" />
+                </div>
+              ) : myWfhRequests.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  No WFH requests submitted yet.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '350px', overflowY: 'auto', paddingRight: '5px' }}>
+                  {myWfhRequests.map(r => (
+                    <div key={r.id} style={{ padding: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-light)' }}>
+                          {r.startDate} to {r.endDate}
+                        </span>
+                        <span style={{ 
+                          fontSize: '0.7rem', 
+                          padding: '2px 8px', 
+                          borderRadius: '12px', 
+                          background: r.status === 'APPROVED' ? 'rgba(46,196,182,0.15)' : r.status === 'REJECTED' ? 'rgba(217,4,41,0.15)' : 'rgba(212,175,55,0.15)',
+                          color: r.status === 'APPROVED' ? '#2ec4b6' : r.status === 'REJECTED' ? '#ff4d6d' : 'var(--gold-light)',
+                          fontWeight: 600
+                        }}>{r.status}</span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>{r.reason}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Pending Approval Panel for Managers/HR */}
+          {isManagerOrHr && (
+            <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: 'var(--gold-primary)', margin: '0 0 20px 0', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <UserCheck size={18} />
+                <span>WFH Approvals Queue</span>
+              </h3>
+              
+              {wfhLoading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+                  <Loader className="animate-spin" size={24} color="#D4AF37" />
+                </div>
+              ) : pendingWfhRequests.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  No pending WFH requests in queue.
+                </div>
+              ) : (
+                <div className="table-responsive">
+                  <table className="crm-table">
+                    <thead>
+                      <tr>
+                        <th>Employee</th>
+                        <th>Date Range</th>
+                        <th>Reason</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pendingWfhRequests.map(r => (
+                        <tr key={r.id}>
+                          <td>
+                            <div style={{ fontWeight: 600 }}>{r.user?.fullName || r.employee?.fullName || "Employee"}</div>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>@{r.user?.username || "agent"}</span>
+                          </td>
+                          <td style={{ fontSize: '0.85rem', fontWeight: 600 }}>{r.startDate} to {r.endDate}</td>
+                          <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{r.reason}</td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <button 
+                                onClick={async () => {
+                                  if (window.confirm("Approve this WFH request?")) {
+                                    try {
+                                      await apiService.approveWfh(r.id);
+                                      alert("Request approved.");
+                                      fetchWfhRequests();
+                                      fetchWfhStatus();
+                                    } catch (err) {
+                                      alert("Failed to approve: " + err.message);
+                                    }
+                                  }
+                                }} 
+                                className="btn-gold" 
+                                style={{ padding: '6px 12px', fontSize: '0.75rem' }}
+                              >
+                                Approve
+                              </button>
+                              <button 
+                                onClick={async () => {
+                                  if (window.confirm("Reject this WFH request?")) {
+                                    try {
+                                      await apiService.rejectWfh(r.id);
+                                      alert("Request rejected.");
+                                      fetchWfhRequests();
+                                      fetchWfhStatus();
+                                    } catch (err) {
+                                      alert("Failed to reject: " + err.message);
+                                    }
+                                  }
+                                }} 
+                                className="btn-outline" 
+                                style={{ padding: '6px 12px', fontSize: '0.75rem', color: '#ff4d6d', borderColor: 'rgba(217,4,41,0.2)' }}
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeSubTab === 'dashboard' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
           {/* Stats Bar */}

@@ -1,4 +1,4 @@
-package com.realestate.twentyfourk.domain.payroll;
+package com.realestate.twentyfourk.domain.attendance;
 
 import com.realestate.twentyfourk.domain.user.User;
 import jakarta.persistence.*;
@@ -11,13 +11,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "payslips", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "pay_period"})})
-@SQLDelete(sql = "UPDATE payslips SET deleted_flag = true, active_flag = false WHERE id = ?")
+@Table(name = "work_from_home")
+@SQLDelete(sql = "UPDATE work_from_home SET deleted_flag = true, active_flag = false WHERE id = ?")
 @SQLRestriction("deleted_flag = false")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -25,7 +25,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Payslip {
+public class WorkFromHome {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,47 +36,26 @@ public class Payslip {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "pay_period", nullable = false, length = 50)
-    private String payPeriod; // e.g. "2026-07"
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
-    @Column(name = "base_salary", nullable = false, precision = 15, scale = 2)
-    @Builder.Default
-    private BigDecimal baseSalary = BigDecimal.ZERO;
+    @Column(name = "end_date", nullable = false)
+    private LocalDate endDate;
 
-    @Column(name = "allowances", nullable = false, precision = 15, scale = 2)
-    @Builder.Default
-    private BigDecimal allowances = BigDecimal.ZERO;
+    @Column(name = "reason", columnDefinition = "TEXT")
+    private String reason;
 
-    @Column(name = "commissions", nullable = false, precision = 15, scale = 2)
-    @Builder.Default
-    private BigDecimal commissions = BigDecimal.ZERO;
-
-    @Column(name = "pf_deduction", nullable = false, precision = 15, scale = 2)
-    @Builder.Default
-    private BigDecimal pfDeduction = BigDecimal.ZERO;
-
-    @Column(name = "pt_deduction", nullable = false, precision = 15, scale = 2)
-    @Builder.Default
-    private BigDecimal ptDeduction = BigDecimal.ZERO;
-
-    @Column(name = "net_salary", nullable = false, precision = 15, scale = 2)
-    @Builder.Default
-    private BigDecimal netSalary = BigDecimal.ZERO;
-
-    @Column(name = "late_deduction", nullable = false, precision = 15, scale = 2)
-    @Builder.Default
-    private BigDecimal lateDeduction = BigDecimal.ZERO;
-
-    @Column(name = "absent_deduction", nullable = false, precision = 15, scale = 2)
-    @Builder.Default
-    private BigDecimal absentDeduction = BigDecimal.ZERO;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 50)
     @Builder.Default
-    private String status = "PENDING"; // PENDING, PAID
+    private WfhStatus status = WfhStatus.PENDING;
 
-    @Column(name = "pdf_url", length = 255)
-    private String pdfUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approved_by")
+    private User approvedBy;
+
+    @Column(name = "approved_date")
+    private LocalDateTime approvedDate;
 
     @CreationTimestamp
     @Column(name = "created_date", nullable = false, updatable = false)

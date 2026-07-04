@@ -24,6 +24,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final AttendanceBreakRepository breakRepository;
     private final UserRepository userRepository;
+    private final WorkFromHomeRepository workFromHomeRepository;
 
     private static final LocalTime LATE_THRESHOLD = LocalTime.of(9, 30);
     private static final LocalTime EARLY_EXIT_THRESHOLD = LocalTime.of(17, 30);
@@ -49,15 +50,20 @@ public class AttendanceServiceImpl implements AttendanceService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        if (latitude == null || longitude == null) {
-            throw new IllegalArgumentException("GPS coordinates are required to log attendance.");
-        }
-        double distance = calculateDistanceInMeters(latitude, longitude, OFFICE_LAT, OFFICE_LON);
-        log.info("[ATTENDANCE] User {} is checking in. Coordinates: ({}, {}). Distance from office: {} meters. Limit: {} meters.", 
-                user.getUsername(), latitude, longitude, Math.round(distance), GEOFENCE_RADIUS_METERS);
-        
-        if (distance > GEOFENCE_RADIUS_METERS) {
-            throw new IllegalArgumentException(String.format("Outside office geofence. Distance: %.1fm. Check-in restricted to 500m.", distance));
+        boolean isWfh = !workFromHomeRepository.findApprovedWfhForDate(userId, LocalDate.now()).isEmpty();
+        if (isWfh) {
+            log.info("[ATTENDANCE] User {} has approved WFH for today. GPS geofence bypassed.", user.getUsername());
+        } else {
+            if (latitude == null || longitude == null) {
+                throw new IllegalArgumentException("GPS coordinates are required to log attendance.");
+            }
+            double distance = calculateDistanceInMeters(latitude, longitude, OFFICE_LAT, OFFICE_LON);
+            log.info("[ATTENDANCE] User {} is checking in. Coordinates: ({}, {}). Distance from office: {} meters. Limit: {} meters.", 
+                    user.getUsername(), latitude, longitude, Math.round(distance), GEOFENCE_RADIUS_METERS);
+            
+            if (distance > GEOFENCE_RADIUS_METERS) {
+                throw new IllegalArgumentException(String.format("Outside office geofence. Distance: %.1fm. Check-in restricted to 500m.", distance));
+            }
         }
 
         LocalDate today = LocalDate.now();
@@ -73,10 +79,10 @@ public class AttendanceServiceImpl implements AttendanceService {
                 .user(user)
                 .date(today)
                 .checkInTime(now)
-                .checkInLat(latitude)
-                .checkInLon(longitude)
-                .status(isLate ? "LATE" : "PRESENT")
-                .late(isLate)
+                .checkInLat(latitude != null ? latitude : OFFICE_LAT)
+                .checkInLon(longitude != null ? longitude : OFFICE_LON)
+                .status(isWfh ? "PRESENT" : (isLate ? "LATE" : "PRESENT"))
+                .late(!isWfh && isLate)
                 .build();
 
         return attendanceRepository.save(attendance);
@@ -84,15 +90,23 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance checkOut(UUID userId, Double latitude, Double longitude) {
-        if (latitude == null || longitude == null) {
-            throw new IllegalArgumentException("GPS coordinates are required to check out.");
-        }
-        double distance = calculateDistanceInMeters(latitude, longitude, OFFICE_LAT, OFFICE_LON);
-        log.info("[ATTENDANCE] User ID {} is checking out. Coordinates: ({}, {}). Distance: {} meters.", 
-                userId, latitude, longitude, Math.round(distance));
-        
-        if (distance > GEOFENCE_RADIUS_METERS) {
-            throw new IllegalArgumentException(String.format("Outside office geofence. Distance: %.1fm. Check-out restricted to 500m.", distance));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
+        boolean isWfh = !workFromHomeRepository.findApprovedWfhForDate(userId, LocalDate.now()).isEmpty();
+        if (isWfh) {
+            log.info("[ATTENDANCE] User ID {} has approved WFH for today. GPS geofence bypassed on checkout.", userId);
+        } else {
+            if (latitude == null || longitude == null) {
+                throw new IllegalArgumentException("GPS coordinates are required to check out.");
+            }
+            double distance = calculateDistanceInMeters(latitude, longitude, OFFICE_LAT, OFFICE_LON);
+            log.info("[ATTENDANCE] User ID {} is checking out. Coordinates: ({}, {}). Distance: {} meters.", 
+                    userId, latitude, longitude, Math.round(distance));
+            
+            if (distance > GEOFENCE_RADIUS_METERS) {
+                throw new IllegalArgumentException(String.format("Outside office geofence. Distance: %.1fm. Check-out restricted to 500m.", distance));
+            }
         }
 
         LocalDate today = LocalDate.now();

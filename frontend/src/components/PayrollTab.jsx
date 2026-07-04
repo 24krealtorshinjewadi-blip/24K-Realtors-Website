@@ -187,6 +187,8 @@ export default function PayrollTab() {
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                         <div>PF: <strong style={{ color: '#ff4d6d' }}>-{formatPrice(slip.pfDeduction)}</strong></div>
                         <div>PT: <strong style={{ color: '#ff4d6d' }}>-{formatPrice(slip.ptDeduction)}</strong></div>
+                        {slip.lateDeduction > 0 && <div>Late: <strong style={{ color: '#ff4d6d' }}>-{formatPrice(slip.lateDeduction)}</strong></div>}
+                        {slip.absentDeduction > 0 && <div>Absent: <strong style={{ color: '#ff4d6d' }}>-{formatPrice(slip.absentDeduction)}</strong></div>}
                       </div>
                     </td>
                     <td style={{ fontWeight: 'bold', color: 'var(--gold-primary)' }}>{formatPrice(slip.netSalary)}</td>

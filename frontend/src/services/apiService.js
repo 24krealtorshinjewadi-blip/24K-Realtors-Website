@@ -1955,6 +1955,123 @@ export const apiService = {
     );
   },
 
+  async applyWfh(wfhData) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/wfh/apply`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(wfhData)
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      () => {
+        const list = getLocalStorageItem('mock_wfh_requests', []);
+        const newRequest = {
+          id: 'wfh-mock-' + Math.random().toString(36).substr(2, 9),
+          startDate: wfhData.startDate,
+          endDate: wfhData.endDate,
+          reason: wfhData.reason,
+          status: 'PENDING',
+          employee: { fullName: localStorage.getItem('adminUser') || 'Self' }
+        };
+        list.push(newRequest);
+        saveLocalStorageItem('mock_wfh_requests', list);
+        return newRequest;
+      }
+    );
+  },
+
+  async getMyWfhRequests() {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/wfh/my-requests`, { headers: getAuthHeaders() });
+        return res.json();
+      },
+      () => {
+        return getLocalStorageItem('mock_wfh_requests', []);
+      }
+    );
+  },
+
+  async getPendingWfhRequests() {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/wfh/pending`, { headers: getAuthHeaders() });
+        return res.json();
+      },
+      () => {
+        const list = getLocalStorageItem('mock_wfh_requests', []);
+        return list.filter(w => w.status === 'PENDING');
+      }
+    );
+  },
+
+  async approveWfh(id) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/wfh/${id}/approve`, {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+        return res.json();
+      },
+      () => {
+        const list = getLocalStorageItem('mock_wfh_requests', []);
+        const idx = list.findIndex(w => w.id === id);
+        if (idx !== -1) {
+          list[idx].status = 'APPROVED';
+          saveLocalStorageItem('mock_wfh_requests', list);
+          return list[idx];
+        }
+        throw new Error('WFH request not found');
+      }
+    );
+  },
+
+  async rejectWfh(id) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/wfh/${id}/reject`, {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+        return res.json();
+      },
+      () => {
+        const list = getLocalStorageItem('mock_wfh_requests', []);
+        const idx = list.findIndex(w => w.id === id);
+        if (idx !== -1) {
+          list[idx].status = 'REJECTED';
+          saveLocalStorageItem('mock_wfh_requests', list);
+          return list[idx];
+        }
+        throw new Error('WFH request not found');
+      }
+    );
+  },
+
+  async isWfhActiveToday() {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/wfh/active-today`, { headers: getAuthHeaders() });
+        return res.json();
+      },
+      () => {
+        const list = getLocalStorageItem('mock_wfh_requests', []);
+        const todayStr = new Date().toISOString().split('T')[0];
+        const today = new Date(todayStr);
+        return list.some(w => {
+          if (w.status !== 'APPROVED') return false;
+          const start = new Date(w.startDate);
+          const end = new Date(w.endDate);
+          return today >= start && today <= end;
+        });
+      }
+    );
+  },
+
   async getDailyDashboard(dateStr) {
     return runWithFallback(
       async () => {
