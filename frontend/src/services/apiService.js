@@ -810,6 +810,7 @@ const initialLocalities = [
 ];
 
 const initialAgents = [
+  { id: "agent-5", name: "Neeraj Giri", phone: "+919876543205", email: "neeraj.giri@24krealtors.com", active: true },
   { id: "agent-1", name: "Jyoti Dhale", phone: "+919876543201", email: "jyoti.dhale@24krealtors.com", active: true },
   { id: "agent-2", name: "Jyoti Jagtap", phone: "+919876543202", email: "jyoti.jagtap@24krealtors.com", active: true },
   { id: "agent-3", name: "Yash Murkute", phone: "+919876543203", email: "yash.murkute@24krealtors.com", active: true },

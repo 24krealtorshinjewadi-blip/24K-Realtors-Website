@@ -100,7 +100,25 @@ public class DatabaseSeeder implements CommandLineRunner {
             log.info("HR user created successfully");
         }
 
-        // 3. Sales Manager
+        // 3. Admin / Operations Controller — Neeraj Giri
+        if (userRepository.findByUsername("neeraj.giri").isEmpty()) {
+            User admin2 = User.builder()
+                    .username("neeraj.giri")
+                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
+                    .role(UserRole.ADMIN)
+                    .fullName("Neeraj Giri")
+                    .email("neeraj.giri@24krealtors.com")
+                    .phone("+919876543205")
+                    .designation("CRM Operations Controller")
+                    .department("Management")
+                    .dateOfJoining(java.time.LocalDate.of(2026, 1, 10))
+                    .salaryBase(new BigDecimal("150000.00"))
+                    .build();
+            userRepository.save(admin2);
+            log.info("Admin (Neeraj Giri) user created successfully");
+        }
+
+        // 4. Sales Manager
         if (userRepository.findByUsername("salesmanager24k").isEmpty()) {
             User sm = User.builder()
                     .username("salesmanager24k")
@@ -118,7 +136,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             log.info("Sales Manager user created successfully");
         }
 
-        // 4. Relationship Managers / Advisory RMs
+        // 5. Relationship Managers / Advisory RMs
         seedRelationshipManagerUser("jyoti.jagtap", "Jyoti Jagtap", "+919876543202", "jyoti.jagtap@24krealtors.com", "Senior RM", "60000.00");
         seedRelationshipManagerUser("yash.murkute", "Yash Murkute", "+919876543203", "yash.murkute@24krealtors.com", "Associate RM", "45000.00");
     }
@@ -143,31 +161,37 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedAgents() {
-        if (agentRepository.count() < 5) {
+        if (agentRepository.count() < 6) {
             log.info("Cleaning up old agents, leads and tasks to seed real employees...");
             taskRepository.deleteAll();
             leadRepository.deleteAll();
             agentRepository.deleteAll();
 
             Agent agent1 = Agent.builder()
+                    .name("Neeraj Giri")
+                    .phone("+919876543205")
+                    .email("neeraj.giri@24krealtors.com")
+                    .active(true)
+                    .build();
+            Agent agent2 = Agent.builder()
                     .name("Jyoti Dhale")
                     .phone("+919876543201")
                     .email("jyoti.dhale@24krealtors.com")
                     .active(true)
                     .build();
-            Agent agent2 = Agent.builder()
+            Agent agent3 = Agent.builder()
                     .name("Jyoti Jagtap")
                     .phone("+919876543202")
                     .email("jyoti.jagtap@24krealtors.com")
                     .active(true)
                     .build();
-            Agent agent3 = Agent.builder()
+            Agent agent4 = Agent.builder()
                     .name("Yash Murkute")
                     .phone("+919876543203")
                     .email("yash.murkute@24krealtors.com")
                     .active(true)
                     .build();
-            Agent agent4 = Agent.builder()
+            Agent agent5 = Agent.builder()
                     .name("Nilesh Rai")
                     .phone("+919876543204")
                     .email("nilesh.rai@24krealtors.com")
@@ -180,8 +204,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .active(true)
                     .build();
 
-            agentRepository.saveAll(List.of(agent1, agent2, agent3, agent4, agent6));
-            log.info("Seeded 5 active relationship managers.");
+            agentRepository.saveAll(List.of(agent1, agent2, agent3, agent4, agent5, agent6));
+            log.info("Seeded 6 active employees: Neeraj Giri, Jyoti Dhale, Jyoti Jagtap, Yash Murkute, Nilesh Rai, Manish Kumar Rai");
         }
     }
 
