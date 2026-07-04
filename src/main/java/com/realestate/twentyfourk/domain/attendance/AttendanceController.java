@@ -61,6 +61,14 @@ public class AttendanceController {
                 .orElse(ResponseEntity.noContent().build());
     }
 
+    @GetMapping("/my-logs")
+    public ResponseEntity<List<Attendance>> getMyLogs(@AuthenticationPrincipal User user) {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = endDate.minusDays(30);
+        List<Attendance> logs = attendanceService.getMonthlyLogs(user.getId(), startDate, endDate);
+        return ResponseEntity.ok(logs);
+    }
+
     @GetMapping("/logs")
     public ResponseEntity<List<Attendance>> getMonthlyLogs(
             @AuthenticationPrincipal User user,

@@ -54,6 +54,18 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                // Public Societies, Builders, and Localities search lookups
+                .requestMatchers(HttpMethod.GET, "/api/v1/societies/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/builders/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/localities/**").permitAll()
+
+                // Administrative access to Societies, Builders, and Localities
+                .requestMatchers(HttpMethod.POST, "/api/v1/societies/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/societies/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/societies/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/builders/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/localities/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+
                 // Media Upload & Download access
                 .requestMatchers(HttpMethod.GET, "/api/v1/media/files/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/media/upload").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")

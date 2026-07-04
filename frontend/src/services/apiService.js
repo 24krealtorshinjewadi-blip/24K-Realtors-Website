@@ -814,7 +814,6 @@ const initialAgents = [
   { id: "agent-2", name: "Jyoti Jagtap", phone: "+919876543202", email: "jyoti.jagtap@24krealtors.com", active: true },
   { id: "agent-3", name: "Yash Murkute", phone: "+919876543203", email: "yash.murkute@24krealtors.com", active: true },
   { id: "agent-4", name: "Nilesh Rai", phone: "+919876543204", email: "nilesh.rai@24krealtors.com", active: true },
-  { id: "agent-5", name: "Atharva Kulkarni", phone: "+919876543205", email: "atharva.kulkarni@24krealtors.com", active: true },
   { id: "agent-6", name: "Manish Kumar Rai", phone: "+919876543206", email: "manish.rai@24krealtors.com", active: true }
 ];
 
@@ -1798,43 +1797,229 @@ export const apiService = {
 
   // --- ATTENDANCE ENDPOINTS ---
   async getAttendanceLogs() {
-    const res = await fetch(`${BASE_URL}/attendance/my-logs`, { headers: getAuthHeaders() });
-    return res.ok ? res.json() : [];
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/attendance/my-logs`, { headers: getAuthHeaders() });
+        return res.ok ? res.json() : [];
+      },
+      () => getLocalStorageItem('mock_attendance_logs', [])
+    );
   },
 
   async checkIn(lat, lon) {
-    const res = await fetch(`${BASE_URL}/attendance/check-in`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-      body: JSON.stringify({ latitude: lat, longitude: lon })
-    });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/attendance/check-in`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify({ latitude: lat, longitude: lon })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      () => {
+        const OFFICE_LAT = 18.583418;
+        const OFFICE_LON = 73.727354;
+        const earthRadius = 6371000;
+        const dLat = (lat - OFFICE_LAT) * Math.PI / 180;
+        const dLon = (lon - OFFICE_LON) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(OFFICE_LAT * Math.PI / 180) * Math.cos(lat * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const distance = earthRadius * c;
+        if (distance > 500) {
+          throw new Error(`Outside office geofence. Distance: ${distance.toFixed(1)}m. Check-in restricted to 500m.`);
+        }
+
+        const logs = getLocalStorageItem('mock_attendance_logs', []);
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (logs.some(l => l.date === todayStr)) {
+          throw new Error("Already checked in for today!");
+        }
+
+        const newLog = {
+          id: 'att-mock-' + (logs.length + 1),
+          date: todayStr,
+          checkInTime: new Date().toLocaleTimeString(),
+          checkOutTime: null,
+          latitude: lat,
+          longitude: lon,
+          totalBreakMinutes: 0,
+          overtimeHours: 0,
+          status: new Date().getHours() >= 9 && new Date().getMinutes() > 30 ? 'LATE' : 'ON_TIME',
+          breaks: []
+        };
+        logs.push(newLog);
+        saveLocalStorageItem('mock_attendance_logs', logs);
+        return newLog;
+      }
+    );
   },
 
-  async checkOut() {
-    const res = await fetch(`${BASE_URL}/attendance/check-out`, {
-      method: 'POST',
-      headers: getAuthHeaders()
-    });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
+  async checkOut(lat, lon) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/attendance/check-out`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify({ latitude: lat, longitude: lon })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      () => {
+        const OFFICE_LAT = 18.583418;
+        const OFFICE_LON = 73.727354;
+        const earthRadius = 6371000;
+        const dLat = (lat - OFFICE_LAT) * Math.PI / 180;
+        const dLon = (lon - OFFICE_LON) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(OFFICE_LAT * Math.PI / 180) * Math.cos(lat * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const distance = earthRadius * c;
+        if (distance > 500) {
+          throw new Error(`Outside office geofence. Distance: ${distance.toFixed(1)}m. Check-out restricted to 500m.`);
+        }
+
+        const logs = getLocalStorageItem('mock_attendance_logs', []);
+        const todayStr = new Date().toISOString().split('T')[0];
+        const logIndex = logs.findIndex(l => l.date === todayStr);
+        if (logIndex === -1) {
+          throw new Error("No active check-in record found for today.");
+        }
+        if (logs[logIndex].checkOutTime) {
+          throw new Error("Already checked out for today!");
+        }
+        logs[logIndex].checkOutTime = new Date().toLocaleTimeString();
+        saveLocalStorageItem('mock_attendance_logs', logs);
+        return logs[logIndex];
+      }
+    );
   },
 
   async startBreak() {
-    const res = await fetch(`${BASE_URL}/attendance/break/start`, {
-      method: 'POST',
-      headers: getAuthHeaders()
-    });
-    return res.json();
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/attendance/break/start`, {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+        return res.json();
+      },
+      () => {
+        const logs = getLocalStorageItem('mock_attendance_logs', []);
+        const todayStr = new Date().toISOString().split('T')[0];
+        const logIndex = logs.findIndex(l => l.date === todayStr);
+        if (logIndex === -1) throw new Error("No active check-in record found.");
+        
+        const newBreak = {
+          startTime: new Date().toISOString(),
+          endTime: null
+        };
+        if (!logs[logIndex].breaks) logs[logIndex].breaks = [];
+        logs[logIndex].breaks.push(newBreak);
+        saveLocalStorageItem('mock_attendance_logs', logs);
+        return newBreak;
+      }
+    );
   },
 
   async endBreak() {
-    const res = await fetch(`${BASE_URL}/attendance/break/end`, {
-      method: 'POST',
-      headers: getAuthHeaders()
-    });
-    return res.json();
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/attendance/break/end`, {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+        return res.json();
+      },
+      () => {
+        const logs = getLocalStorageItem('mock_attendance_logs', []);
+        const todayStr = new Date().toISOString().split('T')[0];
+        const logIndex = logs.findIndex(l => l.date === todayStr);
+        if (logIndex === -1) throw new Error("No active check-in record found.");
+        
+        const breakIndex = logs[logIndex].breaks.findIndex(b => !b.endTime);
+        if (breakIndex === -1) throw new Error("No active break session found.");
+        
+        const nowStr = new Date().toISOString();
+        logs[logIndex].breaks[breakIndex].endTime = nowStr;
+        const breakMinutes = Math.floor((new Date(nowStr).getTime() - new Date(logs[logIndex].breaks[breakIndex].startTime).getTime()) / 60000);
+        logs[logIndex].totalBreakMinutes = (logs[logIndex].totalBreakMinutes || 0) + breakMinutes;
+        
+        saveLocalStorageItem('mock_attendance_logs', logs);
+        return logs[logIndex].breaks[breakIndex];
+      }
+    );
+  },
+
+  async getDailyDashboard(dateStr) {
+    return runWithFallback(
+      async () => {
+        const url = dateStr ? `${BASE_URL}/attendance/daily-dashboard?date=${dateStr}` : `${BASE_URL}/attendance/daily-dashboard`;
+        const res = await fetch(url, { headers: getAuthHeaders() });
+        return res.ok ? res.json() : [];
+      },
+      () => {
+        const agents = LocalMockDb.getAgents();
+        const dateKey = dateStr || new Date().toISOString().split('T')[0];
+        return agents.map((agent, index) => {
+          if (index === 0) {
+            return {
+              id: "att-1",
+              user: agent,
+              date: dateKey,
+              checkInTime: new Date(dateKey + "T09:15:00").toLocaleTimeString(),
+              checkOutTime: new Date(dateKey + "T18:05:00").toLocaleTimeString(),
+              status: "PRESENT",
+              totalBreakMinutes: 45,
+              overtimeMinutes: 30,
+              checkInLat: 18.5590,
+              checkInLon: 73.7868
+            };
+          } else if (index === 1) {
+            return {
+              id: "att-2",
+              user: agent,
+              date: dateKey,
+              checkInTime: new Date(dateKey + "T09:45:00").toLocaleTimeString(),
+              checkOutTime: null,
+              status: "LATE",
+              totalBreakMinutes: 15,
+              overtimeMinutes: 0,
+              checkInLat: 18.5592,
+              checkInLon: 73.7870
+            };
+          } else if (index === 2) {
+            return {
+              id: "att-3",
+              user: agent,
+              date: dateKey,
+              checkInTime: new Date(dateKey + "T09:05:00").toLocaleTimeString(),
+              checkOutTime: new Date(dateKey + "T17:30:00").toLocaleTimeString(),
+              status: "PRESENT",
+              totalBreakMinutes: 30,
+              overtimeMinutes: 0,
+              checkInLat: 18.5588,
+              checkInLon: 73.7865
+            };
+          } else {
+            return {
+              id: "att-" + (index + 1),
+              user: agent,
+              date: dateKey,
+              checkInTime: null,
+              checkOutTime: null,
+              status: "ABSENT",
+              totalBreakMinutes: 0,
+              overtimeMinutes: 0
+            };
+          }
+        });
+      }
+    );
   },
 
   // --- LEAVES ENDPOINTS ---
