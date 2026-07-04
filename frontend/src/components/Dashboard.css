@@ -1020,6 +1020,150 @@
   margin-top: 4px;
 }
 
+.login-logo .logo-badge {
+  font-size: 0.55rem;
+  color: var(--gold-primary);
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.remember-device-container {
+  display: flex;
+  align-items: center;
+  margin-top: 14px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.remember-device-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-device-checkbox {
+  accent-color: var(--gold-primary);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+.otp-digit-grid {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.otp-digit-input {
+  width: 45px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #FFF;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.otp-digit-input:focus {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+  background: rgba(212, 175, 55, 0.02);
+}
+
+.security-icon-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
+
+.mfa-title {
+  color: #FFF;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.mfa-desc {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.mfa-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.btn-resend-otp {
+  background: transparent;
+  border: none;
+  color: var(--gold-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-resend-otp:hover {
+  text-decoration: underline;
+}
+
+.mfa-resend-countdown {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.dev-otp-helper {
+  background: rgba(212, 175, 55, 0.05);
+  border: 1px dashed rgba(212, 175, 55, 0.25);
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.dev-otp-helper .helper-title {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gold-primary);
+}
+
+.dev-otp-helper .helper-code {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.text-left {
+  text-align: left;
+}
+
+
 .auth-tab-buttons {
   display: flex;
   background: rgba(255, 255, 255, 0.03);

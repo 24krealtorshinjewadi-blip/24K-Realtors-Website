@@ -208,6 +208,25 @@ export default function Dashboard({ onViewChange }) {
   const canSeeEmployeeList = isAdmin || isHR || isSalesManager;
   const canSeeAllAttendance = isAdmin || isHR;
 
+  // Multi-factor OTP authentication state variables
+  const [loginStep, setLoginStep] = useState('credentials'); // credentials | otp
+  const [tempToken, setTempToken] = useState('');
+  const [maskedEmail, setMaskedEmail] = useState('');
+  const [rememberDevice, setRememberDevice] = useState(false);
+  const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
+  const [resendTimer, setResendTimer] = useState(0);
+  const [devMockOtpHelper, setDevMockOtpHelper] = useState('');
+
+  // OTP resend timer countdown hook
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const interval = setInterval(() => {
+        setResendTimer(prev => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [resendTimer]);
+
   // CRM Tab management
   const [activeTab, setActiveTab] = useState('leads'); // leads | properties | team
   const [leads, setLeads] = useState([]);
@@ -573,17 +592,24 @@ export default function Dashboard({ onViewChange }) {
     }
   };
 
-  // Handle Login & Registration Submit
+  // Handle Login & Registration Submit (IAM Flow)
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setAuthLoading(true);
     setAuthError('');
     try {
       if (authTab === 'login') {
-        const token = await apiService.login(authForm.username, authForm.password);
-        if (token) {
-          setIsLoggedIn(true);
-          showNotification('Admin Authenticated successfully.');
+        const data = await apiService.loginInit(authForm.username, authForm.password, rememberDevice);
+        if (data && data.tempToken) {
+          setTempToken(data.tempToken);
+          setMaskedEmail(data.emailMasked);
+          setLoginStep('otp');
+          setOtpCode(['', '', '', '', '', '']);
+          setResendTimer(30);
+          if (data.devMockOtp) {
+            setDevMockOtpHelper(data.devMockOtp);
+          }
+          showNotification('MFA Verification code dispatched.');
         }
       } else {
         await apiService.register(authForm.username, authForm.password);
@@ -594,6 +620,80 @@ export default function Dashboard({ onViewChange }) {
       setAuthError(err.message || 'Authentication failed. Please verify credentials.');
     } finally {
       setAuthLoading(false);
+    }
+  };
+
+  // Handle MFA OTP Verification Submit
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+    setAuthLoading(true);
+    setAuthError('');
+    try {
+      const code = otpCode.join('');
+      if (code.length < 6) {
+        throw new Error('Please enter the full 6-digit verification code.');
+      }
+      const data = await apiService.loginVerify(tempToken, code);
+      if (data && data.token) {
+        setIsLoggedIn(true);
+        setLoginStep('credentials');
+        showNotification(`Welcome back, ${data.fullName || data.username}. Session authorized.`);
+      }
+    } catch (err) {
+      setAuthError(err.message || 'Verification failed. Please verify the code.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Resend OTP code request
+  const handleResendOtp = async () => {
+    if (resendTimer > 0) return;
+    setAuthLoading(true);
+    setAuthError('');
+    try {
+      const data = await apiService.loginInit(authForm.username, authForm.password, rememberDevice);
+      if (data && data.tempToken) {
+        setTempToken(data.tempToken);
+        setMaskedEmail(data.emailMasked);
+        setOtpCode(['', '', '', '', '', '']);
+        setResendTimer(30);
+        if (data.devMockOtp) {
+          setDevMockOtpHelper(data.devMockOtp);
+        }
+        showNotification('New verification code dispatched.');
+      }
+    } catch (err) {
+      setAuthError(err.message || 'Failed to dispatch new OTP code.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Focus shifting helpers for OTP code input elements
+  const handleOtpChange = (index, value) => {
+    if (value && isNaN(value)) return;
+    const newOtp = [...otpCode];
+    newOtp[index] = value.slice(-1); // Only take last character
+    setOtpCode(newOtp);
+
+    // Auto-focus next input field
+    if (value !== '' && index < 5) {
+      const nextInput = document.getElementById(`otp-input-${index + 1}`);
+      if (nextInput) nextInput.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && otpCode[index] === '' && index > 0) {
+      const prevInput = document.getElementById(`otp-input-${index - 1}`);
+      if (prevInput) {
+        prevInput.focus();
+        // Clear previous input value on backspace
+        const newOtp = [...otpCode];
+        newOtp[index - 1] = '';
+        setOtpCode(newOtp);
+      }
     }
   };
 
@@ -807,45 +907,125 @@ export default function Dashboard({ onViewChange }) {
       <div className="crm-login-wrapper">
         <div className="login-card">
           <div className="login-logo">
+            <span className="logo-badge">ENTERPRISE IAM PORTAL</span>
             <span className="logo-text">24K REALTORS</span>
-            <span className="sub-text">SECURE CRM GATEWAY</span>
+            <span className="sub-text">IDENTITY &amp; ACCESS CONTROL</span>
           </div>
 
-          <div className="auth-tab-buttons">
-            <button className={authTab === 'login' ? 'active' : ''} onClick={() => setAuthTab('login')}>LOGIN</button>
-            <button className={authTab === 'register' ? 'active' : ''} onClick={() => setAuthTab('register')}>REGISTER</button>
-          </div>
+          {loginStep === 'credentials' ? (
+            <>
+              <div className="auth-tab-buttons">
+                <button className={authTab === 'login' ? 'active' : ''} onClick={() => setAuthTab('login')}>SIGN IN</button>
+                <button className={authTab === 'register' ? 'active' : ''} onClick={() => setAuthTab('register')}>PROVISION ACCESS</button>
+              </div>
 
-          <form onSubmit={handleAuthSubmit} style={{ marginTop: '20px' }}>
-            <div className="form-group">
-              <label className="form-label">Username</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                required 
-                placeholder="e.g. admin" 
-                value={authForm.username} 
-                onChange={e => setAuthForm({...authForm, username: e.target.value})} 
-              />
+              <form onSubmit={handleAuthSubmit} style={{ marginTop: '20px' }}>
+                <div className="form-group text-left">
+                  <label className="form-label">Principal Identity (Username)</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    required 
+                    placeholder="e.g. neeraj.giri" 
+                    value={authForm.username} 
+                    onChange={e => setAuthForm({...authForm, username: e.target.value})} 
+                  />
+                </div>
+                <div className="form-group text-left" style={{ marginTop: '16px' }}>
+                  <label className="form-label">Access Credentials (Password)</label>
+                  <input 
+                    type="password" 
+                    className="form-input" 
+                    required 
+                    placeholder="••••••••" 
+                    value={authForm.password} 
+                    onChange={e => setAuthForm({...authForm, password: e.target.value})} 
+                  />
+                </div>
+
+                {authTab === 'login' && (
+                  <div className="remember-device-container">
+                    <label className="remember-device-label">
+                      <input 
+                        type="checkbox" 
+                        checked={rememberDevice} 
+                        onChange={e => setRememberDevice(e.target.checked)} 
+                        className="remember-device-checkbox"
+                      />
+                      <span>Remember this device for 30 days</span>
+                    </label>
+                  </div>
+                )}
+
+                {authError && <div className="auth-error-msg">⚠️ {authError}</div>}
+
+                <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center', marginTop: '20px' }} disabled={authLoading}>
+                  {authLoading ? <Loader className="animate-spin" size={18} /> : (authTab === 'login' ? 'Verify Credentials →' : 'Request Account Provision')}
+                </button>
+              </form>
+            </>
+          ) : (
+            <div className="mfa-step-container">
+              <div className="security-icon-circle">
+                <Lock className="security-lock-animate" size={24} style={{ color: 'var(--gold-primary)' }} />
+              </div>
+              <h3 className="mfa-title">Multi-Factor Authentication</h3>
+              <p className="mfa-desc">
+                We've dispatched a 6-digit security code to your registered corporate email:
+                <strong className="mfa-email" style={{ display: 'block', marginTop: '6px', color: '#FFF' }}>{maskedEmail}</strong>
+              </p>
+
+              <form onSubmit={handleOtpSubmit} style={{ marginTop: '24px' }}>
+                <div className="otp-digit-grid">
+                  {otpCode.map((digit, idx) => (
+                    <input
+                      key={idx}
+                      id={`otp-input-${idx}`}
+                      type="text"
+                      maxLength="1"
+                      className="otp-digit-input"
+                      value={digit}
+                      onChange={e => handleOtpChange(idx, e.target.value)}
+                      onKeyDown={e => handleOtpKeyDown(idx, e)}
+                      autoFocus={idx === 0}
+                      required
+                    />
+                  ))}
+                </div>
+
+                {authError && <div className="auth-error-msg" style={{ marginTop: '16px' }}>⚠️ {authError}</div>}
+
+                <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center', marginTop: '24px' }} disabled={authLoading}>
+                  {authLoading ? <Loader className="animate-spin" size={18} /> : 'Authorize Workspace session'}
+                </button>
+              </form>
+
+              <div className="mfa-actions-row">
+                {resendTimer > 0 ? (
+                  <span className="mfa-resend-countdown">Resend code in {resendTimer}s</span>
+                ) : (
+                  <button onClick={handleResendOtp} className="btn-resend-otp" disabled={authLoading}>
+                    Resend Code
+                  </button>
+                )}
+                
+                <button 
+                  onClick={() => { setLoginStep('credentials'); setAuthError(''); }} 
+                  className="btn-back-credentials"
+                  style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '0.8rem', cursor: 'pointer' }}
+                >
+                  Change Credentials
+                </button>
+              </div>
+
+              {devMockOtpHelper && (
+                <div className="dev-otp-helper">
+                  <span className="helper-title">🔒 DEVELOPER LOCAL MODE:</span>
+                  <span className="helper-code">Your OTP is: <strong>{devMockOtpHelper}</strong></span>
+                </div>
+              )}
             </div>
-            <div className="form-group">
-              <label className="form-label">Password</label>
-              <input 
-                type="password" 
-                className="form-input" 
-                required 
-                placeholder="••••••••" 
-                value={authForm.password} 
-                onChange={e => setAuthForm({...authForm, password: e.target.value})} 
-              />
-            </div>
-
-            {authError && <div className="auth-error-msg">⚠️ {authError}</div>}
-
-            <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }} disabled={authLoading}>
-              {authLoading ? <Loader className="animate-spin" size={18} /> : (authTab === 'login' ? 'Secure Auth Login' : 'Register Operator')}
-            </button>
-          </form>
+          )}
 
           <button onClick={() => onViewChange('portal')} className="btn-back-portal">
             ← Return to Advisory Portal
