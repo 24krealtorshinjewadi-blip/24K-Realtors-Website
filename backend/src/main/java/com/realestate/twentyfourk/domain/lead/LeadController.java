@@ -3,6 +3,8 @@ package com.realestate.twentyfourk.domain.lead;
 import com.realestate.twentyfourk.domain.lead.dto.LeadRequest;
 import com.realestate.twentyfourk.domain.lead.dto.LeadResponse;
 import com.realestate.twentyfourk.domain.property.PrimeCorridor;
+import com.realestate.twentyfourk.domain.user.User;
+import com.realestate.twentyfourk.domain.user.UserRole;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -17,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/leads")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Permissive CORS for Phase 1 local development
+@CrossOrigin(origins = "*")
 public class LeadController {
 
     private final LeadService leadService;
@@ -34,8 +37,14 @@ public class LeadController {
         return ResponseEntity.ok(lead);
     }
 
+    /**
+     * Privacy-enforced lead listing:
+     * - RELATIONSHIP_MANAGER: sees ONLY their own assigned leads
+     * - All others (ADMIN, SUPER_ADMIN, SALES_MANAGER): see all leads
+     */
     @GetMapping
     public ResponseEntity<Page<LeadResponse>> getAllLeads(
+            @AuthenticationPrincipal User currentUser,
             @RequestParam(required = false) LeadStatus status,
             @RequestParam(required = false) PrimeCorridor preferredLocation,
             @RequestParam(defaultValue = "0") int page,
@@ -43,10 +52,16 @@ public class LeadController {
             @RequestParam(defaultValue = "createdDate") String sortBy,
             @RequestParam(defaultValue = "desc") String direction
     ) {
-        Sort sort = direction.equalsIgnoreCase("desc") ? 
+        Sort sort = direction.equalsIgnoreCase("desc") ?
                 Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-        
+
+        // Privacy gate: RM only sees own leads
+        if (currentUser != null && currentUser.getRole() == UserRole.RELATIONSHIP_MANAGER) {
+            Page<LeadResponse> myLeads = leadService.getMyLeads(currentUser.getEmail(), status, pageRequest);
+            return ResponseEntity.ok(myLeads);
+        }
+
         Page<LeadResponse> leads = leadService.getAllLeads(status, preferredLocation, pageRequest);
         return ResponseEntity.ok(leads);
     }

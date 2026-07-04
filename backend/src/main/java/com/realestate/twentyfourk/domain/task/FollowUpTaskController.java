@@ -3,6 +3,9 @@ package com.realestate.twentyfourk.domain.task;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.realestate.twentyfourk.domain.user.User;
+import com.realestate.twentyfourk.domain.user.UserRole;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -19,7 +22,10 @@ public class FollowUpTaskController {
     private final FollowUpTaskService taskService;
 
     @GetMapping
-    public ResponseEntity<List<FollowUpTask>> getAllTasks() {
+    public ResponseEntity<List<FollowUpTask>> getAllTasks(@AuthenticationPrincipal User currentUser) {
+        if (currentUser != null && currentUser.getRole() == UserRole.RELATIONSHIP_MANAGER) {
+            return ResponseEntity.ok(taskService.getTasksByAgentEmail(currentUser.getEmail()));
+        }
         return ResponseEntity.ok(taskService.getAllTasks());
     }
 

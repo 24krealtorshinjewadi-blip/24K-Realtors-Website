@@ -11,4 +11,5 @@ public interface FollowUpTaskRepository extends JpaRepository<FollowUpTask, UUID
     List<FollowUpTask> findByLeadId(UUID leadId);
     List<FollowUpTask> findByAgentId(UUID agentId);
     List<FollowUpTask> findByStatus(TaskStatus status);
+    List<FollowUpTask> findByAgentEmail(String email);
 }

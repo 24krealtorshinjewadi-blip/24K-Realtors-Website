@@ -2,6 +2,8 @@ package com.realestate.twentyfourk.config;
 
 import com.realestate.twentyfourk.domain.agent.Agent;
 import com.realestate.twentyfourk.domain.agent.AgentRepository;
+import com.realestate.twentyfourk.domain.attendance.Attendance;
+import com.realestate.twentyfourk.domain.attendance.AttendanceRepository;
 import com.realestate.twentyfourk.domain.lead.Lead;
 import com.realestate.twentyfourk.domain.lead.LeadRepository;
 import com.realestate.twentyfourk.domain.lead.LeadRequirementType;
@@ -19,6 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -33,6 +38,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final AgentRepository agentRepository;
     private final FollowUpTaskRepository taskRepository;
+    private final AttendanceRepository attendanceRepository;
     private final com.realestate.twentyfourk.domain.builder.BuilderRepository builderRepository;
     private final com.realestate.twentyfourk.domain.society.SocietyRepository societyRepository;
 
@@ -51,6 +57,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         seedSocieties();
         seedProperties();
         seedLeads();
+        seedJuneAttendance();
     }
 
     private void seedSystemUsers() {
@@ -59,7 +66,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (existingAdmin.isEmpty()) {
             User admin = User.builder()
                     .username(adminUsername)
-                    .password(passwordEncoder.encode(adminPassword))
+                    .password(passwordEncoder.encode("24KAdmin@2026!"))
                     .role(UserRole.SUPER_ADMIN)
                     .fullName("Manish Kumar Rai")
                     .email("manish.rai@24krealtors.com")
@@ -74,11 +81,11 @@ public class DatabaseSeeder implements CommandLineRunner {
         } else {
             User admin = existingAdmin.get();
             admin.setRole(UserRole.SUPER_ADMIN);
-            if (!passwordEncoder.matches(adminPassword, admin.getPassword())) {
-                log.info("Super Admin password mismatch detected — rotating password for '{}'...", adminUsername);
-                admin.setPassword(passwordEncoder.encode(adminPassword));
+            String newPwd = "24KAdmin@2026!";
+            if (!passwordEncoder.matches(newPwd, admin.getPassword())) {
+                log.info("Rotating Super Admin password to individual password...");
+                admin.setPassword(passwordEncoder.encode(newPwd));
                 userRepository.save(admin);
-                log.info("Super Admin password rotated successfully.");
             }
         }
 
@@ -86,7 +93,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (userRepository.findByUsername("hr24k").isEmpty()) {
             User hr = User.builder()
                     .username("hr24k")
-                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
+                    .password(passwordEncoder.encode("Jyoti.D@24K2026!"))
                     .role(UserRole.HR)
                     .fullName("Jyoti Dhale")
                     .email("jyoti.dhale@24krealtors.com")
@@ -98,13 +105,21 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .build();
             userRepository.save(hr);
             log.info("HR user created successfully");
+        } else {
+            userRepository.findByUsername("hr24k").ifPresent(u -> {
+                if (!passwordEncoder.matches("Jyoti.D@24K2026!", u.getPassword())) {
+                    u.setPassword(passwordEncoder.encode("Jyoti.D@24K2026!"));
+                    userRepository.save(u);
+                    log.info("HR password updated to individual password.");
+                }
+            });
         }
 
         // 3. Admin / Operations Controller — Neeraj Giri
         if (userRepository.findByUsername("neeraj.giri").isEmpty()) {
             User admin2 = User.builder()
                     .username("neeraj.giri")
-                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
+                    .password(passwordEncoder.encode("Neeraj@24K2026!"))
                     .role(UserRole.ADMIN)
                     .fullName("Neeraj Giri")
                     .email("neeraj.giri@24krealtors.com")
@@ -116,13 +131,21 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .build();
             userRepository.save(admin2);
             log.info("Admin (Neeraj Giri) user created successfully");
+        } else {
+            userRepository.findByUsername("neeraj.giri").ifPresent(u -> {
+                if (!passwordEncoder.matches("Neeraj@24K2026!", u.getPassword())) {
+                    u.setPassword(passwordEncoder.encode("Neeraj@24K2026!"));
+                    userRepository.save(u);
+                    log.info("Neeraj Giri password updated to individual password.");
+                }
+            });
         }
 
         // 4. Sales Manager
         if (userRepository.findByUsername("salesmanager24k").isEmpty()) {
             User sm = User.builder()
                     .username("salesmanager24k")
-                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
+                    .password(passwordEncoder.encode("Nilesh@24K2026!"))
                     .role(UserRole.SALES_MANAGER)
                     .fullName("Nilesh Rai")
                     .email("nilesh.rai@24krealtors.com")
@@ -134,18 +157,26 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .build();
             userRepository.save(sm);
             log.info("Sales Manager user created successfully");
+        } else {
+            userRepository.findByUsername("salesmanager24k").ifPresent(u -> {
+                if (!passwordEncoder.matches("Nilesh@24K2026!", u.getPassword())) {
+                    u.setPassword(passwordEncoder.encode("Nilesh@24K2026!"));
+                    userRepository.save(u);
+                    log.info("Nilesh Rai password updated to individual password.");
+                }
+            });
         }
 
         // 5. Relationship Managers / Advisory RMs
-        seedRelationshipManagerUser("jyoti.jagtap", "Jyoti Jagtap", "+919876543202", "jyoti.jagtap@24krealtors.com", "Senior RM", "60000.00");
-        seedRelationshipManagerUser("yash.murkute", "Yash Murkute", "+919876543203", "yash.murkute@24krealtors.com", "Associate RM", "45000.00");
+        seedRelationshipManagerUser("jyoti.jagtap", "Jyoti Jagtap", "+919876543202", "jyoti.jagtap@24krealtors.com", "Senior RM", "60000.00", "Jyoti.J@24K2026!");
+        seedRelationshipManagerUser("yash.murkute", "Yash Murkute", "+919876543203", "yash.murkute@24krealtors.com", "Associate RM", "45000.00", "Yash@24K2026!");
     }
 
-    private void seedRelationshipManagerUser(String username, String fullName, String phone, String email, String designation, String salary) {
+    private void seedRelationshipManagerUser(String username, String fullName, String phone, String email, String designation, String salary, String individualPassword) {
         if (userRepository.findByUsername(username).isEmpty()) {
             User rm = User.builder()
                     .username(username)
-                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
+                    .password(passwordEncoder.encode(individualPassword))
                     .role(UserRole.RELATIONSHIP_MANAGER)
                     .fullName(fullName)
                     .email(email)
@@ -157,6 +188,14 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .build();
             userRepository.save(rm);
             log.info("RM user seeded: {}", username);
+        } else {
+            userRepository.findByUsername(username).ifPresent(u -> {
+                if (!passwordEncoder.matches(individualPassword, u.getPassword())) {
+                    u.setPassword(passwordEncoder.encode(individualPassword));
+                    userRepository.save(u);
+                    log.info("{} password updated to individual password.", username);
+                }
+            });
         }
     }
 
@@ -859,6 +898,112 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         taskRepository.saveAll(List.of(t1, t2, t3, t4));
         log.info("Seeded 4 sample tasks.");
+    }
+
+    private void seedJuneAttendance() {
+        // Only seed if no attendance records exist for June 2026
+        LocalDate juneStart = LocalDate.of(2026, 6, 2);
+        LocalDate juneEnd   = LocalDate.of(2026, 6, 28);
+        if (attendanceRepository.findByDate(juneStart).isEmpty()) {
+            log.info("Seeding June 2026 attendance records for all employees...");
+
+            List<User> employees = userRepository.findAll().stream()
+                    .filter(u -> u.getRole() != null)
+                    .toList();
+
+            List<Attendance> records = new ArrayList<>();
+
+            // June 2026 working day patterns per employee
+            // Pattern: 0=PRESENT on-time, 1=LATE, 2=ABSENT, 3=PRESENT overtime
+            // Neeraj Giri - Very regular, mostly on time
+            int[] neerajPattern = {0,0,0,1,0, 0,0,0,0,3, 0,2,0,0,0, 0,0,1,0,0};
+            // Manish Kumar Rai - Present but sometimes late (developer hours)
+            int[] manishPattern = {0,0,1,0,0, 1,0,0,0,0, 0,0,0,2,0, 0,1,0,0,3};
+            // Nilesh Rai - Sales, frequent field visits
+            int[] nileshPattern = {0,1,0,0,1, 0,0,2,0,0, 1,0,0,0,0, 3,0,0,1,0};
+            // Jyoti Dhale - HR, very disciplined
+            int[] jyotiDPattern  = {0,0,0,0,0, 0,1,0,0,0, 0,0,0,0,0, 0,0,0,2,0};
+            // Jyoti Jagtap - RM, moderate attendance
+            int[] jyotiJPattern  = {0,0,1,0,0, 2,0,0,1,0, 0,0,0,1,0, 0,0,2,0,0};
+            // Yash Murkute - RM, junior, some lates
+            int[] yashPattern    = {1,0,0,1,0, 0,2,0,1,0, 0,1,0,0,0, 0,0,0,1,0};
+
+            for (User emp : employees) {
+                int[] pattern = switch (emp.getUsername()) {
+                    case "neeraj.giri"    -> neerajPattern;
+                    case "admin24k"       -> manishPattern;
+                    case "salesmanager24k"-> nileshPattern;
+                    case "hr24k"          -> jyotiDPattern;
+                    case "jyoti.jagtap"   -> jyotiJPattern;
+                    case "yash.murkute"   -> yashPattern;
+                    default -> null;
+                };
+                if (pattern == null) continue;
+
+                int dayIdx = 0;
+                LocalDate current = juneStart;
+                while (!current.isAfter(juneEnd)) {
+                    // Skip weekends (Saturday=6, Sunday=7)
+                    if (current.getDayOfWeek().getValue() >= 6) {
+                        current = current.plusDays(1);
+                        continue;
+                    }
+                    if (dayIdx >= pattern.length) break;
+
+                    int type = pattern[dayIdx++];
+                    if (type == 2) { // ABSENT — no record
+                        current = current.plusDays(1);
+                        continue;
+                    }
+
+                    LocalDateTime checkIn;
+                    LocalDateTime checkOut;
+                    boolean isLate = false;
+                    int overtimeMinutes = 0;
+
+                    switch (type) {
+                        case 1 -> { // LATE — after 9:30
+                            checkIn  = current.atTime(9, 45 + (int)(Math.random() * 30));
+                            checkOut = current.atTime(18, 30 + (int)(Math.random() * 20));
+                            isLate = true;
+                        }
+                        case 3 -> { // PRESENT with overtime
+                            checkIn  = current.atTime(9, (int)(Math.random() * 20));
+                            checkOut = current.atTime(20, (int)(Math.random() * 30));
+                            overtimeMinutes = 90;
+                        }
+                        default -> { // PRESENT on-time
+                            checkIn  = current.atTime(9, (int)(Math.random() * 25));
+                            checkOut = current.atTime(18, 15 + (int)(Math.random() * 30));
+                        }
+                    }
+
+                    Attendance att = Attendance.builder()
+                            .user(emp)
+                            .date(current)
+                            .checkInTime(checkIn)
+                            .checkOutTime(checkOut)
+                            .checkInLat(18.583418 + (Math.random() * 0.001 - 0.0005))
+                            .checkInLon(73.727354 + (Math.random() * 0.001 - 0.0005))
+                            .checkOutLat(18.583418 + (Math.random() * 0.001 - 0.0005))
+                            .checkOutLon(73.727354 + (Math.random() * 0.001 - 0.0005))
+                            .status(isLate ? "LATE" : "PRESENT")
+                            .late(isLate)
+                            .earlyExit(false)
+                            .overtimeMinutes(overtimeMinutes)
+                            .totalBreaksDurationMinutes(30 + (int)(Math.random() * 15))
+                            .build();
+
+                    records.add(att);
+                    current = current.plusDays(1);
+                }
+            }
+
+            attendanceRepository.saveAll(records);
+            log.info("Seeded {} June 2026 attendance records for {} employees.", records.size(), employees.size());
+        } else {
+            log.info("June 2026 attendance already seeded, skipping.");
+        }
     }
 
     private void seedBuilders() {
