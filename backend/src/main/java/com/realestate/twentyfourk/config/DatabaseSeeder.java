@@ -61,15 +61,18 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedSystemUsers() {
-        // 1. Super Admin
-        var existingAdmin = userRepository.findByUsername(adminUsername);
-        if (existingAdmin.isEmpty()) {
+        // 1. Super Admin (Manish)
+        var superAdmins = userRepository.findAll().stream()
+                .filter(u -> u.getRole() == UserRole.SUPER_ADMIN)
+                .toList();
+
+        if (superAdmins.isEmpty()) {
             User admin = User.builder()
-                    .username(adminUsername)
-                    .password(passwordEncoder.encode("24KAdmin@2026!"))
+                    .username("Manishrai07")
+                    .password(passwordEncoder.encode("Manish@993100"))
                     .role(UserRole.SUPER_ADMIN)
                     .fullName("Manish Kumar Rai")
-                    .email("manish.rai@24krealtors.com")
+                    .email("24krealtorshinjewadi@gmail.com")
                     .phone("+919876543206")
                     .designation("CEO & Principal Partner")
                     .department("Management")
@@ -77,16 +80,17 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .salaryBase(new BigDecimal("250000.00"))
                     .build();
             userRepository.save(admin);
-            log.info("Super Admin user created successfully (username: '{}')", adminUsername);
+            log.info("Super Admin (Manishrai07) created successfully.");
         } else {
-            User admin = existingAdmin.get();
-            admin.setRole(UserRole.SUPER_ADMIN);
-            String newPwd = "24KAdmin@2026!";
+            User admin = superAdmins.get(0);
+            admin.setUsername("Manishrai07");
+            admin.setEmail("24krealtorshinjewadi@gmail.com");
+            String newPwd = "Manish@993100";
             if (!passwordEncoder.matches(newPwd, admin.getPassword())) {
-                log.info("Rotating Super Admin password to individual password...");
                 admin.setPassword(passwordEncoder.encode(newPwd));
-                userRepository.save(admin);
             }
+            userRepository.save(admin);
+            log.info("Super Admin (Manishrai07) credentials synchronized.");
         }
 
         // 2. HR Manager
@@ -239,7 +243,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             Agent agent6 = Agent.builder()
                     .name("Manish Kumar Rai")
                     .phone("+919876543206")
-                    .email("manish.rai@24krealtors.com")
+                    .email("24krealtorshinjewadi@gmail.com")
                     .active(true)
                     .build();
 
