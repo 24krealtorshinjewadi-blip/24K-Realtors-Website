@@ -87,10 +87,6 @@ public class PayrollServiceImpl implements PayrollService {
         List<Attendance> logs = attendanceRepository.findByUserIdAndDateBetween(userId, startDate, endDate);
         List<LeaveRequest> leaves = leaveRequestRepository.findByUserId(userId);
 
-        // Count late check-ins
-        long lateCount = logs.stream()
-                .filter(log -> log.isLate() || "LATE".equalsIgnoreCase(log.getStatus()))
-                .count();
         BigDecimal lateDeduction = BigDecimal.ZERO;
 
         // Count present days
@@ -123,7 +119,6 @@ public class PayrollServiceImpl implements PayrollService {
         long absentDays = totalWorkingDays - presentDays - approvedLeaveDays;
         if (absentDays < 0) absentDays = 0;
 
-        BigDecimal dailyRate = BigDecimal.ZERO;
         BigDecimal absentDeduction = BigDecimal.ZERO;
 
         BigDecimal netSalary = base.add(allowances).add(commissions)

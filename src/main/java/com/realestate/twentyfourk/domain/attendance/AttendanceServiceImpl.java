@@ -90,7 +90,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance checkOut(UUID userId, Double latitude, Double longitude) {
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
         boolean isWfh = !workFromHomeRepository.findApprovedWfhForDate(userId, LocalDate.now()).isEmpty();
