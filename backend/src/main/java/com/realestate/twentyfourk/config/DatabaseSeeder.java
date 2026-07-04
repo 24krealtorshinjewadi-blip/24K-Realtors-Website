@@ -967,18 +967,18 @@ public class DatabaseSeeder implements CommandLineRunner {
 
                     switch (type) {
                         case 1 -> { // LATE — after 9:30
-                            checkIn  = current.atTime(9, 45 + (int)(Math.random() * 30));
-                            checkOut = current.atTime(18, 30 + (int)(Math.random() * 20));
+                            checkIn  = current.atTime(9, 45).plusMinutes((int)(Math.random() * 30));
+                            checkOut = current.atTime(18, 30).plusMinutes((int)(Math.random() * 20));
                             isLate = true;
                         }
                         case 3 -> { // PRESENT with overtime
-                            checkIn  = current.atTime(9, (int)(Math.random() * 20));
-                            checkOut = current.atTime(20, (int)(Math.random() * 30));
+                            checkIn  = current.atTime(9, 0).plusMinutes((int)(Math.random() * 20));
+                            checkOut = current.atTime(20, 0).plusMinutes((int)(Math.random() * 30));
                             overtimeMinutes = 90;
                         }
                         default -> { // PRESENT on-time
-                            checkIn  = current.atTime(9, (int)(Math.random() * 25));
-                            checkOut = current.atTime(18, 15 + (int)(Math.random() * 30));
+                            checkIn  = current.atTime(9, 0).plusMinutes((int)(Math.random() * 25));
+                            checkOut = current.atTime(18, 15).plusMinutes((int)(Math.random() * 30));
                         }
                     }
 
