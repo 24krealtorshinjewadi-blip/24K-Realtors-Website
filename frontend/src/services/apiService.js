@@ -1003,6 +1003,98 @@ export const apiService = {
 
   // --- AUTH ENDPOINTS ---
   
+  async loginInit(username, password, rememberDevice) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/auth/login-init`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password, rememberDevice }),
+        });
+        if (!response.ok) {
+          const errText = await response.text().catch(() => '');
+          throw new Error(errText || 'Authentication failed. Please check your credentials.');
+        }
+        return await response.json();
+      },
+      () => {
+        const users = LocalMockDb.getUsers();
+        const user = users.find(u => u.username === username && u.password === password);
+        if (!user) {
+          throw new Error('Authentication failed. Invalid local credentials.');
+        }
+        
+        // Mock email masking
+        const email = user.email || (username + "@24krealtors.com");
+        const atIndex = email.indexOf("@");
+        const namePart = email.substring(0, atIndex);
+        const domainPart = email.substring(atIndex);
+        const masked = namePart.charAt(0) + "***" + namePart.charAt(namePart.length - 1) + domainPart;
+
+        return {
+          tempToken: "mock-temp-token-" + username,
+          emailMasked: masked,
+          devMockOtp: "123456" // Default local fallback OTP
+        };
+      },
+      true
+    );
+  },
+
+  async loginVerify(tempToken, code) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/auth/login-verify`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ tempToken, code }),
+        });
+        if (!response.ok) {
+          const errText = await response.text().catch(() => '');
+          throw new Error(errText || 'Verification failed. Incorrect OTP.');
+        }
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        localStorage.setItem('role', data.role);
+        localStorage.setItem('adminUser', data.username);
+        localStorage.setItem('fullName', data.fullName || data.username);
+        return data;
+      },
+      () => {
+        // If local tempToken starts with mock-temp-token-
+        if (!tempToken.startsWith("mock-temp-token-")) {
+          throw new Error('Invalid temporary session token.');
+        }
+        if (code !== "123456") {
+          throw new Error('Incorrect verification code. Hint: Use 123456');
+        }
+        
+        const username = tempToken.replace("mock-temp-token-", "");
+        const users = LocalMockDb.getUsers();
+        const user = users.find(u => u.username === username);
+        if (!user) {
+          throw new Error('User session not found.');
+        }
+
+        const token = "mock-jwt-session-token-xyz-123";
+        const refreshToken = "mock-refresh-token-xyz-123";
+        localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('role', user.role || 'CRM_ADMIN');
+        localStorage.setItem('adminUser', username);
+        localStorage.setItem('fullName', user.fullName || username);
+        return { token, refreshToken, username, role: user.role || 'CRM_ADMIN', fullName: user.fullName || username };
+      },
+      true
+    );
+  },
+
+  // Retain legacy login for backward compatibility
   async login(username, password) {
     return runWithFallback(
       async () => {
@@ -1015,7 +1107,7 @@ export const apiService = {
         });
         if (!response.ok) {
           const errText = await response.text().catch(() => '');
-          throw new Error(errText || 'Authentication failed. Please check your credentials.');
+          throw new Error(errText || 'Authentication failed.');
         }
         const data = await response.json();
         localStorage.setItem('token', data.token);
@@ -1028,9 +1120,7 @@ export const apiService = {
       () => {
         const users = LocalMockDb.getUsers();
         const user = users.find(u => u.username === username && u.password === password);
-        if (!user) {
-          throw new Error('Authentication failed. Invalid local credentials.');
-        }
+        if (!user) throw new Error('Authentication failed.');
         const token = "mock-jwt-session-token-xyz-123";
         const refreshToken = "mock-refresh-token-xyz-123";
         localStorage.setItem('token', token);
