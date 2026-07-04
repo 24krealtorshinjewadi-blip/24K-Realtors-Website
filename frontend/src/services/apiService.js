@@ -1987,6 +1987,7 @@ export const apiService = {
     return runWithFallback(
       async () => {
         const res = await fetch(`${BASE_URL}/wfh/my-requests`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error("Failed to fetch WFH requests");
         return res.json();
       },
       () => {
@@ -1999,6 +2000,7 @@ export const apiService = {
     return runWithFallback(
       async () => {
         const res = await fetch(`${BASE_URL}/wfh/pending`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error("Failed to fetch pending WFH requests");
         return res.json();
       },
       () => {
@@ -2015,6 +2017,7 @@ export const apiService = {
           method: 'POST',
           headers: getAuthHeaders()
         });
+        if (!res.ok) throw new Error("Failed to approve WFH request");
         return res.json();
       },
       () => {
@@ -2037,6 +2040,7 @@ export const apiService = {
           method: 'POST',
           headers: getAuthHeaders()
         });
+        if (!res.ok) throw new Error("Failed to reject WFH request");
         return res.json();
       },
       () => {
@@ -2056,6 +2060,7 @@ export const apiService = {
     return runWithFallback(
       async () => {
         const res = await fetch(`${BASE_URL}/wfh/active-today`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error("Failed to check active WFH status");
         return res.json();
       },
       () => {
