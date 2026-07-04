@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,6 +80,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/daily-dashboard")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','HR')")
     public ResponseEntity<List<Attendance>> getDailyDashboard(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         LocalDate targetDate = date != null ? date : LocalDate.now();

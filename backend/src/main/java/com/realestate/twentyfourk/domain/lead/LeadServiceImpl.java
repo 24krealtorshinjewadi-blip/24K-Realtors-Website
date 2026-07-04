@@ -80,6 +80,17 @@ public class LeadServiceImpl implements LeadService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<LeadResponse> getMyLeads(String agentEmail, LeadStatus status, Pageable pageable) {
+        if (status != null) {
+            return leadRepository.findByAssignedAgent_EmailAndStatus(agentEmail, status, pageable)
+                    .map(this::mapToResponse);
+        }
+        return leadRepository.findByAssignedAgent_Email(agentEmail, pageable)
+                .map(this::mapToResponse);
+    }
+
+    @Override
     @Transactional
     public LeadResponse updateLeadStatus(UUID id, LeadStatus status) {
         Lead lead = leadRepository.findById(id)

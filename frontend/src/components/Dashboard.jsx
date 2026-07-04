@@ -193,6 +193,21 @@ export default function Dashboard({ onViewChange }) {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState('');
 
+  // Role-based access control — read from localStorage after login
+  const userRole = localStorage.getItem('role') || 'EMPLOYEE';
+  const adminUsername = localStorage.getItem('adminUser') || '';
+
+  // Role permission helpers
+  const isAdmin = ['SUPER_ADMIN', 'ADMIN'].includes(userRole);
+  const isHR = userRole === 'HR';
+  const isSalesManager = userRole === 'SALES_MANAGER';
+  const isRM = userRole === 'RELATIONSHIP_MANAGER';
+  const canSeeAllLeads = isAdmin || isSalesManager;
+  const canManageProperties = isAdmin || isSalesManager;
+  const canSeePayroll = isAdmin || isHR;
+  const canSeeEmployeeList = isAdmin || isHR || isSalesManager;
+  const canSeeAllAttendance = isAdmin || isHR;
+
   // CRM Tab management
   const [activeTab, setActiveTab] = useState('leads'); // leads | properties | team
   const [leads, setLeads] = useState([]);
@@ -846,50 +861,78 @@ export default function Dashboard({ onViewChange }) {
       <aside className="crm-sidebar">
         <div className="crm-sidebar-logo">
           <span>24K OPERATOR</span>
-          <span style={{ fontSize: '0.65rem', color: 'var(--gold-primary)', letterSpacing: '0.1em' }}>CONTROL TERMINAL</span>
+          <div style={{ marginTop: '5px' }}>
+            <span style={{ fontSize: '0.65rem', color: 'var(--gold-primary)', display: 'block' }}>{adminUsername}</span>
+            <span style={{ fontSize: '0.6rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{userRole.replace('_', ' ')}</span>
+          </div>
         </div>
         
         <nav className="sidebar-nav">
-          <button className={`crm-sidebar-glide-item ${activeTab === 'leads' ? 'active' : ''}`} onClick={() => { setActiveTab('leads'); handleClosePropForm(); }}>
-            <Users size={18} />
-            <span>Lead Pipelines</span>
-          </button>
-          <button className={`crm-sidebar-glide-item ${activeTab === 'properties' ? 'active' : ''}`} onClick={() => { setActiveTab('properties'); handleClosePropForm(); }}>
-            <Home size={18} />
-            <span>Properties Desk</span>
-          </button>
-          <button className={`crm-sidebar-glide-item ${activeTab === 'societies' ? 'active' : ''}`} onClick={() => { setActiveTab('societies'); handleClosePropForm(); }}>
-            <Building size={18} />
-            <span>Societies & Devs</span>
-          </button>
-          <button className={`crm-sidebar-glide-item ${activeTab === 'blogs' ? 'active' : ''}`} onClick={() => { setActiveTab('blogs'); handleClosePropForm(); }}>
-            <FileText size={18} />
-            <span>Blogs CMS</span>
-          </button>
-          <button className={`crm-sidebar-glide-item ${activeTab === 'team' ? 'active' : ''}`} onClick={() => { setActiveTab('team'); handleClosePropForm(); }}>
-            <TrendingUp size={18} />
-            <span>Advisory RMs</span>
-          </button>
-          <button className={`crm-sidebar-glide-item ${activeTab === 'tasks' ? 'active' : ''}`} onClick={() => { setActiveTab('tasks'); handleClosePropForm(); }}>
-            <Calendar size={18} />
-            <span>Follow-up Tasks</span>
-          </button>
-          <button className={`crm-sidebar-glide-item ${activeTab === 'employees' ? 'active' : ''}`} onClick={() => { setActiveTab('employees'); handleClosePropForm(); }}>
-            <Users size={18} />
-            <span>Employees (HR)</span>
-          </button>
+          {!isHR && (
+            <button className={`crm-sidebar-glide-item ${activeTab === 'leads' ? 'active' : ''}`} onClick={() => { setActiveTab('leads'); handleClosePropForm(); }}>
+              <Users size={18} />
+              <span>{isRM ? 'My Leads' : 'Lead Pipelines'}</span>
+            </button>
+          )}
+
+          {!isHR && (
+            <button className={`crm-sidebar-glide-item ${activeTab === 'properties' ? 'active' : ''}`} onClick={() => { setActiveTab('properties'); handleClosePropForm(); }}>
+              <Home size={18} />
+              <span>Properties Desk</span>
+            </button>
+          )}
+
+          {canManageProperties && (
+            <button className={`crm-sidebar-glide-item ${activeTab === 'societies' ? 'active' : ''}`} onClick={() => { setActiveTab('societies'); handleClosePropForm(); }}>
+              <Building size={18} />
+              <span>Societies & Devs</span>
+            </button>
+          )}
+
+          {isAdmin && (
+            <button className={`crm-sidebar-glide-item ${activeTab === 'blogs' ? 'active' : ''}`} onClick={() => { setActiveTab('blogs'); handleClosePropForm(); }}>
+              <FileText size={18} />
+              <span>Blogs CMS</span>
+            </button>
+          )}
+
+          {(isAdmin || isSalesManager) && (
+            <button className={`crm-sidebar-glide-item ${activeTab === 'team' ? 'active' : ''}`} onClick={() => { setActiveTab('team'); handleClosePropForm(); }}>
+              <TrendingUp size={18} />
+              <span>Advisory RMs</span>
+            </button>
+          )}
+
+          {!isHR && (
+            <button className={`crm-sidebar-glide-item ${activeTab === 'tasks' ? 'active' : ''}`} onClick={() => { setActiveTab('tasks'); handleClosePropForm(); }}>
+              <Calendar size={18} />
+              <span>{isRM ? 'My Tasks' : 'Follow-up Tasks'}</span>
+            </button>
+          )}
+
+          {canSeeEmployeeList && (
+            <button className={`crm-sidebar-glide-item ${activeTab === 'employees' ? 'active' : ''}`} onClick={() => { setActiveTab('employees'); handleClosePropForm(); }}>
+              <Users size={18} />
+              <span>Employees (HR)</span>
+            </button>
+          )}
+
           <button className={`crm-sidebar-glide-item ${activeTab === 'attendance' ? 'active' : ''}`} onClick={() => { setActiveTab('attendance'); handleClosePropForm(); }}>
             <Clock size={18} />
-            <span>Attendance</span>
+            <span>{canSeeAllAttendance ? 'Attendance (All)' : 'My Attendance'}</span>
           </button>
+
           <button className={`crm-sidebar-glide-item ${activeTab === 'leaves' ? 'active' : ''}`} onClick={() => { setActiveTab('leaves'); handleClosePropForm(); }}>
             <Calendar size={18} />
             <span>Leaves Portal</span>
           </button>
-          <button className={`crm-sidebar-glide-item ${activeTab === 'payroll' ? 'active' : ''}`} onClick={() => { setActiveTab('payroll'); handleClosePropForm(); }}>
-            <FileText size={18} />
-            <span>Payroll & ERP</span>
-          </button>
+
+          {canSeePayroll && (
+            <button className={`crm-sidebar-glide-item ${activeTab === 'payroll' ? 'active' : ''}`} onClick={() => { setActiveTab('payroll'); handleClosePropForm(); }}>
+              <FileText size={18} />
+              <span>Payroll & ERP</span>
+            </button>
+          )}
           
           
           <button onClick={() => onViewChange('portal')} style={{ marginTop: 'auto', border: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-muted)' }}>

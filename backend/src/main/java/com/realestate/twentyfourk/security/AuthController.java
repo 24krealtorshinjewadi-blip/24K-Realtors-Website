@@ -27,7 +27,7 @@ public class AuthController {
     // DTO records
     public record RegisterRequest(String username, String password, UserRole role) {}
     public record LoginRequest(String username, String password) {}
-    public record AuthResponse(String token, String refreshToken, String username, String role) {}
+    public record AuthResponse(String token, String refreshToken, String username, String role, String fullName) {}
     public record TokenRefreshRequest(String refreshToken) {}
     public record TokenRefreshResponse(String accessToken, String refreshToken) {}
 
@@ -85,7 +85,8 @@ public class AuthController {
                 token, 
                 refreshToken.getToken(), 
                 user.getUsername(), 
-                user.getRole().name()
+                user.getRole().name(),
+                user.getFullName()
         ));
     }
 

@@ -91,6 +91,12 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<FollowUpTask> getTasksByAgentEmail(String email) {
+        return taskRepository.findByAgentEmail(email);
+    }
+
+    @Override
     @Transactional
     public void deleteTask(UUID taskId) {
         FollowUpTask task = taskRepository.findById(taskId)

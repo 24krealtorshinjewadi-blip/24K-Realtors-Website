@@ -11,6 +11,7 @@ public interface FollowUpTaskService {
     List<FollowUpTask> getAllTasks();
     List<FollowUpTask> getTasksByLead(UUID leadId);
     List<FollowUpTask> getTasksByAgent(UUID agentId);
+    List<FollowUpTask> getTasksByAgentEmail(String email);
     void deleteTask(UUID taskId);
     Map<String, Object> getTaskStats();
 }

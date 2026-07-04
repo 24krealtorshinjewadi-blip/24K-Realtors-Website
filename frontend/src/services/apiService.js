@@ -897,7 +897,14 @@ const LocalMockDb = {
     saveLocalStorageItem('mock_tasks', tasks);
   },
   getUsers() {
-    return getLocalStorageItem('mock_users', [{ username: 'admin24k', password: '24KRealtors@Pune2026!' }]);
+    return getLocalStorageItem('mock_users', [
+      { username: 'admin24k', password: '24KAdmin@2026!', role: 'SUPER_ADMIN', fullName: 'Manish Kumar Rai' },
+      { username: 'neeraj.giri', password: 'Neeraj@24K2026!', role: 'ADMIN', fullName: 'Neeraj Giri' },
+      { username: 'nilesh.rai', password: 'Nilesh@24K2026!', role: 'SALES_MANAGER', fullName: 'Nilesh Rai' },
+      { username: 'hr24k', password: 'Jyoti.D@24K2026!', role: 'HR', fullName: 'Jyoti Dhale' },
+      { username: 'jyoti.jagtap', password: 'Jyoti.J@24K2026!', role: 'RELATIONSHIP_MANAGER', fullName: 'Jyoti Jagtap' },
+      { username: 'yash.murkute', password: 'Yash@24K2026!', role: 'RELATIONSHIP_MANAGER', fullName: 'Yash Murkute' }
+    ]);
   },
   saveUsers(users) {
     saveLocalStorageItem('mock_users', users);
@@ -1015,6 +1022,7 @@ export const apiService = {
         localStorage.setItem('refreshToken', data.refreshToken);
         localStorage.setItem('role', data.role);
         localStorage.setItem('adminUser', data.username);
+        localStorage.setItem('fullName', data.fullName || data.username);
         return data;
       },
       () => {
@@ -1027,9 +1035,10 @@ export const apiService = {
         const refreshToken = "mock-refresh-token-xyz-123";
         localStorage.setItem('token', token);
         localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('role', 'CRM_ADMIN');
+        localStorage.setItem('role', user.role || 'CRM_ADMIN');
         localStorage.setItem('adminUser', username);
-        return { token, refreshToken, username, role: 'CRM_ADMIN' };
+        localStorage.setItem('fullName', user.fullName || username);
+        return { token, refreshToken, username, role: user.role || 'CRM_ADMIN', fullName: user.fullName || username };
       },
       true
     );
