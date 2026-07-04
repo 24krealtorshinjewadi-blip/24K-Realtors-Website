@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
 import { 
   Users, Home, TrendingUp, Calendar, Trash2, Edit2, Plus, X, 
-  Loader, RefreshCw, Lock, LogOut, Upload, Sparkles, Clock, FileText, Building
+  Loader, RefreshCw, Lock, LogOut, Upload, Sparkles, Clock, FileText, Building, Eye, EyeOff
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -216,6 +216,7 @@ export default function Dashboard({ onViewChange }) {
   const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
   const [resendTimer, setResendTimer] = useState(0);
   const [devMockOtpHelper, setDevMockOtpHelper] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   // OTP resend timer countdown hook
   useEffect(() => {
@@ -933,14 +934,38 @@ export default function Dashboard({ onViewChange }) {
                 </div>
                 <div className="form-group text-left" style={{ marginTop: '16px' }}>
                   <label className="form-label">Access Credentials (Password)</label>
-                  <input 
-                    type="password" 
-                    className="form-input" 
-                    required 
-                    placeholder="••••••••" 
-                    value={authForm.password} 
-                    onChange={e => setAuthForm({...authForm, password: e.target.value})} 
-                  />
+                  <div style={{ position: 'relative' }}>
+                    <input 
+                      type={showPassword ? "text" : "password"} 
+                      className="form-input" 
+                      style={{ paddingRight: '40px' }}
+                      required 
+                      placeholder="••••••••" 
+                      value={authForm.password} 
+                      onChange={e => setAuthForm({...authForm, password: e.target.value})} 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => setShowPassword(!showPassword)} 
+                      style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: 'var(--text-muted)',
+                        padding: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      className="btn-password-toggle"
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
                 </div>
 
                 {authTab === 'login' && (
