@@ -328,7 +328,7 @@ export default function AttendanceTab() {
         )}
       </div>
 
-      {activeSubTab === 'shift' ? (
+      {activeSubTab === 'shift' && (
         <>
           {/* Geofence and shift panel */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
