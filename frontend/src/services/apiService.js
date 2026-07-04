@@ -815,7 +815,7 @@ const initialAgents = [
   { id: "agent-2", name: "Jyoti Jagtap", phone: "+919876543202", email: "jyoti.jagtap@24krealtors.com", active: true },
   { id: "agent-3", name: "Yash Murkute", phone: "+919876543203", email: "yash.murkute@24krealtors.com", active: true },
   { id: "agent-4", name: "Nilesh Rai", phone: "+919876543204", email: "nilesh.rai@24krealtors.com", active: true },
-  { id: "agent-6", name: "Manish Kumar Rai", phone: "+919876543206", email: "manish.rai@24krealtors.com", active: true }
+  { id: "agent-6", name: "Manish Kumar Rai", phone: "+919876543206", email: "24krealtorshinjewadi@gmail.com", active: true }
 ];
 
 const initialTasks = [
@@ -898,7 +898,7 @@ const LocalMockDb = {
   },
   getUsers() {
     return getLocalStorageItem('mock_users', [
-      { username: 'admin24k', password: '24KAdmin@2026!', role: 'SUPER_ADMIN', fullName: 'Manish Kumar Rai' },
+      { username: 'Manishrai07', password: 'Manish@993100', role: 'SUPER_ADMIN', fullName: 'Manish Kumar Rai', email: '24krealtorshinjewadi@gmail.com' },
       { username: 'neeraj.giri', password: 'Neeraj@24K2026!', role: 'ADMIN', fullName: 'Neeraj Giri' },
       { username: 'nilesh.rai', password: 'Nilesh@24K2026!', role: 'SALES_MANAGER', fullName: 'Nilesh Rai' },
       { username: 'hr24k', password: 'Jyoti.D@24K2026!', role: 'HR', fullName: 'Jyoti Dhale' },
