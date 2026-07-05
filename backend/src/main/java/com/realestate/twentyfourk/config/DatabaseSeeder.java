@@ -62,12 +62,23 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private void seedSystemUsers() {
         // 1. Super Admin (Manish)
-        var superAdmins = userRepository.findAll().stream()
-                .filter(u -> u.getRole() == UserRole.SUPER_ADMIN)
-                .toList();
+        User admin = userRepository.findByUsername("Manishrai07").orElse(null);
 
-        if (superAdmins.isEmpty()) {
-            User admin = User.builder()
+        if (admin == null) {
+            // Check if there is any other super admin to rename/synchronize
+            var otherSuperAdmins = userRepository.findAll().stream()
+                    .filter(u -> u.getRole() == UserRole.SUPER_ADMIN)
+                    .toList();
+            
+            if (!otherSuperAdmins.isEmpty()) {
+                admin = otherSuperAdmins.get(0);
+                log.info("Renaming existing Super Admin to Manishrai07");
+            }
+        }
+
+        if (admin == null) {
+            // Build new Super Admin
+            admin = User.builder()
                     .username("Manishrai07")
                     .password(passwordEncoder.encode("Manish@993100"))
                     .role(UserRole.SUPER_ADMIN)
@@ -82,15 +93,17 @@ public class DatabaseSeeder implements CommandLineRunner {
             userRepository.save(admin);
             log.info("Super Admin (Manishrai07) created successfully.");
         } else {
-            User admin = superAdmins.get(0);
+            // Sync credentials and role
             admin.setUsername("Manishrai07");
+            admin.setRole(UserRole.SUPER_ADMIN);
             admin.setEmail("24krealtorshinjewadi@gmail.com");
+            admin.setFullName("Manish Kumar Rai");
             String newPwd = "Manish@993100";
             if (!passwordEncoder.matches(newPwd, admin.getPassword())) {
                 admin.setPassword(passwordEncoder.encode(newPwd));
             }
             userRepository.save(admin);
-            log.info("Super Admin (Manishrai07) credentials synchronized.");
+            log.info("Super Admin (Manishrai07) credentials and role synchronized.");
         }
 
         // 2. HR Manager
