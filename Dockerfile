@@ -21,10 +21,14 @@ WORKDIR /app
 
 # Security: run as non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
 
 # Copy compiled jar from build stage
 COPY --from=build /app/backend/target/*.jar app.jar
+
+# Pre-create uploads directory and change ownership to non-root user
+RUN mkdir -p /app/uploads && chown -R appuser:appgroup /app
+
+USER appuser
 
 # Expose Spring Boot port
 EXPOSE 8080
