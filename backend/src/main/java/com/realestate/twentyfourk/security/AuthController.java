@@ -34,8 +34,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
 
-    // In-memory registry for temporary OTP verification states (expires in 5 minutes)
-    private final ConcurrentHashMap<String, OtpVerification> otpVerifications = new ConcurrentHashMap<>();
+    private final OtpVerificationRepository otpVerificationRepository;
 
     @Value("${spring.profiles.active:dev}")
     private String activeProfile;
@@ -134,7 +133,14 @@ public class AuthController {
                 .rememberDevice(request.rememberDevice())
                 .build();
 
-        otpVerifications.put(tempToken, verification);
+        // Clean up expired verification codes to keep DB clean
+        try {
+            otpVerificationRepository.deleteExpiredBefore(LocalDateTime.now());
+        } catch (Exception e) {
+            log.warn("Failed to clean up expired OTPs: {}", e.getMessage());
+        }
+
+        otpVerificationRepository.save(verification);
 
         // Security logging of the generated OTP (critical for developer convenience)
         log.info("[SECURITY] Generated MFA OTP for user '{}': {}", user.getUsername(), otp);
@@ -150,23 +156,31 @@ public class AuthController {
     // Step 2: MFA OTP Verification
     @PostMapping("/login-verify")
     public ResponseEntity<?> loginVerify(@RequestBody LoginVerifyRequest request) {
-        OtpVerification verification = otpVerifications.get(request.tempToken());
-
+        OtpVerification verification = otpVerificationRepository.findByTempToken(request.tempToken()).orElse(null);
+ 
         if (verification == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid temporary session token.");
         }
-
+ 
         if (verification.isExpired()) {
-            otpVerifications.remove(request.tempToken());
+            try {
+                otpVerificationRepository.delete(verification);
+            } catch (Exception e) {
+                log.warn("Failed to remove expired OTP: {}", e.getMessage());
+            }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Verification session has expired.");
         }
-
+ 
         if (!verification.getOtpCode().equals(request.code())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect verification code.");
         }
-
+ 
         // Successfully verified, clean up temporary registry
-        otpVerifications.remove(request.tempToken());
+        try {
+            otpVerificationRepository.delete(verification);
+        } catch (Exception e) {
+            log.warn("Failed to remove verified OTP: {}", e.getMessage());
+        }
 
         User user = userRepository.findByUsername(verification.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found during verify"));
