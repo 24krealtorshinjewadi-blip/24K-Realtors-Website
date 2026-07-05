@@ -114,7 +114,9 @@ spring:
     activate:
       on-profile: railway
   datasource:
-    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:railway}
+    # Railway provides both DATABASE_URL and individual PGHOST/PGPORT/PGDATABASE vars
+    # Using individual vars here - main() parses DATABASE_URL as system properties if available
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:railway}?sslmode=disable
     username: ${PGUSER:postgres}
     password: ${PGPASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -124,6 +126,7 @@ spring:
       idle-timeout: 30000
       connection-timeout: 20000
       max-lifetime: 600000
+      connection-test-query: SELECT 1
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -140,4 +143,3 @@ spring:
 
 server:
   port: ${PORT:8080}
-

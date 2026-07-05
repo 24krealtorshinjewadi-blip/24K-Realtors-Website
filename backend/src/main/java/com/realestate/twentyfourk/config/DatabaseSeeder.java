@@ -51,13 +51,42 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
         log.info("Running platform seeder checks...");
-        seedSystemUsers();
-        seedAgents();
-        seedBuilders();
-        seedSocieties();
-        seedProperties();
-        seedLeads();
-        seedJuneAttendance();
+        try {
+            seedSystemUsers();
+        } catch (Exception e) {
+            log.warn("seedSystemUsers failed (non-fatal): {}", e.getMessage());
+        }
+        try {
+            seedAgents();
+        } catch (Exception e) {
+            log.warn("seedAgents failed (non-fatal): {}", e.getMessage());
+        }
+        try {
+            seedBuilders();
+        } catch (Exception e) {
+            log.warn("seedBuilders failed (non-fatal): {}", e.getMessage());
+        }
+        try {
+            seedSocieties();
+        } catch (Exception e) {
+            log.warn("seedSocieties failed (non-fatal): {}", e.getMessage());
+        }
+        try {
+            seedProperties();
+        } catch (Exception e) {
+            log.warn("seedProperties failed (non-fatal): {}", e.getMessage());
+        }
+        try {
+            seedLeads();
+        } catch (Exception e) {
+            log.warn("seedLeads failed (non-fatal): {}", e.getMessage());
+        }
+        try {
+            seedJuneAttendance();
+        } catch (Exception e) {
+            log.warn("seedJuneAttendance failed (non-fatal): {}", e.getMessage());
+        }
+        log.info("Platform seeder completed.");
     }
 
     private void seedSystemUsers() {
