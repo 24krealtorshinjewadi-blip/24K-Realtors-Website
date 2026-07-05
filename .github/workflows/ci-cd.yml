@@ -30,10 +30,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
-    - name: Compile & Build Jar Package
+    - name: Compile & Build Jar Package (backend module)
+      working-directory: backend
       run: mvn clean package -DskipTests -B
 
-    - name: Verify Backend Dockerfile Syntax
+    - name: Verify Backend Dockerfile Build
       run: |
         docker build -t twentyfourk-backend-test .
 
@@ -53,16 +54,14 @@ jobs:
         cache-dependency-path: './frontend/package-lock.json'
 
     - name: Install Frontend Dependencies
-      run: |
-        cd frontend
-        npm ci
+      working-directory: frontend
+      run: npm ci
 
     - name: Build Frontend Static Bundle
-      run: |
-        cd frontend
-        npm run build
+      working-directory: frontend
+      run: npm run build
 
-    - name: Verify Frontend Dockerfile Syntax
+    - name: Verify Frontend Dockerfile Build
+      working-directory: frontend
       run: |
-        cd frontend
         docker build -t twentyfourk-frontend-test .

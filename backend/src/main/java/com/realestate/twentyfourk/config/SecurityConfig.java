@@ -37,6 +37,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Allow H2 database console lookups in local dev profile
                 .requestMatchers("/h2-console/**").permitAll()
+                // Actuator health endpoint for container orchestration
+                .requestMatchers("/actuator/**").permitAll()
                 // Authentication API
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 

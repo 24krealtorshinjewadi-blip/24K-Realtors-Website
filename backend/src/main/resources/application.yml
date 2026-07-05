@@ -18,6 +18,18 @@ admin:
   username: ${ADMIN_USERNAME:admin}
   password: ${ADMIN_PASSWORD:adminpassword}
 
+# Spring Boot Actuator — expose health endpoint for container orchestration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+  server:
+    port: ${PORT:8080}
+
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME:}
   api-key: ${CLOUDINARY_API_KEY:}
