@@ -15,9 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
@@ -33,8 +36,8 @@ public class AuthController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
-
     private final OtpVerificationRepository otpVerificationRepository;
+    private final JavaMailSender mailSender;
 
     @Value("${spring.profiles.active:dev}")
     private String activeProfile;
@@ -141,6 +144,29 @@ public class AuthController {
         }
 
         otpVerificationRepository.save(verification);
+
+        // Dispatch OTP via email asynchronously to keep it non-blocking and robust
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            final String userEmail = user.getEmail();
+            final String otpCode = otp;
+            final String username = user.getUsername();
+            CompletableFuture.runAsync(() -> {
+                try {
+                    SimpleMailMessage message = new SimpleMailMessage();
+                    message.setTo(userEmail);
+                    message.setSubject("24K Realtors CRM Security Verification OTP");
+                    message.setText("Dear " + username + ",\n\n" +
+                            "Your 6-digit Multi-Factor Authentication (MFA) OTP is: " + otpCode + "\n\n" +
+                            "This code is valid for the next 5 minutes. Please do not share this OTP with anyone.\n\n" +
+                            "Best regards,\n" +
+                            "24K Realtors Security Desk");
+                    mailSender.send(message);
+                    log.info("[SMTP] Successfully sent OTP email to user '{}'", username);
+                } catch (Exception e) {
+                    log.error("[SMTP] Failed to send OTP email to '{}': {}", userEmail, e.getMessage());
+                }
+            });
+        }
 
         // Security logging of the generated OTP (critical for developer convenience)
         log.info("[SECURITY] Generated MFA OTP for user '{}': {}", user.getUsername(), otp);
