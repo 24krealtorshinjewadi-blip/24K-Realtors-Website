@@ -136,7 +136,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (userRepository.findByUsername("neeraj.giri").isEmpty()) {
             User admin2 = User.builder()
                     .username("neeraj.giri")
-                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"
+                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
                     .role(UserRole.CRM_ADMIN)
                     .fullName("Neeraj Giri")
                     .email("neeraj.giri@24krealtors.com")
