@@ -102,6 +102,130 @@ export default function PayrollTab() {
     }).format(val);
   };
 
+  const handlePrintPayslip = (slip) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert("Popup blocked! Please allow popups for this site to view/print payslips.");
+      return;
+    }
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Payslip - ${slip.payPeriod} - ${slip.employee?.fullName || 'Employee'}</title>
+          <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1a202c; padding: 40px; margin: 0; background-color: #fafafa; }
+            .payslip-container { border: 2px solid #b7791f; border-radius: 8px; padding: 40px; max-width: 800px; margin: 0 auto; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed #b7791f; padding-bottom: 20px; margin-bottom: 20px; }
+            .logo-title { font-size: 1.8rem; font-weight: 800; color: #070f1e; letter-spacing: 1px; }
+            .logo-subtitle { font-size: 0.8rem; color: #b7791f; font-weight: 600; text-transform: uppercase; margin-top: 4px; }
+            .payslip-title { font-size: 1.4rem; font-weight: 800; color: #070f1e; text-align: right; }
+            .period { font-size: 0.9rem; color: #718096; text-align: right; margin-top: 4px; font-weight: 500; }
+            .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; font-size: 0.9rem; line-height: 1.6; }
+            .details-col { padding: 10px; background-color: #f7fafc; border-radius: 6px; }
+            .details-label { color: #718096; font-weight: 500; display: inline-block; width: 130px; }
+            .details-value { color: #1a202c; font-weight: 600; }
+            .salary-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 0.9rem; }
+            .salary-table th { background-color: #070f1e; color: #fff; padding: 12px 15px; text-align: left; font-weight: 600; border: 1px solid #070f1e; }
+            .salary-table td { padding: 12px 15px; border: 1px solid #e2e8f0; }
+            .salary-table tr:nth-child(even) { background-color: #f8fafc; }
+            .summary-section { display: flex; justify-content: space-between; border-top: 2px dashed #b7791f; padding-top: 20px; margin-top: 20px; gap: 20px; }
+            .net-salary-card { background: #070f1e; color: #fff; padding: 20px 30px; border-radius: 6px; text-align: right; border-right: 5px solid #b7791f; min-width: 250px; }
+            .net-label { font-size: 0.8rem; color: #a0aec0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+            .net-value { font-size: 1.8rem; font-weight: 800; color: #ecc94b; margin-top: 5px; }
+            .footer-notes { text-align: center; font-size: 0.75rem; color: #a0aec0; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+            .print-btn { display: block; width: 180px; margin: 30px auto 0 auto; padding: 12px 24px; background: #b7791f; color: #fff; border: none; border-radius: 6px; font-weight: bold; text-align: center; cursor: pointer; font-size: 0.95rem; box-shadow: 0 4px 6px rgba(183,121,31,0.2); transition: all 0.2s; }
+            .print-btn:hover { background: #975a16; }
+            @media print { .print-btn { display: none; } body { padding: 0; background: #fff; } .payslip-container { box-shadow: none; border: 1px solid #a0aec0; } }
+          </style>
+        </head>
+        <body>
+          <div class="payslip-container">
+            <div class="header">
+              <div>
+                <div class="logo-title">24K REALTORS</div>
+                <div class="logo-subtitle">Pune Prime Corridor PropTech CRM</div>
+              </div>
+              <div>
+                <div class="payslip-title">SALARY PAYSLIP</div>
+                <div class="period">Pay Period: ${slip.payPeriod}</div>
+              </div>
+            </div>
+            
+            <div class="details-grid">
+              <div class="details-col">
+                <div><span class="details-label">Employee Name:</span> <span class="details-value">${slip.employee?.fullName || 'N/A'}</span></div>
+                <div><span class="details-label">Designation:</span> <span class="details-value">${slip.employee?.designation || 'N/A'}</span></div>
+                <div><span class="details-label">Department:</span> <span class="details-value">${slip.employee?.department || 'N/A'}</span></div>
+              </div>
+              <div class="details-col">
+                <div><span class="details-label">Bank Account:</span> <span class="details-value">${slip.employee?.bankAccountNumber || 'N/A'}</span></div>
+                <div><span class="details-label">IFSC Code:</span> <span class="details-value">${slip.employee?.bankIfscCode || 'N/A'}</span></div>
+                <div><span class="details-label">PAN Number:</span> <span class="details-value">${slip.employee?.panNumber || 'N/A'}</span></div>
+              </div>
+            </div>
+
+            <table class="salary-table">
+              <thead>
+                <tr>
+                  <th style="width: 35%;">Earnings</th>
+                  <th style="width: 15%;">Amount</th>
+                  <th style="width: 35%;">Deductions</th>
+                  <th style="width: 15%;">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Basic Base Salary</td>
+                  <td>${formatPrice(slip.baseSalary)}</td>
+                  <td>Provident Fund (PF)</td>
+                  <td>${formatPrice(slip.pfDeduction)}</td>
+                </tr>
+                <tr>
+                  <td>Allowances (HRA + DA)</td>
+                  <td>${formatPrice(slip.allowances)}</td>
+                  <td>Professional Tax (PT)</td>
+                  <td>${formatPrice(slip.ptDeduction)}</td>
+                </tr>
+                <tr>
+                  <td>Commissions Earned</td>
+                  <td style="color: #2f855a; font-weight: 600;">+${formatPrice(slip.commissionsEarned)}</td>
+                  <td>Late Attendance Penalty</td>
+                  <td style="color: #c53030;">-${formatPrice(slip.lateDeduction)}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>Absent Leave Deductions</td>
+                  <td style="color: #c53030;">-${formatPrice(slip.absentDeduction)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="summary-section">
+              <div style="max-width: 450px;">
+                <div style="font-size: 0.8rem; color: #718096; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">Payment Details</div>
+                <div style="font-size: 0.85rem; color: #4a5568; margin-top: 8px; line-height: 1.5;">
+                  This payslip is electronically generated and digitally approved by 24K Realtors Management. Cash releases are processed direct to the bank account specified above.
+                </div>
+              </div>
+              <div class="net-salary-card">
+                <div class="net-label">Net Take-Home Salary</div>
+                <div class="net-value">${formatPrice(slip.netSalary)}</div>
+              </div>
+            </div>
+
+            <div class="footer-notes">
+              © 2026 24K Realtors Pune. All Rights Reserved. Confidential Document.
+            </div>
+          </div>
+          <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   return (
     <div style={{ animation: 'slideDown 0.3s forwards', display: 'flex', flexDirection: 'column', gap: '30px' }}>
       
@@ -163,6 +287,7 @@ export default function PayrollTab() {
                   <th>Deductions</th>
                   <th>Net Payout</th>
                   <th>Payment Status</th>
+                  <th>Statement</th>
                   {isAccountsOrAdmin && <th>Action</th>}
                 </tr>
               </thead>
@@ -202,6 +327,15 @@ export default function PayrollTab() {
                       }}>
                         {slip.status}
                       </span>
+                    </td>
+                    <td>
+                      <button 
+                        onClick={() => handlePrintPayslip(slip)} 
+                        className="btn-outline" 
+                        style={{ padding: '6px 10px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                      >
+                        <FileText size={12} /> PDF 📄
+                      </button>
                     </td>
                     {isAccountsOrAdmin && (
                       <td>

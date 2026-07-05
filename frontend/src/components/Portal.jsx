@@ -70,6 +70,7 @@ export default function Portal({ onViewChange }) {
   const [activeCollection, setActiveCollection] = useState('ALL');
   const [selectedForCompare, setSelectedForCompare] = useState([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [selectedPropertyDetail, setSelectedPropertyDetail] = useState(null);
 
   const [activeSlide, setActiveSlide] = useState(0);
   const slides = [
@@ -1111,7 +1112,19 @@ export default function Portal({ onViewChange }) {
       <div className="main-portal-listings-section" style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px' }}>
           
           {activeSection === 'listings' && (
-            <>
+            selectedPropertyDetail ? (
+              <PropertyDetailView 
+                property={selectedPropertyDetail} 
+                onBack={() => setSelectedPropertyDetail(null)}
+                onOpenInquiry={handleOpenInquiry}
+                onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
+                formatPrice={formatPrice}
+                getLocationScorecard={getLocationScorecard}
+                getLandmarks={getLandmarks}
+                getEmbedVideoUrl={getEmbedVideoUrl}
+              />
+            ) : (
+              <>
               {/* Dynamic Advanced Filtering */}
               <section className="filter-section" id="listings-anchor">
                 <h2 className="filter-title">
@@ -1242,6 +1255,7 @@ export default function Portal({ onViewChange }) {
                       onOpenWalkthrough={handleOpenWalkthrough} 
                       onOpen3DTour={handleOpen3DTour} 
                       onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
+                      onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
                       getLocationScorecard={getLocationScorecard}
                       getLandmarks={getLandmarks} 
                     />
@@ -1312,6 +1326,7 @@ export default function Portal({ onViewChange }) {
                 )}
               </section>
             </>
+            )
           )}
 
           {activeSection === 'societies' && (
@@ -1436,7 +1451,7 @@ export default function Portal({ onViewChange }) {
                   ) : (
                     <div className="properties-grid">
                       {properties.filter(p => p.society && p.society.id === selectedSocietyDetail.id).map(property => (
-                        <div key={property.id} className="property-card" onClick={() => handlePropertyClick(property)}>
+                        <div key={property.id} className="property-card" onClick={() => { setSelectedPropertyDetail(property); setActiveSection('listings'); window.scrollTo({ top: 400, behavior: 'smooth' }); }} style={{ cursor: 'pointer' }}>
                           <div className="property-card-image" style={{ height: '140px', backgroundImage: `url('${property.imageUrl || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80"}')` }}>
                             <div className="card-top-badges">
                               <span className="location-badge" style={{ fontSize: '0.65rem' }}>{property.location}</span>
@@ -2546,3 +2561,245 @@ const corridorData = [
   { id: 'TATHAWADE', name: 'Tathawade Corridor', tagline: 'Educational hub & premium villas', icon: <Users size={20} />, pricePerSqft: '₹7,200', yield: '4.6%', growth: '+15%' },
   { id: 'MAHALUNGE', name: 'Mahalunge Corridor', tagline: 'Next-gen smart city township plots', icon: <LineChart size={20} />, pricePerSqft: '₹6,900', yield: '4.8%', growth: '+18%' }
 ];
+
+function PropertyDetailView({ 
+  property, 
+  onBack, 
+  onOpenInquiry, 
+  onOpenChauffeur, 
+  formatPrice, 
+  getLocationScorecard, 
+  getLandmarks, 
+  getEmbedVideoUrl 
+}) {
+  const scores = getLocationScorecard(property.location);
+  const landmarks = getLandmarks(property.location);
+  
+  // Interactive EMI Calculator State
+  const [downPayment, setDownPayment] = React.useState(20); // 20% default
+  const [interestRate, setInterestRate] = React.useState(8.5); // 8.5% default
+  const [loanTerm, setLoanTerm] = React.useState(20); // 20 years default
+  
+  const principal = Number(property.price) * (1 - downPayment / 100);
+  const monthlyRate = (interestRate / 12) / 100;
+  const totalMonths = loanTerm * 12;
+  const emi = monthlyRate > 0 
+    ? (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1)
+    : principal / totalMonths;
+
+  return (
+    <div style={{ animation: 'fadeIn 0.3s forwards', color: 'var(--text-light)', marginBottom: '40px' }}>
+      {/* Back navigation & Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+        <button onClick={onBack} className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', fontSize: '0.85rem', cursor: 'pointer' }}>
+          ← Back to Portfolio
+        </button>
+        <span style={{ fontSize: '0.75rem', background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', padding: '4px 10px', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.2)', fontWeight: 'bold' }}>
+          MahaRERA: {property.reraNumber || 'PRM/VERIFIED'}
+        </span>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px', marginTop: '15px' }}>
+        {/* Left Column: Visuals & Spec */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+          {/* Main Visual Image container */}
+          <div style={{ border: '1px solid var(--border-gold)', borderRadius: '12px', overflow: 'hidden', position: 'relative', height: '400px', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+            <img 
+              src={property.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'} 
+              alt={property.title} 
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+            />
+            <div style={{ position: 'absolute', top: '15px', left: '15px', display: 'flex', gap: '8px', zIndex: 2 }}>
+              <span style={{ background: 'var(--gold-primary)', color: '#070f1e', fontSize: '0.7rem', fontWeight: 'bold', padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                {property.transactionType}
+              </span>
+              {property.exclusiveDeal && (
+                <span style={{ background: '#ecc94b', color: '#070f1e', fontSize: '0.7rem', fontWeight: 'bold', padding: '3px 8px', borderRadius: '4px' }}>
+                  ★ Exclusive
+                </span>
+              )}
+            </div>
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(7,15,30,0.95), rgba(7,15,30,0))', padding: '20px', zIndex: 1 }}>
+              <h2 style={{ fontSize: '1.6rem', color: '#fff', margin: '0 0 5px 0', fontFamily: 'var(--font-title)' }}>{property.title}</h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>📍 {property.address || property.location}</p>
+            </div>
+          </div>
+
+          {/* Quick Specifications */}
+          <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '20px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', textAlign: 'center' }}>
+            <div style={{ borderRight: '1px solid var(--border-muted)' }}>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Layout</span>
+              <strong style={{ fontSize: '1.1rem', color: 'var(--gold-primary)' }}>{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A'}</strong>
+            </div>
+            <div style={{ borderRight: '1px solid var(--border-muted)' }}>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Bathrooms</span>
+              <strong style={{ fontSize: '1.1rem', color: '#fff' }}>{property.bathrooms} Baths</strong>
+            </div>
+            <div>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Carpet Area</span>
+              <strong style={{ fontSize: '1.1rem', color: '#fff' }}>{property.areaSquareFeet} sqft</strong>
+            </div>
+          </div>
+
+          {/* Detailed Overview */}
+          <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '25px' }}>
+            <h3 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', margin: '0 0 15px 0' }}>⚜️ Property Description</h3>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>
+              {property.description || 'This premium architectural configuration is located in the most sought-after growth sector. Featuring high-grade structural finishes, modular provisions, cross ventilation layouts, security fixtures, and direct arterial highway connectivity.'}
+            </p>
+            
+            <div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '15px' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', marginBottom: '8px' }}>Property Features</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <span style={{ fontSize: '0.72rem', background: 'rgba(212,175,55,0.05)', color: 'var(--gold-primary)', padding: '4px 10px', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.1)' }}>
+                  {property.furnishingStatus ? property.furnishingStatus.replace('_', ' ') : 'SEMI FURNISHED'}
+                </span>
+                {property.gasPipeline && (
+                  <span style={{ fontSize: '0.72rem', background: 'rgba(46,196,182,0.05)', color: '#2ec4b6', padding: '4px 10px', borderRadius: '4px', border: '1px solid rgba(46,196,182,0.1)' }}>
+                    🔥 Piped Gas Connected
+                  </span>
+                )}
+                {property.verifiedListing && (
+                  <span style={{ fontSize: '0.72rem', background: 'rgba(56,161,105,0.05)', color: '#38a169', padding: '4px 10px', borderRadius: '4px', border: '1px solid rgba(56,161,105,0.1)' }}>
+                    ✓ 100% Title Clear
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Embedded Drone Walkthrough */}
+          {property.videoUrl && (
+            <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '20px' }}>
+              <h3 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', margin: '0 0 15px 0' }}>📹 Drone Virtual Walkthrough</h3>
+              <div style={{ borderRadius: '8px', overflow: 'hidden', height: '240px' }}>
+                <iframe 
+                  src={getEmbedVideoUrl(property.videoUrl)} 
+                  title="Walkthrough Video"
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Pricing, Finance, Metrics */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+          {/* Pricing Box & Chauffeur scheduling */}
+          <div style={{ background: 'radial-gradient(circle at top left, rgba(21, 34, 56, 0.9) 0%, rgba(7, 15, 30, 0.95) 100%)', border: '2px solid var(--border-gold)', borderRadius: '12px', padding: '30px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Valuation Mandate</span>
+            <div style={{ fontSize: '2.2rem', fontWeight: 'bold', color: 'var(--gold-primary)', margin: '5px 0 15px 0' }}>
+              {formatPrice(property.price, property.transactionType)}
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <button 
+                onClick={() => onOpenInquiry(property)} 
+                className="btn-gold" 
+                style={{ width: '100%', padding: '12px 0', fontSize: '0.9rem', justifyContent: 'center', cursor: 'pointer' }}
+              >
+                Inquire & Receive Brochure
+              </button>
+              <button 
+                onClick={() => onOpenChauffeur(property)} 
+                className="btn-outline" 
+                style={{ width: '100%', padding: '12px 0', fontSize: '0.9rem', justifyContent: 'center', borderColor: 'var(--gold-secondary)', color: 'var(--gold-secondary)', cursor: 'pointer' }}
+              >
+                Book VIP Chauffeur & Inspection
+              </button>
+            </div>
+          </div>
+
+          {/* Location Analytics Scores */}
+          <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '25px' }}>
+            <h3 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', margin: '0 0 15px 0' }}>📊 Location Analytics Scorecard</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Capital Appreciation Potential</span>
+                <strong style={{ color: '#ecc94b' }}>{scores?.appreciation || 8.0}/10</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>IT Commute Proximity</span>
+                <strong style={{ color: '#ecc94b' }}>{scores?.commute || 8.5}/10</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Ecological Green Index</span>
+                <strong style={{ color: '#ecc94b' }}>{scores?.green || 8.0}/10</strong>
+              </div>
+            </div>
+
+            {landmarks && landmarks.length > 0 && (
+              <div style={{ marginTop: '15px' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', marginBottom: '8px' }}>Local Landmarks & Commute Times</span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {landmarks.map((l, i) => (
+                    <span key={i} style={{ fontSize: '0.7rem', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-muted)', color: 'var(--text-light)', padding: '3px 8px', borderRadius: '4px' }}>
+                      {l}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Interactive Mortgage calculator */}
+          <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '25px' }}>
+            <h3 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', margin: '0 0 15px 0' }}>⚜️ Mortgage EMI Calculator</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '4px' }}>
+                  <span>Down Payment ({downPayment}%)</span>
+                  <strong>{formatPrice(Number(property.price) * (downPayment / 100))}</strong>
+                </div>
+                <input 
+                  type="range" 
+                  min="10" 
+                  max="50" 
+                  value={downPayment} 
+                  onChange={e => setDownPayment(Number(e.target.value))} 
+                  style={{ width: '100%', accentColor: 'var(--gold-primary)', cursor: 'pointer' }} 
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Interest Rate (%)</label>
+                  <input 
+                    type="number" 
+                    step="0.1" 
+                    value={interestRate} 
+                    onChange={e => setInterestRate(Number(e.target.value))} 
+                    className="form-input" 
+                    style={{ width: '100%', margin: 0 }} 
+                  />
+                </div>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Loan Term (Years)</label>
+                  <input 
+                    type="number" 
+                    value={loanTerm} 
+                    onChange={e => setLoanTerm(Number(e.target.value))} 
+                    className="form-input" 
+                    style={{ width: '100%', margin: 0 }} 
+                  />
+                </div>
+              </div>
+
+              <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-muted)', borderRadius: '8px', padding: '15px', textAlign: 'center', marginTop: '10px' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Estimated Monthly Outflow</span>
+                <strong style={{ fontSize: '1.5rem', color: 'var(--gold-primary)', display: 'block', marginTop: '4px' }}>
+                  {formatPrice(emi)} / Month
+                </strong>
+                <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                  Computed on a Principal of {formatPrice(principal)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

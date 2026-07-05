@@ -11,6 +11,7 @@ export default function PropertyCard({
   onOpenWalkthrough, 
   onOpen3DTour, 
   onOpenChauffeur,
+  onOpenDetail,
   getLocationScorecard,
   getLandmarks 
 }) {
@@ -57,7 +58,11 @@ export default function PropertyCard({
       onMouseMove={handleCardMouseMove}
       onMouseLeave={handleCardMouseLeave}
     >
-      <div className="property-image-container premium-hover-tint" style={{ position: 'relative', overflow: 'hidden' }}>
+      <div 
+        className="property-image-container premium-hover-tint" 
+        style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+        onClick={() => onOpenDetail ? onOpenDetail(property) : null}
+      >
         <img 
           src={property.imageUrl || defaultImg} 
           alt={property.title} 
@@ -120,7 +125,15 @@ export default function PropertyCard({
           </button>
         </div>
 
-        <h3 className="property-title">{property.title}</h3>
+        <h3 
+          className="property-title" 
+          onClick={() => onOpenDetail ? onOpenDetail(property) : null}
+          style={{ cursor: 'pointer', transition: 'color 0.2s' }}
+          onMouseEnter={(e) => e.currentTarget.style.color = 'var(--gold-primary)'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-light)'}
+        >
+          {property.title}
+        </h3>
         
         <div className="signature-compliance-stamp">
           <Lock size={12} color="#D4AF37" />
