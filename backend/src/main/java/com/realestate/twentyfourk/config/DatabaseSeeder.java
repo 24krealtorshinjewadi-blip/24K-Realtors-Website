@@ -165,8 +165,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (userRepository.findByUsername("neeraj.giri").isEmpty()) {
             User admin2 = User.builder()
                     .username("neeraj.giri")
-                    .password(passwordEncoder.encode("Neeraj@24K2026!"))
-                    .role(UserRole.ADMIN)
+                    .password(passwordEncoder.encode("24KRealtors@Pune2026!"))
+                    .role(UserRole.CRM_ADMIN)
                     .fullName("Neeraj Giri")
                     .email("neeraj.giri@24krealtors.com")
                     .phone("+919876543205")
@@ -179,8 +179,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             log.info("Admin (Neeraj Giri) user created successfully");
         } else {
             userRepository.findByUsername("neeraj.giri").ifPresent(u -> {
-                if (!passwordEncoder.matches("Neeraj@24K2026!", u.getPassword())) {
-                    u.setPassword(passwordEncoder.encode("Neeraj@24K2026!"));
+                if (!passwordEncoder.matches("24KRealtors@Pune2026!", u.getPassword())) {
+                    u.setPassword(passwordEncoder.encode("24KRealtors@Pune2026!"));
                     userRepository.save(u);
                     log.info("Neeraj Giri password updated to individual password.");
                 }
