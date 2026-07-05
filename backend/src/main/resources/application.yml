@@ -18,17 +18,15 @@ admin:
   username: ${ADMIN_USERNAME:admin}
   password: ${ADMIN_PASSWORD:adminpassword}
 
-# Spring Boot Actuator — expose health endpoint for container orchestration
+# Spring Boot Actuator — expose health endpoint for container orchestration (shares main port)
 management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,info
   endpoint:
     health:
       show-details: never
-  server:
-    port: ${PORT:8080}
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME:}
@@ -119,9 +117,12 @@ spring:
     exclude:
       - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
       - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
-      - org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration
       - org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration
       - org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration
+  data:
+    redis:
+      repositories:
+        enabled: false
   datasource:
     url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:railway}
     username: ${PGUSER:postgres}

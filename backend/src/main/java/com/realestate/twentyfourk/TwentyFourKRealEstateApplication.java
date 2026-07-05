@@ -2,10 +2,19 @@ package com.realestate.twentyfourk;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+    RedisAutoConfiguration.class,
+    RedisRepositoriesAutoConfiguration.class,
+    ElasticsearchDataAutoConfiguration.class,
+    ElasticsearchRepositoriesAutoConfiguration.class
+})
 public class TwentyFourKRealEstateApplication {
 
     public static void main(String[] args) {
