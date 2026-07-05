@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
@@ -35,6 +36,9 @@ public class AuthController {
 
     // In-memory registry for temporary OTP verification states (expires in 5 minutes)
     private final ConcurrentHashMap<String, OtpVerification> otpVerifications = new ConcurrentHashMap<>();
+
+    @Value("${spring.profiles.active:dev}")
+    private String activeProfile;
 
     // DTO records
     public record RegisterRequest(String username, String password, UserRole role) {}
@@ -134,14 +138,13 @@ public class AuthController {
 
         // Security logging of the generated OTP (critical for developer convenience)
         log.info("[SECURITY] Generated MFA OTP for user '{}': {}", user.getUsername(), otp);
-        System.out.println("==================================================================");
-        System.out.println("[SECURITY] IAM MFA OTP FOR USER " + user.getUsername() + " IS: " + otp);
-        System.out.println("==================================================================");
 
         String maskedEmail = maskEmail(user.getEmail());
 
-        // We also send the OTP in response as a devMockOtp ONLY if running locally for ease of use
-        return ResponseEntity.ok(new LoginInitResponse(tempToken, maskedEmail, otp));
+        // We also send the OTP in response as a devMockOtp ONLY if running locally (dev/default profiles)
+        boolean isDev = activeProfile != null && (activeProfile.contains("dev") || activeProfile.contains("default"));
+        String devOtp = isDev ? otp : null;
+        return ResponseEntity.ok(new LoginInitResponse(tempToken, maskedEmail, devOtp));
     }
 
     // Step 2: MFA OTP Verification

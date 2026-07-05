@@ -892,6 +892,12 @@ public class DatabaseSeeder implements CommandLineRunner {
     private void seedTasks(List<Lead> leads, List<Agent> agents) {
         log.info("Seeding follow-up tasks...");
         
+        if (leads == null || leads.size() < 4 || agents == null || agents.size() < 4) {
+            log.warn("Cannot seed sample tasks: requires at least 4 leads and 4 agents (got {} leads, {} agents)",
+                    leads != null ? leads.size() : 0, agents != null ? agents.size() : 0);
+            return;
+        }
+
         java.time.LocalDateTime now = java.time.LocalDateTime.now();
 
         // Task 1: Overdue Task for Jyoti Dhale (lead 1)

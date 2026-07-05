@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +18,8 @@ import java.util.UUID;
 
 @Service
 public class MediaUploadService {
+
+    private static final Logger log = LoggerFactory.getLogger(MediaUploadService.class);
 
     @Value("${cloudinary.cloud-name:}")
     private String cloudName;
@@ -40,9 +44,9 @@ public class MediaUploadService {
                     "api_secret", apiSecret,
                     "secure", true
             ));
-            System.out.println("Cloudinary initialized successfully.");
+            log.info("Cloudinary initialized successfully.");
         } else {
-            System.out.println("Cloudinary credentials missing. Falling back to local storage in: " + localUploadDir);
+            log.info("Cloudinary credentials missing. Falling back to local storage in: {}", localUploadDir);
             try {
                 Files.createDirectories(localUploadDir);
             } catch (IOException e) {
