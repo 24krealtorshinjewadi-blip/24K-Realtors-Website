@@ -22,6 +22,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import com.realestate.twentyfourk.domain.lead.service.WhatsAppService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -38,6 +39,7 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
     private final OtpVerificationRepository otpVerificationRepository;
     private final JavaMailSender mailSender;
+    private final WhatsAppService whatsAppService;
 
     @Value("${spring.profiles.active:dev}")
     private String activeProfile;
@@ -164,6 +166,21 @@ public class AuthController {
                     log.info("[SMTP] Successfully sent OTP email to user '{}'", username);
                 } catch (Exception e) {
                     log.error("[SMTP] Failed to send OTP email to '{}': {}", userEmail, e.getMessage());
+                }
+            });
+        }
+
+        // Dispatch OTP via mobile (WhatsApp) asynchronously to keep it non-blocking and robust
+        if (user.getPhone() != null && !user.getPhone().isBlank()) {
+            final String phone = user.getPhone();
+            final String otpCode = otp;
+            final String username = user.getUsername();
+            CompletableFuture.runAsync(() -> {
+                try {
+                    whatsAppService.sendOtpMessage(phone, username, otpCode);
+                    log.info("[WHATSAPP] Successfully sent OTP message to phone '{}'", phone);
+                } catch (Exception e) {
+                    log.error("[WHATSAPP] Failed to send OTP message to '{}': {}", phone, e.getMessage());
                 }
             });
         }

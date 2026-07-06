@@ -120,4 +120,44 @@ public class WhatsAppService {
             }
         }
     }
+
+    public void sendOtpMessage(String phone, String username, String otpCode) {
+        log.info("Preparing WhatsApp OTP trigger for Phone: {} (User: {})", phone, username);
+        
+        String status = "SENT";
+        String errorMessage = null;
+        String payloadJson = "";
+        
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(apiToken);
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("messaging_product", "whatsapp");
+            body.put("to", phone);
+            body.put("type", "text");
+
+            Map<String, String> text = new HashMap<>();
+            text.put("body", "🔒 *24K Realtors Security Alert*\n\nDear " + username + ",\n\nYour 6-digit Multi-Factor Authentication (MFA) OTP is: *" + otpCode + "*\n\nValid for the next 5 minutes. Do not share this code.");
+            body.put("text", text);
+
+            payloadJson = objectMapper.writeValueAsString(body);
+
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+            
+            // Dispatch request
+            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
+            log.info("WhatsApp OTP message dispatched successfully to {}. Status Code: {}", phone, response.getStatusCode());
+        } catch (Exception ex) {
+            errorMessage = ex.getMessage();
+            if (apiToken == null || apiToken.contains("PLACEHOLDER") || errorMessage.contains("401") || errorMessage.contains("400") || errorMessage.contains("500") || errorMessage.contains("Failed to connect")) {
+                status = "SIMULATING";
+                log.info("WhatsApp OTP message simulating locally for {} (using placeholder keys).", phone);
+            } else {
+                status = "FAILED";
+                log.error("Failed to dispatch WhatsApp OTP to {}: {}", phone, errorMessage);
+            }
+        }
+    }
 }

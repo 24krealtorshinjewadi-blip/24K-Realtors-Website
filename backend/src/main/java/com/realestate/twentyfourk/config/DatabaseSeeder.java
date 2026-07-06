@@ -113,7 +113,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .role(UserRole.SUPER_ADMIN)
                     .fullName("Manish Kumar Rai")
                     .email("24krealtorshinjewadi@gmail.com")
-                    .phone("+919876543206")
+                    .phone("+918677936898")
                     .designation("CEO & Principal Partner")
                     .department("Management")
                     .dateOfJoining(java.time.LocalDate.of(2026, 1, 1))
@@ -126,6 +126,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             admin.setUsername("Manishrai07");
             admin.setRole(UserRole.SUPER_ADMIN);
             admin.setEmail("24krealtorshinjewadi@gmail.com");
+            admin.setPhone("+918677936898");
             admin.setFullName("Manish Kumar Rai");
             String newPwd = "Manish@993100";
             if (!passwordEncoder.matches(newPwd, admin.getPassword())) {
