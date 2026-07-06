@@ -15,10 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,8 +36,10 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
     private final OtpVerificationRepository otpVerificationRepository;
-    private final JavaMailSender mailSender;
+    private final EmailService emailService;
+    private final SmsService smsService;
     private final WhatsAppService whatsAppService;
+    private final SecureRandom secureRandom = new SecureRandom();
 
     @Value("${spring.profiles.active:dev}")
     private String activeProfile;
@@ -125,8 +125,8 @@ public class AuthController {
         User user = userRepository.findByUsername(request.username())
                 .orElseThrow(() -> new RuntimeException("User not found after authentication"));
 
-        // Generate 6-digit verification code
-        String otp = String.format("%06d", new Random().nextInt(1000000));
+        // Generate 6-digit verification code securely
+        String otp = String.format("%06d", secureRandom.nextInt(1000000));
         String tempToken = UUID.randomUUID().toString();
 
         // Expire OTP in 5 minutes
@@ -153,35 +153,18 @@ public class AuthController {
             final String otpCode = otp;
             final String username = user.getUsername();
             CompletableFuture.runAsync(() -> {
-                try {
-                    SimpleMailMessage message = new SimpleMailMessage();
-                    message.setTo(userEmail);
-                    message.setSubject("24K Realtors CRM Security Verification OTP");
-                    message.setText("Dear " + username + ",\n\n" +
-                            "Your 6-digit Multi-Factor Authentication (MFA) OTP is: " + otpCode + "\n\n" +
-                            "This code is valid for the next 5 minutes. Please do not share this OTP with anyone.\n\n" +
-                            "Best regards,\n" +
-                            "24K Realtors Security Desk");
-                    mailSender.send(message);
-                    log.info("[SMTP] Successfully sent OTP email to user '{}'", username);
-                } catch (Exception e) {
-                    log.error("[SMTP] Failed to send OTP email to '{}': {}", userEmail, e.getMessage());
-                }
+                emailService.sendOtpEmail(userEmail, username, otpCode);
             });
         }
 
-        // Dispatch OTP via mobile (WhatsApp) asynchronously to keep it non-blocking and robust
+        // Dispatch OTP via mobile (SMS & WhatsApp) asynchronously to keep it non-blocking and robust
         if (user.getPhone() != null && !user.getPhone().isBlank()) {
             final String phone = user.getPhone();
             final String otpCode = otp;
             final String username = user.getUsername();
             CompletableFuture.runAsync(() -> {
-                try {
-                    whatsAppService.sendOtpMessage(phone, username, otpCode);
-                    log.info("[WHATSAPP] Successfully sent OTP message to phone '{}'", phone);
-                } catch (Exception e) {
-                    log.error("[WHATSAPP] Failed to send OTP message to '{}': {}", phone, e.getMessage());
-                }
+                smsService.sendOtpSms(phone, username, otpCode);
+                whatsAppService.sendOtpMessage(phone, username, otpCode);
             });
         }
 
