@@ -190,9 +190,8 @@ public class AuthController {
 
         String maskedEmail = maskEmail(user.getEmail());
 
-        // We also send the OTP in response as a devMockOtp ONLY if running locally (dev/default profiles)
-        boolean isDev = activeProfile != null && (activeProfile.contains("dev") || activeProfile.contains("default"));
-        String devOtp = isDev ? otp : null;
+        // Temporarily return OTP in response for direct login convenience on screen
+        String devOtp = otp;
         return ResponseEntity.ok(new LoginInitResponse(tempToken, maskedEmail, devOtp));
     }
 
