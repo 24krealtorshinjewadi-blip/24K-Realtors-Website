@@ -347,9 +347,10 @@ export default function Portal({ onViewChange }) {
       }
 
       draw() {
+        const isLight = document.documentElement.classList.contains('light-theme');
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(212, 175, 55, 0.45)';
+        ctx.fillStyle = isLight ? 'rgba(154, 123, 28, 0.7)' : 'rgba(212, 175, 55, 0.45)';
         ctx.fill();
       }
     }
@@ -399,12 +400,13 @@ export default function Portal({ onViewChange }) {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < connectionDistance) {
-            const alpha = (1 - dist / connectionDistance) * 0.18;
+            const isLight = document.documentElement.classList.contains('light-theme');
+            const alpha = (1 - dist / connectionDistance) * (isLight ? 0.32 : 0.18);
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(212, 175, 55, ${alpha})`;
-            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = isLight ? `rgba(154, 123, 28, ${alpha})` : `rgba(212, 175, 55, ${alpha})`;
+            ctx.lineWidth = isLight ? 0.9 : 0.6;
             ctx.stroke();
           }
         }
