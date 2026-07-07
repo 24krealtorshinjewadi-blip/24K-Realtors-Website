@@ -975,7 +975,7 @@ export default function Portal({ onViewChange }) {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-              {initialSocieties.map(soc => (
+              {societies.map(soc => (
                 <div key={soc.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '20px' }}>
                   <h4 style={{ color: '#fff', margin: '0 0 5px 0', fontFamily: 'var(--font-title)' }}>{soc.name}</h4>
                   <span style={{ fontSize: '0.78rem', color: 'var(--gold-primary)', fontWeight: 'bold' }}>{soc.reraNumber}</span>
@@ -1055,7 +1055,7 @@ export default function Portal({ onViewChange }) {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
-              {initialLocalities.map(loc => (
+              {localities.map(loc => (
                 <div key={loc.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '24px' }}>
                   <h4 style={{ color: '#fff', margin: '0 0 10px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)' }}>{loc.name} Area Profile</h4>
                   <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '15px' }}>{loc.overview}</p>
@@ -1083,7 +1083,7 @@ export default function Portal({ onViewChange }) {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
-              {initialBuilders.map(builder => (
+              {builders.map(builder => (
                 <div key={builder.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '24px' }}>
                   <h4 style={{ color: '#fff', margin: '0 0 5px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)' }}>{builder.name}</h4>
                   <span style={{ fontSize: '0.78rem', color: 'var(--gold-primary)', fontWeight: 'bold' }}>{builder.awards}</span>
