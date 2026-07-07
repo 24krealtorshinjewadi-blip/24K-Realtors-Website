@@ -50,33 +50,123 @@ export default function PortalNavbar({
 
           {/* Desktop Navigation Links */}
           <div className="nav-transaction-tabs" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <button 
-              className={activeSection === 'listings' && exclusiveTab === 'BUY' ? 'active' : ''} 
-              onClick={() => {
-                onSectionChange && onSectionChange('listings');
-                onTabChange && onTabChange('BUY');
-              }}
-            >
-              BUY
-            </button>
-            <button 
-              className={activeSection === 'listings' && exclusiveTab === 'RENT' ? 'active' : ''} 
-              onClick={() => {
-                onSectionChange && onSectionChange('listings');
-                onTabChange && onTabChange('RENT');
-              }}
-            >
-              RENT
-            </button>
-            <button 
-              className={activeSection === 'listings' && exclusiveTab === 'SELL' ? 'active' : ''} 
-              onClick={() => {
-                onSectionChange && onSectionChange('listings');
-                onTabChange && onTabChange('SELL');
-              }}
-            >
-              SELL
-            </button>
+            <div className="nav-dropdown-item-wrapper">
+              <button 
+                className={`nav-dropdown-trigger-btn ${activeSection === 'listings' && exclusiveTab === 'BUY' ? 'active' : ''}`} 
+                onClick={() => {
+                  onSectionChange && onSectionChange('listings');
+                  onTabChange && onTabChange('BUY');
+                }}
+              >
+                BUY
+              </button>
+              <div className="mega-dropdown-menu">
+                <div className="mega-menu-grid">
+                  <div className="mega-menu-column">
+                    <h5 className="mega-menu-title">Properties for Sale</h5>
+                    <a href="#listings-anchor" onClick={() => { onSectionChange('listings'); onTabChange('BUY'); }}>Active Listings</a>
+                    <a href="#listings-anchor" onClick={() => { onSectionChange('listings'); onTabChange('BUY'); }}>100% Verified Flats</a>
+                    <a href="#rera-compliance">MahaRERA Onboarded</a>
+                    <a href="#exclusive-deals">Exclusive Agency Deals</a>
+                  </div>
+                  <div className="mega-menu-column">
+                    <h5 className="mega-menu-title">Explore Neighborhoods</h5>
+                    <a href="#corridors" onClick={() => onSectionChange('localities')}>Hinjewadi IT Hub</a>
+                    <a href="#corridors" onClick={() => onSectionChange('localities')}>Wakad Residential</a>
+                    <a href="#corridors" onClick={() => onSectionChange('localities')}>Baner Corridor</a>
+                    <a href="#corridors" onClick={() => onSectionChange('localities')}>Tathawade Gateway</a>
+                  </div>
+                  <div className="mega-menu-column">
+                    <h5 className="mega-menu-title">Developer Portfolios</h5>
+                    <a href="#builders-anchor" onClick={() => onSectionChange('builders')}>Pride Purple Group</a>
+                    <a href="#builders-anchor" onClick={() => onSectionChange('builders')}>Kolte Patil Developers</a>
+                    <a href="#builders-anchor" onClick={() => onSectionChange('builders')}>Gera Developments</a>
+                  </div>
+                  <div className="mega-menu-column highlight-column">
+                    <h5 className="mega-menu-title">Home Buying Advice</h5>
+                    <p className="mega-menu-desc">Analyze commute times, check title RERA compliance status, and calculate local rental yields before buying.</p>
+                    <a href="#corridors" className="mega-menu-cta-btn">Locality Guide <ArrowRight size={12} /></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="nav-dropdown-item-wrapper">
+              <button 
+                className={`nav-dropdown-trigger-btn ${activeSection === 'listings' && exclusiveTab === 'RENT' ? 'active' : ''}`} 
+                onClick={() => {
+                  onSectionChange && onSectionChange('listings');
+                  onTabChange && onTabChange('RENT');
+                }}
+              >
+                RENT
+              </button>
+              <div className="mega-dropdown-menu">
+                <div className="mega-menu-grid">
+                  <div className="mega-menu-column">
+                    <h5 className="mega-menu-title">Apartments for Rent</h5>
+                    <a href="#listings-anchor" onClick={() => { onSectionChange('listings'); onTabChange('RENT'); }}>Premium Rented Flats</a>
+                    <a href="#listings-anchor" onClick={() => { onSectionChange('listings'); onTabChange('RENT'); }}>Semi-Furnished 2 BHK</a>
+                    <a href="#listings-anchor" onClick={() => { onSectionChange('listings'); onTabChange('RENT'); }}>Fully Furnished 3 BHK</a>
+                  </div>
+                  <div className="mega-menu-column">
+                    <h5 className="mega-menu-title">Renter Tools</h5>
+                    <a href="#listings-anchor" onClick={() => { onSectionChange('listings'); onTabChange('RENT'); }}>Zero-Brokerage Lists</a>
+                    <a href="#mortgage-desk">Rent vs Buy Estimator</a>
+                    <a href="#listings-anchor">Direct Developer Pricing</a>
+                  </div>
+                  <div className="mega-menu-column">
+                    <h5 className="mega-menu-title">Landlord Tools</h5>
+                    <a href="#seller-mandate-anchor">List Your Rental Flat</a>
+                    <a href="#rera-compliance">Tenant Verification Guide</a>
+                    <a href="#seller-mandate-anchor">Request Yield Analysis</a>
+                  </div>
+                  <div className="mega-menu-column highlight-column">
+                    <h5 className="mega-menu-title">Home Renting Advice</h5>
+                    <p className="mega-menu-desc">Embassy Techzone and Phase 2 IT Park proximity analysis. Clean NOC layouts and online rental registry templates.</p>
+                    <a href="#listings-anchor" onClick={() => { onSectionChange('listings'); onTabChange('RENT'); }} className="mega-menu-cta-btn">Explore Rentals <ArrowRight size={12} /></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="nav-dropdown-item-wrapper">
+              <button 
+                className={`nav-dropdown-trigger-btn ${activeSection === 'listings' && exclusiveTab === 'SELL' ? 'active' : ''}`} 
+                onClick={() => {
+                  onSectionChange && onSectionChange('listings');
+                  onTabChange && onTabChange('SELL');
+                }}
+              >
+                SELL
+              </button>
+              <div className="mega-dropdown-menu">
+                <div className="mega-menu-grid">
+                  <div className="mega-menu-column">
+                    <h5 className="mega-menu-title">Home Selling Tools</h5>
+                    <a href="#seller-mandate-anchor">Direct Listing Submission</a>
+                    <a href="#seller-mandate-anchor">Home Value Estimation</a>
+                    <a href="#seller-mandate-anchor">Compare Local Yields</a>
+                  </div>
+                  <div className="mega-menu-column">
+                    <h5 className="mega-menu-title">Home Selling Advice</h5>
+                    <a href="#blogs-anchor" onClick={() => onSectionChange('blogs')}>Guide to Selling Property</a>
+                    <a href="#blogs-anchor" onClick={() => onSectionChange('blogs')}>Prepare Flat for Appraisal</a>
+                    <a href="#rera-compliance">RERA Registry Compliance Norms</a>
+                  </div>
+                  <div className="mega-menu-column">
+                    <h5 className="mega-menu-title">Recently Sold</h5>
+                    <a href="#listings-anchor">Closed Transactions Index</a>
+                    <a href="#testimonials">Client Success Stories</a>
+                  </div>
+                  <div className="mega-menu-column highlight-column">
+                    <h5 className="mega-menu-title">Professional Advisory</h5>
+                    <p className="mega-menu-desc">List your luxury property with Pune West's leading advisory desk. 100% verified buyers and registry closure support.</p>
+                    <a href="#seller-mandate-anchor" className="mega-menu-cta-btn">List Property <ArrowRight size={12} /></a>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <span style={{ width: '1px', height: '18px', background: 'rgba(255,255,255,0.15)', margin: '0 4px' }}></span>
 

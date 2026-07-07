@@ -3992,8 +3992,136 @@
   border-radius: 4px;
 }
 
+/* Realtor.com Style Mega Menu Styles */
+.nav-dropdown-item-wrapper {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+}
 
+.nav-dropdown-trigger-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  text-transform: uppercase;
+  height: 100%;
+}
 
+.nav-dropdown-trigger-btn:hover,
+.nav-dropdown-trigger-btn.active {
+  color: var(--gold-primary) !important;
+}
 
+.mega-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(15px);
+  width: 880px;
+  background: rgba(7, 15, 30, 0.95);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 12px;
+  padding: 26px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.02);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1100;
+  margin-top: 12px;
+}
 
+.nav-dropdown-item-wrapper:hover .mega-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
 
+.mega-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.mega-menu-column {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.mega-menu-title {
+  font-size: 0.82rem;
+  color: var(--gold-primary);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  padding-bottom: 8px;
+}
+
+.mega-menu-column a {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+}
+
+.mega-menu-column a:hover {
+  color: var(--text-light) !important;
+  transform: translateX(4px);
+}
+
+.mega-menu-column.highlight-column {
+  background: rgba(212, 175, 55, 0.03);
+  border-left: 2px solid var(--gold-primary);
+  padding-left: 16px;
+}
+
+.mega-menu-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.mega-menu-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+  color: var(--gold-primary) !important;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-top: auto;
+}
+
+.mega-menu-cta-btn:hover {
+  gap: 10px;
+  transform: none !important;
+}
+
+/* Light Theme Overrides */
+.light-theme .mega-dropdown-menu {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(154, 123, 28, 0.18) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12) !important;
+}
+
+.light-theme .mega-menu-column a:hover {
+  color: #1A2536 !important;
+}
