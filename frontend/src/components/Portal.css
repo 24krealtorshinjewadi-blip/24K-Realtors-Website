@@ -30,12 +30,19 @@
   left: 0;
   right: 0;
   height: 80px;
-  background: rgba(7, 15, 30, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  background: rgba(7, 15, 30, 0.45);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.luxury-navbar.scrolled-active {
+  background: rgba(7, 15, 30, 0.85) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.22) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(212, 175, 55, 0.05) !important;
 }
 
 .nav-container {
@@ -338,8 +345,6 @@
 
 /* Redesigned Slideshow Hero Section */
 .portal-hero {
-  text-align: center;
-  padding: 110px 30px;
   border-radius: 20px;
   border: 1px solid var(--border-gold);
   margin-bottom: 35px;
@@ -347,6 +352,35 @@
   overflow: hidden;
   box-shadow: 0 15px 50px rgba(0,0,0,0.7);
   background-color: #070F1E;
+}
+
+.hero-video-container {
+  will-change: transform;
+}
+
+.hero-video-bg {
+  pointer-events: none;
+}
+
+.hero-text-block {
+  text-align: left;
+  will-change: transform;
+}
+
+.hero-3d-model-block {
+  will-change: transform;
+}
+
+@media (max-width: 768px) {
+  .hero-text-block {
+    text-align: center !important;
+  }
+  .hero-actions {
+    justify-content: center !important;
+  }
+  .hero-3d-model-block {
+    height: 300px !important;
+  }
 }
 
 /* 3. Cinematic Hero Slide Zoom-In transition (+3%) */

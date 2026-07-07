@@ -176,6 +176,16 @@ export default function Portal({ onViewChange }) {
     { sender: 'bot', text: 'Welcome to 24K Realtors. How can we assist you with Wakad or Baner properties today?' }
   ]);
 
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const [closedProperties, setClosedProperties] = useState([]);
   const [closedLoading, setClosedLoading] = useState(true);
 
@@ -417,13 +427,139 @@ export default function Portal({ onViewChange }) {
 
     drawGrid();
 
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-      if (parentSection) {
-        parentSection.removeEventListener('mousemove', handleMouseMove);
-        parentSection.removeEventListener('mouseleave', handleMouseLeave);
+  }, []);
+
+  // Rotating 3D Wireframe Skyscraper Canvas
+  useEffect(() => {
+    const canvas = document.getElementById('hero-3d-building-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationId;
+    let width = (canvas.width = canvas.offsetWidth);
+    let height = (canvas.height = canvas.offsetHeight);
+    let angleY = 0;
+    const angleX = 0.35;
+
+    const vertices = [];
+    const edges = [];
+
+    const addBox = (yMin, yMax, w, d) => {
+      const baseIndex = vertices.length;
+      vertices.push({ x: -w, y: yMin, z: -d });
+      vertices.push({ x:  w, y: yMin, z: -d });
+      vertices.push({ x:  w, y: yMin, z:  d });
+      vertices.push({ x: -w, y: yMin, z:  d });
+      vertices.push({ x: -w, y: yMax, z: -d });
+      vertices.push({ x:  w, y: yMax, z: -d });
+      vertices.push({ x:  w, y: yMax, z:  d });
+      vertices.push({ x: -w, y: yMax, z:  d });
+
+      edges.push([baseIndex+0, baseIndex+1]);
+      edges.push([baseIndex+1, baseIndex+2]);
+      edges.push([baseIndex+2, baseIndex+3]);
+      edges.push([baseIndex+3, baseIndex+0]);
+
+      edges.push([baseIndex+4, baseIndex+5]);
+      edges.push([baseIndex+5, baseIndex+6]);
+      edges.push([baseIndex+6, baseIndex+7]);
+      edges.push([baseIndex+7, baseIndex+4]);
+
+      edges.push([baseIndex+0, baseIndex+4]);
+      edges.push([baseIndex+1, baseIndex+5]);
+      edges.push([baseIndex+2, baseIndex+6]);
+      edges.push([baseIndex+3, baseIndex+7]);
+
+      const floorCount = 5;
+      for (let f = 1; f < floorCount; f++) {
+        const t = f / floorCount;
+        const fy = yMin + (yMax - yMin) * t;
+        const fIdx = vertices.length;
+        vertices.push({ x: -w, y: fy, z: -d });
+        vertices.push({ x:  w, y: fy, z: -d });
+        vertices.push({ x:  w, y: fy, z:  d });
+        vertices.push({ x: -w, y: fy, z:  d });
+
+        edges.push([fIdx+0, fIdx+1]);
+        edges.push([fIdx+1, fIdx+2]);
+        edges.push([fIdx+2, fIdx+3]);
+        edges.push([fIdx+3, fIdx+0]);
       }
+    };
+
+    addBox(-1.4, -0.4, 0.5, 0.5);
+    addBox(-0.4,  0.5, 0.38, 0.38);
+    addBox( 0.5,  1.3, 0.26, 0.26);
+
+    const spireIdx = vertices.length;
+    vertices.push({ x: 0, y: 1.8, z: 0 });
+    edges.push([spireIdx-4, spireIdx]);
+    edges.push([spireIdx-3, spireIdx]);
+    edges.push([spireIdx-2, spireIdx]);
+    edges.push([spireIdx-1, spireIdx]);
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    const render3D = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      const isLight = document.documentElement.classList.contains('light-theme');
+      const scale = Math.min(width, height) * 0.28;
+      const cx = width / 2;
+      const cy = height * 0.55;
+
+      const projected = vertices.map(v => {
+        let x1 = v.x * Math.cos(angleY) - v.z * Math.sin(angleY);
+        let z1 = v.x * Math.sin(angleY) + v.z * Math.cos(angleY);
+
+        let y2 = v.y * Math.cos(angleX) - z1 * Math.sin(angleX);
+        let z2 = v.y * Math.sin(angleX) + z1 * Math.cos(angleX);
+
+        const perspective = 3.5;
+        const scaleFactor = perspective / (perspective + z2);
+        
+        return {
+          x: cx + x1 * scale * scaleFactor,
+          y: cy - y2 * scale * scaleFactor
+        };
+      });
+
+      ctx.beginPath();
+      edges.forEach(([i, j]) => {
+        const p1 = projected[i];
+        const p2 = projected[j];
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+      });
+
+      ctx.strokeStyle = isLight 
+        ? 'rgba(154, 123, 28, 0.48)' 
+        : 'rgba(212, 175, 55, 0.42)';
+      ctx.lineWidth = isLight ? 1.0 : 0.8;
+      ctx.stroke();
+
+      projected.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = isLight ? '#9A7B1C' : '#D4AF37';
+        ctx.fill();
+      });
+
+      angleY += 0.007;
+      animationId = requestAnimationFrame(render3D);
+    };
+
+    render3D();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -985,38 +1121,66 @@ export default function Portal({ onViewChange }) {
         onSectionChange={setActiveSection}
       />
 
-      {/* Animated Hero Slideshow Section */}
-      <section className="portal-hero">
-        {slides.map((url, idx) => (
-          <div 
-            key={url} 
-            className={`hero-slide-bg ${idx === activeSlide ? 'active' : ''}`}
-            style={{ backgroundImage: `radial-gradient(circle at center, rgba(21, 34, 56, 0.82) 0%, rgba(7, 15, 30, 0.98) 100%), url('${url}')` }}
+      {/* Animated Hero Slideshow Section with Cinematic Video & Parallax */}
+      <section className="portal-hero" style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
+        <div className="hero-video-container" style={{ position: 'absolute', inset: 0, zIndex: 0, transform: `translate3d(0, ${scrollY * 0.35}px, 0)`, transition: 'transform 0.05s linear' }}>
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            className="hero-video-bg"
+            src="https://assets.mixkit.co/videos/preview/mixkit-modern-apartment-building-exterior-44161-large.mp4"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
           />
-        ))}
+          <div className="hero-video-overlay" style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'radial-gradient(circle at center, rgba(7, 15, 30, 0.72) 0%, rgba(7, 15, 30, 0.96) 100%)'
+          }} />
+        </div>
+
         <canvas id="hero-particle-canvas" className="hero-particle-canvas" style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', width: '100%', height: '100%' }} />
         <div className="hero-glow-1"></div>
         <div className="hero-glow-2"></div>
-        <div className="hero-content" style={{ zIndex: 2 }}>
-          <span className="hero-gold-badge">Pune's Premium Location Advisory</span>
-          <h1>
-            {isHnwiMode 
-              ? 'Institutional Mandates & Private Portfolios for Pune Tech Hubs'
-              : 'At 24K Realtors, we help you choose the right location—not just the right flat.'}
-          </h1>
-          <p className="hero-subtext">
-            {isHnwiMode
-              ? 'Exclusive whole-building mandates, premium high-yield commercial assets, and pre-release developer allocations for HNWI partners.'
-              : 'Discover handpicked, 100% verified properties across Hinjewadi, Wakad & Baner\'s high-appreciation corridors.'}
-          </p>
-          <div className="hero-divider"></div>
-          <div className="hero-actions">
-            <a href="#listings-anchor" className="btn-gold" style={{ textDecoration: 'none' }}>
-              {isHnwiMode ? 'Explore Portfolios' : 'View Active Listings'}
-            </a>
-            <a href="#corridors" className="btn-outline" style={{ textDecoration: 'none' }}>
-              Corridor Guide
-            </a>
+        
+        <div className="hero-content" style={{ zIndex: 2, position: 'relative', width: '100%', maxWidth: '1410px', margin: '0 auto', padding: '120px 20px 80px 20px' }}>
+          <div className="hero-grid-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '50px', width: '100%', alignItems: 'center' }}>
+            
+            <div className="hero-text-block" style={{ transform: `translate3d(0, ${scrollY * 0.12}px, 0)`, transition: 'transform 0.05s linear' }}>
+              <span className="hero-gold-badge">Pune's Premium Location Advisory</span>
+              <h1 style={{ fontFamily: 'var(--font-title)', fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: '#fff', lineHeight: 1.25, margin: '15px 0 20px 0', textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+                {isHnwiMode 
+                  ? 'Institutional Mandates & Private Portfolios for Pune Tech Hubs'
+                  : 'At 24K Realtors, we help you choose the right location—not just the right flat.'}
+              </h1>
+              <p className="hero-subtext" style={{ fontSize: 'clamp(0.9rem, 1.2vw, 1.1rem)', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '30px' }}>
+                {isHnwiMode
+                  ? 'Exclusive whole-building mandates, premium high-yield commercial assets, and pre-release developer allocations for HNWI partners.'
+                  : 'Discover handpicked, 100% verified properties across Hinjewadi, Wakad & Baner\'s high-appreciation corridors.'}
+              </p>
+              <div className="hero-divider"></div>
+              <div className="hero-actions" style={{ display: 'flex', gap: '15px', marginTop: '20px', flexWrap: 'wrap' }}>
+                <a href="#listings-anchor" className="btn-gold" style={{ textDecoration: 'none' }}>
+                  {isHnwiMode ? 'Explore Portfolios' : 'View Active Listings'}
+                </a>
+                <a href="#corridors" className="btn-outline" style={{ textDecoration: 'none' }}>
+                  Corridor Guide
+                </a>
+              </div>
+            </div>
+
+            <div className="hero-3d-model-block" style={{ height: '450px', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', transform: `translate3d(0, ${scrollY * -0.06}px, 0)`, transition: 'transform 0.05s linear' }}>
+              <canvas id="hero-3d-building-canvas" style={{ width: '100%', height: '100%', maxWidth: '450px', maxHeight: '450px' }} />
+            </div>
+
           </div>
         </div>
       </section>
