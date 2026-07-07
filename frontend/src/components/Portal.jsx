@@ -1130,7 +1130,7 @@ export default function Portal({ onViewChange }) {
             muted 
             playsInline 
             className="hero-video-bg"
-            src="https://assets.mixkit.co/videos/preview/mixkit-modern-apartment-building-exterior-44161-large.mp4"
+            src="https://assets.mixkit.co/videos/preview/mixkit-modern-villa-with-a-swimming-pool-41620-large.mp4"
             style={{
               position: 'absolute',
               top: 0,
