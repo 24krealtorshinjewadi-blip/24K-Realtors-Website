@@ -1191,6 +1191,34 @@
   height: 100%;
 }
 
+/* 3D Radial Glow and Light Sweep Reflection */
+.radial-glow-card {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform, box-shadow, border-color;
+}
+
+.radial-glow-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 5;
+  background: radial-gradient(
+    220px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.radial-glow-card:hover::after {
+  opacity: 1;
+}
+
 /* 4. Luxury Metallic Gold hover border */
 .premium-luxury-card:hover {
   transform: translateY(-5px);

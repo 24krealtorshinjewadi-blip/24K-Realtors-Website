@@ -301,6 +301,130 @@ export default function Portal({ onViewChange }) {
     return () => clearInterval(timer);
   }, []);
 
+  // Interactive 3D Canvas Particle Grid for Hero Section
+  useEffect(() => {
+    const canvas = document.getElementById('hero-particle-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId;
+    let width = (canvas.width = canvas.offsetWidth);
+    let height = (canvas.height = canvas.offsetHeight);
+
+    const particles = [];
+    const particleCount = 65;
+    const connectionDistance = 110;
+    const mouse = { x: null, y: null, radius: 120 };
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.radius = Math.random() * 2 + 1;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < mouse.radius) {
+            const force = (mouse.radius - dist) / mouse.radius;
+            const angle = Math.atan2(dy, dx);
+            this.x += Math.cos(angle) * force * 1.5;
+            this.y += Math.sin(angle) * force * 1.5;
+          }
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(212, 175, 55, 0.45)';
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    const handleMouseMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+
+    const handleMouseLeave = () => {
+      mouse.x = null;
+      mouse.y = null;
+    };
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+    };
+
+    window.addEventListener('resize', handleResize);
+    const parentSection = canvas.closest('.portal-hero');
+    if (parentSection) {
+      parentSection.addEventListener('mousemove', handleMouseMove);
+      parentSection.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    const drawGrid = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((p) => {
+        p.update();
+        p.draw();
+      });
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const p1 = particles[i];
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < connectionDistance) {
+            const alpha = (1 - dist / connectionDistance) * 0.18;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(212, 175, 55, ${alpha})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(drawGrid);
+    };
+
+    drawGrid();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+      if (parentSection) {
+        parentSection.removeEventListener('mousemove', handleMouseMove);
+        parentSection.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
+
   const fetchProperties = async () => {
     setLoading(true);
     setError(null);
@@ -868,9 +992,10 @@ export default function Portal({ onViewChange }) {
             style={{ backgroundImage: `radial-gradient(circle at center, rgba(21, 34, 56, 0.82) 0%, rgba(7, 15, 30, 0.98) 100%), url('${url}')` }}
           />
         ))}
+        <canvas id="hero-particle-canvas" className="hero-particle-canvas" style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', width: '100%', height: '100%' }} />
         <div className="hero-glow-1"></div>
         <div className="hero-glow-2"></div>
-        <div className="hero-content">
+        <div className="hero-content" style={{ zIndex: 2 }}>
           <span className="hero-gold-badge">Pune's Premium Location Advisory</span>
           <h1>
             {isHnwiMode 
