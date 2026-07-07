@@ -1215,6 +1215,7 @@ export const apiService = {
         if (filters.bedrooms) params.append('bedrooms', filters.bedrooms);
         if (filters.status) params.append('status', filters.status);
         if (filters.furnishingStatus) params.append('furnishingStatus', filters.furnishingStatus);
+        if (filters.query) params.append('query', filters.query);
         
         const response = await fetch(`${BASE_URL}/properties?${params.toString()}`);
         if (!response.ok) {
@@ -1233,6 +1234,15 @@ export const apiService = {
         if (filters.bedrooms) list = list.filter(p => p.bedrooms === Number(filters.bedrooms));
         if (filters.status) list = list.filter(p => p.status === filters.status);
         if (filters.furnishingStatus) list = list.filter(p => p.furnishingStatus === filters.furnishingStatus);
+        if (filters.query) {
+          const q = filters.query.toLowerCase();
+          list = list.filter(p => 
+            p.title.toLowerCase().includes(q) || 
+            (p.description && p.description.toLowerCase().includes(q)) || 
+            (p.address && p.address.toLowerCase().includes(q)) || 
+            p.location.toLowerCase().includes(q)
+          );
+        }
         
         // Sort logic
         list.sort((a, b) => {

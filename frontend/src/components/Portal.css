@@ -383,6 +383,44 @@
   }
 }
 
+/* Hero Search Widget Styles */
+.hero-search-tab-btn {
+  opacity: 0.85;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-search-tab-btn:hover {
+  opacity: 1;
+  color: var(--gold-primary) !important;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.hero-search-capsule {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.hero-search-capsule:focus-within {
+  transform: translateY(-2px);
+  border-color: var(--gold-primary) !important;
+  box-shadow: 0 10px 40px rgba(212, 175, 55, 0.25) !important;
+}
+
+.hero-search-capsule button:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+@media (max-width: 768px) {
+  .hero-search-tabs {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .hero-search-capsule {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
 /* 3. Cinematic Hero Slide Zoom-In transition (+3%) */
 .hero-slide-bg {
   position: absolute;

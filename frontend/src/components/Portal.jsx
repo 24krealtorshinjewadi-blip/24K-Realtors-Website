@@ -64,7 +64,8 @@ export default function Portal({ onViewChange }) {
     maxPrice: '',
     bedrooms: '',
     furnishingStatus: '',
-    status: 'AVAILABLE'
+    status: 'AVAILABLE',
+    query: ''
   });
 
   const [activeCollection, setActiveCollection] = useState('ALL');
@@ -97,6 +98,8 @@ export default function Portal({ onViewChange }) {
   const [notification, setNotification] = useState(null);
   const [exclusiveTab, setExclusiveTab] = useState('BUY');
   const [activeSection, setActiveSection] = useState('listings');
+  const [heroSearchText, setHeroSearchText] = useState('');
+  const [heroTab, setHeroTab] = useState('BUY');
   const [societies, setSocieties] = useState([]);
   const [builders, setBuilders] = useState([]);
   const [localities, setLocalities] = useState([]);
@@ -722,6 +725,24 @@ export default function Portal({ onViewChange }) {
     }, 800);
   };
 
+  const handleHeroSearch = (e) => {
+    if (e) e.preventDefault();
+    setFilters(prev => ({
+      ...prev,
+      transactionType: heroTab,
+      query: heroSearchText
+    }));
+    setExclusiveTab(heroTab);
+    setActiveSection('listings');
+    
+    setTimeout(() => {
+      const el = document.getElementById('listings-anchor');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 150);
+  };
+
   const handleAiAnalyze = () => {
     setAiAnalyzing(true);
     setAiProgress(0);
@@ -1166,15 +1187,55 @@ export default function Portal({ onViewChange }) {
                   ? 'Exclusive whole-building mandates, premium high-yield commercial assets, and pre-release developer allocations for HNWI partners.'
                   : 'Discover handpicked, 100% verified properties across Hinjewadi, Wakad & Baner\'s high-appreciation corridors.'}
               </p>
-              <div className="hero-divider"></div>
-              <div className="hero-actions" style={{ display: 'flex', gap: '15px', marginTop: '20px', flexWrap: 'wrap' }}>
-                <a href="#listings-anchor" className="btn-gold" style={{ textDecoration: 'none' }}>
-                  {isHnwiMode ? 'Explore Portfolios' : 'View Active Listings'}
-                </a>
-                <a href="#corridors" className="btn-outline" style={{ textDecoration: 'none' }}>
-                  Corridor Guide
-                </a>
+              <div className="hero-search-tabs" style={{ display: 'flex', gap: '20px', marginBottom: '14px', borderBottom: '1px solid rgba(255, 255, 255, 0.15)', width: 'fit-content' }}>
+                <button 
+                  type="button"
+                  className={`hero-search-tab-btn ${heroTab === 'BUY' ? 'active' : ''}`} 
+                  onClick={() => setHeroTab('BUY')}
+                  style={{ background: 'none', border: 'none', color: heroTab === 'BUY' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', borderBottom: heroTab === 'BUY' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
+                >
+                  Buy
+                </button>
+                <button 
+                  type="button"
+                  className={`hero-search-tab-btn ${heroTab === 'RENT' ? 'active' : ''}`} 
+                  onClick={() => setHeroTab('RENT')}
+                  style={{ background: 'none', border: 'none', color: heroTab === 'RENT' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', borderBottom: heroTab === 'RENT' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
+                >
+                  Rent
+                </button>
+                <button 
+                  type="button"
+                  className={`hero-search-tab-btn ${heroTab === 'SELL' ? 'active' : ''}`} 
+                  onClick={() => {
+                    setHeroTab('SELL');
+                    setTimeout(() => {
+                      const el = document.getElementById('seller-mandate-anchor');
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                  }}
+                  style={{ background: 'none', border: 'none', color: heroTab === 'SELL' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', borderBottom: heroTab === 'SELL' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
+                >
+                  Sell
+                </button>
               </div>
+
+              <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: '#fff', borderRadius: '50px', padding: '5px', maxWidth: '580px', width: '100%', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', border: '2px solid rgba(212,175,55,0.15)' }}>
+                <input 
+                  type="text" 
+                  placeholder="Search Hinjewadi, Wakad, Baner (e.g. 3 BHK, VTP, Blue Ridge)..." 
+                  value={heroSearchText} 
+                  onChange={e => setHeroSearchText(e.target.value)}
+                  style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#1A2536', outline: 'none' }}
+                />
+                <button 
+                  type="submit"
+                  style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '10px 24px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
+                >
+                  <Search size={15} />
+                  <span>Search</span>
+                </button>
+              </form>
             </div>
 
             <div className="hero-3d-model-block" style={{ height: '450px', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', transform: `translate3d(0, ${scrollY * -0.06}px, 0)`, transition: 'transform 0.05s linear' }}>
