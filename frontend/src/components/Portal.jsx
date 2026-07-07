@@ -743,6 +743,62 @@ export default function Portal({ onViewChange }) {
     }, 150);
   };
 
+  const handleApplyMegaFilter = (newFilters, section = 'listings', targetAnchorId = null) => {
+    setFilters(prev => ({
+      location: '',
+      propertyType: '',
+      transactionType: '',
+      minPrice: '',
+      maxPrice: '',
+      bedrooms: '',
+      furnishingStatus: '',
+      status: 'AVAILABLE',
+      query: '',
+      ...newFilters
+    }));
+
+    if (newFilters.transactionType) {
+      setExclusiveTab(newFilters.transactionType);
+      setHeroTab(newFilters.transactionType);
+    }
+    
+    if (newFilters.query) {
+      setHeroSearchText(newFilters.query);
+    } else {
+      setHeroSearchText('');
+    }
+
+    setActiveSection(section);
+
+    if (targetAnchorId === 'mortgage-desk') {
+      const firstProp = properties[0] || (properties.length > 0 ? properties[0] : null);
+      if (firstProp) {
+        setSelectedProperty(firstProp);
+        setIsModalOpen(true);
+        setTimeout(() => {
+          const el = document.getElementById('mortgage-desk');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+      return;
+    }
+
+    setTimeout(() => {
+      let targetId = targetAnchorId || 'listings-anchor';
+      if (!targetAnchorId) {
+        if (section === 'societies') targetId = 'societies-anchor';
+        else if (section === 'builders') targetId = 'builders-anchor';
+        else if (section === 'localities') targetId = 'localities-anchor';
+        else if (section === 'blogs') targetId = 'blogs-anchor';
+      }
+      
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 150);
+  };
+
   const handleAiAnalyze = () => {
     setAiAnalyzing(true);
     setAiProgress(0);
@@ -1140,6 +1196,7 @@ export default function Portal({ onViewChange }) {
         onTabChange={handleTabChange}
         activeSection={activeSection}
         onSectionChange={setActiveSection}
+        onApplyMegaFilter={handleApplyMegaFilter}
       />
 
       {/* Animated Hero Slideshow Section with Cinematic Video & Parallax */}
@@ -1247,7 +1304,7 @@ export default function Portal({ onViewChange }) {
       </section>
 
       {/* MahaRERA Authorized Trust Banner */}
-      <div className="maharera-trust-banner" style={{ border: '2px solid rgba(212,175,55,0.4)', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', borderRadius: '12px', padding: '24px 30px', margin: '30px auto', maxWidth: '1410px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+      <div id="maharera-trust-banner" className="maharera-trust-banner" style={{ border: '2px solid rgba(212,175,55,0.4)', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', borderRadius: '12px', padding: '24px 30px', margin: '30px auto', maxWidth: '1410px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
         <div className="maharera-content" style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
           <div style={{ background: 'rgba(212,175,55,0.1)', padding: '15px', borderRadius: '50%', border: '1px solid var(--gold-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <ShieldCheck size={36} color="var(--gold-primary)" className="trust-shield-icon" style={{ filter: 'drop-shadow(0 0 8px var(--gold-primary))' }} />
@@ -2777,7 +2834,7 @@ export default function Portal({ onViewChange }) {
                 </form>
               </div>
 
-              <div className="modal-calculator-side">
+              <div id="mortgage-desk" className="modal-calculator-side">
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '16px' }}>
                   <Calculator size={20} />
                   <h4 style={{ margin: 0, fontSize: '1.1rem', fontFamily: 'var(--font-title)' }}>Mortgage Estimator</h4>
