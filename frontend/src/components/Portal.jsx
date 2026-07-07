@@ -100,6 +100,7 @@ export default function Portal({ onViewChange }) {
   const [activeSection, setActiveSection] = useState('listings');
   const [heroSearchText, setHeroSearchText] = useState('');
   const [heroTab, setHeroTab] = useState('BUY');
+  const [activeSubView, setActiveSubView] = useState(null);
   const [societies, setSocieties] = useState([]);
   const [builders, setBuilders] = useState([]);
   const [localities, setLocalities] = useState([]);
@@ -743,7 +744,9 @@ export default function Portal({ onViewChange }) {
     }, 150);
   };
 
-  const handleApplyMegaFilter = (newFilters, section = 'listings', targetAnchorId = null) => {
+  const handleApplyMegaFilter = (newFilters, section = 'listings', targetAnchorId = null, subView = null) => {
+    setActiveSubView(subView);
+
     setFilters(prev => ({
       location: '',
       propertyType: '',
@@ -797,6 +800,303 @@ export default function Portal({ onViewChange }) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }, 150);
+  };
+
+  const renderSubView = () => {
+    const saleProps = properties.filter(p => p.transactionType === 'BUY');
+    const rentProps = properties.filter(p => p.transactionType === 'RENT');
+    const verifiedProps = properties.filter(p => p.verifiedListing);
+    const exclusiveProps = properties.filter(p => p.exclusiveDeal);
+
+    const handleBackToHome = () => {
+      setActiveSubView(null);
+      setFilters({
+        location: '',
+        propertyType: '',
+        transactionType: '',
+        minPrice: '',
+        maxPrice: '',
+        bedrooms: '',
+        furnishingStatus: '',
+        status: 'AVAILABLE',
+        query: ''
+      });
+      setHeroSearchText('');
+    };
+
+    switch (activeSubView) {
+      case 'properties-sale':
+        return (
+          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+              <div>
+                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Active Portfolio</span>
+                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ Premium Properties for Sale</h2>
+                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Explore high-appreciation residential apartments and penthouses in Pune West.</p>
+              </div>
+              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+            </div>
+            
+            <div className="properties-subview-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '30px' }}>
+              {saleProps.map(property => (
+                <PropertyCard 
+                  key={property.id} 
+                  property={property} 
+                  onViewDetails={handleViewDetails}
+                  onCompareToggle={(prop) => {
+                    setSelectedForCompare(prev => {
+                      if (prev.some(p => p.id === prop.id)) {
+                        return prev.filter(p => p.id !== prop.id);
+                      }
+                      return [...prev, prop];
+                    });
+                  }}
+                  isCompared={selectedForCompare.some(p => p.id === property.id)}
+                />
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'properties-rent':
+        return (
+          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+              <div>
+                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Active Portfolio</span>
+                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ Luxury Residences for Rent</h2>
+                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Premium rental flats, corporate suites, and townhouses near IT parks.</p>
+              </div>
+              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+            </div>
+            
+            <div className="properties-subview-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '30px' }}>
+              {rentProps.map(property => (
+                <PropertyCard 
+                  key={property.id} 
+                  property={property} 
+                  onViewDetails={handleViewDetails}
+                  onCompareToggle={(prop) => {
+                    setSelectedForCompare(prev => {
+                      if (prev.some(p => p.id === prop.id)) {
+                        return prev.filter(p => p.id !== prop.id);
+                      }
+                      return [...prev, prop];
+                    });
+                  }}
+                  isCompared={selectedForCompare.some(p => p.id === property.id)}
+                />
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'verified-flats':
+        return (
+          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+              <div>
+                <span className="hero-gold-badge" style={{ marginBottom: '10px', background: 'rgba(46,196,182,0.15)', color: '#2ec4b6' }}>🛡️ 100% Trust Shield</span>
+                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>Verified Premium Listings</h2>
+                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Properties audited for carpet layout compliance, registry status, and MahaRERA approvals.</p>
+              </div>
+              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '30px', flexWrap: 'wrap' }} className="verified-view-grid">
+              <div className="properties-subview-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '30px' }}>
+                {verifiedProps.map(property => (
+                  <PropertyCard 
+                    key={property.id} 
+                    property={property} 
+                    onViewDetails={handleViewDetails}
+                    onCompareToggle={(prop) => {
+                      setSelectedForCompare(prev => {
+                        if (prev.some(p => p.id === prop.id)) {
+                          return prev.filter(p => p.id !== prop.id);
+                        }
+                        return [...prev, prop];
+                      });
+                    }}
+                    isCompared={selectedForCompare.some(p => p.id === property.id)}
+                  />
+                ))}
+              </div>
+
+              <div className="verification-checklist-panel" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '24px', height: 'fit-content' }}>
+                <h4 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', margin: '0 0 15px 0' }}>⚜️ 24K Verification Protocol</h4>
+                <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '20px' }}>Each property undergoes a strict 5-stage legal and spatial audit prior to public onboarding.</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <ShieldCheck size={16} color="#2ec4b6" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div>
+                      <strong style={{ fontSize: '0.88rem', color: 'var(--text-light)' }}>Title-Clear Registry Dossier</strong>
+                      <p style={{ margin: '3px 0 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>Verified land allocations and developer rights.</p>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <ShieldCheck size={16} color="#2ec4b6" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div>
+                      <strong style={{ fontSize: '0.88rem', color: 'var(--text-light)' }}>MahaRERA Status Mapping</strong>
+                      <p style={{ margin: '3px 0 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>Official registration and compliance verification.</p>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <ShieldCheck size={16} color="#2ec4b6" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div>
+                      <strong style={{ fontSize: '0.88rem', color: 'var(--text-light)' }}>Carpet Audit Compliance</strong>
+                      <p style={{ margin: '3px 0 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>Physical layout matches blueprint RERA carpet.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'maharera-directory':
+        return (
+          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+              <div>
+                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Compliance Directory</span>
+                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ MahaRERA Onboarded Projects</h2>
+                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Verified MahaRERA registration certificates and broker license details.</p>
+              </div>
+              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+            </div>
+
+            <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '30px', marginBottom: '30px' }}>
+              <h4 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', margin: '0 0 10px 0' }}>Authorized Broker License: A52100028461</h4>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>In compliance with Section 9 of the Real Estate (Regulation and Development) Act, 2016, all portfolios offered by 24K Realtors are registered under authorized MahaRERA directories. Buyers can cross-verify registrations via the official Maharashtra government portal.</p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+              {initialSocieties.map(soc => (
+                <div key={soc.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '20px' }}>
+                  <h4 style={{ color: '#fff', margin: '0 0 5px 0', fontFamily: 'var(--font-title)' }}>{soc.name}</h4>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--gold-primary)', fontWeight: 'bold' }}>{soc.reraNumber}</span>
+                  <div style={{ margin: '15px 0 0 0', fontSize: '0.84rem', color: 'var(--text-muted)' }}>
+                    <p style={{ margin: '0 0 5px 0' }}><strong>Developer:</strong> {soc.developer}</p>
+                    <p style={{ margin: '0 0 5px 0' }}><strong>Location:</strong> {soc.location}</p>
+                    <p style={{ margin: '0 0 5px 0' }}><strong>Status:</strong> {soc.projectStatus.replace('_', ' ')}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'exclusive-deals':
+        return (
+          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(212,175,55,0.22)', paddingBottom: '15px' }}>
+              <div>
+                <span className="hero-gold-badge" style={{ marginBottom: '10px', background: 'rgba(212,175,55,0.15)', color: 'var(--gold-primary)' }}>⚜️ Private Client Desk</span>
+                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>HNWI Mandates & Exclusive Deals</h2>
+                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Pre-release developer inventory, full-floor commercial assets, and high-yield properties.</p>
+              </div>
+              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '30px' }} className="exclusive-view-grid">
+              <div className="properties-subview-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: '30px' }}>
+                {exclusiveProps.map(property => (
+                  <PropertyCard 
+                    key={property.id} 
+                    property={property} 
+                    onViewDetails={handleViewDetails}
+                    onCompareToggle={(prop) => {
+                      setSelectedForCompare(prev => {
+                        if (prev.some(p => p.id === prop.id)) {
+                          return prev.filter(p => p.id !== prop.id);
+                        }
+                        return [...prev, prop];
+                      });
+                    }}
+                    isCompared={selectedForCompare.some(p => p.id === property.id)}
+                  />
+                ))}
+              </div>
+
+              <div className="private-mandate-form-box" style={{ background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', border: '2px solid var(--gold-primary)', borderRadius: '12px', padding: '30px', height: 'fit-content' }}>
+                <h4 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', margin: '0 0 10px 0', fontSize: '1.2rem' }}>Request Portfolio Access</h4>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '20px' }}>Submit details to receive our locked PDF brochures, yield tables, and schedule a private Maybach chauffeur site tour.</p>
+                <form onSubmit={(e) => { e.preventDefault(); setNotification('NDA request registered. A private client partner will reach out within 15 minutes.'); setTimeout(() => setNotification(null), 5000); }}>
+                  <div style={{ marginBottom: '15px' }}>
+                    <label style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '5px', fontWeight: 'bold' }}>FULL NAME</label>
+                    <input type="text" required style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)', color: '#fff' }} />
+                  </div>
+                  <div style={{ marginBottom: '15px' }}>
+                    <label style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '5px', fontWeight: 'bold' }}>WHATSAPP NUMBER</label>
+                    <input type="tel" required style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)', color: '#fff' }} />
+                  </div>
+                  <button type="submit" className="btn-gold" style={{ width: '100%', padding: '12px', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>Submit NDA Request</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'locality-guides':
+        return (
+          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+              <div>
+                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Advisory Desk</span>
+                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ Locality & Infrastructure Guides</h2>
+                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Connectivity matrices, upcoming metro updates, and school maps for Hinjewadi, Wakad & Baner.</p>
+              </div>
+              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
+              {initialLocalities.map(loc => (
+                <div key={loc.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '24px' }}>
+                  <h4 style={{ color: '#fff', margin: '0 0 10px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)' }}>{loc.name} Area Profile</h4>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '15px' }}>{loc.overview}</p>
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '15px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                    <p style={{ margin: '0 0 8px 0' }}><strong>Transit Connectivity:</strong> {loc.connectivityInfo}</p>
+                    <p style={{ margin: '0 0 8px 0' }}><strong>Metro Line 3 Progress:</strong> {loc.metroConnectivity}</p>
+                    <p style={{ margin: '0 0 8px 0' }}><strong>Investment Score:</strong> {loc.investmentAnalysis}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'developer-portfolios':
+        return (
+          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+              <div>
+                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Developer Directory</span>
+                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ Premium Real Estate Developers</h2>
+                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Profile directories of Pune West's leading certified builder groups.</p>
+              </div>
+              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
+              {initialBuilders.map(builder => (
+                <div key={builder.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '24px' }}>
+                  <h4 style={{ color: '#fff', margin: '0 0 5px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)' }}>{builder.name}</h4>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--gold-primary)', fontWeight: 'bold' }}>{builder.awards}</span>
+                  <div style={{ margin: '20px 0 0 0', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '15px', fontSize: '0.84rem', color: 'var(--text-muted)' }}>
+                    <p style={{ margin: '0 0 6px 0' }}><strong>Experience Years:</strong> {builder.experienceYears} Years</p>
+                    <p style={{ margin: '0 0 6px 0' }}><strong>Completed Projects:</strong> {builder.completedProjectsCount}+ Projects</p>
+                    <p style={{ margin: '0 0 6px 0' }}><strong>Ongoing Projects:</strong> {builder.ongoingProjectsCount} Active Sites</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   const handleAiAnalyze = () => {
@@ -1199,8 +1499,10 @@ export default function Portal({ onViewChange }) {
         onApplyMegaFilter={handleApplyMegaFilter}
       />
 
-      {/* Animated Hero Slideshow Section with Cinematic Video & Parallax */}
-      <section className="portal-hero" style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
+      {activeSubView ? renderSubView() : (
+        <>
+          {/* Animated Hero Slideshow Section with Cinematic Video & Parallax */}
+          <section className="portal-hero" style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
         <div className="hero-video-container" style={{ position: 'absolute', inset: 0, zIndex: 0, transform: `translate3d(0, ${scrollY * 0.35}px, 0)`, transition: 'transform 0.05s linear' }}>
           <video 
             autoPlay 
@@ -2730,6 +3032,8 @@ export default function Portal({ onViewChange }) {
             </div>
           </div>
         </div>
+      )}
+        </>
       )}
 
       {/* Modular Chauffeur Site Visit Modal */}
