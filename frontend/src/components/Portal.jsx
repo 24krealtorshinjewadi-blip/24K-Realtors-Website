@@ -842,16 +842,17 @@ export default function Portal({ onViewChange }) {
                 <PropertyCard 
                   key={property.id} 
                   property={property} 
-                  onViewDetails={handleViewDetails}
-                  onCompareToggle={(prop) => {
-                    setSelectedForCompare(prev => {
-                      if (prev.some(p => p.id === prop.id)) {
-                        return prev.filter(p => p.id !== prop.id);
-                      }
-                      return [...prev, prop];
-                    });
-                  }}
+                  isHnwiMode={isHnwiMode}
                   isCompared={selectedForCompare.some(p => p.id === property.id)}
+                  formatPrice={formatPrice}
+                  onToggleCompare={handleToggleCompare}
+                  onOpenRera={handleOpenReraDrawer}
+                  onOpenWalkthrough={handleOpenWalkthrough}
+                  onOpen3DTour={handleOpen3DTour}
+                  onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
+                  onOpenDetail={(prop) => { setSelectedProperty(prop); setIsModalOpen(true); }}
+                  getLocationScorecard={getLocationScorecard}
+                  getLandmarks={getLandmarks}
                 />
               ))}
             </div>
@@ -875,16 +876,17 @@ export default function Portal({ onViewChange }) {
                 <PropertyCard 
                   key={property.id} 
                   property={property} 
-                  onViewDetails={handleViewDetails}
-                  onCompareToggle={(prop) => {
-                    setSelectedForCompare(prev => {
-                      if (prev.some(p => p.id === prop.id)) {
-                        return prev.filter(p => p.id !== prop.id);
-                      }
-                      return [...prev, prop];
-                    });
-                  }}
+                  isHnwiMode={isHnwiMode}
                   isCompared={selectedForCompare.some(p => p.id === property.id)}
+                  formatPrice={formatPrice}
+                  onToggleCompare={handleToggleCompare}
+                  onOpenRera={handleOpenReraDrawer}
+                  onOpenWalkthrough={handleOpenWalkthrough}
+                  onOpen3DTour={handleOpen3DTour}
+                  onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
+                  onOpenDetail={(prop) => { setSelectedProperty(prop); setIsModalOpen(true); }}
+                  getLocationScorecard={getLocationScorecard}
+                  getLandmarks={getLandmarks}
                 />
               ))}
             </div>
@@ -909,16 +911,17 @@ export default function Portal({ onViewChange }) {
                   <PropertyCard 
                     key={property.id} 
                     property={property} 
-                    onViewDetails={handleViewDetails}
-                    onCompareToggle={(prop) => {
-                      setSelectedForCompare(prev => {
-                        if (prev.some(p => p.id === prop.id)) {
-                          return prev.filter(p => p.id !== prop.id);
-                        }
-                        return [...prev, prop];
-                      });
-                    }}
+                    isHnwiMode={isHnwiMode}
                     isCompared={selectedForCompare.some(p => p.id === property.id)}
+                    formatPrice={formatPrice}
+                    onToggleCompare={handleToggleCompare}
+                    onOpenRera={handleOpenReraDrawer}
+                    onOpenWalkthrough={handleOpenWalkthrough}
+                    onOpen3DTour={handleOpen3DTour}
+                    onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
+                    onOpenDetail={(prop) => { setSelectedProperty(prop); setIsModalOpen(true); }}
+                    getLocationScorecard={getLocationScorecard}
+                    getLandmarks={getLandmarks}
                   />
                 ))}
               </div>
@@ -1005,16 +1008,17 @@ export default function Portal({ onViewChange }) {
                   <PropertyCard 
                     key={property.id} 
                     property={property} 
-                    onViewDetails={handleViewDetails}
-                    onCompareToggle={(prop) => {
-                      setSelectedForCompare(prev => {
-                        if (prev.some(p => p.id === prop.id)) {
-                          return prev.filter(p => p.id !== prop.id);
-                        }
-                        return [...prev, prop];
-                      });
-                    }}
+                    isHnwiMode={isHnwiMode}
                     isCompared={selectedForCompare.some(p => p.id === property.id)}
+                    formatPrice={formatPrice}
+                    onToggleCompare={handleToggleCompare}
+                    onOpenRera={handleOpenReraDrawer}
+                    onOpenWalkthrough={handleOpenWalkthrough}
+                    onOpen3DTour={handleOpen3DTour}
+                    onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
+                    onOpenDetail={(prop) => { setSelectedProperty(prop); setIsModalOpen(true); }}
+                    getLocationScorecard={getLocationScorecard}
+                    getLandmarks={getLandmarks}
                   />
                 ))}
               </div>
