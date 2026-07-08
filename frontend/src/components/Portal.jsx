@@ -3,7 +3,8 @@ import { apiService } from '../services/apiService';
 import { 
   Search, Loader, CheckCircle, IndianRupee, Laptop, Sparkles, Activity, 
   LineChart, Car, Users, ShieldCheck, 
-  Calculator, Compass, Clock, Lock, TrendingUp, Building
+  Calculator, Compass, Clock, Lock, TrendingUp, Building,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 import './Portal.css';
 import * as THREE from 'three';
@@ -12,6 +13,7 @@ import * as THREE from 'three';
 import PortalNavbar from '../layouts/PortalNavbar';
 import PortalFooter from '../layouts/PortalFooter';
 import PropertyCard from './PropertyCard';
+import PropertyDetailView from './PropertyDetailView';
 import CompareOverlay from './CompareOverlay';
 import ReraDrawer from './ReraDrawer';
 import ChauffeurModal from './ChauffeurModal';
@@ -46,6 +48,26 @@ export default function Portal({ onViewChange }) {
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [selectedPropertyDetail, setSelectedPropertyDetail] = useState(null);
 
+  const [allRawProperties, setAllRawProperties] = useState([]);
+  const [wishlistIds, setWishlistIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('wishlist_properties');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const handleToggleWishlist = (property) => {
+    setWishlistIds(prev => {
+      const updated = prev.includes(property.id)
+        ? prev.filter(id => id !== property.id)
+        : [...prev, property.id];
+      localStorage.setItem('wishlist_properties', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [leadForm, setLeadForm] = useState({
@@ -65,6 +87,11 @@ export default function Portal({ onViewChange }) {
   const [activeSection, setActiveSection] = useState('listings');
   const [heroSearchText, setHeroSearchText] = useState('');
   const [heroTab, setHeroTab] = useState('BUY');
+  const [recentSearches, setRecentSearches] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('recent_searches') || '[]'); } catch { return []; }
+  });
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [smartChips, setSmartChips] = useState([]);
   const [activeSubView, setActiveSubView] = useState(null);
   const [societies, setSocieties] = useState([]);
   const [builders, setBuilders] = useState([]);
@@ -97,9 +124,6 @@ export default function Portal({ onViewChange }) {
   const [vipSubmitting, setVipSubmitting] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
-  const [isTourOpen, setIsTourOpen] = useState(false);
-  const [activeTourProperty, setActiveTourProperty] = useState(null);
-  const [mediaConsoleTab, setMediaConsoleTab] = useState('3d');
 
   const [isChatWidgetOpen, setIsChatWidgetOpen] = useState(false);
 
@@ -673,12 +697,69 @@ export default function Portal({ onViewChange }) {
     };
   }, []);
 
+  useEffect(() => {
+    const loadRawProperties = async () => {
+      try {
+        const data = await apiService.getProperties({}, 0, 100);
+        setAllRawProperties(data.content || []);
+      } catch (err) {
+        console.error("Error loading raw properties for carousels:", err);
+      }
+    };
+    loadRawProperties();
+  }, []);
+
+  useEffect(() => {
+    if (selectedPropertyDetail) {
+      document.title = `${selectedPropertyDetail.title} | ${selectedPropertyDetail.bedrooms} BHK Luxury Home in ${selectedPropertyDetail.location} | 24K Realtors`;
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', `Explore ${selectedPropertyDetail.title} in ${selectedPropertyDetail.location} Corridor, Pune. Features: ${selectedPropertyDetail.bedrooms} BHK, ${selectedPropertyDetail.areaSquareFeet} sqft carpet, MahaRERA: ${selectedPropertyDetail.reraNumber}. Exclusive listings by 24K Realtors.`);
+    } else {
+      document.title = isHnwiMode 
+        ? "HNWI Private Portfolios & Institutional Mandates | 24K Realtors Pune"
+        : "24K Realtors | Premium Luxury Real Estate Pune | Hinjewadi, Wakad & Baner";
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', "Discover premium residential apartments, penthouses, commercial assets, and HNWI exclusive mandates in Hinjewadi, Wakad, Baner, Pune West. 100% verified listings.");
+    }
+  }, [selectedPropertyDetail, isHnwiMode]);
+
   const fetchProperties = useCallback(async () => {
     setError(null);
     try {
       let queryFilters = { ...filters };
       
-      if (activeCollection === 'SKY_PENTHOUSE') {
+      if (activeCollection === 'WISHLIST') {
+        const saved = allRawProperties.filter(p => wishlistIds.includes(p.id));
+        setProperties(saved);
+        setTotalPages(1);
+        setTotalElements(saved.length);
+        setLoading(false);
+        return;
+      }
+
+      if (activeCollection === 'APARTMENT') {
+        queryFilters.propertyType = 'RESIDENTIAL';
+      } else if (activeCollection === 'VILLA') {
+        queryFilters.bedrooms = '4';
+      } else if (activeCollection === 'PENTHOUSE') {
+        queryFilters.bedrooms = '4';
+        queryFilters.propertyType = 'RESIDENTIAL';
+      } else if (activeCollection === 'COMMERCIAL') {
+        queryFilters.propertyType = 'COMMERCIAL';
+      } else if (activeCollection === 'READY') {
+        queryFilters.propertyType = 'RESIDENTIAL';
+        queryFilters.transactionType = 'BUY';
+      } else if (activeCollection === 'SKY_PENTHOUSE') {
         queryFilters.bedrooms = '4';
         queryFilters.propertyType = 'RESIDENTIAL';
       } else if (activeCollection === 'TECH_OFFICE') {
@@ -701,11 +782,108 @@ export default function Portal({ onViewChange }) {
     } finally {
       setLoading(false);
     }
-  }, [filters, activeCollection, page]);
+  }, [filters, activeCollection, page, allRawProperties, wishlistIds]);
 
   useEffect(() => {
     fetchProperties();
   }, [fetchProperties]);
+
+  const isSearchActive = !!(
+    filters.location ||
+    filters.propertyType ||
+    filters.transactionType ||
+    filters.minPrice ||
+    filters.maxPrice ||
+    filters.bedrooms ||
+    filters.furnishingStatus ||
+    filters.query ||
+    heroSearchText
+  );
+
+  const handleCarouselScroll = (index, direction) => {
+    const track = document.getElementById(`carousel-track-${index}`);
+    if (track) {
+      const scrollAmount = track.clientWidth * 0.75;
+      track.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const renderCuratedCarousels = () => {
+    const collections = [
+      { title: "Featured Luxury Homes", data: allRawProperties.filter(p => p.exclusiveDeal || p.verifiedListing) },
+      { title: "Ready To Move Residences", data: allRawProperties.filter(p => p.propertyType === 'RESIDENTIAL' && (p.reraNumber?.includes('24K') || p.exclusiveDeal)) },
+      { title: "Premium Apartments", data: allRawProperties.filter(p => p.propertyType === 'RESIDENTIAL' && p.bedrooms <= 3 && !p.title.toLowerCase().includes('penthouse')) },
+      { title: "Luxury Villas", data: allRawProperties.filter(p => p.title.toLowerCase().includes('villa') || p.bedrooms >= 4) },
+      { title: "Penthouse Collection", data: allRawProperties.filter(p => p.title.toLowerCase().includes('penthouse') || p.description.toLowerCase().includes('penthouse')) },
+      { title: "Commercial Assets", data: allRawProperties.filter(p => p.propertyType === 'COMMERCIAL') },
+      { title: "Investment Picks", data: allRawProperties.filter(p => p.location === 'BANER' || p.location === 'MAHALUNGE' || p.location === 'WAKAD') },
+      { title: "New Launches", data: [...allRawProperties].reverse() },
+      { title: "Trending in Pune", data: allRawProperties.filter(p => p.location === 'HINJEWADI' || p.location === 'BALEWADI') },
+      { title: "Editor's Choice", data: allRawProperties.filter(p => p.verifiedListing).slice(0, 6) }
+    ];
+
+    return (
+      <div className="curated-carousels-container">
+        {collections.map((col, i) => {
+          if (col.data.length === 0) return null;
+          return (
+            <div key={i} className="luxury-carousel-section" id={`carousel-section-${i}`}>
+              <div className="carousel-title-row">
+                <h3>⚜️ {col.title}</h3>
+                <div className="carousel-nav-buttons">
+                  <button 
+                    onClick={() => handleCarouselScroll(i, 'left')} 
+                    className="carousel-nav-btn"
+                    aria-label="Scroll left"
+                    type="button"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button 
+                    onClick={() => handleCarouselScroll(i, 'right')} 
+                    className="carousel-nav-btn"
+                    aria-label="Scroll right"
+                    type="button"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
+              </div>
+              <div className="carousel-track-container">
+                <div className="carousel-track" id={`carousel-track-${i}`}>
+                  {col.data.map(property => (
+                    <PropertyCard 
+                      key={property.id} 
+                      property={property} 
+                      isHnwiMode={isHnwiMode}
+                      isCompared={selectedForCompare.some(p => p.id === property.id)}
+                      isWishlisted={wishlistIds.includes(property.id)}
+                      formatPrice={formatPrice}
+                      onToggleCompare={handleToggleCompare}
+                      onToggleWishlist={handleToggleWishlist}
+                      onOpenRera={handleOpenReraDrawer}
+                      onOpenDetail={(prop) => { 
+                        setSelectedPropertyDetail(prop); 
+                        window.scrollTo({ top: 300, behavior: 'smooth' }); 
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const handleCollectionChange = (collection) => {
+    setActiveCollection(collection);
+    setPage(0);
+  };
 
   const handleTabChange = (tab) => {
     setExclusiveTab(tab);
@@ -819,21 +997,79 @@ export default function Portal({ onViewChange }) {
     }, 800);
   };
 
+  // ── Smart NLP query parser ─────────────────────────────────────────────────
+  const parseSmartQuery = (text) => {
+    const t = text.toLowerCase();
+    const parsed = { bedrooms: '', location: '', maxPrice: '', query: text };
+    const chips = [];
+
+    // BHK detection
+    const bhkMatch = t.match(/(\d+)\s*(?:bhk|bed|bedroom)/i);
+    if (bhkMatch) {
+      parsed.bedrooms = bhkMatch[1];
+      chips.push({ label: `🛏 ${bhkMatch[1]} BHK`, key: 'bedrooms' });
+    }
+
+    // Price detection — "under 1.2 cr", "below 80 lakh", "upto 2cr"
+    const crMatch = t.match(/(?:under|below|upto|max|within|<)\s*([\d.]+)\s*cr/i);
+    const lakhMatch = t.match(/(?:under|below|upto|max|within|<)\s*([\d.]+)\s*lakh/i);
+    if (crMatch) {
+      parsed.maxPrice = Math.round(parseFloat(crMatch[1]) * 10000000);
+      chips.push({ label: `₹ < ${crMatch[1]} Cr`, key: 'maxPrice' });
+    } else if (lakhMatch) {
+      parsed.maxPrice = Math.round(parseFloat(lakhMatch[1]) * 100000);
+      chips.push({ label: `₹ < ${lakhMatch[1]} L`, key: 'maxPrice' });
+    }
+
+    // Location detection
+    const locations = ['hinjewadi', 'wakad', 'baner', 'balewadi', 'mahalunge', 'punawale', 'kharadi', 'viman nagar', 'aundh', 'pashan', 'sus road'];
+    for (const loc of locations) {
+      if (t.includes(loc)) {
+        parsed.location = loc.toUpperCase().replace(/\s+/g, '_');
+        chips.push({ label: `📍 ${loc.split(' ').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')}`, key: 'location' });
+        break;
+      }
+    }
+
+    return { parsed, chips };
+  };
+
+  const handleSmartInputChange = (val) => {
+    setHeroSearchText(val);
+    if (val.trim().length > 2) {
+      const { chips } = parseSmartQuery(val);
+      setSmartChips(chips);
+    } else {
+      setSmartChips([]);
+    }
+  };
+
   const handleHeroSearch = (e) => {
     if (e) e.preventDefault();
+    const { parsed } = parseSmartQuery(heroSearchText);
     setFilters(prev => ({
       ...prev,
       transactionType: heroTab,
-      query: heroSearchText
+      query: heroSearchText,
+      ...(parsed.bedrooms && { bedrooms: parsed.bedrooms }),
+      ...(parsed.maxPrice && { maxPrice: String(parsed.maxPrice) }),
+      ...(parsed.location && { location: parsed.location }),
     }));
     setExclusiveTab(heroTab);
     setActiveSection('listings');
-    
+    setSmartChips([]);
+    setSearchFocused(false);
+    // Save to recent searches
+    if (heroSearchText.trim()) {
+      setRecentSearches(prev => {
+        const updated = [heroSearchText.trim(), ...prev.filter(s => s !== heroSearchText.trim())].slice(0, 5);
+        localStorage.setItem('recent_searches', JSON.stringify(updated));
+        return updated;
+      });
+    }
     setTimeout(() => {
       const el = document.getElementById('listings-anchor');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 150);
   };
 
@@ -957,15 +1193,16 @@ export default function Portal({ onViewChange }) {
                   property={property} 
                   isHnwiMode={isHnwiMode}
                   isCompared={selectedForCompare.some(p => p.id === property.id)}
+                  isWishlisted={wishlistIds.includes(property.id)}
                   formatPrice={formatPrice}
                   onToggleCompare={handleToggleCompare}
+                  onToggleWishlist={handleToggleWishlist}
                   onOpenRera={handleOpenReraDrawer}
-                  onOpenWalkthrough={handleOpenWalkthrough}
-                  onOpen3DTour={handleOpen3DTour}
-                  onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
-                  onOpenDetail={(prop) => { setSelectedProperty(prop); setIsModalOpen(true); }}
-                  getLocationScorecard={getLocationScorecard}
-                  getLandmarks={getLandmarks}
+                  onOpenDetail={(prop) => { 
+                    setSelectedPropertyDetail(prop); 
+                    setActiveSection('listings'); 
+                    window.scrollTo({ top: 300, behavior: 'smooth' }); 
+                  }}
                 />
               ))}
             </div>
@@ -993,15 +1230,16 @@ export default function Portal({ onViewChange }) {
                   property={property} 
                   isHnwiMode={isHnwiMode}
                   isCompared={selectedForCompare.some(p => p.id === property.id)}
+                  isWishlisted={wishlistIds.includes(property.id)}
                   formatPrice={formatPrice}
                   onToggleCompare={handleToggleCompare}
+                  onToggleWishlist={handleToggleWishlist}
                   onOpenRera={handleOpenReraDrawer}
-                  onOpenWalkthrough={handleOpenWalkthrough}
-                  onOpen3DTour={handleOpen3DTour}
-                  onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
-                  onOpenDetail={(prop) => { setSelectedProperty(prop); setIsModalOpen(true); }}
-                  getLocationScorecard={getLocationScorecard}
-                  getLandmarks={getLandmarks}
+                  onOpenDetail={(prop) => { 
+                    setSelectedPropertyDetail(prop); 
+                    setActiveSection('listings'); 
+                    window.scrollTo({ top: 300, behavior: 'smooth' }); 
+                  }}
                 />
               ))}
             </div>
@@ -1030,15 +1268,16 @@ export default function Portal({ onViewChange }) {
                     property={property} 
                     isHnwiMode={isHnwiMode}
                     isCompared={selectedForCompare.some(p => p.id === property.id)}
+                    isWishlisted={wishlistIds.includes(property.id)}
                     formatPrice={formatPrice}
                     onToggleCompare={handleToggleCompare}
+                    onToggleWishlist={handleToggleWishlist}
                     onOpenRera={handleOpenReraDrawer}
-                    onOpenWalkthrough={handleOpenWalkthrough}
-                    onOpen3DTour={handleOpen3DTour}
-                    onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
-                    onOpenDetail={(prop) => { setSelectedProperty(prop); setIsModalOpen(true); }}
-                    getLocationScorecard={getLocationScorecard}
-                    getLandmarks={getLandmarks}
+                    onOpenDetail={(prop) => { 
+                      setSelectedPropertyDetail(prop); 
+                      setActiveSection('listings'); 
+                      window.scrollTo({ top: 300, behavior: 'smooth' }); 
+                    }}
                   />
                 ))}
               </div>
@@ -1127,15 +1366,16 @@ export default function Portal({ onViewChange }) {
                     property={property} 
                     isHnwiMode={isHnwiMode}
                     isCompared={selectedForCompare.some(p => p.id === property.id)}
+                    isWishlisted={wishlistIds.includes(property.id)}
                     formatPrice={formatPrice}
                     onToggleCompare={handleToggleCompare}
+                    onToggleWishlist={handleToggleWishlist}
                     onOpenRera={handleOpenReraDrawer}
-                    onOpenWalkthrough={handleOpenWalkthrough}
-                    onOpen3DTour={handleOpen3DTour}
-                    onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
-                    onOpenDetail={(prop) => { setSelectedProperty(prop); setIsModalOpen(true); }}
-                    getLocationScorecard={getLocationScorecard}
-                    getLandmarks={getLandmarks}
+                    onOpenDetail={(prop) => { 
+                      setSelectedPropertyDetail(prop); 
+                      setActiveSection('listings'); 
+                      window.scrollTo({ top: 300, behavior: 'smooth' }); 
+                    }}
                   />
                 ))}
               </div>
@@ -1458,17 +1698,7 @@ export default function Portal({ onViewChange }) {
     });
   };
 
-  const handleOpenWalkthrough = (property) => {
-    setActiveTourProperty(property);
-    setIsTourOpen(true);
-    setMediaConsoleTab('video');
-  };
 
-  const handleOpen3DTour = (property) => {
-    setActiveTourProperty(property);
-    setIsTourOpen(true);
-    setMediaConsoleTab('3d');
-  };
 
   const handleOpenReraDrawer = (property, e) => {
     e.stopPropagation();
@@ -1733,22 +1963,86 @@ export default function Portal({ onViewChange }) {
                   </div>
                 </div>
  
-                <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '50px', padding: '5px', width: '100%', border: '1px solid rgba(255, 255, 255, 0.08)', transition: 'all 0.3s ease' }}>
-                  <input 
-                    type="text" 
-                    placeholder="Search Hinjewadi, Wakad, Baner (e.g. 3 BHK, VTP, Blue Ridge)..." 
-                    value={heroSearchText} 
-                    onChange={e => setHeroSearchText(e.target.value)}
-                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#fff', outline: 'none' }}
-                  />
-                  <button 
-                    type="submit"
-                    style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '10px 24px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
-                  >
-                    <Search size={15} />
-                    <span>Search</span>
-                  </button>
-                </form>
+                {/* Smart chip tokens */}
+                {smartChips.length > 0 && (
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                    {smartChips.map((chip, i) => (
+                      <span key={i} style={{
+                        background: 'rgba(212,175,55,0.12)',
+                        border: '1px solid rgba(212,175,55,0.3)',
+                        borderRadius: '20px',
+                        padding: '3px 10px',
+                        fontSize: '0.72rem',
+                        color: 'var(--gold-primary)',
+                        fontWeight: 600,
+                        letterSpacing: '0.02em',
+                      }}>
+                        {chip.label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div style={{ position: 'relative', width: '100%' }}>
+                  <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '50px', padding: '5px', width: '100%', border: `1px solid ${searchFocused ? 'rgba(212,175,55,0.35)' : 'rgba(255, 255, 255, 0.08)'}`, transition: 'all 0.3s ease', boxShadow: searchFocused ? '0 0 0 3px rgba(212,175,55,0.08)' : 'none' }}>
+                    <input
+                      type="text"
+                      placeholder="Try: 3 BHK Hinjewadi under 1.2 Cr, Penthouse Baner..."
+                      value={heroSearchText}
+                      onChange={e => handleSmartInputChange(e.target.value)}
+                      onFocus={() => setSearchFocused(true)}
+                      onBlur={() => setTimeout(() => setSearchFocused(false), 180)}
+                      style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#fff', outline: 'none' }}
+                      aria-label="Search properties"
+                    />
+                    <button
+                      type="submit"
+                      style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '10px 24px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
+                    >
+                      <Search size={15} />
+                      <span>Search</span>
+                    </button>
+                  </form>
+
+                  {/* Recent searches dropdown */}
+                  {searchFocused && !heroSearchText && recentSearches.length > 0 && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 8px)',
+                      left: 0, right: 0,
+                      background: 'rgba(7, 15, 30, 0.97)',
+                      border: '1px solid rgba(212,175,55,0.15)',
+                      borderRadius: '16px',
+                      overflow: 'hidden',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                      zIndex: 100,
+                      backdropFilter: 'blur(20px)',
+                    }}>
+                      <div style={{ padding: '10px 16px 6px', fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                        Recent Searches
+                      </div>
+                      {recentSearches.map((s, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onMouseDown={() => { handleSmartInputChange(s); }}
+                          style={{
+                            display: 'block', width: '100%', textAlign: 'left',
+                            padding: '10px 16px',
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            fontSize: '0.86rem', color: 'var(--text-light)',
+                            borderBottom: i < recentSearches.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+                            transition: 'background 0.15s',
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.06)'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                        >
+                          🕐 {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* 3D WebGL Penthouse Model Canvas (Below Search Bar) */}
@@ -1991,6 +2285,7 @@ export default function Portal({ onViewChange }) {
                 getLocationScorecard={getLocationScorecard}
                 getLandmarks={getLandmarks}
                 getEmbedVideoUrl={getEmbedVideoUrl}
+                allProperties={allRawProperties}
               />
             ) : (
               <>
@@ -2065,37 +2360,21 @@ export default function Portal({ onViewChange }) {
               </section>
 
               {/* Listings Header Row */}
-              <div className="listings-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
-                <span className="total-found-badge">
+              <div className="listings-header-row" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
+                <span className="total-found-badge" style={{ alignSelf: 'flex-start' }}>
                   🏢 {totalElements} Verified listings found in {filters.location || 'Pune West'}
                 </span>
                 
-                {/* Horizontal Transaction Subtabs */}
-                <div style={{ display: 'flex', gap: '5px' }}>
-                  <button 
-                    onClick={() => handleCollectionChange('ALL')} 
-                    className={`btn-subtab ${activeCollection === 'ALL' ? 'active' : ''}`}
-                  >
-                    All Luxury
-                  </button>
-                  <button 
-                    onClick={() => handleCollectionChange('SKY_PENTHOUSE')} 
-                    className={`btn-subtab ${activeCollection === 'SKY_PENTHOUSE' ? 'active' : ''}`}
-                  >
-                    Penthouse Portfolio
-                  </button>
-                  <button 
-                    onClick={() => handleCollectionChange('READY_TO_MOVE')} 
-                    className={`btn-subtab ${activeCollection === 'READY_TO_MOVE' ? 'active' : ''}`}
-                  >
-                    Ready-To-Move
-                  </button>
-                  <button 
-                    onClick={() => handleCollectionChange('TECH_OFFICE')} 
-                    className={`btn-subtab ${activeCollection === 'TECH_OFFICE' ? 'active' : ''}`}
-                  >
-                    Commercial Assets
-                  </button>
+                {/* Horizontal Segmented Luxury controls */}
+                <div className="luxury-segmented-controls">
+                  <button onClick={() => handleCollectionChange('ALL')} className={`luxury-segment-btn ${activeCollection === 'ALL' ? 'active' : ''}`}>All Luxury</button>
+                  <button onClick={() => handleCollectionChange('APARTMENT')} className={`luxury-segment-btn ${activeCollection === 'APARTMENT' ? 'active' : ''}`}>Premium Apartments</button>
+                  <button onClick={() => handleCollectionChange('VILLA')} className={`luxury-segment-btn ${activeCollection === 'VILLA' ? 'active' : ''}`}>Luxury Villas</button>
+                  <button onClick={() => handleCollectionChange('PENTHOUSE')} className={`luxury-segment-btn ${activeCollection === 'PENTHOUSE' ? 'active' : ''}`}>Penthouse Portfolio</button>
+                  <button onClick={() => handleCollectionChange('COMMERCIAL')} className={`luxury-segment-btn ${activeCollection === 'COMMERCIAL' ? 'active' : ''}`}>Commercial Assets</button>
+                  <button onClick={() => handleCollectionChange('READY')} className={`luxury-segment-btn ${activeCollection === 'READY' ? 'active' : ''}`}>Ready To Move</button>
+                  <button onClick={() => handleCollectionChange('NEW')} className={`luxury-segment-btn ${activeCollection === 'NEW' ? 'active' : ''}`}>New Launches</button>
+                  <button onClick={() => handleCollectionChange('WISHLIST')} className={`luxury-segment-btn ${activeCollection === 'WISHLIST' ? 'active' : ''}`}>Saved Portfolio ({wishlistIds.length})</button>
                 </div>
               </div>
 
@@ -2105,6 +2384,8 @@ export default function Portal({ onViewChange }) {
                 </div>
               ) : error ? (
                 <div className="error-card">{error}</div>
+              ) : (!isSearchActive && activeCollection === 'ALL') ? (
+                renderCuratedCarousels()
               ) : properties.length === 0 ? (
                 <div className="empty-state">
                   <p>No premium properties match the filter configuration.</p>
@@ -2118,15 +2399,15 @@ export default function Portal({ onViewChange }) {
                       property={property} 
                       isHnwiMode={isHnwiMode} 
                       isCompared={selectedForCompare.some(p => p.id === property.id)} 
+                      isWishlisted={wishlistIds.includes(property.id)}
                       formatPrice={formatPrice} 
                       onToggleCompare={handleToggleCompare} 
+                      onToggleWishlist={handleToggleWishlist}
                       onOpenRera={handleOpenReraDrawer} 
-                      onOpenWalkthrough={handleOpenWalkthrough} 
-                      onOpen3DTour={handleOpen3DTour} 
-                      onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
-                      onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
-                      getLocationScorecard={getLocationScorecard}
-                      getLandmarks={getLandmarks} 
+                      onOpenDetail={(prop) => { 
+                        setSelectedPropertyDetail(prop); 
+                        window.scrollTo({ top: 300, behavior: 'smooth' }); 
+                      }}
                     />
                   ))}
                 </div>
@@ -3108,89 +3389,10 @@ export default function Portal({ onViewChange }) {
               >
                 Compare Now
               </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Unified Media Console (3D & Drone Tour) */}
-      {isTourOpen && activeTourProperty && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '850px', background: '#080f1e', padding: '24px', border: '1px solid var(--gold-primary)', borderRadius: '12px' }}>
-            <button className="modal-close" onClick={() => setIsTourOpen(false)}>×</button>
-            <h3 className="modal-title" style={{ color: 'var(--gold-primary)', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <Compass size={22} className={mediaConsoleTab === '3d' ? "animate-spin" : ""} style={{ animationDuration: '8s' }} />
-              <span>{activeTourProperty.title} — Immersive Media Console</span>
-            </h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '20px' }}>
-              RERA No: {activeTourProperty.reraNumber} | Location: {activeTourProperty.location} Corridor
-            </p>
-
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '10px' }}>
-              <button 
-                onClick={() => setMediaConsoleTab('3d')}
-                className={`exclusive-tab-btn ${mediaConsoleTab === '3d' ? 'active' : ''}`}
-                style={{ padding: '8px 16px', fontSize: '0.85rem', flexGrow: 1, justifyContent: 'center' }}
-              >
-                📐 Interactive 3D Floor View
-              </button>
-              <button 
-                onClick={() => setMediaConsoleTab('video')}
-                className={`exclusive-tab-btn ${mediaConsoleTab === 'video' ? 'active' : ''}`}
-                style={{ padding: '8px 16px', fontSize: '0.85rem', flexGrow: 1, justifyContent: 'center' }}
-              >
-                📹 Cinematic Drone Tour
-              </button>
-            </div>
-
-            <div className="video-player-container" style={{ border: '1px solid var(--border-gold)', borderRadius: '8px', overflow: 'hidden', height: '480px', background: '#020617' }}>
-              {mediaConsoleTab === '3d' ? (
-                <iframe 
-                  width="100%" 
-                  height="100%" 
-                  src={activeTourProperty.threeDTourUrl || "https://my.matterport.com/show/?m=JGPmBB6q58g"} 
-                  frameBorder="0"
-                  allowFullScreen
-                  allow="xr-spatial-tracking"
-                  title="3D Tour Frame"
-                />
-              ) : (
-                <iframe 
-                  width="100%" 
-                  height="100%" 
-                  src={getEmbedVideoUrl(activeTourProperty.videoUrl)} 
-                  title="Cinematic Tour Frame"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowFullScreen
-                />
-              )}
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
-              <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                {mediaConsoleTab === '3d' ? 'Powered by Matterport 3D Scanning Desk' : 'Powered by 24K Cinematic Drone Campaigns'}
-              </span>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button 
-                  onClick={() => { setIsTourOpen(false); handleOpenInquiry(activeTourProperty); }}
-                  className="btn-outline"
-                  style={{ padding: '8px 16px', fontSize: '0.85rem' }}
-                >
-                  Request Consultation
-                </button>
-                <button 
-                  onClick={() => { setIsTourOpen(false); setSelectedChauffeurProp(activeTourProperty); setIsChauffeurModalOpen(true); }}
-                  className="btn-gold"
-                  style={{ padding: '8px 20px', fontSize: '0.85rem' }}
-                >
-                  Book Chauffeur Site Visit
-                </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
         </>
       )}
 
@@ -3414,244 +3616,3 @@ const corridorData = [
   { id: 'MAHALUNGE', name: 'Mahalunge Corridor', tagline: 'Next-gen smart city township plots', icon: <LineChart size={20} />, pricePerSqft: '₹6,900', yield: '4.8%', growth: '+18%' }
 ];
 
-function PropertyDetailView({ 
-  property, 
-  onBack, 
-  onOpenInquiry, 
-  onOpenChauffeur, 
-  formatPrice, 
-  getLocationScorecard, 
-  getLandmarks, 
-  getEmbedVideoUrl 
-}) {
-  const scores = getLocationScorecard(property.location);
-  const landmarks = getLandmarks(property.location);
-  
-  // Interactive EMI Calculator State
-  const [downPayment, setDownPayment] = React.useState(20); // 20% default
-  const [interestRate, setInterestRate] = React.useState(8.5); // 8.5% default
-  const [loanTerm, setLoanTerm] = React.useState(20); // 20 years default
-  
-  const principal = Number(property.price) * (1 - downPayment / 100);
-  const monthlyRate = (interestRate / 12) / 100;
-  const totalMonths = loanTerm * 12;
-  const emi = monthlyRate > 0 
-    ? (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1)
-    : principal / totalMonths;
-
-  return (
-    <div style={{ animation: 'fadeIn 0.3s forwards', color: 'var(--text-light)', marginBottom: '40px' }}>
-      {/* Back navigation & Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
-        <button onClick={onBack} className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', fontSize: '0.85rem', cursor: 'pointer' }}>
-          ← Back to Portfolio
-        </button>
-        <span style={{ fontSize: '0.75rem', background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', padding: '4px 10px', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.2)', fontWeight: 'bold' }}>
-          MahaRERA: {property.reraNumber || 'PRM/VERIFIED'}
-        </span>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px', marginTop: '15px' }}>
-        {/* Left Column: Visuals & Spec */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-          {/* Main Visual Image container */}
-          <div style={{ border: '1px solid var(--border-gold)', borderRadius: '12px', overflow: 'hidden', position: 'relative', height: '400px', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
-            <img 
-              src={property.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'} 
-              alt={`Luxury property view of ${property.title} located at ${property.address}`} 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-            />
-            <div style={{ position: 'absolute', top: '15px', left: '15px', display: 'flex', gap: '8px', zIndex: 2 }}>
-              <span style={{ background: 'var(--gold-primary)', color: '#070f1e', fontSize: '0.7rem', fontWeight: 'bold', padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase' }}>
-                {property.transactionType}
-              </span>
-              {property.exclusiveDeal && (
-                <span style={{ background: '#ecc94b', color: '#070f1e', fontSize: '0.7rem', fontWeight: 'bold', padding: '3px 8px', borderRadius: '4px' }}>
-                  ★ Exclusive
-                </span>
-              )}
-            </div>
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(7,15,30,0.95), rgba(7,15,30,0))', padding: '20px', zIndex: 1 }}>
-              <h2 style={{ fontSize: '1.6rem', color: '#fff', margin: '0 0 5px 0', fontFamily: 'var(--font-title)' }}>{property.title}</h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>📍 {property.address || property.location}</p>
-            </div>
-          </div>
-
-          {/* Quick Specifications */}
-          <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '20px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', textAlign: 'center' }}>
-            <div style={{ borderRight: '1px solid var(--border-muted)' }}>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Layout</span>
-              <strong style={{ fontSize: '1.1rem', color: 'var(--gold-primary)' }}>{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A'}</strong>
-            </div>
-            <div style={{ borderRight: '1px solid var(--border-muted)' }}>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Bathrooms</span>
-              <strong style={{ fontSize: '1.1rem', color: '#fff' }}>{property.bathrooms} Baths</strong>
-            </div>
-            <div>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Carpet Area</span>
-              <strong style={{ fontSize: '1.1rem', color: '#fff' }}>{property.areaSquareFeet} sqft</strong>
-            </div>
-          </div>
-
-          {/* Detailed Overview */}
-          <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '25px' }}>
-            <h3 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', margin: '0 0 15px 0' }}>⚜️ Property Description</h3>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>
-              {property.description || 'This premium architectural configuration is located in the most sought-after growth sector. Featuring high-grade structural finishes, modular provisions, cross ventilation layouts, security fixtures, and direct arterial highway connectivity.'}
-            </p>
-            
-            <div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '15px' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', marginBottom: '8px' }}>Property Features</span>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                <span style={{ fontSize: '0.72rem', background: 'rgba(212,175,55,0.05)', color: 'var(--gold-primary)', padding: '4px 10px', borderRadius: '4px', border: '1px solid rgba(212,175,55,0.1)' }}>
-                  {property.furnishingStatus ? property.furnishingStatus.replace('_', ' ') : 'SEMI FURNISHED'}
-                </span>
-                {property.gasPipeline && (
-                  <span style={{ fontSize: '0.72rem', background: 'rgba(46,196,182,0.05)', color: '#2ec4b6', padding: '4px 10px', borderRadius: '4px', border: '1px solid rgba(46,196,182,0.1)' }}>
-                    🔥 Piped Gas Connected
-                  </span>
-                )}
-                {property.verifiedListing && (
-                  <span style={{ fontSize: '0.72rem', background: 'rgba(56,161,105,0.05)', color: '#38a169', padding: '4px 10px', borderRadius: '4px', border: '1px solid rgba(56,161,105,0.1)' }}>
-                    ✓ 100% Title Clear
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Embedded Drone Walkthrough */}
-          {property.videoUrl && (
-            <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '20px' }}>
-              <h3 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', margin: '0 0 15px 0' }}>📹 Drone Virtual Walkthrough</h3>
-              <div style={{ borderRadius: '8px', overflow: 'hidden', height: '240px' }}>
-                <iframe 
-                  src={getEmbedVideoUrl(property.videoUrl)} 
-                  title="Walkthrough Video"
-                  style={{ width: '100%', height: '100%', border: 'none' }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowFullScreen
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Column: Pricing, Finance, Metrics */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-          {/* Pricing Box & Chauffeur scheduling */}
-          <div style={{ background: 'radial-gradient(circle at top left, rgba(21, 34, 56, 0.9) 0%, rgba(7, 15, 30, 0.95) 100%)', border: '2px solid var(--border-gold)', borderRadius: '12px', padding: '30px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Valuation Mandate</span>
-            <div style={{ fontSize: '2.2rem', fontWeight: 'bold', color: 'var(--gold-primary)', margin: '5px 0 15px 0' }}>
-              {formatPrice(property.price, property.transactionType)}
-            </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <button 
-                onClick={() => onOpenInquiry(property)} 
-                className="btn-gold" 
-                style={{ width: '100%', padding: '12px 0', fontSize: '0.9rem', justifyContent: 'center', cursor: 'pointer' }}
-              >
-                Inquire & Receive Brochure
-              </button>
-              <button 
-                onClick={() => onOpenChauffeur(property)} 
-                className="btn-outline" 
-                style={{ width: '100%', padding: '12px 0', fontSize: '0.9rem', justifyContent: 'center', borderColor: 'var(--gold-secondary)', color: 'var(--gold-secondary)', cursor: 'pointer' }}
-              >
-                Book VIP Chauffeur & Inspection
-              </button>
-            </div>
-          </div>
-
-          {/* Location Analytics Scores */}
-          <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '25px' }}>
-            <h3 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', margin: '0 0 15px 0' }}>📊 Location Analytics Scorecard</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Capital Appreciation Potential</span>
-                <strong style={{ color: '#ecc94b' }}>{scores?.appreciation || 8.0}/10</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>IT Commute Proximity</span>
-                <strong style={{ color: '#ecc94b' }}>{scores?.commute || 8.5}/10</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Ecological Green Index</span>
-                <strong style={{ color: '#ecc94b' }}>{scores?.green || 8.0}/10</strong>
-              </div>
-            </div>
-
-            {landmarks && landmarks.length > 0 && (
-              <div style={{ marginTop: '15px' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', marginBottom: '8px' }}>Local Landmarks & Commute Times</span>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {landmarks.map((l, i) => (
-                    <span key={i} style={{ fontSize: '0.7rem', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-muted)', color: 'var(--text-light)', padding: '3px 8px', borderRadius: '4px' }}>
-                      {l}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Interactive Mortgage calculator */}
-          <div style={{ background: 'rgba(7,15,30,0.6)', border: '1px solid var(--border-gold)', borderRadius: '12px', padding: '25px' }}>
-            <h3 style={{ color: 'var(--gold-primary)', fontSize: '1.1rem', margin: '0 0 15px 0' }}>⚜️ Mortgage EMI Calculator</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '4px' }}>
-                  <span>Down Payment ({downPayment}%)</span>
-                  <strong>{formatPrice(Number(property.price) * (downPayment / 100))}</strong>
-                </div>
-                <input 
-                  type="range" 
-                  min="10" 
-                  max="50" 
-                  value={downPayment} 
-                  onChange={e => setDownPayment(Number(e.target.value))} 
-                  style={{ width: '100%', accentColor: 'var(--gold-primary)', cursor: 'pointer' }} 
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                <div className="form-group">
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Interest Rate (%)</label>
-                  <input 
-                    type="number" 
-                    step="0.1" 
-                    value={interestRate} 
-                    onChange={e => setInterestRate(Number(e.target.value))} 
-                    className="form-input" 
-                    style={{ width: '100%', margin: 0 }} 
-                  />
-                </div>
-                <div className="form-group">
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Loan Term (Years)</label>
-                  <input 
-                    type="number" 
-                    value={loanTerm} 
-                    onChange={e => setLoanTerm(Number(e.target.value))} 
-                    className="form-input" 
-                    style={{ width: '100%', margin: 0 }} 
-                  />
-                </div>
-              </div>
-
-              <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-muted)', borderRadius: '8px', padding: '15px', textAlign: 'center', marginTop: '10px' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Estimated Monthly Outflow</span>
-                <strong style={{ fontSize: '1.5rem', color: 'var(--gold-primary)', display: 'block', marginTop: '4px' }}>
-                  {formatPrice(emi)} / Month
-                </strong>
-                <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
-                  Computed on a Principal of {formatPrice(principal)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
