@@ -446,62 +446,90 @@ export default function Portal({ onViewChange }) {
     let angleY = 0;
     const angleX = 0.35;
 
-    const vertices = [];
-    const edges = [];
+    const vertices = [
+      // Base box (0-7)
+      { x: -0.6, y: -0.8, z: -0.6 }, // 0: bottom-left-front
+      { x:  0.6, y: -0.8, z: -0.6 }, // 1: bottom-right-front
+      { x:  0.6, y: -0.8, z:  0.6 }, // 2: bottom-right-back
+      { x: -0.6, y: -0.8, z:  0.6 }, // 3: bottom-left-back
+      { x: -0.6, y:  0.2, z: -0.6 }, // 4: top-left-front
+      { x:  0.6, y:  0.2, z: -0.6 }, // 5: top-right-front
+      { x:  0.6, y:  0.2, z:  0.6 }, // 6: top-right-back
+      { x: -0.6, y:  0.2, z:  0.6 }, // 7: top-left-back
 
-    const addBox = (yMin, yMax, w, d) => {
-      const baseIndex = vertices.length;
-      vertices.push({ x: -w, y: yMin, z: -d });
-      vertices.push({ x:  w, y: yMin, z: -d });
-      vertices.push({ x:  w, y: yMin, z:  d });
-      vertices.push({ x: -w, y: yMin, z:  d });
-      vertices.push({ x: -w, y: yMax, z: -d });
-      vertices.push({ x:  w, y: yMax, z: -d });
-      vertices.push({ x:  w, y: yMax, z:  d });
-      vertices.push({ x: -w, y: yMax, z:  d });
+      // Roof apices (8-9)
+      { x:  0.0, y:  0.8, z: -0.6 }, // 8: front apex
+      { x:  0.0, y:  0.8, z:  0.6 }, // 9: back apex
 
-      edges.push([baseIndex+0, baseIndex+1]);
-      edges.push([baseIndex+1, baseIndex+2]);
-      edges.push([baseIndex+2, baseIndex+3]);
-      edges.push([baseIndex+3, baseIndex+0]);
+      // Door (10-13)
+      { x: -0.15, y: -0.8, z: -0.605 }, // 10: door bottom-left
+      { x:  0.15, y: -0.8, z: -0.605 }, // 11: door bottom-right
+      { x:  0.15, y: -0.2, z: -0.605 }, // 12: door top-right
+      { x: -0.15, y: -0.2, z: -0.605 }, // 13: door top-left
 
-      edges.push([baseIndex+4, baseIndex+5]);
-      edges.push([baseIndex+5, baseIndex+6]);
-      edges.push([baseIndex+6, baseIndex+7]);
-      edges.push([baseIndex+7, baseIndex+4]);
+      // Left Window outline (14-17)
+      { x: -0.42, y: -0.3,  z: -0.605 }, // 14
+      { x: -0.25, y: -0.3,  z: -0.605 }, // 15
+      { x: -0.25, y:  0.0,  z: -0.605 }, // 16
+      { x: -0.42, y:  0.0,  z: -0.605 }, // 17
+      // Left Window cross (18-21)
+      { x: -0.335, y: -0.3, z: -0.605 }, // 18
+      { x: -0.335, y:  0.0, z: -0.605 }, // 19
+      { x: -0.42,  y: -0.15, z: -0.605 }, // 20
+      { x: -0.25,  y: -0.15, z: -0.605 }, // 21
 
-      edges.push([baseIndex+0, baseIndex+4]);
-      edges.push([baseIndex+1, baseIndex+5]);
-      edges.push([baseIndex+2, baseIndex+6]);
-      edges.push([baseIndex+3, baseIndex+7]);
+      // Right Window outline (22-25)
+      { x:  0.25, y: -0.3,  z: -0.605 }, // 22
+      { x:  0.42, y: -0.3,  z: -0.605 }, // 23
+      { x:  0.42, y:  0.0,  z: -0.605 }, // 24
+      { x:  0.25, y:  0.0,  z: -0.605 }, // 25
+      // Right Window cross (26-29)
+      { x:  0.335, y: -0.3, z: -0.605 }, // 26
+      { x:  0.335, y:  0.0, z: -0.605 }, // 27
+      { x:  0.25,  y: -0.15, z: -0.605 }, // 28
+      { x:  0.42,  y: -0.15, z: -0.605 }, // 29
 
-      const floorCount = 5;
-      for (let f = 1; f < floorCount; f++) {
-        const t = f / floorCount;
-        const fy = yMin + (yMax - yMin) * t;
-        const fIdx = vertices.length;
-        vertices.push({ x: -w, y: fy, z: -d });
-        vertices.push({ x:  w, y: fy, z: -d });
-        vertices.push({ x:  w, y: fy, z:  d });
-        vertices.push({ x: -w, y: fy, z:  d });
+      // Chimney base (30-33)
+      { x:  0.25, y:  0.45, z:  0.15 }, // 30
+      { x:  0.4,  y:  0.35, z:  0.15 }, // 31
+      { x:  0.4,  y:  0.35, z:  0.3 },  // 32
+      { x:  0.25, y:  0.45, z:  0.3 },  // 33
+      // Chimney top (34-37)
+      { x:  0.25, y:  0.9,  z:  0.15 }, // 34
+      { x:  0.4,  y:  0.9,  z:  0.15 }, // 35
+      { x:  0.4,  y:  0.9,  z:  0.3 },  // 36
+      { x:  0.25, y:  0.9,  z:  0.3 }   // 37
+    ];
 
-        edges.push([fIdx+0, fIdx+1]);
-        edges.push([fIdx+1, fIdx+2]);
-        edges.push([fIdx+2, fIdx+3]);
-        edges.push([fIdx+3, fIdx+0]);
-      }
-    };
+    const edges = [
+      // Base box bottom
+      [0, 1], [1, 2], [2, 3], [3, 0],
+      // Base box top
+      [4, 5], [5, 6], [6, 7], [7, 4],
+      // Vertical pillars
+      [0, 4], [1, 5], [2, 6], [3, 7],
 
-    addBox(-1.4, -0.4, 0.5, 0.5);
-    addBox(-0.4,  0.5, 0.38, 0.38);
-    addBox( 0.5,  1.3, 0.26, 0.26);
+      // Roof ridge & sides
+      [8, 9], // ridge line
+      [4, 8], [5, 8], // front triangle
+      [7, 9], [6, 9], // back triangle
 
-    const spireIdx = vertices.length;
-    vertices.push({ x: 0, y: 1.8, z: 0 });
-    edges.push([spireIdx-4, spireIdx]);
-    edges.push([spireIdx-3, spireIdx]);
-    edges.push([spireIdx-2, spireIdx]);
-    edges.push([spireIdx-1, spireIdx]);
+      // Door outline
+      [10, 13], [13, 12], [12, 11], [10, 11],
+
+      // Left window
+      [14, 15], [15, 16], [16, 17], [17, 14], // outline
+      [18, 19], [20, 21], // cross panes
+
+      // Right window
+      [22, 23], [23, 24], [24, 25], [25, 22], // outline
+      [26, 27], [28, 29], // cross panes
+
+      // Chimney
+      [30, 31], [31, 32], [32, 33], [33, 30], // base
+      [34, 35], [35, 36], [36, 37], [37, 34], // top
+      [30, 34], [31, 35], [32, 36], [33, 37]  // vertical pillars
+    ];
 
     const handleResize = () => {
       if (!canvas) return;
@@ -1568,55 +1596,68 @@ export default function Portal({ onViewChange }) {
                   ? 'Exclusive whole-building mandates, premium high-yield commercial assets, and pre-release developer allocations for HNWI partners.'
                   : 'Discover handpicked, 100% verified properties across Hinjewadi, Wakad & Baner\'s high-appreciation corridors.'}
               </p>
-              <div className="hero-search-tabs" style={{ display: 'flex', gap: '20px', marginBottom: '14px', borderBottom: '1px solid rgba(255, 255, 255, 0.15)', width: 'fit-content' }}>
-                <button 
-                  type="button"
-                  className={`hero-search-tab-btn ${heroTab === 'BUY' ? 'active' : ''}`} 
-                  onClick={() => setHeroTab('BUY')}
-                  style={{ background: 'none', border: 'none', color: heroTab === 'BUY' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', borderBottom: heroTab === 'BUY' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
-                >
-                  Buy
-                </button>
-                <button 
-                  type="button"
-                  className={`hero-search-tab-btn ${heroTab === 'RENT' ? 'active' : ''}`} 
-                  onClick={() => setHeroTab('RENT')}
-                  style={{ background: 'none', border: 'none', color: heroTab === 'RENT' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', borderBottom: heroTab === 'RENT' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
-                >
-                  Rent
-                </button>
-                <button 
-                  type="button"
-                  className={`hero-search-tab-btn ${heroTab === 'SELL' ? 'active' : ''}`} 
-                  onClick={() => {
-                    setHeroTab('SELL');
-                    setTimeout(() => {
-                      const el = document.getElementById('seller-mandate-anchor');
-                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 100);
-                  }}
-                  style={{ background: 'none', border: 'none', color: heroTab === 'SELL' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', borderBottom: heroTab === 'SELL' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
-                >
-                  Sell
-                </button>
+              <div className="hero-search-wrapper" style={{
+                background: 'rgba(255, 255, 255, 0.03)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1px solid rgba(212, 175, 55, 0.22)',
+                borderRadius: '24px',
+                padding: '20px',
+                marginTop: '10px',
+                maxWidth: '600px',
+                width: '100%',
+                boxShadow: '0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+              }}>
+                <div className="hero-search-tabs" style={{ display: 'flex', gap: '20px', marginBottom: '15px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', width: '100%' }}>
+                  <button 
+                    type="button"
+                    className={`hero-search-tab-btn ${heroTab === 'BUY' ? 'active' : ''}`} 
+                    onClick={() => setHeroTab('BUY')}
+                    style={{ background: 'none', border: 'none', color: heroTab === 'BUY' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.92rem', borderBottom: heroTab === 'BUY' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
+                  >
+                    Buy
+                  </button>
+                  <button 
+                    type="button"
+                    className={`hero-search-tab-btn ${heroTab === 'RENT' ? 'active' : ''}`} 
+                    onClick={() => setHeroTab('RENT')}
+                    style={{ background: 'none', border: 'none', color: heroTab === 'RENT' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.92rem', borderBottom: heroTab === 'RENT' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
+                  >
+                    Rent
+                  </button>
+                  <button 
+                    type="button"
+                    className={`hero-search-tab-btn ${heroTab === 'SELL' ? 'active' : ''}`} 
+                    onClick={() => {
+                      setHeroTab('SELL');
+                      setTimeout(() => {
+                        const el = document.getElementById('seller-mandate-anchor');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }, 100);
+                    }}
+                    style={{ background: 'none', border: 'none', color: heroTab === 'SELL' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.92rem', borderBottom: heroTab === 'SELL' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
+                  >
+                    Sell
+                  </button>
+                </div>
+ 
+                <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '50px', padding: '5px', width: '100%', border: '1px solid rgba(212,175,55,0.3)', transition: 'all 0.3s ease' }}>
+                  <input 
+                    type="text" 
+                    placeholder="Search Hinjewadi, Wakad, Baner (e.g. 3 BHK, VTP, Blue Ridge)..." 
+                    value={heroSearchText} 
+                    onChange={e => setHeroSearchText(e.target.value)}
+                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#fff', outline: 'none' }}
+                  />
+                  <button 
+                    type="submit"
+                    style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '10px 24px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
+                  >
+                    <Search size={15} />
+                    <span>Search</span>
+                  </button>
+                </form>
               </div>
-
-              <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: '#fff', borderRadius: '50px', padding: '5px', maxWidth: '580px', width: '100%', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', border: '2px solid rgba(212,175,55,0.15)' }}>
-                <input 
-                  type="text" 
-                  placeholder="Search Hinjewadi, Wakad, Baner (e.g. 3 BHK, VTP, Blue Ridge)..." 
-                  value={heroSearchText} 
-                  onChange={e => setHeroSearchText(e.target.value)}
-                  style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#1A2536', outline: 'none' }}
-                />
-                <button 
-                  type="submit"
-                  style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '10px 24px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
-                >
-                  <Search size={15} />
-                  <span>Search</span>
-                </button>
-              </form>
             </div>
 
             <div className="hero-3d-model-block" style={{ height: '450px', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', transform: `translate3d(0, ${scrollY * -0.06}px, 0)`, transition: 'transform 0.05s linear' }}>
