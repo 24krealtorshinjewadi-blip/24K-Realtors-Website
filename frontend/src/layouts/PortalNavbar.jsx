@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
-  UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building
+  UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building,
+  Home, Search, Heart
 } from 'lucide-react';
 import ThemeSelector from '../components/ThemeSelector';
 
@@ -14,10 +15,16 @@ export default function PortalNavbar({
   onTabChange: _onTabChange,
   activeSection,
   onSectionChange,
-  onApplyMegaFilter
+  onApplyMegaFilter,
+  onHomeClick,
+  onSearchClick,
+  onSavedClick,
+  activeCollection,
+  selectedPropertyDetail
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isAtListings, setIsAtListings] = useState(false);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -26,10 +33,21 @@ export default function PortalNavbar({
       } else {
         setScrolled(false);
       }
+      
+      if (window.scrollY > 480) {
+        setIsAtListings(true);
+      } else {
+        setIsAtListings(false);
+      }
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const isSavedActive = !selectedPropertyDetail && activeCollection === 'WISHLIST';
+  const isHomeActive = !selectedPropertyDetail && !isSavedActive && !isAtListings && activeSection === 'listings';
+  const isSearchActive = !selectedPropertyDetail && !isSavedActive && (isAtListings || activeCollection !== 'ALL') && activeSection === 'listings';
+
 
   return (
     <>
@@ -419,6 +437,44 @@ export default function PortalNavbar({
           <span>24K Realtors Pune © 2026</span>
           <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>The Gold Standard of Advisory</span>
         </div>
+      </div>
+      {/* Mobile Bottom Tab Bar */}
+      <div className="mobile-bottom-tab-bar" role="navigation" aria-label="Mobile navigation bar">
+        <button 
+          onClick={onHomeClick}
+          className={`mobile-tab-item ${isHomeActive ? 'active' : ''}`}
+          aria-label="Home"
+        >
+          <Home size={18} />
+          <span>Home</span>
+        </button>
+
+        <button 
+          onClick={onSearchClick}
+          className={`mobile-tab-item ${isSearchActive ? 'active' : ''}`}
+          aria-label="Search Listings"
+        >
+          <Search size={18} />
+          <span>Search</span>
+        </button>
+
+        <button 
+          onClick={onSavedClick}
+          className={`mobile-tab-item ${isSavedActive ? 'active' : ''}`}
+          aria-label="Saved Portfolio"
+        >
+          <Heart size={18} />
+          <span>Saved</span>
+        </button>
+
+        <button 
+          onClick={onBookVisitClick}
+          className="mobile-tab-item"
+          aria-label="Contact Advisory"
+        >
+          <Phone size={18} />
+          <span>Contact</span>
+        </button>
       </div>
     </>
   );
