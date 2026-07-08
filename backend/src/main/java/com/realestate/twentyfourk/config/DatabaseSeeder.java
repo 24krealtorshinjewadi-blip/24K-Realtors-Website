@@ -41,6 +41,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final AttendanceRepository attendanceRepository;
     private final com.realestate.twentyfourk.domain.builder.BuilderRepository builderRepository;
     private final com.realestate.twentyfourk.domain.society.SocietyRepository societyRepository;
+    private final com.realestate.twentyfourk.domain.locality.LocalityRepository localityRepository;
 
     @Value("${admin.username}")
     private String adminUsername;
@@ -70,6 +71,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             seedSocieties();
         } catch (Exception e) {
             log.warn("seedSocieties failed (non-fatal): {}", e.getMessage());
+        }
+        try {
+            seedLocalities();
+        } catch (Exception e) {
+            log.warn("seedLocalities failed (non-fatal): {}", e.getMessage());
         }
         try {
             seedProperties();
@@ -1179,6 +1185,56 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .build();
 
             societyRepository.saveAll(List.of(s1, s2, s3, s4));
+        }
+    }
+
+    private void seedLocalities() {
+        if (localityRepository.count() == 0) {
+            log.info("Seeding initial Localities...");
+            var l1 = com.realestate.twentyfourk.domain.locality.Locality.builder()
+                    .name("Hinjewadi")
+                    .slug("hinjewadi-pune")
+                    .overview("Hinjewadi is Pune's leading IT hub, housing the Rajiv Gandhi Infotech Park. It sees huge demand for residential rentals from tech professionals.")
+                    .connectivityInfo("Directly linked to the Pune-Mumbai Highway. The upcoming Hinjewadi-Shivajinagar Metro Line 3 will enhance public transit connectivity.")
+                    .schools("Mercedes-Benz International School, Blue Ridge Public School, Anisha Global")
+                    .hospitals("Ruby Hall Clinic Hinjewadi, Hinjawadi Hospital, Sahyadri Hospital")
+                    .markets("Grand Highstreet Hinjewadi, D-Mart Hinjewadi")
+                    .metroConnectivity("Metro Line 3 under active construction, stations located at Phase 1, Phase 2, Phase 3.")
+                    .investmentAnalysis("IT hub expansion drives high capital appreciation. Average price per sq ft ranges between ₹6,500 and ₹9,500.")
+                    .rentalDemand("Extremely high rental demand due to thousands of IT employees working nearby.")
+                    .futureGrowth("Ongoing infrastructure projects including the metro and new ring roads ensure long-term value appreciation.")
+                    .build();
+
+            var l2 = com.realestate.twentyfourk.domain.locality.Locality.builder()
+                    .name("Wakad")
+                    .slug("wakad-pune")
+                    .overview("Wakad is a premium residential corridor in West Pune, offering proximity to both Hinjewadi IT parks and Balewadi High Street entertainment hubs.")
+                    .connectivityInfo("Bordering the Bangalore-Mumbai bypass. Connected well via BRT routes and upcoming Metro stations.")
+                    .schools("EuroSchool Wakad, Indira Group of Institutes, Mount Litera School")
+                    .hospitals("Lifepoint Multispecialty Hospital, Surya Mother & Child Care")
+                    .markets("Phoenix Mall of the Millennium, Wakad Market")
+                    .metroConnectivity("Connected through Hinjewadi Metro bypass line stations.")
+                    .investmentAnalysis("Strong price growth following the launch of Phoenix Mall. Prices range between ₹7,500 and ₹10,500 per sq ft.")
+                    .rentalDemand("High demand for semi and fully-furnished 2 & 3 BHK flats.")
+                    .futureGrowth("New road expansions and proximity to premium IT corridors keep Wakad as Pune's top real estate investment hotspot.")
+                    .build();
+
+            var l3 = com.realestate.twentyfourk.domain.locality.Locality.builder()
+                    .name("Baner")
+                    .slug("baner-pune")
+                    .overview("Baner is an upscale residential-cum-commercial suburb, known for high-end dining, high streets, and premium residential towers like 24K Opula.")
+                    .connectivityInfo("Well-connected to Pune University, Aundh, and Mumbai Highway. Easy travel access to downtown Pune.")
+                    .schools("The Orchid School, VIBGYOR High School")
+                    .hospitals("Jupiter Hospital, Elite Healthcare")
+                    .markets("Balewadi High Street retail blocks, Westend Mall")
+                    .metroConnectivity("Metro stations at Baner Road under construction.")
+                    .investmentAnalysis("Elite residential market with high pricing stability. Premium properties average ₹10,000 - ₹14,000 per sq ft.")
+                    .rentalDemand("Sought after by senior executives and families preferring premium lifestyle apartments.")
+                    .futureGrowth("High commercial demand from corporate offices keeps residential appreciation robust.")
+                    .build();
+
+            localityRepository.saveAll(List.of(l1, l2, l3));
+            log.info("Seeded 3 premium localities successfully.");
         }
     }
 }

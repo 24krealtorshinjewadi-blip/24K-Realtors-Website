@@ -744,6 +744,24 @@ export default function Portal({ onViewChange }) {
     }, 150);
   };
 
+  const handleSectionChange = (section) => {
+    setActiveSubView(null);
+    setActiveSection(section);
+    
+    setTimeout(() => {
+      let targetId = 'listings-anchor';
+      if (section === 'societies') targetId = 'societies-anchor';
+      else if (section === 'builders') targetId = 'builders-anchor';
+      else if (section === 'localities') targetId = 'localities-anchor';
+      else if (section === 'blogs') targetId = 'blogs-anchor';
+      
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
   const handleApplyMegaFilter = (newFilters, section = 'listings', targetAnchorId = null, subView = null) => {
     setActiveSubView(subView);
 
@@ -1499,7 +1517,7 @@ export default function Portal({ onViewChange }) {
         exclusiveTab={exclusiveTab}
         onTabChange={handleTabChange}
         activeSection={activeSection}
-        onSectionChange={setActiveSection}
+        onSectionChange={handleSectionChange}
         onApplyMegaFilter={handleApplyMegaFilter}
       />
 
