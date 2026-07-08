@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { apiService } from '../services/apiService';
 import { 
   Search, Loader, CheckCircle, IndianRupee, Laptop, Sparkles, Activity, 
@@ -13,13 +13,40 @@ import * as THREE from 'three';
 import PortalNavbar from '../layouts/PortalNavbar';
 import PortalFooter from '../layouts/PortalFooter';
 import PropertyCard from './PropertyCard';
-import PropertyDetailView from './PropertyDetailView';
-import CompareOverlay from './CompareOverlay';
-import ReraDrawer from './ReraDrawer';
-import ChauffeurModal from './ChauffeurModal';
-import ChatWidget from './ChatWidget';
+
+const PropertyDetailView = lazy(() => import('./PropertyDetailView'));
+const CompareOverlay = lazy(() => import('./CompareOverlay'));
+const ReraDrawer = lazy(() => import('./ReraDrawer'));
+const ChauffeurModal = lazy(() => import('./ChauffeurModal'));
+const ChatWidget = lazy(() => import('./ChatWidget'));
 
 
+
+
+function PropertySkeleton() {
+  return (
+    <div style={{
+      background: 'rgba(10, 18, 36, 0.45)',
+      border: '1px solid rgba(255, 255, 255, 0.05)',
+      borderRadius: '16px',
+      overflow: 'hidden',
+      height: '380px',
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
+      <div className="shimmer" style={{ height: '220px' }} />
+      <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px', flexGrow: 1 }}>
+        <div className="shimmer" style={{ width: '40%', height: '14px', borderRadius: '4px' }} />
+        <div className="shimmer" style={{ width: '85%', height: '20px', borderRadius: '4px' }} />
+        <div className="shimmer" style={{ width: '60%', height: '14px', borderRadius: '4px' }} />
+        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="shimmer" style={{ width: '35%', height: '20px', borderRadius: '4px' }} />
+          <div className="shimmer" style={{ width: '25%', height: '20px', borderRadius: '4px' }} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Portal({ onViewChange }) {
   const [isHnwiMode, setIsHnwiMode] = useState(false);
@@ -1850,25 +1877,53 @@ export default function Portal({ onViewChange }) {
         activeSection={activeSection}
         onSectionChange={handleSectionChange}
         onApplyMegaFilter={handleApplyMegaFilter}
+        onHomeClick={() => { 
+          setSelectedPropertyDetail(null); 
+          handleResetFilters(); 
+          window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }}
+        onSearchClick={() => { 
+          setSelectedPropertyDetail(null); 
+          setTimeout(() => {
+            const el = document.getElementById('listings-anchor'); 
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+          }, 100);
+        }}
+        onSavedClick={() => { 
+          setSelectedPropertyDetail(null); 
+          handleCollectionChange('WISHLIST'); 
+          setTimeout(() => {
+            const el = document.getElementById('listings-anchor'); 
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+          }, 100);
+        }}
+        activeCollection={activeCollection}
+        selectedPropertyDetail={selectedPropertyDetail}
       />
 
       {selectedPropertyDetail ? (
         <div className="main-portal-listings-section" style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px', paddingTop: '20px' }}>
-          <PropertyDetailView 
-            property={selectedPropertyDetail} 
-            onBack={() => {
-              setSelectedPropertyDetail(null);
-              setTimeout(() => {
-                const el = document.getElementById('listings-anchor');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }, 100);
-            }}
-            onOpenInquiry={handleOpenInquiry}
-            onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
-            formatPrice={formatPrice}
-            getEmbedVideoUrl={getEmbedVideoUrl}
-            allProperties={allRawProperties}
-          />
+          <Suspense fallback={
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+              <Loader className="animate-spin" size={36} color="var(--gold-primary)" />
+            </div>
+          }>
+            <PropertyDetailView 
+              property={selectedPropertyDetail} 
+              onBack={() => {
+                setSelectedPropertyDetail(null);
+                setTimeout(() => {
+                  const el = document.getElementById('listings-anchor');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+              }}
+              onOpenInquiry={handleOpenInquiry}
+              onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
+              formatPrice={formatPrice}
+              getEmbedVideoUrl={getEmbedVideoUrl}
+              allProperties={allRawProperties}
+            />
+          </Suspense>
         </div>
       ) : activeSubView ? renderSubView() : (
         <>
@@ -2385,8 +2440,8 @@ export default function Portal({ onViewChange }) {
               </div>
 
               {loading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
-                  <Loader className="animate-spin" size={40} color="#D4AF37" />
+                <div className="properties-grid" style={{ minHeight: '400px' }}>
+                  {[1, 2, 3, 4, 5, 6].map(i => <PropertySkeleton key={i} />)}
                 </div>
               ) : error ? (
                 <div className="error-card">{error}</div>
@@ -2454,7 +2509,17 @@ export default function Portal({ onViewChange }) {
                 </p>
 
                 {closedLoading ? (
-                  <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}><Loader className="animate-spin" size={24} color="#888" /></div>
+                  <div className="closed-deals-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
+                    {[1, 2, 3, 4].map(i => (
+                      <div key={i} style={{ height: '220px', borderRadius: '8px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', overflow: 'hidden' }}>
+                        <div className="shimmer" style={{ height: '140px' }} />
+                        <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <div className="shimmer" style={{ width: '70%', height: '14px', borderRadius: '3px' }} />
+                          <div className="shimmer" style={{ width: '40%', height: '12px', borderRadius: '3px' }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : closedProperties.length === 0 ? (
                   <div className="empty-state" style={{ color: '#888', borderStyle: 'dashed' }}><p>No recently closed records loaded.</p></div>
                 ) : (
@@ -3367,13 +3432,15 @@ export default function Portal({ onViewChange }) {
       </section>
 
       {/* Modular Comparison Overlay Modal */}
-      <CompareOverlay 
-        isOpen={isCompareOpen}
-        selectedForCompare={selectedForCompare}
-        onClose={() => setIsCompareOpen(false)}
-        formatPrice={formatPrice}
-        onOpenInquiry={handleOpenInquiry}
-      />
+      <Suspense fallback={null}>
+        <CompareOverlay 
+          isOpen={isCompareOpen}
+          selectedForCompare={selectedForCompare}
+          onClose={() => setIsCompareOpen(false)}
+          formatPrice={formatPrice}
+          onOpenInquiry={handleOpenInquiry}
+        />
+      </Suspense>
 
       {/* Comparison Drawer Sticky Bar */}
       {selectedForCompare.length > 0 && (
@@ -3402,22 +3469,26 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* Modular Chauffeur Site Visit Modal */}
-      <ChauffeurModal 
-        isOpen={isChauffeurModalOpen}
-        property={selectedChauffeurProp}
-        onClose={() => setIsChauffeurModalOpen(false)}
-        onSubmit={handleChauffeurSubmit}
-        chauffeurForm={chauffeurForm}
-        setChauffeurForm={setChauffeurForm}
-        chauffeurSubmitting={chauffeurSubmitting}
-      />
+      <Suspense fallback={null}>
+        <ChauffeurModal 
+          isOpen={isChauffeurModalOpen}
+          property={selectedChauffeurProp}
+          onClose={() => setIsChauffeurModalOpen(false)}
+          onSubmit={handleChauffeurSubmit}
+          chauffeurForm={chauffeurForm}
+          setChauffeurForm={setChauffeurForm}
+          chauffeurSubmitting={chauffeurSubmitting}
+        />
+      </Suspense>
 
       {/* Modular MahaRERA compliance slide drawer */}
-      <ReraDrawer 
-        isOpen={isReraDrawerOpen}
-        property={selectedReraProperty}
-        onClose={() => setIsReraDrawerOpen(false)}
-      />
+      <Suspense fallback={null}>
+        <ReraDrawer 
+          isOpen={isReraDrawerOpen}
+          property={selectedReraProperty}
+          onClose={() => setIsReraDrawerOpen(false)}
+        />
+      </Suspense>
 
       {/* Modular Enquiry Callback Modal with Mortgage Calculator */}
       {isModalOpen && selectedProperty && (
@@ -3581,14 +3652,16 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* Floating chatbot widget */}
-      <ChatWidget 
-        isOpen={isChatWidgetOpen}
-        setIsOpen={setIsChatWidgetOpen}
-        chatMessages={chatMessages}
-        chatInput={chatInput}
-        setChatInput={setChatInput}
-        onSubmit={handleChatSubmit}
-      />
+      <Suspense fallback={null}>
+        <ChatWidget 
+          isOpen={isChatWidgetOpen}
+          setIsOpen={setIsChatWidgetOpen}
+          chatMessages={chatMessages}
+          chatInput={chatInput}
+          setChatInput={setChatInput}
+          onSubmit={handleChatSubmit}
+        />
+      </Suspense>
 
       {/* Sticky Floating WhatsApp */}
       <a 

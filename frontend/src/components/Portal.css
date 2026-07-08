@@ -4919,3 +4919,87 @@
     gap: 10px !important;
   }
 }
+
+/* ─── Skeleton Loading Shimmer Animation ───────────────────────────────────── */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite linear;
+}
+
+/* ─── Mobile Bottom Tab Bar ───────────────────────────────────────────────── */
+.mobile-bottom-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(7, 15, 30, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 900;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.mobile-tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  width: 25%;
+  height: 100%;
+  transition: all 0.25s ease;
+  padding: 0;
+}
+
+.mobile-tab-item:active {
+  transform: scale(0.92);
+}
+
+.mobile-tab-item.active {
+  color: var(--gold-primary);
+}
+
+/* Hide on desktop, show only on mobile */
+@media (min-width: 769px) {
+  .mobile-bottom-tab-bar {
+    display: none !important;
+  }
+}
+
+/* Adjust padding-bottom on wrapper on mobile so content is not cut off by bottom tab bar */
+@media (max-width: 768px) {
+  .portal-container {
+    padding-bottom: 74px !important;
+  }
+}
+
+

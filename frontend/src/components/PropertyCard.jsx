@@ -2,6 +2,13 @@ import React from 'react';
 import { MapPin, ShieldCheck, Sliders, Heart, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+const getOptimizedImgUrl = (url, width) => {
+  if (!url) return '';
+  if (!url.includes('unsplash.com')) return url;
+  const base = url.split('?')[0];
+  return `${base}?auto=format,compress&q=75&fm=webp&w=${width}&fit=crop`;
+};
+
 export default function PropertyCard({ 
   property, 
   isHnwiMode, 
@@ -47,7 +54,11 @@ export default function PropertyCard({
         }}
       >
         <img 
-          src={property.imageUrl || defaultImg} 
+          src={property.imageUrl ? getOptimizedImgUrl(property.imageUrl, 800) : defaultImg} 
+          srcSet={property.imageUrl && property.imageUrl.includes('unsplash.com') 
+            ? `${getOptimizedImgUrl(property.imageUrl, 400)} 400w, ${getOptimizedImgUrl(property.imageUrl, 800)} 800w, ${getOptimizedImgUrl(property.imageUrl, 1200)} 1200w`
+            : undefined}
+          sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
           alt={`Exterior of ${property.title}`} 
           loading="lazy" 
           className="card-main-image"
