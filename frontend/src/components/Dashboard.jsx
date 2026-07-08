@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
 import { 
-  Users, Home, TrendingUp, Calendar, Trash2, Edit2, Plus, X, 
-  Loader, RefreshCw, Lock, LogOut, Upload, Sparkles, Clock, FileText, Building, Eye, EyeOff
+  Users, Home, TrendingUp, Calendar, Trash2, Edit2, Plus, 
+  Loader, RefreshCw, Lock, LogOut, Upload, Clock, FileText, Building, Eye, EyeOff
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -202,7 +202,6 @@ export default function Dashboard({ onViewChange }) {
   const isHR = userRole === 'HR';
   const isSalesManager = userRole === 'SALES_MANAGER';
   const isRM = userRole === 'RELATIONSHIP_MANAGER';
-  const canSeeAllLeads = isAdmin || isSalesManager;
   const canManageProperties = isAdmin || isSalesManager;
   const canSeePayroll = isAdmin || isHR;
   const canSeeEmployeeList = isAdmin || isHR || isSalesManager;
@@ -261,7 +260,6 @@ export default function Dashboard({ onViewChange }) {
   const [agents, setAgents] = useState([]);
   const [agentsLoading, setAgentsLoading] = useState(true);
   const [allLeadsForStats, setAllLeadsForStats] = useState([]);
-  const [showMatrix, setShowMatrix] = useState(true);
   const [societies, setSocieties] = useState([]);
   const [propertyForm, setPropertyForm] = useState({
     title: '',
@@ -291,8 +289,6 @@ export default function Dashboard({ onViewChange }) {
 
   // Selected Lead Details Modal State
   const [selectedLead, setSelectedLead] = useState(null);
-  const [whatsappLogs, setWhatsappLogs] = useState([]);
-  const [logsLoading, setLogsLoading] = useState(false);
 
   // Follow-up Task States
   const [tasks, setTasks] = useState([]);
@@ -310,17 +306,6 @@ export default function Dashboard({ onViewChange }) {
     priority: 'MEDIUM'
   });
   
-  const [leadTasks, setLeadTasks] = useState([]);
-  const [leadTasksLoading, setLeadTasksLoading] = useState(false);
-  const [showInlineTaskForm, setShowInlineTaskForm] = useState(false);
-  const [inlineTaskForm, setInlineTaskForm] = useState({
-    title: '',
-    description: '',
-    taskType: 'CALL',
-    dueDate: '',
-    priority: 'MEDIUM'
-  });
-
   const fetchTasks = async () => {
     if (!isLoggedIn) return;
     setTasksLoading(true);
@@ -467,6 +452,7 @@ export default function Dashboard({ onViewChange }) {
       fetchTaskStats();
       fetchSocieties();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, leadPage, propPage, leadFilters, activeTab]);
 
   useEffect(() => {
@@ -521,38 +507,6 @@ export default function Dashboard({ onViewChange }) {
         priority: 'MEDIUM'
       });
       
-      fetchTasks();
-      fetchTaskStats();
-      fetchAgents();
-    } catch (err) {
-      alert(`Failed to create task: ${err.message}`);
-    }
-  };
-
-  const handleCreateInlineTask = async (e) => {
-    e.preventDefault();
-    if (!selectedLead) return;
-    
-    const agent = agents.find(a => a.phone === selectedLead.assignedAgentPhone || a.name === selectedLead.assignedAgentName) || agents[0];
-    if (!agent) {
-      alert("No agent assigned to this lead. Please assign an agent first.");
-      return;
-    }
-    
-    try {
-      const payload = {
-        leadId: selectedLead.id,
-        agentId: agent.id,
-        title: inlineTaskForm.title,
-        description: inlineTaskForm.description,
-        taskType: inlineTaskForm.taskType,
-        dueDate: inlineTaskForm.dueDate ? new Date(inlineTaskForm.dueDate).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
-        priority: inlineTaskForm.priority
-      };
-      await apiService.createTask(payload);
-      showNotification('Task scheduled for lead.');
-      setShowInlineTaskForm(false);
-      fetchLeadTasks(selectedLead.id);
       fetchTasks();
       fetchTaskStats();
       fetchAgents();
@@ -851,11 +805,11 @@ export default function Dashboard({ onViewChange }) {
     const sizeMatch = text.match(/(\d+)\s*(?:sqft|sq\.ft\.|square\s*feet)/i);
     if (sizeMatch) parsed.areaSquareFeet = parseInt(sizeMatch[1]);
 
-    const priceCrMatch = text.match(/([\d\.]+)\s*(?:Cr|cr|Crore)/);
+    const priceCrMatch = text.match(/([\d.]+)\s*(?:Cr|cr|Crore)/);
     if (priceCrMatch) {
       parsed.price = Math.round(parseFloat(priceCrMatch[1]) * 10000000);
     } else {
-      const priceLMatch = text.match(/([\d\.]+)\s*(?:L|l|Lakh)/);
+      const priceLMatch = text.match(/([\d.]+)\s*(?:L|l|Lakh)/);
       if (priceLMatch) parsed.price = Math.round(parseFloat(priceLMatch[1]) * 100000);
     }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
-import { Plus, Search, Building, Landmark, Loader, RefreshCw, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Building, Landmark, Loader, RefreshCw, Edit2, Trash2 } from 'lucide-react';
 import ImageUploader from './ImageUploader';
 
 export default function SocietiesTab() {
@@ -473,7 +473,7 @@ export default function SocietiesTab() {
                           {soc.galleryUrls && (
                             <img 
                               src={soc.galleryUrls.startsWith('/') ? `${apiService.BASE_URL.replace('/api/v1', '')}${soc.galleryUrls}` : soc.galleryUrls} 
-                              alt="Soc" 
+                              alt={`Thumbnail preview of ${soc.name} society in ${soc.location}`} 
                               style={{ width: '32px', height: '24px', objectFit: 'cover', borderRadius: '4px' }} 
                             />
                           )}

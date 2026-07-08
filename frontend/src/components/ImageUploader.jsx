@@ -72,7 +72,7 @@ export default function ImageUploader({ onUploadSuccess, label = 'Upload Image',
     if (currentValue !== successUrl) {
       setSuccessUrl(currentValue);
     }
-  }, [currentValue]);
+  }, [currentValue, successUrl]);
 
   return (
     <div className="form-group" style={{ marginBottom: '16px' }}>
@@ -95,7 +95,7 @@ export default function ImageUploader({ onUploadSuccess, label = 'Upload Image',
         }}>
           <img 
             src={successUrl.startsWith('/') ? `${apiService.BASE_URL.replace('/api/v1', '')}${successUrl}` : successUrl} 
-            alt="Uploaded Preview" 
+            alt={`Uploaded preview for ${label}`} 
             style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', background: 'rgba(255,255,255,0.05)' }} 
           />
           <div style={{ flex: 1, overflow: 'hidden' }}>

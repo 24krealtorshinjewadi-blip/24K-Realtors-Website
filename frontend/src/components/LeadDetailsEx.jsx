@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/apiService';
 import { 
-  X, Calendar, Sparkles, Activity, MapPin, Tag, ShieldCheck, 
-  IndianRupee, Briefcase, Plus, RefreshCw, Loader, CheckCircle, Car
+  X, Sparkles, IndianRupee, Loader
 } from 'lucide-react';
 
 export default function LeadDetailsEx({ lead, onClose, agents, properties: initialProperties, fetchLeads, fetchStats }) {
@@ -24,16 +23,16 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
   const [bookingsLoading, setBookingsLoading] = useState(false);
   const [bookingForm, setBookingForm] = useState({ propertyId: '', finalPrice: '', discountApplied: '0', paymentReceived: false });
 
-  const fetchPropertiesList = async () => {
+  const fetchPropertiesList = useCallback(async () => {
     try {
       const data = await apiService.getProperties({ status: '' }, 0, 100);
       setProperties(data.content || []);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const fetchTimeline = async () => {
+  const fetchTimeline = useCallback(async () => {
     setTimelineLoading(true);
     try {
       const data = await apiService.getLeadTimeline(lead.id);
@@ -43,9 +42,9 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
     } finally {
       setTimelineLoading(false);
     }
-  };
+  }, [lead.id]);
 
-  const fetchVisitsAndBookings = async () => {
+  const fetchVisitsAndBookings = useCallback(async () => {
     setVisitsLoading(true);
     setBookingsLoading(true);
     try {
@@ -60,7 +59,7 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
       setVisitsLoading(false);
       setBookingsLoading(false);
     }
-  };
+  }, [lead.id]);
 
   useEffect(() => {
     fetchTimeline();
@@ -68,7 +67,7 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
     if (!initialProperties || initialProperties.length === 0) {
       fetchPropertiesList();
     }
-  }, [lead.id]);
+  }, [lead.id, initialProperties, fetchTimeline, fetchVisitsAndBookings, fetchPropertiesList]);
 
   // Log Activity
   const handleLogActivity = async (e) => {

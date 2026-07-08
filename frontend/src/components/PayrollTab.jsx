@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/apiService';
-import { Plus, Check, RefreshCw, IndianRupee, FileText, Loader } from 'lucide-react';
+import { Plus, Check, RefreshCw, FileText, Loader } from 'lucide-react';
 
 export default function PayrollTab() {
   const [employees, setEmployees] = useState([]);
@@ -19,7 +19,7 @@ export default function PayrollTab() {
   const isManagerOrHr = ['SUPER_ADMIN', 'ADMIN', 'HR'].includes(role);
   const isAccountsOrAdmin = ['SUPER_ADMIN', 'ADMIN', 'ACCOUNTS'].includes(role);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const slips = isManagerOrHr ? await apiService.getAllPayslips() : await apiService.getMyPayslips();
@@ -42,11 +42,11 @@ export default function PayrollTab() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isManagerOrHr]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleGeneratePayslip = async (e) => {
     e.preventDefault();

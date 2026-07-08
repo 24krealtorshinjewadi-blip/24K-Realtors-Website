@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { apiService } from '../services/apiService';
 import { Clock, Navigation, Play, Pause, Square, AlertCircle, RefreshCw, Loader, MapPin, UserCheck, UserX, Calendar, ShieldAlert } from 'lucide-react';
 
@@ -46,7 +46,7 @@ export default function AttendanceTab() {
   const isManagerOrHr = ['SUPER_ADMIN', 'ADMIN', 'HR'].includes(role);
 
   // Live geofence check
-  const checkGeofence = () => {
+  const checkGeofence = useCallback(() => {
     if (wfhActive) {
       setGeofenceStatus('authorized');
       return;
@@ -68,7 +68,7 @@ export default function AttendanceTab() {
           setGeofenceStatus('restricted');
         }
       },
-      (err) => {
+      (_err) => {
         console.warn("Geolocation blocked/timed out. Falling back to test office coordinates.");
         // Fallback coordinates (0m from office) for testing/local dev
         setUserLocation({ lat: OFFICE_LAT, lon: OFFICE_LON });
@@ -77,9 +77,9 @@ export default function AttendanceTab() {
       },
       { enableHighAccuracy: true, timeout: 5000 }
     );
-  };
+  }, [wfhActive]);
 
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     setLoading(true);
     try {
       const data = await apiService.getAttendanceLogs();
@@ -110,7 +110,7 @@ export default function AttendanceTab() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const fetchDashboardLogs = async (date) => {
     setDashboardLoading(true);
@@ -124,7 +124,7 @@ export default function AttendanceTab() {
     }
   };
 
-  const fetchWfhStatus = async () => {
+  const fetchWfhStatus = useCallback(async () => {
     try {
       const active = await apiService.isWfhActiveToday();
       setWfhActive(active);
@@ -134,9 +134,9 @@ export default function AttendanceTab() {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, []);
 
-  const fetchWfhRequests = async () => {
+  const fetchWfhRequests = useCallback(async () => {
     setWfhLoading(true);
     try {
       const own = await apiService.getMyWfhRequests();
@@ -145,12 +145,12 @@ export default function AttendanceTab() {
         const pending = await apiService.getPendingWfhRequests();
         setPendingWfhRequests(pending || []);
       }
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
     } finally {
       setWfhLoading(false);
     }
-  };
+  }, [isManagerOrHr]);
 
   useEffect(() => {
     fetchLogs();
@@ -158,13 +158,13 @@ export default function AttendanceTab() {
     checkGeofence();
     const interval = setInterval(checkGeofence, 15000); // Refresh geofence status every 15s
     return () => clearInterval(interval);
-  }, [wfhActive]);
+  }, [wfhActive, fetchLogs, fetchWfhStatus, checkGeofence]);
 
   useEffect(() => {
     if (activeSubTab === 'wfh') {
       fetchWfhRequests();
     }
-  }, [activeSubTab]);
+  }, [activeSubTab, fetchWfhRequests]);
 
   useEffect(() => {
     if (activeBreak) {

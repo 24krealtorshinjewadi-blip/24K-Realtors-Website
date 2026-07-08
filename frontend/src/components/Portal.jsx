@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/apiService';
 import { 
-  Search, MapPin, Bed, Bath, Maximize, Phone, Mail, Loader, 
-  CheckCircle, Tag, IndianRupee, Laptop, Sparkles, Activity, 
-  LineChart, Car, Users, Award, ShieldCheck, 
-  Sliders, Calculator, Eye, Compass, Star, Sun, Moon, Calendar, Clock, Lock, TrendingUp, Building, Key, MessageSquare,
-  X
+  Search, Loader, CheckCircle, IndianRupee, Laptop, Sparkles, Activity, 
+  LineChart, Car, Users, ShieldCheck, 
+  Calculator, Compass, Clock, Lock, TrendingUp, Building
 } from 'lucide-react';
 import './Portal.css';
 
@@ -18,33 +16,7 @@ import ReraDrawer from './ReraDrawer';
 import ChauffeurModal from './ChauffeurModal';
 import ChatWidget from './ChatWidget';
 
-const reviewsData = [
-  {
-    author: "Amit & Priyanjali Sharma",
-    role: "VP Engineering at Tech Mahindra & Teacher at Vibgyor",
-    text: "24K Realtors changed our approach completely. Instead of pushing properties, they analyzed our commute times to Hinjewadi Phase 1 IT park and top school distances. The RERA compliance is crystal clear."
-  },
-  {
-    author: "Dr. Sandeep Deshmukh",
-    role: "Chief Cardiologist, Ruby Hall Clinic Pune",
-    text: "Buying in Wakad was seamless. We saved developer brokerage, received fully verified property layouts, and got assistance with mortgage rates directly on the site. Genuine real estate advisors."
-  },
-  {
-    author: "Vikram Malhotra",
-    role: "Managing Director, VM Tech-Ventures",
-    text: "Acquired a commercial retail space on Balewadi High Street. Direct developer pricing, legal due diligence support, and complete transparency on local rental yields. Unbeatable advisory desk."
-  },
-  {
-    author: "Rajesh Nair",
-    role: "Principal Architect, Cognizant",
-    text: "Rented a premium 3 BHK in TCG The Crown Greens, Hinjewadi Phase 2 through 24K Realtors. The entire documentation, society NOC, and tenant verification were handled online in 2 days. Highly professional!"
-  },
-  {
-    author: "Sneha Kulkarni",
-    role: "Senior HR Manager, Wipro",
-    text: "Sold my 2 BHK apartment in Megapolis Splendour Phase 3. 24K Realtors found a buyer within 3 weeks and managed the registry and society transfer smoothly. Got excellent market pricing."
-  }
-];
+
 
 export default function Portal({ onViewChange }) {
   const [isHnwiMode, setIsHnwiMode] = useState(false);
@@ -73,14 +45,6 @@ export default function Portal({ onViewChange }) {
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [selectedPropertyDetail, setSelectedPropertyDetail] = useState(null);
 
-  const [activeSlide, setActiveSlide] = useState(0);
-  const slides = [
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80'
-  ];
-
-  const [scrolled, setScrolled] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [leadForm, setLeadForm] = useState({
@@ -308,12 +272,7 @@ export default function Portal({ onViewChange }) {
     fetchDirectories();
   }, []);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
+
 
   // Interactive 3D Canvas Particle Grid for Hero Section
   useEffect(() => {
@@ -431,6 +390,14 @@ export default function Portal({ onViewChange }) {
 
     drawGrid();
 
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (parentSection) {
+        parentSection.removeEventListener('mousemove', handleMouseMove);
+        parentSection.removeEventListener('mouseleave', handleMouseLeave);
+      }
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   // Rotating 3D Wireframe Skyscraper Canvas
@@ -595,7 +562,7 @@ export default function Portal({ onViewChange }) {
     };
   }, []);
 
-  const fetchProperties = async () => {
+  const fetchProperties = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -624,23 +591,11 @@ export default function Portal({ onViewChange }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, activeCollection, page]);
 
   useEffect(() => {
     fetchProperties();
-  }, [page, activeCollection, filters.transactionType]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [fetchProperties]);
 
   const handleTabChange = (tab) => {
     setExclusiveTab(tab);
@@ -793,7 +748,7 @@ export default function Portal({ onViewChange }) {
   const handleApplyMegaFilter = (newFilters, section = 'listings', targetAnchorId = null, subView = null) => {
     setActiveSubView(subView);
 
-    setFilters(prev => ({
+    setFilters({
       location: '',
       propertyType: '',
       transactionType: '',
@@ -804,7 +759,7 @@ export default function Portal({ onViewChange }) {
       status: 'AVAILABLE',
       query: '',
       ...newFilters
-    }));
+    });
 
     if (newFilters.transactionType) {
       setExclusiveTab(newFilters.transactionType);
@@ -1503,10 +1458,11 @@ export default function Portal({ onViewChange }) {
   };
 
   const getEmbedVideoUrl = (url) => {
-    if (!url) return "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WgXcQ";
+    if (!url) return "https://www.youtube.com/embed/LXb3EKWsInQ?autoplay=1&mute=1&loop=1&playlist=LXb3EKWsInQ";
     if (url.includes("/embed/")) {
       return url.includes("?") ? `${url}&autoplay=1&mute=1` : `${url}?autoplay=1&mute=1`;
     }
+    // eslint-disable-next-line no-useless-escape
     const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
     const match = url.match(ytRegex);
     if (match && match[1]) {
@@ -3307,26 +3263,7 @@ export default function Portal({ onViewChange }) {
   );
 }
 
-// Customized Premium Geometric Gold Loader spinner replacing the basic spinner
-function PremiumGoldLoader() {
-  return (
-    <div className="premium-loader-container">
-      <div className="premium-loader-ring"></div>
-      <div className="premium-loader-core">
-        <span>24K</span>
-      </div>
-      <p className="loader-status">Auditing Verified Inventory Registry...</p>
-    </div>
-  );
-}
 
-function RefreshCwIcon({ size = 16 }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
-      <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-    </svg>
-  );
-}
 
 // Corridor static datasets used for the tech corridor filters (Redesigned with Metrics)
 const corridorData = [
@@ -3382,7 +3319,7 @@ function PropertyDetailView({
           <div style={{ border: '1px solid var(--border-gold)', borderRadius: '12px', overflow: 'hidden', position: 'relative', height: '400px', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
             <img 
               src={property.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'} 
-              alt={property.title} 
+              alt={`Luxury property view of ${property.title} located at ${property.address}`} 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
             />
             <div style={{ position: 'absolute', top: '15px', left: '15px', display: 'flex', gap: '8px', zIndex: 2 }}>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/apiService';
-import { Plus, Trash2, Edit2, Loader, RefreshCw, BookOpen, User, Calendar, Check, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Edit2, Loader, RefreshCw, BookOpen, User, Calendar } from 'lucide-react';
 import ImageUploader from './ImageUploader';
 
 export default function BlogsTab() {
@@ -28,7 +28,7 @@ export default function BlogsTab() {
 
   const [previewMode, setPreviewMode] = useState(false); // Edit vs Live HTML Preview
 
-  const fetchBlogs = async () => {
+  const fetchBlogs = useCallback(async () => {
     setLoading(true);
     try {
       // Fetch admin blogs (includes drafts)
@@ -41,11 +41,11 @@ export default function BlogsTab() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
 
   useEffect(() => {
     fetchBlogs();
-  }, [page]);
+  }, [fetchBlogs]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -366,7 +366,7 @@ export default function BlogsTab() {
                         {blog.coverImageUrl && (
                           <img 
                             src={blog.coverImageUrl.startsWith('/') ? `${apiService.BASE_URL.replace('/api/v1', '')}${blog.coverImageUrl}` : blog.coverImageUrl} 
-                            alt="Cover" 
+                            alt={`Cover preview of blog post: ${blog.title}`} 
                             style={{ width: '48px', height: '36px', objectFit: 'cover', borderRadius: '4px', background: 'rgba(255,255,255,0.05)' }} 
                           />
                         )}

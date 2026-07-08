@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/apiService';
 import { Plus, CheckCircle, XCircle, RefreshCw, Loader } from 'lucide-react';
 
@@ -14,7 +14,7 @@ export default function LeavesTab() {
   const role = localStorage.getItem('role') || 'CRM_AGENT';
   const isManagerOrHr = ['SUPER_ADMIN', 'ADMIN', 'HR'].includes(role);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const bal = await apiService.getLeaveBalance();
@@ -32,11 +32,11 @@ export default function LeavesTab() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isManagerOrHr]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleApply = async (e) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
-import { Plus, Search, ShieldCheck, Mail, Phone, Briefcase, RefreshCw, Loader } from 'lucide-react';
+import { Plus, Mail, Phone, Briefcase, RefreshCw, Loader } from 'lucide-react';
 
 export default function EmployeesTab() {
   const [employees, setEmployees] = useState([]);

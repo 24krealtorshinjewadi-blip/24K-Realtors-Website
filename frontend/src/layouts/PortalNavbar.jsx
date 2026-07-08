@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
-  UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Eye, Building
+  UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building
 } from 'lucide-react';
 import ThemeSelector from '../components/ThemeSelector';
 
@@ -11,7 +11,7 @@ export default function PortalNavbar({
   onViewChange, 
   onBookVisitClick, 
   exclusiveTab, 
-  onTabChange,
+  onTabChange: _onTabChange,
   activeSection,
   onSectionChange,
   onApplyMegaFilter
@@ -33,7 +33,11 @@ export default function PortalNavbar({
 
   return (
     <>
-      <nav className={`luxury-navbar ${scrolled ? 'scrolled-active' : ''}`}>
+      <nav
+        className={`luxury-navbar ${scrolled ? 'scrolled-active' : ''}`}
+        aria-label="Main navigation"
+        role="navigation"
+      >
         <div className="nav-container">
           <a href="#" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, null); }} className="nav-logo">
             <span className="logo-number">24K REALTORS</span>
@@ -41,12 +45,39 @@ export default function PortalNavbar({
           </a>
 
           {/* HNWI Portfolio Mode Selector Desk */}
-          <div className="hnwi-mode-desk">
-            <span className={!isHnwiMode ? 'active-label' : ''} onClick={() => setIsHnwiMode(false)}>Residential</span>
-            <div className={`hnwi-pill-switch ${isHnwiMode ? 'active' : ''}`} onClick={() => setIsHnwiMode(!isHnwiMode)}>
-              <div className="hnwi-pill-knob"></div>
+          <div className="hnwi-mode-desk" role="group" aria-label="Portfolio mode selector">
+            <button
+              className={`hnwi-label-btn ${!isHnwiMode ? 'active-label' : ''}`}
+              onClick={() => setIsHnwiMode(false)}
+              aria-pressed={!isHnwiMode}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, color: !isHnwiMode ? 'var(--text-light)' : 'var(--text-muted)', transition: 'color 0.2s', padding: '2px 4px', borderRadius: '4px', fontFamily: 'var(--font-sans)' }}
+            >
+              Residential
+            </button>
+            <div
+              className={`hnwi-pill-switch ${isHnwiMode ? 'active' : ''}`}
+              role="switch"
+              aria-checked={isHnwiMode}
+              aria-label="Toggle between Residential and HNWI Private Office mode"
+              tabIndex={0}
+              onClick={() => setIsHnwiMode(!isHnwiMode)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setIsHnwiMode(!isHnwiMode);
+                }
+              }}
+            >
+              <div className="hnwi-pill-knob" aria-hidden="true"></div>
             </div>
-            <span className={isHnwiMode ? 'active-hnwi' : ''} onClick={() => setIsHnwiMode(true)}>Private Office (HNWI)</span>
+            <button
+              className={`hnwi-label-btn ${isHnwiMode ? 'active-hnwi' : ''}`}
+              onClick={() => setIsHnwiMode(true)}
+              aria-pressed={isHnwiMode}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, color: isHnwiMode ? 'var(--gold-primary)' : 'var(--text-muted)', transition: 'color 0.2s', padding: '2px 4px', borderRadius: '4px', fontFamily: 'var(--font-sans)' }}
+            >
+              Private Office (HNWI)
+            </button>
           </div>
 
           {/* Desktop Navigation Links */}
@@ -169,29 +200,37 @@ export default function PortalNavbar({
               </div>
             </div>
 
-            <span style={{ width: '1px', height: '18px', background: 'rgba(255,255,255,0.15)', margin: '0 4px' }}></span>
+            <span style={{ width: '1px', height: '18px', background: 'rgba(255,255,255,0.15)', margin: '0 4px' }} aria-hidden="true"></span>
 
             <button 
               className={activeSection === 'societies' ? 'active' : ''} 
               onClick={() => onSectionChange && onSectionChange('societies')}
+              aria-label="Browse society directories"
+              aria-current={activeSection === 'societies' ? 'page' : undefined}
             >
               SOCIETIES
             </button>
             <button 
               className={activeSection === 'builders' ? 'active' : ''} 
               onClick={() => onSectionChange && onSectionChange('builders')}
+              aria-label="Browse developer and builder portfolios"
+              aria-current={activeSection === 'builders' ? 'page' : undefined}
             >
               BUILDERS
             </button>
             <button 
               className={activeSection === 'localities' ? 'active' : ''} 
               onClick={() => onSectionChange && onSectionChange('localities')}
+              aria-label="Explore locality guides for Hinjewadi, Wakad, and Baner"
+              aria-current={activeSection === 'localities' ? 'page' : undefined}
             >
               LOCALITIES
             </button>
             <button 
               className={activeSection === 'blogs' ? 'active' : ''} 
               onClick={() => onSectionChange && onSectionChange('blogs')}
+              aria-label="Read real estate market insights and blogs"
+              aria-current={activeSection === 'blogs' ? 'page' : undefined}
             >
               BLOGS
             </button>
