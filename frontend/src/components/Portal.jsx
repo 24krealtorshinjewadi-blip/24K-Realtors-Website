@@ -1725,12 +1725,15 @@ export default function Portal({ onViewChange }) {
                   <div 
                     className="hero-search-tab-underline"
                     style={{
-                      transform: `translateX(${heroTab === 'BUY' ? 0 : heroTab === 'RENT' ? 98 : 196}px)`
+                      width: '33.333%',
+                      transform: `translateX(${heroTab === 'BUY' ? '0%' : heroTab === 'RENT' ? '100%' : '200%'})`
                     }}
-                  />
+                  >
+                    <div className="hero-search-tab-pill-bg"></div>
+                  </div>
                 </div>
  
-                <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '50px', padding: '5px', width: '100%', border: '1px solid rgba(212,175,55,0.3)', transition: 'all 0.3s ease' }}>
+                <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '50px', padding: '5px', width: '100%', border: '1px solid rgba(255, 255, 255, 0.08)', transition: 'all 0.3s ease' }}>
                   <input 
                     type="text" 
                     placeholder="Search Hinjewadi, Wakad, Baner (e.g. 3 BHK, VTP, Blue Ridge)..." 

@@ -4651,34 +4651,33 @@
   .property-card { break-inside: avoid; }
 }
 
-/* ===== HERO SEARCH TABS SLIDING CAPSULE (Phase 3) ===== */
+/* ===== HERO SEARCH TABS SLIDING CAPSULE (Phase 3 Redesign) ===== */
 .hero-search-tabs-container {
-  display: inline-flex;
+  display: flex;
   position: relative;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 50px;
   padding: 4px;
-  gap: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   width: 100%;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .hero-search-tab-btn {
+  flex: 1;
   background: none !important;
   border: none !important;
-  width: 90px !important;
   text-align: center !important;
   cursor: pointer;
   font-weight: 700 !important;
-  font-size: 0.88rem !important;
+  font-size: 0.9rem !important;
   font-family: var(--font-sans) !important;
   color: rgba(255, 255, 255, 0.6) !important;
   transition: color 0.3s var(--ease-out-expo) !important;
-  padding: 8px 0 !important;
+  padding: 10px 0 !important;
   outline: none !important;
   border-radius: 50px !important;
   z-index: 2;
@@ -4686,25 +4685,29 @@
 }
 
 .hero-search-tab-btn.active {
-  color: var(--text-dark) !important;
+  color: #070F1E !important;
 }
 
 .light-theme .hero-search-tab-btn.active {
-  color: #fff !important;
+  color: #070F1E !important;
 }
 
 .hero-search-tab-underline {
   position: absolute;
-  top: 4px;
-  bottom: 4px;
-  left: 4px;
-  width: 90px;
-  background: var(--gold-primary);
-  border-radius: 50px;
-  transition: transform 0.38s var(--ease-out-expo) !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
   z-index: 1;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
   will-change: transform;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+}
+
+.hero-search-tab-pill-bg {
+  height: calc(100% - 8px);
+  margin: 4px;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
 }
 
 /* ===== TYPOGRAPHY MASK REVEALS (Phase 2) ===== */
