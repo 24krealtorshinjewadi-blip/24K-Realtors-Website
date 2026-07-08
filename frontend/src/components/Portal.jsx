@@ -87,6 +87,11 @@ export default function Portal({ onViewChange }) {
   const [activeSection, setActiveSection] = useState('listings');
   const [heroSearchText, setHeroSearchText] = useState('');
   const [heroTab, setHeroTab] = useState('BUY');
+  const [recentSearches, setRecentSearches] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('recent_searches') || '[]'); } catch { return []; }
+  });
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [smartChips, setSmartChips] = useState([]);
   const [activeSubView, setActiveSubView] = useState(null);
   const [societies, setSocieties] = useState([]);
   const [builders, setBuilders] = useState([]);
@@ -992,21 +997,79 @@ export default function Portal({ onViewChange }) {
     }, 800);
   };
 
+  // ── Smart NLP query parser ─────────────────────────────────────────────────
+  const parseSmartQuery = (text) => {
+    const t = text.toLowerCase();
+    const parsed = { bedrooms: '', location: '', maxPrice: '', query: text };
+    const chips = [];
+
+    // BHK detection
+    const bhkMatch = t.match(/(\d+)\s*(?:bhk|bed|bedroom)/i);
+    if (bhkMatch) {
+      parsed.bedrooms = bhkMatch[1];
+      chips.push({ label: `🛏 ${bhkMatch[1]} BHK`, key: 'bedrooms' });
+    }
+
+    // Price detection — "under 1.2 cr", "below 80 lakh", "upto 2cr"
+    const crMatch = t.match(/(?:under|below|upto|max|within|<)\s*([\d.]+)\s*cr/i);
+    const lakhMatch = t.match(/(?:under|below|upto|max|within|<)\s*([\d.]+)\s*lakh/i);
+    if (crMatch) {
+      parsed.maxPrice = Math.round(parseFloat(crMatch[1]) * 10000000);
+      chips.push({ label: `₹ < ${crMatch[1]} Cr`, key: 'maxPrice' });
+    } else if (lakhMatch) {
+      parsed.maxPrice = Math.round(parseFloat(lakhMatch[1]) * 100000);
+      chips.push({ label: `₹ < ${lakhMatch[1]} L`, key: 'maxPrice' });
+    }
+
+    // Location detection
+    const locations = ['hinjewadi', 'wakad', 'baner', 'balewadi', 'mahalunge', 'punawale', 'kharadi', 'viman nagar', 'aundh', 'pashan', 'sus road'];
+    for (const loc of locations) {
+      if (t.includes(loc)) {
+        parsed.location = loc.toUpperCase().replace(/\s+/g, '_');
+        chips.push({ label: `📍 ${loc.split(' ').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')}`, key: 'location' });
+        break;
+      }
+    }
+
+    return { parsed, chips };
+  };
+
+  const handleSmartInputChange = (val) => {
+    setHeroSearchText(val);
+    if (val.trim().length > 2) {
+      const { chips } = parseSmartQuery(val);
+      setSmartChips(chips);
+    } else {
+      setSmartChips([]);
+    }
+  };
+
   const handleHeroSearch = (e) => {
     if (e) e.preventDefault();
+    const { parsed } = parseSmartQuery(heroSearchText);
     setFilters(prev => ({
       ...prev,
       transactionType: heroTab,
-      query: heroSearchText
+      query: heroSearchText,
+      ...(parsed.bedrooms && { bedrooms: parsed.bedrooms }),
+      ...(parsed.maxPrice && { maxPrice: String(parsed.maxPrice) }),
+      ...(parsed.location && { location: parsed.location }),
     }));
     setExclusiveTab(heroTab);
     setActiveSection('listings');
-    
+    setSmartChips([]);
+    setSearchFocused(false);
+    // Save to recent searches
+    if (heroSearchText.trim()) {
+      setRecentSearches(prev => {
+        const updated = [heroSearchText.trim(), ...prev.filter(s => s !== heroSearchText.trim())].slice(0, 5);
+        localStorage.setItem('recent_searches', JSON.stringify(updated));
+        return updated;
+      });
+    }
     setTimeout(() => {
       const el = document.getElementById('listings-anchor');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 150);
   };
 
@@ -1900,22 +1963,86 @@ export default function Portal({ onViewChange }) {
                   </div>
                 </div>
  
-                <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '50px', padding: '5px', width: '100%', border: '1px solid rgba(255, 255, 255, 0.08)', transition: 'all 0.3s ease' }}>
-                  <input 
-                    type="text" 
-                    placeholder="Search Hinjewadi, Wakad, Baner (e.g. 3 BHK, VTP, Blue Ridge)..." 
-                    value={heroSearchText} 
-                    onChange={e => setHeroSearchText(e.target.value)}
-                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#fff', outline: 'none' }}
-                  />
-                  <button 
-                    type="submit"
-                    style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '10px 24px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
-                  >
-                    <Search size={15} />
-                    <span>Search</span>
-                  </button>
-                </form>
+                {/* Smart chip tokens */}
+                {smartChips.length > 0 && (
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                    {smartChips.map((chip, i) => (
+                      <span key={i} style={{
+                        background: 'rgba(212,175,55,0.12)',
+                        border: '1px solid rgba(212,175,55,0.3)',
+                        borderRadius: '20px',
+                        padding: '3px 10px',
+                        fontSize: '0.72rem',
+                        color: 'var(--gold-primary)',
+                        fontWeight: 600,
+                        letterSpacing: '0.02em',
+                      }}>
+                        {chip.label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div style={{ position: 'relative', width: '100%' }}>
+                  <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '50px', padding: '5px', width: '100%', border: `1px solid ${searchFocused ? 'rgba(212,175,55,0.35)' : 'rgba(255, 255, 255, 0.08)'}`, transition: 'all 0.3s ease', boxShadow: searchFocused ? '0 0 0 3px rgba(212,175,55,0.08)' : 'none' }}>
+                    <input
+                      type="text"
+                      placeholder="Try: 3 BHK Hinjewadi under 1.2 Cr, Penthouse Baner..."
+                      value={heroSearchText}
+                      onChange={e => handleSmartInputChange(e.target.value)}
+                      onFocus={() => setSearchFocused(true)}
+                      onBlur={() => setTimeout(() => setSearchFocused(false), 180)}
+                      style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#fff', outline: 'none' }}
+                      aria-label="Search properties"
+                    />
+                    <button
+                      type="submit"
+                      style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '10px 24px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
+                    >
+                      <Search size={15} />
+                      <span>Search</span>
+                    </button>
+                  </form>
+
+                  {/* Recent searches dropdown */}
+                  {searchFocused && !heroSearchText && recentSearches.length > 0 && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 8px)',
+                      left: 0, right: 0,
+                      background: 'rgba(7, 15, 30, 0.97)',
+                      border: '1px solid rgba(212,175,55,0.15)',
+                      borderRadius: '16px',
+                      overflow: 'hidden',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                      zIndex: 100,
+                      backdropFilter: 'blur(20px)',
+                    }}>
+                      <div style={{ padding: '10px 16px 6px', fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                        Recent Searches
+                      </div>
+                      {recentSearches.map((s, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onMouseDown={() => { handleSmartInputChange(s); }}
+                          style={{
+                            display: 'block', width: '100%', textAlign: 'left',
+                            padding: '10px 16px',
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            fontSize: '0.86rem', color: 'var(--text-light)',
+                            borderBottom: i < recentSearches.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+                            transition: 'background 0.15s',
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.06)'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                        >
+                          🕐 {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* 3D WebGL Penthouse Model Canvas (Below Search Bar) */}
