@@ -1031,15 +1031,15 @@ export default function Portal({ onViewChange }) {
     const chips = [];
 
     // BHK detection
-    const bhkMatch = t.match(/(\d+)\s*(?:bhk|bed|bedroom)/i);
+    const bhkMatch = t.match(/(\d+)\s*(?:bhk|bed|bedroom|beds|bedrooms)/i);
     if (bhkMatch) {
       parsed.bedrooms = bhkMatch[1];
       chips.push({ label: `🛏 ${bhkMatch[1]} BHK`, key: 'bedrooms' });
     }
 
-    // Price detection — "under 1.2 cr", "below 80 lakh", "upto 2cr"
-    const crMatch = t.match(/(?:under|below|upto|max|within|<)\s*([\d.]+)\s*cr/i);
-    const lakhMatch = t.match(/(?:under|below|upto|max|within|<)\s*([\d.]+)\s*lakh/i);
+    // Price detection — "under 1.2 cr", "below 80 lakh", "upto 2cr", "under 90l"
+    const crMatch = t.match(/(?:under|below|upto|max|within|<)\s*([\d.]+)\s*(?:cr|crore|crores)/i);
+    const lakhMatch = t.match(/(?:under|below|upto|max|within|<)\s*([\d.]+)\s*(?:lakh|lakhs|l)/i);
     if (crMatch) {
       parsed.maxPrice = Math.round(parseFloat(crMatch[1]) * 10000000);
       chips.push({ label: `₹ < ${crMatch[1]} Cr`, key: 'maxPrice' });
@@ -1049,7 +1049,7 @@ export default function Portal({ onViewChange }) {
     }
 
     // Location detection
-    const locations = ['hinjewadi', 'wakad', 'baner', 'balewadi', 'mahalunge', 'punawale', 'kharadi', 'viman nagar', 'aundh', 'pashan', 'sus road'];
+    const locations = ['hinjewadi', 'wakad', 'baner', 'balewadi', 'mahalunge', 'punawale', 'kharadi', 'viman nagar', 'aundh', 'pashan', 'sus road', 'tathawade'];
     for (const loc of locations) {
       if (t.includes(loc)) {
         parsed.location = loc.toUpperCase().replace(/\s+/g, '_');
@@ -1059,6 +1059,94 @@ export default function Portal({ onViewChange }) {
     }
 
     return { parsed, chips };
+  };
+
+  const getSearchSuggestions = (text) => {
+    if (!text || text.trim().length < 2) return [];
+    const t = text.toLowerCase().trim();
+    const suggestions = [];
+
+    // Location matches
+    const locMap = {
+      hinjewadi: { label: '📍 Properties in Hinjewadi IT Hub', filters: { location: 'HINJEWADI' } },
+      wakad: { label: '📍 Properties in Wakad Junction', filters: { location: 'WAKAD' } },
+      baner: { label: '📍 Properties in Baner Tech Corridor', filters: { location: 'BANER' } },
+      balewadi: { label: '📍 Properties in Balewadi High Street', filters: { location: 'BALEWADI' } },
+      tathawade: { label: '📍 Properties in Tathawade Corridor', filters: { location: 'TATHAWADE' } },
+      mahalunge: { label: '📍 Properties in Mahalunge Smart City', filters: { location: 'MAHALUNGE' } }
+    };
+    for (const [k, v] of Object.entries(locMap)) {
+      if (k.startsWith(t) || t.includes(k)) {
+        suggestions.push(v);
+      }
+    }
+
+    // BHK matches
+    const bhkMap = {
+      '1': { label: '🛏 1 BHK Smart Luxury Homes', filters: { bedrooms: '1' } },
+      '2': { label: '🛏 2 BHK Elite Residences', filters: { bedrooms: '2' } },
+      '3': { label: '🛏 3 BHK Premium Penthouses', filters: { bedrooms: '3' } },
+      '4': { label: '🛏 4 BHK Ultra-Luxury Villas', filters: { bedrooms: '4' } }
+    };
+    const digits = t.match(/\d/);
+    if (digits && bhkMap[digits[0]]) {
+      suggestions.push(bhkMap[digits[0]]);
+    }
+
+    // Developer matches
+    const devMap = {
+      '24k': { label: '🏢 Kolte-Patil 24K Luxury Brand', filters: { query: '24K' } },
+      'godrej': { label: '🏢 Godrej Premium Properties', filters: { query: 'Godrej' } },
+      'kasturi': { label: '🏢 Kasturi Signature Projects', filters: { query: 'Kasturi' } },
+      'lodha': { label: '🏢 Lodha World-Class Towers', filters: { query: 'Lodha' } }
+    };
+    for (const [k, v] of Object.entries(devMap)) {
+      if (k.startsWith(t) || t.includes(k)) {
+        suggestions.push(v);
+      }
+    }
+
+    // Typology matches
+    if ('apartment'.startsWith(t) || 'flat'.startsWith(t) || t.includes('apartment') || t.includes('flat')) {
+      suggestions.push({ label: '🏢 Residential Apartments Portfolio', filters: { propertyType: 'RESIDENTIAL' } });
+    }
+    if ('commercial'.startsWith(t) || 'office'.startsWith(t) || 'shop'.startsWith(t) || t.includes('commercial') || t.includes('office')) {
+      suggestions.push({ label: '💼 Commercial Workspaces & Offices', filters: { propertyType: 'COMMERCIAL' } });
+    }
+
+    return suggestions.slice(0, 5);
+  };
+
+  const handleSelectSuggestion = (suggestion) => {
+    setSelectedPropertyDetail(null);
+    setFilters(prev => ({
+      ...prev,
+      transactionType: heroTab,
+      query: '',
+      location: '',
+      bedrooms: '',
+      maxPrice: '',
+      propertyType: '',
+      ...suggestion.filters
+    }));
+    setHeroSearchText('');
+    setSmartChips([]);
+    setSearchFocused(false);
+    setExclusiveTab(heroTab);
+    setActiveSection('listings');
+    
+    // Save to recent searches
+    const cleanLabel = suggestion.label.replace(/^[📍🛏🏢💼]\s*/, '');
+    setRecentSearches(prev => {
+      const updated = [cleanLabel, ...prev.filter(s => s !== cleanLabel)].slice(0, 5);
+      localStorage.setItem('recent_searches', JSON.stringify(updated));
+      return updated;
+    });
+
+    setTimeout(() => {
+      const el = document.getElementById('listings-anchor');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
   };
 
   const handleSmartInputChange = (val) => {
@@ -1071,25 +1159,58 @@ export default function Portal({ onViewChange }) {
     }
   };
 
-  const handleHeroSearch = (e) => {
+  const handleHeroSearch = (e, searchTextOverride = null) => {
     if (e) e.preventDefault();
-    const { parsed } = parseSmartQuery(heroSearchText);
-    setFilters(prev => ({
-      ...prev,
-      transactionType: heroTab,
-      query: heroSearchText,
-      ...(parsed.bedrooms && { bedrooms: parsed.bedrooms }),
-      ...(parsed.maxPrice && { maxPrice: String(parsed.maxPrice) }),
-      ...(parsed.location && { location: parsed.location }),
-    }));
+    setSelectedPropertyDetail(null);
+    const queryText = searchTextOverride !== null ? searchTextOverride : heroSearchText;
+    
+    // Check if the query text matches one of the autocomplete suggestions
+    const suggestions = getSearchSuggestions(queryText);
+    const matchedSuggestion = suggestions.find(s => 
+      s.label.toLowerCase().includes(queryText.toLowerCase()) || 
+      queryText.toLowerCase().includes(s.label.toLowerCase().replace(/^[📍🛏🏢💼]\s*/, ''))
+    );
+
+    setFilters(prev => {
+      const baseFilters = {
+        ...prev,
+        transactionType: heroTab,
+        query: '',
+        location: '',
+        bedrooms: '',
+        maxPrice: '',
+        propertyType: ''
+      };
+
+      if (matchedSuggestion) {
+        return {
+          ...baseFilters,
+          ...matchedSuggestion.filters
+        };
+      } else {
+        const { parsed } = parseSmartQuery(queryText);
+        return {
+          ...baseFilters,
+          query: queryText,
+          ...(parsed.bedrooms && { bedrooms: parsed.bedrooms }),
+          ...(parsed.maxPrice && { maxPrice: String(parsed.maxPrice) }),
+          ...(parsed.location && { location: parsed.location }),
+        };
+      }
+    });
+    
     setExclusiveTab(heroTab);
     setActiveSection('listings');
     setSmartChips([]);
     setSearchFocused(false);
+    if (searchTextOverride !== null) {
+      setHeroSearchText(searchTextOverride);
+    }
+    
     // Save to recent searches
-    if (heroSearchText.trim()) {
+    if (queryText.trim()) {
       setRecentSearches(prev => {
-        const updated = [heroSearchText.trim(), ...prev.filter(s => s !== heroSearchText.trim())].slice(0, 5);
+        const updated = [queryText.trim(), ...prev.filter(s => s !== queryText.trim())].slice(0, 5);
         localStorage.setItem('recent_searches', JSON.stringify(updated));
         return updated;
       });
@@ -2099,7 +2220,7 @@ export default function Portal({ onViewChange }) {
                         <button
                           key={i}
                           type="button"
-                          onMouseDown={() => { handleSmartInputChange(s); }}
+                          onMouseDown={() => { handleHeroSearch(null, s); }}
                           style={{
                             display: 'block', width: '100%', textAlign: 'left',
                             padding: '10px 16px',
@@ -2112,6 +2233,45 @@ export default function Portal({ onViewChange }) {
                           onMouseLeave={e => e.currentTarget.style.background = 'none'}
                         >
                           🕐 {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Autocomplete Suggestions dropdown */}
+                  {searchFocused && heroSearchText && getSearchSuggestions(heroSearchText).length > 0 && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 8px)',
+                      left: 0, right: 0,
+                      background: 'rgba(7, 15, 30, 0.97)',
+                      border: '1px solid rgba(212,175,55,0.15)',
+                      borderRadius: '16px',
+                      overflow: 'hidden',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                      zIndex: 100,
+                      backdropFilter: 'blur(20px)',
+                    }}>
+                      <div style={{ padding: '10px 16px 6px', fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                        Suggested Matches
+                      </div>
+                      {getSearchSuggestions(heroSearchText).map((s, i, arr) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onMouseDown={() => { handleSelectSuggestion(s); }}
+                          style={{
+                            display: 'block', width: '100%', textAlign: 'left',
+                            padding: '10px 16px',
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            fontSize: '0.86rem', color: 'var(--text-light)',
+                            borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+                            transition: 'background 0.15s',
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.06)'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                        >
+                          {s.label}
                         </button>
                       ))}
                     </div>
