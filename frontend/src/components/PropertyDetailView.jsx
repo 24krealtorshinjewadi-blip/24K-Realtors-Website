@@ -133,9 +133,28 @@ export default function PropertyDetailView({
 
   const waLink = `https://wa.me/919673000053?text=Hi%2024K%20Realtors,%20I'm%20interested%20in%20"${encodeURIComponent(property.title)}"%20at%20${encodeURIComponent(property.location)}.%20Please%20share%20details.`;
 
+  const getSimilarityScore = (p) => {
+    let score = 0;
+    if (p.location === property.location) score += 35;
+    if (p.propertyType === property.propertyType) score += 20;
+    if (p.bedrooms === property.bedrooms) score += 20;
+    
+    const priceDiff = Math.abs(Number(p.price) - Number(property.price));
+    const priceRatio = priceDiff / Number(property.price);
+    if (priceRatio <= 0.1) score += 25;
+    else if (priceRatio <= 0.25) score += 15;
+    else if (priceRatio <= 0.5) score += 5;
+    
+    return score;
+  };
+
   const similarProperties = allProperties
-    .filter(p => p.id !== property.id && (p.location === property.location || p.propertyType === property.propertyType))
+    .filter(p => p.id !== property.id)
+    .map(p => ({ ...p, similarityScore: getSimilarityScore(p) }))
+    .filter(p => p.similarityScore >= 40)
+    .sort((a, b) => b.similarityScore - a.similarityScore)
     .slice(0, 3);
+
 
   return (
     <motion.div
@@ -715,6 +734,16 @@ export default function PropertyDetailView({
                 <div style={{ height: '180px', overflow: 'hidden', position: 'relative' }}>
                   <img src={sim.imageUrl || slideshowImages[0]} alt={sim.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} />
                   <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'var(--gold-primary)', color: '#070f1e', fontSize: '0.62rem', fontWeight: 800, padding: '3px 8px', borderRadius: '3px', textTransform: 'uppercase' }}>{sim.transactionType}</span>
+                  <span style={{ 
+                    position: 'absolute', top: '10px', right: '10px', 
+                    background: 'rgba(7, 15, 30, 0.85)', backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(212, 175, 55, 0.3)',
+                    color: 'var(--gold-primary)', fontSize: '0.65rem', fontWeight: 700, 
+                    padding: '3px 8px', borderRadius: '4px',
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
+                  }}>
+                    ✨ {sim.similarityScore}% Match
+                  </span>
                 </div>
                 <div style={{ padding: '18px' }}>
                   <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}><MapPin size={10} color="var(--gold-primary)" /> {sim.location}</span>
