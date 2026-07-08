@@ -272,6 +272,37 @@ export default function Portal({ onViewChange }) {
     fetchDirectories();
   }, []);
 
+  // Intersection Observer Scroll-Triggered reveals (Phase 2)
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      document.querySelectorAll('.reveal-mask, .reveal-fade-up').forEach(el => {
+        el.classList.add('active');
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target); // Trigger once
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    const elements = document.querySelectorAll('.reveal-mask, .reveal-fade-up');
+    elements.forEach(el => observer.observe(el));
+
+    return () => {
+      elements.forEach(el => observer.unobserve(el));
+      observer.disconnect();
+    };
+  }, [properties]);
+
 
 
   // Interactive 3D Canvas Particle Grid for Hero Section
@@ -832,8 +863,10 @@ export default function Portal({ onViewChange }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
               <div>
                 <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Active Portfolio</span>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ Premium Properties for Sale</h2>
-                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Explore high-appreciation residential apartments and penthouses in Pune West.</p>
+                <h2 className="reveal-mask" style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>
+                  <span className="reveal-mask-content">⚜️ Premium Properties for Sale</span>
+                </h2>
+                <p className="reveal-fade-up" style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Explore high-appreciation residential apartments and penthouses in Pune West.</p>
               </div>
               <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
             </div>
@@ -866,8 +899,10 @@ export default function Portal({ onViewChange }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
               <div>
                 <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Active Portfolio</span>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ Luxury Residences for Rent</h2>
-                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Premium rental flats, corporate suites, and townhouses near IT parks.</p>
+                <h2 className="reveal-mask" style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>
+                  <span className="reveal-mask-content">⚜️ Luxury Residences for Rent</span>
+                </h2>
+                <p className="reveal-fade-up" style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Premium rental flats, corporate suites, and townhouses near IT parks.</p>
               </div>
               <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
             </div>
@@ -900,8 +935,10 @@ export default function Portal({ onViewChange }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
               <div>
                 <span className="hero-gold-badge" style={{ marginBottom: '10px', background: 'rgba(46,196,182,0.15)', color: '#2ec4b6' }}>🛡️ 100% Trust Shield</span>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>Verified Premium Listings</h2>
-                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Properties audited for carpet layout compliance, registry status, and MahaRERA approvals.</p>
+                <h2 className="reveal-mask" style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>
+                  <span className="reveal-mask-content">Verified Premium Listings</span>
+                </h2>
+                <p className="reveal-fade-up" style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Properties audited for carpet layout compliance, registry status, and MahaRERA approvals.</p>
               </div>
               <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
             </div>
@@ -1781,8 +1818,10 @@ export default function Portal({ onViewChange }) {
       {/* Interactive Corridor Cards Grid with Live Metrics */}
       <section className="corridors-section" id="corridors">
         <div className="section-header">
-          <h2 className="luxury-title">Pune Tech Corridor Live Market Trends</h2>
-          <p className="section-subtitle">Select an area to explore live pricing and average appreciation index metrics</p>
+          <h2 className="luxury-title reveal-mask">
+            <span className="reveal-mask-content">Pune Tech Corridor Live Market Trends</span>
+          </h2>
+          <p className="section-subtitle reveal-fade-up">Select an area to explore live pricing and average appreciation index metrics</p>
         </div>
         
         <div className="corridors-grid">

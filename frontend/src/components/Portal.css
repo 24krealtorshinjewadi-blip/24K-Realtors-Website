@@ -1278,13 +1278,14 @@
   pointer-events: none;
   z-index: 5;
   background: radial-gradient(
-    220px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.04) 50%,
+    300px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+    rgba(212, 175, 55, 0.16) 0%,
+    rgba(212, 175, 55, 0.03) 50%,
     transparent 100%
   );
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.4s var(--ease-out-expo);
+  will-change: opacity;
 }
 
 .radial-glow-card:hover::after {
@@ -3409,32 +3410,10 @@
   animation: kenBurnsEffect 24s infinite alternate ease-in-out;
 }
 
-/* 7. Radial Cursor Hover Glow Card */
-.radial-glow-card {
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-
-.radial-glow-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(212, 175, 55, 0.15), transparent 40%);
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.radial-glow-card:hover::before {
-  opacity: 1;
-}
-
+/* 7. Radial Cursor Hover Glow Card (Cleaned up, handled by 3D tilt) */
 .radial-glow-card:hover {
-  transform: translateY(-4px) scale(1.01);
   border-color: var(--gold-primary) !important;
-  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.12) !important;
+  box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15) !important;
 }
 
 /* 8. Closed Deals Fomo Lock */
@@ -4710,4 +4689,33 @@
   background-color: var(--gold-primary);
   transition: transform 0.4s var(--ease-out-expo) !important;
   will-change: transform;
+}
+
+/* ===== TYPOGRAPHY MASK REVEALS (Phase 2) ===== */
+.reveal-mask {
+  display: block;
+  overflow: hidden;
+}
+
+.reveal-mask-content {
+  display: block;
+  transform: translateY(100%);
+  transition: transform 1.2s var(--ease-out-expo);
+  will-change: transform;
+}
+
+.reveal-mask.active .reveal-mask-content {
+  transform: translateY(0);
+}
+
+.reveal-fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+
+.reveal-fade-up.active {
+  opacity: 1;
+  transform: translateY(0);
 }

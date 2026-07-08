@@ -1,5 +1,6 @@
-import React, { useState, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
+import Lenis from 'lenis';
 import './App.css';
 
 // Lazy load Dashboard (CRM) — only loads when authenticated user needs it
@@ -67,6 +68,36 @@ function AppLoadingScreen() {
 
 export default function App() {
   const [currentView, setCurrentView] = useState('portal'); // portal | dashboard
+
+  useEffect(() => {
+    // Check prefers-reduced-motion to respect accessibility rules
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+      infinite: false,
+    });
+
+    let animationId;
+    function raf(time) {
+      lenis.raf(time);
+      animationId = requestAnimationFrame(raf);
+    }
+
+    animationId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      lenis.destroy();
+    };
+  }, []);
 
   const handleViewChange = useCallback((view) => {
     // Auth guard: only allow dashboard access if JWT token exists
