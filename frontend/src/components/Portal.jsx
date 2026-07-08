@@ -1748,7 +1748,7 @@ export default function Portal({ onViewChange }) {
     return formattedPrice;
   };
 
-  const getLandmarks = (loc) => {
+  const _getLandmarks = (loc) => {
     switch (loc) {
       case 'BANER':
         return ['Balewadi High Street (5 mins)', 'Mumbai-Pune Highway (10 mins)'];
@@ -1767,7 +1767,7 @@ export default function Portal({ onViewChange }) {
     }
   };
 
-  const getLocationScorecard = (loc) => {
+  const _getLocationScorecard = (loc) => {
     switch (loc) {
       case 'BANER':
         return { appreciation: '9.6', commute: '9.0', schools: '9.5', noise: '8.8', green: '9.0' };
@@ -1785,6 +1785,7 @@ export default function Portal({ onViewChange }) {
         return { appreciation: '9.0', commute: '9.0', schools: '9.0', noise: '8.0', green: '8.5' };
     }
   };
+
 
   const getAppreciationCAGR = (loc) => {
     switch (loc) {
@@ -1851,7 +1852,25 @@ export default function Portal({ onViewChange }) {
         onApplyMegaFilter={handleApplyMegaFilter}
       />
 
-      {activeSubView ? renderSubView() : (
+      {selectedPropertyDetail ? (
+        <div className="main-portal-listings-section" style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px', paddingTop: '20px' }}>
+          <PropertyDetailView 
+            property={selectedPropertyDetail} 
+            onBack={() => {
+              setSelectedPropertyDetail(null);
+              setTimeout(() => {
+                const el = document.getElementById('listings-anchor');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 100);
+            }}
+            onOpenInquiry={handleOpenInquiry}
+            onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
+            formatPrice={formatPrice}
+            getEmbedVideoUrl={getEmbedVideoUrl}
+            allProperties={allRawProperties}
+          />
+        </div>
+      ) : activeSubView ? renderSubView() : (
         <>
           {/* Animated Hero Slideshow Section with Cinematic Video & Parallax */}
           <section className="portal-hero" style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
@@ -2275,20 +2294,7 @@ export default function Portal({ onViewChange }) {
       <div className="main-portal-listings-section" style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px' }}>
           
           {activeSection === 'listings' && (
-            selectedPropertyDetail ? (
-              <PropertyDetailView 
-                property={selectedPropertyDetail} 
-                onBack={() => setSelectedPropertyDetail(null)}
-                onOpenInquiry={handleOpenInquiry}
-                onOpenChauffeur={(prop) => { setSelectedChauffeurProp(prop); setIsChauffeurModalOpen(true); }}
-                formatPrice={formatPrice}
-                getLocationScorecard={getLocationScorecard}
-                getLandmarks={getLandmarks}
-                getEmbedVideoUrl={getEmbedVideoUrl}
-                allProperties={allRawProperties}
-              />
-            ) : (
-              <>
+            <>
               {/* Dynamic Advanced Filtering */}
               <section className="filter-section" id="listings-anchor">
                 <h2 className="filter-title">
@@ -2476,7 +2482,6 @@ export default function Portal({ onViewChange }) {
                 )}
               </section>
             </>
-            )
           )}
 
           {activeSection === 'societies' && (
