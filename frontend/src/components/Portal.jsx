@@ -1564,12 +1564,11 @@ export default function Portal({ onViewChange }) {
                 width: '100%',
                 boxShadow: '0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
               }}>
-                <div className="hero-search-tabs" style={{ display: 'flex', gap: '20px', marginBottom: '15px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', width: '100%' }}>
+                <div className="hero-search-tabs-container">
                   <button 
                     type="button"
                     className={`hero-search-tab-btn ${heroTab === 'BUY' ? 'active' : ''}`} 
                     onClick={() => setHeroTab('BUY')}
-                    style={{ background: 'none', border: 'none', color: heroTab === 'BUY' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.92rem', borderBottom: heroTab === 'BUY' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
                   >
                     Buy
                   </button>
@@ -1577,7 +1576,6 @@ export default function Portal({ onViewChange }) {
                     type="button"
                     className={`hero-search-tab-btn ${heroTab === 'RENT' ? 'active' : ''}`} 
                     onClick={() => setHeroTab('RENT')}
-                    style={{ background: 'none', border: 'none', color: heroTab === 'RENT' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.92rem', borderBottom: heroTab === 'RENT' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
                   >
                     Rent
                   </button>
@@ -1591,10 +1589,15 @@ export default function Portal({ onViewChange }) {
                         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }, 100);
                     }}
-                    style={{ background: 'none', border: 'none', color: heroTab === 'SELL' ? 'var(--gold-primary)' : 'rgba(255, 255, 255, 0.6)', paddingBottom: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.92rem', borderBottom: heroTab === 'SELL' ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}
                   >
                     Sell
                   </button>
+                  <div 
+                    className="hero-search-tab-underline"
+                    style={{
+                      transform: `translateX(${heroTab === 'BUY' ? 0 : heroTab === 'RENT' ? 100 : 200}px)`
+                    }}
+                  />
                 </div>
  
                 <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '50px', padding: '5px', width: '100%', border: '1px solid rgba(212,175,55,0.3)', transition: 'all 0.3s ease' }}>

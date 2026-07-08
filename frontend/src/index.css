@@ -82,6 +82,10 @@
 
   /* Focus Ring */
   --focus-ring: 0 0 0 2px #070F1E, 0 0 0 4px #D4AF37;
+
+  /* Premium Motion Easings */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ===== LIGHT THEME ===== */
@@ -128,7 +132,7 @@ body {
   color: var(--text-light);
   overflow-x: hidden;
   line-height: 1.6;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.4s var(--ease-out-expo), color 0.4s var(--ease-out-expo);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -206,7 +210,7 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s var(--ease-out-expo);
   font-size: 0.9rem;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -244,7 +248,7 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  transition: all 0.3s ease;
+  transition: all 0.4s var(--ease-out-expo);
   font-size: 0.9rem;
   font-family: var(--font-sans);
 }
@@ -277,7 +281,7 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  transition: all 0.3s ease;
+  transition: all 0.4s var(--ease-out-expo);
   font-size: 0.9rem;
   font-family: var(--font-sans);
 }
