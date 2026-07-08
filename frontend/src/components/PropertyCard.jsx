@@ -1,244 +1,296 @@
 import React from 'react';
-import { MapPin, ShieldCheck, Lock, Bed, Bath, Maximize, Sparkles, Eye, Compass, Car, Sliders } from 'lucide-react';
+import { MapPin, ShieldCheck, Sliders, Heart, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function PropertyCard({ 
   property, 
   isHnwiMode, 
   isCompared, 
+  isWishlisted,
   formatPrice, 
   onToggleCompare, 
-  onOpenRera, 
-  onOpenWalkthrough, 
-  onOpen3DTour, 
-  onOpenChauffeur,
+  onToggleWishlist,
   onOpenDetail,
-  getLocationScorecard,
-  getLandmarks 
+  onOpenRera
 }) {
-  const scores = getLocationScorecard(property.location);
   const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
-  const waLink = `https://wa.me/919673000053?text=Hi%2024K%20Realtors,%20I%20am%20interested%20in%20"${property.title}"%20located%20at%20${property.address}%20for%20₹${property.price}`;
-
-  const [tiltStyle, setTiltStyle] = React.useState({});
-
-  const handleCardMouseMove = (e) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -6;
-    const rotateY = ((x - centerX) / centerX) * 6;
-    
-    setTiltStyle({
-      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
-      transition: 'transform 0.1s ease, box-shadow 0.3s ease, border-color 0.3s ease',
-      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 15px rgba(212, 175, 55, 0.15)',
-      borderColor: 'var(--gold-primary)',
-      '--mouse-x': `${x}px`,
-      '--mouse-y': `${y}px`
-    });
-  };
-
-  const handleCardMouseLeave = () => {
-    setTiltStyle({
-      transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
-      transition: 'transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease',
-      boxShadow: 'none',
-      borderColor: 'rgba(255, 255, 255, 0.06)'
-    });
-  };
 
   return (
-    <div 
-      className="property-card premium-luxury-card radial-glow-card" 
-      style={tiltStyle}
-      onMouseMove={handleCardMouseMove}
-      onMouseLeave={handleCardMouseLeave}
+    <motion.div 
+      className={`property-card premium-luxury-card radial-glow-card ${isCompared ? 'compared-active' : ''}`}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      whileHover={{ y: -8 }}
+      id={`property-${property.id}`}
+      style={{
+        position: 'relative',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        background: 'rgba(10, 18, 36, 0.45)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+        cursor: 'pointer',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+      }}
+      onClick={() => onOpenDetail ? onOpenDetail(property) : null}
     >
+      
+      {/* 1. Large Premium Image Container */}
       <div 
-        className="property-image-container premium-hover-tint" 
-        style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
-        onClick={() => onOpenDetail ? onOpenDetail(property) : null}
+        className="property-image-container" 
+        style={{ 
+          position: 'relative', 
+          height: '220px', 
+          overflow: 'hidden' 
+        }}
       >
         <img 
           src={property.imageUrl || defaultImg} 
-          alt={`Luxury exterior of ${property.title} located at ${property.address}`} 
+          alt={`Exterior of ${property.title}`} 
           loading="lazy" 
+          className="card-main-image"
           style={{ 
-            position: 'absolute', 
-            top: 0, 
-            left: 0, 
             width: '100%', 
             height: '100%', 
-            objectFit: 'cover', 
-            zIndex: 0
+            objectFit: 'cover',
+            transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         />
+
+        {/* Dark Vignette Overlay */}
         <div style={{
           position: 'absolute',
           top: 0, left: 0, right: 0, bottom: 0,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(7,15,30,0.9) 100%)',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 40%, rgba(7,15,30,0.85) 100%)',
           zIndex: 1
         }}></div>
-        <span className="property-tag">{property.transactionType}</span>
-        <div className="property-badge-container">
-          {property.verifiedListing && <span className="p-badge p-badge-verified">✓ Verified</span>}
-          {property.exclusiveDeal && <span className="p-badge p-badge-exclusive">★ Exclusive</span>}
-          {property.noBrokerage && <span className="p-badge p-badge-nobroker">No Brokerage</span>}
-          {property.threeDTourUrl && <span className="p-badge p-badge-tour-glow">📐 3D Tour</span>}
-          {property.videoUrl && <span className="p-badge p-badge-video-glow">📹 Drone Tour</span>}
-        </div>
-        
-        <button 
-          onClick={(e) => { e.stopPropagation(); onToggleCompare(property); }}
-          className={`btn-compare-badge ${isCompared ? 'compared' : ''}`}
-          title={isCompared ? 'Remove from comparison' : 'Compare property'}
-          aria-label={isCompared ? `Remove ${property.title} from comparison list` : `Add ${property.title} to comparison list`}
-        >
-          <Sliders size={14} aria-hidden="true" />
-          <span>{isCompared ? 'Compared' : 'Compare'}</span>
-        </button>
 
-        <span className="property-price-tag">
+        {/* Transaction Tag (Buy/Rent) */}
+        <span 
+          className="property-tag"
+          style={{
+            position: 'absolute',
+            top: '12px',
+            left: '12px',
+            background: 'var(--gold-primary)',
+            color: '#070F1E',
+            fontWeight: 800,
+            fontSize: '0.68rem',
+            padding: '3px 8px',
+            borderRadius: '4px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            zIndex: 2
+          }}
+        >
+          {property.transactionType}
+        </span>
+
+        {/* Floating Quick Action Icons Overlay on Image */}
+        <div 
+          className="card-quick-actions"
+          style={{
+            position: 'absolute',
+            top: '12px',
+            right: '12px',
+            display: 'flex',
+            gap: '8px',
+            zIndex: 3
+          }}
+        >
+          {/* Wishlist Toggle Button */}
+          <button 
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              if (onToggleWishlist) onToggleWishlist(property); 
+            }}
+            style={{
+              background: isWishlisted ? 'var(--gold-primary)' : 'rgba(7, 15, 30, 0.7)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '50%',
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: isWishlisted ? '#070F1E' : '#fff',
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+            }}
+            title={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            aria-label={isWishlisted ? `Remove ${property.title} from wishlist` : `Add ${property.title} to wishlist`}
+          >
+            <Heart size={14} fill={isWishlisted ? 'currentColor' : 'none'} />
+          </button>
+
+          {/* Compare Toggle Button */}
+          <button 
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              onToggleCompare(property); 
+            }}
+            style={{
+              background: isCompared ? 'var(--gold-primary)' : 'rgba(7, 15, 30, 0.7)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '50%',
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: isCompared ? '#070F1E' : '#fff',
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+            }}
+            title={isCompared ? 'Remove from compare list' : 'Add to compare list'}
+            aria-label={isCompared ? `Remove ${property.title} from compare list` : `Add ${property.title} to compare list`}
+          >
+            <Sliders size={14} />
+          </button>
+        </div>
+
+        {/* Pricing tag aligned on bottom-left of image */}
+        <span 
+          className="property-price-tag"
+          style={{
+            position: 'absolute',
+            bottom: '12px',
+            left: '12px',
+            fontSize: '1.2rem',
+            fontWeight: 800,
+            color: 'var(--gold-primary)',
+            textShadow: '0 2px 4px rgba(0,0,0,0.7)',
+            zIndex: 2
+          }}
+        >
           {isHnwiMode 
-            ? `Gross Yield: ${property.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice(property.price, property.transactionType)}` 
+            ? `Yield: ${property.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice(property.price, property.transactionType)}` 
             : formatPrice(property.price, property.transactionType)}
         </span>
       </div>
-      
-      <div className="property-info">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <span className="property-location">
-            <MapPin size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} aria-hidden="true" />
+
+      {/* 2. Text Info Panel */}
+      <div 
+        className="property-info"
+        style={{ 
+          padding: '18px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px'
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {/* Location corridor */}
+          <span 
+            className="property-location"
+            style={{
+              fontSize: '0.78rem',
+              color: 'var(--text-muted)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <MapPin size={12} color="var(--gold-primary)" />
             {property.location}
           </span>
           
+          {/* MahaRERA Code */}
           <button 
             className="rera-interactive-btn"
-            onClick={(e) => onOpenRera(property, e)}
-            title="Open compliance dossier"
-            aria-label={`Verify MahaRERA compliance certificate ${property.reraNumber || 'PRM/VERIFIED'}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenRera(property, e);
+            }}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '3px',
+              fontSize: '0.72rem',
+              color: 'var(--gold-secondary)',
+              fontWeight: 600
+            }}
+            title="MahaRERA dossier"
           >
-            <ShieldCheck size={12} color="#D4AF37" style={{ marginRight: '4px' }} aria-hidden="true" />
-            <span>{property.reraNumber || 'PRM/VERIFIED'}</span>
+            <ShieldCheck size={11} />
+            <span>RERA Approved</span>
           </button>
         </div>
 
+        {/* Property Title */}
         <h3 
-          className="property-title" 
-          onClick={() => onOpenDetail ? onOpenDetail(property) : null}
-          style={{ cursor: 'pointer', transition: 'color 0.2s' }}
-          onMouseEnter={(e) => e.currentTarget.style.color = 'var(--gold-primary)'}
-          onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-light)'}
+          className="property-title"
+          style={{
+            fontSize: '1rem',
+            fontFamily: 'var(--font-title)',
+            color: '#fff',
+            margin: '4px 0 0 0',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            transition: 'color 0.3s ease'
+          }}
         >
           {property.title}
         </h3>
-        
-        <div className="signature-compliance-stamp">
-          <Lock size={12} color="#D4AF37" aria-hidden="true" />
-          <span>Certified Title-Clear Portfolio (Regional Lead Advisory)</span>
-        </div>
 
-        <p className="property-desc">{property.description || 'Premium architectural layout featuring cross ventilation, modern structural design.'}</p>
-        
-        <div className="location-scorecard">
-          <div className="score-item">
-            <span>Appreciation</span>
-            <strong>{scores.appreciation}/10</strong>
-          </div>
-          <div className="score-item">
-            <span>Commute</span>
-            <strong>{scores.commute}/10</strong>
-          </div>
-          <div className="score-item">
-            <span>Green Index</span>
-            <strong>{scores.green}/10</strong>
-          </div>
-        </div>
-
-        <div className="landmarks-snippets">
-          <span className="landmark-tag-mini">{getLandmarks(property.location)[0]}</span>
-          <span className="landmark-tag-mini">{getLandmarks(property.location)[1]}</span>
-        </div>
-
-        <div className="property-specs">
-          <div className="spec-item">
-            <Bed size={16} color="#C5A880" aria-hidden="true" />
-            <span className="spec-value">{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A'}</span>
-          </div>
-          <div className="spec-item">
-            <Bath size={16} color="#C5A880" aria-hidden="true" />
-            <span className="spec-value">{property.bathrooms} Baths</span>
-          </div>
-          <div className="spec-item">
-            <Maximize size={16} color="#C5A880" aria-hidden="true" />
-            <span className="spec-value">{property.areaSquareFeet} sqft</span>
-          </div>
-        </div>
-
-        <div className="luxury-amenities-mini-grid">
-          <span className="amenity-badge" style={{ borderColor: 'rgba(212,175,55,0.4)', color: 'var(--gold-primary)', fontWeight: 600 }}>
-            <Sparkles size={10} aria-hidden="true" /> {property.furnishingStatus ? property.furnishingStatus.replace('_', ' ') : 'FULLY FURNISHED'}
-          </span>
-          {property.gasPipeline && (
-            <span className="amenity-badge" style={{ borderColor: '#2ec4b6', color: '#2ec4b6' }}>
-              🔥 Piped Gas
-            </span>
+        {/* Minimal configuration details (BHK + Area) */}
+        <div 
+          className="property-specs"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            fontSize: '0.8rem',
+            color: 'var(--text-muted)',
+            borderTop: '1px solid rgba(255,255,255,0.04)',
+            paddingTop: '10px',
+            marginTop: '4px'
+          }}
+        >
+          <span>{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A Layout'}</span>
+          <span style={{ width: '4px', height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '50%' }}></span>
+          <span>{property.areaSquareFeet} sqft Carpet</span>
+          {property.exclusiveDeal && (
+            <>
+              <span style={{ width: '4px', height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '50%' }}></span>
+              <span style={{ color: 'var(--gold-secondary)', fontWeight: 600 }}>★ Exclusive</span>
+            </>
           )}
-          <span className="amenity-badge"><Sparkles size={10} aria-hidden="true" /> Infinity Pool</span>
-          <span className="amenity-badge"><Sparkles size={10} aria-hidden="true" /> 24/7 Concierge</span>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
-          <button 
-            onClick={() => onOpenWalkthrough(property)}
-            className="btn-outline"
-            title="Drone Virtual Tour"
-            aria-label={`View Drone Virtual Tour for ${property.title}`}
-            style={{ padding: '10px 12px' }}
+        {/* Sleek CTA */}
+        <div 
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            marginTop: '8px'
+          }}
+        >
+          <span 
+            className="view-details-cta"
+            style={{
+              fontSize: '0.78rem',
+              color: 'var(--gold-primary)',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              transition: 'transform 0.3s ease'
+            }}
           >
-            <Eye size={14} aria-hidden="true" />
-          </button>
-
-          <button 
-            onClick={() => onOpen3DTour(property)}
-            className="btn-outline"
-            title="3D Floor View"
-            aria-label={`View 3D Virtual Tour for ${property.title}`}
-            style={{ padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
-          >
-            <Compass size={14} aria-hidden="true" />
-            <span style={{ fontSize: '0.78rem' }}>3D Tour</span>
-          </button>
-          
-          <button 
-            onClick={() => onOpenChauffeur(property)}
-            className="btn-outline"
-            aria-label={`Book VIP Chauffeur visit for ${property.title}`}
-            style={{ flex: '1 1 auto', padding: '10px 8px', justifyContent: 'center', borderColor: 'var(--gold-secondary)', color: 'var(--gold-secondary)', fontSize: '0.78rem' }}
-          >
-            <Car size={14} style={{ marginRight: '4px' }} aria-hidden="true" />
-            <span>VIP Chauffeur</span>
-          </button>
-
-          <a 
-            href={waLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-gold"
-            style={{ padding: '10px 12px', background: '#2ec4b6', borderColor: '#2ec4b6', color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            title="Direct WhatsApp Negotiation"
-            aria-label={`Contact representative on WhatsApp for ${property.title}`}
-          >
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
-              <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371c1.394.756 2.96 1.157 4.777 1.158h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2zm5.787 14.404c-.24.675-1.397 1.285-1.92 1.36-.474.07-1.088.13-3.18-.737-2.677-1.11-4.4-3.837-4.536-4.015-.132-.178-1.08-1.433-1.08-2.73 0-1.298.68-1.936.92-2.199.243-.263.53-.328.706-.328.176 0 .353.003.507.01.162.007.382-.062.597.45.22.524.75 1.83.816 1.964.066.13.11.286.022.463-.087.177-.13.287-.26.439-.13.15-.27.337-.385.45-.126.126-.259.263-.11.517.15.253.66.1.91 1.488.75 1.309 1.37 2.14 2.15 2.65.783.51 1.237.585 1.58.204.34-.38 1.484-1.72 1.88-2.31.398-.59.794-.49 1.346-.29.553.2.3.5 1.764 1.226.22.11.365.163.475.328.11.165.11.954-.13 1.63z"/>
-            </svg>
-          </a>
+            View Details <ArrowRight size={12} />
+          </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
