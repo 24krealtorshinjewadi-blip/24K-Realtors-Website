@@ -6,6 +6,7 @@ import {
   Calculator, Compass, Clock, Lock, TrendingUp, Building
 } from 'lucide-react';
 import './Portal.css';
+import * as THREE from 'three';
 
 // Import Modular Components
 import PortalNavbar from '../layouts/PortalNavbar';
@@ -431,170 +432,248 @@ export default function Portal({ onViewChange }) {
     };
   }, []);
 
-  // Rotating 3D Wireframe Skyscraper Canvas
+  // Rotating 3D WebGL Skyscraper/Penthouse (Three.js upgrade - Phase 3)
   useEffect(() => {
     const canvas = document.getElementById('hero-3d-building-canvas');
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
 
-    let animationId;
-    let width = (canvas.width = canvas.offsetWidth);
-    let height = (canvas.height = canvas.offsetHeight);
-    let angleY = 0;
-    const angleX = 0.35;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const vertices = [
-      // Base box (0-7)
-      { x: -0.6, y: -0.8, z: -0.6 }, // 0: bottom-left-front
-      { x:  0.6, y: -0.8, z: -0.6 }, // 1: bottom-right-front
-      { x:  0.6, y: -0.8, z:  0.6 }, // 2: bottom-right-back
-      { x: -0.6, y: -0.8, z:  0.6 }, // 3: bottom-left-back
-      { x: -0.6, y:  0.2, z: -0.6 }, // 4: top-left-front
-      { x:  0.6, y:  0.2, z: -0.6 }, // 5: top-right-front
-      { x:  0.6, y:  0.2, z:  0.6 }, // 6: top-right-back
-      { x: -0.6, y:  0.2, z:  0.6 }, // 7: top-left-back
+    // 1. Scene setup
+    const scene = new THREE.Scene();
+    
+    // Light & Dark theme background colors matching var(--bg-dark)
+    const isLight = document.documentElement.classList.contains('light-theme');
+    
+    // 2. Camera setup
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, 1.2, 5.5);
 
-      // Roof apices (8-9)
-      { x:  0.0, y:  0.8, z: -0.6 }, // 8: front apex
-      { x:  0.0, y:  0.8, z:  0.6 }, // 9: back apex
+    // 3. Renderer setup
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      alpha: true
+    });
+    renderer.setSize(width, height, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Door (10-13)
-      { x: -0.15, y: -0.8, z: -0.605 }, // 10: door bottom-left
-      { x:  0.15, y: -0.8, z: -0.605 }, // 11: door bottom-right
-      { x:  0.15, y: -0.2, z: -0.605 }, // 12: door top-right
-      { x: -0.15, y: -0.2, z: -0.605 }, // 13: door top-left
+    // 4. Lights
+    const ambientLight = new THREE.AmbientLight(isLight ? 0xffffff : 0x0a1530, isLight ? 1.5 : 0.6);
+    scene.add(ambientLight);
 
-      // Left Window outline (14-17)
-      { x: -0.42, y: -0.3,  z: -0.605 }, // 14
-      { x: -0.25, y: -0.3,  z: -0.605 }, // 15
-      { x: -0.25, y:  0.0,  z: -0.605 }, // 16
-      { x: -0.42, y:  0.0,  z: -0.605 }, // 17
-      // Left Window cross (18-21)
-      { x: -0.335, y: -0.3, z: -0.605 }, // 18
-      { x: -0.335, y:  0.0, z: -0.605 }, // 19
-      { x: -0.42,  y: -0.15, z: -0.605 }, // 20
-      { x: -0.25,  y: -0.15, z: -0.605 }, // 21
+    const dirLight = new THREE.DirectionalLight(0xffffff, isLight ? 1.8 : 1.2);
+    dirLight.position.set(5, 10, 7);
+    scene.add(dirLight);
 
-      // Right Window outline (22-25)
-      { x:  0.25, y: -0.3,  z: -0.605 }, // 22
-      { x:  0.42, y: -0.3,  z: -0.605 }, // 23
-      { x:  0.42, y:  0.0,  z: -0.605 }, // 24
-      { x:  0.25, y:  0.0,  z: -0.605 }, // 25
-      // Right Window cross (26-29)
-      { x:  0.335, y: -0.3, z: -0.605 }, // 26
-      { x:  0.335, y:  0.0, z: -0.605 }, // 27
-      { x:  0.25,  y: -0.15, z: -0.605 }, // 28
-      { x:  0.42,  y: -0.15, z: -0.605 }, // 29
+    // Internal golden glows inside rooms
+    const pointLight1 = new THREE.PointLight(0xD4AF37, isLight ? 1.5 : 4.0, 10);
+    pointLight1.position.set(0, 0, 0);
+    scene.add(pointLight1);
 
-      // Chimney base (30-33)
-      { x:  0.25, y:  0.45, z:  0.15 }, // 30
-      { x:  0.4,  y:  0.35, z:  0.15 }, // 31
-      { x:  0.4,  y:  0.35, z:  0.3 },  // 32
-      { x:  0.25, y:  0.45, z:  0.3 },  // 33
-      // Chimney top (34-37)
-      { x:  0.25, y:  0.9,  z:  0.15 }, // 34
-      { x:  0.4,  y:  0.9,  z:  0.15 }, // 35
-      { x:  0.4,  y:  0.9,  z:  0.3 },  // 36
-      { x:  0.25, y:  0.9,  z:  0.3 }   // 37
+    const pointLight2 = new THREE.PointLight(0xD4AF37, isLight ? 1.0 : 3.0, 10);
+    pointLight2.position.set(0.5, 0.8, -0.2);
+    scene.add(pointLight2);
+
+    // 5. Materials
+    const goldFrameMat = new THREE.MeshStandardMaterial({
+      color: 0xD4AF37,
+      metalness: 0.9,
+      roughness: 0.25,
+      flatShading: false
+    });
+
+    const glassMat = new THREE.MeshStandardMaterial({
+      color: isLight ? 0x9A7B1C : 0x152238,
+      metalness: 0.8,
+      roughness: 0.1,
+      transparent: true,
+      opacity: isLight ? 0.35 : 0.55
+    });
+
+    // 6. Building Group Construction
+    const buildingGroup = new THREE.Group();
+
+    // Stacked architectural slabs & glass boxes
+    const floorsCount = 3;
+    const floorHeight = 0.65;
+    const floorWidths = [1.4, 1.1, 0.8];
+    const floorDepths = [1.4, 1.1, 0.8];
+    const offsets = [
+      { x: 0, z: 0 },
+      { x: 0.12, z: -0.12 },
+      { x: -0.08, z: 0.08 }
     ];
 
-    const edges = [
-      // Base box bottom
-      [0, 1], [1, 2], [2, 3], [3, 0],
-      // Base box top
-      [4, 5], [5, 6], [6, 7], [7, 4],
-      // Vertical pillars
-      [0, 4], [1, 5], [2, 6], [3, 7],
+    const geometriesToDispose = [];
+    const meshes = [];
 
-      // Roof ridge & sides
-      [8, 9], // ridge line
-      [4, 8], [5, 8], // front triangle
-      [7, 9], [6, 9], // back triangle
+    for (let i = 0; i < floorsCount; i++) {
+      const yPos = (i - floorsCount/2) * floorHeight + floorHeight/2;
+      const w = floorWidths[i];
+      const h = floorHeight - 0.04;
+      const d = floorDepths[i];
+      const offset = offsets[i];
 
-      // Door outline
-      [10, 13], [13, 12], [12, 11], [10, 11],
+      // Glass Room block
+      const roomGeo = new THREE.BoxGeometry(w, h, d);
+      geometriesToDispose.push(roomGeo);
+      const room = new THREE.Mesh(roomGeo, glassMat);
+      room.position.set(offset.x, yPos, offset.z);
+      buildingGroup.add(room);
+      meshes.push(room);
 
-      // Left window
-      [14, 15], [15, 16], [16, 17], [17, 14], // outline
-      [18, 19], [20, 21], // cross panes
+      // Floor & Ceiling gold slabs
+      const slabGeo = new THREE.BoxGeometry(w + 0.08, 0.03, d + 0.08);
+      geometriesToDispose.push(slabGeo);
+      const slabBottom = new THREE.Mesh(slabGeo, goldFrameMat);
+      slabBottom.position.set(offset.x, yPos - h/2 - 0.015, offset.z);
+      buildingGroup.add(slabBottom);
+      meshes.push(slabBottom);
 
-      // Right window
-      [22, 23], [23, 24], [24, 25], [25, 22], // outline
-      [26, 27], [28, 29], // cross panes
+      const slabTop = new THREE.Mesh(slabGeo, goldFrameMat);
+      slabTop.position.set(offset.x, yPos + h/2 + 0.015, offset.z);
+      buildingGroup.add(slabTop);
+      meshes.push(slabTop);
 
-      // Chimney
-      [30, 31], [31, 32], [32, 33], [33, 30], // base
-      [34, 35], [35, 36], [36, 37], [37, 34], // top
-      [30, 34], [31, 35], [32, 36], [33, 37]  // vertical pillars
-    ];
+      // Corner pillars (thin cylinder columns)
+      const colHeight = h + 0.03;
+      const colGeo = new THREE.CylinderGeometry(0.016, 0.016, colHeight, 8);
+      geometriesToDispose.push(colGeo);
+
+      const halfW = w / 2;
+      const halfD = d / 2;
+      const columnPositions = [
+        { x: offset.x - halfW, z: offset.z - halfD },
+        { x: offset.x + halfW, z: offset.z - halfD },
+        { x: offset.x - halfW, z: offset.z + halfD },
+        { x: offset.x + halfW, z: offset.z + halfD }
+      ];
+
+      columnPositions.forEach(pos => {
+        const pillar = new THREE.Mesh(colGeo, goldFrameMat);
+        pillar.position.set(pos.x, yPos, pos.z);
+        buildingGroup.add(pillar);
+        meshes.push(pillar);
+      });
+    }
+
+    // Top Helipad / Spire
+    const antennaSpireGeo = new THREE.CylinderGeometry(0.005, 0.01, 0.6, 8);
+    geometriesToDispose.push(antennaSpireGeo);
+    const antenna = new THREE.Mesh(antennaSpireGeo, goldFrameMat);
+    const lastOffset = offsets[floorsCount - 1];
+    antenna.position.set(lastOffset.x, (floorsCount - floorsCount/2) * floorHeight + 0.3, lastOffset.z);
+    buildingGroup.add(antenna);
+    meshes.push(antenna);
+
+    scene.add(buildingGroup);
+
+    // 7. Ambient Dust Particle System
+    const particleCount = prefersReducedMotion ? 0 : 50;
+    let particleSystem;
+    if (particleCount > 0) {
+      const particleGeo = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+      for (let i = 0; i < particleCount * 3; i += 3) {
+        positions[i] = (Math.random() - 0.5) * 4;
+        positions[i+1] = (Math.random() - 0.5) * 4;
+        positions[i+2] = (Math.random() - 0.5) * 4;
+      }
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometriesToDispose.push(particleGeo);
+
+      const particleMat = new THREE.PointsMaterial({
+        color: 0xD4AF37,
+        size: 0.04,
+        transparent: true,
+        opacity: 0.6
+      });
+      particleSystem = new THREE.Points(particleGeo, particleMat);
+      scene.add(particleSystem);
+    }
+
+    // 8. Animation & Interaction loop variables
+    let targetRotationY = 0;
+    let targetRotationX = 0;
+    let currentRotationY = 0;
+    let currentRotationX = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    const handleMouseMove = (e) => {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      mouseX = (e.clientX / windowWidth) - 0.5;
+      mouseY = (e.clientY / windowHeight) - 0.5;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = canvas.offsetHeight;
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
     };
     window.addEventListener('resize', handleResize);
 
-    const render3D = () => {
-      ctx.clearRect(0, 0, width, height);
+    // 9. Frame draw cycle
+    let animationId;
+    let clock = new THREE.Clock();
 
-      const isLight = document.documentElement.classList.contains('light-theme');
-      const scale = Math.min(width, height) * 0.28;
-      const cx = width / 2;
-      const cy = height * 0.55;
-
-      const projected = vertices.map(v => {
-        let x1 = v.x * Math.cos(angleY) - v.z * Math.sin(angleY);
-        let z1 = v.x * Math.sin(angleY) + v.z * Math.cos(angleY);
-
-        let y2 = v.y * Math.cos(angleX) - z1 * Math.sin(angleX);
-        let z2 = v.y * Math.sin(angleX) + z1 * Math.cos(angleX);
-
-        const perspective = 3.5;
-        const scaleFactor = perspective / (perspective + z2);
+    const animate = () => {
+      // Rotation logic
+      const elapsedTime = clock.getElapsedTime();
+      
+      if (!prefersReducedMotion) {
+        // Auto rotate slowly
+        buildingGroup.rotation.y = elapsedTime * 0.15;
         
-        return {
-          x: cx + x1 * scale * scaleFactor,
-          y: cy - y2 * scale * scaleFactor
-        };
-      });
+        // Add mouse influence (smooth interpolation / lerp)
+        targetRotationY = mouseX * 0.8;
+        targetRotationX = mouseY * 0.4;
+        currentRotationY += (targetRotationY - currentRotationY) * 0.05;
+        currentRotationX += (targetRotationX - currentRotationX) * 0.05;
 
-      ctx.beginPath();
-      edges.forEach(([i, j]) => {
-        const p1 = projected[i];
-        const p2 = projected[j];
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-      });
+        buildingGroup.rotation.y += currentRotationY;
+        buildingGroup.rotation.x = currentRotationX + 0.15; // default tilt
+        
+        if (particleSystem) {
+          particleSystem.rotation.y = -elapsedTime * 0.05;
+          particleSystem.rotation.x = elapsedTime * 0.02;
+        }
+      } else {
+        // Reduced motion mode: static slow default angle
+        buildingGroup.rotation.y = 0.5;
+        buildingGroup.rotation.x = 0.15;
+      }
 
-      ctx.strokeStyle = isLight 
-        ? 'rgba(154, 123, 28, 0.48)' 
-        : 'rgba(212, 175, 55, 0.42)';
-      ctx.lineWidth = isLight ? 1.0 : 0.8;
-      ctx.stroke();
-
-      projected.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = isLight ? '#9A7B1C' : '#D4AF37';
-        ctx.fill();
-      });
-
-      angleY += 0.007;
-      animationId = requestAnimationFrame(render3D);
+      renderer.render(scene, camera);
+      animationId = requestAnimationFrame(animate);
     };
 
-    render3D();
+    animate();
 
+    // 10. Clean up WebGL resources
     return () => {
       cancelAnimationFrame(animationId);
+      window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+
+      // Dispose geometries
+      geometriesToDispose.forEach(g => g.dispose());
+      // Dispose materials
+      goldFrameMat.dispose();
+      glassMat.dispose();
+      renderer.dispose();
     };
   }, []);
 
   const fetchProperties = useCallback(async () => {
-    setLoading(true);
     setError(null);
     try {
       let queryFilters = { ...filters };
@@ -1589,6 +1668,21 @@ export default function Portal({ onViewChange }) {
                   ? 'Exclusive whole-building mandates, premium high-yield commercial assets, and pre-release developer allocations for HNWI partners.'
                   : 'Discover handpicked, 100% verified properties across Hinjewadi, Wakad & Baner\'s high-appreciation corridors.'}
               </p>
+            </div>
+
+            <div className="hero-3d-model-block" style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '24px', 
+              alignItems: 'center', 
+              width: '100%',
+              maxWidth: '520px',
+              justifySelf: 'center',
+              transform: `translate3d(0, ${scrollY * -0.04}px, 0)`, 
+              transition: 'transform 0.05s linear' 
+            }}>
+              
+              {/* Search Capsule Wrapper (Moved to Right Column next to Title - Phase 3) */}
               <div className="hero-search-wrapper" style={{
                 background: 'rgba(255, 255, 255, 0.03)',
                 backdropFilter: 'blur(16px)',
@@ -1596,10 +1690,9 @@ export default function Portal({ onViewChange }) {
                 border: '1px solid rgba(212, 175, 55, 0.22)',
                 borderRadius: '24px',
                 padding: '20px',
-                marginTop: '10px',
-                maxWidth: '600px',
                 width: '100%',
-                boxShadow: '0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                boxShadow: '0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+                zIndex: 10
               }}>
                 <div className="hero-search-tabs-container">
                   <button 
@@ -1632,7 +1725,7 @@ export default function Portal({ onViewChange }) {
                   <div 
                     className="hero-search-tab-underline"
                     style={{
-                      transform: `translateX(${heroTab === 'BUY' ? 0 : heroTab === 'RENT' ? 100 : 200}px)`
+                      transform: `translateX(${heroTab === 'BUY' ? 0 : heroTab === 'RENT' ? 98 : 196}px)`
                     }}
                   />
                 </div>
@@ -1654,12 +1747,13 @@ export default function Portal({ onViewChange }) {
                   </button>
                 </form>
               </div>
-            </div>
 
-            <div className="hero-3d-model-block" style={{ height: '450px', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', transform: `translate3d(0, ${scrollY * -0.06}px, 0)`, transition: 'transform 0.05s linear' }}>
-              <canvas id="hero-3d-building-canvas" style={{ width: '100%', height: '100%', maxWidth: '450px', maxHeight: '450px' }} />
-            </div>
+              {/* 3D WebGL Penthouse Model Canvas (Below Search Bar) */}
+              <div style={{ width: '100%', height: '320px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+                <canvas id="hero-3d-building-canvas" style={{ width: '100%', height: '100%', maxWidth: '320px', maxHeight: '320px' }} />
+              </div>
 
+            </div>
           </div>
         </div>
       </section>
