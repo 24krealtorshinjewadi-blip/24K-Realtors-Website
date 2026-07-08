@@ -875,6 +875,11 @@ export default function Portal({ onViewChange }) {
     );
   };
 
+  const handleCollectionChange = (collection) => {
+    setActiveCollection(collection);
+    setPage(0);
+  };
+
   const handleTabChange = (tab) => {
     setExclusiveTab(tab);
     if (tab === 'SELL') {
