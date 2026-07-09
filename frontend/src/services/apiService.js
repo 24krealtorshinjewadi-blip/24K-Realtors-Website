@@ -2838,5 +2838,103 @@ export const apiService = {
         };
       }
     );
-  }
+  },
+
+  // ─── Auth Methods ─────────────────────────────────────────────────────────
+
+  /** Step 1: MFA login init — returns { tempToken, emailMasked, devMockOtp } */
+  async loginInit(username, password) {
+    const response = await fetch(`${BASE_URL}/auth/login-init`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, rememberDevice: false }),
+    });
+    if (!response.ok) {
+      const text = await response.text().catch(() => 'Authentication failed');
+      throw new Error(text || 'Invalid credentials');
+    }
+    return response.json();
+  },
+
+  /** Step 2: MFA OTP verify — returns { token, refreshToken, role, fullName, username } */
+  async loginVerify(tempToken, code) {
+    const response = await fetch(`${BASE_URL}/auth/login-verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tempToken, code }),
+    });
+    if (!response.ok) {
+      const text = await response.text().catch(() => 'Verification failed');
+      throw new Error(text || 'Invalid OTP');
+    }
+    return response.json();
+  },
+
+  /** Classic single-step login (no MFA) */
+  async login(username, password) {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    if (!response.ok) {
+      const text = await response.text().catch(() => 'Login failed');
+      throw new Error(text || 'Invalid credentials');
+    }
+    return response.json();
+  },
+
+  /** Refresh the access token using the stored refresh token */
+  async refreshAccessToken() {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) throw new Error('No refresh token');
+    const response = await fetch(`${BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    });
+    if (!response.ok) throw new Error('Refresh failed');
+    const data = await response.json();
+    localStorage.setItem('token', data.accessToken);
+    return data.accessToken;
+  },
+
+  /** Clear all auth state from localStorage */
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userFullName');
+    localStorage.removeItem('username');
+  },
+
+  /** List all users (SUPER_ADMIN only) */
+  async listUsers() {
+    const response = await fetch(`${BASE_URL}/users`, {
+      headers: { ...getAuthHeaders() },
+    });
+    if (!response.ok) throw new Error('Failed to fetch users');
+    return response.json();
+  },
+
+  /** Change a user's role (SUPER_ADMIN only) */
+  async changeUserRole(userId, role) {
+    const response = await fetch(`${BASE_URL}/users/${userId}/role`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify({ role }),
+    });
+    if (!response.ok) throw new Error('Failed to update role');
+    return response.json();
+  },
+
+  /** Soft-delete a user (SUPER_ADMIN only) */
+  async deleteUser(userId) {
+    const response = await fetch(`${BASE_URL}/users/${userId}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() },
+    });
+    if (!response.ok) throw new Error('Failed to delete user');
+    return response.json();
+  },
 };

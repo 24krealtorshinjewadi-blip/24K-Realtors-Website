@@ -75,6 +75,14 @@ public class AuthController {
                 .build();
 
         userRepository.save(user);
+
+        // Fire async welcome email via Resend (non-blocking, does not fail registration)
+        final String savedEmail = user.getEmail();
+        final String savedUsername = user.getUsername();
+        if (savedEmail != null && !savedEmail.isBlank()) {
+            CompletableFuture.runAsync(() -> emailService.sendWelcomeEmail(savedEmail, savedUsername));
+        }
+
         return new ResponseEntity<>("User registered successfully!", HttpStatus.CREATED);
     }
 

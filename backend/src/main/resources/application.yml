@@ -3,18 +3,15 @@ spring:
     active: dev
   application:
     name: twentyfourk-realestate
-  mail:
-    host: ${SPRING_MAIL_HOST:smtp.gmail.com}
-    port: ${SPRING_MAIL_PORT:587}
-    username: ${SPRING_MAIL_USERNAME:24krealtorshinjewadi@gmail.com}
-    password: ${SPRING_MAIL_PASSWORD:}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
+  # Disable auto-configuration of JavaMailSender (we use Resend HTTP API directly)
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+
+# ─── Resend.com Email Delivery ───────────────────────────────────────────────
+# Set RESEND_API_KEY in Railway env vars. Get free key from https://resend.com
+resend:
+  api-key: ${RESEND_API_KEY:}
+  from: ${RESEND_FROM:24K Realtors <onboarding@resend.dev>}
 
 whatsapp:
   api:
