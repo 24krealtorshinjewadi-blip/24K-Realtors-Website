@@ -3,9 +3,9 @@
 
 /* Portal Container Base */
 .portal-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* 1. Custom Obsidian & Gold Scrollbar (Universal inside components) */
