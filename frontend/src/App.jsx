@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
+import LoginModal from './components/LoginModal';
 import Lenis from 'lenis';
 import './App.css';
 
-// Lazy load Dashboard (CRM) — only loads when authenticated user needs it
-// This reduces initial bundle by ~100KB
+// Lazy load heavy components — reduces initial bundle
 const Portal = lazy(() => import('./components/Portal'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 
@@ -15,23 +15,16 @@ function AppLoadingScreen() {
       role="status"
       aria-label="Loading 24K Realtors"
       style={{
-        minHeight: '100vh',
-        background: '#070F1E',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        gap: '20px',
+        minHeight: '100vh', background: '#070F1E',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexDirection: 'column', gap: '20px',
         fontFamily: "'Montserrat', sans-serif",
       }}
     >
       <div
         style={{
-          fontFamily: "'Cinzel', serif",
-          fontSize: '1.6rem',
-          fontWeight: 800,
-          color: '#D4AF37',
-          letterSpacing: '0.05em',
+          fontFamily: "'Cinzel', serif", fontSize: '1.6rem', fontWeight: 800,
+          color: '#D4AF37', letterSpacing: '0.05em',
           animation: 'pulse 1.5s ease-in-out infinite',
         }}
         aria-hidden="true"
@@ -40,18 +33,15 @@ function AppLoadingScreen() {
       </div>
       <div
         style={{
-          width: '180px',
-          height: '2px',
+          width: '180px', height: '2px',
           background: 'rgba(212, 175, 55, 0.15)',
-          borderRadius: '2px',
-          overflow: 'hidden',
+          borderRadius: '2px', overflow: 'hidden',
         }}
         aria-hidden="true"
       >
         <div
           style={{
-            height: '100%',
-            width: '40%',
+            height: '100%', width: '40%',
             background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)',
             animation: 'shimmer 1.2s ease-in-out infinite',
           }}
@@ -68,15 +58,15 @@ function AppLoadingScreen() {
 
 export default function App() {
   const [currentView, setCurrentView] = useState('portal'); // portal | dashboard
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    // Check prefers-reduced-motion to respect accessibility rules
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
@@ -90,7 +80,6 @@ export default function App() {
       lenis.raf(time);
       animationId = requestAnimationFrame(raf);
     }
-
     animationId = requestAnimationFrame(raf);
 
     return () => {
@@ -100,17 +89,29 @@ export default function App() {
   }, []);
 
   const handleViewChange = useCallback((view) => {
-    // Auth guard: only allow dashboard access if JWT token exists
     if (view === 'dashboard') {
       const token = localStorage.getItem('token');
       if (!token) {
-        // Redirect unauthenticated users to portal with auth prompt
-        console.warn('[Auth] Attempt to access Dashboard without token. Redirecting.');
-        setCurrentView('portal');
+        // Show premium login modal instead of silent redirect
+        setShowLoginModal(true);
         return;
       }
     }
+    if (view === 'logout') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('userFullName');
+      localStorage.removeItem('username');
+      setCurrentView('portal');
+      return;
+    }
     setCurrentView(view);
+  }, []);
+
+  const handleLoginSuccess = useCallback(() => {
+    setShowLoginModal(false);
+    setCurrentView('dashboard');
   }, []);
 
   return (
@@ -131,6 +132,14 @@ export default function App() {
             )}
           </Suspense>
         </main>
+
+        {/* Premium login modal — triggered when unauthenticated user accesses dashboard */}
+        {showLoginModal && (
+          <LoginModal
+            onClose={() => setShowLoginModal(false)}
+            onSuccess={handleLoginSuccess}
+          />
+        )}
       </div>
     </ErrorBoundary>
   );
