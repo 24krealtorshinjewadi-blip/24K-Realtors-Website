@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoginModal from './components/LoginModal';
+import CompanyLogo from './components/CompanyLogo';
 import Lenis from 'lenis';
 import './App.css';
 
@@ -21,16 +22,7 @@ function AppLoadingScreen() {
         fontFamily: "'Montserrat', sans-serif",
       }}
     >
-      <div
-        style={{
-          fontFamily: "'Cinzel', serif", fontSize: '1.6rem', fontWeight: 800,
-          color: '#D4AF37', letterSpacing: '0.05em',
-          animation: 'pulse 1.5s ease-in-out infinite',
-        }}
-        aria-hidden="true"
-      >
-        24K REALTORS
-      </div>
+      <CompanyLogo variant="full" width={220} height={140} style={{ animation: 'pulse 1.5s ease-in-out infinite' }} />
       <div
         style={{
           width: '180px', height: '2px',

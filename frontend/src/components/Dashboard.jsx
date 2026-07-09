@@ -5,6 +5,7 @@ import {
   Loader, RefreshCw, Lock, LogOut, Upload, Clock, FileText, Building, Eye, EyeOff
 } from 'lucide-react';
 import './Dashboard.css';
+import CompanyLogo from './CompanyLogo';
 
 // Import Modular Property Form Drawer
 import PropertyFormDrawer from './PropertyFormDrawer';
@@ -861,9 +862,10 @@ export default function Dashboard({ onViewChange }) {
     return (
       <div className="crm-login-wrapper">
         <div className="login-card">
-          <div className="login-logo">
-            <span className="logo-badge">ENTERPRISE IAM PORTAL</span>
-            <span className="logo-text">24K REALTORS</span>
+          <div className="login-logo" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <span className="logo-badge" style={{ marginBottom: '12px' }}>ENTERPRISE IAM PORTAL</span>
+            <CompanyLogo variant="icon" width={110} height={82} />
+            <span className="logo-text" style={{ marginTop: '5px' }}>24K REALTORS</span>
             <span className="sub-text">IDENTITY &amp; ACCESS CONTROL</span>
           </div>
 
@@ -1018,10 +1020,11 @@ export default function Dashboard({ onViewChange }) {
     <div className="crm-wrapper">
       {/* Sidebar Navigation */}
       <aside className="crm-sidebar">
-        <div className="crm-sidebar-logo">
-          <span>24K OPERATOR</span>
+        <div className="crm-sidebar-logo" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '20px 10px' }}>
+          <CompanyLogo variant="icon" width={75} height={56} />
+          <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 700, fontSize: '0.9rem', color: 'var(--gold-primary)', letterSpacing: '0.05em', marginTop: '6px' }}>24K OPERATOR</span>
           <div style={{ marginTop: '5px' }}>
-            <span style={{ fontSize: '0.65rem', color: 'var(--gold-primary)', display: 'block' }}>{adminUsername}</span>
+            <span style={{ fontSize: '0.65rem', color: '#eee', display: 'block' }}>{adminUsername}</span>
             <span style={{ fontSize: '0.6rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{userRole.replace('_', ' ')}</span>
           </div>
         </div>

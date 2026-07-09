@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, X, Lock, User, Shield, ArrowRight, RotateCcw } from 'lucide-react';
 import { apiService } from '../services/apiService';
+import CompanyLogo from './CompanyLogo';
 
 /* ─── Premium 2-Step Login Modal ───────────────────────────────────────────
    Step 1: Username + Password  →  calls /api/v1/auth/login-init
@@ -174,18 +175,11 @@ export default function LoginModal({ onClose, onSuccess }) {
 
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+            <CompanyLogo variant="icon" width={110} height={82} style={{ margin: '0 auto' }} />
             <div style={{
-              width: '52px', height: '52px', borderRadius: '50%',
-              background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 14px',
-            }}>
-              {step === 1 ? <Lock size={22} color={GOLD} /> : <Shield size={22} color={GOLD} />}
-            </div>
-            <div style={{
-              fontFamily: "'Cinzel', serif", fontSize: '0.7rem', fontWeight: 700,
-              color: GOLD, letterSpacing: '0.15em', textTransform: 'uppercase',
-              marginBottom: '6px',
+              fontFamily: "'Cinzel', serif", fontSize: '0.8rem', fontWeight: 700,
+              color: GOLD, letterSpacing: '0.12em', textTransform: 'uppercase',
+              marginBottom: '6px', marginTop: '-4px'
             }}>24K REALTORS</div>
             <h2 style={{
               fontFamily: "'Cinzel', serif", fontSize: '1.35rem',

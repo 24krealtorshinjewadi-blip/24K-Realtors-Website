@@ -5,6 +5,7 @@ import {
   Home, Search, Heart
 } from 'lucide-react';
 import ThemeSelector from '../components/ThemeSelector';
+import CompanyLogo from '../components/CompanyLogo';
 
 export default function PortalNavbar({ 
   isHnwiMode, 
@@ -28,14 +29,21 @@ export default function PortalNavbar({
 
   React.useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 40) {
+      if (window.scrollY > 20) {
         setScrolled(true);
       } else {
         setScrolled(false);
       }
-      
-      if (window.scrollY > 480) {
-        setIsAtListings(true);
+
+      // Check if scroll has passed the hero section to highlight listings
+      const listingsEl = document.getElementById('listings-container');
+      if (listingsEl) {
+        const rect = listingsEl.getBoundingClientRect();
+        if (rect.top <= 100) {
+          setIsAtListings(true);
+        } else {
+          setIsAtListings(false);
+        }
       } else {
         setIsAtListings(false);
       }
@@ -58,8 +66,7 @@ export default function PortalNavbar({
       >
         <div className="nav-container">
           <a href="#" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, null); }} className="nav-logo">
-            <span className="logo-number">24K REALTORS</span>
-            <span className="logo-city-tagline">PUNE • PREMIUM ADVISORY</span>
+            <CompanyLogo variant="compact" />
           </a>
 
           {/* HNWI Portfolio Mode Selector Desk */}
