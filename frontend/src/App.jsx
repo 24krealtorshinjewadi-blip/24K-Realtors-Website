@@ -16,33 +16,59 @@ function AppLoadingScreen() {
       role="status"
       aria-label="Loading 24K Realtors"
       style={{
-        minHeight: '100vh', background: '#070F1E',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flexDirection: 'column', gap: '20px',
+        minHeight: '100vh',
+        background: 'radial-gradient(circle, #0e1e36 0%, #040814 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '30px',
         fontFamily: "'Montserrat', sans-serif",
       }}
     >
-      <CompanyLogo variant="full" width={220} height={140} style={{ animation: 'pulse 1.5s ease-in-out infinite' }} />
+      <div style={{
+        animation: 'cinematicPulse 2.5s ease-in-out infinite',
+        transform: 'scale(1)',
+        opacity: 0.95,
+        display: 'flex',
+        justifyContent: 'center'
+      }}>
+        <CompanyLogo variant="full" width={320} height={200} />
+      </div>
+      
+      {/* Sleek Golden Loading Bar */}
       <div
         style={{
-          width: '180px', height: '2px',
-          background: 'rgba(212, 175, 55, 0.15)',
-          borderRadius: '2px', overflow: 'hidden',
+          width: '240px',
+          height: '2px',
+          background: 'rgba(212, 175, 55, 0.12)',
+          borderRadius: '4px',
+          overflow: 'hidden',
+          marginTop: '10px',
+          boxShadow: '0 0 10px rgba(212, 175, 55, 0.2)'
         }}
         aria-hidden="true"
       >
         <div
           style={{
-            height: '100%', width: '40%',
-            background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)',
-            animation: 'shimmer 1.2s ease-in-out infinite',
+            height: '100%',
+            width: '35%',
+            background: 'linear-gradient(90deg, transparent, #FFDF79, #D4AF37, transparent)',
+            animation: 'shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite',
           }}
         />
       </div>
-      <span className="sr-only">Loading, please wait…</span>
+      <span className="sr-only">Loading 24K Realtors Platform…</span>
       <style>{`
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        @keyframes shimmer { 0% { transform: translateX(-200%); } 100% { transform: translateX(400%); } }
+        @keyframes cinematicPulse {
+          0%, 100% { transform: scale(0.98); opacity: 0.85; filter: brightness(0.9); }
+          50% { transform: scale(1.02); opacity: 1; filter: brightness(1.1) drop-shadow(0 0 15px rgba(212,175,55,0.2)); }
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-150%); }
+          50% { transform: translateX(100%); }
+          100% { transform: translateX(250%); }
+        }
       `}</style>
     </div>
   );
