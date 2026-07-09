@@ -75,8 +75,10 @@ export default function LoginModal({ onClose, onSuccess }) {
       localStorage.setItem('token', data.token);
       localStorage.setItem('refreshToken', data.refreshToken);
       localStorage.setItem('userRole', data.role);
+      localStorage.setItem('role', data.role);
       localStorage.setItem('userFullName', data.fullName || data.username);
       localStorage.setItem('username', data.username);
+      localStorage.setItem('adminUser', data.username);
       onSuccess(data);
     } catch (err) {
       setError(err?.message || 'Invalid or expired OTP.');
