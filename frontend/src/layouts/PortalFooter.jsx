@@ -79,12 +79,14 @@ export default function PortalFooter() {
     >
       <div 
         style={{ 
-          maxWidth: '1410px', 
+          maxWidth: '100%', 
           margin: '0 auto', 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
           gap: '40px',
           paddingBottom: '40px',
+          paddingLeft: '5%',
+          paddingRight: '5%',
           borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
         }}
       >
@@ -164,13 +166,15 @@ export default function PortalFooter() {
       {/* Bottom Bar: Copyrights & Trust */}
       <div 
         style={{ 
-          maxWidth: '1410px', 
+          maxWidth: '100%', 
           margin: '25px auto 0 auto', 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center', 
           flexWrap: 'wrap', 
           gap: '20px',
+          paddingLeft: '5%',
+          paddingRight: '5%',
           fontSize: '0.78rem',
           color: 'var(--text-muted)'
         }}

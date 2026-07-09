@@ -5300,6 +5300,65 @@
   animation: spin 0.8s linear infinite !important;
 }
 
+/* ==========================================================================
+   ⚜️ EDGE-TO-EDGE FLUID VIEWPORT LAYOUT (NETFLIX & APPLE STYLE)
+   ========================================================================== */
+
+/* Expand containers dynamically to eliminate empty side margins on wide screens */
+.main-portal-listings-section,
+.subview-container,
+.hero-content,
+.portfolio-transaction-section,
+.nav-container {
+  max-width: 95% !important;
+  width: 95% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Carousel padding corrections to align with logo margins */
+.carousel-track {
+  padding: 20px 0 !important;
+}
+
+/* Responsive expansion scaling for wide desktop viewports */
+@media (min-width: 1400px) {
+  .main-portal-listings-section,
+  .subview-container,
+  .hero-content,
+  .portfolio-transaction-section,
+  .nav-container {
+    max-width: 94% !important;
+    width: 94% !important;
+  }
+}
+
+@media (min-width: 1800px) {
+  .main-portal-listings-section,
+  .subview-container,
+  .hero-content,
+  .portfolio-transaction-section,
+  .nav-container {
+    max-width: 95% !important;
+    width: 95% !important;
+  }
+}
+
+@media (min-width: 2200px) {
+  .main-portal-listings-section,
+  .subview-container,
+  .hero-content,
+  .portfolio-transaction-section,
+  .nav-container {
+    max-width: 96% !important;
+    width: 96% !important;
+  }
+}
+
+
 
 
 
