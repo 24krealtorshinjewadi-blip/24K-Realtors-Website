@@ -5002,4 +5002,227 @@
   }
 }
 
+/* ==========================================================================
+   ⚜️ STICKY GLASS NAVBAR & HERO SECTION REDESIGN
+   ========================================================================== */
+
+/* 1. Sticky Glass Navbar */
+.luxury-navbar {
+  background: rgba(4, 8, 20, 0.45) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.luxury-navbar.scrolled-active {
+  background: rgba(4, 8, 20, 0.85) !important;
+  border-bottom: 1px solid rgba(230, 195, 92, 0.25) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 2. Full-Screen Sunset Hero Section */
+.portal-hero {
+  min-height: 100vh !important;
+  margin: 0 0 0 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  box-shadow: inset 0 -40px 100px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Linear & radial overlays for premium readability and dark theme blending */
+.hero-vignette-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(4, 8, 20, 0.95) 0%, rgba(4, 8, 20, 0.75) 45%, rgba(4, 8, 20, 0.4) 100%),
+              radial-gradient(circle at center, rgba(4, 8, 20, 0.2) 0%, rgba(4, 8, 20, 0.9) 100%);
+  z-index: 1;
+}
+
+.hero-content {
+  z-index: 2;
+  position: relative;
+  width: 100%;
+}
+
+.hero-gold-badge {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #E6C35C;
+  border: 1px solid rgba(230, 195, 92, 0.3);
+  padding: 6px 16px;
+  border-radius: 50px;
+  background-color: rgba(4, 8, 20, 0.75);
+  backdrop-filter: blur(8px);
+  margin-bottom: 24px;
+  letter-spacing: 0.12em;
+}
+
+/* 3. Floating Glassmorphic Search Panel */
+.hero-search-wrapper {
+  background: rgba(4, 8, 20, 0.55) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border: 1px solid rgba(230, 195, 92, 0.2) !important;
+  border-radius: 24px !important;
+  padding: 30px !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.08) !important;
+  width: 100% !important;
+  max-width: 580px !important;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.hero-search-wrapper:hover {
+  border-color: rgba(230, 195, 92, 0.35) !important;
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.75), 0 0 25px rgba(230, 195, 92, 0.2) !important;
+}
+
+.hero-search-tabs-container {
+  display: flex;
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.hero-search-tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.65) !important;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 12px 0;
+  cursor: pointer;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.hero-search-tab-btn.active {
+  color: #040814 !important;
+}
+
+.hero-search-tab-underline {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%);
+  z-index: 1;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 4px 15px rgba(230, 195, 92, 0.3);
+}
+
+.hero-search-capsule {
+  background: rgba(4, 8, 20, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 50px !important;
+  padding: 6px 6px 6px 18px !important;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.hero-search-capsule:focus-within {
+  border-color: rgba(230, 195, 92, 0.6) !important;
+  box-shadow: 0 0 20px rgba(230, 195, 92, 0.15) !important;
+}
+
+/* 4. Stat Counter Ribbon */
+.trust-stats-section {
+  background: #040814;
+  border-top: 1px solid rgba(230, 195, 92, 0.12);
+  border-bottom: 1px solid rgba(230, 195, 92, 0.12);
+  padding: 40px 0;
+}
+
+.trust-stats-grid {
+  max-width: 1410px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  text-align: center;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-number {
+  font-family: 'Cinzel', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* 5. Builder Showcase Gallery */
+.builder-showcase-section {
+  background: #040814;
+  padding: 60px 0 80px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.builder-showcase-grid {
+  max-width: 1410px;
+  margin: 40px auto 0;
+  padding: 0 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 40px 60px;
+}
+
+.builder-logo-item {
+  font-family: 'Cinzel', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  user-select: none;
+}
+
+.builder-logo-item:hover {
+  color: #FFF4D0;
+  text-shadow: 0 0 15px rgba(230, 195, 92, 0.4);
+  transform: translateY(-2px);
+}
+
+
 

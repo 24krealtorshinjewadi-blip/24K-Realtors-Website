@@ -48,6 +48,32 @@ function PropertySkeleton() {
   );
 }
 
+// Reusable 60-FPS Animated Counter Component for trust stats
+function AnimatedCounter({ value, duration = 2000 }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let start = 0;
+    const end = parseInt(value.replace(/[^0-9]/g, ''), 10);
+    if (isNaN(end)) {
+      setCount(value);
+      return;
+    }
+    const suffix = value.replace(/[0-9]/g, '');
+    const startTime = performance.now();
+
+    const animateCount = (timestamp) => {
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      setCount(Math.floor(progress * end) + suffix);
+      if (progress < 1) {
+        requestAnimationFrame(animateCount);
+      }
+    };
+    requestAnimationFrame(animateCount);
+  }, [value, duration]);
+
+  return <span>{count}</span>;
+}
+
 export default function Portal({ onViewChange }) {
   const [isHnwiMode, setIsHnwiMode] = useState(false);
   const [properties, setProperties] = useState([]);
@@ -494,246 +520,7 @@ export default function Portal({ onViewChange }) {
     };
   }, []);
 
-  // Rotating 3D WebGL Skyscraper/Penthouse (Three.js upgrade - Phase 3)
-  useEffect(() => {
-    const canvas = document.getElementById('hero-3d-building-canvas');
-    if (!canvas) return;
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // 1. Scene setup
-    const scene = new THREE.Scene();
-    
-    // Light & Dark theme background colors matching var(--bg-dark)
-    const isLight = document.documentElement.classList.contains('light-theme');
-    
-    // 2. Camera setup
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 1.2, 5.5);
-
-    // 3. Renderer setup
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      antialias: true,
-      alpha: true
-    });
-    renderer.setSize(width, height, false);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    // 4. Lights
-    const ambientLight = new THREE.AmbientLight(isLight ? 0xffffff : 0x0a1530, isLight ? 1.5 : 0.6);
-    scene.add(ambientLight);
-
-    const dirLight = new THREE.DirectionalLight(0xffffff, isLight ? 1.8 : 1.2);
-    dirLight.position.set(5, 10, 7);
-    scene.add(dirLight);
-
-    // Internal golden glows inside rooms
-    const pointLight1 = new THREE.PointLight(0xD4AF37, isLight ? 1.5 : 4.0, 10);
-    pointLight1.position.set(0, 0, 0);
-    scene.add(pointLight1);
-
-    const pointLight2 = new THREE.PointLight(0xD4AF37, isLight ? 1.0 : 3.0, 10);
-    pointLight2.position.set(0.5, 0.8, -0.2);
-    scene.add(pointLight2);
-
-    // 5. Materials
-    const goldFrameMat = new THREE.MeshStandardMaterial({
-      color: 0xD4AF37,
-      metalness: 0.9,
-      roughness: 0.25,
-      flatShading: false
-    });
-
-    const glassMat = new THREE.MeshStandardMaterial({
-      color: isLight ? 0x9A7B1C : 0x152238,
-      metalness: 0.8,
-      roughness: 0.1,
-      transparent: true,
-      opacity: isLight ? 0.35 : 0.55
-    });
-
-    // 6. Building Group Construction
-    const buildingGroup = new THREE.Group();
-
-    // Stacked architectural slabs & glass boxes
-    const floorsCount = 3;
-    const floorHeight = 0.65;
-    const floorWidths = [1.4, 1.1, 0.8];
-    const floorDepths = [1.4, 1.1, 0.8];
-    const offsets = [
-      { x: 0, z: 0 },
-      { x: 0.12, z: -0.12 },
-      { x: -0.08, z: 0.08 }
-    ];
-
-    const geometriesToDispose = [];
-    const meshes = [];
-
-    for (let i = 0; i < floorsCount; i++) {
-      const yPos = (i - floorsCount/2) * floorHeight + floorHeight/2;
-      const w = floorWidths[i];
-      const h = floorHeight - 0.04;
-      const d = floorDepths[i];
-      const offset = offsets[i];
-
-      // Glass Room block
-      const roomGeo = new THREE.BoxGeometry(w, h, d);
-      geometriesToDispose.push(roomGeo);
-      const room = new THREE.Mesh(roomGeo, glassMat);
-      room.position.set(offset.x, yPos, offset.z);
-      buildingGroup.add(room);
-      meshes.push(room);
-
-      // Floor & Ceiling gold slabs
-      const slabGeo = new THREE.BoxGeometry(w + 0.08, 0.03, d + 0.08);
-      geometriesToDispose.push(slabGeo);
-      const slabBottom = new THREE.Mesh(slabGeo, goldFrameMat);
-      slabBottom.position.set(offset.x, yPos - h/2 - 0.015, offset.z);
-      buildingGroup.add(slabBottom);
-      meshes.push(slabBottom);
-
-      const slabTop = new THREE.Mesh(slabGeo, goldFrameMat);
-      slabTop.position.set(offset.x, yPos + h/2 + 0.015, offset.z);
-      buildingGroup.add(slabTop);
-      meshes.push(slabTop);
-
-      // Corner pillars (thin cylinder columns)
-      const colHeight = h + 0.03;
-      const colGeo = new THREE.CylinderGeometry(0.016, 0.016, colHeight, 8);
-      geometriesToDispose.push(colGeo);
-
-      const halfW = w / 2;
-      const halfD = d / 2;
-      const columnPositions = [
-        { x: offset.x - halfW, z: offset.z - halfD },
-        { x: offset.x + halfW, z: offset.z - halfD },
-        { x: offset.x - halfW, z: offset.z + halfD },
-        { x: offset.x + halfW, z: offset.z + halfD }
-      ];
-
-      columnPositions.forEach(pos => {
-        const pillar = new THREE.Mesh(colGeo, goldFrameMat);
-        pillar.position.set(pos.x, yPos, pos.z);
-        buildingGroup.add(pillar);
-        meshes.push(pillar);
-      });
-    }
-
-    // Top Helipad / Spire
-    const antennaSpireGeo = new THREE.CylinderGeometry(0.005, 0.01, 0.6, 8);
-    geometriesToDispose.push(antennaSpireGeo);
-    const antenna = new THREE.Mesh(antennaSpireGeo, goldFrameMat);
-    const lastOffset = offsets[floorsCount - 1];
-    antenna.position.set(lastOffset.x, (floorsCount - floorsCount/2) * floorHeight + 0.3, lastOffset.z);
-    buildingGroup.add(antenna);
-    meshes.push(antenna);
-
-    scene.add(buildingGroup);
-
-    // 7. Ambient Dust Particle System
-    const particleCount = prefersReducedMotion ? 0 : 50;
-    let particleSystem;
-    if (particleCount > 0) {
-      const particleGeo = new THREE.BufferGeometry();
-      const positions = new Float32Array(particleCount * 3);
-      for (let i = 0; i < particleCount * 3; i += 3) {
-        positions[i] = (Math.random() - 0.5) * 4;
-        positions[i+1] = (Math.random() - 0.5) * 4;
-        positions[i+2] = (Math.random() - 0.5) * 4;
-      }
-      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      geometriesToDispose.push(particleGeo);
-
-      const particleMat = new THREE.PointsMaterial({
-        color: 0xD4AF37,
-        size: 0.04,
-        transparent: true,
-        opacity: 0.6
-      });
-      particleSystem = new THREE.Points(particleGeo, particleMat);
-      scene.add(particleSystem);
-    }
-
-    // 8. Animation & Interaction loop variables
-    let targetRotationY = 0;
-    let targetRotationX = 0;
-    let currentRotationY = 0;
-    let currentRotationX = 0;
-    let mouseX = 0;
-    let mouseY = 0;
-
-    const handleMouseMove = (e) => {
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      mouseX = (e.clientX / windowWidth) - 0.5;
-      mouseY = (e.clientY / windowHeight) - 0.5;
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-
-    const handleResize = () => {
-      if (!canvas) return;
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h, false);
-    };
-    window.addEventListener('resize', handleResize);
-
-    // 9. Frame draw cycle
-    let animationId;
-    let clock = new THREE.Clock();
-
-    const animate = () => {
-      // Rotation logic
-      const elapsedTime = clock.getElapsedTime();
-      
-      if (!prefersReducedMotion) {
-        // Auto rotate slowly
-        buildingGroup.rotation.y = elapsedTime * 0.15;
-        
-        // Add mouse influence (smooth interpolation / lerp)
-        targetRotationY = mouseX * 0.8;
-        targetRotationX = mouseY * 0.4;
-        currentRotationY += (targetRotationY - currentRotationY) * 0.05;
-        currentRotationX += (targetRotationX - currentRotationX) * 0.05;
-
-        buildingGroup.rotation.y += currentRotationY;
-        buildingGroup.rotation.x = currentRotationX + 0.15; // default tilt
-        
-        if (particleSystem) {
-          particleSystem.rotation.y = -elapsedTime * 0.05;
-          particleSystem.rotation.x = elapsedTime * 0.02;
-        }
-      } else {
-        // Reduced motion mode: static slow default angle
-        buildingGroup.rotation.y = 0.5;
-        buildingGroup.rotation.x = 0.15;
-      }
-
-      renderer.render(scene, camera);
-      animationId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    // 10. Clean up WebGL resources
-    return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('resize', handleResize);
-
-      // Dispose geometries
-      geometriesToDispose.forEach(g => g.dispose());
-      // Dispose materials
-      goldFrameMat.dispose();
-      glassMat.dispose();
-      renderer.dispose();
-    };
-  }, []);
+  // Redesigned with premium sunset luxury property image background instead of canvas models.
 
   useEffect(() => {
     const loadRawProperties = async () => {
@@ -1143,16 +930,19 @@ export default function Portal({ onViewChange }) {
 
   const handleSelectSuggestion = (suggestion) => {
     setSelectedPropertyDetail(null);
-    setFilters(prev => ({
-      ...prev,
-      transactionType: heroTab,
-      query: '',
-      location: '',
-      bedrooms: '',
-      maxPrice: '',
-      propertyType: '',
-      ...suggestion.filters
-    }));
+    setFilters(prev => {
+      const isCommercial = heroTab === 'COMMERCIAL';
+      return {
+        ...prev,
+        transactionType: isCommercial ? '' : heroTab,
+        query: '',
+        location: '',
+        bedrooms: '',
+        maxPrice: '',
+        propertyType: isCommercial ? 'COMMERCIAL' : '',
+        ...suggestion.filters
+      };
+    });
     setHeroSearchText('');
     setSmartChips([]);
     setSearchFocused(false);
@@ -1196,14 +986,15 @@ export default function Portal({ onViewChange }) {
     );
 
     setFilters(prev => {
+      const isCommercial = heroTab === 'COMMERCIAL';
       const baseFilters = {
         ...prev,
-        transactionType: heroTab,
+        transactionType: isCommercial ? '' : heroTab,
         query: '',
         location: '',
         bedrooms: '',
         maxPrice: '',
-        propertyType: ''
+        propertyType: isCommercial ? 'COMMERCIAL' : ''
       };
 
       if (matchedSuggestion) {
@@ -2074,246 +1865,295 @@ export default function Portal({ onViewChange }) {
         </div>
       ) : activeSubView ? renderSubView() : (
         <>
-          {/* Animated Hero Slideshow Section with Cinematic Video & Parallax */}
-          <section className="portal-hero" style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-        <div className="hero-video-container" style={{ position: 'absolute', inset: 0, zIndex: 0, transform: `translate3d(0, ${scrollY * 0.35}px, 0)`, transition: 'transform 0.05s linear' }}>
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            className="hero-video-bg"
-            src="https://assets.mixkit.co/videos/preview/mixkit-modern-villa-with-a-swimming-pool-41620-large.mp4"
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
-          />
-          <div className="hero-video-overlay" style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'radial-gradient(circle at center, rgba(7, 15, 30, 0.72) 0%, rgba(7, 15, 30, 0.96) 100%)'
-          }} />
-        </div>
-
-        <canvas id="hero-particle-canvas" className="hero-particle-canvas" style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', width: '100%', height: '100%' }} />
-        <div className="hero-glow-1"></div>
-        <div className="hero-glow-2"></div>
-        
-        <div className="hero-content" style={{ zIndex: 2, position: 'relative', width: '100%', maxWidth: '1410px', margin: '0 auto', padding: '120px 20px 80px 20px' }}>
-          <div className="hero-grid-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '50px', width: '100%', alignItems: 'center' }}>
+          {/* Redesigned Full-Screen Cinematic Hero Section */}
+          <section className="portal-hero">
+            {/* Dark vignette overlay for readability */}
+            <div className="hero-vignette-overlay" />
             
-            <div className="hero-text-block" style={{ transform: `translate3d(0, ${scrollY * 0.12}px, 0)`, transition: 'transform 0.05s linear' }}>
-              <span className="hero-gold-badge">Pune's Premium Location Advisory</span>
-              <h1 style={{ fontFamily: 'var(--font-title)', fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: '#fff', lineHeight: 1.25, margin: '15px 0 20px 0', textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
-                {isHnwiMode 
-                  ? 'Institutional Mandates & Private Portfolios for Pune Tech Hubs'
-                  : 'At 24K Realtors, we help you choose the right location—not just the right flat.'}
-              </h1>
-              <p className="hero-subtext" style={{ fontSize: 'clamp(0.9rem, 1.2vw, 1.1rem)', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '30px' }}>
-                {isHnwiMode
-                  ? 'Exclusive whole-building mandates, premium high-yield commercial assets, and pre-release developer allocations for HNWI partners.'
-                  : 'Discover handpicked, 100% verified properties across Hinjewadi, Wakad & Baner\'s high-appreciation corridors.'}
-              </p>
-            </div>
+            <div className="hero-content" style={{ maxWidth: '1410px', margin: '0 auto', padding: '120px 20px 80px 20px' }}>
+              <div className="hero-grid-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '50px', width: '100%', alignItems: 'center' }}>
+                
+                {/* Left Column: Headings & CTA */}
+                <div className="hero-text-block" style={{ transform: `translate3d(0, ${scrollY * 0.12}px, 0)`, transition: 'transform 0.05s linear' }}>
+                  <span className="hero-gold-badge">⚜️ Pune's Premium Location Advisory</span>
+                  <h1 style={{ 
+                    fontFamily: "'Cinzel', serif", 
+                    fontSize: 'clamp(2.4rem, 4vw, 3.8rem)', 
+                    color: '#fff', 
+                    lineHeight: 1.2, 
+                    margin: '15px 0 20px 0', 
+                    fontWeight: 700,
+                    textShadow: '0 4px 15px rgba(0,0,0,0.8)' 
+                  }}>
+                    {isHnwiMode 
+                      ? 'Private Portfolios & Institutional Mandates'
+                      : 'We help you choose the right location — not just the right flat.'}
+                  </h1>
+                  <p className="hero-subtext" style={{ 
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontSize: 'clamp(0.95rem, 1.2vw, 1.15rem)', 
+                    color: 'rgba(255, 255, 255, 0.7)', 
+                    lineHeight: 1.6, 
+                    marginBottom: '35px',
+                    textShadow: '0 2px 5px rgba(0,0,0,0.6)'
+                  }}>
+                    {isHnwiMode
+                      ? 'Exclusive whole-building mandates, premium high-yield commercial assets, and pre-release developer allocations for HNWI partners.'
+                      : 'Discover handpicked, 100% verified properties across Hinjewadi, Wakad & Baner\'s high-appreciation corridors.'}
+                  </p>
 
-            <div className="hero-3d-model-block" style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              gap: '24px', 
-              alignItems: 'center', 
-              width: '100%',
-              maxWidth: '520px',
-              justifySelf: 'center',
-              transform: `translate3d(0, ${scrollY * -0.04}px, 0)`, 
-              transition: 'transform 0.05s linear' 
-            }}>
-              
-              {/* Search Capsule Wrapper (Moved to Right Column next to Title - Phase 3) */}
-              <div className="hero-search-wrapper" style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1px solid rgba(212, 175, 55, 0.22)',
-                borderRadius: '24px',
-                padding: '20px',
-                width: '100%',
-                boxShadow: '0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
-                zIndex: 10
-              }}>
-                <div className="hero-search-tabs-container">
-                  <button 
-                    type="button"
-                    className={`hero-search-tab-btn ${heroTab === 'BUY' ? 'active' : ''}`} 
-                    onClick={() => setHeroTab('BUY')}
-                  >
-                    Buy
-                  </button>
-                  <button 
-                    type="button"
-                    className={`hero-search-tab-btn ${heroTab === 'RENT' ? 'active' : ''}`} 
-                    onClick={() => setHeroTab('RENT')}
-                  >
-                    Rent
-                  </button>
-                  <button 
-                    type="button"
-                    className={`hero-search-tab-btn ${heroTab === 'SELL' ? 'active' : ''}`} 
-                    onClick={() => {
-                      setHeroTab('SELL');
-                      setTimeout(() => {
-                        const el = document.getElementById('seller-mandate-anchor');
-                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      }, 100);
-                    }}
-                  >
-                    Sell
-                  </button>
-                  <div 
-                    className="hero-search-tab-underline"
-                    style={{
-                      width: '33.333%',
-                      transform: `translateX(${heroTab === 'BUY' ? '0%' : heroTab === 'RENT' ? '100%' : '200%'})`
-                    }}
-                  >
-                    <div className="hero-search-tab-pill-bg"></div>
-                  </div>
-                </div>
- 
-                {/* Smart chip tokens */}
-                {smartChips.length > 0 && (
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                    {smartChips.map((chip, i) => (
-                      <span key={i} style={{
-                        background: 'rgba(212,175,55,0.12)',
-                        border: '1px solid rgba(212,175,55,0.3)',
-                        borderRadius: '20px',
-                        padding: '3px 10px',
-                        fontSize: '0.72rem',
-                        color: 'var(--gold-primary)',
-                        fontWeight: 600,
-                        letterSpacing: '0.02em',
-                      }}>
-                        {chip.label}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                <div style={{ position: 'relative', width: '100%' }}>
-                  <form onSubmit={handleHeroSearch} className="hero-search-capsule" style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '50px', padding: '5px', width: '100%', border: `1px solid ${searchFocused ? 'rgba(212,175,55,0.35)' : 'rgba(255, 255, 255, 0.08)'}`, transition: 'all 0.3s ease', boxShadow: searchFocused ? '0 0 0 3px rgba(212,175,55,0.08)' : 'none' }}>
-                    <input
-                      type="text"
-                      placeholder="Try: 3 BHK Hinjewadi under 1.2 Cr, Penthouse Baner..."
-                      value={heroSearchText}
-                      onChange={e => handleSmartInputChange(e.target.value)}
-                      onFocus={() => setSearchFocused(true)}
-                      onBlur={() => setTimeout(() => setSearchFocused(false), 180)}
-                      style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#fff', outline: 'none' }}
-                      aria-label="Search properties"
-                    />
-                    <button
-                      type="submit"
-                      style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '10px 24px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
+                  {/* Extra CTA/Action links in Hero (Apple style) */}
+                  <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '30px' }}>
+                    <button 
+                      onClick={() => {
+                        const el = document.getElementById('listings-anchor');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                      style={{
+                        background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                        border: 'none',
+                        color: '#040814',
+                        padding: '14px 28px',
+                        borderRadius: '50px',
+                        fontWeight: 700,
+                        letterSpacing: '0.05em',
+                        cursor: 'pointer',
+                        boxShadow: '0 10px 25px rgba(230,195,92,0.3)',
+                        transition: 'transform 0.2s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
+                      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                     >
-                      <Search size={15} />
-                      <span>Search</span>
+                      Explore Portfolio
                     </button>
-                  </form>
-
-                  {/* Recent searches dropdown */}
-                  {searchFocused && !heroSearchText && recentSearches.length > 0 && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 'calc(100% + 8px)',
-                      left: 0, right: 0,
-                      background: 'rgba(7, 15, 30, 0.97)',
-                      border: '1px solid rgba(212,175,55,0.15)',
-                      borderRadius: '16px',
-                      overflow: 'hidden',
-                      boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-                      zIndex: 100,
-                      backdropFilter: 'blur(20px)',
-                    }}>
-                      <div style={{ padding: '10px 16px 6px', fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                        Recent Searches
-                      </div>
-                      {recentSearches.map((s, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onMouseDown={() => { handleHeroSearch(null, s); }}
-                          style={{
-                            display: 'block', width: '100%', textAlign: 'left',
-                            padding: '10px 16px',
-                            background: 'none', border: 'none', cursor: 'pointer',
-                            fontSize: '0.86rem', color: 'var(--text-light)',
-                            borderBottom: i < recentSearches.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
-                            transition: 'background 0.15s',
-                          }}
-                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.06)'}
-                          onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                        >
-                          🕐 {s}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Autocomplete Suggestions dropdown */}
-                  {searchFocused && heroSearchText && getSearchSuggestions(heroSearchText).length > 0 && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 'calc(100% + 8px)',
-                      left: 0, right: 0,
-                      background: 'rgba(7, 15, 30, 0.97)',
-                      border: '1px solid rgba(212,175,55,0.15)',
-                      borderRadius: '16px',
-                      overflow: 'hidden',
-                      boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-                      zIndex: 100,
-                      backdropFilter: 'blur(20px)',
-                    }}>
-                      <div style={{ padding: '10px 16px 6px', fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                        Suggested Matches
-                      </div>
-                      {getSearchSuggestions(heroSearchText).map((s, i, arr) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onMouseDown={() => { handleSelectSuggestion(s); }}
-                          style={{
-                            display: 'block', width: '100%', textAlign: 'left',
-                            padding: '10px 16px',
-                            background: 'none', border: 'none', cursor: 'pointer',
-                            fontSize: '0.86rem', color: 'var(--text-light)',
-                            borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
-                            transition: 'background 0.15s',
-                          }}
-                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.06)'}
-                          onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                        >
-                          {s.label}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                    <button 
+                      onClick={() => handleCollectionChange('WISHLIST')}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.15)',
+                        color: '#FFF4D0',
+                        padding: '14px 28px',
+                        borderRadius: '50px',
+                        fontWeight: 700,
+                        letterSpacing: '0.05em',
+                        cursor: 'pointer',
+                        transition: 'background 0.2s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'}
+                    >
+                      Saved Listings
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* 3D WebGL Penthouse Model Canvas (Below Search Bar) */}
-              <div style={{ width: '100%', height: '320px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-                <canvas id="hero-3d-building-canvas" style={{ width: '100%', height: '100%', maxWidth: '320px', maxHeight: '320px' }} />
-              </div>
+                {/* Right Column: Floating Glassmorphism Search Panel */}
+                <div className="hero-3d-model-block">
+                  <div className="hero-search-wrapper">
+                    <div className="hero-search-tabs-container">
+                      <button 
+                        type="button"
+                        className={`hero-search-tab-btn ${heroTab === 'BUY' ? 'active' : ''}`} 
+                        onClick={() => setHeroTab('BUY')}
+                      >
+                        Buy
+                      </button>
+                      <button 
+                        type="button"
+                        className={`hero-search-tab-btn ${heroTab === 'RENT' ? 'active' : ''}`} 
+                        onClick={() => setHeroTab('RENT')}
+                      >
+                        Rent
+                      </button>
+                      <button 
+                        type="button"
+                        className={`hero-search-tab-btn ${heroTab === 'COMMERCIAL' ? 'active' : ''}`} 
+                        onClick={() => setHeroTab('COMMERCIAL')}
+                      >
+                        Commercial
+                      </button>
+                      <div 
+                        className="hero-search-tab-underline"
+                        style={{
+                          width: '33.333%',
+                          transform: `translateX(${heroTab === 'BUY' ? '0%' : heroTab === 'RENT' ? '100%' : '200%'})`
+                        }}
+                      >
+                        <div className="hero-search-tab-pill-bg"></div>
+                      </div>
+                    </div>
+     
+                    {/* Smart chip tokens */}
+                    {smartChips.length > 0 && (
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                        {smartChips.map((chip, i) => (
+                          <span key={i} style={{
+                            background: 'rgba(212,175,55,0.12)',
+                            border: '1px solid rgba(212,175,55,0.3)',
+                            borderRadius: '20px',
+                            padding: '3px 10px',
+                            fontSize: '0.72rem',
+                            color: 'var(--gold-primary)',
+                            fontWeight: 600,
+                            letterSpacing: '0.02em',
+                          }}>
+                            {chip.label}
+                          </span>
+                        ))}
+                      </div>
+                    )}
 
+                    <div style={{ position: 'relative', width: '100%' }}>
+                      <form onSubmit={handleHeroSearch} className="hero-search-capsule">
+                        <input
+                          type="text"
+                          placeholder="Try: 3 BHK Hinjewadi under 1.2 Cr, Penthouse Baner..."
+                          value={heroSearchText}
+                          onChange={e => handleSmartInputChange(e.target.value)}
+                          onFocus={() => setSearchFocused(true)}
+                          onBlur={() => setTimeout(() => setSearchFocused(false), 180)}
+                          style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#fff', outline: 'none' }}
+                          aria-label="Search properties"
+                        />
+                        <button
+                          type="submit"
+                          style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
+                        >
+                          <Search size={15} />
+                          <span>Search</span>
+                        </button>
+                      </form>
+
+                      {/* Recent searches dropdown */}
+                      {searchFocused && !heroSearchText && recentSearches.length > 0 && (
+                        <div style={{
+                          position: 'absolute',
+                          top: 'calc(100% + 8px)',
+                          left: 0, right: 0,
+                          background: 'rgba(7, 15, 30, 0.97)',
+                          border: '1px solid rgba(212,175,55,0.15)',
+                          borderRadius: '16px',
+                          overflow: 'hidden',
+                          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                          zIndex: 100,
+                          backdropFilter: 'blur(20px)',
+                        }}>
+                          <div style={{ padding: '10px 16px 6px', fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                            Recent Searches
+                          </div>
+                          {recentSearches.map((s, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onMouseDown={() => { handleHeroSearch(null, s); }}
+                              style={{
+                                display: 'block', width: '100%', textAlign: 'left',
+                                padding: '10px 16px',
+                                background: 'none', border: 'none', cursor: 'pointer',
+                                fontSize: '0.86rem', color: 'var(--text-light)',
+                                borderBottom: i < recentSearches.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+                                transition: 'background 0.15s',
+                              }}
+                              onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.06)'}
+                              onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                            >
+                              🕐 {s}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Autocomplete Suggestions dropdown */}
+                      {searchFocused && heroSearchText && getSearchSuggestions(heroSearchText).length > 0 && (
+                        <div style={{
+                          position: 'absolute',
+                          top: 'calc(100% + 8px)',
+                          left: 0, right: 0,
+                          background: 'rgba(7, 15, 30, 0.97)',
+                          border: '1px solid rgba(212,175,55,0.15)',
+                          borderRadius: '16px',
+                          overflow: 'hidden',
+                          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                          zIndex: 100,
+                          backdropFilter: 'blur(20px)',
+                        }}>
+                          <div style={{ padding: '10px 16px 6px', fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                            Suggested Matches
+                          </div>
+                          {getSearchSuggestions(heroSearchText).map((s, i, arr) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onMouseDown={() => { handleSelectSuggestion(s); }}
+                              style={{
+                                display: 'block', width: '100%', textAlign: 'left',
+                                padding: '10px 16px',
+                                background: 'none', border: 'none', cursor: 'pointer',
+                                fontSize: '0.86rem', color: 'var(--text-light)',
+                                borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+                                transition: 'background 0.15s',
+                              }}
+                              onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.06)'}
+                              onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                            >
+                              {s.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
+
+          {/* ⚜️ Trust statistics Counter Ribbon */}
+          <section className="trust-stats-section">
+            <div className="trust-stats-grid">
+              <div className="stat-card">
+                <div className="stat-number">
+                  <AnimatedCounter value="500+" />
+                </div>
+                <div className="stat-label">Families Assisted</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">
+                  <AnimatedCounter value="800Cr+" />
+                </div>
+                <div className="stat-label">Sales Volume</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">
+                  <AnimatedCounter value="100%" />
+                </div>
+                <div className="stat-label">Verified Listings</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">
+                  <AnimatedCounter value="15+" />
+                </div>
+                <div className="stat-label">Top Builders</div>
+              </div>
+            </div>
+          </section>
+
+          {/* ⚜️ Premium Builders Alliance grayscale gallery */}
+          <section className="builder-showcase-section">
+            <div style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
+              <span className="hero-gold-badge" style={{ fontSize: '0.7rem', marginBottom: '0' }}>Premium Real Estate Partners</span>
+              <div className="builder-showcase-grid">
+                <div className="builder-logo-item">LODHA</div>
+                <div className="builder-logo-item">GODREJ</div>
+                <div className="builder-logo-item">VTP REALTY</div>
+                <div className="builder-logo-item">KOLTE PATIL</div>
+                <div className="builder-logo-item">SHAPOORJI PALLONJI</div>
+                <div className="builder-logo-item">GERA DEVELOPERS</div>
+                <div className="builder-logo-item">NYATI GROUP</div>
+              </div>
+            </div>
+          </section>
 
       {/* MahaRERA Authorized Trust Banner */}
       <div id="maharera-trust-banner" className="maharera-trust-banner" style={{ border: '2px solid rgba(212,175,55,0.4)', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', borderRadius: '12px', padding: '24px 30px', margin: '30px auto', maxWidth: '1410px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
