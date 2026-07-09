@@ -82,13 +82,7 @@
 
 /* 2. HNWI Switch Pill Selector Desk */
 .hnwi-mode-desk {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(212, 175, 55, 0.15);
-  padding: 5px 12px;
-  border-radius: 50px;
+  display: none !important;
 }
 
 .hnwi-mode-desk span {
@@ -3079,37 +3073,39 @@
 /* BUY / RENT / SELL Selector Tabs */
 .nav-transaction-tabs {
   display: flex;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(212, 175, 55, 0.15);
-  padding: 4px;
-  border-radius: 50px;
-  gap: 4px;
-}
-
-.nav-transaction-tabs button {
   background: transparent;
-  border: 1px solid transparent;
-  color: var(--text-muted);
-  font-size: 0.72rem;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  gap: 12px;
+  align-items: center;
+}
+
+.nav-transaction-tabs button,
+.nav-transaction-tabs .nav-dropdown-trigger-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.78rem;
   font-weight: 700;
-  padding: 6px 18px;
-  border-radius: 50px;
+  padding: 8px 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
   outline: none;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
 }
 
-.nav-transaction-tabs button:hover {
-  color: var(--text-light);
+.nav-transaction-tabs button:hover,
+.nav-transaction-tabs .nav-dropdown-trigger-btn:hover {
+  color: #E6C35C;
 }
 
-.nav-transaction-tabs button.active {
-  background: rgba(212, 175, 55, 0.08);
-  border: 1px solid var(--gold-primary);
-  color: var(--gold-primary);
+.nav-transaction-tabs button.active,
+.nav-transaction-tabs .nav-dropdown-trigger-btn.active {
+  color: #E6C35C;
   font-weight: 700;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
 }
 
 /* Light Theme Overrides */
@@ -5392,10 +5388,47 @@
 }
 
 /* Responsiveness for search panel on mobile/tablets */
-@media (max-width: 900px) {
-  .luxury-search-panel form {
-    grid-template-columns: 1fr !important;
+@media (max-width: 991px) {
+  .luxury-search-capsule-form {
+    flex-direction: column !important;
+    padding: 20px !important;
+    gap: 16px !important;
   }
+  .luxury-search-capsule-form .luxury-select-divider {
+    display: none !important;
+  }
+  .luxury-search-capsule-form > div {
+    width: 100% !important;
+    padding-right: 0 !important;
+  }
+  .luxury-search-capsule-form select {
+    padding: 10px 14px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 8px !important;
+    width: 100% !important;
+  }
+  .luxury-search-capsule-form button[type="submit"] {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* Custom luxury-select dropdown styling */
+.luxury-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23E6C35C' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 4px center !important;
+  padding-right: 20px !important;
+  cursor: pointer;
+}
+
+.luxury-select option {
+  background-color: #070f1e !important;
+  color: #fff !important;
 }
 
 

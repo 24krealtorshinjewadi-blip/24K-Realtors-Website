@@ -156,7 +156,7 @@ export default function CompanyLogo({ variant = 'full', width, height, className
             color: '#E6C35C', 
             letterSpacing: '0.15em',
             marginTop: '3px'
-          }}>FIND YOUR SELF AT HOME</span>
+          }}>FIND YOUR LUXURY</span>
         </div>
       </div>
     );
@@ -219,7 +219,7 @@ export default function CompanyLogo({ variant = 'full', width, height, className
             filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5))'
           }}
         >
-          FIND YOUR SELF AT HOME
+          FIND YOUR LUXURY
         </text>
 
         {/* Flourish Divider */}

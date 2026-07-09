@@ -1971,7 +1971,7 @@ export default function Portal({ onViewChange }) {
                   fontWeight: 700,
                   textShadow: '0 4px 15px rgba(0,0,0,0.6)' 
                 }}>
-                  Find Your <span style={{ color: '#E6C35C' }}>Dream Home</span> in Pune
+                  Find Your Dream Home <span style={{ color: '#E6C35C' }}>in Pune</span>
                 </h1>
                 
                 <p className="hero-subtext" style={{ 
@@ -2056,28 +2056,30 @@ export default function Portal({ onViewChange }) {
 
               {/* Structured Floating Search Panel */}
               <div className="luxury-search-panel" style={{
-                background: 'rgba(7, 15, 30, 0.55)',
-                backdropFilter: 'blur(28px)',
-                WebkitBackdropFilter: 'blur(28px)',
-                border: '1px solid rgba(230, 195, 92, 0.2)',
-                borderRadius: '24px',
-                padding: '24px 32px',
                 width: '100%',
-                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
                 boxSizing: 'border-box',
                 marginTop: '40px'
               }}>
                 {/* Tabs */}
-                <div style={{ display: 'flex', gap: '24px', marginBottom: '20px', borderBottom: '1px solid rgba(255,255,0.06)', paddingBottom: '12px' }}>
+                <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
                   <button 
                     onClick={() => setHeroTab('BUY')}
                     type="button"
                     style={{
-                      background: 'none', border: 'none', color: heroTab === 'BUY' ? '#E6C35C' : 'rgba(255,255,255,0.6)',
-                      fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.08em', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: '8px', paddingBottom: '12px',
-                      borderBottom: heroTab === 'BUY' ? '2px solid #E6C35C' : 'none',
-                      transition: 'all 0.3s ease', textTransform: 'uppercase'
+                      background: heroTab === 'BUY' ? 'rgba(230, 195, 92, 0.08)' : 'none',
+                      border: heroTab === 'BUY' ? '1px solid rgba(230, 195, 92, 0.5)' : '1px solid transparent',
+                      color: heroTab === 'BUY' ? '#E6C35C' : 'rgba(255,255,255,0.7)',
+                      fontSize: '0.78rem', 
+                      fontWeight: 700, 
+                      letterSpacing: '0.08em', 
+                      cursor: 'pointer',
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '8px', 
+                      padding: '8px 20px',
+                      borderRadius: '30px',
+                      transition: 'all 0.3s ease', 
+                      textTransform: 'uppercase'
                     }}
                   >
                     <Home size={14} />
@@ -2087,11 +2089,20 @@ export default function Portal({ onViewChange }) {
                     onClick={() => setHeroTab('RENT')}
                     type="button"
                     style={{
-                      background: 'none', border: 'none', color: heroTab === 'RENT' ? '#E6C35C' : 'rgba(255,255,255,0.6)',
-                      fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.08em', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: '8px', paddingBottom: '12px',
-                      borderBottom: heroTab === 'RENT' ? '2px solid #E6C35C' : 'none',
-                      transition: 'all 0.3s ease', textTransform: 'uppercase'
+                      background: heroTab === 'RENT' ? 'rgba(230, 195, 92, 0.08)' : 'none',
+                      border: heroTab === 'RENT' ? '1px solid rgba(230, 195, 92, 0.5)' : '1px solid transparent',
+                      color: heroTab === 'RENT' ? '#E6C35C' : 'rgba(255,255,255,0.7)',
+                      fontSize: '0.78rem', 
+                      fontWeight: 700, 
+                      letterSpacing: '0.08em', 
+                      cursor: 'pointer',
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '8px', 
+                      padding: '8px 20px',
+                      borderRadius: '30px',
+                      transition: 'all 0.3s ease', 
+                      textTransform: 'uppercase'
                     }}
                   >
                     <Key size={14} />
@@ -2101,165 +2112,195 @@ export default function Portal({ onViewChange }) {
                     onClick={() => setHeroTab('COMMERCIAL')}
                     type="button"
                     style={{
-                      background: 'none', border: 'none', color: heroTab === 'COMMERCIAL' ? '#E6C35C' : 'rgba(255,255,255,0.6)',
-                      fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.08em', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: '8px', paddingBottom: '12px',
-                      borderBottom: heroTab === 'COMMERCIAL' ? '2px solid #E6C35C' : 'none',
-                      transition: 'all 0.3s ease', textTransform: 'uppercase'
+                      background: heroTab === 'COMMERCIAL' ? 'rgba(230, 195, 92, 0.08)' : 'none',
+                      border: heroTab === 'COMMERCIAL' ? '1px solid rgba(230, 195, 92, 0.5)' : '1px solid transparent',
+                      color: heroTab === 'COMMERCIAL' ? '#E6C35C' : 'rgba(255,255,255,0.7)',
+                      fontSize: '0.78rem', 
+                      fontWeight: 700, 
+                      letterSpacing: '0.08em', 
+                      cursor: 'pointer',
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '8px', 
+                      padding: '8px 20px',
+                      borderRadius: '30px',
+                      transition: 'all 0.3s ease', 
+                      textTransform: 'uppercase'
                     }}
                   >
-                    <Briefcase size={14} />
+                    <Building size={14} />
                     <span>COMMERCIAL</span>
                   </button>
                 </div>
 
-                {/* Form fields grid */}
-                <form onSubmit={handleLuxurySearch} style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr)) 180px',
-                  gap: '20px',
-                  alignItems: 'end'
-                }}>
+                {/* Form fields glass capsule */}
+                <form 
+                  onSubmit={handleLuxurySearch} 
+                  className="luxury-search-capsule-form"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: 'rgba(7, 15, 30, 0.45)',
+                    backdropFilter: 'blur(24px)',
+                    WebkitBackdropFilter: 'blur(24px)',
+                    border: '1px solid rgba(230, 195, 92, 0.25)',
+                    borderRadius: '20px',
+                    padding: '8px 8px 8px 24px',
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.05)',
+                  }}
+                >
                   {/* Location Field */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.68rem', color: '#FFF4D0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                      <MapPin size={12} style={{ color: '#E6C35C' }} />
-                      <span>LOCATION</span>
-                    </label>
-                    <select 
-                      value={searchLocation} 
-                      onChange={e => setSearchLocation(e.target.value)}
-                      style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                        borderRadius: '8px',
-                        padding: '10px 14px',
-                        color: '#fff',
-                        fontSize: '0.85rem',
-                        fontFamily: "'Montserrat', sans-serif",
-                        outline: 'none',
-                        cursor: 'pointer',
-                        width: '100%'
-                      }}
-                    >
-                      <option value="" style={{ background: '#070F1E' }}>Hinjewadi, Wakad, Baner...</option>
-                      <option value="HINJEWADI" style={{ background: '#070F1E' }}>Hinjewadi IT Zone</option>
-                      <option value="WAKAD" style={{ background: '#070F1E' }}>Wakad Junction</option>
-                      <option value="BANER" style={{ background: '#070F1E' }}>Baner Tech Corridor</option>
-                      <option value="BALEWADI" style={{ background: '#070F1E' }}>Balewadi High Street</option>
-                      <option value="TATHAWADE" style={{ background: '#070F1E' }}>Tathawade Hub</option>
-                      <option value="MAHALUNGE" style={{ background: '#070F1E' }}>Mahalunge Township</option>
-                    </select>
+                  <div style={{ flex: '1.2 1 200px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <MapPin size={18} style={{ color: '#E6C35C', opacity: 0.85 }} />
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>LOCATION</span>
+                      <select 
+                        value={searchLocation} 
+                        onChange={e => setSearchLocation(e.target.value)}
+                        className="luxury-select"
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#fff',
+                          fontSize: '0.86rem',
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontWeight: 600,
+                          outline: 'none',
+                          cursor: 'pointer',
+                          padding: '4px 0',
+                          width: '100%'
+                        }}
+                      >
+                        <option value="" style={{ background: '#070F1E' }}>Hinjewadi, Wakad, Baner...</option>
+                        <option value="HINJEWADI" style={{ background: '#070F1E' }}>Hinjewadi IT Zone</option>
+                        <option value="WAKAD" style={{ background: '#070F1E' }}>Wakad Junction</option>
+                        <option value="BANER" style={{ background: '#070F1E' }}>Baner Tech Corridor</option>
+                        <option value="BALEWADI" style={{ background: '#070F1E' }}>Balewadi High Street</option>
+                        <option value="TATHAWADE" style={{ background: '#070F1E' }}>Tathawade Hub</option>
+                        <option value="MAHALUNGE" style={{ background: '#070F1E' }}>Mahalunge Township</option>
+                      </select>
+                    </div>
                   </div>
+
+                  <div className="luxury-select-divider" style={{ width: '1px', height: '36px', background: 'rgba(230, 195, 92, 0.15)', margin: '0 20px' }} />
 
                   {/* Property Type Field */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.68rem', color: '#FFF4D0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                      <Building size={12} style={{ color: '#E6C35C' }} />
-                      <span>PROPERTY TYPE</span>
-                    </label>
-                    <select 
-                      value={searchPropType} 
-                      onChange={e => setSearchPropType(e.target.value)}
-                      disabled={heroTab === 'COMMERCIAL'}
-                      style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                        borderRadius: '8px',
-                        padding: '10px 14px',
-                        color: '#fff',
-                        fontSize: '0.85rem',
-                        fontFamily: "'Montserrat', sans-serif",
-                        outline: 'none',
-                        cursor: heroTab === 'COMMERCIAL' ? 'not-allowed' : 'pointer',
-                        width: '100%',
-                        opacity: heroTab === 'COMMERCIAL' ? 0.5 : 1
-                      }}
-                    >
-                      {heroTab === 'COMMERCIAL' ? (
-                        <option value="COMMERCIAL" style={{ background: '#070F1E' }}>Commercial</option>
-                      ) : (
-                        <>
-                          <option value="" style={{ background: '#070F1E' }}>Select Type</option>
-                          <option value="RESIDENTIAL" style={{ background: '#070F1E' }}>Residential Apartment</option>
-                          <option value="COMMERCIAL" style={{ background: '#070F1E' }}>Commercial Workspace</option>
-                        </>
-                      )}
-                    </select>
+                  <div style={{ flex: '1 1 170px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Building size={18} style={{ color: '#E6C35C', opacity: 0.85 }} />
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>PROPERTY TYPE</span>
+                      <select 
+                        value={searchPropType} 
+                        onChange={e => setSearchPropType(e.target.value)}
+                        className="luxury-select"
+                        disabled={heroTab === 'COMMERCIAL'}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#fff',
+                          fontSize: '0.86rem',
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontWeight: 600,
+                          outline: 'none',
+                          cursor: heroTab === 'COMMERCIAL' ? 'not-allowed' : 'pointer',
+                          padding: '4px 0',
+                          width: '100%',
+                          opacity: heroTab === 'COMMERCIAL' ? 0.6 : 1
+                        }}
+                      >
+                        {heroTab === 'COMMERCIAL' ? (
+                          <option value="COMMERCIAL" style={{ background: '#070F1E' }}>Commercial</option>
+                        ) : (
+                          <>
+                            <option value="" style={{ background: '#070F1E' }}>Select Type</option>
+                            <option value="RESIDENTIAL" style={{ background: '#070F1E' }}>Residential Apartment</option>
+                            <option value="COMMERCIAL" style={{ background: '#070F1E' }}>Commercial Workspace</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
                   </div>
+
+                  <div className="luxury-select-divider" style={{ width: '1px', height: '36px', background: 'rgba(230, 195, 92, 0.15)', margin: '0 20px' }} />
 
                   {/* Budget Field */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.68rem', color: '#FFF4D0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                      <IndianRupee size={12} style={{ color: '#E6C35C' }} />
-                      <span>BUDGET</span>
-                    </label>
-                    <select 
-                      value={searchBudget} 
-                      onChange={e => setSearchBudget(e.target.value)}
-                      style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                        borderRadius: '8px',
-                        padding: '10px 14px',
-                        color: '#fff',
-                        fontSize: '0.85rem',
-                        fontFamily: "'Montserrat', sans-serif",
-                        outline: 'none',
-                        cursor: 'pointer',
-                        width: '100%'
-                      }}
-                    >
-                      <option value="" style={{ background: '#070F1E' }}>Select Budget</option>
-                      {heroTab === 'RENT' ? (
-                        <>
-                          <option value="20000" style={{ background: '#070F1E' }}>Under 20k / Month</option>
-                          <option value="35000" style={{ background: '#070F1E' }}>Under 35k / Month</option>
-                          <option value="50000" style={{ background: '#070F1E' }}>Under 50k / Month</option>
-                          <option value="100000" style={{ background: '#070F1E' }}>Under 1 Lakh / Month</option>
-                        </>
-                      ) : (
-                        <>
-                          <option value="8000000" style={{ background: '#070F1E' }}>Under 80 Lakhs</option>
-                          <option value="12000000" style={{ background: '#070F1E' }}>Under 1.2 Crore</option>
-                          <option value="20000000" style={{ background: '#070F1E' }}>Under 2 Crore</option>
-                          <option value="50000000" style={{ background: '#070F1E' }}>Under 5 Crore</option>
-                          <option value="500000000" style={{ background: '#070F1E' }}>Under 50 Crore</option>
-                        </>
-                      )}
-                    </select>
+                  <div style={{ flex: '1 1 170px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <IndianRupee size={18} style={{ color: '#E6C35C', opacity: 0.85 }} />
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>BUDGET</span>
+                      <select 
+                        value={searchBudget} 
+                        onChange={e => setSearchBudget(e.target.value)}
+                        className="luxury-select"
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#fff',
+                          fontSize: '0.86rem',
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontWeight: 600,
+                          outline: 'none',
+                          cursor: 'pointer',
+                          padding: '4px 0',
+                          width: '100%'
+                        }}
+                      >
+                        <option value="" style={{ background: '#070F1E' }}>Select Budget</option>
+                        {heroTab === 'RENT' ? (
+                          <>
+                            <option value="20000" style={{ background: '#070F1E' }}>Under 20k / Month</option>
+                            <option value="35000" style={{ background: '#070F1E' }}>Under 35k / Month</option>
+                            <option value="50000" style={{ background: '#070F1E' }}>Under 50k / Month</option>
+                            <option value="100000" style={{ background: '#070F1E' }}>Under 1 Lakh / Month</option>
+                          </>
+                        ) : (
+                          <>
+                            <option value="8000000" style={{ background: '#070F1E' }}>Under 80 Lakhs</option>
+                            <option value="12000000" style={{ background: '#070F1E' }}>Under 1.2 Crore</option>
+                            <option value="20000000" style={{ background: '#070F1E' }}>Under 2 Crore</option>
+                            <option value="50000000" style={{ background: '#070F1E' }}>Under 5 Crore</option>
+                            <option value="500000000" style={{ background: '#070F1E' }}>Under 50 Crore</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
                   </div>
 
+                  <div className="luxury-select-divider" style={{ width: '1px', height: '36px', background: 'rgba(230, 195, 92, 0.15)', margin: '0 20px' }} />
+
                   {/* BHK Layout Field */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.68rem', color: '#FFF4D0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                      <BedDouble size={12} style={{ color: '#E6C35C' }} />
-                      <span>BHK</span>
-                    </label>
-                    <select 
-                      value={searchBHK} 
-                      onChange={e => setSearchBHK(e.target.value)}
-                      disabled={heroTab === 'COMMERCIAL'}
-                      style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                        borderRadius: '8px',
-                        padding: '10px 14px',
-                        color: '#fff',
-                        fontSize: '0.85rem',
-                        fontFamily: "'Montserrat', sans-serif",
-                        outline: 'none',
-                        cursor: heroTab === 'COMMERCIAL' ? 'not-allowed' : 'pointer',
-                        width: '100%',
-                        opacity: heroTab === 'COMMERCIAL' ? 0.5 : 1
-                      }}
-                    >
-                      <option value="" style={{ background: '#070F1E' }}>Any Layout</option>
-                      <option value="1" style={{ background: '#070F1E' }}>1 BHK</option>
-                      <option value="2" style={{ background: '#070F1E' }}>2 BHK</option>
-                      <option value="3" style={{ background: '#070F1E' }}>3 BHK</option>
-                      <option value="4" style={{ background: '#070F1E' }}>4 BHK+</option>
-                    </select>
+                  <div style={{ flex: '1 1 110px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <BedDouble size={18} style={{ color: '#E6C35C', opacity: 0.85 }} />
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>BHK</span>
+                      <select 
+                        value={searchBHK} 
+                        onChange={e => setSearchBHK(e.target.value)}
+                        className="luxury-select"
+                        disabled={heroTab === 'COMMERCIAL'}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#fff',
+                          fontSize: '0.86rem',
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontWeight: 600,
+                          outline: 'none',
+                          cursor: heroTab === 'COMMERCIAL' ? 'not-allowed' : 'pointer',
+                          padding: '4px 0',
+                          width: '100%',
+                          opacity: heroTab === 'COMMERCIAL' ? 0.6 : 1
+                        }}
+                      >
+                        <option value="" style={{ background: '#070F1E' }}>Any</option>
+                        <option value="1" style={{ background: '#070F1E' }}>1 BHK</option>
+                        <option value="2" style={{ background: '#070F1E' }}>2 BHK</option>
+                        <option value="3" style={{ background: '#070F1E' }}>3 BHK</option>
+                        <option value="4" style={{ background: '#070F1E' }}>4 BHK+</option>
+                      </select>
+                    </div>
                   </div>
 
                   {/* Search Button */}
@@ -2269,26 +2310,32 @@ export default function Portal({ onViewChange }) {
                       background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
                       border: 'none',
                       color: '#040814',
-                      padding: '12px 20px',
-                      borderRadius: '8px',
+                      padding: '14px 28px',
+                      borderRadius: '12px',
                       fontWeight: 700,
                       fontFamily: "'Montserrat', sans-serif",
-                      fontSize: '0.78rem',
+                      fontSize: '0.8rem',
                       letterSpacing: '0.06em',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      width: '100%',
-                      height: '42px',
-                      boxShadow: '0 4px 15px rgba(230, 195, 92, 0.25)',
-                      transition: 'all 0.3s ease'
+                      height: '52px',
+                      boxShadow: '0 4px 20px rgba(230, 195, 92, 0.35)',
+                      transition: 'all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                      marginLeft: '12px'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.filter = 'brightness(1.08)'}
-                    onMouseLeave={e => e.currentTarget.style.filter = 'brightness(1)'}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.filter = 'brightness(1.08)';
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.filter = 'brightness(1)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
                   >
-                    <Search size={14} />
+                    <Search size={16} />
                     <span>SEARCH PROPERTIES</span>
                   </button>
                 </form>
