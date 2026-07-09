@@ -1928,7 +1928,7 @@ export default function Portal({ onViewChange }) {
           <section className="portal-hero" style={{
             position: 'relative',
             minHeight: '85vh',
-            backgroundImage: "url('/luxury_sunset_tower.png')",
+            backgroundImage: "url('/luxury_sunset_pool.png')",
             backgroundSize: 'cover',
             backgroundPosition: 'center right',
             display: 'flex',
