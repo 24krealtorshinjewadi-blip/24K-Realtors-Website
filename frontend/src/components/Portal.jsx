@@ -1866,6 +1866,7 @@ export default function Portal({ onViewChange }) {
       <PortalNavbar 
         isHnwiMode={isHnwiMode} 
         setIsHnwiMode={setIsHnwiMode} 
+        filters={filters}
         onViewChange={onViewChange} 
         onBookVisitClick={() => { setSelectedChauffeurProp(properties[0] || null); setIsChauffeurModalOpen(true); }}
         exclusiveTab={exclusiveTab}

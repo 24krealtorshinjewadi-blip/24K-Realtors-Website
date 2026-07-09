@@ -21,7 +21,8 @@ export default function PortalNavbar({
   onSearchClick,
   onSavedClick,
   activeCollection,
-  selectedPropertyDetail
+  selectedPropertyDetail,
+  filters
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
