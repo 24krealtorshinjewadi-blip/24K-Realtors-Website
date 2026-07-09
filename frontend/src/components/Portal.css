@@ -5358,6 +5358,23 @@
   }
 }
 
+/* ==========================================================================
+   ⚜️ ATOMIC DESIGN SYSTEM COMPONENTS
+   ========================================================================== */
+
+/* Glassmorphic input field focus effects */
+.glass-input-field:focus {
+  border-color: rgba(230, 195, 92, 0.6) !important;
+  background: rgba(4, 8, 20, 0.65) !important;
+  box-shadow: 0 0 20px rgba(230, 195, 92, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Luxury button click/tap scale overrides */
+.luxury-btn:active {
+  transform: scale(0.98) translateY(0) !important;
+}
+
+
 
 
 
