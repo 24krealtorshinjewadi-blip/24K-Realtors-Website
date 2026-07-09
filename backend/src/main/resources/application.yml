@@ -10,7 +10,7 @@ spring:
 # ─── Resend.com Email Delivery ───────────────────────────────────────────────
 # Set RESEND_API_KEY in Railway env vars. Get free key from https://resend.com
 resend:
-  api-key: ${RESEND_API_KEY:}
+  api-key: ${RESEND_API_KEY:re_i5gvY6vM_HP3ityQM5oCDbYgn7d6BMW5g}
   from: ${RESEND_FROM:24K Realtors <onboarding@resend.dev>}
 
 whatsapp:
