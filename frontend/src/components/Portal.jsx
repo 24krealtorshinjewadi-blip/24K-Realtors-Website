@@ -611,7 +611,15 @@ export default function Portal({ onViewChange }) {
       }
 
       const data = await apiService.getProperties(queryFilters, page, 12);
-      setProperties(data.content || []);
+      if (page === 0) {
+        setProperties(data.content || []);
+      } else {
+        setProperties(prev => {
+          const newItems = data.content || [];
+          const existingIds = new Set(prev.map(p => p.id));
+          return [...prev, ...newItems.filter(p => !existingIds.has(p.id))];
+        });
+      }
       setTotalPages(data.totalPages || 0);
       setTotalElements(data.totalElements || 0);
     } catch (err) {
@@ -625,6 +633,27 @@ export default function Portal({ onViewChange }) {
   useEffect(() => {
     fetchProperties();
   }, [fetchProperties]);
+
+  // Smooth Infinite Scroll Trigger Hook
+  useEffect(() => {
+    if (loading || page >= totalPages - 1) return;
+    const trigger = document.getElementById('infinite-scroll-trigger');
+    if (!trigger) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setPage(prev => prev + 1);
+      }
+    }, { threshold: 0.1 });
+
+    observer.observe(trigger);
+    return () => observer.disconnect();
+  }, [loading, page, totalPages]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(0);
+  }, [filters]);
 
   const isSearchActive = !!(
     filters.location ||
@@ -2500,27 +2529,23 @@ export default function Portal({ onViewChange }) {
                 </div>
               )}
 
-                  {totalPages > 1 && (
-                    <div className="pagination" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '30px' }}>
-                      <button 
-                        disabled={page === 0} 
-                        onClick={() => setPage(prev => Math.max(0, prev - 1))}
-                        className="btn-outline"
-                        style={{ padding: '8px 16px', fontSize: '0.85rem' }}
-                      >
-                        Previous
-                      </button>
-                      <span style={{ color: 'var(--text-light)', display: 'flex', alignItems: 'center', fontSize: '0.9rem' }}>
-                        Page {page + 1} of {totalPages}
-                      </span>
-                      <button 
-                        disabled={page >= totalPages - 1} 
-                        onClick={() => setPage(prev => prev + 1)}
-                        className="btn-outline"
-                        style={{ padding: '8px 16px', fontSize: '0.85rem' }}
-                      >
-                        Next
-                      </button>
+                  {/* Smooth Infinite Scroll Loader Trigger */}
+                  {page < totalPages - 1 && (
+                    <div id="infinite-scroll-trigger" style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: '40px 0',
+                      width: '100%'
+                    }}>
+                      <div className="infinite-scroll-spinner" style={{
+                        width: '32px',
+                        height: '32px',
+                        border: '3px solid rgba(230, 195, 92, 0.15)',
+                        borderTopColor: '#E6C35C',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                      }}></div>
                     </div>
                   )}
 

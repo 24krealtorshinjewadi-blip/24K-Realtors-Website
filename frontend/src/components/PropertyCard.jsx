@@ -9,6 +9,19 @@ const getOptimizedImgUrl = (url, width) => {
   return `${base}?auto=format,compress&q=75&fm=webp&w=${width}&fit=crop`;
 };
 
+const getBuilderName = (title, desc) => {
+  const t = (title + ' ' + (desc || '')).toLowerCase();
+  if (t.includes('lodha')) return 'LODHA GROUP';
+  if (t.includes('godrej')) return 'GODREJ PROPERTIES';
+  if (t.includes('vtp')) return 'VTP REALTY';
+  if (t.includes('kolte') || t.includes('24k')) return 'KOLTE PATIL';
+  if (t.includes('shapoorji')) return 'SHAPOORJI PALLONJI';
+  if (t.includes('gera')) return 'GERA DEVELOPERS';
+  if (t.includes('nyati')) return 'NYATI GROUP';
+  if (t.includes('kasturi')) return 'KASTURI BUILDERS';
+  return 'PREMIUM ALLIANCE';
+};
+
 export default function PropertyCard({ 
   property, 
   isHnwiMode, 
@@ -21,6 +34,7 @@ export default function PropertyCard({
   onOpenRera
 }) {
   const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
+  const builderName = getBuilderName(property.title, property.description);
 
   return (
     <motion.div 
@@ -28,8 +42,8 @@ export default function PropertyCard({
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-      whileHover={{ y: -8 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      whileHover={{ y: -12 }}
       id={`property-${property.id}`}
       style={{
         position: 'relative',
@@ -85,8 +99,8 @@ export default function PropertyCard({
             position: 'absolute',
             top: '12px',
             left: '12px',
-            background: 'var(--gold-primary)',
-            color: '#070F1E',
+            background: '#E6C35C',
+            color: '#040814',
             fontWeight: 800,
             fontSize: '0.68rem',
             padding: '3px 8px',
@@ -118,7 +132,7 @@ export default function PropertyCard({
               if (onToggleWishlist) onToggleWishlist(property); 
             }}
             style={{
-              background: isWishlisted ? 'var(--gold-primary)' : 'rgba(7, 15, 30, 0.7)',
+              background: isWishlisted ? '#E6C35C' : 'rgba(7, 15, 30, 0.7)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '50%',
               width: '32px',
@@ -126,7 +140,7 @@ export default function PropertyCard({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: isWishlisted ? '#070F1E' : '#fff',
+              color: isWishlisted ? '#040814' : '#fff',
               cursor: 'pointer',
               transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
               boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
@@ -144,7 +158,7 @@ export default function PropertyCard({
               onToggleCompare(property); 
             }}
             style={{
-              background: isCompared ? 'var(--gold-primary)' : 'rgba(7, 15, 30, 0.7)',
+              background: isCompared ? '#E6C35C' : 'rgba(7, 15, 30, 0.7)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '50%',
               width: '32px',
@@ -152,7 +166,7 @@ export default function PropertyCard({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: isCompared ? '#070F1E' : '#fff',
+              color: isCompared ? '#040814' : '#fff',
               cursor: 'pointer',
               transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
               boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
@@ -173,7 +187,7 @@ export default function PropertyCard({
             left: '12px',
             fontSize: '1.2rem',
             fontWeight: 800,
-            color: 'var(--gold-primary)',
+            color: '#E6C35C',
             textShadow: '0 2px 4px rgba(0,0,0,0.7)',
             zIndex: 2
           }}
@@ -194,6 +208,36 @@ export default function PropertyCard({
           gap: '8px'
         }}
       >
+        {/* Builder & Premium Badge Row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+          <span style={{
+            fontSize: '0.65rem',
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: 800,
+            color: '#E6C35C',
+            background: 'rgba(230, 195, 92, 0.08)',
+            border: '1px solid rgba(230, 195, 92, 0.22)',
+            padding: '2px 8px',
+            borderRadius: '4px',
+            letterSpacing: '0.05em'
+          }}>
+            {builderName}
+          </span>
+          {property.exclusiveDeal && (
+            <span style={{
+              fontSize: '0.65rem',
+              fontWeight: 800,
+              color: '#040814',
+              background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 100%)',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              letterSpacing: '0.02em'
+            }}>
+              EXCL
+            </span>
+          )}
+        </div>
+
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           {/* Location corridor */}
           <span 
@@ -206,7 +250,7 @@ export default function PropertyCard({
               gap: '4px'
             }}
           >
-            <MapPin size={12} color="var(--gold-primary)" />
+            <MapPin size={12} color="#E6C35C" />
             {property.location}
           </span>
           
@@ -218,20 +262,22 @@ export default function PropertyCard({
               onOpenRera(property, e);
             }}
             style={{
-              background: 'none',
-              border: 'none',
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '4px',
+              padding: '3px 8px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '3px',
-              fontSize: '0.72rem',
-              color: 'var(--gold-secondary)',
+              gap: '4px',
+              fontSize: '0.68rem',
+              color: '#FFF4D0',
               fontWeight: 600
             }}
             title="MahaRERA dossier"
           >
-            <ShieldCheck size={11} />
-            <span>RERA Approved</span>
+            <ShieldCheck size={11} color="#E6C35C" />
+            <span>RERA Certified</span>
           </button>
         </div>
 
@@ -272,7 +318,7 @@ export default function PropertyCard({
           {property.exclusiveDeal && (
             <>
               <span style={{ width: '4px', height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '50%' }}></span>
-              <span style={{ color: 'var(--gold-secondary)', fontWeight: 600 }}>★ Exclusive</span>
+              <span style={{ color: '#E6C35C', fontWeight: 600 }}>★ Exclusive</span>
             </>
           )}
         </div>
@@ -290,7 +336,7 @@ export default function PropertyCard({
             className="view-details-cta"
             style={{
               fontSize: '0.78rem',
-              color: 'var(--gold-primary)',
+              color: '#E6C35C',
               fontWeight: 700,
               display: 'flex',
               alignItems: 'center',

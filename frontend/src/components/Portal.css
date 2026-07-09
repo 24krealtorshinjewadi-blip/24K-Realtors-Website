@@ -5224,5 +5224,82 @@
   transform: translateY(-2px);
 }
 
+/* ==========================================================================
+   🍿 NETFLIX-INSPIRED HORIZONTAL SNAPPING ROWS & CARD ANIMATIONS
+   ========================================================================== */
+
+/* 1. Horizontal Scroll & Snapping Row Overrides */
+.carousel-track-container {
+  overflow: visible !important;
+  position: relative;
+}
+
+.carousel-track {
+  display: flex !important;
+  overflow-x: auto !important;
+  scroll-snap-type: x mandatory !important;
+  scroll-behavior: smooth !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  padding: 24px 0 !important;
+  gap: 24px !important;
+  margin: 0 !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Ensure each property card snaps to the start and maintains responsive sizes */
+.carousel-track > div {
+  scroll-snap-align: start !important;
+  flex: 0 0 330px !important;
+  width: 330px !important;
+  max-width: 330px !important;
+  box-sizing: border-box;
+}
+
+/* Smooth fade out indicator on the right of the row (Netflix fade) */
+.carousel-track-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 60px;
+  background: linear-gradient(to right, rgba(4, 8, 20, 0) 0%, #040814 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 2. Card Image Zoom on Hover (GPU Accelerated) */
+.property-card:hover .card-main-image {
+  transform: scale(1.08) !important;
+}
+
+/* 3. Luxury Hover Lift & Shadows */
+.property-card.premium-luxury-card {
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+              border-color 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+              box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+}
+
+.property-card.premium-luxury-card:hover {
+  border-color: rgba(230, 195, 92, 0.35) !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75), 0 0 25px rgba(230, 195, 92, 0.12) !important;
+}
+
+/* 4. Spinner Rotation Keyframes for Infinite Scroll */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.infinite-scroll-spinner {
+  animation: spin 0.8s linear infinite !important;
+}
+
+
 
 
