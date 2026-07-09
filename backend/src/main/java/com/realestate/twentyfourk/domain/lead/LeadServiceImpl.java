@@ -29,6 +29,7 @@ public class LeadServiceImpl implements LeadService {
     private final LeadRoutingService leadRoutingService;
     private final AuditLogService auditLogService;
     private final AgentRepository agentRepository;
+    private final com.realestate.twentyfourk.domain.property.PropertyRepository propertyRepository;
 
     @Override
     @Transactional
@@ -186,6 +187,10 @@ public class LeadServiceImpl implements LeadService {
 
     // Mapping Helpers
     private Lead mapToEntity(LeadRequest request) {
+        com.realestate.twentyfourk.domain.property.Property property = null;
+        if (request.propertyId() != null) {
+            property = propertyRepository.findById(request.propertyId()).orElse(null);
+        }
         return Lead.builder()
                 .name(request.name())
                 .phone(request.phone())
@@ -196,6 +201,7 @@ public class LeadServiceImpl implements LeadService {
                 .preferredLocation(request.preferredLocation())
                 .status(request.status())
                 .notes(request.notes())
+                .property(property)
                 .build();
     }
 
@@ -237,7 +243,9 @@ public class LeadServiceImpl implements LeadService {
                 lead.getAssignedAgent() != null ? lead.getAssignedAgent().getName() : "Unassigned",
                 lead.getAssignedAgent() != null ? lead.getAssignedAgent().getPhone() : null,
                 lead.getLeadScore(),
-                lead.getCreatedDate()
+                lead.getCreatedDate(),
+                lead.getProperty() != null ? lead.getProperty().getId() : null,
+                lead.getProperty() != null ? lead.getProperty().getTitle() : null
         );
     }
 }

@@ -22,5 +22,7 @@ public record LeadResponse(
         String assignedAgentName,
         String assignedAgentPhone,
         Integer leadScore,
-        LocalDateTime createdDate
+        LocalDateTime createdDate,
+        UUID propertyId,
+        String propertyTitle
 ) {}

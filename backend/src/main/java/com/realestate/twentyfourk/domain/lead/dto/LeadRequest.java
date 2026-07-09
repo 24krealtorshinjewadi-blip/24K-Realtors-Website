@@ -29,5 +29,6 @@ public record LeadRequest(
         BigDecimal budgetMax,
         PrimeCorridor preferredLocation,
         LeadStatus status, // Optional for admin updates
-        String notes
+        String notes,
+        java.util.UUID propertyId
 ) {}

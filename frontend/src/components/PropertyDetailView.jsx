@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { apiService } from '../services/apiService';
 
 /* ─── Builder lookup ──────────────────────────────────────────── */
 const getBuilderInfo = (title = '') => {
@@ -98,7 +99,29 @@ export default function PropertyDetailView({
   const [loanTerm, setLoanTerm] = useState(20);
   const [activePlan, setActivePlan] = useState('floor');
 
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(() => {
+    try {
+      const saved = localStorage.getItem('wishlist_properties');
+      const list = saved ? JSON.parse(saved) : [];
+      return list.includes(property.id);
+    } catch {
+      return false;
+    }
+  });
+
+  const [marketTrends, setMarketTrends] = useState(null);
+
+  useEffect(() => {
+    const fetchTrends = async () => {
+      try {
+        const trends = await apiService.getMarketTrends(property.location);
+        setMarketTrends(trends);
+      } catch (err) {
+        console.error('Failed to fetch market trends:', err);
+      }
+    };
+    fetchTrends();
+  }, [property.location]);
 
 
   const isCommercial = property.propertyType === 'COMMERCIAL';
@@ -123,6 +146,34 @@ export default function PropertyDetailView({
   const emi = monthlyRate > 0
     ? (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1)
     : principal / totalMonths;
+
+  const handleToggleWishlist = async () => {
+    const nextState = !isWishlisted;
+    setIsWishlisted(nextState);
+    
+    try {
+      const saved = localStorage.getItem('wishlist_properties');
+      let list = saved ? JSON.parse(saved) : [];
+      if (nextState) {
+        if (!list.includes(property.id)) list.push(property.id);
+      } else {
+        list = list.filter(id => id !== property.id);
+      }
+      localStorage.setItem('wishlist_properties', JSON.stringify(list));
+    } catch (e) {
+      console.error(e);
+    }
+
+    try {
+      if (nextState) {
+        await apiService.addToWishlist(property.id);
+      } else {
+        await apiService.removeFromWishlist(property.id);
+      }
+    } catch (err) {
+      console.error('Failed to sync wishlist with backend:', err);
+    }
+  };
 
   const nextSlide = () => setActiveSlide(p => (p + 1) % slideshowImages.length);
   const prevSlide = () => setActiveSlide(p => (p - 1 + slideshowImages.length) % slideshowImages.length);
@@ -212,7 +263,7 @@ export default function PropertyDetailView({
         {/* ── Action buttons top-right ── */}
         <div style={{ position: 'absolute', top: '24px', right: '24px', zIndex: 10, display: 'flex', gap: '10px' }}>
           <button
-            onClick={() => setIsWishlisted(w => !w)}
+            onClick={handleToggleWishlist}
             style={{
               background: isWishlisted ? 'var(--gold-primary)' : 'rgba(4,8,20,0.7)',
               backdropFilter: 'blur(12px)',
@@ -660,6 +711,24 @@ export default function PropertyDetailView({
                 </div>
               ))}
             </div>
+
+            {marketTrends && (
+              <div style={{ marginTop: '16px', padding: '12px', borderRadius: '8px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.15)', fontSize: '0.78rem' }}>
+                <div style={{ color: 'var(--gold-secondary)', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '0.05em' }}>Live Corridor Metrics</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Avg Price Per Sqft:</span>
+                  <strong style={{ color: '#fff' }}>{marketTrends.averagePricePerSqft}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Annual appreciation:</span>
+                  <strong style={{ color: '#2ec4b6' }}>{marketTrends.appreciationRate}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Expected Yield:</span>
+                  <strong style={{ color: '#2ec4b6' }}>{marketTrends.rentalYield}</strong>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* EMI Calculator */}

@@ -2730,5 +2730,113 @@ export const apiService = {
         });
       }
     );
+  },
+
+  async addToWishlist(propertyId) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/wishlist/${propertyId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to add to wishlist: ${response.statusText}`);
+        }
+      },
+      () => {
+        const saved = localStorage.getItem('wishlist_properties');
+        let list = saved ? JSON.parse(saved) : [];
+        if (!list.includes(propertyId)) {
+          list.push(propertyId);
+          localStorage.setItem('wishlist_properties', JSON.stringify(list));
+        }
+      }
+    );
+  },
+
+  async removeFromWishlist(propertyId) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/wishlist/${propertyId}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to remove from wishlist: ${response.statusText}`);
+        }
+      },
+      () => {
+        const saved = localStorage.getItem('wishlist_properties');
+        let list = saved ? JSON.parse(saved) : [];
+        list = list.filter(id => id !== propertyId);
+        localStorage.setItem('wishlist_properties', JSON.stringify(list));
+      }
+    );
+  },
+
+  async getWishlist() {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/wishlist`, {
+          headers: getAuthHeaders()
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to get wishlist: ${response.statusText}`);
+        }
+        return response.json();
+      },
+      () => {
+        const saved = localStorage.getItem('wishlist_properties');
+        const list = saved ? JSON.parse(saved) : [];
+        const allProps = LocalMockDb.getProperties();
+        return allProps.filter(p => list.includes(p.id));
+      }
+    );
+  },
+
+  async getMarketTrends(location) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/analytics/market-trends?location=${location}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch market trends: ${response.statusText}`);
+        }
+        return response.json();
+      },
+      () => {
+        const defaultTrends = {
+          HINJEWADI: { pricePerSqft: 7800, yield: '5.2%', growth: '+11%' },
+          BANER: { pricePerSqft: 11500, yield: '3.8%', growth: '+16%' },
+          WAKAD: { pricePerSqft: 8200, yield: '4.5%', growth: '+14%' },
+          BALEWADI: { pricePerSqft: 10200, yield: '4.0%', growth: '+13%' },
+          TATHAWADE: { pricePerSqft: 7200, yield: '4.6%', growth: '+15%' },
+          MAHALUNGE: { pricePerSqft: 6900, yield: '4.8%', growth: '+18%' }
+        };
+        const upper = location.toUpperCase();
+        const trend = defaultTrends[upper] || defaultTrends.BANER;
+        
+        const months = ["Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025", "Dec 2025", "Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026", "Jun 2026"];
+        const growthRate = parseFloat(trend.growth) / 100.0;
+        const monthGrowth = growthRate / 12.0;
+        const historicalData = months.map((m, idx) => {
+          const discount = (12 - idx) * monthGrowth;
+          return {
+            month: m,
+            price: Math.round(trend.pricePerSqft * (1.0 - discount))
+          };
+        });
+        
+        return {
+          location: upper,
+          averagePricePerSqft: `₹${trend.pricePerSqft.toLocaleString()}`,
+          appreciationRate: trend.growth,
+          rentalYield: trend.yield,
+          historicalData
+        };
+      }
+    );
   }
 };

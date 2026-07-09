@@ -74,6 +74,10 @@ public class Lead {
     @JoinColumn(name = "assigned_agent_id")
     private Agent assignedAgent;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "property_id")
+    private com.realestate.twentyfourk.domain.property.Property property;
+
     @CreationTimestamp
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;
