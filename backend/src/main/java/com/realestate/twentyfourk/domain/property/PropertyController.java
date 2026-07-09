@@ -44,6 +44,7 @@ public class PropertyController {
             @RequestParam(required = false) Integer bedrooms,
             @RequestParam(required = false) PropertyStatus status,
             @RequestParam(required = false) FurnishingStatus furnishingStatus,
+            @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdDate") String sortBy,
@@ -54,7 +55,7 @@ public class PropertyController {
         PageRequest pageRequest = PageRequest.of(page, size, sort);
         
         Page<PropertyResponse> properties = propertyService.getAllProperties(
-                location, minPrice, maxPrice, propertyType, transactionType, bedrooms, status, furnishingStatus, pageRequest
+                location, minPrice, maxPrice, propertyType, transactionType, bedrooms, status, furnishingStatus, query, pageRequest
         );
         return ResponseEntity.ok(properties);
     }

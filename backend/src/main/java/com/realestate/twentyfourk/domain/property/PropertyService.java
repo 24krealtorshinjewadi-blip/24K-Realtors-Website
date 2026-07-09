@@ -20,6 +20,7 @@ public interface PropertyService {
             Integer bedrooms,
             PropertyStatus status,
             FurnishingStatus furnishingStatus,
+            String query,
             Pageable pageable
     );
     PropertyResponse updateProperty(UUID id, PropertyRequest request);

@@ -85,7 +85,8 @@ export default function Portal({ onViewChange }) {
     }
   });
 
-  const handleToggleWishlist = (property) => {
+  const handleToggleWishlist = async (property) => {
+    const isAdding = !wishlistIds.includes(property.id);
     setWishlistIds(prev => {
       const updated = prev.includes(property.id)
         ? prev.filter(id => id !== property.id)
@@ -93,6 +94,16 @@ export default function Portal({ onViewChange }) {
       localStorage.setItem('wishlist_properties', JSON.stringify(updated));
       return updated;
     });
+
+    try {
+      if (isAdding) {
+        await apiService.addToWishlist(property.id);
+      } else {
+        await apiService.removeFromWishlist(property.id);
+      }
+    } catch (err) {
+      console.error('Failed to sync wishlist with backend:', err);
+    }
   };
 
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -733,7 +744,20 @@ export default function Portal({ onViewChange }) {
         console.error("Error loading raw properties for carousels:", err);
       }
     };
+    const syncWishlist = async () => {
+      try {
+        const serverWishlist = await apiService.getWishlist();
+        if (serverWishlist && Array.isArray(serverWishlist)) {
+          const serverIds = serverWishlist.map(p => p.id);
+          setWishlistIds(serverIds);
+          localStorage.setItem('wishlist_properties', JSON.stringify(serverIds));
+        }
+      } catch (err) {
+        console.error("Failed to sync wishlist with server on mount:", err);
+      }
+    };
     loadRawProperties();
+    syncWishlist();
   }, []);
 
   useEffect(() => {
@@ -1730,7 +1754,8 @@ export default function Portal({ onViewChange }) {
       budgetMin: property.price ? (Number(property.price) * 0.9).toString() : '',
       budgetMax: property.price ? (Number(property.price) * 1.1).toString() : '',
       preferredLocation: property.location || '',
-      notes: `Interested in property: "${property.title}" (ID: ${property.id})`
+      notes: `Interested in property: "${property.title}" (ID: ${property.id})`,
+      propertyId: property.id
     });
     
     calculateEMI(property.price, mortgageDetails.downPaymentPercent, mortgageDetails.interestRate, mortgageDetails.loanTermYears);
@@ -1780,7 +1805,8 @@ export default function Portal({ onViewChange }) {
         budgetMin: selectedChauffeurProp.price ? selectedChauffeurProp.price.toString() : '10000000',
         budgetMax: selectedChauffeurProp.price ? (Number(selectedChauffeurProp.price) * 1.1).toString() : '20000000',
         preferredLocation: selectedChauffeurProp.location || '',
-        notes: notesMsg
+        notes: notesMsg,
+        propertyId: selectedChauffeurProp.id
       });
 
       setIsChauffeurModalOpen(false);

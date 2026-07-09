@@ -16,7 +16,8 @@ public class PropertySpecification {
             TransactionType transactionType,
             Integer bedrooms,
             PropertyStatus status,
-            FurnishingStatus furnishingStatus
+            FurnishingStatus furnishingStatus,
+            String queryText
     ) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -44,6 +45,22 @@ public class PropertySpecification {
             }
             if (furnishingStatus != null) {
                 predicates.add(cb.equal(root.get("furnishingStatus"), furnishingStatus));
+            }
+            if (queryText != null && !queryText.trim().isEmpty()) {
+                String q = "%" + queryText.trim().toLowerCase() + "%";
+                Predicate titleLike = cb.like(cb.lower(root.get("title")), q);
+                Predicate descLike = cb.like(cb.lower(root.get("description")), q);
+                Predicate addrLike = cb.like(cb.lower(root.get("address")), q);
+                
+                Predicate locLike;
+                try {
+                    PrimeCorridor corridor = PrimeCorridor.valueOf(queryText.trim().toUpperCase());
+                    locLike = cb.equal(root.get("location"), corridor);
+                } catch (IllegalArgumentException e) {
+                    locLike = cb.like(cb.lower(root.get("location").as(String.class)), q);
+                }
+                
+                predicates.add(cb.or(titleLike, descLike, addrLike, locLike));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

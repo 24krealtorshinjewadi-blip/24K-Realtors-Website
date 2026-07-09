@@ -65,10 +65,11 @@ public class PropertyServiceImpl implements PropertyService {
             Integer bedrooms,
             PropertyStatus status,
             FurnishingStatus furnishingStatus,
+            String query,
             Pageable pageable
     ) {
         Specification<Property> spec = PropertySpecification.filterProperties(
-                location, minPrice, maxPrice, propertyType, transactionType, bedrooms, status, furnishingStatus
+                location, minPrice, maxPrice, propertyType, transactionType, bedrooms, status, furnishingStatus, query
         );
         Page<Property> propertiesPage = propertyRepository.findAll(spec, pageable);
         return propertiesPage.map(this::mapToResponse);
