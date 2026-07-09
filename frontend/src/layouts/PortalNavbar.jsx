@@ -228,47 +228,96 @@ export default function PortalNavbar({
             <span style={{ width: '1px', height: '18px', background: 'rgba(255,255,255,0.15)', margin: '0 4px' }} aria-hidden="true"></span>
 
             <button 
+              className={activeSection === 'listings' && !exclusiveTab ? 'active' : ''} 
+              onClick={() => onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, null)}
+            >
+              PROJECTS
+            </button>
+            <button 
               className={activeSection === 'societies' ? 'active' : ''} 
               onClick={() => onSectionChange && onSectionChange('societies')}
-              aria-label="Browse society directories"
-              aria-current={activeSection === 'societies' ? 'page' : undefined}
             >
               SOCIETIES
             </button>
             <button 
               className={activeSection === 'builders' ? 'active' : ''} 
               onClick={() => onSectionChange && onSectionChange('builders')}
-              aria-label="Browse developer and builder portfolios"
-              aria-current={activeSection === 'builders' ? 'page' : undefined}
             >
               BUILDERS
             </button>
             <button 
-              className={activeSection === 'localities' ? 'active' : ''} 
-              onClick={() => onSectionChange && onSectionChange('localities')}
-              aria-label="Explore locality guides for Hinjewadi, Wakad, and Baner"
-              aria-current={activeSection === 'localities' ? 'page' : undefined}
+              className={activeSection === 'listings' && filters.propertyType === 'COMMERCIAL' ? 'active' : ''} 
+              onClick={() => onApplyMegaFilter && onApplyMegaFilter({ propertyType: 'COMMERCIAL' }, 'listings', null, 'properties-sale')}
             >
-              LOCALITIES
+              COMMERCIAL
+            </button>
+            <button 
+              onClick={() => {
+                const footer = document.querySelector('footer');
+                if (footer) footer.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              ABOUT US
             </button>
             <button 
               className={activeSection === 'blogs' ? 'active' : ''} 
               onClick={() => onSectionChange && onSectionChange('blogs')}
-              aria-label="Read real estate market insights and blogs"
-              aria-current={activeSection === 'blogs' ? 'page' : undefined}
             >
               BLOGS
+            </button>
+            <button 
+              onClick={() => {
+                const footer = document.querySelector('footer');
+                if (footer) footer.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              CONTACT
             </button>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {/* Book Visit CTA Button */}
+            {/* Contact Phone Number Pill */}
+            <a href="tel:+919112272272" className="nav-phone-pill" style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 16px',
+              borderRadius: '30px',
+              border: '1px solid rgba(230, 195, 92, 0.3)',
+              background: 'rgba(255,255,255,0.02)',
+              color: '#FFF4D0',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              textDecoration: 'none',
+              fontFamily: 'var(--font-sans)',
+              transition: 'all 0.3s ease'
+            }}>
+              <Phone size={13} style={{ color: '#E6C35C' }} />
+              <span>+91 9112 272 272</span>
+            </a>
+
+            {/* Book Site Visit CTA Button */}
             <button 
               onClick={onBookVisitClick} 
               className="nav-pill-book"
+              style={{
+                background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                border: 'none',
+                color: '#040814',
+                padding: '10px 20px',
+                borderRadius: '30px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 15px rgba(230, 195, 92, 0.2)'
+              }}
             >
               <Calendar size={13} />
-              <span>BOOK VISIT</span>
+              <span>BOOK SITE VISIT</span>
             </button>
 
             {/* Circular Theme Selector */}

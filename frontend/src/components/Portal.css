@@ -5374,6 +5374,31 @@
   transform: scale(0.98) translateY(0) !important;
 }
 
+/* Premium Mockup Dropdown selects inside the search panel */
+.luxury-search-panel select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23E6C35C' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 32px !important;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.luxury-search-panel select:focus {
+  border-color: rgba(230, 195, 92, 0.6) !important;
+  background: rgba(4, 8, 20, 0.65) !important;
+  box-shadow: 0 0 20px rgba(230, 195, 92, 0.15) !important;
+}
+
+/* Responsiveness for search panel on mobile/tablets */
+@media (max-width: 900px) {
+  .luxury-search-panel form {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
 
 
 

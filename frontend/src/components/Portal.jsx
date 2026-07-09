@@ -4,7 +4,8 @@ import {
   Search, Loader, CheckCircle, IndianRupee, Laptop, Sparkles, Activity, 
   LineChart, Car, Users, ShieldCheck, 
   Calculator, Compass, Clock, Lock, TrendingUp, Building,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, MapPin, BedDouble, Phone, Calendar,
+  Handshake, ArrowRight, Key, Home, Briefcase
 } from 'lucide-react';
 import './Portal.css';
 import * as THREE from 'three';
@@ -151,6 +152,10 @@ export default function Portal({ onViewChange }) {
   const [activeSection, setActiveSection] = useState('listings');
   const [heroSearchText, setHeroSearchText] = useState('');
   const [heroTab, setHeroTab] = useState('BUY');
+  const [searchLocation, setSearchLocation] = useState('');
+  const [searchPropType, setSearchPropType] = useState('');
+  const [searchBudget, setSearchBudget] = useState('');
+  const [searchBHK, setSearchBHK] = useState('');
   const [recentSearches, setRecentSearches] = useState(() => {
     try { return JSON.parse(localStorage.getItem('recent_searches') || '[]'); } catch { return []; }
   });
@@ -1000,6 +1005,30 @@ export default function Portal({ onViewChange }) {
     } else {
       setSmartChips([]);
     }
+  };
+
+  const handleLuxurySearch = (e) => {
+    if (e) e.preventDefault();
+    setSelectedPropertyDetail(null);
+    setFilters(prev => {
+      const isCommercial = heroTab === 'COMMERCIAL';
+      return {
+        ...prev,
+        transactionType: isCommercial ? 'BUY' : heroTab,
+        location: searchLocation,
+        propertyType: isCommercial ? 'COMMERCIAL' : searchPropType,
+        bedrooms: searchBHK,
+        maxPrice: searchBudget,
+        query: ''
+      };
+    });
+    setExclusiveTab(heroTab === 'COMMERCIAL' ? 'BUY' : heroTab);
+    setActiveSection('listings');
+    setPage(0);
+    setTimeout(() => {
+      const el = document.getElementById('listings-anchor');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleHeroSearch = (e, searchTextOverride = null) => {
@@ -1895,291 +1924,492 @@ export default function Portal({ onViewChange }) {
       ) : activeSubView ? renderSubView() : (
         <>
           {/* Redesigned Full-Screen Cinematic Hero Section */}
-          <section className="portal-hero">
+          <section className="portal-hero" style={{
+            position: 'relative',
+            minHeight: '85vh',
+            backgroundImage: "url('/luxury_sunset_tower.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center right',
+            display: 'flex',
+            alignItems: 'center',
+            overflow: 'hidden'
+          }}>
             {/* Dark vignette overlay for readability */}
-            <div className="hero-vignette-overlay" />
+            <div className="hero-vignette-overlay" style={{
+              position: 'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              background: 'linear-gradient(to right, rgba(4, 8, 20, 0.95) 0%, rgba(4, 8, 20, 0.4) 60%, rgba(4, 8, 20, 0.8) 100%), linear-gradient(to bottom, rgba(4, 8, 20, 0.5) 0%, rgba(4, 8, 20, 0.95) 100%)',
+              zIndex: 1
+            }} />
             
-            <div className="hero-content" style={{ maxWidth: '1410px', margin: '0 auto', padding: '120px 20px 80px 20px' }}>
-              <div className="hero-grid-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '50px', width: '100%', alignItems: 'center' }}>
+            <div className="hero-content" style={{ 
+              position: 'relative',
+              zIndex: 2,
+              width: '100%',
+              maxWidth: '94%',
+              margin: '0 auto',
+              padding: '120px 0 60px 0'
+            }}>
+              <div className="hero-text-block" style={{ maxWidth: '650px', marginBottom: '40px' }}>
+                <span className="hero-gold-badge" style={{
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  color: '#E6C35C',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase'
+                }}>
+                  PUNE'S MOST TRUSTED REAL ESTATE CONSULTANTS
+                </span>
                 
-                {/* Left Column: Headings & CTA */}
-                <div className="hero-text-block" style={{ transform: `translate3d(0, ${scrollY * 0.12}px, 0)`, transition: 'transform 0.05s linear' }}>
-                  <span className="hero-gold-badge">⚜️ Pune's Premium Location Advisory</span>
-                  <h1 style={{ 
-                    fontFamily: "'Cinzel', serif", 
-                    fontSize: 'clamp(2.4rem, 4vw, 3.8rem)', 
-                    color: '#fff', 
-                    lineHeight: 1.2, 
-                    margin: '15px 0 20px 0', 
-                    fontWeight: 700,
-                    textShadow: '0 4px 15px rgba(0,0,0,0.8)' 
-                  }}>
-                    {isHnwiMode 
-                      ? 'Private Portfolios & Institutional Mandates'
-                      : 'We help you choose the right location — not just the right flat.'}
-                  </h1>
-                  <p className="hero-subtext" style={{ 
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontSize: 'clamp(0.95rem, 1.2vw, 1.15rem)', 
-                    color: 'rgba(255, 255, 255, 0.7)', 
-                    lineHeight: 1.6, 
-                    marginBottom: '35px',
-                    textShadow: '0 2px 5px rgba(0,0,0,0.6)'
-                  }}>
-                    {isHnwiMode
-                      ? 'Exclusive whole-building mandates, premium high-yield commercial assets, and pre-release developer allocations for HNWI partners.'
-                      : 'Discover handpicked, 100% verified properties across Hinjewadi, Wakad & Baner\'s high-appreciation corridors.'}
-                  </p>
+                <h1 style={{ 
+                  fontFamily: "'Cinzel', serif", 
+                  fontSize: 'clamp(2.5rem, 5vw, 4.2rem)', 
+                  color: '#fff', 
+                  lineHeight: 1.15, 
+                  margin: '20px 0', 
+                  fontWeight: 700,
+                  textShadow: '0 4px 15px rgba(0,0,0,0.6)' 
+                }}>
+                  Find Your <span style={{ color: '#E6C35C' }}>Dream Home</span> in Pune
+                </h1>
+                
+                <p className="hero-subtext" style={{ 
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontSize: 'clamp(0.95rem, 1.2vw, 1.15rem)', 
+                  color: 'rgba(255, 255, 255, 0.8)', 
+                  lineHeight: 1.6, 
+                  marginBottom: '35px',
+                  textShadow: '0 2px 5px rgba(0,0,0,0.5)'
+                }}>
+                  Handpicked, 100% verified properties in Hinjewadi, Wakad, Baner & Pune's most premium locations.
+                </p>
 
-                  {/* Extra CTA/Action links in Hero (Apple style) */}
-                  <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '30px' }}>
-                    <button 
-                      onClick={() => {
-                        const el = document.getElementById('listings-anchor');
-                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }}
-                      style={{
-                        background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-                        border: 'none',
-                        color: '#040814',
-                        padding: '14px 28px',
-                        borderRadius: '50px',
-                        fontWeight: 700,
-                        letterSpacing: '0.05em',
-                        cursor: 'pointer',
-                        boxShadow: '0 10px 25px rgba(230,195,92,0.3)',
-                        transition: 'transform 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
-                      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                    >
-                      Explore Portfolio
-                    </button>
-                    <button 
-                      onClick={() => handleCollectionChange('WISHLIST')}
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.15)',
-                        color: '#FFF4D0',
-                        padding: '14px 28px',
-                        borderRadius: '50px',
-                        fontWeight: 700,
-                        letterSpacing: '0.05em',
-                        cursor: 'pointer',
-                        transition: 'background 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'}
-                    >
-                      Saved Listings
-                    </button>
-                  </div>
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <button 
+                    onClick={() => {
+                      const el = document.getElementById('listings-anchor');
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    style={{
+                      background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                      border: 'none',
+                      color: '#040814',
+                      padding: '14px 32px',
+                      borderRadius: '30px',
+                      fontWeight: 700,
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '0.85rem',
+                      letterSpacing: '0.06em',
+                      cursor: 'pointer',
+                      boxShadow: '0 8px 24px rgba(230, 195, 92, 0.3)',
+                      transition: 'all 0.3s ease',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 12px 30px rgba(230, 195, 92, 0.4)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(230, 195, 92, 0.3)';
+                    }}
+                  >
+                    <span>EXPLORE PROJECTS</span>
+                    <ArrowRight size={14} />
+                  </button>
+                  
+                  <button 
+                    onClick={handleOpenInquiry}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      border: '1px solid rgba(230, 195, 92, 0.3)',
+                      color: '#FFF4D0',
+                      padding: '14px 32px',
+                      borderRadius: '30px',
+                      fontWeight: 700,
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '0.85rem',
+                      letterSpacing: '0.06em',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'rgba(230, 195, 92, 0.05)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <Phone size={14} style={{ color: '#E6C35C' }} />
+                    <span>TALK TO EXPERT</span>
+                  </button>
                 </div>
-
-                {/* Right Column: Floating Glassmorphism Search Panel */}
-                <div className="hero-3d-model-block">
-                  <div className="hero-search-wrapper">
-                    <div className="hero-search-tabs-container">
-                      <button 
-                        type="button"
-                        className={`hero-search-tab-btn ${heroTab === 'BUY' ? 'active' : ''}`} 
-                        onClick={() => setHeroTab('BUY')}
-                      >
-                        Buy
-                      </button>
-                      <button 
-                        type="button"
-                        className={`hero-search-tab-btn ${heroTab === 'RENT' ? 'active' : ''}`} 
-                        onClick={() => setHeroTab('RENT')}
-                      >
-                        Rent
-                      </button>
-                      <button 
-                        type="button"
-                        className={`hero-search-tab-btn ${heroTab === 'COMMERCIAL' ? 'active' : ''}`} 
-                        onClick={() => setHeroTab('COMMERCIAL')}
-                      >
-                        Commercial
-                      </button>
-                      <div 
-                        className="hero-search-tab-underline"
-                        style={{
-                          width: '33.333%',
-                          transform: `translateX(${heroTab === 'BUY' ? '0%' : heroTab === 'RENT' ? '100%' : '200%'})`
-                        }}
-                      >
-                        <div className="hero-search-tab-pill-bg"></div>
-                      </div>
-                    </div>
-     
-                    {/* Smart chip tokens */}
-                    {smartChips.length > 0 && (
-                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                        {smartChips.map((chip, i) => (
-                          <span key={i} style={{
-                            background: 'rgba(212,175,55,0.12)',
-                            border: '1px solid rgba(212,175,55,0.3)',
-                            borderRadius: '20px',
-                            padding: '3px 10px',
-                            fontSize: '0.72rem',
-                            color: 'var(--gold-primary)',
-                            fontWeight: 600,
-                            letterSpacing: '0.02em',
-                          }}>
-                            {chip.label}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    <div style={{ position: 'relative', width: '100%' }}>
-                      <form onSubmit={handleHeroSearch} className="hero-search-capsule">
-                        <input
-                          type="text"
-                          placeholder="Try: 3 BHK Hinjewadi under 1.2 Cr, Penthouse Baner..."
-                          value={heroSearchText}
-                          onChange={e => handleSmartInputChange(e.target.value)}
-                          onFocus={() => setSearchFocused(true)}
-                          onBlur={() => setTimeout(() => setSearchFocused(false), 180)}
-                          style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 18px', fontSize: '0.92rem', color: '#fff', outline: 'none' }}
-                          aria-label="Search properties"
-                        />
-                        <button
-                          type="submit"
-                          style={{ background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-dark))', border: 'none', color: '#070F1E', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.88rem' }}
-                        >
-                          <Search size={15} />
-                          <span>Search</span>
-                        </button>
-                      </form>
-
-                      {/* Recent searches dropdown */}
-                      {searchFocused && !heroSearchText && recentSearches.length > 0 && (
-                        <div style={{
-                          position: 'absolute',
-                          top: 'calc(100% + 8px)',
-                          left: 0, right: 0,
-                          background: 'rgba(7, 15, 30, 0.97)',
-                          border: '1px solid rgba(212,175,55,0.15)',
-                          borderRadius: '16px',
-                          overflow: 'hidden',
-                          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-                          zIndex: 100,
-                          backdropFilter: 'blur(20px)',
-                        }}>
-                          <div style={{ padding: '10px 16px 6px', fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                            Recent Searches
-                          </div>
-                          {recentSearches.map((s, i) => (
-                            <button
-                              key={i}
-                              type="button"
-                              onMouseDown={() => { handleHeroSearch(null, s); }}
-                              style={{
-                                display: 'block', width: '100%', textAlign: 'left',
-                                padding: '10px 16px',
-                                background: 'none', border: 'none', cursor: 'pointer',
-                                fontSize: '0.86rem', color: 'var(--text-light)',
-                                borderBottom: i < recentSearches.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
-                                transition: 'background 0.15s',
-                              }}
-                              onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.06)'}
-                              onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                            >
-                              🕐 {s}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Autocomplete Suggestions dropdown */}
-                      {searchFocused && heroSearchText && getSearchSuggestions(heroSearchText).length > 0 && (
-                        <div style={{
-                          position: 'absolute',
-                          top: 'calc(100% + 8px)',
-                          left: 0, right: 0,
-                          background: 'rgba(7, 15, 30, 0.97)',
-                          border: '1px solid rgba(212,175,55,0.15)',
-                          borderRadius: '16px',
-                          overflow: 'hidden',
-                          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-                          zIndex: 100,
-                          backdropFilter: 'blur(20px)',
-                        }}>
-                          <div style={{ padding: '10px 16px 6px', fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                            Suggested Matches
-                          </div>
-                          {getSearchSuggestions(heroSearchText).map((s, i, arr) => (
-                            <button
-                              key={i}
-                              type="button"
-                              onMouseDown={() => { handleSelectSuggestion(s); }}
-                              style={{
-                                display: 'block', width: '100%', textAlign: 'left',
-                                padding: '10px 16px',
-                                background: 'none', border: 'none', cursor: 'pointer',
-                                fontSize: '0.86rem', color: 'var(--text-light)',
-                                borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
-                                transition: 'background 0.15s',
-                              }}
-                              onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.06)'}
-                              onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                            >
-                              {s.label}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
               </div>
+
+              {/* Structured Floating Search Panel */}
+              <div className="luxury-search-panel" style={{
+                background: 'rgba(7, 15, 30, 0.55)',
+                backdropFilter: 'blur(28px)',
+                WebkitBackdropFilter: 'blur(28px)',
+                border: '1px solid rgba(230, 195, 92, 0.2)',
+                borderRadius: '24px',
+                padding: '24px 32px',
+                width: '100%',
+                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
+                boxSizing: 'border-box',
+                marginTop: '40px'
+              }}>
+                {/* Tabs */}
+                <div style={{ display: 'flex', gap: '24px', marginBottom: '20px', borderBottom: '1px solid rgba(255,255,0.06)', paddingBottom: '12px' }}>
+                  <button 
+                    onClick={() => setHeroTab('BUY')}
+                    type="button"
+                    style={{
+                      background: 'none', border: 'none', color: heroTab === 'BUY' ? '#E6C35C' : 'rgba(255,255,255,0.6)',
+                      fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.08em', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '8px', paddingBottom: '12px',
+                      borderBottom: heroTab === 'BUY' ? '2px solid #E6C35C' : 'none',
+                      transition: 'all 0.3s ease', textTransform: 'uppercase'
+                    }}
+                  >
+                    <Home size={14} />
+                    <span>BUY</span>
+                  </button>
+                  <button 
+                    onClick={() => setHeroTab('RENT')}
+                    type="button"
+                    style={{
+                      background: 'none', border: 'none', color: heroTab === 'RENT' ? '#E6C35C' : 'rgba(255,255,255,0.6)',
+                      fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.08em', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '8px', paddingBottom: '12px',
+                      borderBottom: heroTab === 'RENT' ? '2px solid #E6C35C' : 'none',
+                      transition: 'all 0.3s ease', textTransform: 'uppercase'
+                    }}
+                  >
+                    <Key size={14} />
+                    <span>RENT</span>
+                  </button>
+                  <button 
+                    onClick={() => setHeroTab('COMMERCIAL')}
+                    type="button"
+                    style={{
+                      background: 'none', border: 'none', color: heroTab === 'COMMERCIAL' ? '#E6C35C' : 'rgba(255,255,255,0.6)',
+                      fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.08em', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '8px', paddingBottom: '12px',
+                      borderBottom: heroTab === 'COMMERCIAL' ? '2px solid #E6C35C' : 'none',
+                      transition: 'all 0.3s ease', textTransform: 'uppercase'
+                    }}
+                  >
+                    <Briefcase size={14} />
+                    <span>COMMERCIAL</span>
+                  </button>
+                </div>
+
+                {/* Form fields grid */}
+                <form onSubmit={handleLuxurySearch} style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr)) 180px',
+                  gap: '20px',
+                  alignItems: 'end'
+                }}>
+                  {/* Location Field */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.68rem', color: '#FFF4D0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                      <MapPin size={12} style={{ color: '#E6C35C' }} />
+                      <span>LOCATION</span>
+                    </label>
+                    <select 
+                      value={searchLocation} 
+                      onChange={e => setSearchLocation(e.target.value)}
+                      style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        borderRadius: '8px',
+                        padding: '10px 14px',
+                        color: '#fff',
+                        fontSize: '0.85rem',
+                        fontFamily: "'Montserrat', sans-serif",
+                        outline: 'none',
+                        cursor: 'pointer',
+                        width: '100%'
+                      }}
+                    >
+                      <option value="" style={{ background: '#070F1E' }}>Hinjewadi, Wakad, Baner...</option>
+                      <option value="HINJEWADI" style={{ background: '#070F1E' }}>Hinjewadi IT Zone</option>
+                      <option value="WAKAD" style={{ background: '#070F1E' }}>Wakad Junction</option>
+                      <option value="BANER" style={{ background: '#070F1E' }}>Baner Tech Corridor</option>
+                      <option value="BALEWADI" style={{ background: '#070F1E' }}>Balewadi High Street</option>
+                      <option value="TATHAWADE" style={{ background: '#070F1E' }}>Tathawade Hub</option>
+                      <option value="MAHALUNGE" style={{ background: '#070F1E' }}>Mahalunge Township</option>
+                    </select>
+                  </div>
+
+                  {/* Property Type Field */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.68rem', color: '#FFF4D0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                      <Building size={12} style={{ color: '#E6C35C' }} />
+                      <span>PROPERTY TYPE</span>
+                    </label>
+                    <select 
+                      value={searchPropType} 
+                      onChange={e => setSearchPropType(e.target.value)}
+                      disabled={heroTab === 'COMMERCIAL'}
+                      style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        borderRadius: '8px',
+                        padding: '10px 14px',
+                        color: '#fff',
+                        fontSize: '0.85rem',
+                        fontFamily: "'Montserrat', sans-serif",
+                        outline: 'none',
+                        cursor: heroTab === 'COMMERCIAL' ? 'not-allowed' : 'pointer',
+                        width: '100%',
+                        opacity: heroTab === 'COMMERCIAL' ? 0.5 : 1
+                      }}
+                    >
+                      {heroTab === 'COMMERCIAL' ? (
+                        <option value="COMMERCIAL" style={{ background: '#070F1E' }}>Commercial</option>
+                      ) : (
+                        <>
+                          <option value="" style={{ background: '#070F1E' }}>Select Type</option>
+                          <option value="RESIDENTIAL" style={{ background: '#070F1E' }}>Residential Apartment</option>
+                          <option value="COMMERCIAL" style={{ background: '#070F1E' }}>Commercial Workspace</option>
+                        </>
+                      )}
+                    </select>
+                  </div>
+
+                  {/* Budget Field */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.68rem', color: '#FFF4D0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                      <IndianRupee size={12} style={{ color: '#E6C35C' }} />
+                      <span>BUDGET</span>
+                    </label>
+                    <select 
+                      value={searchBudget} 
+                      onChange={e => setSearchBudget(e.target.value)}
+                      style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        borderRadius: '8px',
+                        padding: '10px 14px',
+                        color: '#fff',
+                        fontSize: '0.85rem',
+                        fontFamily: "'Montserrat', sans-serif",
+                        outline: 'none',
+                        cursor: 'pointer',
+                        width: '100%'
+                      }}
+                    >
+                      <option value="" style={{ background: '#070F1E' }}>Select Budget</option>
+                      {heroTab === 'RENT' ? (
+                        <>
+                          <option value="20000" style={{ background: '#070F1E' }}>Under 20k / Month</option>
+                          <option value="35000" style={{ background: '#070F1E' }}>Under 35k / Month</option>
+                          <option value="50000" style={{ background: '#070F1E' }}>Under 50k / Month</option>
+                          <option value="100000" style={{ background: '#070F1E' }}>Under 1 Lakh / Month</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="8000000" style={{ background: '#070F1E' }}>Under 80 Lakhs</option>
+                          <option value="12000000" style={{ background: '#070F1E' }}>Under 1.2 Crore</option>
+                          <option value="20000000" style={{ background: '#070F1E' }}>Under 2 Crore</option>
+                          <option value="50000000" style={{ background: '#070F1E' }}>Under 5 Crore</option>
+                          <option value="500000000" style={{ background: '#070F1E' }}>Under 50 Crore</option>
+                        </>
+                      )}
+                    </select>
+                  </div>
+
+                  {/* BHK Layout Field */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.68rem', color: '#FFF4D0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                      <BedDouble size={12} style={{ color: '#E6C35C' }} />
+                      <span>BHK</span>
+                    </label>
+                    <select 
+                      value={searchBHK} 
+                      onChange={e => setSearchBHK(e.target.value)}
+                      disabled={heroTab === 'COMMERCIAL'}
+                      style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        borderRadius: '8px',
+                        padding: '10px 14px',
+                        color: '#fff',
+                        fontSize: '0.85rem',
+                        fontFamily: "'Montserrat', sans-serif",
+                        outline: 'none',
+                        cursor: heroTab === 'COMMERCIAL' ? 'not-allowed' : 'pointer',
+                        width: '100%',
+                        opacity: heroTab === 'COMMERCIAL' ? 0.5 : 1
+                      }}
+                    >
+                      <option value="" style={{ background: '#070F1E' }}>Any Layout</option>
+                      <option value="1" style={{ background: '#070F1E' }}>1 BHK</option>
+                      <option value="2" style={{ background: '#070F1E' }}>2 BHK</option>
+                      <option value="3" style={{ background: '#070F1E' }}>3 BHK</option>
+                      <option value="4" style={{ background: '#070F1E' }}>4 BHK+</option>
+                    </select>
+                  </div>
+
+                  {/* Search Button */}
+                  <button 
+                    type="submit"
+                    style={{
+                      background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                      border: 'none',
+                      color: '#040814',
+                      padding: '12px 20px',
+                      borderRadius: '8px',
+                      fontWeight: 700,
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '0.78rem',
+                      letterSpacing: '0.06em',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      width: '100%',
+                      height: '42px',
+                      boxShadow: '0 4px 15px rgba(230, 195, 92, 0.25)',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.filter = 'brightness(1.08)'}
+                    onMouseLeave={e => e.currentTarget.style.filter = 'brightness(1)'}
+                  >
+                    <Search size={14} />
+                    <span>SEARCH PROPERTIES</span>
+                  </button>
+                </form>
+              </div>
+
             </div>
           </section>
 
           {/* ⚜️ Trust statistics Counter Ribbon */}
-          <section className="trust-stats-section">
-            <div className="trust-stats-grid">
-              <div className="stat-card">
-                <div className="stat-number">
-                  <AnimatedCounter value="500+" />
+          <section className="trust-stats-section" style={{
+            background: 'rgba(7, 15, 30, 0.45)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(230, 195, 92, 0.15)',
+            borderRadius: '24px',
+            padding: '28px 40px',
+            maxWidth: '94%',
+            margin: '-40px auto 40px auto',
+            position: 'relative',
+            zIndex: 3,
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)'
+          }}>
+            <div className="trust-stats-grid" style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '30px',
+              alignItems: 'center'
+            }}>
+              <div className="stat-card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ background: 'rgba(230, 195, 92, 0.08)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(230,195,92,0.15)' }}>
+                  <Users size={24} color="#E6C35C" />
                 </div>
-                <div className="stat-label">Families Assisted</div>
+                <div>
+                  <div className="stat-number" style={{ fontSize: '1.65rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>
+                    <AnimatedCounter value="500+" />
+                  </div>
+                  <div className="stat-label" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Families Assisted</div>
+                </div>
               </div>
-              <div className="stat-card">
-                <div className="stat-number">
-                  <AnimatedCounter value="800Cr+" />
+              
+              <div className="stat-card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ background: 'rgba(230, 195, 92, 0.08)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(230,195,92,0.15)' }}>
+                  <IndianRupee size={24} color="#E6C35C" />
                 </div>
-                <div className="stat-label">Sales Volume</div>
+                <div>
+                  <div className="stat-number" style={{ fontSize: '1.65rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>
+                    <AnimatedCounter value="800Cr+" />
+                  </div>
+                  <div className="stat-label" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Certified Sales</div>
+                </div>
               </div>
-              <div className="stat-card">
-                <div className="stat-number">
-                  <AnimatedCounter value="100%" />
+              
+              <div className="stat-card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ background: 'rgba(230, 195, 92, 0.08)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(230,195,92,0.15)' }}>
+                  <ShieldCheck size={24} color="#E6C35C" />
                 </div>
-                <div className="stat-label">Verified Listings</div>
+                <div>
+                  <div className="stat-number" style={{ fontSize: '1.65rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>
+                    <AnimatedCounter value="100%" />
+                  </div>
+                  <div className="stat-label" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Verified Listings</div>
+                </div>
               </div>
-              <div className="stat-card">
-                <div className="stat-number">
-                  <AnimatedCounter value="15+" />
+              
+              <div className="stat-card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ background: 'rgba(230, 195, 92, 0.08)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(230,195,92,0.15)' }}>
+                  <Handshake size={24} color="#E6C35C" />
                 </div>
-                <div className="stat-label">Top Builders</div>
+                <div>
+                  <div className="stat-number" style={{ fontSize: '1.65rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>
+                    <AnimatedCounter value="15+" />
+                  </div>
+                  <div className="stat-label" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Top Builder Partnerships</div>
+                </div>
               </div>
             </div>
           </section>
 
           {/* ⚜️ Premium Builders Alliance grayscale gallery */}
-          <section className="builder-showcase-section">
-            <div style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-              <span className="hero-gold-badge" style={{ fontSize: '0.7rem', marginBottom: '0' }}>Premium Real Estate Partners</span>
-              <div className="builder-showcase-grid">
-                <div className="builder-logo-item">LODHA</div>
-                <div className="builder-logo-item">GODREJ</div>
-                <div className="builder-logo-item">VTP REALTY</div>
-                <div className="builder-logo-item">KOLTE PATIL</div>
-                <div className="builder-logo-item">SHAPOORJI PALLONJI</div>
-                <div className="builder-logo-item">GERA DEVELOPERS</div>
-                <div className="builder-logo-item">NYATI GROUP</div>
+          <section className="builder-showcase-section" style={{ padding: '40px 0 60px 0' }}>
+            <div style={{ maxWidth: '94%', margin: '0 auto', textAlign: 'center' }}>
+              <span className="hero-gold-badge" style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', color: '#E6C35C', marginBottom: '8px', display: 'inline-block' }}>
+                TRUSTED BY INDIA'S LEADING BUILDERS
+              </span>
+              <div style={{ width: '40px', height: '2px', background: '#E6C35C', margin: '8px auto 30px auto', borderRadius: '2px' }} />
+              
+              <div className="builder-showcase-grid" style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '40px 30px',
+                opacity: 0.85
+              }}>
+                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <strong style={{ color: '#fff', fontSize: '1.35rem', letterSpacing: '0.06em' }}>LODHA</strong>
+                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>BUILDING A BETTER LIFE</span>
+                </div>
+                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <strong style={{ color: '#fff', fontSize: '1.35rem', fontStyle: 'italic', fontFamily: 'serif' }}>godrej</strong>
+                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>PROPERTIES</span>
+                </div>
+                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <strong style={{ color: '#fff', fontSize: '1.35rem', letterSpacing: '0.08em' }}>VTP REALTY</strong>
+                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>VTP TP</span>
+                </div>
+                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <strong style={{ color: '#fff', fontSize: '1.3rem', letterSpacing: '0.06em' }}>KOLTE-PATIL</strong>
+                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.06em' }}>Creation, not Construction.</span>
+                </div>
+                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <strong style={{ color: '#fff', fontSize: '1.25rem', letterSpacing: '0.05em' }}>SHAPOORJI PALLONJI</strong>
+                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>Real Estate</span>
+                </div>
+                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <strong style={{ color: '#fff', fontSize: '1.35rem', letterSpacing: '0.06em' }}>GERA</strong>
+                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>Let's Outdo</span>
+                </div>
+                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <strong style={{ color: '#fff', fontSize: '1.35rem', letterSpacing: '0.06em' }}>NYATI</strong>
+                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>BUILDING RELATIONSHIPS</span>
+                </div>
               </div>
             </div>
           </section>
