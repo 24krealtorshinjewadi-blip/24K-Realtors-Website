@@ -235,30 +235,10 @@ export default function PortalNavbar({
               PROJECTS
             </button>
             <button 
-              className={activeSection === 'societies' ? 'active' : ''} 
-              onClick={() => onSectionChange && onSectionChange('societies')}
-            >
-              SOCIETIES
-            </button>
-            <button 
-              className={activeSection === 'builders' ? 'active' : ''} 
-              onClick={() => onSectionChange && onSectionChange('builders')}
-            >
-              BUILDERS
-            </button>
-            <button 
               className={activeSection === 'listings' && filters.propertyType === 'COMMERCIAL' ? 'active' : ''} 
               onClick={() => onApplyMegaFilter && onApplyMegaFilter({ propertyType: 'COMMERCIAL' }, 'listings', null, 'properties-sale')}
             >
               COMMERCIAL
-            </button>
-            <button 
-              onClick={() => {
-                const footer = document.querySelector('footer');
-                if (footer) footer.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              ABOUT US
             </button>
             <button 
               className={activeSection === 'blogs' ? 'active' : ''} 
@@ -266,19 +246,11 @@ export default function PortalNavbar({
             >
               BLOGS
             </button>
-            <button 
-              onClick={() => {
-                const footer = document.querySelector('footer');
-                if (footer) footer.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              CONTACT
-            </button>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {/* Contact Phone Number Pill */}
-            <a href="tel:+919112272272" className="nav-phone-pill" style={{
+            <a href="tel:+919673000053" className="nav-phone-pill" style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
@@ -294,7 +266,7 @@ export default function PortalNavbar({
               transition: 'all 0.3s ease'
             }}>
               <Phone size={13} style={{ color: '#E6C35C' }} />
-              <span>+91 9112 272 272</span>
+              <span>+91 96730 00053</span>
             </a>
 
             {/* Book Site Visit CTA Button */}
