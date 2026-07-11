@@ -9,11 +9,11 @@
 
 /* ===== DESIGN TOKENS ===== */
 :root {
-  /* Backgrounds */
-  --bg-dark: #070F1E;
-  --bg-deep: #0D1B2A;
-  --bg-card: #152238;
-  --bg-card-hover: #1D2D44;
+  /* Backgrounds — softened for premium, less harsh contrast */
+  --bg-dark: #09111F;        /* was #070F1E — warmer deep navy */
+  --bg-deep: #0F1C2E;        /* was #0D1B2A — richer midnight */
+  --bg-card: #162438;        /* was #152238 — subtle warmth */
+  --bg-card-hover: #1E2F46;  /* was #1D2D44 */
 
   /* Gold Palette */
   --gold-primary: #D4AF37;

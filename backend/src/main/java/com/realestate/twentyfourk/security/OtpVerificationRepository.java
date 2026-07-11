@@ -12,9 +12,12 @@ import java.util.Optional;
 @Repository
 public interface OtpVerificationRepository extends JpaRepository<OtpVerification, String> {
     Optional<OtpVerification> findByTempToken(String tempToken);
-    
+
+    Optional<OtpVerification> findByIdentifierAndIdentifierType(String identifier, String identifierType);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM OtpVerification o WHERE o.expiresAt < ?1")
     void deleteExpiredBefore(LocalDateTime dateTime);
 }
+

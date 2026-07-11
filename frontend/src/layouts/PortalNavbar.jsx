@@ -4,7 +4,7 @@ import {
   UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building,
   Home, Search, Heart, ChevronDown
 } from 'lucide-react';
-import ThemeSelector from '../components/ThemeSelector';
+
 import CompanyLogo from '../components/CompanyLogo';
 
 export default function PortalNavbar({ 
@@ -285,8 +285,6 @@ export default function PortalNavbar({
               <span>BOOK SITE VISIT</span>
             </button>
 
-            {/* Circular Theme Selector */}
-            <ThemeSelector />
 
             {/* Hamburger Menu Toggle Button */}
             <button 

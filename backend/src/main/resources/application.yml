@@ -24,6 +24,12 @@ twilio:
   auth-token: ${TWILIO_AUTH_TOKEN:}
   from-number: ${TWILIO_FROM_NUMBER:}
 
+# ─── Fast2SMS (Indian SMS Gateway — cheaper than Twilio for India) ────────────
+# Get API key from https://www.fast2sms.com → API → Dev API Key
+# Set FAST2SMS_API_KEY env var. If set, takes priority over Twilio.
+fast2sms:
+  api-key: ${FAST2SMS_API_KEY:}
+
 jwt:
   secret: ${JWT_SECRET:YTI5M2Y0YjVkNmQ4Zjg5YTA5YjQzOWM1YTMzYjM1YzZmNzI4ZjkzYWUzYzYyN2M4ODliMWMzNmRmOTBhN2M4ZQ==}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}

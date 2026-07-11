@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
-import LoginModal from './components/LoginModal';
+import LoginModal from './components/LoginModal'; // legacy modal — kept for backward compat
+import LoginPage from './components/LoginPage';   // new SaaS full-page login
 import CompanyLogo from './components/CompanyLogo';
 import AiAssistantPanel from './components/AiAssistantPanel';
 import { auth, subscribeToNotifications, onForegroundMessage } from './services/firebaseConfig';
@@ -78,8 +79,9 @@ function AppLoadingScreen() {
 }
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('portal'); // portal | dashboard
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  // views: 'portal' | 'dashboard' | 'login'
+  const [currentView, setCurrentView] = useState('portal');
+  const [showLoginModal, setShowLoginModal] = useState(false); // legacy fallback
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
 
@@ -136,8 +138,8 @@ export default function App() {
     if (view === 'dashboard') {
       const token = localStorage.getItem('token');
       if (!token) {
-        // Show premium login modal instead of silent redirect
-        setShowLoginModal(true);
+        // Use new full-page login instead of modal
+        setCurrentView('login');
         return;
       }
     }
@@ -169,7 +171,12 @@ export default function App() {
           tabIndex={-1}
         >
           <Suspense fallback={<AppLoadingScreen />}>
-            {currentView === 'portal' ? (
+            {currentView === 'login' ? (
+              // ✨ New SaaS full-page login
+              <LoginPage onSuccess={(data) => {
+                setCurrentView('dashboard');
+              }} />
+            ) : currentView === 'portal' ? (
               <Portal onViewChange={handleViewChange} />
             ) : (
               <Dashboard onViewChange={handleViewChange} />
@@ -177,11 +184,14 @@ export default function App() {
           </Suspense>
         </main>
 
-        {/* Premium login modal */}
+        {/* Legacy modal — retained for any in-app re-auth triggers */}
         {showLoginModal && (
           <LoginModal
             onClose={() => setShowLoginModal(false)}
-            onSuccess={handleLoginSuccess}
+            onSuccess={() => {
+              setShowLoginModal(false);
+              setCurrentView('dashboard');
+            }}
           />
         )}
 

@@ -4,7 +4,9 @@ import {
   Car, Calculator, TrendingUp, HelpCircle,
   MessageSquare, ChevronLeft, ChevronRight, Download,
   Building, CheckCircle, FileText, ArrowRight, ArrowLeft,
-  Share2, Heart, Award
+  Share2, Heart, Award, Wifi, Zap, Camera, Trees, Coffee,
+  Dumbbell, ParkingCircle, Droplets, UtensilsCrossed, Phone,
+  Star, Shield, Sun, Wind, Tv, Lock
 } from 'lucide-react';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -60,22 +62,67 @@ function ScoreBar({ label, value, max = 10 }) {
   );
 }
 
-/* ─── Amenity chip ───────────────────────────────────────────── */
+/* ─── Amenity icon map ───────────────────────────────────────── */
+const AMENITY_ICONS = {
+  '24/7 Concierge Desk':       { icon: Phone,          color: '#D4AF37', bg: 'rgba(212,175,55,0.12)' },
+  'Infinity Sky Pool':         { icon: Droplets,       color: '#38bdf8', bg: 'rgba(56,189,248,0.10)' },
+  'Private Elevator Access':   { icon: Building,       color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+  'Smart Home Automation':     { icon: Wifi,           color: '#34d399', bg: 'rgba(52,211,153,0.10)' },
+  'Modular Kitchen Provisions':{ icon: UtensilsCrossed,color: '#fb923c', bg: 'rgba(251,146,60,0.10)'  },
+  '100% Power Backup Grid':    { icon: Zap,            color: '#fbbf24', bg: 'rgba(251,191,36,0.10)' },
+  'CCTV & Video Door Phone':   { icon: Camera,         color: '#f87171', bg: 'rgba(248,113,113,0.10)'},
+  'Landscaped Zen Gardens':    { icon: Trees,          color: '#4ade80', bg: 'rgba(74,222,128,0.10)' },
+  'Clubhouse & Co-work Space': { icon: Coffee,         color: '#c084fc', bg: 'rgba(192,132,252,0.10)'},
+  "Children's Play Zone":      { icon: Star,           color: '#f9a8d4', bg: 'rgba(249,168,212,0.10)'},
+  'Multi-Level Car Parking':   { icon: ParkingCircle, color: '#93c5fd', bg: 'rgba(147,197,253,0.10)'},
+  'Rainwater Harvesting':      { icon: Wind,           color: '#6ee7b7', bg: 'rgba(110,231,183,0.10)'},
+};
+
+/* ─── Netflix-style Amenity Card ────────────────────────────── */
 function AmenityChip({ label }) {
+  const meta = AMENITY_ICONS[label] || { icon: CheckCircle, color: '#D4AF37', bg: 'rgba(212,175,55,0.10)' };
+  const IconComp = meta.icon;
 
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: '10px',
-      background: 'rgba(255,255,255,0.02)',
-      border: '1px solid rgba(212,175,55,0.08)',
-      borderRadius: '10px', padding: '12px 16px',
-      transition: 'all 0.25s ease',
+      display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+      gap: '14px',
+      background: 'rgba(12,20,40,0.7)',
+      border: '1px solid rgba(255,255,255,0.06)',
+      borderRadius: '16px', padding: '20px 18px',
+      transition: 'all 0.28s ease',
+      cursor: 'default',
+      backdropFilter: 'blur(8px)',
     }}
-      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.05)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.2)'; }}
-      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.08)'; }}
+      onMouseEnter={e => {
+        e.currentTarget.style.background = 'rgba(18,28,55,0.85)';
+        e.currentTarget.style.borderColor = meta.color + '55';
+        e.currentTarget.style.transform = 'translateY(-3px)';
+        e.currentTarget.style.boxShadow = `0 8px 28px ${meta.color}18`;
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background = 'rgba(12,20,40,0.7)';
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = 'none';
+      }}
     >
-      <CheckCircle size={14} color="var(--gold-primary)" />
-      <span style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.85)' }}>{label}</span>
+      {/* Icon badge */}
+      <div style={{
+        width: '42px', height: '42px', borderRadius: '12px',
+        background: meta.bg,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0,
+      }}>
+        <IconComp size={20} color={meta.color} strokeWidth={1.8} />
+      </div>
+      {/* Label */}
+      <span style={{
+        fontSize: '0.82rem', fontWeight: 600,
+        color: 'rgba(255,255,255,0.82)',
+        lineHeight: 1.35,
+        letterSpacing: '0.01em',
+      }}>{label}</span>
     </div>
   );
 }
@@ -479,16 +526,16 @@ export default function PropertyDetailView({
             </p>
           </div>
 
-          {/* Amenities */}
+          {/* Amenities — Netflix-style luxury cards */}
           <div style={{
-            background: 'rgba(10,18,36,0.5)', border: '1px solid rgba(255,255,255,0.06)',
+            background: 'rgba(8,14,30,0.55)', border: '1px solid rgba(255,255,255,0.05)',
             borderRadius: '20px', padding: '32px',
           }}>
-            <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.2rem', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.2rem', margin: '0 0 24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Sparkles size={18} /> Elite Lifestyle Amenities
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
-              {['24/7 Concierge Desk', 'Infinity Sky Pool', 'Private Elevator Access', 'Smart Home Automation', 'Modular Kitchen Provisions', '100% Power Backup Grid', 'CCTV & Video Door Phone', 'Landscaped Zen Gardens', 'Clubhouse & Co-work Space', 'Children\'s Play Zone', 'Multi-Level Car Parking', 'Rainwater Harvesting'].map(a => (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>
+              {['24/7 Concierge Desk', 'Infinity Sky Pool', 'Private Elevator Access', 'Smart Home Automation', 'Modular Kitchen Provisions', '100% Power Backup Grid', 'CCTV & Video Door Phone', 'Landscaped Zen Gardens', 'Clubhouse & Co-work Space', "Children's Play Zone", 'Multi-Level Car Parking', 'Rainwater Harvesting'].map(a => (
                 <AmenityChip key={a} label={a} />
               ))}
             </div>
@@ -828,40 +875,7 @@ export default function PropertyDetailView({
         </div>
       )}
 
-      {/* ══════════════════════════════════════════════════════════
-          STICKY BOTTOM BAR
-      ══════════════════════════════════════════════════════════ */}
-      <div style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0,
-        background: 'rgba(4,8,20,0.92)', backdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(212,175,55,0.2)',
-        padding: '14px 40px', zIndex: 999,
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        boxShadow: '0 -12px 40px rgba(0,0,0,0.5)',
-      }} className="sticky-booking-bar">
-        <div>
-          <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Valuation Mandate</div>
-          <strong style={{ fontSize: '1.3rem', color: 'var(--gold-primary)' }}>{formatPrice(property.price, property.transactionType)}</strong>
-        </div>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <a href={waLink} target="_blank" rel="noopener noreferrer" style={{
-            padding: '10px 18px', borderRadius: '50px',
-            background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.3)',
-            color: '#25D366', display: 'flex', alignItems: 'center', gap: '6px',
-            fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none',
-          }}>
-            <MessageSquare size={14} /> WhatsApp
-          </a>
-          <button onClick={() => onOpenInquiry(property)} style={{
-            padding: '10px 22px', borderRadius: '50px',
-            background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))',
-            border: 'none', color: '#070F1E', fontWeight: 800, fontSize: '0.88rem',
-            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
-          }}>
-            Inquire Now <ArrowRight size={14} />
-          </button>
-        </div>
-      </div>
+      {/* Sticky bottom bar hidden — CTA already in right column sidebar */}
 
     </motion.div>
   );

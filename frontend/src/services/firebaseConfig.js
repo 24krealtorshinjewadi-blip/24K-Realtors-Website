@@ -3,7 +3,7 @@
 // Connects: Firebase Auth | Firestore | FCM Push Notifications
 // ═══════════════════════════════════════════════════════════════
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
@@ -30,6 +30,13 @@ export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   prompt: 'select_account',
   hd: '*' // Allow all Google accounts
+});
+
+// ── Microsoft Provider ───────────────────────────────────────────────
+export const microsoftProvider = new OAuthProvider('microsoft.com');
+microsoftProvider.setCustomParameters({
+  prompt: 'select_account',
+  tenant: 'common' // allows personal + corporate Microsoft accounts
 });
 
 // ── Messaging (FCM) — graceful init ─────────────────────────
@@ -66,6 +73,31 @@ export async function signInWithGoogle() {
     };
   } catch (error) {
     console.error('[Firebase Auth] Google Sign-In failed:', error.code, error.message);
+    throw error;
+  }
+}
+
+/**
+ * Sign in with Microsoft Popup — Real OAuth via Firebase
+ * Returns Firebase User object + ID Token
+ */
+export async function signInWithMicrosoft() {
+  try {
+    const result = await signInWithPopup(auth, microsoftProvider);
+    const user = result.user;
+    const idToken = await user.getIdToken();
+
+    console.log('[Firebase Auth] Microsoft Sign-In success:', user.email);
+    return {
+      user,
+      idToken,
+      email: user.email,
+      name: user.displayName,
+      photo: user.photoURL,
+      uid: user.uid
+    };
+  } catch (error) {
+    console.error('[Firebase Auth] Microsoft Sign-In failed:', error.code, error.message);
     throw error;
   }
 }

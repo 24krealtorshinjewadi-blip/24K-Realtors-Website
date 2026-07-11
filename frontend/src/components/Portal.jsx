@@ -3980,33 +3980,38 @@ export default function Portal({ onViewChange }) {
         </div>
       )}
 
-      {/* Floating chatbot widget */}
-      <Suspense fallback={null}>
-        <ChatWidget 
-          isOpen={isChatWidgetOpen}
-          setIsOpen={setIsChatWidgetOpen}
-          chatMessages={chatMessages}
-          chatInput={chatInput}
-          setChatInput={setChatInput}
-          onSubmit={handleChatSubmit}
-        />
-      </Suspense>
+      {/* Floating chatbot widget — hidden on subpages/detail pages */}
+      {!selectedPropertyDetail && !selectedSocietyDetail && !selectedBuilderDetail && !selectedLocalityDetail && !selectedBlogDetail && (
+        <Suspense fallback={null}>
+          <ChatWidget 
+            isOpen={isChatWidgetOpen}
+            setIsOpen={setIsChatWidgetOpen}
+            chatMessages={chatMessages}
+            chatInput={chatInput}
+            setChatInput={setChatInput}
+            onSubmit={handleChatSubmit}
+          />
+        </Suspense>
+      )}
 
-      {/* Sticky Floating WhatsApp */}
-      <a 
-        href="https://wa.me/919673000053?text=I%20am%20interested%20in%20real%20estate%20consultation"
-        className="floating-whatsapp"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="WhatsApp Consultation Desk"
-      >
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-          <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371c1.394.756 2.96 1.157 4.777 1.158h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2zm5.787 14.404c-.24.675-1.397 1.285-1.92 1.36-.474.07-1.088.13-3.18-.737-2.677-1.11-4.4-3.837-4.536-4.015-.132-.178-1.08-1.433-1.08-2.73 0-1.298.68-1.936.92-2.199.243-.263.53-.328.706-.328.176 0 .353.003.507.01.162.007.382-.062.597.45.22.524.75 1.83.816 1.964.066.13.11.286.022.463-.087.177-.13.287-.26.439-.13.15-.27.337-.385.45-.126.126-.259.263-.11.517.15.253.66.1.91 1.488.75 1.309 1.37 2.14 2.15 2.65.783.51 1.237.585 1.58.204.34-.38 1.484-1.72 1.88-2.31.398-.59.794-.49 1.346-.29.553.2.3.5 1.764 1.226.22.11.365.163.475.328.11.165.11.954-.13 1.63z"/>
-        </svg>
-      </a>
+      {/* Sticky Floating WhatsApp — hidden on subpages/detail pages */}
+      {!selectedPropertyDetail && !selectedSocietyDetail && !selectedBuilderDetail && !selectedLocalityDetail && !selectedBlogDetail && (
+        <a 
+          href="https://wa.me/919673000053?text=I%20am%20interested%20in%20real%20estate%20consultation"
+          className="floating-whatsapp"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="WhatsApp Consultation Desk"
+        >
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+            <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371c1.394.756 2.96 1.157 4.777 1.158h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2zm5.787 14.404c-.24.675-1.397 1.285-1.92 1.36-.474.07-1.088.13-3.18-.737-2.677-1.11-4.4-3.837-4.536-4.015-.132-.178-1.08-1.433-1.08-2.73 0-1.298.68-1.936.92-2.199.243-.263.53-.328.706-.328.176 0 .353.003.507.01.162.007.382-.062.597.45.22.524.75 1.83.816 1.964.066.13.11.286.022.463-.087.177-.13.287-.26.439-.13.15-.27.337-.385.45-.126.126-.259.263-.11.517.15.253.66.1.91 1.488.75 1.309 1.37 2.14 2.15 2.65.783.51 1.237.585 1.58.204.34-.38 1.484-1.72 1.88-2.31.398-.59.794-.49 1.346-.29.553.2.3.5 1.764 1.226.22.11.365.163.475.328.11.165.11.954-.13 1.63z"/>
+          </svg>
+        </a>
+      )}
 
       {/* Portal Footer */}
       <PortalFooter />
+
     </div>
   );
 }

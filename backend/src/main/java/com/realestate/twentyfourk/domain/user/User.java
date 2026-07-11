@@ -55,6 +55,26 @@ public class User implements UserDetails {
     @Column(name = "phone", length = 20)
     private String phone;
 
+    /** Set true after OTP-verified email login */
+    @Column(name = "email_verified", nullable = false)
+    @Builder.Default
+    private boolean emailVerified = false;
+
+    /** Set true after OTP-verified mobile login */
+    @Column(name = "mobile_verified", nullable = false)
+    @Builder.Default
+    private boolean mobileVerified = false;
+
+    /** If true, only OTP login allowed — password step is skipped */
+    @Column(name = "passwordless_enabled", nullable = false)
+    @Builder.Default
+    private boolean passwordlessEnabled = false;
+
+    /** LOCAL | GOOGLE | MICROSOFT */
+    @Column(name = "auth_provider", length = 20)
+    @Builder.Default
+    private String authProvider = "LOCAL";
+
     @Column(name = "designation", length = 100)
     private String designation;
 
