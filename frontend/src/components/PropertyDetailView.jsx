@@ -113,23 +113,24 @@ function AmenityChip({ label }) {
         display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
         gap: '14px',
         background: isHovered 
-          ? 'linear-gradient(135deg, rgba(10,18,36,0.85) 0%, rgba(5,10,22,0.7) 100%)' 
-          : 'linear-gradient(135deg, rgba(8,15,30,0.8) 0%, rgba(4,8,16,0.65) 100%)',
-        border: '1px solid rgba(255,255,255,0.06)',
+          ? 'rgba(15, 23, 42, 0.45)' 
+          : 'rgba(10, 17, 32, 0.65)',
+        border: isHovered 
+          ? '1.5px solid rgba(212, 175, 55, 0.6)' 
+          : '1px solid rgba(255, 255, 255, 0.08)',
         borderRadius: '16px', padding: '22px 20px',
         cursor: 'default',
-        backdropFilter: 'blur(10px)',
-        transform: `perspective(800px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) translateZ(${isHovered ? '8px' : '0px'})`,
+        backdropFilter: 'blur(16px)',
+        transform: `perspective(800px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) translateZ(${isHovered ? '10px' : '0px'})`,
         transition: isHovered ? 'none' : 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease',
         boxShadow: isHovered 
-          ? `0 14px 35px rgba(0, 0, 0, 0.6), 0 0 0 1px ${meta.color}3a, 0 6px 20px ${meta.color}15` 
-          : '0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255,255,255,0.02)',
-        borderColor: isHovered ? `${meta.color}77` : 'rgba(255,255,255,0.06)',
+          ? `0 20px 40px rgba(0, 0, 0, 0.65), 0 0 15px ${meta.color}25` 
+          : '0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* 4K Background Cover Image */}
+      {/* 4K Background Cover Image — Vivid & Colorful */}
       {meta.img && (
         <div style={{
           position: 'absolute',
@@ -137,22 +138,21 @@ function AmenityChip({ label }) {
           backgroundImage: `url(${meta.img})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: isHovered ? 0.20 : 0.06,
-          mixBlendMode: 'luminosity',
-          transform: isHovered ? 'scale(1.15) translateZ(-5px)' : 'scale(1) translateZ(0px)',
+          opacity: isHovered ? 0.45 : 0.22,
+          transform: isHovered ? 'scale(1.18) translateZ(-10px)' : 'scale(1.05) translateZ(0px)',
           transition: 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease',
           pointerEvents: 'none',
           zIndex: 0,
         }} />
       )}
 
-      {/* Dark overlay grid to secure text readability */}
+      {/* Luxury Gradient Tint Overlay (darker at bottom for text contrast) */}
       <div style={{
         position: 'absolute',
         inset: 0,
         background: isHovered 
-          ? 'linear-gradient(to bottom, rgba(10,18,36,0.35) 0%, rgba(5,10,22,0.85) 100%)' 
-          : 'linear-gradient(to bottom, rgba(8,15,30,0.55) 0%, rgba(4,8,16,0.92) 100%)',
+          ? 'linear-gradient(to bottom, rgba(7, 12, 24, 0.25) 0%, rgba(7, 12, 24, 0.85) 100%)' 
+          : 'linear-gradient(to bottom, rgba(7, 12, 24, 0.45) 0%, rgba(7, 12, 24, 0.9) 100%)',
         zIndex: 1,
         pointerEvents: 'none',
         transition: 'all 0.3s ease',
@@ -163,7 +163,7 @@ function AmenityChip({ label }) {
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.1) 0%, transparent 60%)`,
+          background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.15) 0%, transparent 60%)`,
           pointerEvents: 'none',
           mixBlendMode: 'overlay',
           zIndex: 2,
@@ -178,25 +178,26 @@ function AmenityChip({ label }) {
 
       {/* Content wrapper above all background layers */}
       <div style={{ position: 'relative', zIndex: 3, display: 'flex', flexDirection: 'column', gap: '14px', width: '100%' }}>
-        {/* Icon badge */}
+        {/* Icon badge with glass background */}
         <div style={{
           width: '46px', height: '46px', borderRadius: '14px',
-          background: meta.bg,
+          background: isHovered ? meta.bg : 'rgba(255, 255, 255, 0.03)',
+          border: `1px solid ${isHovered ? meta.color + '44' : 'rgba(255, 255, 255, 0.08)'}`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           flexShrink: 0,
-          boxShadow: isHovered ? `0 4px 14px ${meta.color}25` : 'none',
+          boxShadow: isHovered ? `0 4px 15px ${meta.color}35` : 'none',
           transition: 'all 0.3s ease',
-          transform: isHovered ? 'scale(1.08) translateZ(4px)' : 'scale(1)',
+          transform: isHovered ? 'scale(1.12) translateZ(8px)' : 'scale(1)',
         }}>
-          <IconComp size={22} color={meta.color} strokeWidth={2} />
+          <IconComp size={22} color={isHovered ? '#fff' : meta.color} strokeWidth={2} />
         </div>
-        {/* Label */}
+        {/* Label with drop shadow */}
         <span style={{
-          fontSize: '0.86rem', fontWeight: 600,
-          color: isHovered ? '#fff' : 'rgba(255,255,255,0.85)',
+          fontSize: '0.88rem', fontWeight: 700,
+          color: '#fff',
           lineHeight: 1.35,
           letterSpacing: '0.01em',
-          textShadow: isHovered ? '0 2px 4px rgba(0,0,0,0.5)' : 'none',
+          textShadow: '0 2px 8px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.95)',
           transition: 'color 0.3s ease',
         }}>{label}</span>
       </div>
