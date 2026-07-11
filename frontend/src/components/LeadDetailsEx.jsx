@@ -180,8 +180,19 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
     }).format(val);
   };
 
-  // Calculate score helper from lead fields
   const score = lead.leadScore || 50;
+
+  // Calculate current stage dynamically
+  let currentStage = 1;
+  if (bookings.length > 0) {
+    currentStage = 5;
+  } else if (visits.some(v => v.status === 'COMPLETED' || v.status === 'CHECKED_IN')) {
+    currentStage = 4;
+  } else if (visits.some(v => v.status === 'SCHEDULED')) {
+    currentStage = 3;
+  } else if (timeline.length > 0) {
+    currentStage = 2;
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(7,15,30,0.85)', zIndex: 1000, padding: '20px' }}>
@@ -209,6 +220,69 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
             Factors: Budget, Preferred Location (Wakad/Baner), Notes filled, Site tours completed.
           </span>
+        </div>
+
+        {/* Visual Lead Journey Stepper */}
+        <div style={{ margin: '24px 0', background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative', alignItems: 'center' }}>
+            {/* Background connecting bar */}
+            <div style={{ position: 'absolute', top: '15px', left: '4%', right: '4%', height: '3px', background: 'rgba(255,255,255,0.08)', zIndex: 1 }} />
+            {/* Active gold connecting bar */}
+            <div style={{ 
+              position: 'absolute', 
+              top: '15px', 
+              left: '4%', 
+              width: `${(currentStage - 1) * 23}%`, 
+              height: '3px', 
+              background: 'linear-gradient(90deg, #D4AF37, #FFDF79)', 
+              zIndex: 2,
+              transition: 'width 0.5s ease-in-out'
+            }} />
+            
+            {/* Step Nodes */}
+            {['Contact', 'Engaged', 'Site Visit', 'Checked In', 'Booked'].map((label, index) => {
+              const stepNum = index + 1;
+              const isCompleted = stepNum <= currentStage;
+              const isActive = stepNum === currentStage;
+              
+              return (
+                <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 3, width: '18%' }}>
+                  <div style={{ 
+                    width: '32px', 
+                    height: '32px', 
+                    borderRadius: '50%', 
+                    background: isActive 
+                      ? '#070f1e' 
+                      : isCompleted 
+                        ? 'linear-gradient(135deg, #D4AF37, #B8960C)' 
+                        : 'rgba(255,255,255,0.05)',
+                    border: `2px solid ${isCompleted ? '#D4AF37' : 'rgba(255,255,255,0.15)'}`,
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    color: isActive ? '#D4AF37' : isCompleted ? '#070F1E' : 'rgba(255,255,255,0.4)',
+                    fontWeight: 800,
+                    fontSize: '0.85rem',
+                    transition: 'all 0.3s ease',
+                    boxShadow: isActive ? '0 0 15px rgba(212,175,55,0.4)' : 'none'
+                  }}>
+                    {isCompleted && stepNum < currentStage ? '✓' : stepNum}
+                  </div>
+                  <span style={{ 
+                    marginTop: '8px', 
+                    fontSize: '0.72rem', 
+                    color: isActive ? '#D4AF37' : isCompleted ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.3)',
+                    fontWeight: isActive || isCompleted ? 700 : 500,
+                    textAlign: 'center',
+                    letterSpacing: '0.02em',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Tabs navigation */}
@@ -327,7 +401,29 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
                         {v.status}
                       </span>
                       {v.status === 'SCHEDULED' && (
-                        <button onClick={() => handleVisitCheckIn(v.id)} className="btn-outline" style={{ padding: '4px 8px', fontSize: '0.72rem' }}>Check In</button>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <button onClick={() => handleVisitCheckIn(v.id)} className="btn-outline" style={{ padding: '4px 8px', fontSize: '0.72rem' }}>Check In</button>
+                          <a 
+                            href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                              `Namaste ${lead.name} ji! 👋\n\n24K Realtors ki taraf se aapka VIP Site Tour scheduled hai:\n🏡 Property: ${v.property?.title}\n📅 Date & Time: ${new Date(v.scheduledTime).toLocaleString()}\n🚗 Transport: ${v.transportMode === 'VIP_CHAUFFEUR' ? 'VIP Chauffeur Service (Pickup arranged)' : 'Self Drive'}\n🧑‍💼 RM: ${v.assignedAgent?.fullName || 'Assigned Agent'}\n\nHum aapse reach out karenge. Please confirm if this time suits you. Dhanyawad! 🙏`
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-gold"
+                            style={{ 
+                              padding: '4px 8px', 
+                              fontSize: '0.72rem', 
+                              textDecoration: 'none',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              background: 'linear-gradient(135deg, #25D366, #128C7E)',
+                              border: 'none',
+                              color: '#fff'
+                            }}
+                          >
+                            💬 Invite
+                          </a>
+                        </div>
                       )}
                       {v.status === 'CHECKED_IN' && (
                         <button onClick={() => handleVisitComplete(v.id)} className="btn-gold" style={{ padding: '4px 8px', fontSize: '0.72rem' }}>Complete Tour</button>
