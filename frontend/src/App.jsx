@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoginModal from './components/LoginModal';
 import CompanyLogo from './components/CompanyLogo';
+import AiAssistantPanel from './components/AiAssistantPanel';
+import { auth, subscribeToNotifications, onForegroundMessage } from './services/firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
 import Lenis from 'lenis';
 import './App.css';
 
@@ -77,6 +80,29 @@ function AppLoadingScreen() {
 export default function App() {
   const [currentView, setCurrentView] = useState('portal'); // portal | dashboard
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [firebaseUser, setFirebaseUser] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+
+  // Firebase Auth State Listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setFirebaseUser(user);
+      if (user) {
+        console.log('[Firebase] User signed in:', user.email);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // FCM Foreground notifications
+  useEffect(() => {
+    const unsubFCM = onForegroundMessage((payload) => {
+      const notif = payload.notification || {};
+      console.log('[FCM] New notification:', notif.title);
+      setNotifications(prev => [{ ...notif, id: Date.now() }, ...prev.slice(0, 9)]);
+    });
+    return () => { if (unsubFCM) unsubFCM(); };
+  }, []);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -151,11 +177,18 @@ export default function App() {
           </Suspense>
         </main>
 
-        {/* Premium login modal — triggered when unauthenticated user accesses dashboard */}
+        {/* Premium login modal */}
         {showLoginModal && (
           <LoginModal
             onClose={() => setShowLoginModal(false)}
             onSuccess={handleLoginSuccess}
+          />
+        )}
+
+        {/* 🤖 AI CRM Co-pilot — available on Dashboard */}
+        {currentView === 'dashboard' && (
+          <AiAssistantPanel
+            onCommand={(cmd) => console.log('[Voice Command]', cmd)}
           />
         )}
       </div>
