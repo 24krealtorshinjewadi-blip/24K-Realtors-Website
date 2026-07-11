@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { apiService } from '../services/apiService';
+import { chatWithVisitor } from '../services/geminiService';
 import { 
   Search, Loader, CheckCircle, IndianRupee, Laptop, Sparkles, Activity, 
   LineChart, Car, Users, ShieldCheck, 
@@ -829,44 +830,39 @@ export default function Portal({ onViewChange }) {
     
     const userMsg = { sender: 'user', text: chatInput };
     setChatMessages(prev => [...prev, userMsg]);
-    const currentInput = chatInput.toLowerCase();
     const rawInput = chatInput;
     setChatInput('');
     
-    setTimeout(async () => {
-      let replyText = 'Thank you for reaching out! A senior portfolio advisor is being notified to connect with you regarding this.';
-      
-      if (currentInput.includes('wakad')) {
-        replyText = 'Wakad Corridor holds a +14% annual appreciation rate driven by multi-lane transit connectivity. Tier-1 societies like 24K Opula starting at ₹1.2 Cr offer excellent inventory. Would you like to schedule a private site visit?';
-      } else if (currentInput.includes('baner')) {
-        replyText = 'Baner Corridor is Pune West\'s premium segment, showing a +16% YoY price rise. Excellent lifestyle avenues near Balewadi High Street. We have 3 gated luxury options available now.';
-      } else if (currentInput.includes('hinjewadi')) {
-        replyText = 'Hinjewadi IT Corridor is the rental yield leader at 5.2%. Excellent for corporate professionals seeking high capital growth with stable tenants. Type "maybach" to schedule a premium chauffeur site tour!';
-      } else if (currentInput.includes('price') || currentInput.includes('cost') || currentInput.includes('budget')) {
-        replyText = 'Our portfolio ranges from ₹65 Lakhs for entry IT apartments up to ₹3.8 Crore+ for exclusive whole-floor mandates and luxury penthouses. What budget range are you evaluating?';
-      } else if (currentInput.includes('maybach') || currentInput.includes('chauffeur') || currentInput.includes('car')) {
-        replyText = 'We provide complimentary Mercedes-Maybach / BMW 7 Series chauffeured transport for qualified site inspections. Click the "VIP Chauffeur" option in any property listing to book your slot!';
-      } else if (currentInput.includes('rera') || currentInput.includes('license') || currentInput.includes('verify')) {
-        replyText = 'All properties listed on 24K Realtors are registered with MahaRERA (our license: A52100028461) and have certified title-clear registry dossiers. You can explore the RERA compliance stamp on any card!';
-      }
-      
-      const botMsg = { sender: 'bot', text: replyText };
-      setChatMessages(prev => [...prev, botMsg]);
-      try {
-        await apiService.submitLead({
-          name: '[LIVE CHAT CLIENT]',
-          phone: '+919673000053',
-          email: 'chat@24krealestate.com',
-          requirementType: 'BUY',
-          budgetMin: '0',
-          budgetMax: '0',
-          preferredLocation: 'HINJEWADI',
-          notes: `[LIVE SUPPORT CHAT] User inquiry: "${rawInput}"`
-        });
-      } catch (err) {
-        console.error("Failed to register live chat lead:", err);
-      }
-    }, 800);
+    // Add temporary loading indicator for visitor
+    const typingId = 'typing-' + Date.now();
+    setChatMessages(prev => [...prev, { id: typingId, sender: 'bot', text: 'Typing...', isTyping: true }]);
+    
+    // Let's call Gemini
+    try {
+      const replyText = await chatWithVisitor(rawInput, selectedPropertyDetail);
+      setChatMessages(prev => prev.filter(m => m.id !== typingId).concat({ sender: 'bot', text: replyText }));
+    } catch (err) {
+      console.error("Gemini response failed:", err);
+      setChatMessages(prev => prev.filter(m => m.id !== typingId).concat({ 
+        sender: 'bot', 
+        text: 'Thank you for reaching out! A senior portfolio advisor is being notified to connect with you regarding this.' 
+      }));
+    }
+
+    try {
+      await apiService.submitLead({
+        name: '[LIVE CHAT CLIENT]',
+        phone: '+919673000053',
+        email: 'chat@24krealestate.com',
+        requirementType: 'BUY',
+        budgetMin: '0',
+        budgetMax: '0',
+        preferredLocation: 'HINJEWADI',
+        notes: `[LIVE SUPPORT CHAT] User inquiry: "${rawInput}"`
+      });
+    } catch (err) {
+      console.error("Failed to register live chat lead:", err);
+    }
   };
 
   // ── Smart NLP query parser ─────────────────────────────────────────────────

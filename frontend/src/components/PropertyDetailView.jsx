@@ -78,50 +78,94 @@ const AMENITY_ICONS = {
   'Rainwater Harvesting':      { icon: Wind,           color: '#6ee7b7', bg: 'rgba(110,231,183,0.10)'},
 };
 
-/* ─── Netflix-style Amenity Card ────────────────────────────── */
+/* ─── Premium 3D Netflix-style Amenity Card ─────────────────── */
 function AmenityChip({ label }) {
   const meta = AMENITY_ICONS[label] || { icon: CheckCircle, color: '#D4AF37', bg: 'rgba(212,175,55,0.10)' };
   const IconComp = meta.icon;
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateY = ((x - centerX) / centerX) * 12; // 12deg max tilt
+    const rotateX = -((y - centerY) / centerY) * 12;
+    
+    setRotate({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setRotate({ x: 0, y: 0 });
+  };
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-      gap: '14px',
-      background: 'rgba(12,20,40,0.7)',
-      border: '1px solid rgba(255,255,255,0.06)',
-      borderRadius: '16px', padding: '20px 18px',
-      transition: 'all 0.28s ease',
-      cursor: 'default',
-      backdropFilter: 'blur(8px)',
-    }}
-      onMouseEnter={e => {
-        e.currentTarget.style.background = 'rgba(18,28,55,0.85)';
-        e.currentTarget.style.borderColor = meta.color + '55';
-        e.currentTarget.style.transform = 'translateY(-3px)';
-        e.currentTarget.style.boxShadow = `0 8px 28px ${meta.color}18`;
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.background = 'rgba(12,20,40,0.7)';
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = 'none';
+    <div 
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+        gap: '14px',
+        background: isHovered 
+          ? 'linear-gradient(135deg, rgba(18,28,55,0.9) 0%, rgba(10,18,36,0.75) 100%)' 
+          : 'linear-gradient(135deg, rgba(12,20,40,0.7) 0%, rgba(6,11,24,0.5) 100%)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        borderRadius: '16px', padding: '22px 20px',
+        cursor: 'default',
+        backdropFilter: 'blur(10px)',
+        transform: `perspective(800px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) translateZ(${isHovered ? '8px' : '0px'})`,
+        transition: isHovered ? 'none' : 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease',
+        boxShadow: isHovered 
+          ? `0 14px 35px rgba(0, 0, 0, 0.55), 0 0 0 1px ${meta.color}3a, 0 6px 20px ${meta.color}15` 
+          : '0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255,255,255,0.02)',
+        borderColor: isHovered ? `${meta.color}77` : 'rgba(255,255,255,0.06)',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
+      {/* Glossy holographic sheen highlight */}
+      {isHovered && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.08) 0%, transparent 60%)`,
+          pointerEvents: 'none',
+          mixBlendMode: 'overlay',
+        }} 
+        ref={el => {
+          if (el && el.parentElement) {
+            el.style.setProperty('--mouse-x', `${(rotate.y / 12 * 50) + 50}%`);
+            el.style.setProperty('--mouse-y', `${(-rotate.x / 12 * 50) + 50}%`);
+          }
+        }}/>
+      )}
+
       {/* Icon badge */}
       <div style={{
-        width: '42px', height: '42px', borderRadius: '12px',
+        width: '46px', height: '46px', borderRadius: '14px',
         background: meta.bg,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexShrink: 0,
+        boxShadow: isHovered ? `0 4px 14px ${meta.color}25` : 'none',
+        transition: 'all 0.3s ease',
+        transform: isHovered ? 'scale(1.08) translateZ(4px)' : 'scale(1)',
       }}>
-        <IconComp size={20} color={meta.color} strokeWidth={1.8} />
+        <IconComp size={22} color={meta.color} strokeWidth={2} />
       </div>
       {/* Label */}
       <span style={{
-        fontSize: '0.82rem', fontWeight: 600,
-        color: 'rgba(255,255,255,0.82)',
+        fontSize: '0.86rem', fontWeight: 600,
+        color: isHovered ? '#fff' : 'rgba(255,255,255,0.85)',
         lineHeight: 1.35,
         letterSpacing: '0.01em',
+        textShadow: isHovered ? '0 2px 4px rgba(0,0,0,0.5)' : 'none',
+        transition: 'color 0.3s ease',
       }}>{label}</span>
     </div>
   );
@@ -875,7 +919,40 @@ export default function PropertyDetailView({
         </div>
       )}
 
-      {/* Sticky bottom bar hidden — CTA already in right column sidebar */}
+      {/* ══════════════════════════════════════════════════════════
+          STICKY BOTTOM BAR
+      ══════════════════════════════════════════════════════════ */}
+      <div style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0,
+        background: 'rgba(4,8,20,0.94)', backdropFilter: 'blur(20px)',
+        borderTop: '1px solid rgba(212,175,55,0.2)',
+        padding: '14px 40px', zIndex: 999,
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        boxShadow: '0 -12px 40px rgba(0,0,0,0.5)',
+      }} className="sticky-booking-bar">
+        <div>
+          <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Valuation Mandate</div>
+          <strong style={{ fontSize: '1.3rem', color: 'var(--gold-primary)' }}>{formatPrice(property.price, property.transactionType)}</strong>
+        </div>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <a href={waLink} target="_blank" rel="noopener noreferrer" style={{
+            padding: '10px 18px', borderRadius: '50px',
+            background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.3)',
+            color: '#25D366', display: 'flex', alignItems: 'center', gap: '6px',
+            fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none',
+          }}>
+            <MessageSquare size={14} /> WhatsApp
+          </a>
+          <button onClick={() => onOpenInquiry(property)} style={{
+            padding: '10px 22px', borderRadius: '50px',
+            background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))',
+            border: 'none', color: '#070F1E', fontWeight: 800, fontSize: '0.88rem',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
+          }}>
+            Inquire Now <ArrowRight size={14} />
+          </button>
+        </div>
+      </div>
 
     </motion.div>
   );

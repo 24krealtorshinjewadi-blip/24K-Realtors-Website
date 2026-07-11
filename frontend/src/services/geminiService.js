@@ -255,11 +255,65 @@ Respond to the agent's latest message: "${userMessage}"`;
   return `Main samajh gaya. Aap ${userMessage} ke baare mein pooch rahe hain. Please thoda aur detail dein taaki main better help kar sakoon. 🤝`;
 }
 
+/**
+ * Chat with Portal Visitor (Consumer-facing chatbot)
+ * Powered by Gemini 2.0 Flash with fallback NLP
+ */
+export async function chatWithVisitor(userMessage, propertyContext = null) {
+  const prompt = `You are "24K Premium Concierge", an expert AI real estate assistant for "24K Realtors", Pune's premier luxury real estate advisory.
+  
+  Our Brand & Operations Information:
+  - Name: 24K Realtors Pune
+  - RERA License: A52100028461 (MahaRERA registered, 100% compliant)
+  - Tagline: Pune's Premium Location Advisory (Zero Brokerage fee mandate)
+  - Prime Corridors: Hinjewadi (5.2% rental yield leader), Wakad (14.2% growth, family residential corridor), Baner (16.5% appreciation, Balewadi High Street hub), Tathawade, Balewadi.
+  - VIP Service: We provide complimentary Mercedes-Maybach or BMW 7 Series chauffeured tours for qualified site inspections.
+  - Contact Phone: +91 96730 00053
+  - Contact Email: contact@24krealtors.in
+
+  ${propertyContext ? `The visitor is currently viewing this property detail page: ${JSON.stringify(propertyContext)}` : ''}
+
+  Rules:
+  1. Answer in elegant, warm Hinglish (natural mix of Hindi and English) — respectful (use "Aap", "ji"), highly elite, and professional.
+  2. Keep responses concise (under 80-110 words) so they look neat in a chat bubble.
+  3. Encourage them to book a VIP chauffeur tour or connect on WhatsApp at +91 96730 00053.
+  4. Write ONLY the assistant's reply. Do not add prefix/suffix like "Assistant:".
+
+  Visitor query: "${userMessage}"`;
+
+  try {
+    const result = await callGemini(prompt, { temperature: 0.7, maxTokens: 300 });
+    if (result) return result.trim();
+  } catch (e) {
+    console.warn('[Gemini] Visitor chat failed, using fallback NLP:', e.message);
+  }
+
+  // Smart local NLP fallback
+  const currentInput = userMessage.toLowerCase();
+  if (currentInput.includes('wakad')) {
+    return 'Wakad Corridor holds a +14.2% annual appreciation rate. Tier-1 societies like 24K Opula starting at ₹1.2 Cr offer excellent inventory. Would you like to schedule a private Mercedes-Maybach site visit?';
+  } else if (currentInput.includes('baner')) {
+    return 'Baner Corridor is Pune West\'s premium segment, showing a +16.5% YoY price rise near Balewadi High Street. We have 3 gated luxury options available now. Kya hum ek callback arrange karein?';
+  } else if (currentInput.includes('hinjewadi')) {
+    return 'Hinjewadi IT Corridor is the rental yield leader at 5.2%. Excellent for corporate professionals seeking high capital growth with stable tenants. Type "maybach" to schedule a premium chauffeur site tour!';
+  } else if (currentInput.includes('price') || currentInput.includes('cost') || currentInput.includes('budget')) {
+    return 'Our portfolio ranges from ₹65 Lakhs for entry IT apartments up to ₹3.8 Crore+ for exclusive whole-floor mandates and luxury penthouses. Aapka budget range kya hai?';
+  } else if (currentInput.includes('maybach') || currentInput.includes('chauffeur') || currentInput.includes('car')) {
+    return 'We provide complimentary Mercedes-Maybach / BMW 7 Series chauffeured transport for qualified site inspections. Click the "Book VIP Chauffeur Tour" button to book your slot!';
+  } else if (currentInput.includes('rera') || currentInput.includes('license') || currentInput.includes('verify')) {
+    return 'All properties listed on 24K Realtors are registered with MahaRERA (our license: A52100028461). Aap safe aur secure transactions trust kar sakte hain.';
+  }
+
+  return 'Namaste! Main 24K Premium Concierge hoon. Hamare premium properties (Hinjewadi, Wakad, Baner) ya VIP Maybach tours ke baare me kuch bhi poohein. Main aapki help ke liye ready hoon! 😊';
+}
+
 export const geminiService = {
   scoreLeadWithAI,
   generateWhatsAppMessage,
   matchPropertiesWithAI,
-  chatWithAI
+  chatWithAI,
+  chatWithVisitor
 };
 
 export default geminiService;
+
