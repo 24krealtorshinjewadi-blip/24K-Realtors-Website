@@ -938,7 +938,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(135deg, rgba(7, 15, 30, 0.88), rgba(7, 15, 30, 0.94)), url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80');
+  background-image: linear-gradient(135deg, rgba(7, 15, 30, 0.9), rgba(7, 15, 30, 0.95)), url('/luxury_sunset_pool.png');
   background-size: cover;
   background-position: center;
   position: relative;
@@ -954,7 +954,6 @@
 .btn-password-toggle:hover {
   color: var(--gold-primary) !important;
 }
-
 
 .crm-login-wrapper::before {
   content: "24K REALTORS";
@@ -989,15 +988,15 @@
 }
 
 .login-card {
-  background: rgba(11, 21, 40, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  border-radius: 16px;
-  padding: 40px;
+  background: rgba(10, 16, 32, 0.55);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 24px;
+  padding: 44px;
   width: 100%;
   max-width: 440px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.05);
   box-sizing: border-box;
   text-align: center;
   position: relative;
@@ -1009,7 +1008,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
 .login-logo .logo-text {
@@ -1034,11 +1033,11 @@
   color: var(--gold-primary);
   background: rgba(212, 175, 55, 0.08);
   border: 1px solid rgba(212, 175, 55, 0.2);
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 20px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   text-transform: uppercase;
 }
 
@@ -1076,24 +1075,60 @@
 }
 
 .otp-digit-input {
-  width: 45px;
-  height: 50px;
+  width: 48px;
+  height: 56px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+  border-radius: 10px;
   text-align: center;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #FFF;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
+  font-family: monospace;
 }
 
 .otp-digit-input:focus {
   border-color: var(--gold-primary);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
   background: rgba(212, 175, 55, 0.02);
 }
+
+.crm-login-wrapper .form-input {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #fff;
+  padding: 14px 16px;
+  font-size: 0.95rem;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.03em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.crm-login-wrapper .form-input:focus {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.crm-login-wrapper .form-group {
+  margin-bottom: 20px;
+}
+
+.crm-login-wrapper .form-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
 
 .security-icon-circle {
   width: 50px;
@@ -1176,8 +1211,8 @@
 .auth-tab-buttons {
   display: flex;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-muted);
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
   padding: 4px;
   margin-bottom: 24px;
 }
@@ -1186,14 +1221,16 @@
   flex: 1;
   background: transparent;
   border: none;
-  color: var(--text-muted);
-  padding: 10px;
-  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 11px;
+  border-radius: 50px;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.05em;
 }
 
 .auth-tab-buttons button:hover {
@@ -1201,9 +1238,10 @@
 }
 
 .auth-tab-buttons button.active {
-  background: var(--gold-primary);
-  color: var(--text-dark);
+  background: linear-gradient(135deg, var(--gold-primary), #B8960C);
+  color: #070F1E;
   font-weight: 700;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
 }
 
 .auth-error-msg {
@@ -1405,6 +1443,15 @@
 
 .tab-btn.active::after {
   width: 80%;
+}
+
+.btn-google-login:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.btn-google-login:active {
+  transform: scale(0.98);
 }
 
 

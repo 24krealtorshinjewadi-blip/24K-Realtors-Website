@@ -1163,6 +1163,56 @@ export const apiService = {
     );
   },
 
+  async googleLogin(credential) {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/auth/google-login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ credential }),
+        });
+        if (!response.ok) {
+          const errText = await response.text().catch(() => '');
+          throw new Error(errText || 'Google sign-in failed.');
+        }
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        localStorage.setItem('role', data.role);
+        localStorage.setItem('adminUser', data.username);
+        localStorage.setItem('fullName', data.fullName || data.username);
+        return data;
+      },
+      () => {
+        let email = "manishrajapakari@gmail.com";
+        let name = "Manish Kumar Rai";
+        try {
+          const parts = credential.split(".");
+          if (parts.length >= 2) {
+            const payload = JSON.parse(atob(parts[1]));
+            email = payload.email || email;
+            name = payload.name || name;
+          }
+        } catch (e) {
+          console.warn("Could not decode Google mock credential, using default profile info");
+        }
+        
+        const token = "mock-jwt-session-token-xyz-123";
+        const refreshToken = "mock-refresh-token-xyz-123";
+        const username = email.split("@")[0].toLowerCase();
+        localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('role', 'CRM_ADMIN');
+        localStorage.setItem('adminUser', username);
+        localStorage.setItem('fullName', name);
+        return { token, refreshToken, username, role: 'CRM_ADMIN', fullName: name };
+      },
+      true
+    );
+  },
+
   async refreshToken() {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) return null;

@@ -97,49 +97,60 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private void seedSystemUsers() {
         // 1. Super Admin (Manish)
-        User admin = userRepository.findByUsername("Manishrai07").orElse(null);
-
+        User admin = userRepository.findByUsername("Manish").orElse(null);
         if (admin == null) {
-            // Check if there is any other super admin to rename/synchronize
-            var otherSuperAdmins = userRepository.findAll().stream()
-                    .filter(u -> u.getRole() == UserRole.SUPER_ADMIN)
-                    .toList();
-            
-            if (!otherSuperAdmins.isEmpty()) {
-                admin = otherSuperAdmins.get(0);
-                log.info("Renaming existing Super Admin to Manishrai07");
-            }
-        }
-
-        if (admin == null) {
-            // Build new Super Admin
             admin = User.builder()
-                    .username("Manishrai07")
+                    .username("Manish")
                     .password(passwordEncoder.encode("Manish@993100"))
                     .role(UserRole.SUPER_ADMIN)
                     .fullName("Manish Kumar Rai")
                     .email("24krealtorshinjewadi@gmail.com")
-                    .phone("+918677936898")
+                    .phone("+919673000053")
                     .designation("CEO & Principal Partner")
                     .department("Management")
                     .dateOfJoining(java.time.LocalDate.of(2026, 1, 1))
                     .salaryBase(new BigDecimal("250000.00"))
                     .build();
             userRepository.save(admin);
-            log.info("Super Admin (Manishrai07) created successfully.");
+            log.info("Super Admin (Manish) created successfully.");
         } else {
-            // Sync credentials and role
-            admin.setUsername("Manishrai07");
             admin.setRole(UserRole.SUPER_ADMIN);
             admin.setEmail("24krealtorshinjewadi@gmail.com");
-            admin.setPhone("+918677936898");
+            admin.setPhone("+919673000053");
             admin.setFullName("Manish Kumar Rai");
-            String newPwd = "Manish@993100";
-            if (!passwordEncoder.matches(newPwd, admin.getPassword())) {
-                admin.setPassword(passwordEncoder.encode(newPwd));
+            if (!passwordEncoder.matches("Manish@993100", admin.getPassword())) {
+                admin.setPassword(passwordEncoder.encode("Manish@993100"));
             }
             userRepository.save(admin);
-            log.info("Super Admin (Manishrai07) credentials and role synchronized.");
+            log.info("Super Admin (Manish) credentials synchronized.");
+        }
+
+        // Keep Manishrai07 synchronized as well
+        User adminLegacy = userRepository.findByUsername("Manishrai07").orElse(null);
+        if (adminLegacy == null) {
+            adminLegacy = User.builder()
+                    .username("Manishrai07")
+                    .password(passwordEncoder.encode("Manish@993100"))
+                    .role(UserRole.SUPER_ADMIN)
+                    .fullName("Manish Kumar Rai")
+                    .email("24krealtorshinjewadi@gmail.com")
+                    .phone("+919673000053")
+                    .designation("CEO & Principal Partner")
+                    .department("Management")
+                    .dateOfJoining(java.time.LocalDate.of(2026, 1, 1))
+                    .salaryBase(new BigDecimal("250000.00"))
+                    .build();
+            userRepository.save(adminLegacy);
+            log.info("Legacy Super Admin (Manishrai07) created successfully.");
+        } else {
+            adminLegacy.setRole(UserRole.SUPER_ADMIN);
+            adminLegacy.setEmail("24krealtorshinjewadi@gmail.com");
+            adminLegacy.setPhone("+919673000053");
+            if (!passwordEncoder.matches("Manish@993100", adminLegacy.getPassword())) {
+                adminLegacy.setPassword(passwordEncoder.encode("Manish@993100"));
+            }
+            userRepository.save(adminLegacy);
+            log.info("Legacy Super Admin (Manishrai07) synchronized.");
         }
 
         // 2. HR Manager

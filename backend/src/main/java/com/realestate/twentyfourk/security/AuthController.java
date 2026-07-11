@@ -50,6 +50,7 @@ public class AuthController {
     public record AuthResponse(String token, String refreshToken, String username, String role, String fullName) {}
     public record TokenRefreshRequest(String refreshToken) {}
     public record TokenRefreshResponse(String accessToken, String refreshToken) {}
+    public record GoogleLoginRequest(String credential) {}
 
     // Multi-factor authentication DTOs
     public record LoginInitRequest(String username, String password, boolean rememberDevice) {}
@@ -121,6 +122,82 @@ public class AuthController {
                 user.getRole().name(),
                 user.getFullName()
         ));
+    }
+
+    @PostMapping("/google-login")
+    public ResponseEntity<?> googleLogin(@RequestBody GoogleLoginRequest request) {
+        log.info("Received Google login request with credential length: {}", request.credential() != null ? request.credential().length() : 0);
+        try {
+            String[] parts = request.credential().split("\\.");
+            if (parts.length < 2) {
+                return ResponseEntity.badRequest().body("Invalid Google token format.");
+            }
+            
+            String payloadJson = new String(java.util.Base64.getUrlDecoder().decode(parts[1]));
+            log.info("Google ID Token payload: {}", payloadJson);
+            
+            String email = getValueFromJson(payloadJson, "email");
+            String name = getValueFromJson(payloadJson, "name");
+            
+            if (email == null || email.isBlank()) {
+                return ResponseEntity.badRequest().body("Could not resolve email from Google Identity.");
+            }
+            
+            String username = email.split("@")[0].toLowerCase();
+            User user = userRepository.findByUsername(username).orElse(null);
+            
+            if (user == null) {
+                var optUser = userRepository.findAll().stream()
+                        .filter(u -> email.equalsIgnoreCase(u.getEmail()))
+                        .findFirst();
+                if (optUser.isPresent()) {
+                    user = optUser.get();
+                }
+            }
+            
+            if (user == null) {
+                user = User.builder()
+                        .username(username)
+                        .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                        .email(email)
+                        .fullName(name != null ? name : username)
+                        .role(UserRole.CRM_ADMIN)
+                        .designation("Google Authorized Advisor")
+                        .department("Brokerage Operations")
+                        .dateOfJoining(java.time.LocalDate.now())
+                        .build();
+                userRepository.save(user);
+                log.info("New Google user registered: {}", username);
+            }
+            
+            refreshTokenService.deleteByUserId(user.getId());
+            String token = jwtService.generateToken(user);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+            
+            return ResponseEntity.ok(new AuthResponse(
+                    token,
+                    refreshToken.getToken(),
+                    user.getUsername(),
+                    user.getRole().name(),
+                    user.getFullName()
+            ));
+        } catch (Exception e) {
+            log.error("Google Authentication failed", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Google Authentication failed: " + e.getMessage());
+        }
+    }
+    
+    private String getValueFromJson(String json, String key) {
+        try {
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\"" + key + "\"\\s*:\\s*\"([^\"]+)\"");
+            java.util.regex.Matcher matcher = pattern.matcher(json);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
+        } catch (Exception e) {
+            log.warn("Failed to extract key '{}' from json", key);
+        }
+        return null;
     }
 
     // Step 1: MFA Authentication Initialization
