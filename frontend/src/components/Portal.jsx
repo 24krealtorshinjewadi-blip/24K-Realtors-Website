@@ -1924,7 +1924,7 @@ export default function Portal({ onViewChange }) {
           <section className="portal-hero" style={{
             position: 'relative',
             minHeight: '85vh',
-            backgroundImage: "url('https://lh3.googleusercontent.com/d/1NE3PCnBbbv2zYpsRd4PdTM3wRvj0t3iW')",
+            backgroundImage: "url('/hero_bg.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             display: 'flex',
