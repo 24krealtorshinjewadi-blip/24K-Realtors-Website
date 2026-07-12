@@ -1,0 +1,62 @@
+version: 2
+updates:
+
+  # ─────────────────────────────────────────
+  # Backend — Maven (Spring Boot)
+  # ─────────────────────────────────────────
+  - package-ecosystem: "maven"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "backend"
+    commit-message:
+      prefix: "chore(deps-backend)"
+    ignore:
+      # Only ignore if major version bump — review manually
+      - dependency-name: "org.springframework.boot"
+        update-types: ["version-update:semver-major"]
+
+  # ─────────────────────────────────────────
+  # Frontend — npm (React / Vite)
+  # ─────────────────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "frontend"
+    commit-message:
+      prefix: "chore(deps-frontend)"
+    groups:
+      react-ecosystem:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "react-*"
+
+  # ─────────────────────────────────────────
+  # GitHub Actions
+  # ─────────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Kolkata"
+    labels:
+      - "dependencies"
+      - "ci/cd"
+    commit-message:
+      prefix: "chore(deps-actions)"

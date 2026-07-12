@@ -1,0 +1,48 @@
+# .github/labeler.yml
+# Auto-assigns GitHub labels based on PR branch name and changed files
+
+"enhancement":
+  - head-branch: ["^feature/"]
+
+"bug":
+  - head-branch: ["^fix/", "^bugfix/"]
+
+"hotfix":
+  - head-branch: ["^hotfix/"]
+
+"chore":
+  - head-branch: ["^chore/", "^deps/"]
+
+"documentation":
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/*.md"
+      - "docs/**"
+
+"backend":
+  - changed-files:
+    - any-glob-to-any-file:
+      - "backend/**"
+
+"frontend":
+  - changed-files:
+    - any-glob-to-any-file:
+      - "frontend/**"
+
+"ci/cd":
+  - changed-files:
+    - any-glob-to-any-file:
+      - ".github/**"
+      - "Dockerfile*"
+      - "docker-compose*"
+
+"database":
+  - changed-files:
+    - any-glob-to-any-file:
+      - "backend/src/main/resources/db/migration/**"
+
+"security":
+  - changed-files:
+    - any-glob-to-any-file:
+      - "backend/src/main/java/**/security/**"
+      - "backend/src/main/java/**/config/SecurityConfig*"

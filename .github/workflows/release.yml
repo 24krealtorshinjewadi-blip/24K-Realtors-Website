@@ -1,0 +1,51 @@
+name: "🚀 Release — Tag & Publish"
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v1.2.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: "📦 Create GitHub Release"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "📥 Checkout Code"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed for full git log
+
+      - name: "📝 Generate Release Notes from Conventional Commits"
+        id: changelog
+        uses: orhun/git-cliff-action@v3
+        with:
+          config: .github/cliff.toml
+          args: --current --strip header
+        continue-on-error: true
+
+      - name: "📦 Create GitHub Release"
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "24K Realtors ${{ github.ref_name }}"
+          body: |
+            ## 🏠 24K Realtors — ${{ github.ref_name }}
+
+            ${{ steps.changelog.outputs.content || 'See commit history for changes.' }}
+
+            ---
+            **Full Changelog:** https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-beta') || contains(github.ref_name, '-alpha') }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

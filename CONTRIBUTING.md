@@ -1,60 +1,157 @@
-# 🤝 Contributing to 24K Realtors Project
+# 🤝 Contributing to 24K Realtors
 
-Thank you for contributing to 24K Realtors! To maintain code quality and ensure a smooth development lifecycle, please adhere to the following professional team guidelines.
-
----
-
-## 🌿 Git Branching Strategy (Git Flow)
-
-We use a structured branch model to keep our production codebase stable:
-
-1. **`main`**: Production-ready code only. Direct commits to `main` are restricted.
-2. **`develop`**: Integration branch for new features. All pull requests target `develop`.
-3. **`feature/{feature-name}`**: Dedicated branch for a specific feature (e.g., `feature/matterport-tour-modal`).
-4. **`bugfix/{bug-name}`**: Dedicated branch to resolve issues (e.g., `bugfix/mobile-menu-overflow`).
-5. **`hotfix/{hotfix-name}`**: Urgent production patches merged directly into `main` and back-ported to `develop`.
+Thank you for your interest in contributing! This guide covers everything you need to work on this codebase effectively.
 
 ---
 
-## 📝 Commit Message Guidelines
+## 📋 Table of Contents
+1. [Prerequisites](#prerequisites)
+2. [Local Development Setup](#local-development-setup)
+3. [Branch Naming Convention](#branch-naming-convention)
+4. [Commit Message Format](#commit-message-format)
+5. [Pull Request Process](#pull-request-process)
+6. [Code Style Guidelines](#code-style-guidelines)
+7. [Database Migrations](#database-migrations)
 
-We enforce **Conventional Commits** formatting to automate changelogs and track code history clearly:
+---
+
+## Prerequisites
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Java (JDK) | 21+ | Spring Boot backend |
+| Maven | 3.9+ | Build tool (use `./mvnw`) |
+| Node.js | 20+ | React frontend |
+| npm | 9+ | Package management |
+| PostgreSQL | 15+ | Database (or Docker) |
+| Docker | Latest | Local containerized DB |
+| Git | 2.40+ | Version control |
+
+---
+
+## Local Development Setup
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing.git
+cd "24k-real-Estate-Digital-marketing"
+
+# 2. Start PostgreSQL (Docker)
+docker run -d \
+  --name 24k-postgres \
+  -e POSTGRES_DB=twentyfourk_db \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=yourpassword \
+  -p 5432:5432 \
+  postgres:15
+
+# 3. Configure backend environment
+# Edit application.yml with your local DB credentials
+
+# 4. Start backend
+cd backend && ./mvnw spring-boot:run
+
+# 5. Start frontend (new terminal)
+cd frontend && npm install && npm run dev
+```
+
+Frontend: http://localhost:5173 | Backend: http://localhost:8080/api/v1
+
+---
+
+## Branch Naming Convention
 
 ```
-<type>(<scope>): <short description>
+feature/<description>     New features
+fix/<description>         Bug fixes
+hotfix/<description>      Urgent production fixes
+chore/<description>       Maintenance, deps, CI
+docs/<description>        Documentation only
+refactor/<description>    Internal code restructure
 ```
 
-### Types allowed:
-*   `feat`: A new user-facing feature.
-*   `fix`: A bug fix.
-*   `docs`: Documentation changes only.
-*   `style`: Code style changes (formatting, missing semi-colons, no functional impact).
-*   `refactor`: Code changes that neither fix a bug nor add a feature.
-*   `perf`: Performance optimizations.
-*   `test`: Adding or correcting tests.
-*   `chore`: Updating build scripts, dependencies, or configurations.
-
-### Examples:
-*   `feat(portal): add Matterport 3D Tour modal for premium listings`
-*   `fix(crm): resolve mobile viewport overlap by adding important to nav-links`
-*   `docs(readme): update local networking guide for mobile testing`
+**Examples:**
+```
+feature/whatsapp-lead-notification
+fix/otp-expiry-validation
+chore/upgrade-spring-boot-3.3
+```
 
 ---
 
-## 🔍 Pull Request Process
+## Commit Message Format
 
-All code changes must undergo a structured pull request (PR) review before integration:
+We follow **Conventional Commits** spec: `<type>(<scope>): <subject>`
 
-1. **Create Branch:** Create a branch from `develop` following the branching standard.
-2. **Local Verification:** Verify that the frontend compiles cleanly (`npm run build`) and the Spring Boot backend builds successfully (`mvn clean compile`).
-3. **Open Pull Request:** Open a PR targeting the `develop` branch. Fill out the Pull Request Template completely.
-4. **Code Review:** Obtain approval from at least one senior reviewer. Resolve any code quality or linting feedback.
-5. **Merge:** Once approved and CI builds pass, the PR is merged via Squash & Merge.
+| Type | When to Use |
+|------|-------------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `hotfix` | Urgent production fix |
+| `chore` | Build, deps, tooling |
+| `docs` | Documentation |
+| `refactor` | Code restructure (no behavior change) |
+| `test` | Adding/fixing tests |
+| `ci` | CI/CD pipeline changes |
+| `perf` | Performance improvements |
+| `design` | UI/UX visual changes |
+
+**Examples:**
+```
+feat(leads): add WhatsApp notification on lead assignment
+fix(auth): resolve OTP not expiring after 5 minutes
+design(hero): set luxury Pune property as homepage background
+```
 
 ---
 
-## 💻 Coding Standards & Linting
+## Pull Request Process
 
-*   **Frontend (JS/React):** Follow standard ES6+ guidelines. Use functional components with hooks, keep styling clean and centralized (avoid inline styles where possible).
-*   **Backend (Java):** Adhere to standard Spring Boot architecture. Keep controllers thin, write business logic in service implementations (`ServiceImpl.java`), manage transactions correctly, and use Flyway migrations to update schemas.
-*   **HTML/CSS:** Use semantic HTML tags. Follow responsive design best practices (use flex/grid layouts and CSS variables).
+1. Create branch from `main` following naming convention
+2. Make focused, atomic commits
+3. Run CI locally: `./mvnw test` + `npm run lint && npm run build`
+4. Open PR to `main` — fill the PR template completely
+5. Wait for all CI checks to pass
+6. Merge via **Squash & Merge**
+
+> ⚠️ **Never push directly to `main`.** All changes must go through a PR.
+
+---
+
+## Code Style Guidelines
+
+### Backend (Java)
+- Use `@Service`, `@Repository`, `@Controller` annotations properly
+- All new endpoints must have `@PreAuthorize` security annotations
+- Use `ResponseEntity<>` for all controller return types
+- No hardcoded credentials anywhere
+
+### Frontend (React)
+- Functional components only
+- Use descriptive `id` attributes on all interactive elements
+- Use CSS variables from `index.css` — no ad-hoc inline colors
+- Keep components under 300 lines
+
+---
+
+## Database Migrations
+
+We use **Flyway** for all schema changes.
+
+```
+backend/src/main/resources/db/migration/
+  V1__initial_schema.sql
+  V23__create_otp_verification_table.sql  ← always increment version
+```
+
+**Rules:**
+1. Never modify an existing migration file
+2. Always create a new file: `V<N+1>__<description>.sql`
+3. Migrations must be backward-compatible where possible
+4. Document rollback steps in PR if destructive
+
+---
+
+## Questions?
+
+Open a [Discussion](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/discussions) or reach out to [@manishrai99-afk](https://github.com/manishrai99-afk).

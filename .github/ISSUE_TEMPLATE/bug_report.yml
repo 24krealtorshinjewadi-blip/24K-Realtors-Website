@@ -1,0 +1,103 @@
+name: "🐛 Bug Report"
+description: "Report a reproducible bug in 24K Realtors platform"
+title: "fix: [Brief description of the bug]"
+labels: ["bug", "needs-triage"]
+assignees: ["manishrai99-afk"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report
+        Thank you for helping improve 24K Realtors! Please fill this out as completely as possible.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: "📍 Affected Area"
+      description: "Which part of the application is affected?"
+      multiple: false
+      options:
+        - "Frontend — Portal / UI"
+        - "Frontend — Authentication / Login"
+        - "Frontend — Property Listings"
+        - "Frontend — Chat Widget"
+        - "Backend — REST API"
+        - "Backend — Authentication / OTP"
+        - "Backend — Lead Management"
+        - "Backend — WhatsApp / SMS"
+        - "Backend — Email"
+        - "Database / Migrations"
+        - "CI/CD / Deployment"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "📝 Bug Description"
+      description: "A clear and concise description of what the bug is."
+      placeholder: "When I click on 'Explore Projects', the page throws a 500 error..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "🔁 Steps to Reproduce"
+      description: "Exact steps to reproduce the behavior."
+      placeholder: |
+        1. Go to homepage
+        2. Click on 'BUY' dropdown
+        3. Select '3BHK'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "✅ Expected Behavior"
+      placeholder: "The properties list should load with 3BHK filter applied."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "❌ Actual Behavior"
+      placeholder: "Page crashes with 'Cannot read property of undefined' in console."
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: "🌐 Environment"
+      description: "Browser, OS, and deployment environment"
+      placeholder: "Chrome 125 / Windows 11 / Vercel Production"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "📋 Error Logs / Console Output"
+      description: "Paste any relevant error messages, API responses, or stack traces."
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "📸 Screenshots / Screen Recording"
+      description: "Add screenshots or a Loom/screen recording if applicable."
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "✅ Before Submitting"
+      options:
+        - label: "I searched existing issues and this is not a duplicate."
+          required: true
+        - label: "I can reliably reproduce this bug."
+          required: true

@@ -1,0 +1,85 @@
+name: "✨ Feature Request"
+description: "Suggest a new feature or improvement for 24K Realtors"
+title: "feat: [Brief description of the feature]"
+labels: ["enhancement", "needs-triage"]
+assignees: ["manishrai99-afk"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ✨ Feature Request
+        Have an idea to make 24K Realtors even better? We'd love to hear it!
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: "📦 Feature Category"
+      options:
+        - "Lead Management / CRM"
+        - "Property Listings / Search"
+        - "Authentication / User Management"
+        - "WhatsApp / SMS Notifications"
+        - "Email / Communication"
+        - "Dashboard / Analytics"
+        - "Mobile Responsiveness"
+        - "Performance / SEO"
+        - "Admin Panel"
+        - "AI / Chat Assistant"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "🤔 Problem Statement"
+      description: "What problem does this feature solve? What's the current pain point?"
+      placeholder: "When a lead fills the enquiry form, there's no way to automatically assign it to the right agent based on locality..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "💡 Proposed Solution"
+      description: "Describe the feature you'd like to see implemented."
+      placeholder: "Add a lead routing rule engine in the admin panel where we can set rules like: 'Leads from Baner → assign to Agent A'..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "🔄 Alternatives Considered"
+      description: "Have you considered any workarounds or alternative approaches?"
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "🎯 Business Priority"
+      options:
+        - "🔴 Critical — Blocking revenue / operations"
+        - "🟠 High — Significant improvement"
+        - "🟡 Medium — Nice to have"
+        - "🟢 Low — Minor enhancement"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "✅ Acceptance Criteria"
+      description: "How will we know this feature is done?"
+      placeholder: |
+        - [ ] Lead routing rules can be configured in admin panel
+        - [ ] Leads are auto-assigned within 5 seconds of creation
+        - [ ] Agent gets WhatsApp notification on assignment
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "✅ Before Submitting"
+      options:
+        - label: "I searched existing issues and this is not a duplicate."
+          required: true
