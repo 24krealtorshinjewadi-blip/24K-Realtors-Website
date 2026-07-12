@@ -1,11 +1,17 @@
-// Auto-clear stale mock database from localStorage if it contains old demo agent names (e.g. "Amit Verma")
+// Auto-clear stale mock database from localStorage if it contains old demo agent names or lacks prop-21
 try {
   const mockAgentsStr = localStorage.getItem('mock_agents');
-  if (mockAgentsStr && mockAgentsStr.includes('Amit Verma')) {
-    console.info('[Cache Bust] Stale mock database detected. Resetting localStorage keys...');
+  const mockPropsStr = localStorage.getItem('mock_properties');
+  if (
+    (mockAgentsStr && mockAgentsStr.includes('Amit Verma')) || 
+    (mockPropsStr && !mockPropsStr.includes('prop-21'))
+  ) {
+    console.info('[Cache Bust] Resetting stale localStorage keys to load fresh database updates...');
     localStorage.removeItem('mock_agents');
     localStorage.removeItem('mock_leads');
     localStorage.removeItem('mock_tasks');
+    localStorage.removeItem('mock_properties');
+    localStorage.removeItem('mock_societies');
   }
 } catch (e) {
   console.error('[Cache Bust] Failed to inspect/clear localStorage', e);
@@ -578,6 +584,60 @@ const initialProperties = [
     gasPipeline: false,
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
+  },
+  {
+    id: "prop-21",
+    title: "Shapoorji Pallonji Joyville Vyomora",
+    description: "Vyomora represents Hinjawadi's premier luxury residential landmark by Shapoorji Pallonji Real Estate. Nestled in a low-density 25-acre integrated development, it features state-of-the-art ventilation, modular configurations, Vaastu-compliant layouts, and biometric safety door access. Residents enjoy an expansive 25,454 sq ft grand clubhouse, Miyawaki forest gardens, panic alarm systems, and high-speed elevator access close to the upcoming Pune Metro line.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 8400000,
+    areaSquareFeet: 1477,
+    location: "HINJEWADI",
+    address: "Joyville Sensorium, Near Phase 1 IT Park, Hinjewadi, Pune",
+    latitude: 18.5995,
+    longitude: 73.7425,
+    bedrooms: 3,
+    bathrooms: 3,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "MahaRERA: PR1260002600999",
+    imageUrl: "/luxury_sunset_tower.png",
+    slideshowImages: [
+      "/luxury_sunset_pool.png",
+      "/luxury_sunset_tower.png",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85",
+      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85"
+    ],
+    videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ",
+    threeDTourUrl: "https://my.matterport.com/show/?m=JGPmBB6q58g",
+    furnishingStatus: "UNFURNISHED",
+    gasPipeline: true,
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString(),
+    configurations: [
+      { name: "2 BHK Luxe", area: "684.91 sq.ft", price: "₹84 Lakhs", status: "Selling Fast" },
+      { name: "2 BHK Smart", area: "749.60 sq.ft", price: "₹92 Lakhs", status: "Available" },
+      { name: "2 BHK Grande", area: "779.42 sq.ft", price: "₹1.02 Cr", status: "Selling Fast" },
+      { name: "2 BHK Royale", area: "838.95 sq.ft", price: "₹1.12 Cr", status: "Premium Units" },
+      { name: "3 BHK Select", area: "1051.86 sq.ft", price: "₹1.35 Cr", status: "Limited Release" },
+      { name: "3 BHK Elite", area: "1090.72 sq.ft", price: "₹1.45 Cr", status: "Selling Fast" },
+      { name: "3 BHK Imperial", area: "1184.47 sq.ft", price: "₹1.60 Cr", status: "Premium Units" },
+      { name: "3 BHK Signature Duplex", area: "1477.00 sq.ft", price: "₹1.95 Cr", status: "Exclusive Launch" }
+    ],
+    specificAmenities: [
+      "25,454 sq.ft Grand Clubhouse",
+      "Miyawaki Forest Zone",
+      "Wellness Clinic",
+      "Digital Dome Theater",
+      "Cricket Simulator Suite",
+      "Video Games Arcade Room",
+      "Trampoline & Adventure Park",
+      "Spa & Reflexology Path",
+      "Infinity Swimming Pool",
+      "Library & Co-working Lounge"
+    ]
   }
 ];
 
