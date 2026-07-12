@@ -277,8 +277,8 @@ public class AuthController {
 
         String maskedEmail = maskEmail(user.getEmail());
 
-        // Temporarily return OTP in response for direct login convenience on screen
-        String devOtp = otp;
+        // Expose OTP in response only on development environment
+        String devOtp = "dev".equalsIgnoreCase(activeProfile) ? otp : null;
         return ResponseEntity.ok(new LoginInitResponse(tempToken, maskedEmail, devOtp));
     }
 
@@ -397,14 +397,15 @@ public class AuthController {
         otpVerificationRepository.save(session);
 
         // ── Dispatch OTP ─────────────────────────────────────────────────
+        final String finalNormalized = normalized;
         final String finalOtp = otp;
         final String finalUser = user.getUsername();
         if ("EMAIL".equals(identifierType)) {
-            CompletableFuture.runAsync(() -> emailService.sendOtpEmail(normalized, finalUser, finalOtp));
+            CompletableFuture.runAsync(() -> emailService.sendOtpEmail(finalNormalized, finalUser, finalOtp));
         } else {
             CompletableFuture.runAsync(() -> {
-                smsService.sendOtpSms(normalized, finalUser, finalOtp);
-                whatsAppService.sendOtpMessage(normalized, finalUser, finalOtp);
+                smsService.sendOtpSms(finalNormalized, finalUser, finalOtp);
+                whatsAppService.sendOtpMessage(finalNormalized, finalUser, finalOtp);
             });
         }
 
@@ -414,7 +415,7 @@ public class AuthController {
                 ? maskEmail(normalized)
                 : maskMobile(normalized);
 
-        String devOtp = activeProfile.contains("prod") ? null : otp;
+        String devOtp = "dev".equalsIgnoreCase(activeProfile) ? otp : null;
         return ResponseEntity.ok(new IdentifyResponse(
                 tempToken, identifierType, masked,
                 user.getPassword() != null && !user.getPassword().isBlank(),
