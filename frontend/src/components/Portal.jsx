@@ -1935,7 +1935,7 @@ export default function Portal({ onViewChange }) {
             <div className="hero-vignette-overlay" style={{
               position: 'absolute',
               top: 0, left: 0, right: 0, bottom: 0,
-              background: 'linear-gradient(to right, rgba(4, 8, 20, 0.95) 0%, rgba(4, 8, 20, 0.4) 60%, rgba(4, 8, 20, 0.8) 100%), linear-gradient(to bottom, rgba(4, 8, 20, 0.5) 0%, rgba(4, 8, 20, 0.95) 100%)',
+              background: 'linear-gradient(to right, rgba(4, 8, 20, 0.78) 0%, rgba(4, 8, 20, 0.20) 55%, rgba(4, 8, 20, 0.35) 100%), linear-gradient(to bottom, rgba(4, 8, 20, 0.25) 0%, rgba(4, 8, 20, 0.75) 100%)',
               zIndex: 1
             }} />
             
