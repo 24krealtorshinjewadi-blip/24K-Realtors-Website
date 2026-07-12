@@ -35,6 +35,8 @@ public class EmailService {
     // ─── OTP (existing) ────────────────────────────────────────────────────────
 
     public void sendOtpEmail(String toEmail, String username, String otpCode) {
+        if (toEmail == null || toEmail.isBlank()) return;
+        String normalizedEmail = toEmail.toLowerCase().trim();
         String subject = "24K Realtors — Security OTP";
         String html = """
             <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;padding:32px;background:#070F1E;color:#fff;border-radius:12px;">
@@ -47,13 +49,14 @@ public class EmailService {
               <p style="color:rgba(255,255,255,0.4);font-size:0.75rem;">24K Realtors Security Desk — Pune, India</p>
             </div>
             """.formatted(username, otpCode);
-        sendEmail(toEmail, subject, html);
+        sendEmail(normalizedEmail, subject, html);
     }
 
     // ─── Welcome (new user registration) ───────────────────────────────────────
 
     public void sendWelcomeEmail(String toEmail, String username) {
         if (toEmail == null || toEmail.isBlank()) return;
+        String normalizedEmail = toEmail.toLowerCase().trim();
         String subject = "Welcome to 24K Realtors Portal!";
         String html = """
             <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;padding:32px;background:#070F1E;color:#fff;border-radius:12px;">
@@ -69,13 +72,14 @@ public class EmailService {
               <p style="color:rgba(255,255,255,0.4);font-size:0.75rem;">24K Realtors — Pune's Premier Luxury Real Estate</p>
             </div>
             """.formatted(username);
-        sendEmail(toEmail, subject, html);
+        sendEmail(normalizedEmail, subject, html);
     }
 
     // ─── Lead Confirmation (customer inquiry) ──────────────────────────────────
 
     public void sendLeadConfirmation(String toEmail, String customerName, String propertyTitle) {
         if (toEmail == null || toEmail.isBlank()) return;
+        String normalizedEmail = toEmail.toLowerCase().trim();
         String propLine = (propertyTitle != null && !propertyTitle.isBlank())
                 ? "regarding <strong>" + propertyTitle + "</strong>"
                 : "for one of our luxury listings";
@@ -95,7 +99,7 @@ public class EmailService {
               <p style="color:rgba(255,255,255,0.4);font-size:0.75rem;">24K Realtors — Pune's Premier Luxury Real Estate | Zero Brokerage</p>
             </div>
             """.formatted(customerName, propLine);
-        sendEmail(toEmail, subject, html);
+        sendEmail(normalizedEmail, subject, html);
     }
 
     // ─── Core sender ───────────────────────────────────────────────────────────
