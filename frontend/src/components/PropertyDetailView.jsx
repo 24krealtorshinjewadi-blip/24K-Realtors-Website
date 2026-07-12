@@ -16,6 +16,8 @@ import { apiService } from '../services/apiService';
 const getBuilderInfo = (title = '') => {
   if (title.includes('24K') || title.includes('Opula') || title.includes('Sereno'))
     return { name: 'Kolte-Patil Developers', brand: '24K Luxury Brand', reraId: 'A52100028461', desc: "Kolte-Patil's 24K brand delivers architectural design excellence, smart home configurations, and high-appreciation corridor landmarks across Pune West." };
+  if (title.includes('Shapoorji') || title.includes('Joyville') || title.includes('Vyomora'))
+    return { name: 'Shapoorji Pallonji Real Estate', brand: 'Joyville Landmark Series', reraId: 'PR1260002600999', desc: 'Shapoorji Pallonji Real Estate brings over 160 years of engineering legacy, delivering high-end construction standards, structural stability, and premium spaces across major Indian cities.' };
   if (title.includes('Godrej'))
     return { name: 'Godrej Properties', brand: 'Premium Luxury Homes', reraId: 'A52100012431', desc: 'Godrej Properties brings a legacy of innovation, trust, and advanced home automation to ultra-premium gated communities.' };
   if (title.includes('Kasturi'))
@@ -76,6 +78,18 @@ const AMENITY_ICONS = {
   "Children's Play Zone":      { icon: Star,           color: '#f9a8d4', bg: 'rgba(249,168,212,0.10)', img: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=400&q=80' },
   'Multi-Level Car Parking':   { icon: ParkingCircle,  color: '#93c5fd', bg: 'rgba(147,197,253,0.10)', img: 'https://images.unsplash.com/photo-1506521788723-868126d5e368?auto=format&fit=crop&w=400&q=80' },
   'Rainwater Harvesting':      { icon: Wind,           color: '#6ee7b7', bg: 'rgba(110,231,183,0.10)', img: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=400&q=80' },
+  
+  // Specific Vyomora amenities
+  '25,454 sq.ft Grand Clubhouse': { icon: Building,    color: '#D4AF37', bg: 'rgba(212,175,55,0.12)', img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=400&q=80' },
+  'Miyawaki Forest Zone':         { icon: Trees,       color: '#4ade80', bg: 'rgba(74,222,128,0.10)', img: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=400&q=80' },
+  'Wellness Clinic':              { icon: Shield,      color: '#38bdf8', bg: 'rgba(56,189,248,0.10)', img: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=400&q=80' },
+  'Digital Dome Theater':         { icon: Tv,          color: '#a78bfa', bg: 'rgba(167,139,250,0.10)', img: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80' },
+  'Cricket Simulator Suite':      { icon: Star,        color: '#fbbf24', bg: 'rgba(251,191,36,0.10)', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80' },
+  'Video Games Arcade Room':      { icon: Lock,        color: '#fb923c', bg: 'rgba(251,146,60,0.10)', img: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80' },
+  'Trampoline & Adventure Park':  { icon: Sun,         color: '#f9a8d4', bg: 'rgba(249,168,212,0.10)', img: 'https://images.unsplash.com/photo-1579684389782-64d84b5e901a?auto=format&fit=crop&w=400&q=80' },
+  'Spa & Reflexology Path':       { icon: Wind,        color: '#6ee7b7', bg: 'rgba(110,231,183,0.10)', img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=400&q=80' },
+  'Infinity Swimming Pool':       { icon: Droplets,    color: '#38bdf8', bg: 'rgba(56,189,248,0.10)', img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=400&q=80' },
+  'Library & Co-working Lounge':  { icon: Coffee,      color: '#c084fc', bg: 'rgba(192,132,252,0.10)', img: 'https://images.unsplash.com/photo-1527192491265-7e452a145d55?auto=format&fit=crop&w=400&q=80' }
 };
 
 /* ─── Premium 3D Netflix-style Amenity Card with Cover Image ─── */
@@ -253,7 +267,7 @@ export default function PropertyDetailView({
   const builder = getBuilderInfo(property.title);
   const corridor = getCorridorData(property.location);
 
-  const slideshowImages = [
+  const slideshowImages = property.slideshowImages || [
     property.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
     isCommercial
       ? 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=85'
@@ -613,7 +627,7 @@ export default function PropertyDetailView({
               <Sparkles size={18} /> Elite Lifestyle Amenities
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>
-              {['24/7 Concierge Desk', 'Infinity Sky Pool', 'Private Elevator Access', 'Smart Home Automation', 'Modular Kitchen Provisions', '100% Power Backup Grid', 'CCTV & Video Door Phone', 'Landscaped Zen Gardens', 'Clubhouse & Co-work Space', "Children's Play Zone", 'Multi-Level Car Parking', 'Rainwater Harvesting'].map(a => (
+              {(property.specificAmenities || ['24/7 Concierge Desk', 'Infinity Sky Pool', 'Private Elevator Access', 'Smart Home Automation', 'Modular Kitchen Provisions', '100% Power Backup Grid', 'CCTV & Video Door Phone', 'Landscaped Zen Gardens', 'Clubhouse & Co-work Space', "Children's Play Zone", 'Multi-Level Car Parking', 'Rainwater Harvesting']).map(a => (
                 <AmenityChip key={a} label={a} />
               ))}
             </div>
@@ -700,6 +714,64 @@ export default function PropertyDetailView({
               </div>
             </div>
           </div>
+
+          {/* Configurations & Pricing Table (if property has configurations defined) */}
+          {property.configurations && property.configurations.length > 0 && (
+            <div style={{
+              background: 'rgba(10,18,36,0.5)', border: '1px solid rgba(212,175,55,0.15)',
+              borderRadius: '20px', padding: '32px',
+            }}>
+              <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.2rem', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Building size={18} /> Tower Configurations & Pricing Options
+              </h2>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '450px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                      <th style={{ padding: '12px 16px' }}>Variant Type</th>
+                      <th style={{ padding: '12px 16px' }}>Carpet Area</th>
+                      <th style={{ padding: '12px 16px' }}>Starting Price</th>
+                      <th style={{ padding: '12px 16px' }}>Status</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'right' }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {property.configurations.map((config, idx) => (
+                      <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '0.9rem', transition: 'background 0.2s' }}
+                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                        <td style={{ padding: '16px', fontWeight: 700, color: '#fff' }}>{config.name}</td>
+                        <td style={{ padding: '16px', color: 'rgba(255,255,255,0.7)' }}>{config.area}</td>
+                        <td style={{ padding: '16px', color: 'var(--gold-primary)', fontWeight: 700 }}>{config.price}</td>
+                        <td style={{ padding: '16px' }}>
+                          <span style={{
+                            fontSize: '0.72rem', fontWeight: 700,
+                            padding: '4px 10px', borderRadius: '12px',
+                            background: config.status.includes('Fast') || config.status.includes('Launch') ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                            color: config.status.includes('Fast') || config.status.includes('Launch') ? '#ef4444' : '#10b981',
+                            border: `1px solid ${config.status.includes('Fast') || config.status.includes('Launch') ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}`
+                          }}>{config.status}</span>
+                        </td>
+                        <td style={{ padding: '16px', textAlign: 'right' }}>
+                          <button onClick={onOpenInquiry} style={{
+                            background: 'var(--gold-primary)', color: '#070f1e',
+                            border: 'none', borderRadius: '8px', padding: '6px 14px',
+                            fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                            display: 'inline-flex', alignItems: 'center', gap: '4px',
+                            transition: 'all 0.2s ease',
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 0 10px rgba(212,175,55,0.4)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                            Inquire <ArrowRight size={12} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {/* Video Tour */}
           {property.videoUrl && (
