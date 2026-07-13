@@ -821,6 +821,33 @@ const initialSocieties = [
     faqs: "Q: What does child-centric mean?\nA: It includes professional coaching for sports, music, and arts inside the gated community.",
     seoTitle: "Gera Joy on the Banks Wakad - Child-Centric Homes by Gera",
     seoDescription: "Book 2 & 3 BHK homes at Gera Joy on the Banks, Wakad. Riverview apartments starting from ₹88 Lakhs with active sports training programs."
+  },
+  {
+    id: "soc-5",
+    name: "Shapoorji Pallonji Joyville Vyomora",
+    slug: "shapoorji-joyville-vyomora-hinjewadi",
+    location: "HINJEWADI",
+    developer: "Shapoorji Pallonji Real Estate",
+    reraNumber: "MahaRERA: PR1260002600999",
+    projectStatus: "NEW_LAUNCH",
+    startingPrice: 8400000,
+    possessionDate: "June 2029",
+    overview: "Vyomora represents Hinjawadi's premier luxury residential landmark by Shapoorji Pallonji Real Estate. Nestled in a low-density 25-acre integrated development, it features state-of-the-art ventilation, modular configurations, Vaastu-compliant layouts, and biometric safety door access. Residents enjoy an expansive 25,454 sq ft grand clubhouse, Miyawaki forest gardens, panic alarm systems, and high-speed elevator access close to the upcoming Pune Metro line.",
+    amenities: "25,454 sq.ft Grand Clubhouse, Miyawaki Forest Zone, Wellness Clinic, Digital Dome Theater, Cricket Simulator Suite, Video Games Arcade Room, Trampoline & Adventure Park, Spa & Reflexology Path, Infinity Swimming Pool, Library & Co-working Lounge",
+    priceRange: "₹84 Lakhs - ₹1.95 Cr",
+    configuration: "2 BHK Luxe, 2 BHK Smart, 2 BHK Grande, 2 BHK Royale, 3 BHK Select, 3 BHK Elite, 3 BHK Imperial, 3 BHK Signature Duplex",
+    nearbySchools: "Mercedes-Benz International School (1.5 km), Blue Ridge Public School (2.5 km)",
+    nearbyHospitals: "Ruby Hall Clinic Hinjewadi (3.0 km)",
+    nearbyItParks: "Rajiv Gandhi IT Park (1.0 km), Embassy Tech Zone (3.0 km)",
+    nearbyMetro: "Hinjewadi Phase 1 Metro (1.2 km)",
+    nearbyMalls: "Grand Highstreet Hinjewadi (2.5 km)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.55555555555!2d73.7425!3d18.5995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c00!2sHinjewadi!5e0!3m2!1sen!2sin!4v1625118",
+    travelTimeInfo: "Metro Station: 3 mins | IT Park Phase 1: 5 mins | Mumbai Highway: 12 mins",
+    investmentScore: 94,
+    rentalYield: 5.4,
+    faqs: "Q: When is the possession of Vyomora?\nA: The possession is scheduled for June 2029.\n\nQ: Is it RERA registered?\nA: Yes, it is fully registered under MahaRERA: PR1260002600999.",
+    seoTitle: "Shapoorji Pallonji Joyville Vyomora Hinjewadi - 2 & 3 BHK Homes",
+    seoDescription: "Book premium 2 & 3 BHK homes and signature duplexes at Shapoorji Pallonji Joyville Vyomora in Hinjawadi, Pune. RERA registered premium residences starting from ₹84 Lakhs."
   }
 ];
 
@@ -1038,6 +1065,61 @@ const runWithFallback = async (apiFn, fallbackFn, bypassMockCheck = false) => {
     localStorage.setItem('OFFLINE_MODE_ACTIVE', 'false');
     throw err;
   }
+};
+
+
+
+const enrichVyomoraProperty = (p) => {
+  if (!p) return p;
+  if (p.id === 'prop-21' || (p.title && p.title.toLowerCase().includes('vyomora'))) {
+    return {
+      ...p,
+      imageUrl: "/luxury_sunset_tower.png",
+      slideshowImages: [
+        "/luxury_sunset_pool.png",
+        "/luxury_sunset_tower.png",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85",
+        "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85"
+      ],
+      configurations: [
+        { name: "2 BHK Luxe", area: "684.91 sq.ft", price: "₹84 Lakhs", status: "Selling Fast" },
+        { name: "2 BHK Smart", area: "749.60 sq.ft", price: "₹92 Lakhs", status: "Available" },
+        { name: "2 BHK Grande", area: "779.42 sq.ft", price: "₹1.02 Cr", status: "Selling Fast" },
+        { name: "2 BHK Royale", area: "838.95 sq.ft", price: "₹1.12 Cr", status: "Premium Units" },
+        { name: "3 BHK Select", area: "1051.86 sq.ft", price: "₹1.35 Cr", status: "Limited Release" },
+        { name: "3 BHK Elite", area: "1090.72 sq.ft", price: "₹1.45 Cr", status: "Selling Fast" },
+        { name: "3 BHK Imperial", area: "1184.47 sq.ft", price: "₹1.60 Cr", status: "Premium Units" },
+        { name: "3 BHK Signature Duplex", area: "1477.00 sq.ft", price: "₹1.95 Cr", status: "Exclusive Launch" }
+      ],
+      specificAmenities: [
+        "25,454 sq.ft Grand Clubhouse",
+        "Miyawaki Forest Zone",
+        "Wellness Clinic",
+        "Digital Dome Theater",
+        "Cricket Simulator Suite",
+        "Video Games Arcade Room",
+        "Trampoline & Adventure Park",
+        "Spa & Reflexology Path",
+        "Infinity Swimming Pool",
+        "Library & Co-working Lounge"
+      ]
+    };
+  }
+  return p;
+};
+
+const enrichPropertiesResponse = (res) => {
+  if (!res) return res;
+  if (Array.isArray(res)) {
+    return res.map(enrichVyomoraProperty);
+  }
+  if (res.content && Array.isArray(res.content)) {
+    return {
+      ...res,
+      content: res.content.map(enrichVyomoraProperty)
+    };
+  }
+  return enrichVyomoraProperty(res);
 };
 
 
@@ -1309,7 +1391,7 @@ export const apiService = {
   // --- PROPERTIES ENDPOINTS ---
   
   async getProperties(filters = {}, page = 0, size = 10, sortBy = 'createdDate', direction = 'desc') {
-    return runWithFallback(
+    const res = await runWithFallback(
       async () => {
         const params = new URLSearchParams();
         params.append('page', page);
@@ -1363,7 +1445,7 @@ export const apiService = {
           }
           return direction === 'desc' ? fieldB - fieldA : fieldA - fieldB;
         });
-
+ 
         // Pagination
         const start = page * size;
         const pagedList = list.slice(start, start + size);
@@ -1376,10 +1458,11 @@ export const apiService = {
         };
       }
     );
+    return enrichPropertiesResponse(res);
   },
-
+ 
   async getPropertyById(id) {
-    return runWithFallback(
+    const res = await runWithFallback(
       async () => {
         if (isMockId(id)) throw new TypeError('Mock ID bypass');
         const response = await fetch(`${BASE_URL}/properties/${id}`);
@@ -1395,6 +1478,7 @@ export const apiService = {
         return prop;
       }
     );
+    return enrichPropertiesResponse(res);
   },
 
   async createProperty(propertyData) {
