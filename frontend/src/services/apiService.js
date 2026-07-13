@@ -636,6 +636,63 @@ const initialProperties = [
       "Child-Centric Sports Center",
       "24/7 Security & CCTV Grid"
     ]
+  },
+  {
+    id: "prop-22",
+    title: "Shapoorji Pallonji Joyville Vyomora",
+    description: "Vyomora represents Hinjewadi's premier luxury residential landmark by Shapoorji Pallonji Real Estate. Nestled in a low-density 25-acre integrated development, it features state-of-the-art ventilation, modular configurations, Vaastu-compliant layouts, and biometric safety door access. Residents enjoy an expansive 25,454 sq ft grand clubhouse, Miyawaki forest gardens, panic alarm systems, and high-speed elevator access close to the upcoming Pune Metro line.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 8400000,
+    areaSquareFeet: 1477,
+    location: "HINJEWADI",
+    address: "Joyville Sensorium, Near Phase 1 IT Park, Hinjewadi, Pune",
+    latitude: 18.5995,
+    longitude: 73.7425,
+    bedrooms: 3,
+    bathrooms: 3,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "MahaRERA: PR1260002600999",
+    imageUrl: "/properties/vyomora/hero.jpg",
+    slideshowImages: [
+      "/properties/vyomora/hero.jpg",
+      "/properties/vyomora/pool.jpg",
+      "/properties/vyomora/playarea.jpg",
+      "/properties/vyomora/wormeye.jpg",
+      "/properties/vyomora/livingroom.jpg",
+      "/properties/vyomora/kitchen.jpg",
+      "/properties/vyomora/bedroom.jpg"
+    ],
+    videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ",
+    threeDTourUrl: "https://my.matterport.com/show/?m=JGPmBB6q58g",
+    furnishingStatus: "UNFURNISHED",
+    gasPipeline: true,
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString(),
+    configurations: [
+      { name: "2 BHK Luxe", area: "684.91 sq.ft", price: "₹84 Lakhs", status: "Selling Fast" },
+      { name: "2 BHK Smart", area: "749.60 sq.ft", price: "₹92 Lakhs", status: "Available" },
+      { name: "2 BHK Grande", area: "779.42 sq.ft", price: "₹1.02 Cr", status: "Selling Fast" },
+      { name: "2 BHK Royale", area: "838.95 sq.ft", price: "₹1.12 Cr", status: "Premium Units" },
+      { name: "3 BHK Select", area: "1051.86 sq.ft", price: "₹1.35 Cr", status: "Limited Release" },
+      { name: "3 BHK Elite", area: "1090.72 sq.ft", price: "₹1.45 Cr", status: "Selling Fast" },
+      { name: "3 BHK Imperial", area: "1184.47 sq.ft", price: "₹1.60 Cr", status: "Premium Units" },
+      { name: "3 BHK Signature Duplex", area: "1477.00 sq.ft", price: "₹1.95 Cr", status: "Exclusive Launch" }
+    ],
+    specificAmenities: [
+      "25,454 sq.ft Grand Clubhouse",
+      "Miyawaki Forest Zone",
+      "Wellness Clinic",
+      "Digital Dome Theater",
+      "Cricket Simulator Suite",
+      "Video Games Arcade Room",
+      "Trampoline & Adventure Park",
+      "Spa & Reflexology Path",
+      "Lap Pool & Aqua Gym",
+      "Library & Co-working Lounge"
+    ]
   }
 ];
 
@@ -1110,18 +1167,64 @@ const enrichGodrejIvaraProperty = (p) => {
   return p;
 };
 
+const enrichVyomoraProperty = (p) => {
+  if (!p) return p;
+  if (p.id === 'prop-22' || p.id === 22 || (p.title && p.title.toLowerCase().includes('vyomora'))) {
+    return {
+      ...p,
+      location: "HINJEWADI",
+      imageUrl: "/properties/vyomora/hero.jpg",
+      slideshowImages: [
+        "/properties/vyomora/hero.jpg",
+        "/properties/vyomora/pool.jpg",
+        "/properties/vyomora/playarea.jpg",
+        "/properties/vyomora/wormeye.jpg",
+        "/properties/vyomora/livingroom.jpg",
+        "/properties/vyomora/kitchen.jpg",
+        "/properties/vyomora/bedroom.jpg"
+      ],
+      floorPlanUrl: "/properties/vyomora/floorplan_2bhk.png",
+      masterPlanUrl: "/properties/vyomora/masterplan.png",
+      locationMapUrl: "/properties/vyomora/locationmap.jpg",
+      configurations: [
+        { name: "2 BHK Luxe", area: "684.91 sq.ft", price: "₹84 Lakhs", status: "Selling Fast" },
+        { name: "2 BHK Smart", area: "749.60 sq.ft", price: "₹92 Lakhs", status: "Available" },
+        { name: "2 BHK Grande", area: "779.42 sq.ft", price: "₹1.02 Cr", status: "Selling Fast" },
+        { name: "2 BHK Royale", area: "838.95 sq.ft", price: "₹1.12 Cr", status: "Premium Units" },
+        { name: "3 BHK Select", area: "1051.86 sq.ft", price: "₹1.35 Cr", status: "Limited Release" },
+        { name: "3 BHK Elite", area: "1090.72 sq.ft", price: "₹1.45 Cr", status: "Selling Fast" },
+        { name: "3 BHK Imperial", area: "1184.47 sq.ft", price: "₹1.60 Cr", status: "Premium Units" },
+        { name: "3 BHK Signature Duplex", area: "1477.00 sq.ft", price: "₹1.95 Cr", status: "Exclusive Launch" }
+      ],
+      specificAmenities: [
+        "25,454 sq.ft Grand Clubhouse",
+        "Miyawaki Forest Zone",
+        "Wellness Clinic",
+        "Digital Dome Theater",
+        "Cricket Simulator Suite",
+        "Video Games Arcade Room",
+        "Trampoline & Adventure Park",
+        "Spa & Reflexology Path",
+        "Lap Pool & Aqua Gym",
+        "Library & Co-working Lounge"
+      ]
+    };
+  }
+  return p;
+};
+
 const enrichPropertiesResponse = (res) => {
   if (!res) return res;
   if (Array.isArray(res)) {
-    return res.map(enrichGodrejIvaraProperty);
+    return res.map(p => enrichVyomoraProperty(enrichGodrejIvaraProperty(p)));
   }
   if (res.content && Array.isArray(res.content)) {
     return {
       ...res,
-      content: res.content.map(enrichGodrejIvaraProperty)
+      content: res.content.map(p => enrichVyomoraProperty(enrichGodrejIvaraProperty(p)))
     };
   }
-  return enrichGodrejIvaraProperty(res);
+  return enrichVyomoraProperty(enrichGodrejIvaraProperty(res));
 };
 
 

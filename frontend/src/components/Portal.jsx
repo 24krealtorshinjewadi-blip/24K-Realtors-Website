@@ -592,7 +592,13 @@ export default function Portal({ onViewChange }) {
       }
       
       if (activeCollection === 'NEW') {
-        const newLaunches = allRawProperties.filter(p => p.id === 'prop-21' || (p.title && p.title.toLowerCase().includes('ivara')));
+        const newLaunches = allRawProperties.filter(p => 
+          p.id === 'prop-21' || 
+          p.id === 'prop-22' || 
+          p.id === 21 ||
+          p.id === 22 ||
+          (p.title && (p.title.toLowerCase().includes('ivara') || p.title.toLowerCase().includes('vyomora')))
+        );
         setProperties(newLaunches);
         setTotalPages(1);
         setTotalElements(newLaunches.length);
@@ -702,7 +708,13 @@ export default function Portal({ onViewChange }) {
       { title: "Penthouse Collection", data: allRawProperties.filter(p => p.title.toLowerCase().includes('penthouse') || p.description.toLowerCase().includes('penthouse')) },
       { title: "Commercial Assets", data: allRawProperties.filter(p => p.propertyType === 'COMMERCIAL') },
       { title: "Investment Picks", data: allRawProperties.filter(p => p.location === 'BANER' || p.location === 'MAHALUNGE' || p.location === 'WAKAD') },
-      { title: "New Launches", data: allRawProperties.filter(p => p.id === 'prop-21' || (p.title && p.title.toLowerCase().includes('ivara'))) },
+      { title: "New Launches", data: allRawProperties.filter(p => 
+        p.id === 'prop-21' || 
+        p.id === 'prop-22' || 
+        p.id === 21 ||
+        p.id === 22 ||
+        (p.title && (p.title.toLowerCase().includes('ivara') || p.title.toLowerCase().includes('vyomora')))
+      ) },
       { title: "Trending in Pune", data: allRawProperties.filter(p => p.location === 'HINJEWADI' || p.location === 'BALEWADI') },
       { title: "Editor's Choice", data: allRawProperties.filter(p => p.verifiedListing).slice(0, 6) }
     ];

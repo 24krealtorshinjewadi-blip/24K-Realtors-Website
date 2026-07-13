@@ -313,8 +313,8 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedProperties() {
-        if (propertyRepository.count() < 21) {
-            log.info("Cleaning and seeding 21 premium real estate listings in Hinjewadi/Baner/Wakad...");
+        if (propertyRepository.count() < 22) {
+            log.info("Cleaning and seeding 22 premium real estate listings in Hinjewadi/Baner/Wakad...");
             propertyRepository.deleteAll();
 
             var sOpula = societyRepository.findBySlug("24k-opula-baner").orElse(null);
@@ -827,12 +827,36 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .gasPipeline(true)
                     .build();
 
+            Property prop22 = Property.builder()
+                    .title("Shapoorji Pallonji Joyville Vyomora")
+                    .description("Vyomora represents Hinjewadi's premier luxury residential landmark by Shapoorji Pallonji Real Estate. Nestled in a low-density 25-acre integrated development, it features state-of-the-art ventilation, modular configurations, Vaastu-compliant layouts, and biometric safety door access. Residents enjoy an expansive 25,454 sq ft grand clubhouse, Miyawaki forest gardens, panic alarm systems, and high-speed elevator access close to the upcoming Pune Metro line.")
+                    .propertyType(PropertyType.RESIDENTIAL)
+                    .transactionType(TransactionType.BUY)
+                    .price(new BigDecimal("8400000"))
+                    .areaSquareFeet(1477.0)
+                    .location(PrimeCorridor.HINJEWADI)
+                    .address("Joyville Sensorium, Near Phase 1 IT Park, Hinjewadi, Pune")
+                    .latitude(18.5995)
+                    .longitude(73.7425)
+                    .bedrooms(3)
+                    .bathrooms(3)
+                    .status(PropertyStatus.AVAILABLE)
+                    .verifiedListing(true)
+                    .exclusiveDeal(true)
+                    .reraNumber("PR1260002600999")
+                    .imageUrl("/properties/vyomora/hero.jpg")
+                    .videoUrl("https://www.youtube.com/embed/LXb3EKWsInQ")
+                    .threeDTourUrl("https://my.matterport.com/show/?m=JGPmBB6q58g")
+                    .furnishingStatus(FurnishingStatus.UNFURNISHED)
+                    .gasPipeline(true)
+                    .build();
+
             propertyRepository.saveAll(List.of(
                     prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8, prop9, prop10,
                     prop11, prop12, prop13, prop14, prop15, prop16, prop17, prop18, prop19, prop20,
-                    prop21
+                    prop21, prop22
             ));
-            log.info("Seeded 21 premium real estate listings successfully.");
+            log.info("Seeded 22 premium real estate listings successfully.");
         }
     }
 
