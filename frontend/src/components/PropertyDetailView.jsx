@@ -18,8 +18,8 @@ const getBuilderInfo = (title = '') => {
     return { name: 'Kolte-Patil Developers', brand: '24K Luxury Brand', reraId: 'A52100028461', desc: "Kolte-Patil's 24K brand delivers architectural design excellence, smart home configurations, and high-appreciation corridor landmarks across Pune West." };
   if (title.includes('Shapoorji') || title.includes('Joyville') || title.includes('Vyomora'))
     return { name: 'Shapoorji Pallonji Real Estate', brand: 'Joyville Landmark Series', reraId: 'PR1260002600999', desc: 'Shapoorji Pallonji Real Estate brings over 160 years of engineering legacy, delivering high-end construction standards, structural stability, and premium spaces across major Indian cities.' };
-  if (title.includes('Godrej'))
-    return { name: 'Godrej Properties', brand: 'Premium Luxury Homes', reraId: 'A52100012431', desc: 'Godrej Properties brings a legacy of innovation, trust, and advanced home automation to ultra-premium gated communities.' };
+  if (title.includes('Godrej') || title.includes('Ivara'))
+    return { name: 'Godrej Properties', brand: 'Premium Luxury Homes', reraId: 'PR1260002502426', desc: 'Godrej Properties brings a legacy of innovation, trust, and advanced home automation to ultra-premium gated communities.' };
   if (title.includes('Kasturi'))
     return { name: 'Kasturi Builders', brand: 'Signature Penthouses', reraId: 'A52100045231', desc: 'Kasturi is renowned for Italian marble finishes, double-height lobbies, and ultra-high-net-worth residences in Pune.' };
   if (title.includes('Lodha'))

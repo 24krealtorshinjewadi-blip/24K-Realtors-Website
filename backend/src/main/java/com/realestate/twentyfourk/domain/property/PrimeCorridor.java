@@ -6,5 +6,6 @@ public enum PrimeCorridor {
     BANER,
     BALEWADI,
     TATHAWADE,
-    MAHALUNGE
+    MAHALUNGE,
+    KHARADI
 }

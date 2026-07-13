@@ -587,22 +587,22 @@ const initialProperties = [
   },
   {
     id: "prop-21",
-    title: "Shapoorji Pallonji Joyville Vyomora",
-    description: "Vyomora represents Hinjawadi's premier luxury residential landmark by Shapoorji Pallonji Real Estate. Nestled in a low-density 25-acre integrated development, it features state-of-the-art ventilation, modular configurations, Vaastu-compliant layouts, and biometric safety door access. Residents enjoy an expansive 25,454 sq ft grand clubhouse, Miyawaki forest gardens, panic alarm systems, and high-speed elevator access close to the upcoming Pune Metro line.",
+    title: "Godrej Ivara Kharadi",
+    description: "Welcome to Godrej Ivara, an exquisite township coming up in Central Kharadi, Pune. This 11-tower-strong residential community presents 2 BHK, 3 BHK, and 4 BHK apartments with spacious decks offering beautiful panoramic views. The apartments in this enclave are designed to harness maximum space, sunlight, and air flow. From lavish flooring to branded fittings, this project offers the means for an indulgent lifestyle. It also presents a set of thoughtfully curated amenities, including a 100,000 sq. ft. clubhouse, 10,000 sq. ft. gymnasium, forest lounge, swimming pool, jogging track, indoor games room, co-working space, and more.",
     propertyType: "RESIDENTIAL",
     transactionType: "BUY",
-    price: 8400000,
-    areaSquareFeet: 1477,
-    location: "HINJEWADI",
-    address: "Joyville Sensorium, Near Phase 1 IT Park, Hinjewadi, Pune",
-    latitude: 18.5995,
-    longitude: 73.7425,
+    price: 11700000,
+    areaSquareFeet: 1650,
+    location: "KHARADI",
+    address: "Upper Kharadi Main Rd, Wagholi, Haveli, Pune, Maharashtra 400079",
+    latitude: 18.5525,
+    longitude: 73.9535,
     bedrooms: 3,
     bathrooms: 3,
     status: "AVAILABLE",
     verifiedListing: true,
     exclusiveDeal: true,
-    reraNumber: "MahaRERA: PR1260002600999",
+    reraNumber: "PR1260002502426",
     imageUrl: "/luxury_sunset_tower.png",
     slideshowImages: [
       "/luxury_sunset_pool.png",
@@ -617,26 +617,24 @@ const initialProperties = [
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString(),
     configurations: [
-      { name: "2 BHK Luxe", area: "684.91 sq.ft", price: "₹84 Lakhs", status: "Selling Fast" },
-      { name: "2 BHK Smart", area: "749.60 sq.ft", price: "₹92 Lakhs", status: "Available" },
-      { name: "2 BHK Grande", area: "779.42 sq.ft", price: "₹1.02 Cr", status: "Selling Fast" },
-      { name: "2 BHK Royale", area: "838.95 sq.ft", price: "₹1.12 Cr", status: "Premium Units" },
-      { name: "3 BHK Select", area: "1051.86 sq.ft", price: "₹1.35 Cr", status: "Limited Release" },
-      { name: "3 BHK Elite", area: "1090.72 sq.ft", price: "₹1.45 Cr", status: "Selling Fast" },
-      { name: "3 BHK Imperial", area: "1184.47 sq.ft", price: "₹1.60 Cr", status: "Premium Units" },
-      { name: "3 BHK Signature Duplex", area: "1477.00 sq.ft", price: "₹1.95 Cr", status: "Exclusive Launch" }
+      { name: "2 BHK Premium", area: "725 - 750 sq.ft", price: "₹1.17 Cr", status: "Selling Fast" },
+      { name: "3 BHK Elite", area: "875 - 900 sq.ft", price: "₹1.49 Cr", status: "Available" },
+      { name: "3 BHK Regal", area: "975 - 1000 sq.ft", price: "₹1.69 Cr", status: "Selling Fast" },
+      { name: "3 BHK Ultra", area: "1100 - 1150 sq.ft", price: "₹1.95 Cr", status: "Premium Units" },
+      { name: "3 BHK Opulent", area: "1200 - 1250 sq.ft", price: "₹2.19 Cr", status: "Premium Units" },
+      { name: "4 BHK Iconic", area: "1550 - 1650 sq.ft", price: "₹2.89 Cr", status: "Exclusive Launch" }
     ],
     specificAmenities: [
-      "25,454 sq.ft Grand Clubhouse",
-      "Miyawaki Forest Zone",
-      "Wellness Clinic",
-      "Digital Dome Theater",
-      "Cricket Simulator Suite",
-      "Video Games Arcade Room",
-      "Trampoline & Adventure Park",
-      "Spa & Reflexology Path",
+      "100,000 sq.ft Club Forest",
+      "10,000 sq.ft Gymnasium",
       "Infinity Swimming Pool",
-      "Library & Co-working Lounge"
+      "Forest Lounge Zone",
+      "Jogging & Cycling Track",
+      "Indoor Video Games Room",
+      "Co-working Space Lounge",
+      "Landscaped Zen Gardens",
+      "Child-Centric Sports Center",
+      "24/7 Security & CCTV Grid"
     ]
   }
 ];
@@ -1069,11 +1067,12 @@ const runWithFallback = async (apiFn, fallbackFn, bypassMockCheck = false) => {
 
 
 
-const enrichVyomoraProperty = (p) => {
+const enrichGodrejIvaraProperty = (p) => {
   if (!p) return p;
-  if (p.id === 'prop-21' || (p.title && p.title.toLowerCase().includes('vyomora'))) {
+  if (p.id === 'prop-21' || (p.title && p.title.toLowerCase().includes('ivara'))) {
     return {
       ...p,
+      location: "KHARADI",
       imageUrl: "/luxury_sunset_tower.png",
       slideshowImages: [
         "/luxury_sunset_pool.png",
@@ -1082,26 +1081,24 @@ const enrichVyomoraProperty = (p) => {
         "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85"
       ],
       configurations: [
-        { name: "2 BHK Luxe", area: "684.91 sq.ft", price: "₹84 Lakhs", status: "Selling Fast" },
-        { name: "2 BHK Smart", area: "749.60 sq.ft", price: "₹92 Lakhs", status: "Available" },
-        { name: "2 BHK Grande", area: "779.42 sq.ft", price: "₹1.02 Cr", status: "Selling Fast" },
-        { name: "2 BHK Royale", area: "838.95 sq.ft", price: "₹1.12 Cr", status: "Premium Units" },
-        { name: "3 BHK Select", area: "1051.86 sq.ft", price: "₹1.35 Cr", status: "Limited Release" },
-        { name: "3 BHK Elite", area: "1090.72 sq.ft", price: "₹1.45 Cr", status: "Selling Fast" },
-        { name: "3 BHK Imperial", area: "1184.47 sq.ft", price: "₹1.60 Cr", status: "Premium Units" },
-        { name: "3 BHK Signature Duplex", area: "1477.00 sq.ft", price: "₹1.95 Cr", status: "Exclusive Launch" }
+        { name: "2 BHK Premium", area: "725 - 750 sq.ft", price: "₹1.17 Cr", status: "Selling Fast" },
+        { name: "3 BHK Elite", area: "875 - 900 sq.ft", price: "₹1.49 Cr", status: "Available" },
+        { name: "3 BHK Regal", area: "975 - 1000 sq.ft", price: "₹1.69 Cr", status: "Selling Fast" },
+        { name: "3 BHK Ultra", area: "1100 - 1150 sq.ft", price: "₹1.95 Cr", status: "Premium Units" },
+        { name: "3 BHK Opulent", area: "1200 - 1250 sq.ft", price: "₹2.19 Cr", status: "Premium Units" },
+        { name: "4 BHK Iconic", area: "1550 - 1650 sq.ft", price: "₹2.89 Cr", status: "Exclusive Launch" }
       ],
       specificAmenities: [
-        "25,454 sq.ft Grand Clubhouse",
-        "Miyawaki Forest Zone",
-        "Wellness Clinic",
-        "Digital Dome Theater",
-        "Cricket Simulator Suite",
-        "Video Games Arcade Room",
-        "Trampoline & Adventure Park",
-        "Spa & Reflexology Path",
+        "100,000 sq.ft Club Forest",
+        "10,000 sq.ft Gymnasium",
         "Infinity Swimming Pool",
-        "Library & Co-working Lounge"
+        "Forest Lounge Zone",
+        "Jogging & Cycling Track",
+        "Indoor Video Games Room",
+        "Co-working Space Lounge",
+        "Landscaped Zen Gardens",
+        "Child-Centric Sports Center",
+        "24/7 Security & CCTV Grid"
       ]
     };
   }
@@ -1111,15 +1108,15 @@ const enrichVyomoraProperty = (p) => {
 const enrichPropertiesResponse = (res) => {
   if (!res) return res;
   if (Array.isArray(res)) {
-    return res.map(enrichVyomoraProperty);
+    return res.map(enrichGodrejIvaraProperty);
   }
   if (res.content && Array.isArray(res.content)) {
     return {
       ...res,
-      content: res.content.map(enrichVyomoraProperty)
+      content: res.content.map(enrichGodrejIvaraProperty)
     };
   }
-  return enrichVyomoraProperty(res);
+  return enrichGodrejIvaraProperty(res);
 };
 
 
