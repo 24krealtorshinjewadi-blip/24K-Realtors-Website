@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "follow_up_tasks")
-@SQLDelete(sql = "UPDATE follow_up_tasks SET deleted_flag = true, active_flag = false WHERE id = ?")
+@SQLDelete(sql = "UPDATE follow_up_tasks SET deleted_flag = true, active_flag = false WHERE id = ? AND version = ?")
 @SQLRestriction("deleted_flag = false")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
