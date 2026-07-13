@@ -21,7 +21,7 @@ import java.util.UUID;
     @Index(name = "idx_lead_pref_loc", columnList = "preferred_location"),
     @Index(name = "idx_lead_created", columnList = "created_date")
 })
-@SQLDelete(sql = "UPDATE leads SET deleted_flag = true, active_flag = false WHERE id = ?")
+@SQLDelete(sql = "UPDATE leads SET deleted_flag = true, active_flag = false WHERE id = ? AND version = ?")
 @SQLRestriction("deleted_flag = false")
 @EntityListeners(AuditingEntityListener.class)
 @Getter

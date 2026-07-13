@@ -20,7 +20,7 @@ import java.util.UUID;
     @Index(name = "idx_prop_price_txn", columnList = "price, transaction_type"),
     @Index(name = "idx_prop_status", columnList = "status")
 })
-@SQLDelete(sql = "UPDATE properties SET deleted_flag = true, active_flag = false WHERE id = ?")
+@SQLDelete(sql = "UPDATE properties SET deleted_flag = true, active_flag = false WHERE id = ? AND version = ?")
 @SQLRestriction("deleted_flag = false")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
