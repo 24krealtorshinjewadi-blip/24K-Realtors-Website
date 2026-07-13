@@ -313,8 +313,8 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedProperties() {
-        if (propertyRepository.count() < 21) {
-            log.info("Cleaning and seeding 21 premium real estate listings in Hinjewadi/Baner/Wakad...");
+        if (propertyRepository.count() < 22) {
+            log.info("Cleaning and seeding 22 premium real estate listings in Hinjewadi/Baner/Wakad...");
             propertyRepository.deleteAll();
 
             var sOpula = societyRepository.findBySlug("24k-opula-baner").orElse(null);
