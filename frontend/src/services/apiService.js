@@ -1073,13 +1073,18 @@ const enrichGodrejIvaraProperty = (p) => {
     return {
       ...p,
       location: "KHARADI",
-      imageUrl: "/luxury_sunset_tower.png",
+      imageUrl: "https://www.godrejivaraskharadi.com/assets/img/desk1.webp",
       slideshowImages: [
-        "/luxury_sunset_pool.png",
-        "/luxury_sunset_tower.png",
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85",
-        "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85"
+        "https://www.godrejivaraskharadi.com/assets/img/desk1.webp",
+        "https://www.godrejivaraskharadi.com/assets/img/desk2.webp",
+        "https://www.godrejivaraskharadi.com/assets/img/gallery/g1.webp",
+        "https://www.godrejivaraskharadi.com/assets/img/gallery/g2.webp",
+        "https://www.godrejivaraskharadi.com/assets/img/gallery/g3.webp",
+        "https://www.godrejivaraskharadi.com/assets/img/gallery/g4.webp"
       ],
+      floorPlanUrl: "https://www.godrejivaraskharadi.com/assets/img/floorplan/2bhk_725_750.webp",
+      masterPlanUrl: "https://www.godrejivaraskharadi.com/assets/img/floorplan/masterplan.webp",
+      locationMapUrl: "https://www.godrejivaraskharadi.com/assets/img/locationmap.webp",
       configurations: [
         { name: "2 BHK Premium", area: "725 - 750 sq.ft", price: "₹1.17 Cr", status: "Selling Fast" },
         { name: "3 BHK Elite", area: "875 - 900 sq.ft", price: "₹1.49 Cr", status: "Available" },

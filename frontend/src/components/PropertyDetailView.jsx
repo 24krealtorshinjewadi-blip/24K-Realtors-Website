@@ -659,32 +659,40 @@ export default function PropertyDetailView({
             <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr', gap: '28px', alignItems: 'center' }} className="floor-plan-grid">
               <div style={{ background: 'rgba(4,8,20,0.8)', border: '1px dashed rgba(212,175,55,0.25)', borderRadius: '14px', padding: '20px', height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {activePlan === 'floor' ? (
-                  <svg viewBox="0 0 200 150" style={{ width: '100%', height: '100%' }}>
-                    <rect x="10" y="10" width="180" height="130" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeDasharray="3,3" />
-                    <rect x="10" y="10" width="90" height="70" fill="rgba(212,175,55,0.05)" stroke="rgba(212,175,55,0.5)" strokeWidth="1" />
-                    <text x="55" y="43" fill="rgba(255,255,255,0.85)" fontSize="8" textAnchor="middle" fontFamily="sans-serif">Master Bed</text>
-                    <text x="55" y="54" fill="#D4AF37" fontSize="7" textAnchor="middle" fontFamily="sans-serif">14' × 12'</text>
-                    <rect x="100" y="10" width="40" height="40" fill="rgba(255,255,255,0.01)" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
-                    <text x="120" y="33" fill="rgba(255,255,255,0.45)" fontSize="6" textAnchor="middle">Bath</text>
-                    <rect x="10" y="80" width="130" height="60" fill="rgba(212,175,55,0.07)" stroke="rgba(212,175,55,0.5)" strokeWidth="1" />
-                    <text x="75" y="111" fill="rgba(255,255,255,0.85)" fontSize="8" textAnchor="middle" fontFamily="sans-serif">Living & Dining</text>
-                    <text x="75" y="122" fill="#D4AF37" fontSize="7" textAnchor="middle" fontFamily="sans-serif">18' × 14'</text>
-                    <rect x="140" y="50" width="50" height="60" fill="rgba(255,255,255,0.01)" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
-                    <text x="165" y="82" fill="rgba(255,255,255,0.7)" fontSize="7" textAnchor="middle">Kitchen</text>
-                    <rect x="140" y="110" width="50" height="30" fill="rgba(46,196,182,0.05)" stroke="#2ec4b6" strokeWidth="1" />
-                    <text x="165" y="128" fill="#2ec4b6" fontSize="6" textAnchor="middle" fontWeight="bold">Sky Deck</text>
-                  </svg>
+                  property.floorPlanUrl ? (
+                    <img src={property.floorPlanUrl} alt="Floor Plan" style={{ width: '100%', height: '100%', objectFit: 'contain', cursor: 'pointer' }} onClick={() => window.open(property.floorPlanUrl, '_blank')} />
+                  ) : (
+                    <svg viewBox="0 0 200 150" style={{ width: '100%', height: '100%' }}>
+                      <rect x="10" y="10" width="180" height="130" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeDasharray="3,3" />
+                      <rect x="10" y="10" width="90" height="70" fill="rgba(212,175,55,0.05)" stroke="rgba(212,175,55,0.5)" strokeWidth="1" />
+                      <text x="55" y="43" fill="rgba(255,255,255,0.85)" fontSize="8" textAnchor="middle" fontFamily="sans-serif">Master Bed</text>
+                      <text x="55" y="54" fill="#D4AF37" fontSize="7" textAnchor="middle" fontFamily="sans-serif">14' × 12'</text>
+                      <rect x="100" y="10" width="40" height="40" fill="rgba(255,255,255,0.01)" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
+                      <text x="120" y="33" fill="rgba(255,255,255,0.45)" fontSize="6" textAnchor="middle">Bath</text>
+                      <rect x="10" y="80" width="130" height="60" fill="rgba(212,175,55,0.07)" stroke="rgba(212,175,55,0.5)" strokeWidth="1" />
+                      <text x="75" y="111" fill="rgba(255,255,255,0.85)" fontSize="8" textAnchor="middle" fontFamily="sans-serif">Living & Dining</text>
+                      <text x="75" y="122" fill="#D4AF37" fontSize="7" textAnchor="middle" fontFamily="sans-serif">18' × 14'</text>
+                      <rect x="140" y="50" width="50" height="60" fill="rgba(255,255,255,0.01)" stroke="rgba(255,255,255,0.1)" strokeWidth="0.8" />
+                      <text x="165" y="82" fill="rgba(255,255,255,0.7)" fontSize="7" textAnchor="middle">Kitchen</text>
+                      <rect x="140" y="110" width="50" height="30" fill="rgba(46,196,182,0.05)" stroke="#2ec4b6" strokeWidth="1" />
+                      <text x="165" y="128" fill="#2ec4b6" fontSize="6" textAnchor="middle" fontWeight="bold">Sky Deck</text>
+                    </svg>
+                  )
                 ) : (
-                  <svg viewBox="0 0 200 150" style={{ width: '100%', height: '100%' }}>
-                    <circle cx="100" cy="75" r="28" fill="rgba(212,175,55,0.05)" stroke="var(--gold-primary)" strokeWidth="1" />
-                    <text x="100" y="78" fill="#fff" fontSize="6" textAnchor="middle">Luxury Club</text>
-                    <rect x="20" y="20" width="40" height="40" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.12)" strokeWidth="0.8" />
-                    <text x="40" y="42" fill="rgba(255,255,255,0.75)" fontSize="6" textAnchor="middle">Tower A</text>
-                    <rect x="140" y="20" width="40" height="40" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.12)" strokeWidth="0.8" />
-                    <text x="160" y="42" fill="rgba(255,255,255,0.75)" fontSize="6" textAnchor="middle">Tower B</text>
-                    <ellipse cx="100" cy="125" rx="35" ry="14" fill="rgba(46,196,182,0.05)" stroke="#2ec4b6" strokeWidth="1" />
-                    <text x="100" y="128" fill="#2ec4b6" fontSize="6" textAnchor="middle">Infinity Pool</text>
-                  </svg>
+                  property.masterPlanUrl ? (
+                    <img src={property.masterPlanUrl} alt="Master Site Plan" style={{ width: '100%', height: '100%', objectFit: 'contain', cursor: 'pointer' }} onClick={() => window.open(property.masterPlanUrl, '_blank')} />
+                  ) : (
+                    <svg viewBox="0 0 200 150" style={{ width: '100%', height: '100%' }}>
+                      <circle cx="100" cy="75" r="28" fill="rgba(212,175,55,0.05)" stroke="var(--gold-primary)" strokeWidth="1" />
+                      <text x="100" y="78" fill="#fff" fontSize="6" textAnchor="middle">Luxury Club</text>
+                      <rect x="20" y="20" width="40" height="40" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.12)" strokeWidth="0.8" />
+                      <text x="40" y="42" fill="rgba(255,255,255,0.75)" fontSize="6" textAnchor="middle">Tower A</text>
+                      <rect x="140" y="20" width="40" height="40" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.12)" strokeWidth="0.8" />
+                      <text x="160" y="42" fill="rgba(255,255,255,0.75)" fontSize="6" textAnchor="middle">Tower B</text>
+                      <ellipse cx="100" cy="125" rx="35" ry="14" fill="rgba(46,196,182,0.05)" stroke="#2ec4b6" strokeWidth="1" />
+                      <text x="100" y="128" fill="#2ec4b6" fontSize="6" textAnchor="middle">Infinity Pool</text>
+                    </svg>
+                  )
                 )}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -923,6 +931,15 @@ export default function PropertyDetailView({
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'rgba(255,255,255,0.6)' }}>Expected Yield:</span>
                   <strong style={{ color: '#2ec4b6' }}>{marketTrends.rentalYield}</strong>
+                </div>
+              </div>
+            )}
+            
+            {property.locationMapUrl && (
+              <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Location Connectivity Map</div>
+                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' }} onClick={() => window.open(property.locationMapUrl, '_blank')}>
+                  <img src={property.locationMapUrl} alt="Location Map" style={{ width: '100%', display: 'block', transition: 'transform 0.3s ease' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
                 </div>
               </div>
             )}
