@@ -1174,6 +1174,8 @@ const enrichVyomoraProperty = (p) => {
       ...p,
       location: "HINJEWADI",
       imageUrl: "/properties/vyomora/hero.jpg",
+      description: "Vyomora by Shapoorji Pallonji Real Estate is a landmark residential project nestled at Hinjewadi Off Maan Road, Pune's fastest appreciating IT corridor. Spread across 12.5 acres with 6 premium towers, Vyomora offers intelligently designed 2 & 3 BHK residences featuring expansive balconies, superior RCC framed structure, and a 25,454 sq.ft Grand Clubhouse with 40+ world-class amenities. Powered by 160 years of Shapoorji Pallonji engineering legacy — RERA registered & MahaRERA verified.",
+      videoUrl: "https://www.youtube.com/watch?v=Sn4_9-3SXTY",
       slideshowImages: [
         "/properties/vyomora/hero.jpg",
         "/properties/vyomora/pool.jpg",
@@ -1184,8 +1186,19 @@ const enrichVyomoraProperty = (p) => {
         "/properties/vyomora/bedroom.jpg"
       ],
       floorPlanUrl: "/properties/vyomora/floorplan_2bhk.png",
+      floorPlan3BHKUrl: "/properties/vyomora/floorplan_3bhk.png",
       masterPlanUrl: "/properties/vyomora/masterplan.png",
       locationMapUrl: "/properties/vyomora/locationmap.jpg",
+      amenityImages: {
+        clubhouse: "/properties/vyomora/brochure_p4_Im0.jpg",
+        pool: "/properties/vyomora/pool.jpg",
+        playarea: "/properties/vyomora/playarea.jpg",
+        exterior: "/properties/vyomora/brochure_p2_Im0.jpg",
+        aerial: "/properties/vyomora/wormeye.jpg",
+        living: "/properties/vyomora/livingroom.jpg",
+        kitchen: "/properties/vyomora/kitchen.jpg",
+        bedroom: "/properties/vyomora/bedroom.jpg"
+      },
       configurations: [
         { name: "2 BHK Luxe", area: "684.91 sq.ft", price: "₹84 Lakhs", status: "Selling Fast" },
         { name: "2 BHK Smart", area: "749.60 sq.ft", price: "₹92 Lakhs", status: "Available" },
@@ -1198,6 +1211,7 @@ const enrichVyomoraProperty = (p) => {
       ],
       specificAmenities: [
         "25,454 sq.ft Grand Clubhouse",
+        "Infinity Swimming Pool",
         "Miyawaki Forest Zone",
         "Wellness Clinic",
         "Digital Dome Theater",
@@ -1205,7 +1219,6 @@ const enrichVyomoraProperty = (p) => {
         "Video Games Arcade Room",
         "Trampoline & Adventure Park",
         "Spa & Reflexology Path",
-        "Lap Pool & Aqua Gym",
         "Library & Co-working Lounge"
       ]
     };

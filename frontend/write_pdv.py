@@ -1,4 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+#!/usr/bin/env python3
+"""Script to write the new PropertyDetailView.jsx"""
+import os
+
+content = r"""import React, { useState, useEffect, useRef } from 'react';
 import {
   MapPin, ShieldCheck, Bed, Bath, Maximize, Sparkles,
   Car, Calculator, TrendingUp, HelpCircle,
@@ -741,3 +745,11 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     </motion.div>
   );
 }
+"""
+
+target_path = r"src\components\PropertyDetailView.jsx"
+with open(target_path, 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print(f"SUCCESS: Written {len(content)} bytes to {target_path}")
+print(f"Lines: {content.count(chr(10))}")
