@@ -59,6 +59,35 @@ const getApiBaseUrl = () => {
 
 const BASE_URL = getApiBaseUrl();
 
+// ─── Railway Keep-Alive ─────────────────────────────────────────────────────
+// Prevents Railway container from sleeping (free tier sleeps after ~5 min)
+const IS_PRODUCTION = !window.location.hostname.includes('localhost') &&
+                      !window.location.hostname.includes('127.0.0.1') &&
+                      !window.location.hostname.startsWith('192.168.');
+
+if (IS_PRODUCTION) {
+  const pingRailway = () => {
+    fetch(`${RAILWAY_API}/properties?page=0&size=1`, { method: 'GET', cache: 'no-store' })
+      .then(() => console.info('[Keep-Alive] Railway backend pinged ✓'))
+      .catch(() => console.warn('[Keep-Alive] Railway ping failed'));
+  };
+  // Immediate ping on load, then every 8 minutes
+  setTimeout(pingRailway, 500);
+  setInterval(pingRailway, 8 * 60 * 1000);
+}
+
+// ─── In-Memory Properties Cache ────────────────────────────────────────────
+// Serves cached data instantly on tab revisit, avoids cold-start delay
+const _propertiesCache = {
+  data: null,
+  timestamp: 0,
+  TTL: 5 * 60 * 1000, // 5 minutes
+  isValid() { return this.data && (Date.now() - this.timestamp < this.TTL); },
+  set(data) { this.data = data; this.timestamp = Date.now(); },
+  get() { return this.isValid() ? this.data : null; },
+  invalidate() { this.data = null; this.timestamp = 0; },
+};
+
 
 // Helper to retrieve JWT token and construct authentication headers
 const getAuthHeaders = () => {
@@ -1509,6 +1538,16 @@ export const apiService = {
   // --- PROPERTIES ENDPOINTS ---
   
   async getProperties(filters = {}, page = 0, size = 10, sortBy = 'createdDate', direction = 'desc') {
+    // ── Cache shortcut: serve instantly for unfiltered full-list requests ──
+    const isUnfilteredFullLoad = !filters.location && !filters.minPrice && !filters.maxPrice &&
+      !filters.propertyType && !filters.transactionType && !filters.bedrooms &&
+      !filters.status && !filters.furnishingStatus && !filters.query && size >= 50 && page === 0;
+
+    if (isUnfilteredFullLoad && _propertiesCache.isValid()) {
+      console.info('[Cache] Serving properties from in-memory cache ⚡');
+      return _propertiesCache.get();
+    }
+
     const res = await runWithFallback(
       async () => {
         const params = new URLSearchParams();
@@ -1531,7 +1570,10 @@ export const apiService = {
         if (!response.ok) {
           throw new Error(`Failed to fetch properties: ${response.statusText}`);
         }
-        return response.json();
+        const json = await response.json();
+        // Cache unfiltered full-list result
+        if (isUnfilteredFullLoad) _propertiesCache.set(json);
+        return json;
       },
       () => {
         let list = LocalMockDb.getProperties();

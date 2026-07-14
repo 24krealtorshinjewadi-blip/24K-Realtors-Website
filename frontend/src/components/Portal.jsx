@@ -50,6 +50,94 @@ function PropertySkeleton() {
   );
 }
 
+// ── Premium Railway Wake-Up Loader ─────────────────────────────────────────
+// Shows while Railway backend cold-starts (typically 10-40 sec on free tier)
+function RailwayWakeLoader({ elapsed }) {
+  const steps = [
+    { label: 'Connecting to 24K Realtors server', done: elapsed >= 2 },
+    { label: 'Waking up secure data layer',        done: elapsed >= 8 },
+    { label: 'Loading verified listings',           done: elapsed >= 18 },
+    { label: 'Applying RERA filters',               done: elapsed >= 28 },
+  ];
+  const pct = Math.min(Math.round((elapsed / 35) * 100), 95);
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 9998,
+      background: 'linear-gradient(135deg, #040814 0%, #070f1e 60%, #0a1828 100%)',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center', gap: '32px',
+    }}>
+      {/* Logo pulse */}
+      <div style={{ textAlign: 'center' }}>
+        <div style={{
+          width: '72px', height: '72px', borderRadius: '18px', margin: '0 auto 20px',
+          background: 'linear-gradient(135deg, rgba(212,175,55,0.15), rgba(184,140,28,0.05))',
+          border: '1px solid rgba(212,175,55,0.3)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 0 40px rgba(212,175,55,0.12)',
+          animation: 'pulse 2s ease-in-out infinite',
+        }}>
+          <span style={{ fontSize: '2.2rem' }}>🏆</span>
+        </div>
+        <div style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+          24K Realtors
+        </div>
+        <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem', marginTop: '4px' }}>
+          Pune's Premium Property Portal
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ width: '320px', maxWidth: '85vw' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.78rem' }}>
+          <span style={{ color: 'rgba(255,255,255,0.5)' }}>Loading live listings...</span>
+          <span style={{ color: 'var(--gold-primary)', fontWeight: 700 }}>{pct}%</span>
+        </div>
+        <div style={{ height: '5px', background: 'rgba(255,255,255,0.07)', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{
+            height: '100%', borderRadius: '4px',
+            width: `${pct}%`,
+            background: 'linear-gradient(90deg, var(--gold-secondary), var(--gold-primary))',
+            transition: 'width 1s ease',
+            boxShadow: '0 0 10px rgba(212,175,55,0.5)',
+          }}/>
+        </div>
+      </div>
+
+      {/* Steps */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '320px', maxWidth: '85vw' }}>
+        {steps.map(({ label, done }) => (
+          <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '10px', opacity: done ? 1 : 0.3, transition: 'opacity 0.5s ease' }}>
+            <div style={{
+              width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0,
+              background: done ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${done ? 'rgba(212,175,55,0.6)' : 'rgba(255,255,255,0.1)'}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '0.7rem', color: done ? '#D4AF37' : 'transparent',
+            }}>
+              ✓
+            </div>
+            <span style={{ fontSize: '0.82rem', color: done ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.3)' }}>{label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.25)', textAlign: 'center' }}>
+        Secure server starting up · Usually takes 15-30 seconds on first visit
+      </div>
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { box-shadow: 0 0 30px rgba(212,175,55,0.12); }
+          50%        { box-shadow: 0 0 60px rgba(212,175,55,0.28); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+
 // Reusable 60-FPS Animated Counter Component for trust stats
 function AnimatedCounter({ value, duration = 2000 }) {
   const [count, setCount] = useState(0);
@@ -80,6 +168,7 @@ export default function Portal({ onViewChange }) {
   const [isHnwiMode, setIsHnwiMode] = useState(false);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingElapsed, setLoadingElapsed] = useState(0); // seconds elapsed during initial load
   const [error, setError] = useState(null);
   
   const [page, setPage] = useState(0);
@@ -529,12 +618,22 @@ export default function Portal({ onViewChange }) {
   // Redesigned with premium sunset luxury property image background instead of canvas models.
 
   useEffect(() => {
+    // ── Elapsed timer: show premium loader if Railway takes long to respond ──
+    const startTime = Date.now();
+    const ticker = setInterval(() => {
+      const sec = Math.floor((Date.now() - startTime) / 1000);
+      setLoadingElapsed(sec);
+    }, 1000);
+
     const loadRawProperties = async () => {
       try {
         const data = await apiService.getProperties({}, 0, 100);
         setAllRawProperties(data.content || []);
       } catch (err) {
         console.error("Error loading raw properties for carousels:", err);
+      } finally {
+        clearInterval(ticker);
+        setLoadingElapsed(0);
       }
     };
     const syncWishlist = async () => {
@@ -549,6 +648,7 @@ export default function Portal({ onViewChange }) {
         console.error("Failed to sync wishlist with server on mount:", err);
       }
     };
+
     loadRawProperties();
     syncWishlist();
   }, []);
@@ -1860,6 +1960,9 @@ export default function Portal({ onViewChange }) {
 
   return (
     <div className="portal-container" style={{ paddingTop: '80px' }}>
+      {/* Railway Wake Loader */}
+      {loadingElapsed > 3 && <RailwayWakeLoader elapsed={loadingElapsed} />}
+      
       {/* Toast Notification */}
       {notification && (
         <div className="notification premium-toast">
