@@ -7,7 +7,7 @@ import {
   Share2, Heart, Award, Wifi, Zap, Camera, Trees, Coffee,
   Dumbbell, ParkingCircle, Droplets, UtensilsCrossed, Phone,
   Star, Shield, Sun, Wind, Tv, Lock, Play, X, ZoomIn,
-  Home, Grid, Map, Video, Info, ChevronDown
+  Home, Grid, Map, Video, Info, ChevronDown, RotateCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
@@ -186,6 +186,12 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [lightboxOpen, setLightboxOpen]   = useState(false);
   const [lightboxStart, setLightboxStart] = useState(0);
   const [marketTrends, setMarketTrends]   = useState(null);
+  
+  // ── 3D Blueprint & Multi-Video Switcher States ──
+  const [is3DMode, setIs3DMode] = useState(false);
+  const [floorPlanRotation, setFloorPlanRotation] = useState(0);
+  const [activeVideoTab, setActiveVideoTab] = useState('walkthrough');
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const [isWishlisted, setIsWishlisted] = useState(() => {
     try { const s = localStorage.getItem('wishlist_properties'); return (s ? JSON.parse(s) : []).includes(property.id); }
@@ -260,6 +266,17 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     { id: 'master', label: 'Master Plan', url: property.masterPlanUrl,    desc: '12.5 Acre Estate' },
   ].filter(v => v.url);
   const fpActive = fpVariants.find(v => v.id === activePlan) || fpVariants[0];
+
+  const handleMouseMoveFloorplan = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setMousePos({ x, y });
+  };
+
+  const handleMouseLeaveFloorplan = () => {
+    setMousePos({ x: 0, y: 0 });
+  };
 
   const Card = ({ children, style = {} }) => (
     <div style={{ background: 'rgba(10,18,36,0.55)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '20px', padding: '32px', ...style }}>
@@ -393,17 +410,28 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
           {/* Overview */}
           <div id="sec-overview">
-            <Card>
-              <H2 icon={<Sparkles size={18}/>}>About This Property</H2>
-              <p style={{ fontSize: '0.92rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.85, margin: 0 }}>
+            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(212,175,55,0.18)', boxShadow: '0 16px 40px rgba(0,0,0,0.4)' }}>
+              <H2 icon={<Sparkles size={18} color="var(--gold-primary)"/>}>About This Property</H2>
+              <p style={{ fontSize: '0.96rem', color: 'rgba(255,255,255,0.8)', lineHeight: 1.9, margin: '0 0 24px', letterSpacing: '0.015em' }}>
                 {property.description || `${property.title} is a meticulously designed luxury residence in ${property.location}, Pune, offering world-class amenities and superior construction standards. RERA registered and MahaRERA verified.`}
               </p>
+              
               {isVyomora && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(155px, 1fr))', gap: '10px', marginTop: '22px' }}>
-                  {[['🏙️','6 Premium Towers'],['🌿','75% Open Spaces'],['🏊','40+ Amenities'],['📐','12.5 Acre Campus'],['🏗️','160 Yr Legacy'],['✅','MahaRERA Verified']].map(([ic, lb]) => (
-                    <div key={lb} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '10px', padding: '11px 13px' }}>
-                      <span style={{ fontSize: '1.1rem' }}>{ic}</span>
-                      <span style={{ fontSize: '0.79rem', color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>{lb}</span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
+                  {[
+                    ['🏙️','6 Premium Towers','High Rise Luxury'],
+                    ['🌿','75% Open Spaces','Eco-Friendly Gated'],
+                    ['🏊','40+ Amenities','Elite Club Lifestyle'],
+                    ['📐','12.5 Acre Campus','Sprawling Gated Estate'],
+                    ['🏗️','160 Yr Legacy','Engineering Trust'],
+                    ['✅','MahaRERA Verified','PR1260002600999']
+                  ].map(([ic, lb, desc]) => (
+                    <div key={lb} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.12)', borderRadius: '12px', padding: '14px 16px', transition: 'all 0.25s', cursor: 'default' }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(212,175,55,0.05)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '1.2rem' }}>{ic}</span>
+                        <span style={{ fontSize: '0.84rem', color: '#fff', fontWeight: 700 }}>{lb}</span>
+                      </div>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 500 }}>{desc}</span>
                     </div>
                   ))}
                 </div>
@@ -413,35 +441,35 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
           {/* Amenities */}
           <div id="sec-amenities">
-            <Card>
-              <H2 icon={<Sparkles size={18}/>}>Elite Lifestyle Amenities</H2>
+            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <H2 icon={<Sparkles size={18} color="var(--gold-primary)"/>}>Elite Lifestyle Amenities</H2>
               {isVyomora && property.amenityImages && (
                 <div style={{ marginBottom: '28px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '200px 200px', gap: '8px', borderRadius: '14px', overflow: 'hidden' }}>
-                    <div style={{ gridRow: '1/3', position: 'relative', overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setLightboxStart(1); setLightboxOpen(true); }}>
-                      <img src={property.amenityImages.pool} alt="Pool" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.06)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                      <div style={{ position: 'absolute', bottom: '14px', left: '14px', background: 'rgba(4,8,20,0.75)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: '0.8rem', fontWeight: 700, padding: '5px 12px', borderRadius: '30px' }}>Infinity Pool</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gridTemplateRows: '220px 220px', gap: '10px', borderRadius: '16px', overflow: 'hidden' }}>
+                    <div style={{ gridRow: '1/3', position: 'relative', overflow: 'hidden', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }} onClick={() => { setLightboxStart(1); setLightboxOpen(true); }}>
+                      <img src={property.amenityImages.pool} alt="Pool" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
+                      <div style={{ position: 'absolute', bottom: '16px', left: '16px', background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(10px)', color: 'var(--gold-primary)', fontSize: '0.82rem', fontWeight: 800, padding: '6px 14px', borderRadius: '30px', border: '1px solid rgba(212,175,55,0.2)' }}>🏊 Infinite Swimming Pool</div>
                     </div>
-                    <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setLightboxStart(2); setLightboxOpen(true); }}>
-                      <img src={property.amenityImages.playarea} alt="Play Area" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.06)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                      <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(4,8,20,0.75)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: '0.75rem', fontWeight: 700, padding: '4px 10px', borderRadius: '30px' }}>Adventure Park</div>
+                    <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }} onClick={() => { setLightboxStart(2); setLightboxOpen(true); }}>
+                      <img src={property.amenityImages.playarea} alt="Play Area" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
+                      <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(10px)', color: '#fff', fontSize: '0.78rem', fontWeight: 700, padding: '5px 12px', borderRadius: '30px' }}>🌳 Kids Play Park</div>
                     </div>
-                    <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setLightboxStart(4); setLightboxOpen(true); }}>
-                      <img src={property.amenityImages.living} alt="Living Room" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.06)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                      <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(4,8,20,0.75)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: '0.75rem', fontWeight: 700, padding: '4px 10px', borderRadius: '30px' }}>Living Room</div>
+                    <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }} onClick={() => { setLightboxStart(4); setLightboxOpen(true); }}>
+                      <img src={property.amenityImages.living} alt="Living Room" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
+                      <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(10px)', color: '#fff', fontSize: '0.78rem', fontWeight: 700, padding: '5px 12px', borderRadius: '30px' }}>🛋️ Designer Living Room</div>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-                    {[{key:'kitchen',label:'Kitchen',li:5},{key:'bedroom',label:'Bedroom',li:6},{key:'aerial',label:'Aerial View',li:3}].map(({key, label, li}) => (
-                      <div key={key} style={{ flex: 1, height: '110px', position: 'relative', overflow: 'hidden', borderRadius: '10px', cursor: 'pointer' }} onClick={() => { setLightboxStart(li); setLightboxOpen(true); }}>
-                        <img src={property.amenityImages[key]} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.08)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                        <div style={{ position: 'absolute', bottom: '8px', left: '8px', background: 'rgba(4,8,20,0.75)', backdropFilter: 'blur(6px)', color: '#fff', fontSize: '0.7rem', fontWeight: 700, padding: '3px 9px', borderRadius: '20px' }}>{label}</div>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                    {[{key:'kitchen',label:'🍳 Modern Kitchen',li:5},{key:'bedroom',label:'🛏️ Elite Bedroom',li:6},{key:'aerial',label:'🚁 Aerial Landscape',li:3}].map(({key, label, li}) => (
+                      <div key={key} style={{ flex: 1, height: '120px', position: 'relative', overflow: 'hidden', borderRadius: '12px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)' }} onClick={() => { setLightboxStart(li); setLightboxOpen(true); }}>
+                        <img src={property.amenityImages[key]} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.08)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
+                        <div style={{ position: 'absolute', bottom: '8px', left: '8px', background: 'rgba(4,8,20,0.8)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: '0.74rem', fontWeight: 700, padding: '4px 10px', borderRadius: '20px' }}>{label}</div>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: '10px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(155px, 1fr))', gap: '10px' }}>
                 {(property.specificAmenities || ['24/7 Concierge Desk','Infinity Sky Pool','Private Elevator Access','Smart Home Automation','Modular Kitchen Provisions','100% Power Backup Grid','CCTV & Video Door Phone','Landscaped Zen Gardens','Clubhouse & Co-work Space',"Children's Play Zone",'Multi-Level Car Parking','Rainwater Harvesting']).map(a => <AmenityCard key={a} label={a}/>)}
               </div>
             </Card>
@@ -450,49 +478,158 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           {/* Floor Plans */}
           <div id="sec-floorplans">
             <Card>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
                 <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.15rem', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>📐 Layout Blueprints</h2>
                 {fpVariants.length > 0 && (
                   <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.3)', padding: '4px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.07)' }}>
                     {fpVariants.map(v => (
-                      <button key={v.id} onClick={() => setActivePlan(v.id)} style={{ background: activePlan === v.id ? 'var(--gold-primary)' : 'transparent', color: activePlan === v.id ? '#070f1e' : 'rgba(255,255,255,0.6)', border: 'none', padding: '7px 16px', borderRadius: '30px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s', whiteSpace: 'nowrap' }}>
+                      <button key={v.id} onClick={() => { setActivePlan(v.id); setFloorPlanRotation(0); }} style={{ background: activePlan === v.id ? 'var(--gold-primary)' : 'transparent', color: activePlan === v.id ? '#070f1e' : 'rgba(255,255,255,0.6)', border: 'none', padding: '7px 16px', borderRadius: '30px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s', whiteSpace: 'nowrap' }}>
                         {v.label}
                       </button>
                     ))}
                   </div>
                 )}
               </div>
+
               {fpActive ? (
-                <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr', gap: '24px', alignItems: 'start' }} className="floor-plan-grid">
-                  <div style={{ background: 'rgba(4,8,20,0.85)', border: '1px dashed rgba(212,175,55,0.22)', borderRadius: '14px', overflow: 'hidden', minHeight: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', cursor: 'zoom-in' }} onClick={() => window.open(fpActive.url, '_blank')}>
-                    <img src={fpActive.url} alt={`${fpActive.label} Plan`} style={{ width: '100%', height: '100%', objectFit: 'contain', maxHeight: '320px', transition: 'transform 0.4s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.03)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                    <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(4,8,20,0.7)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', padding: '5px 10px', color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <ZoomIn size={12}/> Click to expand
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div>
-                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Unit Type</div>
-                      <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--gold-primary)', fontFamily: 'var(--font-title)' }}>{fpActive.label}</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Area Range</div>
-                      <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#fff' }}>{fpActive.desc}</div>
-                    </div>
-                    {isVyomora && activePlan !== 'master' && property.configurations && (
-                      <div style={{ marginTop: '4px' }}>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Configurations</div>
-                        {property.configurations.filter(c => activePlan === '2bhk' ? c.name.includes('2 BHK') : c.name.includes('3 BHK')).map(c => (
-                          <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '7px', marginBottom: '7px', fontSize: '0.8rem' }}>
-                            <span style={{ color: 'rgba(255,255,255,0.6)' }}>{c.name.replace('2 BHK ','').replace('3 BHK ','')}</span>
-                            <strong style={{ color: '#fff' }}>{c.area}</strong>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <button onClick={onOpenInquiry} style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center', background: 'none', border: '1px solid rgba(212,175,55,0.28)', borderRadius: '10px', color: 'var(--gold-secondary)', padding: '10px 14px', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 700, transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.08)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'; }} onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.28)'; }}>
-                      <Download size={13}/> Download Brochure
+                <div>
+                  {/* Perspective Mode Switcher */}
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', background: 'rgba(255,255,255,0.02)', padding: '6px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', width: 'fit-content' }}>
+                    <button onClick={() => setIs3DMode(false)} style={{ background: !is3DMode ? 'rgba(212,175,55,0.15)' : 'transparent', color: !is3DMode ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', border: !is3DMode ? '1px solid rgba(212,175,55,0.35)' : '1px solid transparent', padding: '6px 14px', borderRadius: '8px', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.25s', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <Maximize size={12}/> 2D Orthographic
                     </button>
+                    <button onClick={() => setIs3DMode(true)} style={{ background: is3DMode ? 'rgba(212,175,55,0.15)' : 'transparent', color: is3DMode ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', border: is3DMode ? '1px solid rgba(212,175,55,0.35)' : '1px solid transparent', padding: '6px 14px', borderRadius: '8px', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.25s', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <RotateCw size={12}/> 3D Isometric View
+                    </button>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr', gap: '24px', alignItems: 'center' }} className="floor-plan-grid">
+                    {/* Visualizer Frame */}
+                    <div 
+                      style={{ 
+                        position: 'relative', 
+                        background: 'radial-gradient(circle at center, rgba(16,28,54,0.7) 0%, rgba(6,12,24,0.95) 100%)', 
+                        border: '1px solid rgba(212,175,55,0.12)', 
+                        borderRadius: '16px', 
+                        minHeight: '340px', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        overflow: 'hidden',
+                        perspective: '1200px',
+                        cursor: is3DMode ? 'grab' : 'zoom-in'
+                      }}
+                      onMouseMove={handleMouseMoveFloorplan}
+                      onMouseLeave={handleMouseLeaveFloorplan}
+                      onClick={() => !is3DMode && window.open(fpActive.url, '_blank')}
+                    >
+                      {/* Architectural Tech Grid */}
+                      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)', backgroundSize: '20px 20px', pointerEvents: 'none', opacity: is3DMode ? 0.8 : 0.3 }}/>
+                      
+                      {/* Volumetric Hologram Container */}
+                      <div style={{
+                        position: 'relative',
+                        width: '80%',
+                        height: '80%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transformStyle: 'preserve-3d',
+                        transform: is3DMode 
+                          ? `rotateX(${58 + mousePos.y * 15}deg) rotateY(${mousePos.x * 15}deg) rotateZ(${-35 + floorPlanRotation}deg) translateZ(10px)`
+                          : 'none',
+                        transition: 'transform 0.15s cubic-bezier(0.1, 0.8, 0.2, 1)',
+                      }}>
+                        
+                        {/* 3D Depth Layer 3 (Far Shadow/Base) */}
+                        {is3DMode && (
+                          <div style={{
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundImage: `url(${fpActive.url})`,
+                            backgroundSize: 'contain',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            transform: 'translateZ(-24px)',
+                            filter: 'brightness(0) saturate(100%) invert(84%) sepia(21%) saturate(980%) hue-rotate(340deg) brightness(80%) contrast(75%) opacity(0.12)',
+                            pointerEvents: 'none'
+                          }}/>
+                        )}
+
+                        {/* 3D Depth Layer 2 (Mid Slab) */}
+                        {is3DMode && (
+                          <div style={{
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundImage: `url(${fpActive.url})`,
+                            backgroundSize: 'contain',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            transform: 'translateZ(-12px)',
+                            filter: 'brightness(0) saturate(100%) invert(84%) sepia(21%) saturate(980%) hue-rotate(340deg) brightness(88%) contrast(85%) opacity(0.35)',
+                            pointerEvents: 'none'
+                          }}/>
+                        )}
+
+                        {/* Top Main Render Layer */}
+                        <div style={{
+                          position: 'relative',
+                          width: '100%',
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transform: is3DMode ? 'translateZ(0px)' : 'none',
+                          filter: is3DMode ? 'drop-shadow(0 25px 35px rgba(0,0,0,0.85))' : 'none',
+                          transition: 'all 0.3s'
+                        }}>
+                          <img src={fpActive.url} alt={`${fpActive.label} Layout Blueprint`} style={{ width: '100%', height: '100%', objectFit: 'contain', maxHeight: '300px' }}/>
+                        </div>
+                      </div>
+
+                      {/* 3D Mode Interaction Overlay controls */}
+                      {is3DMode ? (
+                        <div style={{ position: 'absolute', bottom: '14px', left: '14px', right: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none' }}>
+                          <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>↔ Drag mouse to tilt</span>
+                          <button onClick={(e) => { e.stopPropagation(); setFloorPlanRotation(r => (r + 90) % 360); }} style={{ pointerEvents: 'auto', background: 'rgba(7,15,30,0.85)', backdropFilter: 'blur(10px)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '8px', padding: '6px 12px', color: 'var(--gold-secondary)', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.7)'} onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'}>
+                            <RotateCw size={12}/> Rotate 90°
+                          </button>
+                        </div>
+                      ) : (
+                        <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(4,8,20,0.78)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '5px 10px', color: 'rgba(255,255,255,0.65)', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '5px', pointerEvents: 'none' }}>
+                          <ZoomIn size={12}/> Click to expand
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Stats & Specifications Side-Dossier */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px' }}>
+                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Unit Type</div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--gold-primary)', fontFamily: 'var(--font-title)' }}>{fpActive.label}</div>
+                      </div>
+
+                      <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px' }}>
+                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Super Built-Up Area</div>
+                        <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff' }}>{fpActive.desc}</div>
+                      </div>
+
+                      {isVyomora && activePlan !== 'master' && property.configurations && (
+                        <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px' }}>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Configurations Details</div>
+                          {property.configurations.filter(c => activePlan === '2bhk' ? c.name.includes('2 BHK') : c.name.includes('3 BHK')).map(c => (
+                            <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '7px', marginBottom: '7px', fontSize: '0.78rem' }}>
+                              <span style={{ color: 'rgba(255,255,255,0.55)' }}>{c.name.replace('2 BHK ','').replace('3 BHK ','')}</span>
+                              <strong style={{ color: '#fff' }}>{c.area}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      <button onClick={onOpenInquiry} style={{ marginTop: '4px', width: '100%', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', background: 'none', border: '1px solid rgba(212,175,55,0.28)', borderRadius: '10px', color: 'var(--gold-secondary)', padding: '12px 18px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, transition: 'all 0.25s' }} onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.08)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'; }} onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.28)'; }}>
+                        <Download size={13}/> Download Structural PDF
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -504,13 +641,18 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           {/* Pricing Table */}
           {property.configurations && property.configurations.length > 0 && (
             <div id="sec-pricing">
-              <Card>
-                <H2 icon={<Building size={18}/>}>Tower Configurations & Pricing</H2>
+              <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(212,175,55,0.18)', boxShadow: '0 16px 40px rgba(0,0,0,0.4)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
+                  <H2 icon={<Building size={18} color="var(--gold-primary)"/>} style={{ margin: 0 }}>Tower Configurations & Pricing</H2>
+                  <span style={{ fontSize: '0.66rem', color: 'var(--gold-secondary)', border: '1px solid rgba(212,175,55,0.25)', padding: '4px 10px', borderRadius: '4px', background: 'rgba(212,175,55,0.05)', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}>
+                    🛡️ MahaRERA Escrow Protected
+                  </span>
+                </div>
                 <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '420px' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '460px' }}>
                     <thead>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                        {['Unit Type','Carpet Area','Starting Price','Status','Action'].map((h, i) => <th key={h} style={{ padding: '12px 16px', textAlign: i === 4 ? 'right' : 'left' }}>{h}</th>)}
+                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-muted)', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                        {['Unit Type','Super Carpet Area','Investment Estimate','Availability Status','Action'].map((h, i) => <th key={h} style={{ padding: '14px 16px', textAlign: i === 4 ? 'right' : 'left' }}>{h}</th>)}
                       </tr>
                     </thead>
                     <tbody>
@@ -518,16 +660,16 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                         const fast = c.status.includes('Fast') || c.status.includes('Exclusive');
                         const lim  = c.status.includes('Limited') || c.status.includes('Premium');
                         return (
-                          <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', fontSize: '0.88rem', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.03)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                            <td style={{ padding: '15px 16px', fontWeight: 700, color: '#fff' }}>{c.name}</td>
-                            <td style={{ padding: '15px 16px', color: 'rgba(255,255,255,0.65)' }}>{c.area}</td>
-                            <td style={{ padding: '15px 16px', color: 'var(--gold-primary)', fontWeight: 800, fontSize: '0.95rem' }}>{c.price}</td>
-                            <td style={{ padding: '15px 16px' }}>
-                              <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '4px 10px', borderRadius: '20px', background: fast ? 'rgba(239,68,68,0.12)' : lim ? 'rgba(251,191,36,0.12)' : 'rgba(16,185,129,0.12)', color: fast ? '#ef4444' : lim ? '#fbbf24' : '#10b981', border: `1px solid ${fast ? 'rgba(239,68,68,0.2)' : lim ? 'rgba(251,191,36,0.2)' : 'rgba(16,185,129,0.2)'}` }}>{c.status}</span>
+                          <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', fontSize: '0.88rem', transition: 'all 0.25s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.04)'; e.currentTarget.style.borderLeft = '2px solid var(--gold-primary)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderLeft = 'none'; }}>
+                            <td style={{ padding: '16px 16px', fontWeight: 700, color: '#fff' }}>{c.name}</td>
+                            <td style={{ padding: '16px 16px', color: 'rgba(255,255,255,0.7)' }}>{c.area}</td>
+                            <td style={{ padding: '16px 16px', color: 'var(--gold-primary)', fontWeight: 800, fontSize: '0.98rem' }}>{c.price}</td>
+                            <td style={{ padding: '16px 16px' }}>
+                              <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '4px 12px', borderRadius: '20px', background: fast ? 'rgba(239,68,68,0.12)' : lim ? 'rgba(251,191,36,0.12)' : 'rgba(16,185,129,0.12)', color: fast ? '#ef4444' : lim ? '#fbbf24' : '#10b981', border: `1px solid ${fast ? 'rgba(239,68,68,0.2)' : lim ? 'rgba(251,191,36,0.2)' : 'rgba(16,185,129,0.2)'}`, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{c.status}</span>
                             </td>
-                            <td style={{ padding: '15px 16px', textAlign: 'right' }}>
-                              <button onClick={onOpenInquiry} style={{ background: 'var(--gold-primary)', color: '#070f1e', border: 'none', borderRadius: '8px', padding: '7px 16px', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 0 12px rgba(212,175,55,0.45)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}>
-                                Inquire <ArrowRight size={12}/>
+                            <td style={{ padding: '16px 16px', textAlign: 'right' }}>
+                              <button onClick={() => onOpenInquiry(property)} style={{ background: 'var(--gold-primary)', color: '#070f1e', border: 'none', borderRadius: '8px', padding: '8px 18px', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '5px', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 0 14px rgba(212,175,55,0.5)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                                Request Call <ArrowRight size={12}/>
                               </button>
                             </td>
                           </tr>
@@ -544,30 +686,104 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           {property.videoUrl && (
             <div id="sec-video">
               <Card>
-                <H2 icon={<Play size={18}/>}>🎬 Drone Virtual Walkthrough</H2>
-                <div style={{ borderRadius: '14px', overflow: 'hidden', aspectRatio: '16/9', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <iframe src={getEmbedVideoUrl(property.videoUrl)} title="Property Video Tour" style={{ width: '100%', height: '100%', border: 'none' }} allowFullScreen/>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+                  <H2 icon={<Play size={18}/>} style={{ margin: 0 }}>🎬 Cinematic Video Tour</H2>
+                  
+                  {isVyomora && (
+                    <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.3)', padding: '4px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      {[
+                        { id: 'walkthrough', label: 'Drone Walkthrough' },
+                        { id: 'showflat', label: 'Show Flat Tour' },
+                        { id: 'location', label: 'Location AV' }
+                      ].map(t => (
+                        <button 
+                          key={t.id} 
+                          onClick={() => setActiveVideoTab(t.id)} 
+                          style={{ 
+                            background: activeVideoTab === t.id ? 'var(--gold-primary)' : 'transparent', 
+                            color: activeVideoTab === t.id ? '#070f1e' : 'rgba(255,255,255,0.6)', 
+                            border: 'none', 
+                            padding: '7px 16px', 
+                            borderRadius: '30px', 
+                            fontSize: '0.78rem', 
+                            fontWeight: 700, 
+                            cursor: 'pointer', 
+                            transition: 'all 0.3s', 
+                            whiteSpace: 'nowrap' 
+                          }}
+                        >
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
+
+                {isVyomora ? (
+                  <div style={{ borderRadius: '16px', overflow: 'hidden', aspectRatio: '16/9', boxShadow: '0 25px 60px rgba(0,0,0,0.6)', border: '1px solid rgba(212,175,55,0.18)', background: '#040814' }}>
+                    {activeVideoTab === 'walkthrough' && (
+                      <video 
+                        key="walkthrough"
+                        controls 
+                        preload="metadata"
+                        poster={slideshowImages[0]}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      >
+                        <source src="https://drive.google.com/uc?id=1DYALmyrqT27g5nS8fPwffNLFMO3iBpT0" type="video/mp4" />
+                        Your browser does not support HTML5 video streaming.
+                      </video>
+                    )}
+                    {activeVideoTab === 'showflat' && (
+                      <video 
+                        key="showflat"
+                        controls 
+                        preload="metadata"
+                        poster={slideshowImages[4] || slideshowImages[0]}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      >
+                        <source src="https://drive.google.com/uc?id=1vXzk2x-kiWGtLj_jsTKsyPnKzMBJqSsR" type="video/mp4" />
+                        Your browser does not support HTML5 video streaming.
+                      </video>
+                    )}
+                    {activeVideoTab === 'location' && (
+                      <video 
+                        key="location"
+                        controls 
+                        preload="metadata"
+                        poster={property.locationMapUrl || slideshowImages[0]}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      >
+                        <source src="https://drive.google.com/uc?id=1IsrDGjG8-1iHFtCJk15MVRxSsndNA63A" type="video/mp4" />
+                        Your browser does not support HTML5 video streaming.
+                      </video>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ borderRadius: '16px', overflow: 'hidden', aspectRatio: '16/9', boxShadow: '0 25px 60px rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <iframe src={getEmbedVideoUrl(property.videoUrl)} title="Property Video Tour" style={{ width: '100%', height: '100%', border: 'none' }} allowFullScreen/>
+                  </div>
+                )}
               </Card>
             </div>
           )}
 
           {/* Location */}
           <div id="sec-location">
-            <Card>
-              <H2 icon={<MapPin size={18}/>}>Location & Connectivity</H2>
+            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 40px rgba(0,0,0,0.4)' }}>
+              <H2 icon={<MapPin size={18} color="var(--gold-primary)"/>}>Location & Connectivity</H2>
               {property.locationMapUrl && (
-                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', marginBottom: '24px', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }} onClick={() => window.open(property.locationMapUrl, '_blank')}>
-                  <img src={property.locationMapUrl} alt="Location Map" style={{ width: '100%', display: 'block', maxHeight: '260px', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.04)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,8,20,0.4), transparent)', pointerEvents: 'none' }}/>
-                  <div style={{ position: 'absolute', bottom: '14px', right: '14px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '6px', padding: '5px 12px', fontSize: '0.75rem', fontWeight: 800 }}>Open in Maps ↗</div>
+                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '14px', marginBottom: '24px', border: '1px solid rgba(212,175,55,0.2)', cursor: 'pointer', boxShadow: '0 12px 30px rgba(0,0,0,0.5)' }} onClick={() => window.open(property.locationMapUrl, '_blank')}>
+                  <img src={property.locationMapUrl} alt="Location Map" style={{ width: '100%', display: 'block', maxHeight: '280px', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.03)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,8,20,0.5), transparent)', pointerEvents: 'none' }}/>
+                  <div style={{ position: 'absolute', bottom: '16px', right: '16px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '8px', padding: '6px 14px', fontSize: '0.78rem', fontWeight: 800, boxShadow: '0 4px 12px rgba(212,175,55,0.3)' }}>Open in Google Maps ↗</div>
                 </div>
               )}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))', gap: '10px' }}>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
                 {corridor.landmarks.map((l, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.09)', borderRadius: '10px', padding: '12px 14px', gap: '8px' }}>
-                    <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>{l.split('(')[0].trim()}</span>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--gold-secondary)', fontWeight: 700, whiteSpace: 'nowrap' }}>{l.includes('(') ? l.split('(')[1].replace(')','') : '—'}</span>
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.12)', borderRadius: '12px', padding: '14px 16px', gap: '10px', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'} onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)'}>
+                    <span style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>📍 {l.split('(')[0].trim()}</span>
+                    <span style={{ fontSize: '0.76rem', color: 'var(--gold-secondary)', fontWeight: 800, padding: '3px 8px', background: 'rgba(212,175,55,0.06)', borderRadius: '6px', whiteSpace: 'nowrap' }}>{l.includes('(') ? l.split('(')[1].replace(')','') : '—'}</span>
                   </div>
                 ))}
               </div>
@@ -575,18 +791,18 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
 
           {/* FAQ */}
-          <Card>
-            <H2 icon={<HelpCircle size={18}/>}>Compliance & Buying FAQ</H2>
+          <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <H2 icon={<HelpCircle size={18} color="var(--gold-primary)"/>}>Compliance & Buying FAQ</H2>
             {[
               { q: 'Is title clear and RERA registration verified?', a: `Yes. All 24K Realtors listings undergo a 5-stage carpet and registry deed audit. Developer ID ${builder.reraId} is registered with MahaRERA under Section 9 of the Real Estate Act, 2016.` },
               { q: 'What does all-inclusive pricing comprise?', a: 'Agreement value, stamp duty, registration taxes, development charges, piped gas fees, and society corpus deposits as applicable under standard builder rules.' },
               { q: 'What is the brokerage structure?', a: '24K Realtors charges zero brokerage to buyers. Our advisory is 100% developer-compensated, ensuring full conflict-free guidance.' },
             ].map(({ q, a }) => (
-              <details key={q} style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', padding: '16px 20px', marginBottom: '10px', cursor: 'pointer' }}>
-                <summary style={{ fontSize: '0.9rem', fontWeight: 700, color: '#fff', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <details key={q} style={{ background: 'rgba(255,255,255,0.015)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', padding: '16px 20px', marginBottom: '12px', cursor: 'pointer', transition: 'all 0.3s' }} onToggle={e => e.currentTarget.style.borderColor = e.currentTarget.open ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.05)'}>
+                <summary style={{ fontSize: '0.92rem', fontWeight: 700, color: '#fff', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   {q} <ChevronDown size={14} style={{ color: 'var(--gold-secondary)', flexShrink: 0 }}/>
                 </summary>
-                <p style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.6)', marginTop: '12px', lineHeight: 1.75, marginBottom: 0 }}>{a}</p>
+                <p style={{ fontSize: '0.86rem', color: 'rgba(255,255,255,0.65)', marginTop: '12px', lineHeight: 1.8, marginBottom: 0 }}>{a}</p>
               </details>
             ))}
           </Card>
