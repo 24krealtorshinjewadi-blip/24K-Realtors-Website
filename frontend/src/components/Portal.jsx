@@ -1719,8 +1719,10 @@ export default function Portal({ onViewChange }) {
       requirementType: property.transactionType === 'RENT' ? 'RENT' : 'BUY',
       budgetMin: property.price ? (Number(property.price) * 0.9).toString() : '',
       budgetMax: property.price ? (Number(property.price) * 1.1).toString() : '',
-      preferredLocation: property.location || '',
-      notes: `Interested in property: "${property.title}" (ID: ${property.id})`,
+      preferredLocation: property.location || 'HINJEWADI',
+      bhkType: '',
+      visitSlot: '',
+      notes: `Interested in ${property.title} — please share brochure and availability.`,
       propertyId: property.id
     });
     
@@ -3726,43 +3728,43 @@ export default function Portal({ onViewChange }) {
         </div>
         <div className="transaction-desk-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '30px', alignItems: 'start' }}>
           
-          {/* Priority Callback Desk */}
-          <div className="callback-card" style={{ margin: 0, height: '100%' }}>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '10px' }}>
+          {/* Priority Callback Desk — Pune Targeted */}
+          <div className="callback-card" style={{ margin: 0, height: '100%', borderRadius: '16px', border: '1px solid rgba(212,175,55,0.15)', background: 'linear-gradient(135deg, rgba(12,24,48,0.6) 0%, rgba(6,12,24,0.8) 100%)' }}>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '6px' }}>
               <Clock size={18} className="animate-pulse" />
-              <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>60-Second Priority Callback</h3>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>⚡ 60-Second Callback</h3>
             </div>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.4, marginBottom: '16px' }}>
-              Submit your mobile number. Our regional tech-corridor specialist will dial your line within 60 seconds.
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '16px' }}>
+              Drop your number — our Pune IT corridor specialist calls you within 60 seconds. Available Mon–Sun, 9am to 9pm.
             </p>
             <form onSubmit={handleVipSubmit}>
               <div className="form-group-floating">
-                <input 
-                  type="text" 
-                  id="callbackName"
-                  className="form-input-floating" 
-                  required 
-                  placeholder=" " 
-                  value={vipForm.name} 
-                  onChange={e => setVipForm({ ...vipForm, name: e.target.value })} 
-                />
-                <label htmlFor="callbackName" className="form-label-floating">Your Name</label>
+                <input type="text" id="callbackName" className="form-input-floating" required placeholder=" "
+                  value={vipForm.name} onChange={e => setVipForm({ ...vipForm, name: e.target.value })} />
+                <label htmlFor="callbackName" className="form-label-floating">Your Full Name</label>
               </div>
               <div className="form-group-floating">
-                <input 
-                  type="tel" 
-                  id="callbackPhone"
-                  className="form-input-floating" 
-                  required 
-                  placeholder=" " 
-                  value={vipForm.phone} 
-                  onChange={e => setVipForm({ ...vipForm, phone: e.target.value })} 
-                />
-                <label htmlFor="callbackPhone" className="form-label-floating">WhatsApp Mobile (+91)</label>
+                <input type="tel" id="callbackPhone" className="form-input-floating" required placeholder=" "
+                  value={vipForm.phone} onChange={e => setVipForm({ ...vipForm, phone: e.target.value })} />
+                <label htmlFor="callbackPhone" className="form-label-floating">📱 WhatsApp No. (+91)</label>
               </div>
-              <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center' }} disabled={vipSubmitting}>
-                {vipSubmitting ? <Loader className="animate-spin" size={16} /> : 'Connect Priority Advisor'}
+              <div className="form-group" style={{ marginBottom: '14px' }}>
+                <select className="form-input" value={vipForm.location || 'HINJEWADI'}
+                  onChange={e => setVipForm({ ...vipForm, location: e.target.value })}
+                  style={{ fontSize: '0.84rem', borderRadius: '10px' }}>
+                  <option value="HINJEWADI">📍 Hinjewadi IT Corridor</option>
+                  <option value="BANER">📍 Baner – Balewadi</option>
+                  <option value="WAKAD">📍 Wakad – Pimple Saudagar</option>
+                  <option value="MAHALUNGE">📍 Mahalunge – Maan Road</option>
+                  <option value="KHARADI">📍 Kharadi – EON IT Park</option>
+                  <option value="UNDRI">📍 Undri – Pisoli</option>
+                  <option value="ANY">📍 Open to all Pune locations</option>
+                </select>
+              </div>
+              <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center', borderRadius: '12px' }} disabled={vipSubmitting}>
+                {vipSubmitting ? <Loader className="animate-spin" size={16} /> : '📞 Get Instant Callback'}
               </button>
+              <p style={{ textAlign: 'center', fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '10px' }}>Zero spam · Only verified property advisors call you</p>
             </form>
           </div>
 
@@ -3850,31 +3852,29 @@ export default function Portal({ onViewChange }) {
                 </div>
               </div>
               <div className="form-group">
-                <label className="seller-form-label">Expected Valuation (₹)</label>
-                <input 
-                  type="number" 
-                  name="expectedPrice" 
-                  className="form-input seller-input" 
-                  required 
-                  placeholder="e.g. 85,00,000" 
-                  value={sellerForm.expectedPrice} 
-                  onChange={handleSellerFormChange} 
-                />
+                <label className="seller-form-label">Expected Valuation</label>
+                <select name="expectedPrice" className="form-input seller-input" required
+                  value={sellerForm.expectedPrice} onChange={handleSellerFormChange}>
+                  <option value="">Select Price Range</option>
+                  <option value="3000000">₹30 Lakh – ₹50 Lakh</option>
+                  <option value="5000000">₹50 Lakh – ₹75 Lakh</option>
+                  <option value="7500000">₹75 Lakh – ₹1 Crore</option>
+                  <option value="10000000">₹1 Crore – ₹1.5 Crore</option>
+                  <option value="15000000">₹1.5 Crore – ₹2 Crore</option>
+                  <option value="20000000">₹2 Crore – ₹3 Crore</option>
+                  <option value="30000000">₹3 Crore+</option>
+                </select>
               </div>
               <div className="form-group">
                 <label className="seller-form-label">Property Highlights</label>
-                <textarea 
-                  name="description" 
-                  className="form-input seller-input" 
-                  rows="2" 
-                  placeholder="e.g. 12th floor, modular kitchen, park view, covered parking..."
-                  value={sellerForm.description} 
-                  onChange={handleSellerFormChange} 
-                />
+                <textarea name="description" className="form-input seller-input" rows="2"
+                  placeholder="e.g. 12th floor, east-facing, modular kitchen, 2 covered parking, ready possession..."
+                  value={sellerForm.description} onChange={handleSellerFormChange} />
               </div>
               <button type="submit" className="btn-seller-mandate" disabled={submitLoading}>
-                {submitLoading ? 'Registering...' : '📋 Register Sale Mandate'}
+                {submitLoading ? 'Registering...' : '📋 Register Sale Mandate — 0% Brokerage'}
               </button>
+              <p style={{ textAlign: 'center', fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', marginTop: '8px' }}>Your details are shared only with verified 24K Realtors advisors · MahaRERA compliant</p>
             </form>
           </div>
         </div>
@@ -3939,67 +3939,117 @@ export default function Portal({ onViewChange }) {
         />
       </Suspense>
 
-      {/* Modular Enquiry Callback Modal with Mortgage Calculator */}
+      {/* Pune-Targeted Inquiry Modal with Mortgage Calculator */}
       {isModalOpen && selectedProperty && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '850px' }}>
-            <button className="modal-close" onClick={() => setIsModalOpen(false)}>×</button>
-            
-            <div className="modal-split-layout">
-              <div className="modal-form-side">
-                <h3 className="modal-title">Request Private Presentation</h3>
-                <p className="modal-subtitle">Register interest for <strong>{selectedProperty.title}</strong>.</p>
-                
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setIsModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '900px', borderRadius: '20px', border: '1px solid rgba(212,175,55,0.2)', background: 'linear-gradient(135deg, #070f1e 0%, #0a1828 100%)', boxShadow: '0 40px 80px rgba(0,0,0,0.7)' }}>
+            <button className="modal-close" onClick={() => setIsModalOpen(false)} style={{ top: '16px', right: '16px', fontSize: '1.4rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'rgba(255,255,255,0.7)', transition: 'all 0.2s' }}>×</button>
+
+            <div className="modal-split-layout" style={{ gap: '0' }}>
+              {/* ── LEFT: Form Side ── */}
+              <div className="modal-form-side" style={{ padding: '32px 28px' }}>
+
+                {/* Header */}
+                <div style={{ marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', color: 'var(--gold-secondary)', textTransform: 'uppercase', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)', padding: '3px 10px', borderRadius: '20px' }}>🏙️ Pune Luxury Desk</span>
+                </div>
+                <h3 className="modal-title" style={{ fontSize: '1.35rem', marginBottom: '4px' }}>Book a Private Site Visit</h3>
+                <p className="modal-subtitle" style={{ marginBottom: '20px', fontSize: '0.84rem', lineHeight: 1.5 }}>Enquiring for <strong style={{ color: 'var(--gold-primary)' }}>{selectedProperty.title}</strong> — Hinjewadi, Pune</p>
+
+                {/* Trust badges */}
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px' }}>
+                  {['✅ MahaRERA Verified', '🏠 Zero Brokerage', '📞 WhatsApp First', '⚡ 60-Sec Callback'].map(b => (
+                    <span key={b} style={{ fontSize: '0.68rem', fontWeight: 700, color: 'rgba(255,255,255,0.75)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '4px 10px', borderRadius: '20px' }}>{b}</span>
+                  ))}
+                </div>
+
                 <form onSubmit={handleLeadSubmit}>
-                  <div className="form-group">
-                    <label className="form-label">Full Name</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      required 
-                      placeholder="e.g. Rohan Sharma"
-                      value={leadForm.name} 
-                      onChange={e => setLeadForm({ ...leadForm, name: e.target.value })}
-                    />
+                  {/* Name */}
+                  <div className="form-group" style={{ marginBottom: '14px' }}>
+                    <label className="form-label" style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>Full Name *</label>
+                    <input type="text" className="form-input" required placeholder="e.g. Rahul Sharma"
+                      value={leadForm.name} onChange={e => setLeadForm({ ...leadForm, name: e.target.value })}
+                      style={{ borderRadius: '10px' }}/>
                   </div>
 
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label className="form-label">WhatsApp Mobile</label>
-                      <input 
-                        type="tel" 
-                        className="form-input" 
-                        required 
-                        placeholder="e.g. +919876543210"
-                        value={leadForm.phone} 
-                        onChange={e => setLeadForm({ ...leadForm, phone: e.target.value })}
-                      />
+                  {/* Phone + Email */}
+                  <div className="form-row" style={{ gap: '12px', marginBottom: '14px' }}>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label className="form-label" style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>📱 WhatsApp No. (+91) *</label>
+                      <input type="tel" className="form-input" required placeholder="98765 43210"
+                        value={leadForm.phone} onChange={e => setLeadForm({ ...leadForm, phone: e.target.value })}
+                        style={{ borderRadius: '10px' }}/>
                     </div>
-                    <div className="form-group">
-                      <label className="form-label">Email</label>
-                      <input 
-                        type="email" 
-                        className="form-input" 
-                        required 
-                        placeholder="e.g. rohan@gmail.com"
-                        value={leadForm.email} 
-                        onChange={e => setLeadForm({ ...leadForm, email: e.target.value })}
-                      />
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label className="form-label" style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>Email ID *</label>
+                      <input type="email" className="form-input" required placeholder="you@gmail.com"
+                        value={leadForm.email} onChange={e => setLeadForm({ ...leadForm, email: e.target.value })}
+                        style={{ borderRadius: '10px' }}/>
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Notes</label>
-                    <textarea 
-                      className="form-input" 
-                      rows="2" 
-                      value={leadForm.notes} 
-                      onChange={e => setLeadForm({ ...leadForm, notes: e.target.value })}
-                    />
+                  {/* Pune Locality + BHK */}
+                  <div className="form-row" style={{ gap: '12px', marginBottom: '14px' }}>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label className="form-label" style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>📍 Preferred Pune Locality</label>
+                      <select className="form-input" value={leadForm.preferredLocation}
+                        onChange={e => setLeadForm({ ...leadForm, preferredLocation: e.target.value })}
+                        style={{ borderRadius: '10px' }}>
+                        <option value="HINJEWADI">Hinjewadi IT Corridor</option>
+                        <option value="BANER">Baner – Balewadi</option>
+                        <option value="WAKAD">Wakad – Pimple Saudagar</option>
+                        <option value="BALEWADI">Balewadi High Street</option>
+                        <option value="TATHAWADE">Tathawade – Ravet</option>
+                        <option value="MAHALUNGE">Mahalunge – Maan Road</option>
+                        <option value="KHARADI">Kharadi – EON IT Park</option>
+                        <option value="VIMAN_NAGAR">Viman Nagar – Kalyani Nagar</option>
+                        <option value="UNDRI">Undri – Pisoli</option>
+                        <option value="ANY">Open to any Pune location</option>
+                      </select>
+                    </div>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label className="form-label" style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>🏠 BHK Preference</label>
+                      <select className="form-input" value={leadForm.bhkType || ''}
+                        onChange={e => setLeadForm({ ...leadForm, bhkType: e.target.value })}
+                        style={{ borderRadius: '10px' }}>
+                        <option value="">Select BHK</option>
+                        <option value="1BHK">1 BHK (Studio / 1RK)</option>
+                        <option value="2BHK">2 BHK</option>
+                        <option value="2.5BHK">2.5 BHK</option>
+                        <option value="3BHK">3 BHK</option>
+                        <option value="3.5BHK">3.5 BHK</option>
+                        <option value="4BHK">4 BHK / Penthouse</option>
+                        <option value="VILLA">Independent Villa / Row House</option>
+                        <option value="COMMERCIAL">Commercial / Office Space</option>
+                      </select>
+                    </div>
                   </div>
 
-                  <div className="advisory-appreciation-calculator">
-                    <span className="cal-title"><TrendingUp size={14} style={{ marginRight: '6px' }} /> Capital Appreciation Projection</span>
+                  {/* Site Visit Slot */}
+                  <div className="form-group" style={{ marginBottom: '14px' }}>
+                    <label className="form-label" style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>🗓️ Preferred Site Visit Slot</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+                      {['Weekday Morning (10am–1pm)', 'Weekday Evening (5pm–8pm)', 'Weekend Anytime'].map(slot => (
+                        <button key={slot} type="button"
+                          onClick={() => setLeadForm({ ...leadForm, visitSlot: slot })}
+                          style={{ padding: '8px 6px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer', textAlign: 'center', border: leadForm.visitSlot === slot ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.08)', background: leadForm.visitSlot === slot ? 'rgba(212,175,55,0.12)' : 'rgba(255,255,255,0.02)', color: leadForm.visitSlot === slot ? 'var(--gold-primary)' : 'rgba(255,255,255,0.55)', transition: 'all 0.2s' }}>
+                          {slot}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Notes */}
+                  <div className="form-group" style={{ marginBottom: '14px' }}>
+                    <label className="form-label" style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>Additional Requirements (Optional)</label>
+                    <textarea className="form-input" rows="2" placeholder="e.g. Need vastu-compliant flat, ready-to-move, home loan required..."
+                      value={leadForm.notes} onChange={e => setLeadForm({ ...leadForm, notes: e.target.value })}
+                      style={{ borderRadius: '10px', resize: 'none' }}/>
+                  </div>
+
+                  {/* Capital Appreciation */}
+                  <div className="advisory-appreciation-calculator" style={{ borderRadius: '12px' }}>
+                    <span className="cal-title"><TrendingUp size={14} style={{ marginRight: '6px' }} /> Pune Corridor Capital Appreciation</span>
                     <div className="appreciation-selectors">
                       <button type="button" className={appreciationYears === 3 ? 'active' : ''} onClick={() => setAppreciationYears(3)}>3 Years</button>
                       <button type="button" className={appreciationYears === 5 ? 'active' : ''} onClick={() => setAppreciationYears(5)}>5 Years</button>
@@ -4008,34 +4058,35 @@ export default function Portal({ onViewChange }) {
                     <div className="appreciation-result">
                       <span>Projected Value:</span>
                       <strong>{formatPrice(calculateAppreciatedValue(selectedProperty.price, selectedProperty.location, appreciationYears))}</strong>
-                      <span className="cagr-sub">Based on {getAppreciationCAGR(selectedProperty.location)}% historical corridor CAGR</span>
+                      <span className="cagr-sub">Based on {getAppreciationCAGR(selectedProperty.location)}% Pune corridor CAGR</span>
                     </div>
                   </div>
 
-                  <button 
-                    type="submit" 
-                    className="btn-gold" 
-                    style={{ width: '100%', justifyContent: 'center', marginTop: '16px' }}
-                    disabled={submitLoading}
-                  >
-                    {submitLoading ? <Loader className="animate-spin" size={20} /> : 'Submit Inquiry Desk'}
+                  {/* Submit */}
+                  <button type="submit" className="btn-gold"
+                    style={{ width: '100%', justifyContent: 'center', marginTop: '16px', borderRadius: '12px', padding: '14px', fontSize: '0.92rem', letterSpacing: '0.04em' }}
+                    disabled={submitLoading}>
+                    {submitLoading ? <Loader className="animate-spin" size={20} /> : '📅 Book Site Visit & Get Brochure'}
                   </button>
+
+                  <p style={{ textAlign: 'center', fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', marginTop: '10px' }}>Our Pune advisor will call you on WhatsApp within 60 minutes · Zero spam guarantee</p>
                 </form>
               </div>
 
-              <div id="mortgage-desk" className="modal-calculator-side">
+              {/* ── RIGHT: Mortgage Calculator Side ── */}
+              <div id="mortgage-desk" className="modal-calculator-side" style={{ padding: '32px 24px', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '16px' }}>
                   <Calculator size={20} />
-                  <h4 style={{ margin: 0, fontSize: '1.1rem', fontFamily: 'var(--font-title)' }}>Mortgage Estimator</h4>
+                  <h4 style={{ margin: 0, fontSize: '1.05rem', fontFamily: 'var(--font-title)' }}>Home Loan EMI Estimator</h4>
                 </div>
 
                 <div className="emi-result-box">
                   <span className="emi-label">Estimated Monthly EMI</span>
                   <span className="emi-value">{formatPrice(mortgageDetails.monthlyEMI)}</span>
-                  <span className="emi-sub">Principal & Interest only</span>
+                  <span className="emi-sub">Principal & Interest only · Based on current RBI rates</span>
                 </div>
 
-                <div className="ltv-proportion-container">
+                <div className="ltv-proportion-container" style={{ marginTop: '16px' }}>
                   <span className="ltv-title">Capital Structure (LTV)</span>
                   <div className="ltv-bar-wrapper">
                     <div className="ltv-bar-equity" style={{ width: `${mortgageDetails.downPaymentPercent}%` }}></div>
@@ -4052,31 +4103,21 @@ export default function Portal({ onViewChange }) {
                     <span>Down Payment ({mortgageDetails.downPaymentPercent}%)</span>
                     <span>{formatPrice(Number(selectedProperty.price) * (mortgageDetails.downPaymentPercent / 100))}</span>
                   </div>
-                  <input 
-                    type="range" 
-                    min="10" 
-                    max="80" 
-                    step="5"
-                    value={mortgageDetails.downPaymentPercent} 
+                  <input type="range" min="10" max="80" step="5"
+                    value={mortgageDetails.downPaymentPercent}
                     onChange={e => handleMortgageChange('downPaymentPercent', e.target.value)}
-                    className="calculator-slider"
-                  />
+                    className="calculator-slider" />
                 </div>
 
                 <div className="slider-group">
                   <div className="slider-header">
                     <span>Interest Rate</span>
-                    <span>{mortgageDetails.interestRate}%</span>
+                    <span style={{ color: 'var(--gold-primary)' }}>{mortgageDetails.interestRate}% p.a.</span>
                   </div>
-                  <input 
-                    type="range" 
-                    min="5" 
-                    max="15" 
-                    step="0.1" 
-                    value={mortgageDetails.interestRate} 
+                  <input type="range" min="5" max="15" step="0.1"
+                    value={mortgageDetails.interestRate}
                     onChange={e => handleMortgageChange('interestRate', e.target.value)}
-                    className="calculator-slider"
-                  />
+                    className="calculator-slider" />
                 </div>
 
                 <div className="slider-group">
@@ -4084,16 +4125,29 @@ export default function Portal({ onViewChange }) {
                     <span>Loan Term</span>
                     <span>{mortgageDetails.loanTermYears} Years</span>
                   </div>
-                  <input 
-                    type="range" 
-                    min="5" 
-                    max="30" 
-                    step="1" 
-                    value={mortgageDetails.loanTermYears} 
+                  <input type="range" min="5" max="30" step="1"
+                    value={mortgageDetails.loanTermYears}
                     onChange={e => handleMortgageChange('loanTermYears', e.target.value)}
-                    className="calculator-slider"
-                  />
+                    className="calculator-slider" />
                 </div>
+
+                {/* Bank Home Loan Partners */}
+                <div style={{ marginTop: '20px', padding: '14px', borderRadius: '10px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div style={{ fontSize: '0.68rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>🏦 Approved Bank Partners</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {['SBI Home Loans', 'HDFC Ltd', 'ICICI Bank', 'Axis Bank', 'Bajaj Finserv', 'LIC HFL'].map(b => (
+                      <span key={b} style={{ fontSize: '0.68rem', padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.55)' }}>{b}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* WhatsApp CTA */}
+                <a href={`https://wa.me/919673000053?text=Hi%2C%20I%20am%20interested%20in%20${encodeURIComponent(selectedProperty.title)}%20in%20Pune.%20Please%20share%20details.`}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '16px', padding: '12px', borderRadius: '10px', background: 'linear-gradient(135deg, #25d366, #128c7e)', color: '#fff', fontSize: '0.84rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '0.02em' }}>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371c1.394.756 2.96 1.157 4.777 1.158h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2zm5.787 14.404c-.24.675-1.397 1.285-1.92 1.36-.474.07-1.088.13-3.18-.737-2.677-1.11-4.4-3.837-4.536-4.015-.132-.178-1.08-1.433-1.08-2.73 0-1.298.68-1.936.92-2.199.243-.263.53-.328.706-.328.176 0 .353.003.507.01.162.007.382-.062.597.45.22.524.75 1.83.816 1.964.066.13.11.286.022.463-.087.177-.13.287-.26.439-.13.15-.27.337-.385.45-.126.126-.259.263-.11.517.15.253.66.1.91 1.488.75 1.309 1.37 2.14 2.15 2.65.783.51 1.237.585 1.58.204.34-.38 1.484-1.72 1.88-2.31.398-.59.794-.49 1.346-.29.553.2.3.5 1.764 1.226.22.11.365.163.475.328.11.165.11.954-.13 1.63z"/></svg>
+                  Chat on WhatsApp Now
+                </a>
               </div>
             </div>
           </div>
