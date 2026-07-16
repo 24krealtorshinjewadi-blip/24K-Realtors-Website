@@ -187,11 +187,9 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [lightboxStart, setLightboxStart] = useState(0);
   const [marketTrends, setMarketTrends]   = useState(null);
   
-  // ── 3D Blueprint & Multi-Video Switcher States ──
-  const [is3DMode, setIs3DMode] = useState(false);
-  const [floorPlanRotation, setFloorPlanRotation] = useState(0);
+  // ── Multi-Video Switcher State ──
   const [activeVideoTab, setActiveVideoTab] = useState('walkthrough');
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
 
   const [isWishlisted, setIsWishlisted] = useState(() => {
     try { const s = localStorage.getItem('wishlist_properties'); return (s ? JSON.parse(s) : []).includes(property.id); }
@@ -266,17 +264,6 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     { id: 'master', label: 'Master Plan', url: property.masterPlanUrl,    desc: '12.5 Acre Estate' },
   ].filter(v => v.url);
   const fpActive = fpVariants.find(v => v.id === activePlan) || fpVariants[0];
-
-  const handleMouseMoveFloorplan = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setMousePos({ x, y });
-  };
-
-  const handleMouseLeaveFloorplan = () => {
-    setMousePos({ x: 0, y: 0 });
-  };
 
   const Card = ({ children, style = {} }) => (
     <div style={{ background: 'rgba(10,18,36,0.55)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '20px', padding: '32px', ...style }}>
@@ -475,165 +462,219 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
             </Card>
           </div>
 
-          {/* Floor Plans */}
+          {/* Floor Plans — Premium 2D Viewer with Zoom Lightbox */}
           <div id="sec-floorplans">
-            <Card>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-                <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.15rem', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>📐 Layout Blueprints</h2>
-                {fpVariants.length > 0 && (
-                  <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.3)', padding: '4px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.07)' }}>
-                    {fpVariants.map(v => (
-                      <button key={v.id} onClick={() => { setActivePlan(v.id); setFloorPlanRotation(0); }} style={{ background: activePlan === v.id ? 'var(--gold-primary)' : 'transparent', color: activePlan === v.id ? '#070f1e' : 'rgba(255,255,255,0.6)', border: 'none', padding: '7px 16px', borderRadius: '30px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s', whiteSpace: 'nowrap' }}>
-                        {v.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.88) 100%)', border: '1px solid rgba(255,255,255,0.08)', padding: '28px' }}>
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', flexWrap: 'wrap', gap: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.15rem', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  📐 Layout Blueprints
+                </h2>
+                <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <ZoomIn size={12}/> Click plan to zoom
+                </span>
               </div>
 
               {fpActive ? (
-                <div>
-                  {/* Perspective Mode Switcher */}
-                  <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', background: 'rgba(255,255,255,0.02)', padding: '6px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', width: 'fit-content' }}>
-                    <button onClick={() => setIs3DMode(false)} style={{ background: !is3DMode ? 'rgba(212,175,55,0.15)' : 'transparent', color: !is3DMode ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', border: !is3DMode ? '1px solid rgba(212,175,55,0.35)' : '1px solid transparent', padding: '6px 14px', borderRadius: '8px', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.25s', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <Maximize size={12}/> 2D Orthographic
-                    </button>
-                    <button onClick={() => setIs3DMode(true)} style={{ background: is3DMode ? 'rgba(212,175,55,0.15)' : 'transparent', color: is3DMode ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', border: is3DMode ? '1px solid rgba(212,175,55,0.35)' : '1px solid transparent', padding: '6px 14px', borderRadius: '8px', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.25s', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <RotateCw size={12}/> 3D Isometric View
-                    </button>
+                <>
+                  {/* Main 2D Plan Viewer */}
+                  <div
+                    onClick={() => setLightboxOpen(true) || setLightboxStart(fpVariants.findIndex(v => v.id === activePlan))}
+                    style={{
+                      position: 'relative',
+                      background: '#ffffff',
+                      borderRadius: '16px',
+                      border: '2px solid rgba(212,175,55,0.22)',
+                      boxShadow: '0 16px 48px rgba(0,0,0,0.55)',
+                      overflow: 'hidden',
+                      cursor: 'zoom-in',
+                      marginBottom: '20px',
+                      minHeight: '320px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <img
+                      src={fpActive.url}
+                      alt={`${fpActive.label} Floor Plan`}
+                      style={{
+                        width: '100%',
+                        maxHeight: '480px',
+                        objectFit: 'contain',
+                        display: 'block',
+                        transition: 'transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                      }}
+                      onMouseOver={e => e.currentTarget.style.transform = 'scale(1.025)'}
+                      onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                    />
+
+                    {/* Zoom hint overlay */}
+                    <div style={{
+                      position: 'absolute', top: '14px', right: '14px',
+                      background: 'rgba(7,15,30,0.82)', backdropFilter: 'blur(8px)',
+                      border: '1px solid rgba(212,175,55,0.25)', borderRadius: '8px',
+                      padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px',
+                      fontSize: '0.72rem', fontWeight: 700, color: 'var(--gold-secondary)',
+                      pointerEvents: 'none',
+                    }}>
+                      <ZoomIn size={13}/> Click to zoom
+                    </div>
+
+                    {/* Plan label badge */}
+                    <div style={{
+                      position: 'absolute', bottom: '14px', left: '14px',
+                      background: 'var(--gold-primary)', color: '#070f1e',
+                      borderRadius: '8px', padding: '5px 14px',
+                      fontSize: '0.78rem', fontWeight: 800,
+                      boxShadow: '0 4px 12px rgba(212,175,55,0.35)',
+                    }}>
+                      {fpActive.label} · {fpActive.desc}
+                    </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr', gap: '24px', alignItems: 'center' }} className="floor-plan-grid">
-                    {/* Visualizer Frame */}
-                    <div 
-                      style={{ 
-                        position: 'relative', 
-                        background: 'radial-gradient(circle at center, rgba(16,28,54,0.7) 0%, rgba(6,12,24,0.95) 100%)', 
-                        border: '1px solid rgba(212,175,55,0.12)', 
-                        borderRadius: '16px', 
-                        minHeight: '340px', 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center', 
-                        overflow: 'hidden',
-                        perspective: '1200px',
-                        cursor: is3DMode ? 'grab' : 'zoom-in'
+                  {/* Thumbnail Switcher */}
+                  {fpVariants.length > 1 && (
+                    <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                      {fpVariants.map((v, idx) => (
+                        <div
+                          key={v.id}
+                          onClick={() => setActivePlan(v.id)}
+                          style={{
+                            flex: '1', minWidth: '100px', maxWidth: '200px',
+                            borderRadius: '12px', overflow: 'hidden', cursor: 'pointer',
+                            border: activePlan === v.id
+                              ? '2px solid var(--gold-primary)'
+                              : '2px solid rgba(255,255,255,0.08)',
+                            background: '#fff',
+                            boxShadow: activePlan === v.id
+                              ? '0 0 18px rgba(212,175,55,0.28)'
+                              : '0 4px 12px rgba(0,0,0,0.3)',
+                            transition: 'all 0.25s',
+                            position: 'relative',
+                          }}
+                          onMouseOver={e => { if (activePlan !== v.id) e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'; }}
+                          onMouseOut={e => { if (activePlan !== v.id) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                        >
+                          <img
+                            src={v.url}
+                            alt={v.label}
+                            style={{ width: '100%', height: '80px', objectFit: 'cover', display: 'block' }}
+                          />
+                          <div style={{
+                            padding: '6px 10px',
+                            background: activePlan === v.id ? 'var(--gold-primary)' : '#0a1828',
+                            color: activePlan === v.id ? '#070f1e' : 'rgba(255,255,255,0.7)',
+                            fontSize: '0.72rem', fontWeight: 800, textAlign: 'center',
+                            transition: 'all 0.25s',
+                          }}>
+                            {v.label}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Specs + CTA Row */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', alignItems: 'end' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '14px 16px' }}>
+                      <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Unit Type</div>
+                      <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--gold-primary)', fontFamily: 'var(--font-title)' }}>{fpActive.label}</div>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '14px 16px' }}>
+                      <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Carpet Area</div>
+                      <div style={{ fontSize: '1.0rem', fontWeight: 700, color: '#fff' }}>{fpActive.desc}</div>
+                    </div>
+                    {isVyomora && activePlan !== 'master' && property.configurations && (
+                      <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '14px 16px' }}>
+                        <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>Configurations</div>
+                        {property.configurations.filter(c => activePlan === '2bhk' ? c.name.includes('2 BHK') : c.name.includes('3 BHK')).map(c => (
+                          <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', marginBottom: '4px' }}>
+                            <span style={{ color: 'rgba(255,255,255,0.5)' }}>{c.name.replace('2 BHK ','').replace('3 BHK ','')}</span>
+                            <strong style={{ color: '#fff' }}>{c.area}</strong>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <button
+                      onClick={onOpenInquiry}
+                      style={{
+                        width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
+                        justifyContent: 'center', background: 'none',
+                        border: '1px solid rgba(212,175,55,0.3)', borderRadius: '12px',
+                        color: 'var(--gold-secondary)', padding: '14px 18px',
+                        cursor: 'pointer', fontSize: '0.82rem', fontWeight: 700,
+                        transition: 'all 0.25s',
                       }}
-                      onMouseMove={handleMouseMoveFloorplan}
-                      onMouseLeave={handleMouseLeaveFloorplan}
-                      onClick={() => !is3DMode && window.open(fpActive.url, '_blank')}
+                      onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.08)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.55)'; }}
+                      onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; }}
                     >
-                      {/* Architectural Tech Grid */}
-                      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)', backgroundSize: '20px 20px', pointerEvents: 'none', opacity: is3DMode ? 0.8 : 0.3 }}/>
-                      
-                      {/* Volumetric Hologram Container */}
-                      <div style={{
-                        position: 'relative',
-                        width: '80%',
-                        height: '80%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transformStyle: 'preserve-3d',
-                        transform: is3DMode 
-                          ? `rotateX(${58 + mousePos.y * 15}deg) rotateY(${mousePos.x * 15}deg) rotateZ(${-35 + floorPlanRotation}deg) translateZ(10px)`
-                          : 'none',
-                        transition: 'transform 0.15s cubic-bezier(0.1, 0.8, 0.2, 1)',
-                      }}>
-                        
-                        {/* 3D Depth Layer 3 (Far Shadow/Base) */}
-                        {is3DMode && (
-                          <div style={{
-                            position: 'absolute',
-                            inset: 0,
-                            backgroundImage: `url(${fpActive.url})`,
-                            backgroundSize: 'contain',
-                            backgroundPosition: 'center',
-                            backgroundRepeat: 'no-repeat',
-                            transform: 'translateZ(-24px)',
-                            filter: 'brightness(0) saturate(100%) invert(84%) sepia(21%) saturate(980%) hue-rotate(340deg) brightness(80%) contrast(75%) opacity(0.12)',
-                            pointerEvents: 'none'
-                          }}/>
-                        )}
+                      <Download size={14}/> Download Brochure
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', padding: '48px', fontSize: '0.88rem' }}>
+                  Floor plans available on inquiry
+                </div>
+              )}
 
-                        {/* 3D Depth Layer 2 (Mid Slab) */}
-                        {is3DMode && (
-                          <div style={{
-                            position: 'absolute',
-                            inset: 0,
-                            backgroundImage: `url(${fpActive.url})`,
-                            backgroundSize: 'contain',
-                            backgroundPosition: 'center',
-                            backgroundRepeat: 'no-repeat',
-                            transform: 'translateZ(-12px)',
-                            filter: 'brightness(0) saturate(100%) invert(84%) sepia(21%) saturate(980%) hue-rotate(340deg) brightness(88%) contrast(85%) opacity(0.35)',
-                            pointerEvents: 'none'
-                          }}/>
-                        )}
+              {/* Inline Zoom Lightbox (renders inside Card, no external dep) */}
+              {lightboxOpen && fpActive && (
+                <div
+                  onClick={() => setLightboxOpen(false)}
+                  style={{
+                    position: 'fixed', inset: 0, zIndex: 9999,
+                    background: 'rgba(4,8,20,0.96)', backdropFilter: 'blur(12px)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'zoom-out',
+                  }}
+                >
+                  <button
+                    onClick={e => { e.stopPropagation(); setLightboxOpen(false); }}
+                    style={{
+                      position: 'absolute', top: '20px', right: '20px',
+                      background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)',
+                      borderRadius: '50%', width: '44px', height: '44px',
+                      color: '#fff', fontSize: '1.4rem', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      zIndex: 10000, transition: 'all 0.2s',
+                    }}
+                    onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.2)'}
+                    onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+                  >
+                    ×
+                  </button>
 
-                        {/* Top Main Render Layer */}
-                        <div style={{
-                          position: 'relative',
-                          width: '100%',
-                          height: '100%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          transform: is3DMode ? 'translateZ(0px)' : 'none',
-                          filter: is3DMode ? 'drop-shadow(0 25px 35px rgba(0,0,0,0.85))' : 'none',
-                          transition: 'all 0.3s'
-                        }}>
-                          <img src={fpActive.url} alt={`${fpActive.label} Layout Blueprint`} style={{ width: '100%', height: '100%', objectFit: 'contain', maxHeight: '300px' }}/>
-                        </div>
-                      </div>
-
-                      {/* 3D Mode Interaction Overlay controls */}
-                      {is3DMode ? (
-                        <div style={{ position: 'absolute', bottom: '14px', left: '14px', right: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none' }}>
-                          <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>↔ Drag mouse to tilt</span>
-                          <button onClick={(e) => { e.stopPropagation(); setFloorPlanRotation(r => (r + 90) % 360); }} style={{ pointerEvents: 'auto', background: 'rgba(7,15,30,0.85)', backdropFilter: 'blur(10px)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '8px', padding: '6px 12px', color: 'var(--gold-secondary)', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.7)'} onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'}>
-                            <RotateCw size={12}/> Rotate 90°
-                          </button>
-                        </div>
-                      ) : (
-                        <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(4,8,20,0.78)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '5px 10px', color: 'rgba(255,255,255,0.65)', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '5px', pointerEvents: 'none' }}>
-                          <ZoomIn size={12}/> Click to expand
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Stats & Specifications Side-Dossier */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                      <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px' }}>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Unit Type</div>
-                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--gold-primary)', fontFamily: 'var(--font-title)' }}>{fpActive.label}</div>
-                      </div>
-
-                      <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px' }}>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Super Built-Up Area</div>
-                        <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff' }}>{fpActive.desc}</div>
-                      </div>
-
-                      {isVyomora && activePlan !== 'master' && property.configurations && (
-                        <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px' }}>
-                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Configurations Details</div>
-                          {property.configurations.filter(c => activePlan === '2bhk' ? c.name.includes('2 BHK') : c.name.includes('3 BHK')).map(c => (
-                            <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '7px', marginBottom: '7px', fontSize: '0.78rem' }}>
-                              <span style={{ color: 'rgba(255,255,255,0.55)' }}>{c.name.replace('2 BHK ','').replace('3 BHK ','')}</span>
-                              <strong style={{ color: '#fff' }}>{c.area}</strong>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      
-                      <button onClick={onOpenInquiry} style={{ marginTop: '4px', width: '100%', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', background: 'none', border: '1px solid rgba(212,175,55,0.28)', borderRadius: '10px', color: 'var(--gold-secondary)', padding: '12px 18px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, transition: 'all 0.25s' }} onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.08)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'; }} onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.28)'; }}>
-                        <Download size={13}/> Download Structural PDF
+                  {/* Prev / Next plan buttons */}
+                  {fpVariants.length > 1 && (
+                    <>
+                      <button onClick={e => { e.stopPropagation(); const idx = fpVariants.findIndex(v => v.id === activePlan); setActivePlan(fpVariants[(idx - 1 + fpVariants.length) % fpVariants.length].id); }}
+                        style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+                        ‹
                       </button>
+                      <button onClick={e => { e.stopPropagation(); const idx = fpVariants.findIndex(v => v.id === activePlan); setActivePlan(fpVariants[(idx + 1) % fpVariants.length].id); }}
+                        style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+                        ›
+                      </button>
+                    </>
+                  )}
+
+                  <div onClick={e => e.stopPropagation()} style={{ maxWidth: '90vw', maxHeight: '90vh', background: '#fff', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 40px 80px rgba(0,0,0,0.8)', position: 'relative' }}>
+                    <img
+                      src={fpActive.url}
+                      alt={`${fpActive.label} Floor Plan`}
+                      style={{ display: 'block', maxWidth: '90vw', maxHeight: '88vh', objectFit: 'contain' }}
+                    />
+                    <div style={{ position: 'absolute', bottom: '14px', left: '14px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '8px', padding: '5px 14px', fontSize: '0.78rem', fontWeight: 800 }}>
+                      {fpActive.label} · {fpActive.desc}
                     </div>
+                  </div>
+
+                  <div style={{ position: 'absolute', bottom: '18px', left: '50%', transform: 'translateX(-50%)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)' }}>
+                    Click anywhere to close · Use ‹ › to switch plans
                   </div>
                 </div>
-              ) : (
-                <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', padding: '40px', fontSize: '0.88rem' }}>Floor plans available on inquiry</div>
               )}
             </Card>
           </div>
