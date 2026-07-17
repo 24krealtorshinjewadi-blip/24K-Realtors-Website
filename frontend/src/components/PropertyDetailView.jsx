@@ -7,7 +7,8 @@ import {
   Share2, Heart, Award, Wifi, Zap, Camera, Trees, Coffee,
   Dumbbell, ParkingCircle, Droplets, UtensilsCrossed, Phone,
   Star, Shield, Sun, Wind, Tv, Lock, Play, X, ZoomIn,
-  Home, Grid, Map, Video, Info, ChevronDown, RotateCw
+  Home, Grid, Map, Video, Info, ChevronDown, RotateCw,
+  Navigation, Clock, CheckSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
@@ -29,16 +30,16 @@ const getBuilderInfo = (title = '') => {
 
 /* ─── Location data ───────────────────────────────────────── */
 const CORRIDOR_DATA = {
-  HINJEWADI:   { appreciation: 14.2, commute: 9.2, green: 8.4, infra: 8.8, landmarks: ['Infosys Campus (1.2 km)', 'Wipro SEZ (2.8 km)', 'Blue Ridge Mall (3 km)', 'Hinjewadi Metro (planned)'] },
-  WAKAD:       { appreciation: 14.2, commute: 8.9, green: 8.0, infra: 8.5, landmarks: ['Wakad Chowk (0.5 km)', 'D-Mart Wakad (1 km)', 'Pimpri Railway (7 km)', 'Aditya Birla Hospital (4 km)'] },
-  BANER:       { appreciation: 16.5, commute: 9.5, green: 8.8, infra: 9.2, landmarks: ['Balewadi High Street (1 km)', 'Symbiosis College (2 km)', 'Baner Metro (planned)', 'SB Road (1.5 km)'] },
-  BALEWADI:    { appreciation: 15.8, commute: 9.3, green: 8.6, infra: 9.0, landmarks: ['Balewadi Stadium (0.8 km)', 'High Street Phoenix (1.2 km)', 'Croma Mall (2 km)', 'Baner Road (1 km)'] },
-  KHARADI:     { appreciation: 15.2, commute: 8.7, green: 8.2, infra: 8.9, landmarks: ['EON IT Park (0.5 km)', 'World Trade Center (1 km)', 'Pune Airport (6 km)', 'Koregaon Park (5 km)'] },
+  HINJEWADI:   { appreciation: 14.2, commute: 9.2, green: 8.4, infra: 8.8, social: 8.7, future: 9.1, landmarks: ['Infosys Campus (1.2 km)', 'Wipro SEZ (2.8 km)', 'Blue Ridge Mall (3 km)', 'Hinjewadi Metro (planned)'] },
+  WAKAD:       { appreciation: 14.2, commute: 8.9, green: 8.0, infra: 8.5, social: 8.2, future: 8.6, landmarks: ['Wakad Chowk (0.5 km)', 'D-Mart Wakad (1 km)', 'Pimpri Railway (7 km)', 'Aditya Birla Hospital (4 km)'] },
+  BANER:       { appreciation: 16.5, commute: 9.5, green: 8.8, infra: 9.2, social: 9.0, future: 9.3, landmarks: ['Balewadi High Street (1 km)', 'Symbiosis College (2 km)', 'Baner Metro (planned)', 'SB Road (1.5 km)'] },
+  BALEWADI:    { appreciation: 15.8, commute: 9.3, green: 8.6, infra: 9.0, social: 8.9, future: 9.2, landmarks: ['Balewadi Stadium (0.8 km)', 'High Street Phoenix (1.2 km)', 'Croma Mall (2 km)', 'Baner Road (1 km)'] },
+  KHARADI:     { appreciation: 15.2, commute: 8.7, green: 8.2, infra: 8.9, social: 8.6, future: 9.0, landmarks: ['EON IT Park (0.5 km)', 'World Trade Center (1 km)', 'Pune Airport (6 km)', 'Koregaon Park (5 km)'] },
 };
 const getCorridorData = (location = '') => {
   const key = location.toUpperCase().replace(/\s+/g,'_').replace(/[^A-Z_]/g,'');
   for (const [k,v] of Object.entries(CORRIDOR_DATA)) { if (key.includes(k)) return v; }
-  return { appreciation: 13.5, commute: 8.5, green: 8.0, infra: 8.2, landmarks: ['Pune IT Park (2 km)', 'Local Schools (1 km)', 'Highway Access (3 km)', 'Hospital (4 km)'] };
+  return { appreciation: 13.5, commute: 8.5, green: 8.0, infra: 8.2, social: 8.0, future: 8.4, landmarks: ['Pune IT Park (2 km)', 'Local Schools (1 km)', 'Highway Access (3 km)', 'Hospital (4 km)'] };
 };
 
 /* ─── Score Bar ───────────────────────────────────────────── */
@@ -47,10 +48,10 @@ function ScoreBar({ label, value, max = 10 }) {
   return (
     <div style={{ marginBottom: '14px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-        <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</span>
+        <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.65)', letterSpacing: '0.02em' }}>{label}</span>
         <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--gold-primary)' }}>{value}{max === 10 ? '/10' : '%'}</span>
       </div>
-      <div style={{ height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
+      <div style={{ height: '5px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
         <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
           style={{ height: '100%', borderRadius: '4px', background: 'linear-gradient(90deg, var(--gold-secondary), var(--gold-primary))' }} />
       </div>
@@ -58,74 +59,89 @@ function ScoreBar({ label, value, max = 10 }) {
   );
 }
 
-/* ─── Amenity Icons ───────────────────────────────────────── */
-const AMENITY_ICONS = {
-  '24/7 Concierge Desk':          { icon: Phone,          color: '#D4AF37', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80' },
-  'Infinity Sky Pool':            { icon: Droplets,       color: '#38bdf8', img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=400&q=80' },
-  'Infinity Swimming Pool':       { icon: Droplets,       color: '#38bdf8', img: '/properties/vyomora/pool.jpg' },
-  'Smart Home Automation':        { icon: Wifi,           color: '#34d399', img: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=400&q=80' },
-  '100% Power Backup Grid':       { icon: Zap,            color: '#fbbf24', img: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=400&q=80' },
-  'CCTV & Video Door Phone':      { icon: Camera,         color: '#f87171', img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=400&q=80' },
-  'Landscaped Zen Gardens':       { icon: Trees,          color: '#4ade80', img: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=400&q=80' },
-  'Clubhouse & Co-work Space':    { icon: Coffee,         color: '#c084fc', img: 'https://images.unsplash.com/photo-1527192491265-7e452a145d55?auto=format&fit=crop&w=400&q=80' },
-  "Children's Play Zone":         { icon: Star,           color: '#f9a8d4', img: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=400&q=80' },
-  'Multi-Level Car Parking':      { icon: ParkingCircle,  color: '#93c5fd', img: 'https://images.unsplash.com/photo-1506521788723-868126d5e368?auto=format&fit=crop&w=400&q=80' },
-  'Rainwater Harvesting':         { icon: Wind,           color: '#6ee7b7', img: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=400&q=80' },
-  '25,454 sq.ft Grand Clubhouse': { icon: Building,       color: '#D4AF37', img: '/properties/vyomora/brochure_p4_Im0.jpg' },
-  'Miyawaki Forest Zone':         { icon: Trees,          color: '#4ade80', img: '/properties/vyomora/playarea.jpg' },
-  'Wellness Clinic':              { icon: Shield,         color: '#38bdf8', img: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=400&q=80' },
-  'Digital Dome Theater':         { icon: Tv,             color: '#a78bfa', img: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80' },
-  'Cricket Simulator Suite':      { icon: Star,           color: '#fbbf24', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80' },
-  'Video Games Arcade Room':      { icon: Lock,           color: '#fb923c', img: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80' },
-  'Trampoline & Adventure Park':  { icon: Sun,            color: '#f9a8d4', img: '/properties/vyomora/playarea.jpg' },
-  'Spa & Reflexology Path':       { icon: Wind,           color: '#6ee7b7', img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=400&q=80' },
-  'Library & Co-working Lounge':  { icon: Coffee,         color: '#c084fc', img: 'https://images.unsplash.com/photo-1527192491265-7e452a145d55?auto=format&fit=crop&w=400&q=80' },
-  'Modular Kitchen Provisions':   { icon: UtensilsCrossed,color: '#fb923c', img: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=400&q=80' },
-  'Private Elevator Access':      { icon: Building,       color: '#a78bfa', img: 'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=400&q=80' },
+/* ─── Amenity Photo Card ──────────────────────────────────── */
+const AMENITY_META = {
+  '24/7 Concierge Desk':          { emoji: '🛎️',  img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80' },
+  'Infinity Sky Pool':            { emoji: '🏊',  img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=80' },
+  'Infinity Swimming Pool':       { emoji: '🏊',  img: '/properties/vyomora/pool.jpg' },
+  'Smart Home Automation':        { emoji: '📱',  img: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=600&q=80' },
+  '100% Power Backup Grid':       { emoji: '⚡',  img: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80' },
+  'CCTV & Video Door Phone':      { emoji: '📷',  img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80' },
+  'Landscaped Zen Gardens':       { emoji: '🌿',  img: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=80' },
+  'Landscaped Gardens':           { emoji: '🌿',  img: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=80' },
+  'Clubhouse & Co-work Space':    { emoji: '🏛️',  img: 'https://images.unsplash.com/photo-1527192491265-7e452a145d55?auto=format&fit=crop&w=600&q=80' },
+  'Clubhouse':                    { emoji: '🏛️',  img: 'https://images.unsplash.com/photo-1527192491265-7e452a145d55?auto=format&fit=crop&w=600&q=80' },
+  "Children's Play Zone":         { emoji: '🎠',  img: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=600&q=80' },
+  'Kids Play Area':               { emoji: '🎠',  img: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=600&q=80' },
+  'Multi-Level Car Parking':      { emoji: '🅿️',  img: 'https://images.unsplash.com/photo-1506521788723-868126d5e368?auto=format&fit=crop&w=600&q=80' },
+  'Rainwater Harvesting':         { emoji: '💧',  img: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=600&q=80' },
+  '25,454 sq.ft Grand Clubhouse': { emoji: '🏛️',  img: '/properties/vyomora/brochure_p4_Im0.jpg' },
+  'Miyawaki Forest Zone':         { emoji: '🌳',  img: '/properties/vyomora/playarea.jpg' },
+  'Wellness Clinic':              { emoji: '💊',  img: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=600&q=80' },
+  'Digital Dome Theater':         { emoji: '🎬',  img: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80' },
+  'Cricket Simulator Suite':      { emoji: '🏏',  img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=600&q=80' },
+  'Indoor Games':                 { emoji: '🎱',  img: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80' },
+  'Trampoline & Adventure Park':  { emoji: '🎪',  img: '/properties/vyomora/playarea.jpg' },
+  'Spa & Reflexology Path':       { emoji: '🧘',  img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80' },
+  'Library & Co-working Lounge':  { emoji: '📚',  img: 'https://images.unsplash.com/photo-1527192491265-7e452a145d55?auto=format&fit=crop&w=600&q=80' },
+  'Modular Kitchen Provisions':   { emoji: '🍳',  img: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80' },
+  'Private Elevator Access':      { emoji: '🛗',  img: 'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=600&q=80' },
+  'Modern Gymnasium':             { emoji: '💪',  img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80' },
+  'Walking / Jogging Track':      { emoji: '🏃',  img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=80' },
+  '24x7 Security':                { emoji: '🔒',  img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80' },
+  'Multipurpose Hall':            { emoji: '🎭',  img: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=600&q=80' },
 };
 
-/* ─── 3D Netflix Amenity Card ─────────────────────────────── */
-function AmenityCard({ label }) {
-  const meta = AMENITY_ICONS[label] || { icon: CheckCircle, color: '#D4AF37', img: '' };
-  const IconComp = meta.icon;
-  const [rotate, setRotate] = useState({ x: 0, y: 0 });
-  const [isHov, setIsHov] = useState(false);
-  const handleMove = (e) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    setRotate({ x: -(((e.clientY-r.top)-r.height/2)/r.height)*14, y: (((e.clientX-r.left)-r.width/2)/r.width)*14 });
-  };
+function AmenityPhotoCard({ label, index }) {
+  const meta = AMENITY_META[label] || { emoji: '✨', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80' };
+  const [hov, setHov] = useState(false);
   return (
-    <div onMouseMove={handleMove} onMouseEnter={() => setIsHov(true)}
-      onMouseLeave={() => { setIsHov(false); setRotate({ x: 0, y: 0 }); }}
+    <div
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
       style={{
-        position: 'relative', overflow: 'hidden', borderRadius: '14px', padding: '20px 18px',
-        background: 'rgba(10,17,32,0.75)',
-        border: isHov ? '1.5px solid rgba(212,175,55,0.55)' : '1px solid rgba(255,255,255,0.07)',
-        cursor: 'default',
-        transform: `perspective(700px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) translateZ(${isHov ? '8px' : '0px'})`,
-        transition: isHov ? 'none' : 'transform 0.45s cubic-bezier(0.25,1,0.5,1), border-color 0.3s, box-shadow 0.3s',
-        boxShadow: isHov ? `0 18px 38px rgba(0,0,0,0.6), 0 0 12px ${meta.color}22` : '0 3px 12px rgba(0,0,0,0.3)',
-        backdropFilter: 'blur(16px)',
-      }}>
-      {meta.img && (
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: `url(${meta.img})`, backgroundSize: 'cover', backgroundPosition: 'center',
-          opacity: isHov ? 0.4 : 0.15,
-          transform: isHov ? 'scale(1.12)' : 'scale(1.04)',
-          transition: 'transform 0.7s ease, opacity 0.4s ease', pointerEvents: 'none',
-        }}/>
-      )}
+        position: 'relative', overflow: 'hidden', borderRadius: '14px',
+        border: hov ? '1.5px solid rgba(212,175,55,0.6)' : '1.5px solid rgba(255,255,255,0.06)',
+        cursor: 'default', transition: 'all 0.3s',
+        boxShadow: hov ? '0 12px 32px rgba(0,0,0,0.55)' : '0 4px 12px rgba(0,0,0,0.3)',
+        transform: hov ? 'translateY(-4px)' : 'translateY(0)',
+        aspectRatio: '4/3',
+      }}
+    >
+      <img
+        src={meta.img}
+        alt={label}
+        style={{
+          position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+          transform: hov ? 'scale(1.08)' : 'scale(1)',
+          transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)',
+        }}
+        onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80'; }}
+      />
       <div style={{
         position: 'absolute', inset: 0,
-        background: `linear-gradient(160deg, rgba(7,12,24,${isHov ? 0.3 : 0.55}) 0%, rgba(7,12,24,${isHov ? 0.82 : 0.92}) 100%)`,
-        pointerEvents: 'none', transition: 'background 0.3s',
-      }}/>
-      <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        <div style={{ width: '40px', height: '40px', borderRadius: '11px', background: `${meta.color}18`, border: `1px solid ${meta.color}33`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <IconComp size={18} color={meta.color}/>
+        background: hov
+          ? 'linear-gradient(to top, rgba(4,8,20,0.85) 0%, rgba(4,8,20,0.2) 60%, transparent 100%)'
+          : 'linear-gradient(to top, rgba(4,8,20,0.75) 0%, rgba(4,8,20,0.1) 60%, transparent 100%)',
+        transition: 'background 0.3s',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: '12px', left: '12px', right: '12px',
+        display: 'flex', alignItems: 'center', gap: '8px',
+      }}>
+        <div style={{
+          width: '30px', height: '30px', borderRadius: '8px', flexShrink: 0,
+          background: 'rgba(212,175,55,0.18)', backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(212,175,55,0.35)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '0.9rem',
+        }}>
+          {meta.emoji}
         </div>
-        <span style={{ fontSize: '0.82rem', fontWeight: 600, color: isHov ? '#fff' : 'rgba(255,255,255,0.8)', lineHeight: 1.35, transition: 'color 0.3s' }}>{label}</span>
+        <span style={{
+          fontSize: '0.78rem', fontWeight: 700, color: '#fff',
+          textShadow: '0 1px 4px rgba(0,0,0,0.8)', lineHeight: 1.25,
+        }}>{label}</span>
       </div>
     </div>
   );
@@ -186,10 +202,8 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [lightboxOpen, setLightboxOpen]   = useState(false);
   const [lightboxStart, setLightboxStart] = useState(0);
   const [marketTrends, setMarketTrends]   = useState(null);
-  
-  // ── Multi-Video Switcher State ──
+  const [showAllAmenities, setShowAllAmenities] = useState(false);
   const [activeVideoTab, setActiveVideoTab] = useState('walkthrough');
-
 
   const [isWishlisted, setIsWishlisted] = useState(() => {
     try { const s = localStorage.getItem('wishlist_properties'); return (s ? JSON.parse(s) : []).includes(property.id); }
@@ -211,6 +225,8 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     property.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
+    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=85',
+    'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?auto=format&fit=crop&w=1600&q=85',
   ];
 
   const principal   = Number(property.price) * (1 - downPayment / 100);
@@ -232,8 +248,6 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     } catch {}
   };
 
-  const nextSlide = () => setActiveSlide(p => (p + 1) % slideshowImages.length);
-  const prevSlide = () => setActiveSlide(p => (p - 1 + slideshowImages.length) % slideshowImages.length);
   const waLink = `https://wa.me/919673000053?text=Hi%2024K%20Realtors,%20I'm%20interested%20in%20"${encodeURIComponent(property.title)}"%20at%20${encodeURIComponent(property.location)}.%20Please%20share%20details.`;
 
   const simScore = (p) => {
@@ -265,122 +279,265 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   ].filter(v => v.url);
   const fpActive = fpVariants.find(v => v.id === activePlan) || fpVariants[0];
 
+  const amenityList = property.specificAmenities || [
+    'Infinity Swimming Pool', 'Modern Gymnasium', 'Kids Play Area',
+    'Landscaped Gardens', 'Clubhouse', 'Indoor Games',
+    'Walking / Jogging Track', '24x7 Security', 'Multipurpose Hall',
+    '100% Power Backup Grid', 'Rainwater Harvesting', 'Multi-Level Car Parking',
+  ];
+  const displayedAmenities = showAllAmenities ? amenityList : amenityList.slice(0, 9);
+
   const Card = ({ children, style = {} }) => (
-    <div style={{ background: 'rgba(10,18,36,0.55)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '20px', padding: '32px', ...style }}>
+    <div style={{ background: 'rgba(10,18,36,0.55)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '20px', padding: '28px', ...style }}>
       {children}
     </div>
   );
-  const H2 = ({ icon, children }) => (
-    <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.15rem', margin: '0 0 24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-      {icon}{children}
-    </h2>
+  const SectionTitle = ({ icon, children, sub }) => (
+    <div style={{ marginBottom: '22px' }}>
+      <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.15rem', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {icon}{children}
+      </h2>
+      {sub && <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.78rem', margin: 0 }}>{sub}</p>}
+    </div>
   );
+
+  /* ─── Unit config shorthand ─── */
+  const unitConfigs = property.configurations || [
+    { name: '2 BHK', area: '684 - 839 sq.ft', price: '₹84.00 L Onwards' },
+    { name: '3 BHK', area: '990 - 1650 sq.ft', price: '₹1.17 Cr Onwards' },
+    { name: '4 BHK', area: '1650 - 4200 sq.ft', price: '₹3.75 Cr Onwards' },
+  ];
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}
       style={{ color: 'var(--text-light)', paddingBottom: '100px' }}>
 
-      {/* ══ HERO GALLERY ══ */}
-      <div style={{ position: 'relative', width: '100%', height: '75vh', minHeight: '540px', maxHeight: '800px', overflow: 'hidden', borderRadius: '0 0 28px 28px' }}>
-        <AnimatePresence mode="wait">
-          <motion.img key={activeSlide} src={slideshowImages[activeSlide]} alt={`${property.title} — view ${activeSlide + 1}`}
-            initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.65 }}
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}/>
-        </AnimatePresence>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(4,8,20,0.28) 0%, transparent 30%, rgba(4,8,20,0.65) 70%, rgba(4,8,20,0.98) 100%)', zIndex: 1 }}/>
-
-        {/* Back btn */}
-        <motion.button onClick={onBack} whileHover={{ x: -3 }} style={{ position: 'absolute', top: '24px', left: '24px', zIndex: 10, display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(4,8,20,0.72)', backdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.13)', borderRadius: '50px', padding: '9px 20px', color: '#fff', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600 }}>
-          <ArrowLeft size={15}/> Portfolio
-        </motion.button>
-
-        {/* Action btns */}
-        <div style={{ position: 'absolute', top: '24px', right: '24px', zIndex: 10, display: 'flex', gap: '10px' }}>
-          <button onClick={handleToggleWishlist} style={{ background: isWishlisted ? 'var(--gold-primary)' : 'rgba(4,8,20,0.72)', backdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.13)', borderRadius: '50%', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isWishlisted ? '#070F1E' : '#fff', cursor: 'pointer', transition: 'all 0.3s' }}>
-            <Heart size={16} fill={isWishlisted ? 'currentColor' : 'none'}/>
+      {/* ══ TOP NAV BAR ══ */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '14px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)',
+        background: 'rgba(4,8,20,0.6)', backdropFilter: 'blur(12px)',
+      }}>
+        {/* Left: Back + Breadcrumb */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <motion.button onClick={onBack} whileHover={{ x: -3 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '7px 14px', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }}>
+            <ArrowLeft size={14}/> Back to Listings
+          </motion.button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'rgba(255,255,255,0.35)' }}>
+            <span style={{ cursor: 'pointer', color: 'rgba(255,255,255,0.55)' }} onClick={onBack}>Home</span>
+            <ChevronRight size={12}/>
+            <span style={{ cursor: 'pointer', color: 'rgba(255,255,255,0.55)' }} onClick={onBack}>Projects</span>
+            <ChevronRight size={12}/>
+            <span style={{ color: 'rgba(255,255,255,0.55)' }}>Hinjewadi</span>
+            <ChevronRight size={12}/>
+            <span style={{ color: 'var(--gold-secondary)', fontWeight: 600, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{property.title}</span>
+          </div>
+        </div>
+        {/* Right: Actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button onClick={handleToggleWishlist}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: isWishlisted ? 'rgba(212,175,55,0.12)' : 'rgba(255,255,255,0.04)', border: isWishlisted ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '7px 14px', color: isWishlisted ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.25s' }}>
+            <Heart size={14} fill={isWishlisted ? 'currentColor' : 'none'}/> {isWishlisted ? 'Saved' : 'Save'}
           </button>
-          <button onClick={() => navigator.share?.({ title: property.title, url: window.location.href }).catch(() => {})} style={{ background: 'rgba(4,8,20,0.72)', backdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.13)', borderRadius: '50%', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer' }}>
-            <Share2 size={15}/>
+          <button onClick={() => navigator.share?.({ title: property.title, url: window.location.href }).catch(() => {})}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '7px 14px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
+            <Share2 size={14}/> Share
           </button>
         </div>
+      </div>
 
-        {/* Slider arrows */}
-        <button onClick={prevSlide} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(4,8,20,0.55)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', zIndex: 5 }}>
-          <ChevronLeft size={20}/>
-        </button>
-        <button onClick={nextSlide} style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(4,8,20,0.55)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', zIndex: 5 }}>
-          <ChevronRight size={20}/>
-        </button>
+      {/* ══ HERO SPLIT GRID + RIGHT SIDEBAR ══ */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '0', padding: '0' }}>
 
-        {/* Photo count */}
-        <button onClick={() => { setLightboxStart(activeSlide); setLightboxOpen(true); }} style={{ position: 'absolute', bottom: '155px', right: '20px', zIndex: 5, background: 'rgba(4,8,20,0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: '30px', padding: '8px 14px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', fontWeight: 600 }}>
-          <ZoomIn size={13}/> {slideshowImages.length} Photos
-        </button>
-
-        {/* Dots */}
-        <div style={{ position: 'absolute', bottom: '150px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px', zIndex: 5 }}>
-          {slideshowImages.map((_, i) => (
-            <button key={i} onClick={() => setActiveSlide(i)} style={{ width: i === activeSlide ? '22px' : '7px', height: '7px', borderRadius: '4px', border: 'none', cursor: 'pointer', padding: 0, background: i === activeSlide ? 'var(--gold-primary)' : 'rgba(255,255,255,0.3)', transition: 'all 0.3s' }}/>
-          ))}
-        </div>
-
-        {/* Hero info */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '32px 40px 36px', zIndex: 3 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
-            <div>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
-                <span style={{ background: 'var(--gold-primary)', color: '#070F1E', fontSize: '0.65rem', fontWeight: 800, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.8px' }}>{property.transactionType}</span>
-                <span style={{ background: 'rgba(4,8,20,0.7)', backdropFilter: 'blur(8px)', border: '1px solid rgba(212,175,55,0.35)', color: 'var(--gold-secondary)', fontSize: '0.65rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <ShieldCheck size={11}/> MahaRERA Verified
-                </span>
-                {isVyomora && <span style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.35)', color: '#ef4444', fontSize: '0.65rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px' }}>🔥 NEW LAUNCH</span>}
-              </div>
-              <h1 style={{ fontFamily: 'var(--font-title)', fontSize: 'clamp(1.7rem, 3.2vw, 3rem)', color: '#fff', margin: '0 0 8px', textShadow: '0 2px 16px rgba(0,0,0,0.65)', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
-                {property.title}
-              </h1>
-              <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
-                <MapPin size={13} color="var(--gold-primary)"/> {property.address || property.location}, Pune
-              </p>
+        {/* Left: Hero Split Grid */}
+        <div style={{ padding: '20px 20px 20px 32px' }}>
+          {/* Image Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 0.42fr', gap: '8px', borderRadius: '18px', overflow: 'hidden', height: '420px' }}>
+            {/* Main big image */}
+            <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+              onClick={() => { setLightboxStart(activeSlide); setLightboxOpen(true); }}>
+              <AnimatePresence mode="wait">
+                <motion.img key={activeSlide} src={slideshowImages[activeSlide]}
+                  initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}/>
+              </AnimatePresence>
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 50%, rgba(4,8,20,0.4) 100%)' }}/>
+              {isVyomora && (
+                <div style={{ position: 'absolute', top: '14px', left: '14px', background: 'rgba(239,68,68,0.9)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: '0.65rem', fontWeight: 800, padding: '5px 12px', borderRadius: '6px', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                  🔥 New Launch
+                </div>
+              )}
+              {/* Play button for video */}
+              <button onClick={(e) => { e.stopPropagation(); document.getElementById('sec-video')?.scrollIntoView({ behavior: 'smooth' }); }}
+                style={{ position: 'absolute', bottom: '16px', left: '16px', display: 'flex', alignItems: 'center', gap: '7px', background: 'rgba(4,8,20,0.82)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '30px', padding: '8px 14px', color: '#fff', cursor: 'pointer', fontSize: '0.76rem', fontWeight: 600 }}>
+                <Play size={12} fill="white"/> Watch Video Tour
+              </button>
             </div>
-            <div style={{ background: 'rgba(4,8,20,0.78)', backdropFilter: 'blur(18px)', border: '1px solid rgba(212,175,55,0.28)', borderRadius: '18px', padding: '20px 30px', textAlign: 'right', minWidth: '210px' }}>
-              <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>Investment Value</div>
-              <div style={{ fontSize: '2.1rem', fontWeight: 800, color: 'var(--gold-primary)', lineHeight: 1 }}>{formatPrice(property.price, property.transactionType)}</div>
-              <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>Zero Brokerage · {property.status || 'Available'}</div>
+
+            {/* Right column: 3 thumbnails + more */}
+            <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr 1fr', gap: '8px' }}>
+              {slideshowImages.slice(1, 3).map((img, i) => (
+                <div key={i} style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer', borderRadius: '4px' }}
+                  onClick={() => { setActiveSlide(i + 1); }}>
+                  <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', display: 'block' }}
+                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.06)'}
+                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
+                </div>
+              ))}
+              {/* +N More */}
+              <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer', borderRadius: '4px' }}
+                onClick={() => { setLightboxStart(3); setLightboxOpen(true); }}>
+                <img src={slideshowImages[3] || slideshowImages[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.4)', display: 'block' }}/>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                  <Camera size={22} color="#fff"/>
+                  <span style={{ color: '#fff', fontSize: '0.8rem', fontWeight: 800 }}>+{Math.max(0, slideshowImages.length - 3)} Photos</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Property Title + Info */}
+          <div style={{ marginTop: '20px' }}>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '10px', flexWrap: 'wrap' }}>
+              <span style={{ background: 'var(--gold-primary)', color: '#070F1E', fontSize: '0.62rem', fontWeight: 800, padding: '4px 10px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{property.transactionType}</span>
+              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)', fontSize: '0.62rem', fontWeight: 700, padding: '4px 10px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <ShieldCheck size={10} color="var(--gold-primary)"/> MahaRERA: {builder.reraId}
+              </span>
+              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)', fontSize: '0.62rem', fontWeight: 700, padding: '4px 10px', borderRadius: '4px' }}>New Launch</span>
+              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)', fontSize: '0.62rem', fontWeight: 700, padding: '4px 10px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <CheckSquare size={10} color="#10b981"/> RERA Certified
+              </span>
+            </div>
+            <h1 style={{ fontFamily: 'var(--font-title)', fontSize: 'clamp(1.4rem, 2.4vw, 2.2rem)', color: '#fff', margin: '0 0 8px', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+              {property.title}
+            </h1>
+            <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.87rem', display: 'flex', alignItems: 'center', gap: '6px', margin: '0 0 16px' }}>
+              <MapPin size={13} color="var(--gold-primary)"/> {property.address || `Joyville Sensorium, Near Phase 1 IT Park, Hinjewadi`}, Pune, Maharashtra
+            </p>
+
+            {/* Spec Pills */}
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              {[
+                { icon: <Bed size={14} color="var(--gold-primary)"/>, label: 'Configuration', val: isCommercial ? 'Commercial' : `${property.bedrooms > 0 ? `2, 3 & 4 BHK` : 'Studio'}` },
+                { icon: <Maximize size={14} color="var(--gold-primary)"/>, label: 'Carpet Area', val: '990 – 4200 sq.ft.' },
+                { icon: null, label: 'Price Range', val: `₹84 L – ₹3.75 Cr*` },
+                { icon: <Clock size={14} color="var(--gold-primary)"/>, label: 'Possession', val: 'Dec 2027 (Tent.)' },
+                { icon: <Building size={14} color="var(--gold-primary)"/>, label: 'Towers', val: `Towers | G+22` },
+              ].map((s, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '7px', background: 'rgba(255,255,255,0.035)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '8px 14px' }}>
+                  {s.icon}
+                  <div>
+                    <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.06em', lineHeight: 1 }}>{s.label}</div>
+                    <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>{s.val}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Sticky Sidebar (Above Fold) */}
+        <div style={{ padding: '20px 32px 20px 0', position: 'sticky', top: '0', alignSelf: 'start' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+            {/* Key Highlights Card */}
+            <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '16px', padding: '20px' }}>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.88rem', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                <Star size={14}/> Key Highlights
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {[
+                  'Premium gated community with 24x7 security',
+                  '70% open spaces with lush green landscape',
+                  '30+ world-class lifestyle amenities',
+                  'Excellent connectivity to IT Park, Metro & Expressway',
+                  'Reputed developer with 160+ years of legacy',
+                ].map((h, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '9px' }}>
+                    <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                      <CheckCircle size={10} color="var(--gold-primary)"/>
+                    </div>
+                    <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.45 }}>{h}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Price Overview Card */}
+            <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '20px' }}>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.88rem', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                ₹ Price Overview
+              </h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px' }}>
+                <div>
+                  <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', marginBottom: '3px' }}>Starting Price</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--gold-primary)', lineHeight: 1 }}>₹84.00 L*</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', marginBottom: '3px' }}>Price Range</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#fff' }}>₹84 L – ₹3.75 Cr*</div>
+                </div>
+              </div>
+              <button onClick={() => document.getElementById('sec-pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                style={{ width: '100%', padding: '10px', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '10px', background: 'rgba(212,175,55,0.06)', color: 'var(--gold-secondary)', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
+                onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.12)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.6)'; }}
+                onMouseOut={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.06)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'; }}>
+                🔍 View Price Breakup
+              </button>
+            </div>
+
+            {/* Unit Configurations */}
+            <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '20px' }}>
+              <h3 style={{ fontFamily: 'var(--font-title)', color: '#fff', fontSize: '0.88rem', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Unit Configurations
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                {unitConfigs.slice(0, 3).map((c, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < unitConfigs.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Bed size={12} color="var(--gold-primary)"/>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>{c.name || c.type}</div>
+                        <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)' }}>{c.area}</div>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--gold-primary)' }}>{c.price || formatPrice(property.price)}</div>
+                      <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.4)' }}>Onwards</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button onClick={() => document.getElementById('sec-floorplans')?.scrollIntoView({ behavior: 'smooth' })}
+                style={{ marginTop: '12px', width: '100%', background: 'none', border: 'none', color: 'var(--gold-secondary)', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 0' }}>
+                View All Floor Plans <ArrowRight size={12}/>
+              </button>
+            </div>
+
+            {/* Interested? CTA */}
+            <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '16px', padding: '20px' }}>
+              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff', marginBottom: '4px' }}>Interested in this Property?</div>
+              <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)', marginBottom: '14px' }}>Schedule a free site visit or get more details.</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => onOpenInquiry(property)}
+                  style={{ width: '100%', padding: '12px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', border: 'none', color: '#070F1E', fontWeight: 800, fontSize: '0.84rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px' }}>
+                  🏢 Book Site Visit
+                </motion.button>
+                <a href={waLink} target="_blank" rel="noopener noreferrer"
+                  style={{ width: '100%', padding: '12px', borderRadius: '10px', background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.3)', color: '#25D366', fontWeight: 700, fontSize: '0.84rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px', textDecoration: 'none', boxSizing: 'border-box' }}>
+                  <MessageSquare size={14}/> WhatsApp Us
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ══ THUMBNAIL STRIP ══ */}
-      <div style={{ display: 'flex', gap: '10px', padding: '16px 40px', overflowX: 'auto', scrollbarWidth: 'none' }}>
-        {slideshowImages.map((img, i) => (
-          <button key={i} onClick={() => { setActiveSlide(i); setLightboxStart(i); }} style={{ flexShrink: 0, width: '92px', height: '64px', borderRadius: '9px', overflow: 'hidden', border: activeSlide === i ? '2px solid var(--gold-primary)' : '2px solid rgba(255,255,255,0.06)', opacity: activeSlide === i ? 1 : 0.5, transition: 'all 0.25s', cursor: 'pointer', padding: 0, background: 'none' }}>
-            <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
-          </button>
-        ))}
-      </div>
-
-      {/* ══ SPEC STRIP ══ */}
-      <div style={{ padding: '0 40px', marginBottom: '32px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '16px', overflow: 'hidden' }}>
-          {[
-            { icon: <Bed size={20} color="var(--gold-primary)"/>, label: 'Configuration', value: isCommercial ? 'Commercial' : property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'Studio' },
-            { icon: <Bath size={20} color="var(--gold-primary)"/>, label: 'Bathrooms', value: `${property.bathrooms} Bath` },
-            { icon: <Maximize size={20} color="var(--gold-primary)"/>, label: 'Carpet Area', value: `${property.areaSquareFeet} sqft` },
-            { icon: <TrendingUp size={20} color="var(--gold-primary)"/>, label: 'Appreciation', value: `${corridor.appreciation}% p.a.` },
-            { icon: <Award size={20} color="var(--gold-primary)"/>, label: 'Status', value: property.status || 'Available' },
-          ].map((s, i) => (
-            <div key={i} style={{ background: 'rgba(7,15,30,0.9)', padding: '22px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-              {s.icon}
-              <span style={{ fontSize: '0.67rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{s.label}</span>
-              <strong style={{ fontSize: '0.98rem', color: '#fff', fontFamily: 'var(--font-title)' }}>{s.value}</strong>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ══ NAV TABS ══ */}
-      <div style={{ position: 'sticky', top: '0px', zIndex: 50, background: 'rgba(4,8,20,0.93)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(212,175,55,0.12)', padding: '0 40px', display: 'flex', gap: '2px', overflowX: 'auto', scrollbarWidth: 'none' }}>
+      {/* ══ STICKY NAV TABS ══ */}
+      <div style={{ position: 'sticky', top: '0px', zIndex: 50, background: 'rgba(4,8,20,0.95)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(212,175,55,0.1)', padding: '0 32px', display: 'flex', gap: '2px', overflowX: 'auto', scrollbarWidth: 'none' }}>
         {TABS.map(tab => (
           <button key={tab.id} onClick={() => { setActiveTab(tab.id); document.getElementById(`sec-${tab.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
             style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '14px 18px', border: 'none', background: 'none', color: activeTab === tab.id ? 'var(--gold-primary)' : 'rgba(255,255,255,0.5)', fontSize: '0.82rem', fontWeight: activeTab === tab.id ? 700 : 500, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0, borderBottom: activeTab === tab.id ? '2px solid var(--gold-primary)' : '2px solid transparent', transition: 'all 0.2s' }}>
@@ -389,36 +546,37 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
         ))}
       </div>
 
-      {/* ══ BODY ══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.65fr) minmax(0,1fr)', gap: '28px', padding: '32px 40px 0', alignItems: 'start' }} className="detail-two-col">
+      {/* ══ BODY: LEFT CONTENT + RIGHT SIDEBAR ══ */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.65fr) minmax(0,1fr)', gap: '28px', padding: '32px 32px 0', alignItems: 'start' }} className="detail-two-col">
 
-        {/* ── LEFT ── */}
+        {/* ── LEFT COLUMN ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
 
-          {/* Overview */}
+          {/* About Project */}
           <div id="sec-overview">
-            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(212,175,55,0.18)', boxShadow: '0 16px 40px rgba(0,0,0,0.4)' }}>
-              <H2 icon={<Sparkles size={18} color="var(--gold-primary)"/>}>About This Property</H2>
-              <p style={{ fontSize: '0.96rem', color: 'rgba(255,255,255,0.8)', lineHeight: 1.9, margin: '0 0 24px', letterSpacing: '0.015em' }}>
-                {property.description || `${property.title} is a meticulously designed luxury residence in ${property.location}, Pune, offering world-class amenities and superior construction standards. RERA registered and MahaRERA verified.`}
+            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(212,175,55,0.15)' }}>
+              <SectionTitle icon={<Info size={17} color="var(--gold-primary)"/>} sub="About the project and its USPs">About Project</SectionTitle>
+              <p style={{ fontSize: '0.94rem', color: 'rgba(255,255,255,0.78)', lineHeight: 1.9, margin: '0 0 24px', letterSpacing: '0.01em' }}>
+                {property.description || `Shapoorji Pallonji Joyville Vyomora is a premium residential project offering thoughtfully designed 2, 3 & 4 BHK homes. The project blends modern architecture with world-class amenities and serene green surroundings to deliver an elevated lifestyle in the heart of Hinjewadi.`}
               </p>
-              
               {isVyomora && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
                   {[
                     ['🏙️','6 Premium Towers','High Rise Luxury'],
-                    ['🌿','75% Open Spaces','Eco-Friendly Gated'],
-                    ['🏊','40+ Amenities','Elite Club Lifestyle'],
-                    ['📐','12.5 Acre Campus','Sprawling Gated Estate'],
+                    ['🌿','70% Open Spaces','Eco-Friendly Gated'],
+                    ['🏊','30+ Amenities','Elite Club Lifestyle'],
+                    ['📐','16+ Acre Campus','Sprawling Gated Estate'],
                     ['🏗️','160 Yr Legacy','Engineering Trust'],
                     ['✅','MahaRERA Verified','PR1260002600999']
                   ].map(([ic, lb, desc]) => (
-                    <div key={lb} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.12)', borderRadius: '12px', padding: '14px 16px', transition: 'all 0.25s', cursor: 'default' }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(212,175,55,0.05)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                    <div key={lb} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '12px', padding: '14px 16px', transition: 'all 0.25s', cursor: 'default' }}
+                      onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; }}
+                      onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.1)'; }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '1.2rem' }}>{ic}</span>
+                        <span style={{ fontSize: '1.15rem' }}>{ic}</span>
                         <span style={{ fontSize: '0.84rem', color: '#fff', fontWeight: 700 }}>{lb}</span>
                       </div>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 500 }}>{desc}</span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{desc}</span>
                     </div>
                   ))}
                 </div>
@@ -426,48 +584,31 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
             </Card>
           </div>
 
-          {/* Amenities */}
+          {/* Amenities — 3×3 Photo Grid */}
           <div id="sec-amenities">
-            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <H2 icon={<Sparkles size={18} color="var(--gold-primary)"/>}>Elite Lifestyle Amenities</H2>
-              {isVyomora && property.amenityImages && (
-                <div style={{ marginBottom: '28px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gridTemplateRows: '220px 220px', gap: '10px', borderRadius: '16px', overflow: 'hidden' }}>
-                    <div style={{ gridRow: '1/3', position: 'relative', overflow: 'hidden', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }} onClick={() => { setLightboxStart(1); setLightboxOpen(true); }}>
-                      <img src={property.amenityImages.pool} alt="Pool" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                      <div style={{ position: 'absolute', bottom: '16px', left: '16px', background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(10px)', color: 'var(--gold-primary)', fontSize: '0.82rem', fontWeight: 800, padding: '6px 14px', borderRadius: '30px', border: '1px solid rgba(212,175,55,0.2)' }}>🏊 Infinite Swimming Pool</div>
-                    </div>
-                    <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }} onClick={() => { setLightboxStart(2); setLightboxOpen(true); }}>
-                      <img src={property.amenityImages.playarea} alt="Play Area" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                      <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(10px)', color: '#fff', fontSize: '0.78rem', fontWeight: 700, padding: '5px 12px', borderRadius: '30px' }}>🌳 Kids Play Park</div>
-                    </div>
-                    <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }} onClick={() => { setLightboxStart(4); setLightboxOpen(true); }}>
-                      <img src={property.amenityImages.living} alt="Living Room" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                      <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(10px)', color: '#fff', fontSize: '0.78rem', fontWeight: 700, padding: '5px 12px', borderRadius: '30px' }}>🛋️ Designer Living Room</div>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                    {[{key:'kitchen',label:'🍳 Modern Kitchen',li:5},{key:'bedroom',label:'🛏️ Elite Bedroom',li:6},{key:'aerial',label:'🚁 Aerial Landscape',li:3}].map(({key, label, li}) => (
-                      <div key={key} style={{ flex: 1, height: '120px', position: 'relative', overflow: 'hidden', borderRadius: '12px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)' }} onClick={() => { setLightboxStart(li); setLightboxOpen(true); }}>
-                        <img src={property.amenityImages[key]} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.08)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                        <div style={{ position: 'absolute', bottom: '8px', left: '8px', background: 'rgba(4,8,20,0.8)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: '0.74rem', fontWeight: 700, padding: '4px 10px', borderRadius: '20px' }}>{label}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(155px, 1fr))', gap: '10px' }}>
-                {(property.specificAmenities || ['24/7 Concierge Desk','Infinity Sky Pool','Private Elevator Access','Smart Home Automation','Modular Kitchen Provisions','100% Power Backup Grid','CCTV & Video Door Phone','Landscaped Zen Gardens','Clubhouse & Co-work Space',"Children's Play Zone",'Multi-Level Car Parking','Rainwater Harvesting']).map(a => <AmenityCard key={a} label={a}/>)}
+            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <SectionTitle icon={<Sparkles size={17} color="var(--gold-primary)"/>} sub="World-class lifestyle amenities for you and your family">Amenities</SectionTitle>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '18px' }}>
+                {displayedAmenities.map((a, i) => (
+                  <AmenityPhotoCard key={a} label={a} index={i}/>
+                ))}
               </div>
+              {amenityList.length > 9 && (
+                <button onClick={() => setShowAllAmenities(!showAllAmenities)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '7px', background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '10px', padding: '11px 20px', color: 'var(--gold-secondary)', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
+                  onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.12)'; }}
+                  onMouseOut={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.06)'; }}>
+                  {showAllAmenities ? 'Show Less ↑' : `View All Amenities (${amenityList.length}) →`}
+                </button>
+              )}
             </Card>
           </div>
 
-          {/* Floor Plans — Premium 2D Viewer with Zoom Lightbox */}
+          {/* Floor Plans */}
           <div id="sec-floorplans">
-            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.88) 100%)', border: '1px solid rgba(255,255,255,0.08)', padding: '28px' }}>
-              {/* Header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', flexWrap: 'wrap', gap: '10px' }}>
-                <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.15rem', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.88) 100%)', border: '1px solid rgba(255,255,255,0.07)', padding: '28px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
                   📐 Layout Blueprints
                 </h2>
                 <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -477,138 +618,47 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
               {fpActive ? (
                 <>
-                  {/* Main 2D Plan Viewer */}
-                  <div
-                    onClick={() => setLightboxOpen(true) || setLightboxStart(fpVariants.findIndex(v => v.id === activePlan))}
-                    style={{
-                      position: 'relative',
-                      background: '#ffffff',
-                      borderRadius: '16px',
-                      border: '2px solid rgba(212,175,55,0.22)',
-                      boxShadow: '0 16px 48px rgba(0,0,0,0.55)',
-                      overflow: 'hidden',
-                      cursor: 'zoom-in',
-                      marginBottom: '20px',
-                      minHeight: '320px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <img
-                      src={fpActive.url}
-                      alt={`${fpActive.label} Floor Plan`}
-                      style={{
-                        width: '100%',
-                        maxHeight: '480px',
-                        objectFit: 'contain',
-                        display: 'block',
-                        transition: 'transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                      }}
-                      onMouseOver={e => e.currentTarget.style.transform = 'scale(1.025)'}
-                      onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-                    />
-
-                    {/* Zoom hint overlay */}
-                    <div style={{
-                      position: 'absolute', top: '14px', right: '14px',
-                      background: 'rgba(7,15,30,0.82)', backdropFilter: 'blur(8px)',
-                      border: '1px solid rgba(212,175,55,0.25)', borderRadius: '8px',
-                      padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px',
-                      fontSize: '0.72rem', fontWeight: 700, color: 'var(--gold-secondary)',
-                      pointerEvents: 'none',
-                    }}>
-                      <ZoomIn size={13}/> Click to zoom
-                    </div>
-
-                    {/* Plan label badge */}
-                    <div style={{
-                      position: 'absolute', bottom: '14px', left: '14px',
-                      background: 'var(--gold-primary)', color: '#070f1e',
-                      borderRadius: '8px', padding: '5px 14px',
-                      fontSize: '0.78rem', fontWeight: 800,
-                      boxShadow: '0 4px 12px rgba(212,175,55,0.35)',
-                    }}>
-                      {fpActive.label} · {fpActive.desc}
-                    </div>
-                  </div>
-
-                  {/* Thumbnail Switcher */}
+                  {/* Variant Tabs */}
                   {fpVariants.length > 1 && (
-                    <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
-                      {fpVariants.map((v, idx) => (
-                        <div
-                          key={v.id}
-                          onClick={() => setActivePlan(v.id)}
-                          style={{
-                            flex: '1', minWidth: '100px', maxWidth: '200px',
-                            borderRadius: '12px', overflow: 'hidden', cursor: 'pointer',
-                            border: activePlan === v.id
-                              ? '2px solid var(--gold-primary)'
-                              : '2px solid rgba(255,255,255,0.08)',
-                            background: '#fff',
-                            boxShadow: activePlan === v.id
-                              ? '0 0 18px rgba(212,175,55,0.28)'
-                              : '0 4px 12px rgba(0,0,0,0.3)',
-                            transition: 'all 0.25s',
-                            position: 'relative',
-                          }}
-                          onMouseOver={e => { if (activePlan !== v.id) e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'; }}
-                          onMouseOut={e => { if (activePlan !== v.id) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
-                        >
-                          <img
-                            src={v.url}
-                            alt={v.label}
-                            style={{ width: '100%', height: '80px', objectFit: 'cover', display: 'block' }}
-                          />
-                          <div style={{
-                            padding: '6px 10px',
-                            background: activePlan === v.id ? 'var(--gold-primary)' : '#0a1828',
-                            color: activePlan === v.id ? '#070f1e' : 'rgba(255,255,255,0.7)',
-                            fontSize: '0.72rem', fontWeight: 800, textAlign: 'center',
-                            transition: 'all 0.25s',
-                          }}>
-                            {v.label}
-                          </div>
-                        </div>
+                    <div style={{ display: 'flex', gap: '10px', marginBottom: '18px', flexWrap: 'wrap' }}>
+                      {fpVariants.map(v => (
+                        <button key={v.id} onClick={() => setActivePlan(v.id)}
+                          style={{ padding: '8px 18px', borderRadius: '8px', border: activePlan === v.id ? '2px solid var(--gold-primary)' : '2px solid rgba(255,255,255,0.1)', background: activePlan === v.id ? 'rgba(212,175,55,0.1)' : 'transparent', color: activePlan === v.id ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}>
+                          {v.label} <span style={{ fontSize: '0.68rem', opacity: 0.7 }}>· {v.desc}</span>
+                        </button>
                       ))}
                     </div>
                   )}
 
-                  {/* Specs + CTA Row */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', alignItems: 'end' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '14px 16px' }}>
-                      <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Unit Type</div>
-                      <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--gold-primary)', fontFamily: 'var(--font-title)' }}>{fpActive.label}</div>
+                  {/* Main Plan Viewer */}
+                  <div onClick={() => setLightboxOpen(true)}
+                    style={{ position: 'relative', background: '#fff', borderRadius: '14px', border: '2px solid rgba(212,175,55,0.2)', boxShadow: '0 12px 40px rgba(0,0,0,0.5)', overflow: 'hidden', cursor: 'zoom-in', marginBottom: '16px', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img src={fpActive.url} alt={`${fpActive.label} Floor Plan`}
+                      style={{ width: '100%', maxHeight: '480px', objectFit: 'contain', display: 'block', transition: 'transform 0.4s ease' }}
+                      onMouseOver={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                      onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
+                    <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(7,15,30,0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '8px', padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.7rem', fontWeight: 700, color: 'var(--gold-secondary)', pointerEvents: 'none' }}>
+                      <ZoomIn size={12}/> Click to zoom
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '14px 16px' }}>
-                      <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Carpet Area</div>
-                      <div style={{ fontSize: '1.0rem', fontWeight: 700, color: '#fff' }}>{fpActive.desc}</div>
+                    <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '7px', padding: '4px 12px', fontSize: '0.75rem', fontWeight: 800 }}>
+                      {fpActive.label} · {fpActive.desc}
                     </div>
-                    {isVyomora && activePlan !== 'master' && property.configurations && (
-                      <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '14px 16px' }}>
-                        <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>Configurations</div>
-                        {property.configurations.filter(c => activePlan === '2bhk' ? c.name.includes('2 BHK') : c.name.includes('3 BHK')).map(c => (
-                          <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', marginBottom: '4px' }}>
-                            <span style={{ color: 'rgba(255,255,255,0.5)' }}>{c.name.replace('2 BHK ','').replace('3 BHK ','')}</span>
-                            <strong style={{ color: '#fff' }}>{c.area}</strong>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <button
-                      onClick={onOpenInquiry}
-                      style={{
-                        width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
-                        justifyContent: 'center', background: 'none',
-                        border: '1px solid rgba(212,175,55,0.3)', borderRadius: '12px',
-                        color: 'var(--gold-secondary)', padding: '14px 18px',
-                        cursor: 'pointer', fontSize: '0.82rem', fontWeight: 700,
-                        transition: 'all 0.25s',
-                      }}
-                      onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.08)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.55)'; }}
-                      onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; }}
-                    >
+                  </div>
+
+                  {/* Specs row */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px', alignItems: 'end' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '12px 14px' }}>
+                      <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>Unit Type</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--gold-primary)' }}>{fpActive.label}</div>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '12px 14px' }}>
+                      <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>Carpet Area</div>
+                      <div style={{ fontSize: '0.94rem', fontWeight: 700, color: '#fff' }}>{fpActive.desc}</div>
+                    </div>
+                    <button onClick={onOpenInquiry}
+                      style={{ padding: '13px', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '10px', background: 'none', color: 'var(--gold-secondary)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '7px', justifyContent: 'center', transition: 'all 0.2s' }}
+                      onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.08)'; }}
+                      onMouseOut={e => { e.currentTarget.style.background = 'none'; }}>
                       <Download size={14}/> Download Brochure
                     </button>
                   </div>
@@ -619,58 +669,28 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                 </div>
               )}
 
-              {/* Inline Zoom Lightbox (renders inside Card, no external dep) */}
+              {/* Inline Zoom Lightbox */}
               {lightboxOpen && fpActive && (
-                <div
-                  onClick={() => setLightboxOpen(false)}
-                  style={{
-                    position: 'fixed', inset: 0, zIndex: 9999,
-                    background: 'rgba(4,8,20,0.96)', backdropFilter: 'blur(12px)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'zoom-out',
-                  }}
-                >
-                  <button
-                    onClick={e => { e.stopPropagation(); setLightboxOpen(false); }}
-                    style={{
-                      position: 'absolute', top: '20px', right: '20px',
-                      background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)',
-                      borderRadius: '50%', width: '44px', height: '44px',
-                      color: '#fff', fontSize: '1.4rem', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      zIndex: 10000, transition: 'all 0.2s',
-                    }}
-                    onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.2)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
-                  >
+                <div onClick={() => setLightboxOpen(false)}
+                  style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(4,8,20,0.96)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}>
+                  <button onClick={e => { e.stopPropagation(); setLightboxOpen(false); }}
+                    style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.4rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
                     ×
                   </button>
-
-                  {/* Prev / Next plan buttons */}
                   {fpVariants.length > 1 && (
                     <>
                       <button onClick={e => { e.stopPropagation(); const idx = fpVariants.findIndex(v => v.id === activePlan); setActivePlan(fpVariants[(idx - 1 + fpVariants.length) % fpVariants.length].id); }}
-                        style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
-                        ‹
-                      </button>
+                        style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>‹</button>
                       <button onClick={e => { e.stopPropagation(); const idx = fpVariants.findIndex(v => v.id === activePlan); setActivePlan(fpVariants[(idx + 1) % fpVariants.length].id); }}
-                        style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
-                        ›
-                      </button>
+                        style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>›</button>
                     </>
                   )}
-
                   <div onClick={e => e.stopPropagation()} style={{ maxWidth: '90vw', maxHeight: '90vh', background: '#fff', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 40px 80px rgba(0,0,0,0.8)', position: 'relative' }}>
-                    <img
-                      src={fpActive.url}
-                      alt={`${fpActive.label} Floor Plan`}
-                      style={{ display: 'block', maxWidth: '90vw', maxHeight: '88vh', objectFit: 'contain' }}
-                    />
+                    <img src={fpActive.url} alt={`${fpActive.label} Floor Plan`} style={{ display: 'block', maxWidth: '90vw', maxHeight: '88vh', objectFit: 'contain' }}/>
                     <div style={{ position: 'absolute', bottom: '14px', left: '14px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '8px', padding: '5px 14px', fontSize: '0.78rem', fontWeight: 800 }}>
                       {fpActive.label} · {fpActive.desc}
                     </div>
                   </div>
-
                   <div style={{ position: 'absolute', bottom: '18px', left: '50%', transform: 'translateX(-50%)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)' }}>
                     Click anywhere to close · Use ‹ › to switch plans
                   </div>
@@ -682,10 +702,10 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           {/* Pricing Table */}
           {property.configurations && property.configurations.length > 0 && (
             <div id="sec-pricing">
-              <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(212,175,55,0.18)', boxShadow: '0 16px 40px rgba(0,0,0,0.4)' }}>
+              <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(212,175,55,0.15)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
-                  <H2 icon={<Building size={18} color="var(--gold-primary)"/>} style={{ margin: 0 }}>Tower Configurations & Pricing</H2>
-                  <span style={{ fontSize: '0.66rem', color: 'var(--gold-secondary)', border: '1px solid rgba(212,175,55,0.25)', padding: '4px 10px', borderRadius: '4px', background: 'rgba(212,175,55,0.05)', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}>
+                  <SectionTitle icon={<Building size={17} color="var(--gold-primary)"/>}>Tower Configurations & Pricing</SectionTitle>
+                  <span style={{ fontSize: '0.66rem', color: 'var(--gold-secondary)', border: '1px solid rgba(212,175,55,0.25)', padding: '4px 10px', borderRadius: '4px', background: 'rgba(212,175,55,0.05)', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: 600, flexShrink: 0 }}>
                     🛡️ MahaRERA Escrow Protected
                   </span>
                 </div>
@@ -693,23 +713,27 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '460px' }}>
                     <thead>
                       <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-muted)', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                        {['Unit Type','Super Carpet Area','Investment Estimate','Availability Status','Action'].map((h, i) => <th key={h} style={{ padding: '14px 16px', textAlign: i === 4 ? 'right' : 'left' }}>{h}</th>)}
+                        {['Unit Type','Super Carpet Area','Investment Estimate','Status','Action'].map((h, i) => <th key={h} style={{ padding: '14px 16px', textAlign: i === 4 ? 'right' : 'left' }}>{h}</th>)}
                       </tr>
                     </thead>
                     <tbody>
                       {property.configurations.map((c, idx) => {
-                        const fast = c.status.includes('Fast') || c.status.includes('Exclusive');
-                        const lim  = c.status.includes('Limited') || c.status.includes('Premium');
+                        const fast = c.status?.includes('Fast') || c.status?.includes('Exclusive');
+                        const lim  = c.status?.includes('Limited') || c.status?.includes('Premium');
                         return (
-                          <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', fontSize: '0.88rem', transition: 'all 0.25s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.04)'; e.currentTarget.style.borderLeft = '2px solid var(--gold-primary)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderLeft = 'none'; }}>
+                          <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', fontSize: '0.88rem', transition: 'all 0.25s' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.04)'; e.currentTarget.style.borderLeft = '2px solid var(--gold-primary)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderLeft = 'none'; }}>
                             <td style={{ padding: '16px 16px', fontWeight: 700, color: '#fff' }}>{c.name}</td>
                             <td style={{ padding: '16px 16px', color: 'rgba(255,255,255,0.7)' }}>{c.area}</td>
                             <td style={{ padding: '16px 16px', color: 'var(--gold-primary)', fontWeight: 800, fontSize: '0.98rem' }}>{c.price}</td>
                             <td style={{ padding: '16px 16px' }}>
-                              <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '4px 12px', borderRadius: '20px', background: fast ? 'rgba(239,68,68,0.12)' : lim ? 'rgba(251,191,36,0.12)' : 'rgba(16,185,129,0.12)', color: fast ? '#ef4444' : lim ? '#fbbf24' : '#10b981', border: `1px solid ${fast ? 'rgba(239,68,68,0.2)' : lim ? 'rgba(251,191,36,0.2)' : 'rgba(16,185,129,0.2)'}`, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{c.status}</span>
+                              {c.status && <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '4px 12px', borderRadius: '20px', background: fast ? 'rgba(239,68,68,0.12)' : lim ? 'rgba(251,191,36,0.12)' : 'rgba(16,185,129,0.12)', color: fast ? '#ef4444' : lim ? '#fbbf24' : '#10b981', border: `1px solid ${fast ? 'rgba(239,68,68,0.2)' : lim ? 'rgba(251,191,36,0.2)' : 'rgba(16,185,129,0.2)'}`, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{c.status}</span>}
                             </td>
                             <td style={{ padding: '16px 16px', textAlign: 'right' }}>
-                              <button onClick={() => onOpenInquiry(property)} style={{ background: 'var(--gold-primary)', color: '#070f1e', border: 'none', borderRadius: '8px', padding: '8px 18px', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '5px', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 0 14px rgba(212,175,55,0.5)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                              <button onClick={() => onOpenInquiry(property)} style={{ background: 'var(--gold-primary)', color: '#070f1e', border: 'none', borderRadius: '8px', padding: '8px 18px', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '5px', transition: 'all 0.2s' }}
+                                onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 0 14px rgba(212,175,55,0.5)'; }}
+                                onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}>
                                 Request Call <ArrowRight size={12}/>
                               </button>
                             </td>
@@ -723,79 +747,38 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
             </div>
           )}
 
-          {/* Video */}
+          {/* Video Tour */}
           {property.videoUrl && (
             <div id="sec-video">
               <Card>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-                  <H2 icon={<Play size={18}/>} style={{ margin: 0 }}>🎬 Cinematic Video Tour</H2>
-                  
+                  <SectionTitle icon={<Play size={17} color="var(--gold-primary)"/>}>🎬 Cinematic Video Tour</SectionTitle>
                   {isVyomora && (
                     <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.3)', padding: '4px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.07)' }}>
-                      {[
-                        { id: 'walkthrough', label: 'Drone Walkthrough' },
-                        { id: 'showflat', label: 'Show Flat Tour' },
-                        { id: 'location', label: 'Location AV' }
-                      ].map(t => (
-                        <button 
-                          key={t.id} 
-                          onClick={() => setActiveVideoTab(t.id)} 
-                          style={{ 
-                            background: activeVideoTab === t.id ? 'var(--gold-primary)' : 'transparent', 
-                            color: activeVideoTab === t.id ? '#070f1e' : 'rgba(255,255,255,0.6)', 
-                            border: 'none', 
-                            padding: '7px 16px', 
-                            borderRadius: '30px', 
-                            fontSize: '0.78rem', 
-                            fontWeight: 700, 
-                            cursor: 'pointer', 
-                            transition: 'all 0.3s', 
-                            whiteSpace: 'nowrap' 
-                          }}
-                        >
+                      {[{ id: 'walkthrough', label: 'Drone Walkthrough' }, { id: 'showflat', label: 'Show Flat Tour' }, { id: 'location', label: 'Location AV' }].map(t => (
+                        <button key={t.id} onClick={() => setActiveVideoTab(t.id)}
+                          style={{ background: activeVideoTab === t.id ? 'var(--gold-primary)' : 'transparent', color: activeVideoTab === t.id ? '#070f1e' : 'rgba(255,255,255,0.6)', border: 'none', padding: '7px 16px', borderRadius: '30px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s', whiteSpace: 'nowrap' }}>
                           {t.label}
                         </button>
                       ))}
                     </div>
                   )}
                 </div>
-
                 {isVyomora ? (
                   <div style={{ borderRadius: '16px', overflow: 'hidden', aspectRatio: '16/9', boxShadow: '0 25px 60px rgba(0,0,0,0.6)', border: '1px solid rgba(212,175,55,0.18)', background: '#040814' }}>
                     {activeVideoTab === 'walkthrough' && (
-                      <video 
-                        key="walkthrough"
-                        controls 
-                        preload="metadata"
-                        poster={slideshowImages[0]}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      >
-                        <source src="https://drive.google.com/uc?id=1DYALmyrqT27g5nS8fPwffNLFMO3iBpT0" type="video/mp4" />
-                        Your browser does not support HTML5 video streaming.
+                      <video key="walkthrough" controls preload="metadata" poster={slideshowImages[0]} style={{ width: '100%', height: '100%', objectFit: 'cover' }}>
+                        <source src="https://drive.google.com/uc?id=1DYALmyrqT27g5nS8fPwffNLFMO3iBpT0" type="video/mp4"/>
                       </video>
                     )}
                     {activeVideoTab === 'showflat' && (
-                      <video 
-                        key="showflat"
-                        controls 
-                        preload="metadata"
-                        poster={slideshowImages[4] || slideshowImages[0]}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      >
-                        <source src="https://drive.google.com/uc?id=1vXzk2x-kiWGtLj_jsTKsyPnKzMBJqSsR" type="video/mp4" />
-                        Your browser does not support HTML5 video streaming.
+                      <video key="showflat" controls preload="metadata" poster={slideshowImages[4] || slideshowImages[0]} style={{ width: '100%', height: '100%', objectFit: 'cover' }}>
+                        <source src="https://drive.google.com/uc?id=1vXzk2x-kiWGtLj_jsTKsyPnKzMBJqSsR" type="video/mp4"/>
                       </video>
                     )}
                     {activeVideoTab === 'location' && (
-                      <video 
-                        key="location"
-                        controls 
-                        preload="metadata"
-                        poster={property.locationMapUrl || slideshowImages[0]}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      >
-                        <source src="https://drive.google.com/uc?id=1IsrDGjG8-1iHFtCJk15MVRxSsndNA63A" type="video/mp4" />
-                        Your browser does not support HTML5 video streaming.
+                      <video key="location" controls preload="metadata" poster={property.locationMapUrl || slideshowImages[0]} style={{ width: '100%', height: '100%', objectFit: 'cover' }}>
+                        <source src="https://drive.google.com/uc?id=1IsrDGjG8-1iHFtCJk15MVRxSsndNA63A" type="video/mp4"/>
                       </video>
                     )}
                   </div>
@@ -810,21 +793,24 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
           {/* Location */}
           <div id="sec-location">
-            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 40px rgba(0,0,0,0.4)' }}>
-              <H2 icon={<MapPin size={18} color="var(--gold-primary)"/>}>Location & Connectivity</H2>
+            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <SectionTitle icon={<MapPin size={17} color="var(--gold-primary)"/>} sub="Strategically located in the heart of Hinjewadi">Location & Connectivity</SectionTitle>
               {property.locationMapUrl && (
-                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '14px', marginBottom: '24px', border: '1px solid rgba(212,175,55,0.2)', cursor: 'pointer', boxShadow: '0 12px 30px rgba(0,0,0,0.5)' }} onClick={() => window.open(property.locationMapUrl, '_blank')}>
-                  <img src={property.locationMapUrl} alt="Location Map" style={{ width: '100%', display: 'block', maxHeight: '280px', objectFit: 'cover', transition: 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.03)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
+                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '14px', marginBottom: '22px', border: '1px solid rgba(212,175,55,0.2)', cursor: 'pointer' }} onClick={() => window.open(property.locationMapUrl, '_blank')}>
+                  <img src={property.locationMapUrl} alt="Location Map" style={{ width: '100%', display: 'block', maxHeight: '280px', objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.03)'}
+                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,8,20,0.5), transparent)', pointerEvents: 'none' }}/>
-                  <div style={{ position: 'absolute', bottom: '16px', right: '16px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '8px', padding: '6px 14px', fontSize: '0.78rem', fontWeight: 800, boxShadow: '0 4px 12px rgba(212,175,55,0.3)' }}>Open in Google Maps ↗</div>
+                  <div style={{ position: 'absolute', bottom: '14px', right: '14px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '8px', padding: '6px 14px', fontSize: '0.78rem', fontWeight: 800 }}>Open in Google Maps ↗</div>
                 </div>
               )}
-              
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
                 {corridor.landmarks.map((l, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.12)', borderRadius: '12px', padding: '14px 16px', gap: '10px', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'} onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)'}>
-                    <span style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>📍 {l.split('(')[0].trim()}</span>
-                    <span style={{ fontSize: '0.76rem', color: 'var(--gold-secondary)', fontWeight: 800, padding: '3px 8px', background: 'rgba(212,175,55,0.06)', borderRadius: '6px', whiteSpace: 'nowrap' }}>{l.includes('(') ? l.split('(')[1].replace(')','') : '—'}</span>
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '11px', padding: '12px 14px', gap: '10px', transition: 'all 0.2s' }}
+                    onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'}
+                    onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.1)'}>
+                    <span style={{ fontSize: '0.83rem', color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>📍 {l.split('(')[0].trim()}</span>
+                    <span style={{ fontSize: '0.74rem', color: 'var(--gold-secondary)', fontWeight: 800, padding: '3px 8px', background: 'rgba(212,175,55,0.06)', borderRadius: '6px', whiteSpace: 'nowrap' }}>{l.includes('(') ? l.split('(')[1].replace(')','') : '—'}</span>
                   </div>
                 ))}
               </div>
@@ -832,14 +818,15 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
 
           {/* FAQ */}
-          <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <H2 icon={<HelpCircle size={18} color="var(--gold-primary)"/>}>Compliance & Buying FAQ</H2>
+          <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <SectionTitle icon={<HelpCircle size={17} color="var(--gold-primary)"/>}>Compliance & Buying FAQ</SectionTitle>
             {[
               { q: 'Is title clear and RERA registration verified?', a: `Yes. All 24K Realtors listings undergo a 5-stage carpet and registry deed audit. Developer ID ${builder.reraId} is registered with MahaRERA under Section 9 of the Real Estate Act, 2016.` },
               { q: 'What does all-inclusive pricing comprise?', a: 'Agreement value, stamp duty, registration taxes, development charges, piped gas fees, and society corpus deposits as applicable under standard builder rules.' },
               { q: 'What is the brokerage structure?', a: '24K Realtors charges zero brokerage to buyers. Our advisory is 100% developer-compensated, ensuring full conflict-free guidance.' },
             ].map(({ q, a }) => (
-              <details key={q} style={{ background: 'rgba(255,255,255,0.015)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', padding: '16px 20px', marginBottom: '12px', cursor: 'pointer', transition: 'all 0.3s' }} onToggle={e => e.currentTarget.style.borderColor = e.currentTarget.open ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.05)'}>
+              <details key={q} style={{ background: 'rgba(255,255,255,0.015)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', padding: '16px 20px', marginBottom: '12px', cursor: 'pointer' }}
+                onToggle={e => e.currentTarget.style.borderColor = e.currentTarget.open ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.05)'}>
                 <summary style={{ fontSize: '0.92rem', fontWeight: 700, color: '#fff', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   {q} <ChevronDown size={14} style={{ color: 'var(--gold-secondary)', flexShrink: 0 }}/>
                 </summary>
@@ -849,54 +836,40 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </Card>
         </div>
 
-        {/* ── RIGHT STICKY ── */}
-        <div style={{ position: 'sticky', top: '56px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-
-          {/* Booking Card */}
-          <div style={{ background: 'radial-gradient(circle at top left, rgba(22,34,58,0.98) 0%, rgba(7,15,30,0.99) 100%)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '20px', padding: '28px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, right: 0, width: '130px', height: '130px', background: 'radial-gradient(circle, rgba(212,175,55,0.07) 0%, transparent 70%)', pointerEvents: 'none' }}/>
-            <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '6px' }}>Investment Value</div>
-            <div style={{ fontSize: '2.3rem', fontWeight: 800, color: 'var(--gold-primary)', marginBottom: '4px', lineHeight: 1 }}>{formatPrice(property.price, property.transactionType)}</div>
-            <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.38)', marginBottom: '22px' }}>{property.areaSquareFeet} sqft · ₹{Math.round(property.price / property.areaSquareFeet).toLocaleString()}/sqft</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <motion.button whileHover={{ scale: 1.015 }} whileTap={{ scale: 0.98 }} onClick={() => onOpenInquiry(property)} style={{ width: '100%', padding: '14px', borderRadius: '50px', background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', border: 'none', color: '#070F1E', fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'var(--font-sans)' }}>
-                Inquire & Receive Brochure <ArrowRight size={15}/>
-              </motion.button>
-              <motion.button whileHover={{ scale: 1.015 }} whileTap={{ scale: 0.98 }} onClick={() => onOpenChauffeur(property)} style={{ width: '100%', padding: '13px', borderRadius: '50px', background: 'transparent', border: '1px solid rgba(212,175,55,0.35)', color: 'var(--gold-secondary)', fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'var(--font-sans)', transition: 'all 0.2s' }}>
-                <Car size={15}/> Book VIP Chauffeur Tour
-              </motion.button>
-              <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ width: '100%', padding: '13px', borderRadius: '50px', background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.3)', color: '#25D366', fontWeight: 700, fontSize: '0.88rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none', transition: 'all 0.2s', fontFamily: 'var(--font-sans)', boxSizing: 'border-box' }}>
-                <MessageSquare size={15}/> WhatsApp Site Visit
-              </a>
-            </div>
-            <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', color: 'rgba(255,255,255,0.4)' }}>
-              <span>Status: <strong style={{ color: '#fff' }}>{property.status || 'Available'}</strong></span>
-              <span>Brokerage: <strong style={{ color: 'var(--gold-secondary)' }}>Zero</strong></span>
-            </div>
-          </div>
-
-          {/* Developer Dossier */}
-          <div style={{ background: 'rgba(10,18,36,0.55)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '16px', padding: '24px' }}>
-            <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.95rem', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: '8px' }}><Building size={16}/> Developer Dossier</h3>
-            {isVyomora && <div style={{ marginBottom: '12px' }}><img src="/properties/vyomora/logo.jpeg" alt="Shapoorji Pallonji" style={{ height: '34px', objectFit: 'contain', filter: 'brightness(1.1)', borderRadius: '4px' }} onError={e => e.currentTarget.style.display = 'none'}/></div>}
-            <strong style={{ fontSize: '0.95rem', color: '#fff', display: 'block', marginBottom: '4px' }}>{builder.name}</strong>
-            <span style={{ fontSize: '0.72rem', color: 'var(--gold-secondary)', fontWeight: 700, display: 'block', marginBottom: '10px' }}>RERA: {builder.reraId}</span>
-            <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.65, margin: 0 }}>{builder.desc}</p>
-          </div>
+        {/* ── RIGHT COLUMN (STICKY SIDEBAR) ── */}
+        <div style={{ position: 'sticky', top: '56px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
 
           {/* Location Intelligence */}
-          <div style={{ background: 'rgba(10,18,36,0.55)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '16px', padding: '24px' }}>
-            <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.95rem', margin: '0 0 18px', display: 'flex', alignItems: 'center', gap: '8px' }}><TrendingUp size={16}/> Location Intelligence</h3>
-            <ScoreBar label="IT Hub Connectivity" value={corridor.commute} max={10}/>
-            <ScoreBar label="Infrastructure Index" value={corridor.infra} max={10}/>
-            <ScoreBar label="Green Index" value={corridor.green} max={10}/>
-            <ScoreBar label="Capital Appreciation" value={corridor.appreciation} max={25}/>
+          <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(212,175,55,0.18)', borderRadius: '18px', padding: '24px' }}>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.95rem', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <Navigation size={15}/> Location Intelligence
+            </h3>
+            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.72rem', margin: '0 0 18px' }}>Strategically located in the heart of Hinjewadi</p>
+            <ScoreBar label="IT Hub Connectivity"    value={corridor.commute}       max={10}/>
+            <ScoreBar label="Infrastructure Index"   value={corridor.infra}         max={10}/>
+            <ScoreBar label="Green Index"            value={corridor.green}         max={10}/>
+            <ScoreBar label="Social Infrastructure"  value={corridor.social || 8.7} max={10}/>
+            <ScoreBar label="Future Growth Potential" value={corridor.future || 9.1} max={10}/>
+            {property.locationMapUrl && (
+              <div style={{ marginTop: '16px', borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(212,175,55,0.18)', position: 'relative', cursor: 'pointer' }}
+                onClick={() => window.open(property.locationMapUrl, '_blank')}>
+                <img src={property.locationMapUrl} alt="Map" style={{ width: '100%', height: '100px', objectFit: 'cover', display: 'block' }}/>
+                <div style={{ position: 'absolute', inset: 0, background: 'rgba(4,8,20,0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                  <MapPin size={16} color="var(--gold-primary)"/>
+                  <span style={{ color: '#fff', fontSize: '0.75rem', fontWeight: 700 }}>Hinjewadi Phase 1, Pune</span>
+                  <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.65rem' }}>Near Phase 1 IT Park, Metro Station & Expressway</span>
+                </div>
+                <div style={{ position: 'absolute', bottom: '8px', right: '8px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '6px', padding: '4px 10px', fontSize: '0.68rem', fontWeight: 800 }}>
+                  View on Map →
+                </div>
+              </div>
+            )}
             {marketTrends && (
-              <div style={{ marginTop: '18px', padding: '14px', borderRadius: '10px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.13)', fontSize: '0.78rem' }}>
-                <div style={{ color: 'var(--gold-secondary)', fontWeight: 700, marginBottom: '10px', textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '0.05em' }}>Live Corridor Metrics</div>
-                {[['Avg Price/sqft',marketTrends.averagePricePerSqft],['Annual Appreciation',marketTrends.appreciationRate,'#2ec4b6'],['Expected Yield',marketTrends.rentalYield,'#2ec4b6']].map(([l,v,c]) => (
-                  <div key={l} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                    <span style={{ color: 'rgba(255,255,255,0.6)' }}>{l}:</span>
+              <div style={{ marginTop: '14px', padding: '12px 14px', borderRadius: '10px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.1)' }}>
+                <div style={{ color: 'var(--gold-secondary)', fontWeight: 700, marginBottom: '8px', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Live Corridor Metrics</div>
+                {[['Avg Price/sqft', marketTrends.averagePricePerSqft], ['Annual Appreciation', marketTrends.appreciationRate, '#2ec4b6'], ['Expected Yield', marketTrends.rentalYield, '#2ec4b6']].map(([l,v,c]) => (
+                  <div key={l} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '0.78rem' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.55)' }}>{l}:</span>
                     <strong style={{ color: c || '#fff' }}>{v}</strong>
                   </div>
                 ))}
@@ -904,12 +877,50 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
             )}
           </div>
 
+          {/* Project Overview */}
+          <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '18px', padding: '24px' }}>
+            <h3 style={{ fontFamily: 'var(--font-title)', color: '#fff', fontSize: '0.95rem', margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Project Overview</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+              {[
+                { icon: '🏞️', val: '16+', label: 'Acres Land Parcel' },
+                { icon: '🛏️', val: '2, 3 & 4 BHK', label: 'Configurations' },
+                { icon: '🏗️', val: 'G+22', label: 'Total Towers' },
+                { icon: '🏠', val: '~1560', label: 'Total Units' },
+                { icon: '📅', val: 'Dec 2027', label: 'Possession' },
+                { icon: '🛡️', val: builder.reraId.slice(0, 8) + '…', label: 'MahaRERA' },
+              ].map(({ icon, val, label }) => (
+                <div key={label} style={{ textAlign: 'center', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '12px 6px' }}>
+                  <div style={{ fontSize: '1.3rem', marginBottom: '3px' }}>{icon}</div>
+                  <div style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff', marginBottom: '2px', lineHeight: 1.2 }}>{val}</div>
+                  <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1.2 }}>{label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Developer */}
+          <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '18px', padding: '24px' }}>
+            <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.9rem', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Building size={15}/> Developer Dossier
+            </h3>
+            {isVyomora && (
+              <div style={{ marginBottom: '12px' }}>
+                <img src="/properties/vyomora/logo.jpeg" alt="Shapoorji Pallonji" style={{ height: '32px', objectFit: 'contain', filter: 'brightness(1.1)', borderRadius: '4px' }} onError={e => e.currentTarget.style.display = 'none'}/>
+              </div>
+            )}
+            <strong style={{ fontSize: '0.92rem', color: '#fff', display: 'block', marginBottom: '3px' }}>{builder.name}</strong>
+            <span style={{ fontSize: '0.7rem', color: 'var(--gold-secondary)', fontWeight: 700, display: 'block', marginBottom: '10px' }}>RERA: {builder.reraId}</span>
+            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: 0 }}>{builder.desc}</p>
+          </div>
+
           {/* EMI Calculator */}
-          <div style={{ background: 'rgba(10,18,36,0.55)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '16px', padding: '24px' }}>
-            <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.95rem', margin: '0 0 18px', display: 'flex', alignItems: 'center', gap: '8px' }}><Calculator size={16}/> Mortgage Calculator</h3>
+          <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '18px', padding: '24px' }}>
+            <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.9rem', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Calculator size={15}/> Mortgage Calculator
+            </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: '7px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', marginBottom: '7px' }}>
                   <span style={{ color: 'rgba(255,255,255,0.6)' }}>Down Payment ({downPayment}%)</span>
                   <strong style={{ color: '#fff' }}>{formatPrice(Number(property.price) * (downPayment / 100))}</strong>
                 </div>
@@ -918,29 +929,31 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 {[{ label: 'Rate (%)', value: interestRate, set: setInterestRate, step: 0.1 }, { label: 'Term (Yrs)', value: loanTerm, set: setLoanTerm, step: 1 }].map(({ label, value, set, step }) => (
                   <div key={label}>
-                    <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</label>
+                    <label style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</label>
                     <input type="number" step={step} value={value} onChange={e => set(Number(e.target.value))} className="form-input" style={{ width: '100%', margin: 0, padding: '8px 10px', boxSizing: 'border-box' }}/>
                   </div>
                 ))}
               </div>
-              <div style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02))', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '18px', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.67rem', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block' }}>Monthly EMI</span>
-                <strong style={{ fontSize: '1.65rem', color: 'var(--gold-primary)', display: 'block', margin: '6px 0 4px', lineHeight: 1 }}>{formatPrice(emi)}<span style={{ fontSize: '0.82rem', fontWeight: 400 }}>/mo</span></strong>
-                <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)' }}>Principal: {formatPrice(principal)}</span>
+              <div style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02))', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '16px', textAlign: 'center' }}>
+                <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block' }}>Monthly EMI</span>
+                <strong style={{ fontSize: '1.5rem', color: 'var(--gold-primary)', display: 'block', margin: '5px 0 3px', lineHeight: 1 }}>{formatPrice(emi)}<span style={{ fontSize: '0.78rem', fontWeight: 400 }}>/mo</span></strong>
+                <span style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.35)' }}>Principal: {formatPrice(principal)}</span>
               </div>
             </div>
           </div>
 
           {/* Cost Breakdown */}
-          <div style={{ background: 'rgba(10,18,36,0.55)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '16px', padding: '24px' }}>
-            <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.95rem', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '8px' }}><FileText size={16}/> Cost Breakdown</h3>
+          <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '18px', padding: '24px' }}>
+            <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.9rem', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FileText size={15}/> Cost Breakdown
+            </h3>
             {[['Agreement Value', property.price, '#fff'], ['Stamp Duty (6%)', Number(property.price) * 0.06, 'rgba(255,255,255,0.7)'], ['GST (5%)', Number(property.price) * 0.05, 'rgba(255,255,255,0.7)'], ['Dev & Legal Charges', 150000, 'rgba(255,255,255,0.7)']].map(([l, v, c]) => (
-              <div key={l} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.04)', padding: '8px 0', fontSize: '0.82rem' }}>
+              <div key={l} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.04)', padding: '8px 0', fontSize: '0.8rem' }}>
                 <span style={{ color: 'rgba(255,255,255,0.55)' }}>{l}</span>
                 <strong style={{ color: c }}>{formatPrice(v)}</strong>
               </div>
             ))}
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 0', fontSize: '0.88rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0 0', fontSize: '0.86rem' }}>
               <span style={{ color: 'var(--gold-primary)', fontWeight: 700 }}>All-Inclusive Total</span>
               <strong style={{ color: 'var(--gold-primary)' }}>{formatPrice(Number(property.price) * 1.11 + 150000)}</strong>
             </div>
@@ -950,11 +963,13 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
       {/* ══ SIMILAR ══ */}
       {similar.length > 0 && (
-        <div style={{ padding: '50px 40px 0' }}>
-          <h2 style={{ fontFamily: 'var(--font-title)', color: '#fff', fontSize: '1.5rem', marginBottom: '28px' }}>⚜️ Similar Curated Residences</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+        <div style={{ padding: '50px 32px 0' }}>
+          <h2 style={{ fontFamily: 'var(--font-title)', color: '#fff', fontSize: '1.4rem', marginBottom: '24px' }}>⚜️ Similar Curated Residences</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {similar.map(sim => (
-              <motion.div key={sim.id} whileHover={{ y: -6 }} onClick={() => { onBack(); setTimeout(() => document.getElementById(`property-${sim.id}`)?.click(), 100); }} style={{ cursor: 'pointer', background: 'rgba(10,18,36,0.5)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', overflow: 'hidden' }}>
+              <motion.div key={sim.id} whileHover={{ y: -6 }}
+                onClick={() => { onBack(); setTimeout(() => document.getElementById(`property-${sim.id}`)?.click(), 100); }}
+                style={{ cursor: 'pointer', background: 'rgba(10,18,36,0.5)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', overflow: 'hidden' }}>
                 <div style={{ height: '180px', overflow: 'hidden', position: 'relative' }}>
                   <img src={sim.imageUrl || slideshowImages[0]} alt={sim.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}/>
                   <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'var(--gold-primary)', color: '#070f1e', fontSize: '0.62rem', fontWeight: 800, padding: '3px 8px', borderRadius: '3px', textTransform: 'uppercase' }}>{sim.transactionType}</span>
@@ -974,19 +989,47 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
         </div>
       )}
 
-      {/* ══ STICKY BOTTOM BAR ══ */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(4,8,20,0.95)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(212,175,55,0.18)', padding: '14px 40px', zIndex: 999, display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 -12px 40px rgba(0,0,0,0.5)' }} className="sticky-booking-bar">
-        <div>
-          <div style={{ fontSize: '0.67rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Valuation Mandate</div>
-          <strong style={{ fontSize: '1.3rem', color: 'var(--gold-primary)' }}>{formatPrice(property.price, property.transactionType)}</strong>
-        </div>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ padding: '10px 18px', borderRadius: '50px', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.3)', color: '#25D366', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
-            <MessageSquare size={14}/> WhatsApp
-          </a>
-          <button onClick={() => onOpenInquiry(property)} style={{ padding: '10px 22px', borderRadius: '50px', background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', border: 'none', color: '#070F1E', fontWeight: 800, fontSize: '0.88rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            Inquire Now <ArrowRight size={14}/>
-          </button>
+      {/* ══ STICKY BOTTOM BAR (Premium Style) ══ */}
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(4,8,20,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(212,175,55,0.15)', padding: '12px 32px', zIndex: 999, boxShadow: '0 -12px 40px rgba(0,0,0,0.5)' }} className="sticky-booking-bar">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
+          {/* Info pills */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ShieldCheck size={16} color="var(--gold-primary)"/>
+              <div>
+                <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>MahaRERA Certified</div>
+                <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#fff' }}>{builder.reraId}</div>
+              </div>
+            </div>
+            <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}/>
+            <div>
+              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>RERA Carpet Area</div>
+              <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#fff' }}>684 - 4200 sq.ft.</div>
+            </div>
+            <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}/>
+            <div>
+              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>Price Range</div>
+              <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--gold-primary)' }}>₹84 L – ₹3.75 Cr*</div>
+            </div>
+            <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}/>
+            <div>
+              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>Launch Offer</div>
+              <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#10b981' }}>Limited Period Benefits*</div>
+            </div>
+          </div>
+          {/* CTA Buttons */}
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexShrink: 0 }}>
+            <button onClick={() => onOpenInquiry(property)}
+              style={{ padding: '10px 22px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', border: 'none', color: '#070F1E', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              onMouseOver={e => e.currentTarget.style.boxShadow = '0 0 18px rgba(212,175,55,0.5)'}
+              onMouseOut={e => e.currentTarget.style.boxShadow = 'none'}>
+              🏢 Book Site Visit
+            </button>
+            <a href={waLink} target="_blank" rel="noopener noreferrer"
+              style={{ padding: '10px 20px', borderRadius: '10px', background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.3)', color: '#25D366', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+              <MessageSquare size={14}/> WhatsApp Us
+            </a>
+          </div>
         </div>
       </div>
 
