@@ -9,7 +9,6 @@ import {
   Handshake, ArrowRight, Key, Home, Briefcase
 } from 'lucide-react';
 import './Portal.css';
-import * as THREE from 'three';
 
 // Import Modular Components
 import PortalNavbar from '../layouts/PortalNavbar';
