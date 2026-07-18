@@ -1,6 +1,7 @@
 package com.realestate.twentyfourk.config;
 
 import com.realestate.twentyfourk.security.JwtAuthenticationFilter;
+import com.realestate.twentyfourk.security.RateLimitingFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
+    private final RateLimitingFilter rateLimitingFilter;
     private final AuthenticationProvider authenticationProvider;
 
     @Value("${cors.allowed-origins:http://localhost:5173,https://real-estate-digital-marketing.vercel.app,https://real-estate-digital-marketing-git-*.vercel.app}")
@@ -36,13 +38,16 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
-            // Permit frame options for local H2 database console visibility
-            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+            // Secure security headers with sameOrigin frames and CSP policies
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())
+                .contentSecurityPolicy(csp -> csp.policyDirectives("frame-ancestors 'self'"))
+            )
             .authorizeHttpRequests(auth -> auth
                 // Allow H2 database console lookups in local dev profile
                 .requestMatchers("/h2-console/**").permitAll()
-                // Actuator health endpoint for container orchestration
-                .requestMatchers("/actuator/**").permitAll()
+                // Expose ONLY Actuator health endpoint for container orchestration publicly
+                .requestMatchers("/actuator/health").permitAll()
                 // Authentication API
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 
@@ -98,6 +103,7 @@ public class SecurityConfig {
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
+            .addFilterBefore(rateLimitingFilter, JwtAuthenticationFilter.class)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

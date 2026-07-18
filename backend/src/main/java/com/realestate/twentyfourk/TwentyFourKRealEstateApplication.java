@@ -28,7 +28,7 @@ public class TwentyFourKRealEstateApplication {
                     int port = uri.getPort();
                     String path = uri.getPath();
                     
-                    String jdbcUrl = "jdbc:postgresql://" + host + ":" + (port == -1 ? 5432 : port) + path;
+                    String jdbcUrl = "jdbc:postgresql://" + host + ":" + (port == -1 ? 5432 : port) + path + "?sslmode=require";
                     
                     System.setProperty("spring.datasource.url", jdbcUrl);
                     System.setProperty("spring.datasource.username", username);

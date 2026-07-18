@@ -139,7 +139,7 @@ spring:
   datasource:
     # Railway provides both DATABASE_URL and individual PGHOST/PGPORT/PGDATABASE vars
     # Using individual vars here - main() parses DATABASE_URL as system properties if available
-    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:railway}?sslmode=disable
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:railway}?sslmode=require
     username: ${PGUSER:postgres}
     password: ${PGPASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
