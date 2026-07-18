@@ -5461,3 +5461,39 @@
 
 
 
+
+
+/* ===== Phase 1 + 2 Luxury Elevation Additions ===== */
+
+/* Hero scroll indicator float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+/* FadeIn utility */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Editorial carousel — hide scrollbar */
+#editorial-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+#editorial-carousel-track {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Floating Advisory CTA */
+@media (max-width: 640px) {
+  .floating-advisory-cta span {
+    display: none !important;
+  }
+}
+
+/* Hero parallax subtle transition */
+.portal-hero {
+  transition: background-position 0.1s linear;
+}
