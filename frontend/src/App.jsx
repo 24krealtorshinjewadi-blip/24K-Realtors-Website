@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoginModal from './components/LoginModal'; // legacy modal — kept for backward compat
-import LoginPage from './components/LoginPage';   // new SaaS full-page login
 import CompanyLogo from './components/CompanyLogo';
-import AiAssistantPanel from './components/AiAssistantPanel';
 import { auth, subscribeToNotifications, onForegroundMessage } from './services/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Lenis from 'lenis';
@@ -12,6 +10,8 @@ import './App.css';
 // Lazy load heavy components — reduces initial bundle
 const Portal = lazy(() => import('./components/Portal'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
+const LoginPage = lazy(() => import('./components/LoginPage'));   // new SaaS full-page login
+const AiAssistantPanel = lazy(() => import('./components/AiAssistantPanel'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {

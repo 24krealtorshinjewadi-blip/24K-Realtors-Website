@@ -16,6 +16,10 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom'],
           // Icon library (heavy) — separate chunk
           'lucide': ['lucide-react'],
+          // Heavy vendor libraries split out for optimal cache & bundle weight
+          'gemini-vendor': ['@google/generative-ai'],
+          'motion-vendor': ['framer-motion'],
+          'lenis-vendor': ['lenis'],
         },
       },
     },
