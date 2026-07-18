@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+﻿import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { apiService } from '../services/apiService';
 import { chatWithVisitor } from '../services/geminiService';
 import { 
@@ -238,6 +238,8 @@ export default function Portal({ onViewChange }) {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [notification, setNotification] = useState(null);
   const [exclusiveTab, setExclusiveTab] = useState('BUY');
+  const [editorialTab, setEditorialTab] = useState('signature');
+  const [advisoryTab, setAdvisoryTab] = useState('buyer');
   const [activeSection, setActiveSection] = useState('listings');
   const [heroSearchText, setHeroSearchText] = useState('');
   const [heroTab, setHeroTab] = useState('BUY');
@@ -799,81 +801,77 @@ export default function Portal({ onViewChange }) {
   };
 
   const renderCuratedCarousels = () => {
-    const collections = [
-      { title: "Featured Luxury Homes", data: allRawProperties.filter(p => p.exclusiveDeal || p.verifiedListing) },
-      { title: "Ready To Move Residences", data: allRawProperties.filter(p => p.propertyType === 'RESIDENTIAL' && (p.reraNumber?.includes('24K') || p.exclusiveDeal)) },
-      { title: "Premium Apartments", data: allRawProperties.filter(p => p.propertyType === 'RESIDENTIAL' && p.bedrooms <= 3 && !p.title.toLowerCase().includes('penthouse')) },
-      { title: "Luxury Villas", data: allRawProperties.filter(p => p.title.toLowerCase().includes('villa') || p.bedrooms >= 4) },
-      { title: "Penthouse Collection", data: allRawProperties.filter(p => p.title.toLowerCase().includes('penthouse') || p.description.toLowerCase().includes('penthouse')) },
-      { title: "Commercial Assets", data: allRawProperties.filter(p => p.propertyType === 'COMMERCIAL') },
-      { title: "Investment Picks", data: allRawProperties.filter(p => p.location === 'BANER' || p.location === 'MAHALUNGE' || p.location === 'WAKAD') },
-      { title: "New Launches", data: allRawProperties.filter(p => 
-        p.id === 'prop-21' || 
-        p.id === 'prop-22' || 
-        p.id === 21 ||
-        p.id === 22 ||
-        (p.title && (p.title.toLowerCase().includes('ivara') || p.title.toLowerCase().includes('vyomora')))
-      ) },
-      { title: "Trending in Pune", data: allRawProperties.filter(p => p.location === 'HINJEWADI' || p.location === 'BALEWADI') },
-      { title: "Editor's Choice", data: allRawProperties.filter(p => p.verifiedListing).slice(0, 6) }
-    ];
-
+    const editorialCollections = {
+      signature: {
+        label: '⚜️ Signature Collection',
+        subtitle: "Editor's picks — verified, exclusive, and hand-curated",
+        data: allRawProperties.filter(p => p.exclusiveDeal || p.verifiedListing)
+      },
+      penthouse: {
+        label: '🏛 Penthouse Portfolio',
+        subtitle: 'Off-market sky residences and ultra-luxury configurations',
+        data: allRawProperties.filter(p =>
+          p.title.toLowerCase().includes('penthouse') ||
+          p.description?.toLowerCase().includes('penthouse') ||
+          p.bedrooms >= 4
+        )
+      },
+      investment: {
+        label: '📈 Investment Estates',
+        subtitle: 'High-yield corridors with strong capital appreciation index',
+        data: allRawProperties.filter(p =>
+          p.location === 'BANER' || p.location === 'MAHALUNGE' ||
+          p.location === 'WAKAD' || p.propertyType === 'COMMERCIAL'
+        )
+      }
+    };
+    const activeCol = editorialCollections[editorialTab];
+    const displayData = activeCol?.data || [];
     return (
-      <div className="curated-carousels-container">
-        {collections.map((col, i) => {
-          if (col.data.length === 0) return null;
-          return (
-            <div key={i} className="luxury-carousel-section" id={`carousel-section-${i}`}>
-              <div className="carousel-title-row">
-                <h3>⚜️ {col.title}</h3>
-                <div className="carousel-nav-buttons">
-                  <button 
-                    onClick={() => handleCarouselScroll(i, 'left')} 
-                    className="carousel-nav-btn"
-                    aria-label="Scroll left"
-                    type="button"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-                  <button 
-                    onClick={() => handleCarouselScroll(i, 'right')} 
-                    className="carousel-nav-btn"
-                    aria-label="Scroll right"
-                    type="button"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
+      <div style={{ paddingBottom: '20px' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+            <div>
+              <span style={{ fontSize: '0.65rem', color: 'rgba(197,168,128,0.6)', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif", fontWeight: 700, display: 'block', marginBottom: '8px' }}>Curated Portfolio</span>
+              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)', color: '#fff', margin: 0, fontWeight: 700, letterSpacing: '-0.01em' }}>{activeCol?.label}</h2>
+              <p style={{ fontFamily: "'Playfair Display', serif", fontStyle: 'italic', color: 'rgba(255,255,255,0.5)', fontSize: '0.92rem', marginTop: '6px', marginBottom: 0 }}>{activeCol?.subtitle}</p>
+            </div>
+            <div style={{ display: 'flex', background: 'rgba(7,15,30,0.6)', border: '1px solid rgba(197,168,128,0.15)', borderRadius: '50px', padding: '4px', gap: '2px', flexShrink: 0 }}>
+              {Object.entries(editorialCollections).map(([key, col]) => (
+                <button key={key} onClick={() => setEditorialTab(key)} type="button" style={{ background: editorialTab === key ? 'linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))' : 'transparent', border: editorialTab === key ? '1px solid rgba(197,168,128,0.35)' : '1px solid transparent', color: editorialTab === key ? '#E6C35C' : 'rgba(255,255,255,0.45)', padding: '8px 18px', borderRadius: '50px', fontSize: '0.72rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.05em', cursor: 'pointer', transition: 'all 0.25s ease', whiteSpace: 'nowrap' }}>
+                  {col.label.split(' ').slice(1).join(' ')}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ marginTop: '24px', height: '1px', background: 'linear-gradient(to right, rgba(197,168,128,0.3), rgba(197,168,128,0.06), transparent)' }} />
+        </div>
+        {displayData.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.3)', fontFamily: "'Playfair Display', serif", fontStyle: 'italic', fontSize: '1.1rem' }}>No properties in this collection yet.</div>
+        ) : (
+          <>
+            <div style={{ position: 'relative' }}>
+              <div id="editorial-carousel-track" style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '8px' }}>
+                {displayData.slice(0, 8).map(property => (
+                  <div key={property.id} style={{ flexShrink: 0, width: 'clamp(280px, 25vw, 360px)' }}>
+                    <PropertyCard property={property} isHnwiMode={isHnwiMode} isCompared={selectedForCompare.some(p => p.id === property.id)} isWishlisted={wishlistIds.includes(property.id)} formatPrice={formatPrice} onToggleCompare={handleToggleCompare} onToggleWishlist={handleToggleWishlist} onOpenRera={handleOpenReraDrawer} onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 300, behavior: 'smooth' }); }} />
+                  </div>
+                ))}
               </div>
-              <div className="carousel-track-container">
-                <div className="carousel-track" id={`carousel-track-${i}`}>
-                  {col.data.map(property => (
-                    <PropertyCard 
-                      key={property.id} 
-                      property={property} 
-                      isHnwiMode={isHnwiMode}
-                      isCompared={selectedForCompare.some(p => p.id === property.id)}
-                      isWishlisted={wishlistIds.includes(property.id)}
-                      formatPrice={formatPrice}
-                      onToggleCompare={handleToggleCompare}
-                      onToggleWishlist={handleToggleWishlist}
-                      onOpenRera={handleOpenReraDrawer}
-                      onOpenDetail={(prop) => { 
-                        setSelectedPropertyDetail(prop); 
-                        window.scrollTo({ top: 300, behavior: 'smooth' }); 
-                      }}
-                    />
-                  ))}
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
+                <button onClick={() => { const t = document.getElementById('editorial-carousel-track'); if(t) t.scrollBy({ left: -t.clientWidth * 0.7, behavior: 'smooth' }); }} type="button" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid rgba(197,168,128,0.3)', background: 'rgba(7,15,30,0.6)', color: 'rgba(197,168,128,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(197,168,128,0.7)'; e.currentTarget.style.color = '#E6C35C'; }} onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(197,168,128,0.3)'; e.currentTarget.style.color = 'rgba(197,168,128,0.7)'; }}><ChevronLeft size={16} /></button>
+                <button onClick={() => { const t = document.getElementById('editorial-carousel-track'); if(t) t.scrollBy({ left: t.clientWidth * 0.7, behavior: 'smooth' }); }} type="button" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid rgba(197,168,128,0.3)', background: 'rgba(7,15,30,0.6)', color: 'rgba(197,168,128,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(197,168,128,0.7)'; e.currentTarget.style.color = '#E6C35C'; }} onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(197,168,128,0.3)'; e.currentTarget.style.color = 'rgba(197,168,128,0.7)'; }}><ChevronRight size={16} /></button>
               </div>
             </div>
-          );
-        })}
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '36px' }}>
+              <button onClick={() => { if (editorialTab === 'penthouse') handleCollectionChange('PENTHOUSE'); else if (editorialTab === 'investment') handleCollectionChange('COMMERCIAL'); else handleCollectionChange('ALL'); }} type="button" style={{ background: 'transparent', border: '1px solid rgba(197,168,128,0.35)', color: '#C5A880', padding: '12px 36px', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.1em', cursor: 'pointer', textTransform: 'uppercase', transition: 'all 0.3s ease', display: 'inline-flex', alignItems: 'center', gap: '8px' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(197,168,128,0.06)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.6)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.35)'; }}>View All Properties <ArrowRight size={13} /></button>
+            </div>
+          </>
+        )}
       </div>
     );
   };
-
-  const handleCollectionChange = (collection) => {
+  const handleCollectionChangenge = (collection) => {
     setActiveCollection(collection);
     setPage(0);
   };
@@ -2074,36 +2072,50 @@ export default function Portal({ onViewChange }) {
             }}>
               <div className="hero-text-block" style={{ maxWidth: '650px', marginBottom: '40px' }}>
                 <span className="hero-gold-badge" style={{
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  color: '#E6C35C',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase'
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  color: '#C5A880',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
                 }}>
-                  PUNE'S MOST TRUSTED REAL ESTATE CONSULTANTS
+                  <span style={{ width: '24px', height: '1px', background: 'rgba(197,168,128,0.6)', display: 'inline-block' }} />
+                  PUNE'S MOST TRUSTED ADVISORY SINCE 2015
+                  <span style={{ width: '24px', height: '1px', background: 'rgba(197,168,128,0.6)', display: 'inline-block' }} />
                 </span>
                 
                 <h1 style={{ 
                   fontFamily: "'Cinzel', serif", 
-                  fontSize: 'clamp(2.5rem, 5vw, 4.2rem)', 
+                  fontSize: 'clamp(2.4rem, 4.8vw, 4.5rem)', 
                   color: '#fff', 
-                  lineHeight: 1.15, 
-                  margin: '20px 0', 
+                  lineHeight: 1.12, 
+                  margin: '22px 0 18px 0', 
                   fontWeight: 700,
-                  textShadow: '0 4px 15px rgba(0,0,0,0.6)' 
+                  letterSpacing: '-0.01em',
+                  textShadow: '0 4px 20px rgba(0,0,0,0.5)' 
                 }}>
-                  Find Your Dream Home <span style={{ color: '#E6C35C' }}>in Pune</span>
+                  Pune's Most Coveted<br />
+                  <span style={{ 
+                    background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 40%, #C5A880 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}>Addresses, Curated For You</span>
                 </h1>
                 
                 <p className="hero-subtext" style={{ 
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontSize: 'clamp(0.95rem, 1.2vw, 1.15rem)', 
-                  color: 'rgba(255, 255, 255, 0.8)', 
-                  lineHeight: 1.6, 
-                  marginBottom: '35px',
-                  textShadow: '0 2px 5px rgba(0,0,0,0.5)'
+                  fontFamily: "'Playfair Display', serif",
+                  fontStyle: 'italic',
+                  fontSize: 'clamp(1rem, 1.3vw, 1.2rem)', 
+                  color: 'rgba(255, 255, 255, 0.72)', 
+                  lineHeight: 1.7, 
+                  marginBottom: '36px',
+                  textShadow: '0 2px 5px rgba(0,0,0,0.5)',
+                  maxWidth: '520px'
                 }}>
-                  Handpicked, 100% verified properties in Hinjewadi, Wakad, Baner & Pune's most premium locations.
+                  Where legacy builders meet verified portfolios — Hinjewadi, Wakad, Baner & Pune's most prestigious corridors.
                 </p>
 
                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
@@ -2173,6 +2185,15 @@ export default function Portal({ onViewChange }) {
                     <span>TALK TO EXPERT</span>
                   </button>
                 </div>
+              </div>
+
+              {/* Hero scroll indicator */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '16px', animation: 'fadeIn 2s ease 1.5s both' }}>
+                <span style={{ fontSize: '0.68rem', color: 'rgba(197,168,128,0.6)', letterSpacing: '0.1em', fontFamily: "'Montserrat', sans-serif", textTransform: 'uppercase' }}>Discover Properties</span>
+                <div style={{ width: '1px', height: '16px', background: 'rgba(197,168,128,0.3)' }} />
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(197,168,128,0.55)" strokeWidth="1.5" style={{ animation: 'float 2s ease-in-out infinite' }}>
+                  <path d="M12 5v14M5 12l7 7 7-7" />
+                </svg>
               </div>
 
               {/* Structured Floating Search Panel */}
@@ -2535,50 +2556,49 @@ export default function Portal({ onViewChange }) {
             </div>
           </section>
 
-          {/* ⚜️ Premium Builders Alliance grayscale gallery */}
-          <section className="builder-showcase-section" style={{ padding: '40px 0 60px 0' }}>
-            <div style={{ maxWidth: '94%', margin: '0 auto', textAlign: 'center' }}>
-              <span className="hero-gold-badge" style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', color: '#E6C35C', marginBottom: '8px', display: 'inline-block' }}>
-                TRUSTED BY INDIA'S LEADING BUILDERS
-              </span>
-              <div style={{ width: '40px', height: '2px', background: '#E6C35C', margin: '8px auto 30px auto', borderRadius: '2px' }} />
-              
-              <div className="builder-showcase-grid" style={{
-                display: 'flex',
-                justifyContent: 'space-between',
+          {/* ⚜️ Premium Builder Alliance — Thin Editorial Strip */}
+          <section className="builder-showcase-section" style={{ 
+            padding: '32px 0 48px 0',
+            borderBottom: '1px solid rgba(255,255,255,0.05)'
+          }}>
+            <div style={{ maxWidth: '94%', margin: '0 auto' }}>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center',
                 alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '40px 30px',
-                opacity: 0.85
+                gap: '40px',
+                flexWrap: 'wrap'
               }}>
-                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <strong style={{ color: '#fff', fontSize: '1.35rem', letterSpacing: '0.06em' }}>LODHA</strong>
-                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>BUILDING A BETTER LIFE</span>
-                </div>
-                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <strong style={{ color: '#fff', fontSize: '1.35rem', fontStyle: 'italic', fontFamily: 'serif' }}>godrej</strong>
-                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>PROPERTIES</span>
-                </div>
-                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <strong style={{ color: '#fff', fontSize: '1.35rem', letterSpacing: '0.08em' }}>VTP REALTY</strong>
-                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>VTP TP</span>
-                </div>
-                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <strong style={{ color: '#fff', fontSize: '1.3rem', letterSpacing: '0.06em' }}>KOLTE-PATIL</strong>
-                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.06em' }}>Creation, not Construction.</span>
-                </div>
-                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <strong style={{ color: '#fff', fontSize: '1.25rem', letterSpacing: '0.05em' }}>SHAPOORJI PALLONJI</strong>
-                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>Real Estate</span>
-                </div>
-                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <strong style={{ color: '#fff', fontSize: '1.35rem', letterSpacing: '0.06em' }}>GERA</strong>
-                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>Let's Outdo</span>
-                </div>
-                <div className="builder-logo-item" style={{ fontSize: '1.15rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <strong style={{ color: '#fff', fontSize: '1.35rem', letterSpacing: '0.06em' }}>NYATI</strong>
-                  <span style={{ fontSize: '0.52rem', color: '#888', letterSpacing: '0.1em' }}>BUILDING RELATIONSHIPS</span>
-                </div>
+                <span style={{ 
+                  fontSize: '0.6rem', 
+                  color: 'rgba(255,255,255,0.25)',
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 700,
+                  whiteSpace: 'nowrap'
+                }}>Authorized Advisors For</span>
+                {['LODHA', 'KOLTE-PATIL', 'GODREJ', 'VTP REALTY', 'SHAPOORJI', 'PANCHSHIL'].map(name => (
+                  <span key={name} style={{
+                    fontSize: '0.8rem',
+                    fontWeight: 800,
+                    color: 'rgba(255,255,255,0.22)',
+                    letterSpacing: '0.1em',
+                    fontFamily: "'Cinzel', serif",
+                    transition: 'color 0.3s ease, text-shadow 0.3s ease',
+                    cursor: 'default'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.color = 'rgba(197,168,128,0.7)';
+                    e.currentTarget.style.textShadow = '0 0 12px rgba(197,168,128,0.2)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.22)';
+                    e.currentTarget.style.textShadow = 'none';
+                  }}>
+                    {name}
+                  </span>
+                ))}
               </div>
             </div>
           </section>
@@ -2700,38 +2720,11 @@ export default function Portal({ onViewChange }) {
         )}
       </div>
 
-      {/* Corporate Statistics Showcase */}
-      <section className="stats-showcase">
-        <div className="stats-grid">
-          <div className="stat-item" style={{ transform: 'none', transition: 'all 0.3s ease' }}>
-            <h4 style={{ fontSize: '2.2rem', color: 'var(--gold-primary)', textShadow: '0 0 10px rgba(212,175,55,0.15)' }}>₹{stats.inventory}+ Cr</h4>
-            <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Curated Inventory</p>
-          </div>
-          <div className="stat-item">
-            <h4 style={{ fontSize: '2.2rem', color: 'var(--gold-primary)', textShadow: '0 0 10px rgba(212,175,55,0.15)' }}>{stats.verified}%</h4>
-            <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Verified Availability</p>
-          </div>
-          <div className="stat-item">
-            <h4 style={{ fontSize: '2.2rem', color: 'var(--gold-primary)', textShadow: '0 0 10px rgba(212,175,55,0.15)' }}>{stats.families}+</h4>
-            <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Pune Families Guided</p>
-          </div>
-          <div className="stat-item">
-            <h4 style={{ fontSize: '2.2rem', color: '#2ec4b6', textShadow: '0 0 10px rgba(46,196,182,0.15)' }}>0%</h4>
-            <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Developer Brokerage</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Authorized Developer Associations */}
-      <div className="builder-partners-showcase">
-        <span className="partners-label">Authorized Portfolio Advisors for Pune's Tier-1 Developers</span>
-        <div className="partners-list">
-          <span className="partner-name">VTP REALTY</span>
-          <span className="partner-name">KOLTE-PATIL</span>
-          <span className="partner-name">GODREJ PROPERTIES</span>
-          <span className="partner-name">PANCHSHIL</span>
-          <span className="partner-name">KASTURI</span>
-        </div>
+      {/* Editorial Section Divider */}
+      <div style={{ maxWidth: '94%', margin: '0 auto 48px auto', display: 'flex', alignItems: 'center', gap: '20px', padding: '0 20px' }}>
+        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(197,168,128,0.2))' }} />
+        <span style={{ fontSize: '0.62rem', color: 'rgba(197,168,128,0.45)', letterSpacing: '0.15em', textTransform: 'uppercase', fontFamily: "'Cinzel', serif", whiteSpace: 'nowrap' }}>Live Market Intelligence</span>
+        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(197,168,128,0.2))' }} />
       </div>
 
       {/* Interactive Corridor Cards Grid with Live Metrics */}
@@ -4183,6 +4176,20 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* Portal Footer */}
+
+      {/* Sticky Floating Advisory CTA */}
+      {!selectedPropertyDetail && !selectedSocietyDetail && !selectedBuilderDetail && !selectedLocalityDetail && !selectedBlogDetail && (
+        <button
+          onClick={() => handleOpenInquiry(properties[0] || allRawProperties[0] || { id: null, title: 'Advisory Consultation', price: '0', location: 'HINJEWADI', transactionType: 'BUY' })}
+          title="Schedule Portfolio Advisory"
+          style={{ position: 'fixed', bottom: '100px', right: '24px', zIndex: 990, background: 'linear-gradient(135deg, #0f1c2e 0%, #09111f 100%)', border: '1px solid rgba(197,168,128,0.4)', borderRadius: '50px', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', boxShadow: '0 8px 28px rgba(0,0,0,0.5)', transition: 'all 0.3s ease' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.7)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.4)'; }}
+        >
+          <Calendar size={15} color="#C5A880" />
+          <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.72rem', fontWeight: 700, color: '#C5A880', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Schedule Advisory</span>
+        </button>
+      )}
       <PortalFooter />
 
     </div>
