@@ -3,6 +3,7 @@ package com.realestate.twentyfourk.config;
 import com.realestate.twentyfourk.security.JwtAuthenticationFilter;
 import com.realestate.twentyfourk.security.RateLimitingFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -103,7 +104,7 @@ public class SecurityConfig {
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
-            .addFilterBefore(rateLimitingFilter, JwtAuthenticationFilter.class)
+            .addFilterBefore(rateLimitingFilter, HeaderWriterFilter.class)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
