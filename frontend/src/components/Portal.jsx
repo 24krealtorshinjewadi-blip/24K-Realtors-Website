@@ -238,7 +238,6 @@ export default function Portal({ onViewChange }) {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [notification, setNotification] = useState(null);
   const [exclusiveTab, setExclusiveTab] = useState('BUY');
-  const [editorialTab, setEditorialTab] = useState('signature');
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [aiStep, setAiStep] = useState(1);
   const [advisoryTab, setAdvisoryTab] = useState('buyer');
@@ -809,47 +808,16 @@ export default function Portal({ onViewChange }) {
   };
 
   const renderCuratedCarousels = () => {
-    const editorialCollections = {
-      signature: {
-        label: '⚜️ Signature Collection',
-        subtitle: "Editor's picks — verified, exclusive, and hand-curated",
-        data: allRawProperties.filter(p => p.exclusiveDeal || p.verifiedListing)
-      },
-      penthouse: {
-        label: '🏛 Penthouse Portfolio',
-        subtitle: 'Off-market sky residences and ultra-luxury configurations',
-        data: allRawProperties.filter(p =>
-          p.title.toLowerCase().includes('penthouse') ||
-          p.description?.toLowerCase().includes('penthouse') ||
-          p.bedrooms >= 4
-        )
-      },
-      investment: {
-        label: '📈 Investment Estates',
-        subtitle: 'High-yield areas with strong capital appreciation index',
-        data: allRawProperties.filter(p =>
-          p.location === 'BANER' || p.location === 'MAHALUNGE' ||
-          p.location === 'WAKAD' || p.propertyType === 'COMMERCIAL'
-        )
-      }
-    };
-    const activeCol = editorialCollections[editorialTab];
-    const displayData = activeCol?.data || [];
+    // Show all verified/exclusive properties directly — no sub-tabs
+    const displayData = allRawProperties.filter(p => p.exclusiveDeal || p.verifiedListing);
     return (
       <div style={{ paddingBottom: '20px' }}>
         <div style={{ marginBottom: '32px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
             <div>
               <span style={{ fontSize: '0.65rem', color: 'rgba(197,168,128,0.6)', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif", fontWeight: 700, display: 'block', marginBottom: '8px' }}>Curated Portfolio</span>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)', color: '#fff', margin: 0, fontWeight: 700, letterSpacing: '-0.01em' }}>{activeCol?.label}</h2>
-              <p style={{ fontFamily: "'Playfair Display', serif", fontStyle: 'italic', color: 'rgba(255,255,255,0.5)', fontSize: '0.92rem', marginTop: '6px', marginBottom: 0 }}>{activeCol?.subtitle}</p>
-            </div>
-            <div style={{ display: 'flex', background: 'rgba(7,15,30,0.6)', border: '1px solid rgba(197,168,128,0.15)', borderRadius: '50px', padding: '4px', gap: '2px', flexShrink: 0 }}>
-              {Object.entries(editorialCollections).map(([key, col]) => (
-                <button key={key} onClick={() => setEditorialTab(key)} type="button" style={{ background: editorialTab === key ? 'linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))' : 'transparent', border: editorialTab === key ? '1px solid rgba(197,168,128,0.35)' : '1px solid transparent', color: editorialTab === key ? '#E6C35C' : 'rgba(255,255,255,0.45)', padding: '8px 18px', borderRadius: '50px', fontSize: '0.72rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.05em', cursor: 'pointer', transition: 'all 0.25s ease', whiteSpace: 'nowrap' }}>
-                  {col.label.split(' ').slice(1).join(' ')}
-                </button>
-              ))}
+              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)', color: '#fff', margin: 0, fontWeight: 700, letterSpacing: '-0.01em' }}>⚜️ Signature Collection</h2>
+              <p style={{ fontFamily: "'Playfair Display', serif", fontStyle: 'italic', color: 'rgba(255,255,255,0.5)', fontSize: '0.92rem', marginTop: '6px', marginBottom: 0 }}>Editor&apos;s picks — verified, exclusive, and hand-curated</p>
             </div>
           </div>
           <div style={{ marginTop: '24px', height: '1px', background: 'linear-gradient(to right, rgba(197,168,128,0.3), rgba(197,168,128,0.06), transparent)' }} />
@@ -860,7 +828,7 @@ export default function Portal({ onViewChange }) {
           <>
             <div style={{ position: 'relative' }}>
               <div id="editorial-carousel-track" style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '8px' }}>
-                {displayData.slice(0, 8).map(property => (
+                {displayData.slice(0, 10).map(property => (
                   <div key={property.id} style={{ flexShrink: 0, width: 'clamp(280px, 25vw, 360px)' }}>
                     <PropertyCard property={property} isHnwiMode={isHnwiMode} isCompared={selectedForCompare.some(p => p.id === property.id)} isWishlisted={wishlistIds.includes(property.id)} formatPrice={formatPrice} onToggleCompare={handleToggleCompare} onToggleWishlist={handleToggleWishlist} onOpenRera={handleOpenReraDrawer} onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 300, behavior: 'smooth' }); }} />
                   </div>
@@ -872,16 +840,29 @@ export default function Portal({ onViewChange }) {
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '36px' }}>
-              <button onClick={() => { if (editorialTab === 'penthouse') handleCollectionChange('PENTHOUSE'); else if (editorialTab === 'investment') handleCollectionChange('COMMERCIAL'); else handleCollectionChange('ALL'); }} type="button" style={{ background: 'transparent', border: '1px solid rgba(197,168,128,0.35)', color: '#C5A880', padding: '12px 36px', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.1em', cursor: 'pointer', textTransform: 'uppercase', transition: 'all 0.3s ease', display: 'inline-flex', alignItems: 'center', gap: '8px' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(197,168,128,0.06)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.6)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.35)'; }}>View All Properties <ArrowRight size={13} /></button>
+              <button
+                onClick={() => handleCollectionChange('ALL')}
+                type="button"
+                style={{ background: 'transparent', border: '1px solid rgba(197,168,128,0.35)', color: '#C5A880', padding: '12px 36px', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.1em', cursor: 'pointer', textTransform: 'uppercase', transition: 'all 0.3s ease', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(197,168,128,0.06)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.6)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.35)'; }}
+              >
+                View All Properties <ArrowRight size={13} />
+              </button>
             </div>
           </>
         )}
       </div>
     );
   };
-  const handleCollectionChangenge = (collection) => {
+  const handleCollectionChange = (collection) => {
     setActiveCollection(collection);
     setPage(0);
+    // When user picks any specific tab, scroll listings into view
+    if (collection !== 'ALL') {
+      const el = document.getElementById('listings-anchor');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const handleTabChange = (tab) => {
@@ -2820,7 +2801,7 @@ export default function Portal({ onViewChange }) {
                 </div>
               ) : error ? (
                 <div className="error-card">{error}</div>
-              ) : (!isSearchActive && activeCollection === 'ALL') ? (
+              ) : (!isSearchActive && activeCollection === 'ALL' && properties.length > 0) ? (
                 renderCuratedCarousels()
               ) : properties.length === 0 ? (
                 <div className="empty-state">
