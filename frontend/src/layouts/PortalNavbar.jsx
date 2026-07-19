@@ -270,7 +270,7 @@ export default function PortalNavbar({
               }}
             >
               <Calendar size={13} />
-              <span>BOOK SITE VISIT</span>
+              <span>ENQUIRE NOW</span>
             </button>
 
 
@@ -326,8 +326,8 @@ export default function PortalNavbar({
           >
             <Calendar size={18} color="#d4af37" />
             <div className="drawer-item-text">
-              <strong>VIP Chauffeur Visit</strong>
-              <span>Book luxurious site pick-up and drop</span>
+              <strong>Schedule Site Visit</strong>
+              <span>Request pricing & tour booking</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </button>
