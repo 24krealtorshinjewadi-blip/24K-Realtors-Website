@@ -700,7 +700,13 @@ export default function Portal({ onViewChange }) {
           p.id === 'prop-22' || 
           p.id === 21 ||
           p.id === 22 ||
-          (p.title && (p.title.toLowerCase().includes('ivara') || p.title.toLowerCase().includes('vyomora')))
+          (p.title && (
+            p.title.toLowerCase().includes('ivara') || 
+            p.title.toLowerCase().includes('vyomora') ||
+            p.title.toLowerCase().includes('joyville') ||
+            p.title.toLowerCase().includes('shapoorji') ||
+            p.title.toLowerCase().includes('elements')
+          ))
         );
         setProperties(newLaunches);
         setTotalPages(1);
