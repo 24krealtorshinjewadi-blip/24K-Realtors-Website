@@ -735,6 +735,8 @@ export default function Portal({ onViewChange }) {
       } else if (activeCollection === 'READY_TO_MOVE') {
         queryFilters.propertyType = 'RESIDENTIAL';
         queryFilters.transactionType = 'BUY';
+      } else if (activeCollection === 'RENT') {
+        queryFilters.transactionType = 'RENT';
       } else if (activeCollection === 'HINJEWADI_RENTALS') {
         queryFilters.location = 'HINJEWADI';
         queryFilters.transactionType = 'RENT';
@@ -2804,6 +2806,7 @@ export default function Portal({ onViewChange }) {
                     { id: 'COMMERCIAL', label: 'Commercial', icon: '\ud83c\udfe6', count: allRawProperties.filter(p => p.propertyType === 'COMMERCIAL').length },
                     { id: 'READY', label: 'Ready To Move', icon: '\u2705', count: allRawProperties.filter(p => p.status === 'AVAILABLE' && p.transactionType === 'BUY').length },
                     { id: 'NEW', label: 'New Launches', icon: '\ud83d\ude80', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('vyomora') || (p.title || '').toLowerCase().includes('ivara') || (p.title || '').toLowerCase().includes('joyville') || (p.title || '').toLowerCase().includes('elements')).length },
+                    { id: 'RENT', label: 'For Rent', icon: '🔑', count: allRawProperties.filter(p => p.transactionType === 'RENT').length },
                     { id: 'WISHLIST', label: 'Saved', icon: '\u2665', count: wishlistIds.length },
                   ].map(({ id, label, icon, count }) => (
                     <button
