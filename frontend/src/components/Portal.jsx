@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { apiService } from '../services/apiService';
 import { chatWithVisitor } from '../services/geminiService';
 import { 
@@ -3635,113 +3635,42 @@ export default function Portal({ onViewChange }) {
           </div>
 
           {/* Seller Exclusive Mandate Desk */}
-          <div id="seller-mandate-anchor" className="seller-mandate-premium" style={{ margin: 0, height: '100%' }}>
-            <div className="seller-mandate-header">
-              <div className="seller-mandate-icon-ring">
-                <Building size={20} />
+          <div id="seller-mandate-anchor" className="seller-mandate-premium" style={{ margin: 0, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '40px 30px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(7,15,30,0.95) 0%, rgba(15,28,46,0.9) 100%)', border: '1px solid rgba(197,168,128,0.25)', borderRadius: '16px' }}>
+            <div className="seller-mandate-header" style={{ marginBottom: '24px' }}>
+              <div className="seller-mandate-icon-ring" style={{ margin: '0 auto 16px auto', width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(197,168,128,0.08)', border: '1px solid rgba(197,168,128,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Building size={24} color="#E6C35C" />
               </div>
-              <div>
-                <h3 className="seller-mandate-title">Seller Advisory Mandate</h3>
-                <p className="seller-mandate-subtitle">List Your Property • 0% Brokerage</p>
-              </div>
+              <h3 className="seller-mandate-title" style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', color: '#fff', margin: '0 0 6px 0', letterSpacing: '0.04em' }}>Seller / Landlord Mandate</h3>
+              <p className="seller-mandate-subtitle" style={{ fontSize: '0.75rem', color: '#E6C35C', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>List Your Property • 0% Brokerage</p>
             </div>
-            <p className="seller-mandate-desc">
-              Direct access to premium verified buyers, institutional property funds, and HNWI investors in Baner, Wakad, and Hinjewadi.
+            
+            <p className="seller-mandate-desc" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '32px' }}>
+              Direct access to premium verified buyers, institutional property funds, and HNWI investors in Baner, Wakad, and Hinjewadi. List with photos and video tour.
             </p>
-            <form onSubmit={handleSellerSubmit} className="seller-mandate-form">
-              <div className="form-group">
-                <label className="seller-form-label">Owner Name</label>
-                <input 
-                  type="text" 
-                  name="name"
-                  className="form-input seller-input" 
-                  required 
-                  placeholder="Full Name" 
-                  value={sellerForm.name} 
-                  onChange={handleSellerFormChange} 
-                />
-              </div>
-              <div className="seller-form-grid">
-                <div className="form-group">
-                  <label className="seller-form-label">WhatsApp Mobile</label>
-                  <input 
-                    type="tel" 
-                    name="phone"
-                    className="form-input seller-input" 
-                    required 
-                    placeholder="+91 XXXXX XXXXX" 
-                    value={sellerForm.phone} 
-                    onChange={handleSellerFormChange} 
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="seller-form-label">Owner Email</label>
-                  <input 
-                    type="email" 
-                    name="email"
-                    className="form-input seller-input" 
-                    required 
-                    placeholder="your@email.com" 
-                    value={sellerForm.email} 
-                    onChange={handleSellerFormChange} 
-                  />
-                </div>
-              </div>
-              <div className="seller-form-grid">
-                <div className="form-group">
-                  <label className="seller-form-label">Project / BHK</label>
-                  <input 
-                    type="text" 
-                    name="propertyTitle"
-                    className="form-input seller-input" 
-                    required 
-                    placeholder="e.g. Blue Ridge 3 BHK" 
-                    value={sellerForm.propertyTitle} 
-                    onChange={handleSellerFormChange} 
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="seller-form-label">Location</label>
-                  <select 
-                    name="location" 
-                    className="form-input seller-input" 
-                    value={sellerForm.location} 
-                    onChange={handleSellerFormChange}
-                  >
-                    <option value="HINJEWADI">Hinjewadi</option>
-                    <option value="BANER">Baner</option>
-                    <option value="WAKAD">Wakad</option>
-                    <option value="BALEWADI">Balewadi</option>
-                    <option value="TATHAWADE">Tathawade</option>
-                    <option value="MAHALUNGE">Mahalunge</option>
-                  </select>
-                </div>
-              </div>
-              <div className="form-group">
-                <label className="seller-form-label">Expected Valuation</label>
-                <select name="expectedPrice" className="form-input seller-input" required
-                  value={sellerForm.expectedPrice} onChange={handleSellerFormChange}>
-                  <option value="">Select Price Range</option>
-                  <option value="3000000">₹30 Lakh – ₹50 Lakh</option>
-                  <option value="5000000">₹50 Lakh – ₹75 Lakh</option>
-                  <option value="7500000">₹75 Lakh – ₹1 Crore</option>
-                  <option value="10000000">₹1 Crore – ₹1.5 Crore</option>
-                  <option value="15000000">₹1.5 Crore – ₹2 Crore</option>
-                  <option value="20000000">₹2 Crore – ₹3 Crore</option>
-                  <option value="30000000">₹3 Crore+</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="seller-form-label">Property Highlights</label>
-                <textarea name="description" className="form-input seller-input" rows="2"
-                  placeholder="e.g. 12th floor, east-facing, modular kitchen, 2 covered parking, ready possession..."
-                  value={sellerForm.description} onChange={handleSellerFormChange} />
-              </div>
-              <button type="submit" className="btn-seller-mandate" disabled={submitLoading}>
-                {submitLoading ? 'Registering...' : '📋 Register Sale Mandate — 0% Brokerage'}
-              </button>
-              <p style={{ textAlign: 'center', fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', marginTop: '8px' }}>Your details are shared only with verified 24K Realtors advisors · MahaRERA compliant</p>
-            </form>
+
+            <button 
+              onClick={() => onViewChange && onViewChange('list-property')}
+              style={{
+                width: '100%',
+                background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                border: 'none',
+                color: '#040814',
+                padding: '14px 28px',
+                borderRadius: '12px',
+                fontSize: '0.85rem',
+                fontWeight: 800,
+                fontFamily: "'Montserrat', sans-serif",
+                letterSpacing: '0.06em',
+                cursor: 'pointer',
+                boxShadow: '0 6px 20px rgba(197,168,128,0.25)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(197,168,128,0.35)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(197,168,128,0.25)'; }}
+            >
+              Start Listing Mandate →
+            </button>
+            <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '16px' }}>MahaRERA compliant · Takes less than 2 minutes</p>
           </div>
         </div>
       </section>

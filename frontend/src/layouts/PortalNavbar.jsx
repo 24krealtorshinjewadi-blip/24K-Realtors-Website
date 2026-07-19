@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
   UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building,
@@ -199,28 +199,16 @@ export default function PortalNavbar({
               PROJECTS
             </button>
             <button 
-              className={activeSection === 'societies' ? 'active' : ''} 
-              onClick={() => onSectionChange && onSectionChange('societies')}
-            >
-              SOCIETIES
-            </button>
-            <button 
-              className={activeSection === 'builders' ? 'active' : ''} 
-              onClick={() => onSectionChange && onSectionChange('builders')}
-            >
-              BUILDERS
-            </button>
-            <button 
               className={activeSection === 'listings' && filters?.propertyType === 'COMMERCIAL' ? 'active' : ''} 
               onClick={() => onApplyMegaFilter && onApplyMegaFilter({ propertyType: 'COMMERCIAL' }, 'listings', null, 'properties-sale')}
             >
               COMMERCIAL
             </button>
             <button 
-              className={activeSection === 'blogs' ? 'active' : ''} 
-              onClick={() => onSectionChange && onSectionChange('blogs')}
+              onClick={() => onViewChange && onViewChange('list-property')}
+              style={{ color: '#E6C35C', fontWeight: 'bold' }}
             >
-              BLOGS
+              ⚜️ SELL/RENT
             </button>
             <button 
               onClick={() => {
@@ -388,14 +376,18 @@ export default function PortalNavbar({
 
           <div className="drawer-section-title">📄 ADVISORY SERVICES</div>
           
-          <a href="#seller-mandate-anchor" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onViewChange && onViewChange('list-property'); }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left', cursor: 'pointer' }}
+          >
             <FileText size={18} color="#d4af37" />
             <div className="drawer-item-text">
-              <strong>Sell Your Property</strong>
-              <span>List directly with 24K advisory desk</span>
+              <strong>Sell / Rent Your Property</strong>
+              <span>List directly on our premium owner desk</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
-          </a>
+          </button>
 
           <a href="#rera-compliance" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
             <ShieldCheck size={18} color="#2ec4b6" />

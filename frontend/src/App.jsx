@@ -11,6 +11,7 @@ import './App.css';
 const Portal = lazy(() => import('./components/Portal'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 const LoginPage = lazy(() => import('./components/LoginPage'));   // new SaaS full-page login
+const ListPropertyPage = lazy(() => import('./components/ListPropertyPage'));
 const AiAssistantPanel = lazy(() => import('./components/AiAssistantPanel'));
 
 // Full-screen skeleton loader for Suspense fallback
@@ -176,6 +177,8 @@ export default function App() {
               <LoginPage onSuccess={(data) => {
                 setCurrentView('dashboard');
               }} />
+            ) : currentView === 'list-property' ? (
+              <ListPropertyPage onBack={() => setCurrentView('portal')} />
             ) : currentView === 'portal' ? (
               <Portal onViewChange={handleViewChange} />
             ) : (
