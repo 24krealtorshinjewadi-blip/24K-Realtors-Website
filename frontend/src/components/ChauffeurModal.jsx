@@ -94,10 +94,52 @@ export default function ChauffeurModal({ isOpen, property, onClose, onSubmit, ch
                   style={{ background: '#070f1e', borderColor: 'var(--border-gold)' }}
                 >
                   <option value="MAYBACH">Mercedes-Maybach S-Class (VIP default)</option>
-                  <option value="BMW7">BMW 7 Series 740Li M-Sport</option>
-                  <option value="AUDIA8">Audi A8 L (Executive Edition)</option>
-                  <option value="TESLAX">Tesla Model X (Private HNWI Office)</option>
+                  <option value="TESLAS">Tesla Model S Plaid (0-60 mph: 1.99s)</option>
+                  <option value="TESLAX">Tesla Model X Plaid (Space Cabin, 6-Seater)</option>
+                  <option value="CYBERTRUCK">Tesla CyberTruck Cyberbeast (VIP Bulletproof Vibe)</option>
                 </select>
+              </div>
+
+              {/* Dynamic Tech Spec HUD Sheet */}
+              <div style={{
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(197,168,128,0.2)',
+                borderRadius: '8px',
+                padding: '12px 16px',
+                fontSize: '0.78rem',
+                fontFamily: "'Montserrat', sans-serif"
+              }}>
+                <div style={{ textTransform: 'uppercase', fontSize: '0.62rem', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.4)', fontWeight: 800, marginBottom: '6px' }}>
+                  ⚡ Fleet Specifications HUD
+                </div>
+                {(chauffeurForm.luxuryCarModel === 'TESLAS') && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff' }}>
+                    <div><strong>0-60 mph:</strong> 1.99s</div>
+                    <div><strong>Top Speed:</strong> 200 mph</div>
+                    <div><strong>Power:</strong> 1,020 hp</div>
+                  </div>
+                )}
+                {(chauffeurForm.luxuryCarModel === 'CYBERTRUCK') && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff' }}>
+                    <div><strong>0-60 mph:</strong> 2.6s</div>
+                    <div><strong>Armor:</strong> Shatter-Proof</div>
+                    <div><strong>Power:</strong> 845 hp</div>
+                  </div>
+                )}
+                {(chauffeurForm.luxuryCarModel === 'TESLAX') && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff' }}>
+                    <div><strong>0-60 mph:</strong> 2.5s</div>
+                    <div><strong>Doors:</strong> Falcon Wing</div>
+                    <div><strong>Power:</strong> 1,020 hp</div>
+                  </div>
+                )}
+                {(!chauffeurForm.luxuryCarModel || chauffeurForm.luxuryCarModel === 'MAYBACH') && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff' }}>
+                    <div><strong>Cabin:</strong> Active Noise Cancel</div>
+                    <div><strong>Seats:</strong> Calf Rest Recline</div>
+                    <div><strong>Suspension:</strong> Magic Body Control</div>
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
@@ -113,7 +155,7 @@ export default function ChauffeurModal({ isOpen, property, onClose, onSubmit, ch
               </div>
 
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                ℹ️ Commute times: Hinjewadi/Baner pickups take approx. 20-30 mins to site locations via the prime corridor bypass highway.
+                ℹ️ Commute times: Pickups take approx. 20-30 mins to site locations via the prime corridor bypass highway.
               </div>
             </div>
           )}

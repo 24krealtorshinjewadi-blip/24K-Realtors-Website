@@ -239,6 +239,9 @@ export default function Portal({ onViewChange }) {
   const [notification, setNotification] = useState(null);
   const [exclusiveTab, setExclusiveTab] = useState('BUY');
   const [showAllGrid, setShowAllGrid] = useState(false);
+  const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
+  const [spotlightQuery, setSpotlightQuery] = useState('');
+  const [viewMode, setViewMode] = useState('GRID'); // GRID | MAP
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [aiStep, setAiStep] = useState(1);
   const [advisoryTab, setAdvisoryTab] = useState('buyer');
@@ -271,6 +274,86 @@ export default function Portal({ onViewChange }) {
     setSelectedLocalityDetail(null);
     setSelectedBlogDetail(null);
   }, [activeSection]);
+
+  // Spotlight Keyboard Shortcut & Natural Query Parser
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSpotlightOpen(prev => !prev);
+      }
+      if (e.key === 'Escape') {
+        setIsSpotlightOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const parseNaturalQuery = (queryStr) => {
+    const q = queryStr.toLowerCase().trim();
+    let parsedFilters = {
+      location: '',
+      propertyType: '',
+      transactionType: '',
+      bedrooms: '',
+      maxPrice: '',
+      query: ''
+    };
+
+    // Parse location
+    const locations = {
+      'baner': 'BANER',
+      'hinjewadi': 'HINJEWADI',
+      'wakad': 'WAKAD',
+      'balewadi': 'BALEWADI',
+      'tathawade': 'TATHAWADE',
+      'mahalunge': 'MAHALUNGE'
+    };
+    for (const [key, val] of Object.entries(locations)) {
+      if (q.includes(key)) {
+        parsedFilters.location = val;
+      }
+    }
+
+    // Parse BHK/Bedrooms
+    if (q.includes('1 bhk') || q.includes('1bhk')) parsedFilters.bedrooms = '1';
+    else if (q.includes('2 bhk') || q.includes('2bhk')) parsedFilters.bedrooms = '2';
+    else if (q.includes('3 bhk') || q.includes('3bhk')) parsedFilters.bedrooms = '3';
+    else if (q.includes('4 bhk') || q.includes('4bhk') || q.includes('villa') || q.includes('penthouse')) parsedFilters.bedrooms = '4';
+
+    // Parse propertyType
+    if (q.includes('commercial') || q.includes('office') || q.includes('shop') || q.includes('workspace') || q.includes('showroom')) {
+      parsedFilters.propertyType = 'COMMERCIAL';
+    } else if (q.includes('apartment') || q.includes('flat') || q.includes('residence') || q.includes('home') || q.includes('villa') || q.includes('penthouse')) {
+      parsedFilters.propertyType = 'RESIDENTIAL';
+    }
+
+    // Parse transactionType
+    if (q.includes('rent') || q.includes('lease')) {
+      parsedFilters.transactionType = 'RENT';
+    } else if (q.includes('buy') || q.includes('purchase') || q.includes('sale') || q.includes('sell')) {
+      parsedFilters.transactionType = 'BUY';
+    }
+
+    // Parse price
+    const crMatch = q.match(/(?:under|below|max|upto)?\s*(\d+(?:\.\d+)?)\s*(?:cr|crore)/);
+    if (crMatch) {
+      parsedFilters.maxPrice = String(parseFloat(crMatch[1]) * 10000000);
+    } else {
+      const lMatch = q.match(/(?:under|below|max|upto)?\s*(\d+(?:\.\d+)?)\s*(?:l|lakh|lakhs)/);
+      if (lMatch) {
+        parsedFilters.maxPrice = String(parseFloat(lMatch[1]) * 100000);
+      }
+    }
+
+    // If nothing structural is matched but there is query text, set it as keyword search
+    if (!parsedFilters.location && !parsedFilters.bedrooms && !parsedFilters.propertyType && !parsedFilters.transactionType && !parsedFilters.maxPrice) {
+      parsedFilters.query = queryStr;
+    }
+
+    return parsedFilters;
+  };
 
   const [sellerForm, setSellerForm] = useState({
     name: '',
@@ -810,6 +893,77 @@ export default function Portal({ onViewChange }) {
     }
   };
 
+  const renderInteractiveVectorMap = () => {
+    const mapNodes = [
+      { id: 'BANER', name: 'Baner', x: 380, y: 350, price: '11.5K', growth: '+16%' },
+      { id: 'BALEWADI', name: 'Balewadi', x: 340, y: 280, price: '10.2K', growth: '+13%' },
+      { id: 'WAKAD', name: 'Wakad', x: 230, y: 200, price: '8.2K', growth: '+14%' },
+      { id: 'TATHAWADE', name: 'Tathawade', x: 120, y: 130, price: '7.2K', growth: '+15%' },
+      { id: 'HINJEWADI', name: 'Hinjewadi', x: 100, y: 320, price: '7.8K', growth: '+11%' },
+      { id: 'MAHALUNGE', name: 'Mahalunge', x: 200, y: 360, price: '6.9K', growth: '+18%' }
+    ];
+
+    return (
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", position: "relative" }}>
+        <div style={{ padding: "12px 20px", borderBottom: "1px solid rgba(197, 168, 128, 0.15)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(7, 15, 30, 0.6)" }}>
+          <span style={{ fontSize: "0.68rem", fontFamily: "\x27Montserrat\x27, sans-serif", fontWeight: 800, color: "#E6C35C", letterSpacing: "0.08em" }}>
+            📡 PUNE WEST SATELLITE COMMAND
+          </span>
+          <span style={{ fontSize: "0.62rem", background: "rgba(255,255,255,0.06)", borderRadius: "4px", padding: "2px 6px", color: "rgba(255,255,255,0.4)", fontWeight: 600 }}>
+            LIVE MAP STATUS
+          </span>
+        </div>
+        <div style={{ flex: 1, position: "relative", background: "#040814" }}>
+          <svg viewBox="0 0 500 500" style={{ width: "100%", height: "100%", background: "radial-gradient(circle at center, #071226 0%, #03060c 100%)" }}>
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.015)" strokeWidth="1" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+            <line x1="120" y1="130" x2="230" y2="200" stroke="rgba(197,168,128,0.2)" strokeWidth="3" strokeDasharray="6,4" />
+            <line x1="230" y1="200" x2="340" y2="280" stroke="rgba(197,168,128,0.2)" strokeWidth="3" strokeDasharray="6,4" />
+            <line x1="340" y1="280" x2="380" y2="350" stroke="rgba(197,168,128,0.2)" strokeWidth="3" strokeDasharray="6,4" />
+            <line x1="100" y1="320" x2="230" y2="200" stroke="rgba(197,168,128,0.15)" strokeWidth="2" strokeDasharray="4,4" />
+            <line x1="200" y1="360" x2="100" y2="320" stroke="rgba(197,168,128,0.15)" strokeWidth="2" strokeDasharray="4,4" />
+            <line x1="200" y1="360" x2="230" y2="200" stroke="rgba(197,168,128,0.15)" strokeWidth="2" strokeDasharray="4,4" />
+            <text x="390" y="80" fill="rgba(255,255,255,0.12)" fontSize="9" fontFamily="monospace">GRID_SEC_E</text>
+            <text x="40" y="440" fill="rgba(255,255,255,0.12)" fontSize="9" fontFamily="monospace">GRID_SEC_W</text>
+            {mapNodes.map((node) => {
+              const isActive = filters.location === node.id;
+              const nodePropsCount = allRawProperties.filter(p => p.location === node.id).length;
+              return (
+                <g
+                  key={node.id}
+                  onClick={() => {
+                    setFilters(prev => ({ ...prev, location: isActive ? "" : node.id }));
+                    setPage(0);
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <circle cx={node.x} cy={node.y} r={isActive ? "24" : "16"} fill="none" stroke={isActive ? "#E6C35C" : "rgba(197, 168, 128, 0.3)"} strokeWidth="1.5" strokeDasharray={isActive ? "none" : "3,3"} style={{ transition: "all 0.3s ease" }} />
+                  <circle cx={node.x} cy={node.y} r={isActive ? "9" : "6"} fill={isActive ? "#E6C35C" : "rgba(7, 15, 30, 0.9)"} stroke={isActive ? "none" : "#C5A880"} strokeWidth="2" style={{ transition: "all 0.3s ease" }} />
+                  {isActive && <circle cx={node.x} cy={node.y} r="3.5" fill="#040814" />}
+                  <text x={node.x} y={node.y - (isActive ? 30 : 22)} textAnchor="middle" fill={isActive ? "#E6C35C" : "#A0AEC0"} fontSize={isActive ? "10.5" : "9"} fontWeight={isActive ? "700" : "600"} fontFamily="\x27Montserrat\x27, sans-serif" style={{ transition: "all 0.3s ease", textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
+                    {node.name.toUpperCase()} ({nodePropsCount})
+                  </text>
+                  <text x={node.x} y={node.y + 22} textAnchor="middle" fill="rgba(197,168,128,0.7)" fontSize="7.5" fontFamily="monospace" style={{ opacity: isActive ? 1 : 0.6, transition: "all 0.2s ease" }}>
+                    {node.price} | {node.growth}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+          <div style={{ position: "absolute", bottom: "16px", left: "16px", background: "rgba(7,15,30,0.85)", border: "1px solid rgba(197,168,128,0.2)", borderRadius: "8px", padding: "8px 12px", fontSize: "0.62rem", color: "rgba(255,255,255,0.5)", pointerEvents: "none" }}>
+            <div style={{ fontWeight: 700, color: "#E6C35C", marginBottom: "3px" }}>📡 SATELLITE RADAR</div>
+            <div>• Click nodes to filter corridor</div>
+            <div>• Metrics: Avg Price | 5-Yr Growth</div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderCuratedCarousels = () => {
     // Show all verified/exclusive properties directly — no sub-tabs
     const displayData = allRawProperties.filter(p => p.exclusiveDeal || p.verifiedListing);
@@ -1310,6 +1464,148 @@ export default function Portal({ onViewChange }) {
     };
 
     switch (activeSubView) {
+      case "market-intelligence":
+        return (
+          <div className="subview-container" style={{ padding: "120px 20px 80px 20px", maxWidth: "1200px", margin: "0 auto", minHeight: "80vh" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "36px", borderBottom: "1px solid rgba(197,168,128,0.15)", paddingBottom: "18px" }}>
+              <div>
+                <span className="hero-gold-badge" style={{ marginBottom: "10px", background: "rgba(46,196,182,0.15)", color: "#2ec4b6" }}>🛰️ 24K DATA LABS v2.4</span>
+                <h2 style={{ fontFamily: "var(--font-title)", fontSize: "2.2rem", color: "#fff", margin: 0 }}>Pune West Market Intelligence</h2>
+                <p style={{ margin: "5px 0 0 0", color: "var(--text-muted)", fontSize: "0.9rem" }}>Data-first real estate analytics index for Hinjewadi, Wakad, Baner & prime western hubs.</p>
+              </div>
+              <button className="btn-outline" onClick={handleBackToHome}>← Back to Portal</button>
+            </div>
+
+            {/* Key stats HUD */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "40px" }}>
+              {[
+                { label: "Closed Volume", value: "₹512 Cr+", desc: "Verified escrow contracts" },
+                { label: "Active Investors", value: "4,218 HNWIs", desc: "Corporate tech profile pool" },
+                { label: "Avg Rental Yield", value: "4.52%", desc: "Hinjewadi peak yield at 5.2%" },
+                { label: "5-Yr Appreciation", value: "+14.6% YoY", desc: "Highest index in Pune region" }
+              ].map((stat, i) => (
+                <div key={i} style={{ background: "rgba(7, 15, 30, 0.45)", border: "1px solid rgba(197, 168, 128, 0.2)", borderRadius: "12px", padding: "20px", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}>
+                  <span style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", fontWeight: 700 }}>{stat.label}</span>
+                  <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "#E6C35C", margin: "4px 0" }}>{stat.value}</div>
+                  <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.3)" }}>{stat.desc}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Charts Section */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(480px, 1fr))", gap: "30px", marginBottom: "50px" }}>
+              
+              {/* SVG Price Appreciation Line Chart */}
+              <div style={{ background: "rgba(7, 15, 30, 0.45)", border: "1px solid rgba(197, 168, 128, 0.22)", borderRadius: "16px", padding: "24px", display: "flex", flexDirection: "column" }}>
+                <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1.1rem", color: "#fff", margin: "0 0 16px 0", letterSpacing: "0.02em" }}>📈 Price Appreciation Index (5-Yr)</h3>
+                <div style={{ flex: 1, height: "260px", position: "relative" }}>
+                  <svg viewBox="0 0 500 220" style={{ width: "100%", height: "100%" }}>
+                    {/* Chart lines grid */}
+                    <line x1="50" y1="180" x2="450" y2="180" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                    <line x1="50" y1="130" x2="450" y2="130" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                    <line x1="50" y1="80" x2="450" y2="80" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                    <line x1="50" y1="30" x2="450" y2="30" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                    
+                    {/* Trend Line (Appreciation) */}
+                    <path d="M 50 170 Q 150 150 250 110 T 450 40" fill="none" stroke="#E6C35C" strokeWidth="3" />
+                    <path d="M 50 170 Q 150 150 250 110 T 450 40 L 450 180 L 50 180 Z" fill="url(#grad)" opacity="0.08" />
+                    
+                    {/* Interactive dots */}
+                    <circle cx="50" cy="170" r="5" fill="#E6C35C" />
+                    <circle cx="150" cy="150" r="5" fill="#E6C35C" />
+                    <circle cx="250" cy="110" r="5" fill="#E6C35C" />
+                    <circle cx="350" cy="80" r="5" fill="#E6C35C" />
+                    <circle cx="450" cy="40" r="5" fill="#E6C35C" />
+                    
+                    {/* Labels */}
+                    <text x="50" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2022</text>
+                    <text x="150" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2023</text>
+                    <text x="250" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2024</text>
+                    <text x="350" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2025</text>
+                    <text x="450" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2026</text>
+                    
+                    <text x="40" y="174" fill="#A0AEC0" fontSize="9" textAnchor="end">₹6.2K</text>
+                    <text x="40" y="114" fill="#A0AEC0" fontSize="9" textAnchor="end">₹8.9K</text>
+                    <text x="40" y="44" fill="#A0AEC0" fontSize="9" textAnchor="end">₹12.5K</text>
+                    
+                    <defs>
+                      <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#E6C35C" />
+                        <stop offset="100%" stopColor="transparent" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+                <p style={{ margin: "16px 0 0 0", fontSize: "0.78rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}>
+                  *Average price calculation across premium residentials in Pune West. Data source: MahaRERA public records & internal transaction index.
+                </p>
+              </div>
+              
+              {/* SVG Rental Yield Bar Chart */}
+              <div style={{ background: "rgba(7, 15, 30, 0.45)", border: "1px solid rgba(197, 168, 128, 0.22)", borderRadius: "16px", padding: "24px", display: "flex", flexDirection: "column" }}>
+                <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1.1rem", color: "#fff", margin: "0 0 16px 0", letterSpacing: "0.02em" }}>💰 Average Rental Yield (%)</h3>
+                <div style={{ flex: 1, height: "260px", position: "relative" }}>
+                  <svg viewBox="0 0 500 220" style={{ width: "100%", height: "100%" }}>
+                    {/* Grid */}
+                    <line x1="50" y1="180" x2="450" y2="180" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                    <line x1="50" y1="130" x2="450" y2="130" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                    <line x1="50" y1="80" x2="450" y2="80" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                    <line x1="50" y1="30" x2="450" y2="30" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                    
+                    {/* Bars: [Hinjewadi: 5.2%, Wakad: 4.5%, Balewadi: 4.0%, Baner: 3.8%] */}
+                    {/* Hinjewadi bar */}
+                    <rect x="80" y="54" width="45" height="126" fill="url(#barGrad1)" rx="4" style={{ transition: "all 0.3s ease" }} />
+                    <text x="102.5" y="44" fill="#2ec4b6" fontSize="10" fontWeight="bold" textAnchor="middle">5.2%</text>
+                    <text x="102.5" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">Hinjewadi</text>
+                    
+                    {/* Wakad bar */}
+                    <rect x="180" y="75" width="45" height="105" fill="url(#barGrad2)" rx="4" />
+                    <text x="202.5" y="65" fill="#E6C35C" fontSize="10" fontWeight="bold" textAnchor="middle">4.5%</text>
+                    <text x="202.5" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">Wakad</text>
+                    
+                    {/* Balewadi bar */}
+                    <rect x="280" y="90" width="45" height="90" fill="url(#barGrad2)" rx="4" />
+                    <text x="302.5" y="80" fill="#E6C35C" fontSize="10" fontWeight="bold" textAnchor="middle">4.0%</text>
+                    <text x="302.5" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">Balewadi</text>
+                    
+                    {/* Baner bar */}
+                    <rect x="380" y="96" width="45" height="84" fill="url(#barGrad2)" rx="4" />
+                    <text x="402.5" y="86" fill="#E6C35C" fontSize="10" fontWeight="bold" textAnchor="middle">3.8%</text>
+                    <text x="402.5" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">Baner</text>
+                    
+                    <defs>
+                      <linearGradient id="barGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#2ec4b6" />
+                        <stop offset="100%" stopColor="transparent" />
+                      </linearGradient>
+                      <linearGradient id="barGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#E6C35C" />
+                        <stop offset="100%" stopColor="transparent" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+                <p style={{ margin: "16px 0 0 0", fontSize: "0.78rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}>
+                  *Average annual gross rental yield (yearly rent divided by purchase price). Tech zone proximity drives Hinjewadi yields.
+                </p>
+              </div>
+            </div>
+
+            {/* Data Labs Footer CTA */}
+            <div style={{ background: "linear-gradient(135deg, #09111F 0%, #162438 100%)", border: "1px solid rgba(197,168,128,0.35)", borderRadius: "20px", padding: "40px", textAlign: "center", boxShadow: "0 16px 48px rgba(0,0,0,0.5)" }}>
+              <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1.6rem", color: "#fff", margin: "0 0 10px 0" }}>Request Customized Yield Report</h3>
+              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 28px auto", lineHeight: 1.6 }}>
+                Planning to invest in Pune West? Get a customized yield map and price forecast docket curated by our analytics team.
+              </p>
+              <button
+                onClick={() => handleOpenInquiry({ id: null, title: "Custom Yield Analysis Request", price: "0", location: "HINJEWADI", transactionType: "BUY" })}
+                style={{ background: "linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)", border: "none", color: "#040814", padding: "14px 36px", borderRadius: "50px", fontSize: "0.85rem", fontWeight: 700, fontFamily: "\x27Montserrat\x27, sans-serif", letterSpacing: "0.06em", cursor: "pointer", boxShadow: "0 8px 24px rgba(230,195,92,0.3)" }}
+              >
+                Schedule Advisory Call
+              </button>
+            </div>
+          </div>
+        );
       case 'properties-sale':
         return (
           <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
@@ -2064,6 +2360,66 @@ export default function Portal({ onViewChange }) {
               background: 'linear-gradient(to right, rgba(4, 8, 20, 0.78) 0%, rgba(4, 8, 20, 0.20) 55%, rgba(4, 8, 20, 0.35) 100%), linear-gradient(to bottom, rgba(4, 8, 20, 0.25) 0%, rgba(4, 8, 20, 0.75) 100%)',
               zIndex: 1
             }} />
+            {/* Flashing System Status & Real-time Ticker Ribbon */}
+            <div style={{
+              position: "absolute",
+              top: "20px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 3,
+              width: "94%",
+              maxWidth: "1410px",
+              background: "rgba(7, 15, 30, 0.75)",
+              backdropFilter: "blur(16px)",
+              border: "1px solid rgba(197, 168, 128, 0.18)",
+              borderRadius: "50px",
+              padding: "10px 24px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "20px",
+              overflow: "hidden",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
+                <span className="live-pulse-dot" style={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  background: "#25D366",
+                  boxShadow: "0 0 10px #25D366",
+                  display: "inline-block",
+                  animation: "pulseGlow 2s infinite"
+                }} />
+                <span style={{ fontSize: "0.65rem", fontFamily: "\x27Montserrat\x27, sans-serif", fontWeight: 800, color: "rgba(255,255,255,0.7)", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                  SYSTEM STATUS: <span style={{ color: "#25D366" }}>ONLINE & SYNCED</span>
+                </span>
+              </div>
+              <div className="ticker-container" style={{ flex: 1, overflow: "hidden", whiteSpace: "nowrap", display: "flex", alignItems: "center" }}>
+                <div className="ticker-text" style={{
+                  display: "inline-block",
+                  fontSize: "0.68rem",
+                  fontFamily: "\x27Montserrat\x27, sans-serif",
+                  fontWeight: 600,
+                  color: "rgba(255, 255, 255, 0.5)",
+                  letterSpacing: "0.04em",
+                  animation: "marqueeText 30s linear infinite",
+                  paddingLeft: "100%"
+                }}>
+                  ✦ [LIVE METRIC] BANER avg price: ₹11,500/sqft (+1.6% this week) &nbsp;&nbsp;&nbsp;&nbsp; ✦ [LIVE DEALS] Hinjewadi IT Plaza Office Space leased by Tech MNC &nbsp;&nbsp;&nbsp;&nbsp; ✦ [MARKET] Hinjewadi rental yields reach 5.2% high index &nbsp;&nbsp;&nbsp;&nbsp; ✦ [PORTFOLIO] 24K Altura Smart 2 BHK demand is up 14% &nbsp;&nbsp;&nbsp;&nbsp; ✦ [VALUATION] AI Compute Engine update complete v2.4
+                </div>
+              </div>
+              <style>{`
+                @keyframes pulseGlow {
+                  0%, 100% { opacity: 0.5; transform: scale(0.9); }
+                  50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 14px #25D366; }
+                }
+                @keyframes marqueeText {
+                  0% { transform: translate3d(0, 0, 0); }
+                  100% { transform: translate3d(-100%, 0, 0); }
+                }
+              `}</style>
+            </div>
             
             <div className="hero-content" style={{ 
               position: 'relative',
@@ -2199,291 +2555,50 @@ export default function Portal({ onViewChange }) {
                 </svg>
               </div>
 
-              {/* Structured Floating Search Panel */}
-              <div className="luxury-search-panel" style={{
-                width: '100%',
-                boxSizing: 'border-box',
-                marginTop: '40px'
-              }}>
-                {/* Tabs */}
-                <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-                  <button 
-                    onClick={() => setHeroTab('BUY')}
-                    type="button"
-                    style={{
-                      background: heroTab === 'BUY' ? 'rgba(230, 195, 92, 0.08)' : 'none',
-                      border: heroTab === 'BUY' ? '1px solid rgba(230, 195, 92, 0.5)' : '1px solid transparent',
-                      color: heroTab === 'BUY' ? '#E6C35C' : 'rgba(255,255,255,0.7)',
-                      fontSize: '0.78rem', 
-                      fontWeight: 700, 
-                      letterSpacing: '0.08em', 
-                      cursor: 'pointer',
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '8px', 
-                      padding: '8px 20px',
-                      borderRadius: '30px',
-                      transition: 'all 0.3s ease', 
-                      textTransform: 'uppercase'
-                    }}
-                  >
-                    <Home size={14} />
-                    <span>BUY</span>
-                  </button>
-                  <button 
-                    onClick={() => setHeroTab('RENT')}
-                    type="button"
-                    style={{
-                      background: heroTab === 'RENT' ? 'rgba(230, 195, 92, 0.08)' : 'none',
-                      border: heroTab === 'RENT' ? '1px solid rgba(230, 195, 92, 0.5)' : '1px solid transparent',
-                      color: heroTab === 'RENT' ? '#E6C35C' : 'rgba(255,255,255,0.7)',
-                      fontSize: '0.78rem', 
-                      fontWeight: 700, 
-                      letterSpacing: '0.08em', 
-                      cursor: 'pointer',
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '8px', 
-                      padding: '8px 20px',
-                      borderRadius: '30px',
-                      transition: 'all 0.3s ease', 
-                      textTransform: 'uppercase'
-                    }}
-                  >
-                    <Key size={14} />
-                    <span>RENT</span>
-                  </button>
-                  <button 
-                    onClick={() => setHeroTab('COMMERCIAL')}
-                    type="button"
-                    style={{
-                      background: heroTab === 'COMMERCIAL' ? 'rgba(230, 195, 92, 0.08)' : 'none',
-                      border: heroTab === 'COMMERCIAL' ? '1px solid rgba(230, 195, 92, 0.5)' : '1px solid transparent',
-                      color: heroTab === 'COMMERCIAL' ? '#E6C35C' : 'rgba(255,255,255,0.7)',
-                      fontSize: '0.78rem', 
-                      fontWeight: 700, 
-                      letterSpacing: '0.08em', 
-                      cursor: 'pointer',
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '8px', 
-                      padding: '8px 20px',
-                      borderRadius: '30px',
-                      transition: 'all 0.3s ease', 
-                      textTransform: 'uppercase'
-                    }}
-                  >
-                    <Building size={14} />
-                    <span>COMMERCIAL</span>
-                  </button>
+              {/* Futuristic Raycast Command Bar */}
+              <div
+                onClick={() => setIsSpotlightOpen(true)}
+                className="tech-command-bar"
+                style={{
+                  width: "100%",
+                  maxWidth: "720px",
+                  background: "rgba(7, 15, 30, 0.45)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  border: "1px solid rgba(230, 195, 92, 0.25)",
+                  borderRadius: "16px",
+                  padding: "16px 24px",
+                  margin: "40px auto 0 auto",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.05), 0 0 0 1px rgba(230, 195, 92, 0.05)",
+                  transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)"
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = "rgba(230, 195, 92, 0.5)";
+                  e.currentTarget.style.boxShadow = "0 24px 50px rgba(0, 0, 0, 0.5), 0 0 15px rgba(230, 195, 92, 0.1)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = "rgba(230, 195, 92, 0.25)";
+                  e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.05), 0 0 0 1px rgba(230, 195, 92, 0.05)";
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "14px", color: "rgba(255, 255, 255, 0.5)" }}>
+                  <span style={{ color: "#E6C35C", fontSize: "1.1rem" }}>🔍</span>
+                  <span style={{ fontSize: "0.92rem", fontFamily: "\x27Montserrat\x27, sans-serif", fontWeight: 500, letterSpacing: "0.02em", color: "#fff" }}>
+                    Search listings, developers, or type a command...
+                  </span>
                 </div>
-
-                {/* Form fields glass capsule */}
-                <form 
-                  onSubmit={handleLuxurySearch} 
-                  className="luxury-search-capsule-form"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    background: 'rgba(7, 15, 30, 0.45)',
-                    backdropFilter: 'blur(24px)',
-                    WebkitBackdropFilter: 'blur(24px)',
-                    border: '1px solid rgba(230, 195, 92, 0.25)',
-                    borderRadius: '20px',
-                    padding: '8px 8px 8px 24px',
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.05)',
-                  }}
-                >
-                  {/* Location Field */}
-                  <div style={{ flex: '1.2 1 200px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <MapPin size={18} style={{ color: '#E6C35C', opacity: 0.85 }} />
-                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                      <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>LOCATION</span>
-                      <select 
-                        value={searchLocation} 
-                        onChange={e => setSearchLocation(e.target.value)}
-                        className="luxury-select"
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          color: '#fff',
-                          fontSize: '0.86rem',
-                          fontFamily: "'Montserrat', sans-serif",
-                          fontWeight: 600,
-                          outline: 'none',
-                          cursor: 'pointer',
-                          padding: '4px 0',
-                          width: '100%'
-                        }}
-                      >
-                        <option value="" style={{ background: '#070F1E' }}>Hinjewadi, Wakad, Baner...</option>
-                        <option value="HINJEWADI" style={{ background: '#070F1E' }}>Hinjewadi IT Zone</option>
-                        <option value="WAKAD" style={{ background: '#070F1E' }}>Wakad Junction</option>
-                        <option value="BANER" style={{ background: '#070F1E' }}>Baner</option>
-                        <option value="BALEWADI" style={{ background: '#070F1E' }}>Balewadi High Street</option>
-                        <option value="TATHAWADE" style={{ background: '#070F1E' }}>Tathawade Hub</option>
-                        <option value="MAHALUNGE" style={{ background: '#070F1E' }}>Mahalunge Township</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="luxury-select-divider" style={{ width: '1px', height: '36px', background: 'rgba(230, 195, 92, 0.15)', margin: '0 20px' }} />
-
-                  {/* Property Type Field */}
-                  <div style={{ flex: '1 1 170px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Building size={18} style={{ color: '#E6C35C', opacity: 0.85 }} />
-                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                      <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>PROPERTY TYPE</span>
-                      <select 
-                        value={searchPropType} 
-                        onChange={e => setSearchPropType(e.target.value)}
-                        className="luxury-select"
-                        disabled={heroTab === 'COMMERCIAL'}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          color: '#fff',
-                          fontSize: '0.86rem',
-                          fontFamily: "'Montserrat', sans-serif",
-                          fontWeight: 600,
-                          outline: 'none',
-                          cursor: heroTab === 'COMMERCIAL' ? 'not-allowed' : 'pointer',
-                          padding: '4px 0',
-                          width: '100%',
-                          opacity: heroTab === 'COMMERCIAL' ? 0.6 : 1
-                        }}
-                      >
-                        {heroTab === 'COMMERCIAL' ? (
-                          <option value="COMMERCIAL" style={{ background: '#070F1E' }}>Commercial</option>
-                        ) : (
-                          <>
-                            <option value="" style={{ background: '#070F1E' }}>Select Type</option>
-                            <option value="RESIDENTIAL" style={{ background: '#070F1E' }}>Residential Apartment</option>
-                            <option value="COMMERCIAL" style={{ background: '#070F1E' }}>Commercial Workspace</option>
-                          </>
-                        )}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="luxury-select-divider" style={{ width: '1px', height: '36px', background: 'rgba(230, 195, 92, 0.15)', margin: '0 20px' }} />
-
-                  {/* Budget Field */}
-                  <div style={{ flex: '1 1 170px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <IndianRupee size={18} style={{ color: '#E6C35C', opacity: 0.85 }} />
-                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                      <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>BUDGET</span>
-                      <select 
-                        value={searchBudget} 
-                        onChange={e => setSearchBudget(e.target.value)}
-                        className="luxury-select"
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          color: '#fff',
-                          fontSize: '0.86rem',
-                          fontFamily: "'Montserrat', sans-serif",
-                          fontWeight: 600,
-                          outline: 'none',
-                          cursor: 'pointer',
-                          padding: '4px 0',
-                          width: '100%'
-                        }}
-                      >
-                        <option value="" style={{ background: '#070F1E' }}>Select Budget</option>
-                        {heroTab === 'RENT' ? (
-                          <>
-                            <option value="20000" style={{ background: '#070F1E' }}>Under 20k / Month</option>
-                            <option value="35000" style={{ background: '#070F1E' }}>Under 35k / Month</option>
-                            <option value="50000" style={{ background: '#070F1E' }}>Under 50k / Month</option>
-                            <option value="100000" style={{ background: '#070F1E' }}>Under 1 Lakh / Month</option>
-                          </>
-                        ) : (
-                          <>
-                            <option value="8000000" style={{ background: '#070F1E' }}>Under 80 Lakhs</option>
-                            <option value="12000000" style={{ background: '#070F1E' }}>Under 1.2 Crore</option>
-                            <option value="20000000" style={{ background: '#070F1E' }}>Under 2 Crore</option>
-                            <option value="50000000" style={{ background: '#070F1E' }}>Under 5 Crore</option>
-                            <option value="500000000" style={{ background: '#070F1E' }}>Under 50 Crore</option>
-                          </>
-                        )}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="luxury-select-divider" style={{ width: '1px', height: '36px', background: 'rgba(230, 195, 92, 0.15)', margin: '0 20px' }} />
-
-                  {/* BHK Layout Field */}
-                  <div style={{ flex: '1 1 110px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <BedDouble size={18} style={{ color: '#E6C35C', opacity: 0.85 }} />
-                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                      <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>BHK</span>
-                      <select 
-                        value={searchBHK} 
-                        onChange={e => setSearchBHK(e.target.value)}
-                        className="luxury-select"
-                        disabled={heroTab === 'COMMERCIAL'}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          color: '#fff',
-                          fontSize: '0.86rem',
-                          fontFamily: "'Montserrat', sans-serif",
-                          fontWeight: 600,
-                          outline: 'none',
-                          cursor: heroTab === 'COMMERCIAL' ? 'not-allowed' : 'pointer',
-                          padding: '4px 0',
-                          width: '100%',
-                          opacity: heroTab === 'COMMERCIAL' ? 0.6 : 1
-                        }}
-                      >
-                        <option value="" style={{ background: '#070F1E' }}>Any</option>
-                        <option value="1" style={{ background: '#070F1E' }}>1 BHK</option>
-                        <option value="2" style={{ background: '#070F1E' }}>2 BHK</option>
-                        <option value="3" style={{ background: '#070F1E' }}>3 BHK</option>
-                        <option value="4" style={{ background: '#070F1E' }}>4 BHK+</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Search Button */}
-                  <button 
-                    type="submit"
-                    style={{
-                      background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-                      border: 'none',
-                      color: '#040814',
-                      padding: '14px 28px',
-                      borderRadius: '12px',
-                      fontWeight: 700,
-                      fontFamily: "'Montserrat', sans-serif",
-                      fontSize: '0.8rem',
-                      letterSpacing: '0.06em',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      height: '52px',
-                      boxShadow: '0 4px 20px rgba(230, 195, 92, 0.35)',
-                      transition: 'all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
-                      marginLeft: '12px'
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.filter = 'brightness(1.08)';
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.filter = 'brightness(1)';
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }}
-                  >
-                    <Search size={16} />
-                    <span>SEARCH PROPERTIES</span>
-                  </button>
-                </form>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span style={{ fontSize: "0.68rem", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "3px 8px", color: "rgba(255,255,255,0.4)", fontFamily: "\x27Montserrat\x27, sans-serif", fontWeight: 700 }}>
+                    CTRL
+                  </span>
+                  <span style={{ fontSize: "0.68rem", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "3px 8px", color: "rgba(255,255,255,0.4)", fontFamily: "\x27Montserrat\x27, sans-serif", fontWeight: 700 }}>
+                    K
+                  </span>
+                </div>
               </div>
 
             </div>
@@ -2791,10 +2906,26 @@ export default function Portal({ onViewChange }) {
               </section>
 
               {/* Listings Header Row */}
-              <div className="listings-header-row" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
-                <span className="total-found-badge" style={{ alignSelf: 'flex-start' }}>
-                  🏢 {totalElements} Verified listings found in {filters.location || 'Pune West'}
+              <div className="listings-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "30px" }}>
+                <span className="total-found-badge" style={{ margin: 0 }}>
+                  🏢 {totalElements} Verified listings found in {filters.location || "Pune West"}
                 </span>
+                <div style={{ display: "flex", background: "rgba(7,15,30,0.6)", border: "1px solid rgba(197,168,128,0.15)", borderRadius: "50px", padding: "4px", gap: "2px" }}>
+                  <button
+                    onClick={() => setViewMode("GRID")}
+                    type="button"
+                    style={{ background: viewMode === "GRID" ? "linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))" : "transparent", border: viewMode === "GRID" ? "1px solid rgba(197,168,128,0.35)" : "1px solid transparent", color: viewMode === "GRID" ? "#E6C35C" : "rgba(255,255,255,0.45)", padding: "8px 18px", borderRadius: "50px", fontSize: "0.72rem", fontWeight: 700, fontFamily: "\x27Montserrat\x27, sans-serif", letterSpacing: "0.05em", cursor: "pointer", transition: "all 0.25s ease", whiteSpace: "nowrap" }}
+                  >
+                    ☰ Grid View
+                  </button>
+                  <button
+                    onClick={() => setViewMode("MAP")}
+                    type="button"
+                    style={{ background: viewMode === "MAP" ? "linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))" : "transparent", border: viewMode === "MAP" ? "1px solid rgba(197,168,128,0.35)" : "1px solid transparent", color: viewMode === "MAP" ? "#E6C35C" : "rgba(255,255,255,0.45)", padding: "8px 18px", borderRadius: "50px", fontSize: "0.72rem", fontWeight: 700, fontFamily: "\x27Montserrat\x27, sans-serif", letterSpacing: "0.05em", cursor: "pointer", transition: "all 0.25s ease", whiteSpace: "nowrap" }}
+                  >
+                    🗺️ Interactive Map
+                  </button>
+                </div>
                 
                 {/* USA-style Segmented Controls with live counts */}
                 <div className="luxury-segmented-controls" style={{ overflowX: "auto", paddingBottom: "4px", scrollbarWidth: "none", msOverflowStyle: "none", gap: "6px" }}>
@@ -2874,27 +3005,55 @@ export default function Portal({ onViewChange }) {
                   <button onClick={handleResetFilters} className="btn-gold" style={{ marginTop: '10px' }}>Reset Filters</button>
                 </div>
               ) : (
-                <div className="properties-grid">
-                  {properties.map((property) => (
-                    <PropertyCard 
-                      key={property.id} 
-                      property={property} 
-                      isHnwiMode={isHnwiMode} 
-                      isCompared={selectedForCompare.some(p => p.id === property.id)} 
-                      isWishlisted={wishlistIds.includes(property.id)}
-                      formatPrice={formatPrice} 
-                      onToggleCompare={handleToggleCompare} 
-                      onToggleWishlist={handleToggleWishlist}
-                      onOpenRera={handleOpenReraDrawer} 
-                      onOpenDetail={(prop) => { 
-                        setSelectedPropertyDetail(prop); 
-                        window.scrollTo({ top: 300, behavior: 'smooth' }); 
-                      }}
-                    />
-                  ))}
-                </div>
+                viewMode === "MAP" ? (
+                  <div style={{ display: "flex", gap: "30px", alignItems: "stretch", minHeight: "600px", flexDirection: window.innerWidth < 992 ? "column" : "row", marginTop: "20px" }}>
+                    <div style={{ flex: "1", maxHeight: "80vh", overflowY: "auto", paddingRight: "8px", scrollbarWidth: "thin" }}>
+                      <div className="properties-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" }}>
+                        {properties.map((property) => (
+                          <PropertyCard
+                            key={property.id}
+                            property={property}
+                            isHnwiMode={isHnwiMode}
+                            isCompared={selectedForCompare.some(p => p.id === property.id)}
+                            isWishlisted={wishlistIds.includes(property.id)}
+                            formatPrice={formatPrice}
+                            onToggleCompare={handleToggleCompare}
+                            onToggleWishlist={handleToggleWishlist}
+                            onOpenRera={handleOpenReraDrawer}
+                            onOpenDetail={(prop) => {
+                              setSelectedPropertyDetail(prop);
+                              window.scrollTo({ top: 300, behavior: "smooth" });
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ flex: "1.1", position: "sticky", top: "100px", height: "600px", background: "rgba(7, 15, 30, 0.45)", border: "1px solid rgba(197, 168, 128, 0.25)", borderRadius: "16px", overflow: "hidden" }}>
+                      {renderInteractiveVectorMap()}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="properties-grid">
+                    {properties.map((property) => (
+                      <PropertyCard
+                        key={property.id}
+                        property={property}
+                        isHnwiMode={isHnwiMode}
+                        isCompared={selectedForCompare.some(p => p.id === property.id)}
+                        isWishlisted={wishlistIds.includes(property.id)}
+                        formatPrice={formatPrice}
+                        onToggleCompare={handleToggleCompare}
+                        onToggleWishlist={handleToggleWishlist}
+                        onOpenRera={handleOpenReraDrawer}
+                        onOpenDetail={(prop) => {
+                          setSelectedPropertyDetail(prop);
+                          window.scrollTo({ top: 300, behavior: "smooth" });
+                        }}
+                      />
+                    ))}
+                  </div>
+                )
               )}
-
                   {/* Smooth Infinite Scroll Loader Trigger */}
                   {page < totalPages - 1 && (
                     <div id="infinite-scroll-trigger" style={{
@@ -4028,6 +4187,125 @@ export default function Portal({ onViewChange }) {
             <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371c1.394.756 2.96 1.157 4.777 1.158h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2zm5.787 14.404c-.24.675-1.397 1.285-1.92 1.36-.474.07-1.088.13-3.18-.737-2.677-1.11-4.4-3.837-4.536-4.015-.132-.178-1.08-1.433-1.08-2.73 0-1.298.68-1.936.92-2.199.243-.263.53-.328.706-.328.176 0 .353.003.507.01.162.007.382-.062.597.45.22.524.75 1.83.816 1.964.066.13.11.286.022.463-.087.177-.13.287-.26.439-.13.15-.27.337-.385.45-.126.126-.259.263-.11.517.15.253.66.1.91 1.488.75 1.309 1.37 2.14 2.15 2.65.783.51 1.237.585 1.58.204.34-.38 1.484-1.72 1.88-2.31.398-.59.794-.49 1.346-.29.553.2.3.5 1.764 1.226.22.11.365.163.475.328.11.165.11.954-.13 1.63z"/>
           </svg>
         </a>
+      )}
+      {/* Spotlight Command Palette (Ctrl+K Overlay) */}
+      {isSpotlightOpen && (
+        <div
+          onClick={e => { if (e.target === e.currentTarget) { setIsSpotlightOpen(false); setSpotlightQuery(""); } }}
+          style={{ position: "fixed", inset: 0, background: "rgba(4,8,20,0.85)", backdropFilter: "blur(20px)", zIndex: 10000, display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "12vh", paddingLeft: "20px", paddingRight: "20px" }}
+        >
+          <div style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1a30 100%)", border: "1px solid rgba(197,168,128,0.25)", borderRadius: "20px", width: "100%", maxWidth: "680px", boxShadow: "0 24px 80px rgba(0,0,0,0.8)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            
+            {/* Input Bar */}
+            <div style={{ display: "flex", alignItems: "center", borderBottom: "1px solid rgba(197,168,128,0.15)", padding: "18px 24px", gap: "14px" }}>
+              <span style={{ fontSize: "1.2rem", color: "#E6C35C" }}>🔍</span>
+              <input
+                type="text"
+                autoFocus
+                value={spotlightQuery}
+                onChange={e => setSpotlightQuery(e.target.value)}
+                placeholder="Type a query (e.g. 3 BHK Baner under 2Cr, rent Wakad)..."
+                style={{ flex: 1, background: "none", border: "none", color: "#fff", fontFamily: "\x27Montserrat\x27, sans-serif", fontSize: "1.05rem", fontWeight: 500, outline: "none" }}
+              />
+              <button onClick={() => { setIsSpotlightOpen(false); setSpotlightQuery(""); }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", color: "rgba(255,255,255,0.5)", cursor: "pointer", fontSize: "0.68rem", fontWeight: 700, padding: "4px 8px", textTransform: "uppercase" }}>ESC</button>
+            </div>
+            
+            {/* suggestions list */}
+            <div style={{ maxHeight: "420px", overflowY: "auto", padding: "16px 24px" }}>
+              
+              {/* AI Parser Active Recommendation Chip */}
+              {spotlightQuery.trim().length > 0 && (
+                <div style={{ marginBottom: "20px" }}>
+                  <span style={{ fontSize: "0.62rem", fontFamily: "\x27Montserrat\x27, sans-serif", fontWeight: 800, color: "rgba(197,168,128,0.6)", letterSpacing: "0.08em", display: "block", marginBottom: "8px", textTransform: "uppercase" }}>🤖 AI COMMAND DETECTED</span>
+                  <button
+                    onClick={() => {
+                      const parsed = parseNaturalQuery(spotlightQuery);
+                      setFilters(prev => ({ ...prev, ...parsed }));
+                      setIsSpotlightOpen(false);
+                      setSpotlightQuery("");
+                      setActiveSection("listings");
+                      setPage(0);
+                      setTimeout(() => {
+                        const el = document.getElementById("listings-anchor");
+                        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }, 100);
+                    }}
+                    style={{ background: "rgba(230,195,92,0.08)", border: "1px solid rgba(230,195,92,0.3)", borderRadius: "10px", width: "100%", padding: "12px 16px", textAlign: "left", cursor: "pointer", color: "#E6C35C", display: "flex", alignItems: "center", justifyContent: "space-between", transition: "all 0.2s ease" }}
+                    onMouseEnter={e => e.currentTarget.style.background = "rgba(230,195,92,0.15)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "rgba(230,195,92,0.08)"}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ fontSize: "1rem" }}>⚡</span>
+                      <span style={{ fontSize: "0.86rem", fontWeight: 600 }}>
+                        Apply AI Filters: {Object.entries(parseNaturalQuery(spotlightQuery)).filter(([k,v]) => v).map(([k,v]) => `${k.toUpperCase()}: ${v}`).join(", ")}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: "0.78rem", fontWeight: 700 }}>Apply ↵</span>
+                  </button>
+                </div>
+              )}
+              
+              {/* Live Preview List */}
+              <div>
+                <span style={{ fontSize: "0.62rem", fontFamily: "\x27Montserrat\x27, sans-serif", fontWeight: 800, color: "rgba(197,168,128,0.6)", letterSpacing: "0.08em", display: "block", marginBottom: "12px", textTransform: "uppercase" }}>🏢 MATCHING PROPERTIES ({
+                  allRawProperties.filter(p => {
+                    if (!spotlightQuery.trim()) return true;
+                    const parsed = parseNaturalQuery(spotlightQuery);
+                    if (parsed.location && p.location !== parsed.location) return false;
+                    if (parsed.bedrooms && p.bedrooms !== Number(parsed.bedrooms)) return false;
+                    if (parsed.propertyType && p.propertyType !== parsed.propertyType) return false;
+                    if (parsed.transactionType && p.transactionType !== parsed.transactionType) return false;
+                    if (parsed.maxPrice && p.price > Number(parsed.maxPrice)) return false;
+                    if (parsed.query && !p.title.toLowerCase().includes(parsed.query.toLowerCase()) && !p.description.toLowerCase().includes(parsed.query.toLowerCase())) return false;
+                    return true;
+                  }).length
+                })</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {allRawProperties.filter(p => {
+                    if (!spotlightQuery.trim()) return true;
+                    const parsed = parseNaturalQuery(spotlightQuery);
+                    if (parsed.location && p.location !== parsed.location) return false;
+                    if (parsed.bedrooms && p.bedrooms !== Number(parsed.bedrooms)) return false;
+                    if (parsed.propertyType && p.propertyType !== parsed.propertyType) return false;
+                    if (parsed.transactionType && p.transactionType !== parsed.transactionType) return false;
+                    if (parsed.maxPrice && p.price > Number(parsed.maxPrice)) return false;
+                    if (parsed.query && !p.title.toLowerCase().includes(parsed.query.toLowerCase()) && !p.description.toLowerCase().includes(parsed.query.toLowerCase())) return false;
+                    return true;
+                  }).slice(0, 5).map(p => (
+                    <div
+                      key={p.id}
+                      onClick={() => {
+                        setSelectedPropertyDetail(p);
+                        setIsSpotlightOpen(false);
+                        setSpotlightQuery("");
+                        window.scrollTo({ top: 300, behavior: "smooth" });
+                      }}
+                      style={{ display: "flex", alignItems: "center", justifySpace: "space-between", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "10px 14px", cursor: "pointer", transition: "all 0.2s ease", justifyContent: "space-between" }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(197,168,128,0.4)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <img src={p.imageUrl} alt={p.title} style={{ width: "40px", height: "40px", borderRadius: "6px", objectFit: "cover" }} />
+                        <div>
+                          <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#fff" }}>{p.title}</div>
+                          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.45)" }}>{p.location} corridor · {p.bedrooms} BHK</div>
+                        </div>
+                      </div>
+                      <div style={{ fontSize: "0.8rem", fontWeight: 800, color: "#E6C35C" }}>{formatPrice(p.price)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Bottom Hotkeys */}
+              <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "24px", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "14px", color: "rgba(255,255,255,0.3)", fontSize: "0.68rem" }}>
+                <span>↕️ Navigate</span>
+                <span>↵ Select</span>
+                <span>ESC Close</span>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
       {isAiModalOpen && (
         <div

@@ -205,6 +205,13 @@ export default function PortalNavbar({
               COMMERCIAL
             </button>
             <button 
+              className={activeSection === 'listings' && activeSubView === 'market-intelligence' ? 'active' : ''} 
+              onClick={() => onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, 'market-intelligence')}
+              style={{ color: '#2ec4b6', fontWeight: 600 }}
+            >
+              📊 DATA LABS
+            </button>
+            <button 
               onClick={() => onViewChange && onViewChange('list-property')}
               style={{ color: '#E6C35C', fontWeight: 'bold' }}
             >
