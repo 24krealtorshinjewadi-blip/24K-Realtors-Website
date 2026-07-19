@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { apiService } from '../services/apiService';
 import { chatWithVisitor } from '../services/geminiService';
 import { 
@@ -2285,6 +2285,7 @@ export default function Portal({ onViewChange }) {
         isHnwiMode={isHnwiMode} 
         setIsHnwiMode={setIsHnwiMode} 
         filters={filters}
+        activeSubView={activeSubView}
         onViewChange={onViewChange} 
         onBookVisitClick={() => { setSelectedChauffeurProp(properties[0] || null); setIsChauffeurModalOpen(true); }}
         exclusiveTab={exclusiveTab}
