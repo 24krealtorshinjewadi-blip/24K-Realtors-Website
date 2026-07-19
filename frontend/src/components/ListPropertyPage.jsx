@@ -262,8 +262,29 @@ export default function ListPropertyPage({ onBack }) {
 
   if (submitted) {
     return (
-      <div style={{ minHeight: '100vh', background: 'radial-gradient(circle at 20% 20%, #0d1a30 0%, #040814 60%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
-        <div style={{ maxWidth: '520px', width: '100%', textAlign: 'center' }}>
+      <div style={{ 
+        minHeight: '100vh', 
+        backgroundImage: 'linear-gradient(to bottom, rgba(4, 8, 20, 0.85), rgba(4, 8, 20, 0.95)), url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        padding: '40px 20px' 
+      }}>
+        <div style={{ 
+          maxWidth: '520px', 
+          width: '100%', 
+          textAlign: 'center',
+          background: 'rgba(7, 15, 30, 0.8)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: '1px solid rgba(197, 168, 128, 0.25)',
+          borderRadius: '24px',
+          padding: '40px 30px',
+          boxShadow: '0 24px 80px rgba(0,0,0,0.6)'
+        }}>
           <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(197,168,128,0.2) 0%, transparent 70%)', border: '2px solid rgba(197,168,128,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 28px auto' }}>
             <CheckCircle size={36} color="#E6C35C" />
           </div>
@@ -306,9 +327,16 @@ export default function ListPropertyPage({ onBack }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#040814', fontFamily: "'Montserrat', sans-serif" }}>
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundImage: 'linear-gradient(to bottom, rgba(4, 8, 20, 0.82), rgba(4, 8, 20, 0.95)), url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      fontFamily: "'Montserrat', sans-serif" 
+    }}>
       {/* Navbar Strip */}
-      <div style={{ height: '64px', background: 'rgba(4,8,20,0.95)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(197,168,128,0.1)', display: 'flex', alignItems: 'center', padding: '0 24px', gap: '16px', position: 'sticky', top: 0, zIndex: 100 }}>
+      <div style={{ height: '64px', background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(197,168,128,0.1)', display: 'flex', alignItems: 'center', padding: '0 24px', gap: '16px', position: 'sticky', top: 0, zIndex: 100 }}>
         <button onClick={onBack} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '7px 14px', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontFamily: "'Montserrat', sans-serif", transition: 'all 0.2s ease' }}
           onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; }}
           onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
@@ -324,7 +352,7 @@ export default function ListPropertyPage({ onBack }) {
       </div>
 
       {/* Hero Section */}
-      <div style={{ background: 'linear-gradient(180deg, #0a1628 0%, #040814 100%)', padding: '52px 24px 40px', textAlign: 'center', borderBottom: '1px solid rgba(197,168,128,0.06)' }}>
+      <div style={{ background: 'rgba(4, 8, 20, 0.35)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', padding: '52px 24px 40px', textAlign: 'center', borderBottom: '1px solid rgba(197,168,128,0.1)' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(197,168,128,0.06)', border: '1px solid rgba(197,168,128,0.15)', borderRadius: '50px', padding: '6px 16px', marginBottom: '20px' }}>
           <Sparkles size={12} color="#E6C35C" />
           <span style={{ fontSize: '0.68rem', color: '#E6C35C', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Zero Brokerage Owner Mandate</span>
@@ -355,7 +383,7 @@ export default function ListPropertyPage({ onBack }) {
       </div>
 
       {/* Step Progress Bar */}
-      <div style={{ background: 'rgba(7,15,30,0.8)', borderBottom: '1px solid rgba(197,168,128,0.08)', padding: '0 24px' }}>
+      <div style={{ background: 'rgba(7,15,30,0.45)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(197,168,128,0.1)', padding: '0 24px' }}>
         <div style={{ maxWidth: '720px', margin: '0 auto', display: 'flex', alignItems: 'center' }}>
           {STEPS.map((s, i) => {
             const Icon = s.icon;
@@ -386,7 +414,7 @@ export default function ListPropertyPage({ onBack }) {
 
       {/* Form Content */}
       <div style={{ maxWidth: '720px', margin: '0 auto', padding: '36px 24px 60px' }}>
-        <div style={{ background: 'linear-gradient(135deg, rgba(10,22,40,0.95) 0%, rgba(7,15,30,0.9) 100%)', border: '1px solid rgba(197,168,128,0.12)', borderRadius: '20px', padding: 'clamp(24px, 5vw, 44px)', boxShadow: '0 24px 80px rgba(0,0,0,0.4)' }}>
+        <div style={{ background: 'rgba(7, 15, 30, 0.78)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(197, 168, 128, 0.22)', borderRadius: '24px', padding: 'clamp(24px, 5vw, 44px)', boxShadow: '0 24px 80px rgba(0,0,0,0.6)' }}>
 
           {/* Step 1: Property Details */}
           {step === 1 && (
