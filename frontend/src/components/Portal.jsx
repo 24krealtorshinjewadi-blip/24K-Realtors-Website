@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+﻿import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { apiService } from '../services/apiService';
 import { chatWithVisitor } from '../services/geminiService';
 import { 
@@ -238,6 +238,7 @@ export default function Portal({ onViewChange }) {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [notification, setNotification] = useState(null);
   const [exclusiveTab, setExclusiveTab] = useState('BUY');
+  const [showAllGrid, setShowAllGrid] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [aiStep, setAiStep] = useState(1);
   const [advisoryTab, setAdvisoryTab] = useState('buyer');
@@ -841,13 +842,21 @@ export default function Portal({ onViewChange }) {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '36px' }}>
               <button
-                onClick={() => handleCollectionChange('ALL')}
+                onClick={() => {
+                  setShowAllGrid(true);
+                  setPage(0);
+                  // scroll to grid
+                  setTimeout(() => {
+                    const el = document.getElementById('listings-anchor');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 80);
+                }}
                 type="button"
-                style={{ background: 'transparent', border: '1px solid rgba(197,168,128,0.35)', color: '#C5A880', padding: '12px 36px', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.1em', cursor: 'pointer', textTransform: 'uppercase', transition: 'all 0.3s ease', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(197,168,128,0.06)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.6)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.35)'; }}
+                style={{ background: 'linear-gradient(135deg, rgba(197,168,128,0.08) 0%, rgba(212,175,55,0.04) 100%)', border: '1px solid rgba(197,168,128,0.4)', color: '#E6C35C', padding: '13px 40px', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.12em', cursor: 'pointer', textTransform: 'uppercase', transition: 'all 0.3s ease', display: 'inline-flex', alignItems: 'center', gap: '10px', boxShadow: '0 4px 16px rgba(197,168,128,0.12)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(197,168,128,0.14)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.7)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(197,168,128,0.2)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'linear-gradient(135deg, rgba(197,168,128,0.08) 0%, rgba(212,175,55,0.04) 100%)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.4)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(197,168,128,0.12)'; }}
               >
-                View All Properties <ArrowRight size={13} />
+                View All {allRawProperties.length} Properties <ArrowRight size={14} />
               </button>
             </div>
           </>
@@ -858,10 +867,13 @@ export default function Portal({ onViewChange }) {
   const handleCollectionChange = (collection) => {
     setActiveCollection(collection);
     setPage(0);
-    // When user picks any specific tab, scroll listings into view
+    // When any specific tab is clicked, reset to carousel for ALL, show grid for others
     if (collection !== 'ALL') {
+      setShowAllGrid(false);
       const el = document.getElementById('listings-anchor');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      setShowAllGrid(false);
     }
   };
 
@@ -2782,16 +2794,33 @@ export default function Portal({ onViewChange }) {
                   🏢 {totalElements} Verified listings found in {filters.location || 'Pune West'}
                 </span>
                 
-                {/* Horizontal Segmented Luxury controls */}
-                <div className="luxury-segmented-controls">
-                  <button onClick={() => handleCollectionChange('ALL')} className={`luxury-segment-btn ${activeCollection === 'ALL' ? 'active' : ''}`}>All Luxury</button>
-                  <button onClick={() => handleCollectionChange('APARTMENT')} className={`luxury-segment-btn ${activeCollection === 'APARTMENT' ? 'active' : ''}`}>Premium Apartments</button>
-                  <button onClick={() => handleCollectionChange('VILLA')} className={`luxury-segment-btn ${activeCollection === 'VILLA' ? 'active' : ''}`}>Luxury Villas</button>
-                  <button onClick={() => handleCollectionChange('PENTHOUSE')} className={`luxury-segment-btn ${activeCollection === 'PENTHOUSE' ? 'active' : ''}`}>Penthouse Portfolio</button>
-                  <button onClick={() => handleCollectionChange('COMMERCIAL')} className={`luxury-segment-btn ${activeCollection === 'COMMERCIAL' ? 'active' : ''}`}>Commercial Assets</button>
-                  <button onClick={() => handleCollectionChange('READY')} className={`luxury-segment-btn ${activeCollection === 'READY' ? 'active' : ''}`}>Ready To Move</button>
-                  <button onClick={() => handleCollectionChange('NEW')} className={`luxury-segment-btn ${activeCollection === 'NEW' ? 'active' : ''}`}>New Launches</button>
-                  <button onClick={() => handleCollectionChange('WISHLIST')} className={`luxury-segment-btn ${activeCollection === 'WISHLIST' ? 'active' : ''}`}>Saved Portfolio ({wishlistIds.length})</button>
+                {/* USA-style Segmented Controls with live counts */}
+                <div className="luxury-segmented-controls" style={{ overflowX: "auto", paddingBottom: "4px", scrollbarWidth: "none", msOverflowStyle: "none", gap: "6px" }}>
+                  {[
+                    { id: 'ALL', label: 'All Luxury', icon: '\u2726', count: allRawProperties.length },
+                    { id: 'APARTMENT', label: 'Apartments', icon: '\ud83c\udfe2', count: allRawProperties.filter(p => p.propertyType === 'RESIDENTIAL' && (p.bedrooms || 0) <= 3).length },
+                    { id: 'VILLA', label: 'Luxury Villas', icon: '\ud83c\udfe1', count: allRawProperties.filter(p => (p.bedrooms || 0) >= 4 && p.propertyType === 'RESIDENTIAL').length },
+                    { id: 'PENTHOUSE', label: 'Penthouse', icon: '\ud83c\udf06', count: allRawProperties.filter(p => (p.bedrooms || 0) >= 4).length },
+                    { id: 'COMMERCIAL', label: 'Commercial', icon: '\ud83c\udfe6', count: allRawProperties.filter(p => p.propertyType === 'COMMERCIAL').length },
+                    { id: 'READY', label: 'Ready To Move', icon: '\u2705', count: allRawProperties.filter(p => p.status === 'AVAILABLE' && p.transactionType === 'BUY').length },
+                    { id: 'NEW', label: 'New Launches', icon: '\ud83d\ude80', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('vyomora') || (p.title || '').toLowerCase().includes('ivara') || (p.title || '').toLowerCase().includes('joyville') || (p.title || '').toLowerCase().includes('elements')).length },
+                    { id: 'WISHLIST', label: 'Saved', icon: '\u2665', count: wishlistIds.length },
+                  ].map(({ id, label, icon, count }) => (
+                    <button
+                      key={id}
+                      onClick={() => handleCollectionChange(id)}
+                      className={`luxury-segment-btn ${activeCollection === id ? "active" : ""}`}
+                      style={{ display: "inline-flex", alignItems: "center", gap: "6px", flexShrink: 0 }}
+                    >
+                      <span style={{ fontSize: "0.85em" }}>{icon}</span>
+                      {label}
+                      {count > 0 && (
+                        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: "18px", height: "18px", borderRadius: "50px", padding: "0 5px", fontSize: "0.6rem", fontWeight: 800, background: activeCollection === id ? "rgba(7,15,30,0.5)" : "rgba(197,168,128,0.08)", color: activeCollection === id ? "#E6C35C" : "rgba(197,168,128,0.5)", border: `1px solid ${activeCollection === id ? "rgba(230,195,92,0.4)" : "rgba(197,168,128,0.2)"}`, marginLeft: "2px" }}>
+                          {count}
+                        </span>
+                      )}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -2801,8 +2830,41 @@ export default function Portal({ onViewChange }) {
                 </div>
               ) : error ? (
                 <div className="error-card">{error}</div>
-              ) : (!isSearchActive && activeCollection === 'ALL' && properties.length > 0) ? (
+              ) : (!isSearchActive && activeCollection === 'ALL' && !showAllGrid && properties.length > 0) ? (
                 renderCuratedCarousels()
+              ) : (showAllGrid && properties.length > 0) ? (
+                <>
+                  {/* Back to curated view */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                    <button
+                      onClick={() => { setShowAllGrid(false); setPage(0); }}
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', borderRadius: '50px', padding: '8px 18px', fontSize: '0.72rem', fontWeight: 600, fontFamily: "'Montserrat', sans-serif", cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s ease' }}
+                      onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(197,168,128,0.4)'}
+                      onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    >
+                      ← Curated View
+                    </button>
+                    <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.4)', fontFamily: "'Montserrat', sans-serif" }}>
+                      Showing all {properties.length} verified listings
+                    </span>
+                  </div>
+                  <div className="properties-grid">
+                    {properties.map((property) => (
+                      <PropertyCard
+                        key={property.id}
+                        property={property}
+                        isHnwiMode={isHnwiMode}
+                        isCompared={selectedForCompare.some(p => p.id === property.id)}
+                        isWishlisted={wishlistIds.includes(property.id)}
+                        formatPrice={formatPrice}
+                        onToggleCompare={handleToggleCompare}
+                        onToggleWishlist={handleToggleWishlist}
+                        onOpenRera={handleOpenReraDrawer}
+                        onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 300, behavior: 'smooth' }); }}
+                      />
+                    ))}
+                  </div>
+                </>
               ) : properties.length === 0 ? (
                 <div className="empty-state">
                   <p>No premium properties match the filter configuration.</p>
@@ -3950,25 +4012,20 @@ export default function Portal({ onViewChange }) {
         </Suspense>
       )}
 
-      {/* Sticky Floating WhatsApp — hidden on subpages/detail pages */}
+      {/* Sticky Floating WhatsApp */}
       {!selectedPropertyDetail && !selectedSocietyDetail && !selectedBuilderDetail && !selectedLocalityDetail && !selectedBlogDetail && (
-        <a 
+        <a
           href="https://wa.me/919673000053?text=I%20am%20interested%20in%20real%20estate%20consultation"
           className="floating-whatsapp"
           target="_blank"
           rel="noopener noreferrer"
-          title="WhatsApp Consultation Desk"
+          title="WhatsApp Consultation — 24K Realtors"
         >
           <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
             <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371c1.394.756 2.96 1.157 4.777 1.158h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2zm5.787 14.404c-.24.675-1.397 1.285-1.92 1.36-.474.07-1.088.13-3.18-.737-2.677-1.11-4.4-3.837-4.536-4.015-.132-.178-1.08-1.433-1.08-2.73 0-1.298.68-1.936.92-2.199.243-.263.53-.328.706-.328.176 0 .353.003.507.01.162.007.382-.062.597.45.22.524.75 1.83.816 1.964.066.13.11.286.022.463-.087.177-.13.287-.26.439-.13.15-.27.337-.385.45-.126.126-.259.263-.11.517.15.253.66.1.91 1.488.75 1.309 1.37 2.14 2.15 2.65.783.51 1.237.585 1.58.204.34-.38 1.484-1.72 1.88-2.31.398-.59.794-.49 1.346-.29.553.2.3.5 1.764 1.226.22.11.365.163.475.328.11.165.11.954-.13 1.63z"/>
           </svg>
         </a>
       )}
-
-      {/* Portal Footer */}
-
-
-      {/* Phase 4 — AI Area Match 3-Step Modal */}
       {isAiModalOpen && (
         <div
           onClick={e => { if (e.target === e.currentTarget) { setIsAiModalOpen(false); setAiStep(1); } }}
@@ -4078,4 +4135,3 @@ const areaData = [
   { id: 'TATHAWADE', name: 'Tathawade', tagline: 'Educational hub & premium villas', icon: <Users size={20} />, pricePerSqft: '₹7,200', yield: '4.6%', growth: '+15%' },
   { id: 'MAHALUNGE', name: 'Mahalunge', tagline: 'Next-gen smart city township plots', icon: <LineChart size={20} />, pricePerSqft: '₹6,900', yield: '4.8%', growth: '+18%' }
 ];
-

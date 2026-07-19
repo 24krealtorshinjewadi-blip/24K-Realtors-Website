@@ -49,7 +49,7 @@ export default function ChatWidget({
         aria-controls="chat-panel-window"
         style={{
           position: 'fixed',
-          bottom: '160px',
+          bottom: '24px',
           right: '30px',
           width: '60px',
           height: '60px',
