@@ -239,6 +239,8 @@ export default function Portal({ onViewChange }) {
   const [notification, setNotification] = useState(null);
   const [exclusiveTab, setExclusiveTab] = useState('BUY');
   const [editorialTab, setEditorialTab] = useState('signature');
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [aiStep, setAiStep] = useState(1);
   const [advisoryTab, setAdvisoryTab] = useState('buyer');
   const [activeSection, setActiveSection] = useState('listings');
   const [heroSearchText, setHeroSearchText] = useState('');
@@ -818,7 +820,7 @@ export default function Portal({ onViewChange }) {
       },
       investment: {
         label: '📈 Investment Estates',
-        subtitle: 'High-yield corridors with strong capital appreciation index',
+        subtitle: 'High-yield areas with strong capital appreciation index',
         data: allRawProperties.filter(p =>
           p.location === 'BANER' || p.location === 'MAHALUNGE' ||
           p.location === 'WAKAD' || p.propertyType === 'COMMERCIAL'
@@ -1029,9 +1031,9 @@ export default function Portal({ onViewChange }) {
     const locMap = {
       hinjewadi: { label: '📍 Properties in Hinjewadi IT Hub', filters: { location: 'HINJEWADI' } },
       wakad: { label: '📍 Properties in Wakad Junction', filters: { location: 'WAKAD' } },
-      baner: { label: '📍 Properties in Baner Tech Corridor', filters: { location: 'BANER' } },
+      baner: { label: '📍 Properties in Baner', filters: { location: 'BANER' } },
       balewadi: { label: '📍 Properties in Balewadi High Street', filters: { location: 'BALEWADI' } },
-      tathawade: { label: '📍 Properties in Tathawade Corridor', filters: { location: 'TATHAWADE' } },
+      tathawade: { label: '📍 Properties in Tathawade', filters: { location: 'TATHAWADE' } },
       mahalunge: { label: '📍 Properties in Mahalunge Smart City', filters: { location: 'MAHALUNGE' } }
     };
     for (const [k, v] of Object.entries(locMap)) {
@@ -1619,13 +1621,13 @@ export default function Portal({ onViewChange }) {
           appreciationIndex = '11.8%';
           rentalYield = '5.2%';
           connectivityScore = '8.8/10';
-          explanation = 'Based on your preference for High Rental Yields, Hinjewadi IT Corridor is recommended. The tech hubs generate stable corporate tenant demand, pushing yields to 5.2%—the highest in Pune West.';
+          explanation = 'Based on your preference for High Rental Yields, Hinjewadi is recommended. The tech hubs generate stable corporate tenant demand, pushing yields to 5.2%—the highest in Pune West.';
         } else if (aiPriority === 'commute') {
           recommendedCorridor = 'BANER';
           appreciationIndex = '16.5%';
           rentalYield = '3.8%';
           connectivityScore = '9.5/10';
-          explanation = 'For optimized commute time and high appreciation, Baner Corridor is recommended. It lies adjacent to Balewadi High Street with excellent transit routes to IT offices.';
+          explanation = 'For optimized commute time and high appreciation, Baner is recommended. It lies adjacent to Balewadi High Street with excellent transit routes to IT offices.';
         } else {
           if (aiBudget === 'under-80L') {
             recommendedCorridor = 'MAHALUNGE';
@@ -1638,12 +1640,12 @@ export default function Portal({ onViewChange }) {
             appreciationIndex = '14.2%';
             rentalYield = '4.5%';
             connectivityScore = '9.2/10';
-            explanation = 'Wakad Corridor offers the most balanced profile. Excellent 14% capital appreciation combined with a solid 4.5% yield and multi-lane highway transit.';
+            explanation = 'Wakad offers the most balanced profile. Excellent 14% capital appreciation combined with a solid 4.5% yield and multi-lane highway transit.';
           }
         }
         
         setAiReport({
-          corridor: recommendedCorridor,
+          area: recommendedCorridor,
           appreciationIndex,
           rentalYield,
           connectivityScore,
@@ -2115,7 +2117,7 @@ export default function Portal({ onViewChange }) {
                   textShadow: '0 2px 5px rgba(0,0,0,0.5)',
                   maxWidth: '520px'
                 }}>
-                  Where legacy builders meet verified portfolios — Hinjewadi, Wakad, Baner & Pune's most prestigious corridors.
+                  Where legacy builders meet verified portfolios — Hinjewadi, Wakad, Baner & Pune's most prestigious areas.
                 </p>
 
                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
@@ -2318,7 +2320,7 @@ export default function Portal({ onViewChange }) {
                         <option value="" style={{ background: '#070F1E' }}>Hinjewadi, Wakad, Baner...</option>
                         <option value="HINJEWADI" style={{ background: '#070F1E' }}>Hinjewadi IT Zone</option>
                         <option value="WAKAD" style={{ background: '#070F1E' }}>Wakad Junction</option>
-                        <option value="BANER" style={{ background: '#070F1E' }}>Baner Tech Corridor</option>
+                        <option value="BANER" style={{ background: '#070F1E' }}>Baner</option>
                         <option value="BALEWADI" style={{ background: '#070F1E' }}>Balewadi High Street</option>
                         <option value="TATHAWADE" style={{ background: '#070F1E' }}>Tathawade Hub</option>
                         <option value="MAHALUNGE" style={{ background: '#070F1E' }}>Mahalunge Township</option>
@@ -2617,107 +2619,27 @@ export default function Portal({ onViewChange }) {
       </div>
 
       {/* 24K AI Location Advisor Panel */}
-      <div className="ai-advisor-panel">
-        <div className="ai-advisor-header">
-          <div className="ai-advisor-icon-pulse">
-            <Sparkles size={28} color="var(--gold-primary)" />
-          </div>
-          <div>
-            <h3 style={{ margin: 0, fontSize: '1.4rem', fontFamily: 'var(--font-title)', color: 'var(--text-light)', letterSpacing: '0.04em' }}>
-              ⚜️ 24K AI LOCATION ADVISOR
-            </h3>
-            <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Real-time multi-metric optimization engine for Pune's high-growth corridors.
-            </p>
-          </div>
-        </div>
-
-        <div className="ai-advisor-grid">
-          <div className="ai-select-wrapper">
-            <label className="ai-select-label">Investment Budget</label>
-            <select 
-              value={aiBudget} 
-              onChange={e => setAiBudget(e.target.value)} 
-              className="ai-select-input"
-            >
-              <option value="under-80L">Under ₹80 Lakhs</option>
-              <option value="80L-1.5Cr">₹80 Lakhs - ₹1.5 Crore</option>
-              <option value="1.5Cr-3Cr">₹1.5 Crore - ₹3.0 Crore</option>
-              <option value="above-3Cr">Above ₹3.0 Crore (Luxury Mandate)</option>
-            </select>
-          </div>
-
-          <div className="ai-select-wrapper">
-            <label className="ai-select-label">Primary Driver</label>
-            <select 
-              value={aiPriority} 
-              onChange={e => setAiPriority(e.target.value)} 
-              className="ai-select-input"
-            >
-              <option value="appreciation">Capital Appreciation Index</option>
-              <option value="yield">High Rental Yield %</option>
-              <option value="commute">Commute Time & Proximity</option>
-            </select>
-          </div>
-
-          <div className="ai-select-wrapper">
-            <label className="ai-select-label">Corridor Interest</label>
-            <select 
-              value={aiCorridor} 
-              onChange={e => setAiCorridor(e.target.value)} 
-              className="ai-select-input"
-            >
-              <option value="all">All Growth Corridors</option>
-              <option value="WAKAD">Wakad Corridor</option>
-              <option value="BANER">Baner Corridor</option>
-              <option value="HINJEWADI">Hinjewadi IT Corridor</option>
-            </select>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-            <button 
-              onClick={handleAiAnalyze} 
-              className="ai-btn-analyze" 
-              style={{ width: '100%', height: '42px' }}
-              disabled={aiAnalyzing}
-            >
-              {aiAnalyzing ? 'Analyzing Location Metrics...' : 'Compute AI Recommendation'}
-            </button>
-          </div>
-        </div>
-
-        {aiAnalyzing && (
-          <div className="ai-diagnostic-bar">
-            <div className="ai-diagnostic-fill" style={{ width: `${aiProgress}%` }}></div>
-          </div>
-        )}
-
-        {aiReport && (
-          <div className="ai-report-box">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.1rem', color: '#fff' }}>Recommended Corridor:</span>
-                <strong style={{ fontSize: '1.25rem', color: 'var(--gold-primary)', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => handleCorridorClick(aiReport.corridor)}>
-                  {aiReport.corridor} CORRIDOR
-                </strong>
-              </div>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <span className="society-metric-badge" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', border: '1px solid rgba(212,175,55,0.2)' }}>
-                  Appreciation: {aiReport.appreciationIndex}
-                </span>
-                <span className="society-metric-badge" style={{ background: 'rgba(46,196,182,0.1)', color: '#2ec4b6', border: '1px solid rgba(46,196,182,0.2)' }}>
-                  Yield: {aiReport.rentalYield}
-                </span>
-                <span className="society-metric-badge" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  Transit: {aiReport.connectivityScore}
-                </span>
-              </div>
+      {/* AI Area Match Teaser — full panel moved to floating modal */}
+      <div style={{ maxWidth: '94%', margin: '0 auto 40px auto', padding: '0 20px' }}>
+        <div style={{ background: 'linear-gradient(135deg, rgba(7,15,30,0.9) 0%, rgba(15,28,46,0.8) 100%)', border: '1px solid rgba(197,168,128,0.18)', borderRadius: '16px', padding: '28px 36px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(197,168,128,0.12) 0%, transparent 70%)', border: '1px solid rgba(197,168,128,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Sparkles size={22} color="#E6C35C" />
             </div>
-            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-              {aiReport.explanation} <strong style={{ color: 'var(--gold-primary)', cursor: 'pointer' }} onClick={() => handleCorridorClick(aiReport.corridor)}>Click here to filter verified properties in this sector.</strong>
-            </p>
+            <div>
+              <h3 style={{ margin: '0 0 4px 0', fontFamily: "'Cinzel', serif", fontSize: '1.05rem', color: '#fff', fontWeight: 700, letterSpacing: '0.02em' }}>AI Area Recommendation</h3>
+              <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(255,255,255,0.45)', fontFamily: "'Playfair Display', serif", fontStyle: 'italic' }}>Answer 3 questions — get your ideal Pune West location match</p>
+            </div>
           </div>
-        )}
+          <button
+            onClick={() => setIsAiModalOpen(true)}
+            style={{ background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', border: 'none', color: '#040814', padding: '12px 28px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.08em', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 4px 15px rgba(197,168,128,0.25)', transition: 'all 0.3s ease' }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(197,168,128,0.35)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(197,168,128,0.25)'; }}
+          >
+            Get My Match →
+          </button>
+        </div>
       </div>
 
       {/* Editorial Section Divider */}
@@ -2728,32 +2650,32 @@ export default function Portal({ onViewChange }) {
       </div>
 
       {/* Interactive Corridor Cards Grid with Live Metrics */}
-      <section className="corridors-section" id="corridors">
+      <section className="areas-section" id="areas">
         <div className="section-header">
           <h2 className="luxury-title reveal-mask">
-            <span className="reveal-mask-content">Pune Tech Corridor Live Market Trends</span>
+            <span className="reveal-mask-content">Pune West Market Intelligence</span>
           </h2>
           <p className="section-subtitle reveal-fade-up">Select an area to explore live pricing and average appreciation index metrics</p>
         </div>
         
-        <div className="corridors-grid">
-          {corridorData.map((corridor) => (
+        <div className="areas-grid">
+          {areaData.map((area) => (
             <div 
-              key={corridor.id} 
-              className={`corridor-card ${filters.location === corridor.id ? 'active' : ''}`}
-              onClick={() => handleCorridorClick(corridor.id)}
+              key={area.id} 
+              className={`area-card ${filters.location === area.id ? 'active' : ''}`}
+              onClick={() => handleCorridorClick(area.id)}
             >
-              <div className="corridor-card-glow"></div>
-              <div className="corridor-icon-wrapper">{corridor.icon}</div>
-              <div className="corridor-info">
+              <div className="area-card-glow"></div>
+              <div className="area-icon-wrapper">{area.icon}</div>
+              <div className="area-info">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                  <h3 style={{ margin: 0 }}>{corridor.name}</h3>
-                  <span className="growth-indicator">{corridor.growth}</span>
+                  <h3 style={{ margin: 0 }}>{area.name}</h3>
+                  <span className="growth-indicator">{area.growth}</span>
                 </div>
-                <p style={{ marginBottom: '8px' }}>{corridor.tagline}</p>
-                <div className="corridor-metrics">
-                  <span>Avg. Price: <strong>{corridor.pricePerSqft}/sqft</strong></span>
-                  <span>Yield: <strong>{corridor.yield}</strong></span>
+                <p style={{ marginBottom: '8px' }}>{area.tagline}</p>
+                <div className="area-metrics">
+                  <span>Avg. Price: <strong>{area.pricePerSqft}/sqft</strong></span>
+                  <span>Yield: <strong>{area.yield}</strong></span>
                 </div>
               </div>
             </div>
@@ -2787,7 +2709,7 @@ export default function Portal({ onViewChange }) {
           <div className="philosophy-card">
             <div className="ph-icon-wrapper"><LineChart size={24} /></div>
             <h3>Investment Goals</h3>
-            <p>Appreciation-rich corridors delivering strong capital growth and consistent rental yields.</p>
+            <p>Appreciation-rich areas delivering strong capital growth and consistent rental yields.</p>
           </div>
         </div>
       </section>
@@ -2810,7 +2732,7 @@ export default function Portal({ onViewChange }) {
                       <option value="">All Pune West Corridors</option>
                       <option value="HINJEWADI">Hinjewadi IT Zone</option>
                       <option value="WAKAD">Wakad Junction</option>
-                      <option value="BANER">Baner Tech Corridor</option>
+                      <option value="BANER">Baner</option>
                       <option value="BALEWADI">Balewadi High Street</option>
                       <option value="TATHAWADE">Tathawade Hub</option>
                       <option value="MAHALUNGE">Mahalunge Township</option>
@@ -2941,54 +2863,6 @@ export default function Portal({ onViewChange }) {
                     </div>
                   )}
 
-              {/* Grayscale Closed Deals FOMO Section */}
-              <section className="closed-deals-section" style={{ marginTop: '50px', borderTop: '1px solid var(--border-muted)', paddingTop: '40px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#888', marginBottom: '16px' }}>
-                  <Lock size={18} />
-                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, letterSpacing: '0.05em' }}>RECENTLY CLOSED TRANSACTIONS</h3>
-                </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '24px', lineHeight: 1.5 }}>
-                  Advisory records of successfully completed property assignments. Grayscale display signifies unavailable listings. Enquire for similar configurations.
-                </p>
-
-                {closedLoading ? (
-                  <div className="closed-deals-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
-                    {[1, 2, 3, 4].map(i => (
-                      <div key={i} style={{ height: '220px', borderRadius: '8px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', overflow: 'hidden' }}>
-                        <div className="shimmer" style={{ height: '140px' }} />
-                        <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          <div className="shimmer" style={{ width: '70%', height: '14px', borderRadius: '3px' }} />
-                          <div className="shimmer" style={{ width: '40%', height: '12px', borderRadius: '3px' }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : closedProperties.length === 0 ? (
-                  <div className="empty-state" style={{ color: '#888', borderStyle: 'dashed' }}><p>No recently closed records loaded.</p></div>
-                ) : (
-                  <div className="closed-deals-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
-                    {closedProperties.map(p => (
-                      <div key={p.id} className="closed-deal-card" style={{ filter: 'grayscale(100%)', opacity: 0.65, border: '1px solid var(--border-muted)', borderRadius: '8px', overflow: 'hidden', background: 'rgba(255,255,255,0.02)', position: 'relative' }}>
-                        <div style={{ height: '140px', backgroundImage: `url('${p.imageUrl || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80"}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <div style={{ background: 'rgba(0,0,0,0.7)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              <Lock size={14} color="var(--gold-primary)" />
-                            </div>
-                          </div>
-                          <span style={{ position: 'absolute', bottom: '10px', left: '10px', background: '#000', color: '#fff', fontSize: '0.65rem', padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>
-                            Acquired under private mandate
-                          </span>
-                        </div>
-                        <div style={{ padding: '12px' }}>
-                          <h4 style={{ margin: '0 0 6px 0', fontSize: '0.9rem', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</h4>
-                          <p style={{ margin: 0, fontSize: '0.75rem', color: '#888' }}>Location: {p.location} Corridor</p>
-                          <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', fontWeight: 600, color: 'var(--gold-primary)' }}>{formatPrice(p.price, p.transactionType)}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </section>
             </>
           )}
 
@@ -3007,7 +2881,7 @@ export default function Portal({ onViewChange }) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '15px', borderBottom: '1px solid var(--border-muted)', paddingBottom: '16px', marginBottom: '16px' }}>
                     <div>
                       <h3 style={{ margin: '0 0 4px 0', fontSize: '1.6rem', color: 'var(--text-light)' }}>{selectedSocietyDetail.name}</h3>
-                      <span style={{ fontSize: '0.78rem', background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>{selectedSocietyDetail.location} Corridor</span>
+                      <span style={{ fontSize: '0.78rem', background: 'rgba(212,175,55,0.1)', color: 'var(--gold-primary)', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>{selectedSocietyDetail.location}</span>
                       <p style={{ margin: '6px 0 0 0', fontSize: '0.9rem', color: 'var(--gold-primary)' }}>Developer: {selectedSocietyDetail.developer}</p>
                     </div>
                     <div style={{ textAlign: 'right' }}>
@@ -3055,7 +2929,7 @@ export default function Portal({ onViewChange }) {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '20px' }}>
                     <div>
                       <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>IT Parks Commute</span>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{selectedSocietyDetail.nearbyItParks || 'Nearby Hinjewadi IT Corridors'}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{selectedSocietyDetail.nearbyItParks || 'Nearby Hinjewadis'}</span>
                     </div>
                     <div>
                       <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Transit & Metro</span>
@@ -3135,7 +3009,7 @@ export default function Portal({ onViewChange }) {
               <div style={{ animation: 'fadeIn 0.3s forwards' }}>
                 <h2 className="luxury-title" style={{ fontSize: '1.6rem', marginBottom: '8px' }}>⚜️ Premium Societies & Townships Index</h2>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.5 }}>
-                  Discover tier-1 residential developments, integrated smart townships, and luxury high-rise communities across Pune West's growth corridors. Direct developer mandates with 0% brokerage.
+                  Discover tier-1 residential developments, integrated smart townships, and luxury high-rise communities across Pune West's growth areas. Direct developer mandates with 0% brokerage.
                 </p>
 
                 {directoriesLoading ? (
@@ -3265,7 +3139,7 @@ export default function Portal({ onViewChange }) {
                         <div style={{ width: '8px', height: '8px', background: 'var(--gold-primary)', borderRadius: '50%', position: 'absolute', top: '-4px', left: '15px', boxShadow: '0 0 8px var(--gold-primary)' }} />
                         <span style={{ fontSize: '0.9rem', color: 'var(--gold-primary)', fontWeight: 'bold', display: 'block' }}>2018 - 2020</span>
                         <span style={{ fontSize: '0.78rem', color: 'var(--text-light)', fontWeight: 600, display: 'block', margin: '4px 0' }}>Launch Epoch</span>
-                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0 }}>Delivered 1200+ units in Wakad and Baner Corridors.</p>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0 }}>Delivered 1200+ units in Wakad and Baners.</p>
                       </div>
                       <div style={{ minWidth: '160px', flex: 1, background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-muted)', borderRadius: '8px', padding: '12px', position: 'relative' }}>
                         <div style={{ width: '8px', height: '8px', background: 'var(--gold-primary)', borderRadius: '50%', position: 'absolute', top: '-4px', left: '15px', boxShadow: '0 0 8px var(--gold-primary)' }} />
@@ -3481,7 +3355,7 @@ export default function Portal({ onViewChange }) {
                     🏢 Premium Townships in {selectedLocalityDetail.name}
                   </h4>
                   {societies.filter(s => s.location?.toString().toUpperCase() === selectedLocalityDetail.slug?.toUpperCase() || s.location?.toString().toUpperCase() === selectedLocalityDetail.name?.toUpperCase()).length === 0 ? (
-                    <div className="empty-state">No gated townships currently listed in this corridor.</div>
+                    <div className="empty-state">No gated townships currently listed in this area.</div>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                       {societies.filter(s => s.location?.toString().toUpperCase() === selectedLocalityDetail.slug?.toUpperCase() || s.location?.toString().toUpperCase() === selectedLocalityDetail.name?.toUpperCase()).map(soc => (
@@ -3727,7 +3601,7 @@ export default function Portal({ onViewChange }) {
               <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>⚡ 60-Second Callback</h3>
             </div>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '16px' }}>
-              Drop your number — our Pune IT corridor specialist calls you within 60 seconds. Available Mon–Sun, 9am to 9pm.
+              Drop your number — our Pune IT area specialist calls you within 60 seconds. Available Mon–Sun, 9am to 9pm.
             </p>
             <form onSubmit={handleVipSubmit}>
               <div className="form-group-floating">
@@ -3744,7 +3618,7 @@ export default function Portal({ onViewChange }) {
                 <select className="form-input" value={vipForm.location || 'HINJEWADI'}
                   onChange={e => setVipForm({ ...vipForm, location: e.target.value })}
                   style={{ fontSize: '0.84rem', borderRadius: '10px' }}>
-                  <option value="HINJEWADI">📍 Hinjewadi IT Corridor</option>
+                  <option value="HINJEWADI">📍 Hinjewadi</option>
                   <option value="BANER">📍 Baner – Balewadi</option>
                   <option value="WAKAD">📍 Wakad – Pimple Saudagar</option>
                   <option value="MAHALUNGE">📍 Mahalunge – Maan Road</option>
@@ -3987,7 +3861,7 @@ export default function Portal({ onViewChange }) {
                       <select className="form-input" value={leadForm.preferredLocation}
                         onChange={e => setLeadForm({ ...leadForm, preferredLocation: e.target.value })}
                         style={{ borderRadius: '10px' }}>
-                        <option value="HINJEWADI">Hinjewadi IT Corridor</option>
+                        <option value="HINJEWADI">Hinjewadi</option>
                         <option value="BANER">Baner – Balewadi</option>
                         <option value="WAKAD">Wakad – Pimple Saudagar</option>
                         <option value="BALEWADI">Balewadi High Street</option>
@@ -4050,7 +3924,7 @@ export default function Portal({ onViewChange }) {
                     <div className="appreciation-result">
                       <span>Projected Value:</span>
                       <strong>{formatPrice(calculateAppreciatedValue(selectedProperty.price, selectedProperty.location, appreciationYears))}</strong>
-                      <span className="cagr-sub">Based on {getAppreciationCAGR(selectedProperty.location)}% Pune corridor CAGR</span>
+                      <span className="cagr-sub">Based on {getAppreciationCAGR(selectedProperty.location)}% Pune area CAGR</span>
                     </div>
                   </div>
 
@@ -4177,6 +4051,87 @@ export default function Portal({ onViewChange }) {
 
       {/* Portal Footer */}
 
+
+      {/* Phase 4 — AI Area Match 3-Step Modal */}
+      {isAiModalOpen && (
+        <div
+          onClick={e => { if (e.target === e.currentTarget) { setIsAiModalOpen(false); setAiStep(1); } }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(12px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+        >
+          <div style={{ background: 'linear-gradient(135deg, #070f1e 0%, #0d1a30 100%)', border: '1px solid rgba(197,168,128,0.25)', borderRadius: '20px', padding: '40px', maxWidth: '480px', width: '100%', position: 'relative', boxShadow: '0 24px 80px rgba(0,0,0,0.7)' }}>
+            {/* Close */}
+            <button onClick={() => { setIsAiModalOpen(false); setAiStep(1); }} style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '50%', width: '32px', height: '32px', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>✕</button>
+
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(197,168,128,0.15) 0%, transparent 70%)', border: '1px solid rgba(197,168,128,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
+                <Sparkles size={24} color="#E6C35C" />
+              </div>
+              <h2 style={{ margin: '0 0 6px 0', fontFamily: "'Cinzel', serif", fontSize: '1.3rem', color: '#fff', fontWeight: 700 }}>AI Area Match</h2>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', fontFamily: "'Playfair Display', serif", fontStyle: 'italic' }}>3 questions · instant recommendation</p>
+            </div>
+
+            {/* Step indicator */}
+            <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '28px' }}>
+              {[1,2,3].map(s => (
+                <div key={s} style={{ width: s <= aiStep ? '28px' : '8px', height: '4px', borderRadius: '2px', background: s <= aiStep ? 'linear-gradient(90deg, #E6C35C, #C5A880)' : 'rgba(255,255,255,0.1)', transition: 'all 0.4s ease' }} />
+              ))}
+            </div>
+
+            {/* Step 1 — Budget */}
+            {aiStep === 1 && (
+              <div>
+                <p style={{ textAlign: 'center', fontSize: '1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '20px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>What is your investment budget?</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[['under-80L','Under ₹80 Lakhs','Affordable premium apartments'],['80L-1.5Cr','₹80L – ₹1.5 Crore','Mid-luxury 2-3 BHK range'],['1.5Cr-3Cr','₹1.5 – ₹3 Crore','Luxury 3-4 BHK & penthouses'],['above-3Cr','Above ₹3 Crore','Ultra-luxury private mandates']].map(([val, label, sub]) => (
+                    <button key={val} onClick={() => { setAiBudget(val); setAiStep(2); }} style={{ background: aiBudget === val ? 'rgba(197,168,128,0.12)' : 'rgba(255,255,255,0.02)', border: `1px solid ${aiBudget === val ? 'rgba(197,168,128,0.5)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '12px', padding: '14px 18px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                      <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.9rem', fontWeight: 700, color: aiBudget === val ? '#E6C35C' : '#fff' }}>{label}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '3px' }}>{sub}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 2 — Priority */}
+            {aiStep === 2 && (
+              <div>
+                <p style={{ textAlign: 'center', fontSize: '1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '20px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>What matters most to you?</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[['appreciation','📈 Capital Appreciation','Long-term asset value growth'],['yield','💰 Rental Yield','Monthly rental income focus'],['commute','🚗 Commute & Connectivity','Easy IT park / city access']].map(([val, label, sub]) => (
+                    <button key={val} onClick={() => { setAiPriority(val); setAiStep(3); }} style={{ background: aiPriority === val ? 'rgba(197,168,128,0.12)' : 'rgba(255,255,255,0.02)', border: `1px solid ${aiPriority === val ? 'rgba(197,168,128,0.5)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '12px', padding: '14px 18px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                      <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.9rem', fontWeight: 700, color: aiPriority === val ? '#E6C35C' : '#fff' }}>{label}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '3px' }}>{sub}</div>
+                    </button>
+                  ))}
+                </div>
+                <button onClick={() => setAiStep(1)} style={{ marginTop: '16px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.8rem', fontFamily: "'Montserrat', sans-serif" }}>← Back</button>
+              </div>
+            )}
+
+            {/* Step 3 — Preferred Area + Result */}
+            {aiStep === 3 && (
+              <div>
+                <p style={{ textAlign: 'center', fontSize: '1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '20px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>Any preferred area?</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
+                  {[['all','Any Area'],['BANER','Baner'],['WAKAD','Wakad'],['HINJEWADI','Hinjewadi'],['MAHALUNGE','Mahalunge'],['TATHAWADE','Tathawade']].map(([val, label]) => (
+                    <button key={val} onClick={() => setAiCorridor(val)} style={{ background: aiCorridor === val ? 'rgba(197,168,128,0.15)' : 'rgba(255,255,255,0.02)', border: `1px solid ${aiCorridor === val ? 'rgba(197,168,128,0.5)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '50px', padding: '8px 16px', cursor: 'pointer', fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 700, color: aiCorridor === val ? '#E6C35C' : 'rgba(255,255,255,0.6)', transition: 'all 0.2s ease' }}>{label}</button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => { handleAiAnalyze(); setIsAiModalOpen(false); setAiStep(1); document.getElementById('areas')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+                  style={{ width: '100%', background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', border: 'none', color: '#040814', padding: '15px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.06em', cursor: 'pointer', boxShadow: '0 6px 20px rgba(197,168,128,0.3)', transition: 'all 0.3s ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(197,168,128,0.4)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(197,168,128,0.3)'; }}
+                >
+                  ✦ Compute My Match
+                </button>
+                <button onClick={() => setAiStep(2)} style={{ marginTop: '12px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.8rem', fontFamily: "'Montserrat', sans-serif", display: 'block', margin: '12px auto 0 auto' }}>← Back</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {/* Sticky Floating Advisory CTA */}
       {!selectedPropertyDetail && !selectedSocietyDetail && !selectedBuilderDetail && !selectedLocalityDetail && !selectedBlogDetail && (
         <button
@@ -4198,13 +4153,13 @@ export default function Portal({ onViewChange }) {
 
 
 
-// Corridor static datasets used for the tech corridor filters (Redesigned with Metrics)
-const corridorData = [
-  { id: 'BANER', name: 'Baner Corridor', tagline: 'Balewadi Link Road, high appreciation', icon: <Activity size={20} />, pricePerSqft: '₹11,500', yield: '3.8%', growth: '+16%' },
-  { id: 'WAKAD', name: 'Wakad Corridor', tagline: 'Datta Mandir, multi-lane connectivity', icon: <TrendingUp size={20} />, pricePerSqft: '₹8,200', yield: '4.5%', growth: '+14%' },
-  { id: 'HINJEWADI', name: 'Hinjewadi IT Corridor', tagline: 'Phase 1 & 2 Infotech park hub', icon: <Laptop size={20} />, pricePerSqft: '₹7,800', yield: '5.2%', growth: '+11%' },
-  { id: 'BALEWADI', name: 'Balewadi High Street', tagline: 'Premium retail & high-end dining', icon: <Sparkles size={20} />, pricePerSqft: '₹10,200', yield: '4.0%', growth: '+13%' },
-  { id: 'TATHAWADE', name: 'Tathawade Corridor', tagline: 'Educational hub & premium villas', icon: <Users size={20} />, pricePerSqft: '₹7,200', yield: '4.6%', growth: '+15%' },
-  { id: 'MAHALUNGE', name: 'Mahalunge Corridor', tagline: 'Next-gen smart city township plots', icon: <LineChart size={20} />, pricePerSqft: '₹6,900', yield: '4.8%', growth: '+18%' }
+// Corridor static datasets used for the tech area filters (Redesigned with Metrics)
+const areaData = [
+  { id: 'BANER', name: 'Baner', tagline: 'Balewadi Link Road, high appreciation', icon: <Activity size={20} />, pricePerSqft: '₹11,500', yield: '3.8%', growth: '+16%' },
+  { id: 'WAKAD', name: 'Wakad', tagline: 'Datta Mandir, multi-lane connectivity', icon: <TrendingUp size={20} />, pricePerSqft: '₹8,200', yield: '4.5%', growth: '+14%' },
+  { id: 'HINJEWADI', name: 'Hinjewadi', tagline: 'Phase 1 & 2 Infotech park hub', icon: <Laptop size={20} />, pricePerSqft: '₹7,800', yield: '5.2%', growth: '+11%' },
+  { id: 'BALEWADI', name: 'Balewadi', tagline: 'Premium retail & high-end dining', icon: <Sparkles size={20} />, pricePerSqft: '₹10,200', yield: '4.0%', growth: '+13%' },
+  { id: 'TATHAWADE', name: 'Tathawade', tagline: 'Educational hub & premium villas', icon: <Users size={20} />, pricePerSqft: '₹7,200', yield: '4.6%', growth: '+15%' },
+  { id: 'MAHALUNGE', name: 'Mahalunge', tagline: 'Next-gen smart city township plots', icon: <LineChart size={20} />, pricePerSqft: '₹6,900', yield: '4.8%', growth: '+18%' }
 ];
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
 import { Plus, Building, Landmark, Loader, RefreshCw, Edit2, Trash2 } from 'lucide-react';
 import ImageUploader from './ImageUploader';
@@ -309,7 +309,7 @@ export default function SocietiesTab() {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label">Location Corridor *</label>
+                    <label className="form-label">Location / Area *</label>
                     <select value={socForm.location} onChange={e => setSocForm({ ...socForm, location: e.target.value })} className="form-input" style={{ width: '100%' }}>
                       <option value="BANER">Baner</option>
                       <option value="WAKAD">Wakad</option>

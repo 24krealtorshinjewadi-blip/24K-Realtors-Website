@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { X, Sparkles, Loader } from 'lucide-react';
 import ImageUploader from './ImageUploader';
 
@@ -100,14 +100,14 @@ export default function PropertyFormDrawer({
 
         <div className="form-row">
           <div className="form-group">
-            <label className="form-label">Prime Corridor</label>
+            <label className="form-label">Prime Location</label>
             <select name="location" value={propertyForm.location} onChange={e => setPropertyForm({...propertyForm, location: e.target.value})} className="form-input">
-              <option value="BANER">Baner Corridor</option>
-              <option value="WAKAD">Wakad Corridor</option>
-              <option value="HINJEWADI">Hinjewadi IT Corridor</option>
+              <option value="BANER">Baner</option>
+              <option value="WAKAD">Wakad</option>
+              <option value="HINJEWADI">Hinjewadi</option>
               <option value="BALEWADI">Balewadi High Street</option>
-              <option value="TATHAWADE">Tathawade Corridor</option>
-              <option value="MAHALUNGE">Mahalunge Corridor</option>
+              <option value="TATHAWADE">Tathawade</option>
+              <option value="MAHALUNGE">Mahalunge</option>
             </select>
           </div>
 
