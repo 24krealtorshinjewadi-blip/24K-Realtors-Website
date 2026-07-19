@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
   UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building,
@@ -131,10 +131,10 @@ export default function PortalNavbar({
                   </div>
                   <div className="mega-menu-column">
                     <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'localities', null, 'locality-guides'); }}>Explore Neighborhoods</h5>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'HINJEWADI' }, 'listings', null, 'properties-sale'); }}>Hinjewadi IT Hub</a>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'WAKAD' }, 'listings', null, 'properties-sale'); }}>Wakad Residential</a>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'BANER' }, 'listings', null, 'properties-sale'); }}>Baner Corridor</a>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'TATHAWADE' }, 'listings', null, 'properties-sale'); }}>Tathawade Gateway</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'HINJEWADI' }, 'listings', null, 'properties-sale'); }}>Hinjewadi</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'WAKAD' }, 'listings', null, 'properties-sale'); }}>Wakad</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'BANER' }, 'listings', null, 'properties-sale'); }}>Baner</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'TATHAWADE' }, 'listings', null, 'properties-sale'); }}>Tathawade</a>
                   </div>
                   <div className="mega-menu-column">
                     <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'builders', null, 'developer-portfolios'); }}>Developer Portfolios</h5>
@@ -215,14 +215,6 @@ export default function PortalNavbar({
               onClick={() => onApplyMegaFilter && onApplyMegaFilter({ propertyType: 'COMMERCIAL' }, 'listings', null, 'properties-sale')}
             >
               COMMERCIAL
-            </button>
-            <button 
-              onClick={() => {
-                const footer = document.querySelector('footer');
-                if (footer) footer.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              ABOUT US
             </button>
             <button 
               className={activeSection === 'blogs' ? 'active' : ''} 
@@ -308,7 +300,7 @@ export default function PortalNavbar({
       {/* Sliding Navigation Drawer Panel */}
       <div className={`nav-drawer-panel ${isDrawerOpen ? 'open' : ''}`}>
         <div className="drawer-close-row">
-          <span className="drawer-logo-text">24K MENU TERMINAL</span>
+          <span className="drawer-logo-text">⚜️ 24K REALTORS</span>
           <button onClick={() => setIsDrawerOpen(false)} className="btn-drawer-close">
             <X size={18} />
           </button>
@@ -353,105 +345,68 @@ export default function PortalNavbar({
             <ArrowRight size={14} className="arrow-icon" />
           </a>
 
-          <div className="drawer-section-title">🏢 EXPLORE PORTFOLIOS</div>
+          <div className="drawer-section-title">🏢 EXPLORE PROPERTIES</div>
           
           <button 
-            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('listings'); }} 
+            onClick={() => { setIsDrawerOpen(false); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY' }, 'listings', null, 'properties-sale'); }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
+          >
+            <Home size={18} color="#d4af37" />
+            <div className="drawer-item-text">
+              <strong>Buy a Property</strong>
+              <span>Browse verified residences in Pune West</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" />
+          </button>
+
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT' }, 'listings', null, 'properties-rent'); }} 
             className="drawer-item-link"
             style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
           >
             <Compass size={18} color="#d4af37" />
             <div className="drawer-item-text">
-              <strong>Premium Price Lists</strong>
-              <span>Browse Wakad, Baner & Hinjewadi properties</span>
+              <strong>Rent a Property</strong>
+              <span>Premium furnished & unfurnished rentals</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </button>
 
           <button 
-            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('societies'); }} 
+            onClick={() => { setIsDrawerOpen(false); onApplyMegaFilter && onApplyMegaFilter({ propertyType: 'COMMERCIAL' }, 'listings', null, 'properties-sale'); }} 
             className="drawer-item-link"
             style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
           >
             <Building size={18} color="#d4af37" />
             <div className="drawer-item-text">
-              <strong>Browse Societies</strong>
-              <span>Check 24K Opula, Altura, township lists</span>
+              <strong>Commercial Spaces</strong>
+              <span>Office, retail & investment assets</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </button>
 
-          <button 
-            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('builders'); }} 
-            className="drawer-item-link"
-            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
-          >
-            <Award size={18} color="#d4af37" />
-            <div className="drawer-item-text">
-              <strong>Premium Builders</strong>
-              <span>Kolte Patil, Gera developments directory</span>
-            </div>
-            <ArrowRight size={14} className="arrow-icon" />
-          </button>
-
-          <button 
-            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('localities'); }} 
-            className="drawer-item-link"
-            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
-          >
-            <Info size={18} color="#d4af37" />
-            <div className="drawer-item-text">
-              <strong>Locality Guides</strong>
-              <span>Hinjewadi, Baner, Wakad connectivity index</span>
-            </div>
-            <ArrowRight size={14} className="arrow-icon" />
-          </button>
-
-          <button 
-            onClick={() => { setIsDrawerOpen(false); onSectionChange && onSectionChange('blogs'); }} 
-            className="drawer-item-link"
-            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
-          >
-            <FileText size={18} color="#d4af37" />
-            <div className="drawer-item-text">
-              <strong>Premium Blogs</strong>
-              <span>Market insights & real estate trends</span>
-            </div>
-            <ArrowRight size={14} className="arrow-icon" />
-          </button>
-
-          <div className="drawer-section-title">📄 SELLER DESK SERVICES</div>
+          <div className="drawer-section-title">📄 ADVISORY SERVICES</div>
           
           <a href="#seller-mandate-anchor" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
             <FileText size={18} color="#d4af37" />
             <div className="drawer-item-text">
-              <strong>Seller Advisory Mandate</strong>
-              <span>List your flat directly with 24K advisory desk</span>
+              <strong>Sell Your Property</strong>
+              <span>List directly with 24K advisory desk</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </a>
 
-          <div className="drawer-section-title">🏛️ TRUST & COMPLIANCE</div>
-          
           <a href="#rera-compliance" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
             <ShieldCheck size={18} color="#2ec4b6" />
             <div className="drawer-item-text">
-              <strong>MahaRERA Certifications</strong>
-              <span>Verify active project registration numbers</span>
+              <strong>MahaRERA Verified</strong>
+              <span>Check active project registration numbers</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </a>
 
-          <a href="#testimonials" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">
-            <UserCheck size={18} color="#2ec4b6" />
-            <div className="drawer-item-text">
-              <strong>Client Testimonials</strong>
-              <span>Read genuine feedback from active buyers</span>
-            </div>
-            <ArrowRight size={14} className="arrow-icon" />
-          </a>
         </div>
-
         <div className="drawer-footer-branding">
           <span>24K Realtors Pune © 2026</span>
           <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>The Gold Standard of Advisory</span>
