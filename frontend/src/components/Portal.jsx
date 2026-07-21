@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { apiService } from '../services/apiService';
 import { chatWithVisitor } from '../services/geminiService';
 import { 
@@ -241,6 +241,8 @@ export default function Portal({ onViewChange }) {
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
   const [spotlightQuery, setSpotlightQuery] = useState('');
   const [viewMode, setViewMode] = useState('GRID'); // GRID | MAP
+  const [hoveredPropertyLoc, setHoveredPropertyLoc] = useState(null);
+  const [hoveredMapNode, setHoveredMapNode] = useState(null);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [aiStep, setAiStep] = useState(1);
   const [advisoryTab, setAdvisoryTab] = useState('buyer');
@@ -894,71 +896,297 @@ export default function Portal({ onViewChange }) {
 
   const renderInteractiveVectorMap = () => {
     const mapNodes = [
-      { id: 'BANER', name: 'Baner', x: 380, y: 350, price: '11.5K', growth: '+16%' },
-      { id: 'BALEWADI', name: 'Balewadi', x: 340, y: 280, price: '10.2K', growth: '+13%' },
-      { id: 'WAKAD', name: 'Wakad', x: 230, y: 200, price: '8.2K', growth: '+14%' },
-      { id: 'TATHAWADE', name: 'Tathawade', x: 120, y: 130, price: '7.2K', growth: '+15%' },
-      { id: 'HINJEWADI', name: 'Hinjewadi', x: 100, y: 320, price: '7.8K', growth: '+11%' },
-      { id: 'MAHALUNGE', name: 'Mahalunge', x: 200, y: 360, price: '6.9K', growth: '+18%' }
+      { id: 'BANER', name: 'Baner', x: 380, y: 350, price: '11.5K', growth: '+16%', yield: '3.8%', tag: 'Established' },
+      { id: 'BALEWADI', name: 'Balewadi', x: 340, y: 280, price: '10.2K', growth: '+13%', yield: '4.0%', tag: 'Premium' },
+      { id: 'WAKAD', name: 'Wakad', x: 230, y: 200, price: '8.2K', growth: '+14%', yield: '4.5%', tag: 'High Growth' },
+      { id: 'TATHAWADE', name: 'Tathawade', x: 120, y: 130, price: '7.2K', growth: '+15%', yield: '4.8%', tag: 'Emerging' },
+      { id: 'HINJEWADI', name: 'Hinjewadi', x: 100, y: 320, price: '7.8K', growth: '+11%', yield: '5.2%', tag: 'IT Hub' },
+      { id: 'MAHALUNGE', name: 'Mahalunge', x: 200, y: 360, price: '6.9K', growth: '+18%', yield: '5.5%', tag: 'Best Value' },
+      { id: 'KHARADI', name: 'Kharadi', x: 430, y: 160, price: '9.8K', growth: '+12%', yield: '4.2%', tag: 'EON IT Park' },
     ];
 
+    const connections = [
+      ['TATHAWADE', 'WAKAD'], ['WAKAD', 'BALEWADI'], ['BALEWADI', 'BANER'],
+      ['HINJEWADI', 'WAKAD'], ['MAHALUNGE', 'HINJEWADI'], ['MAHALUNGE', 'WAKAD'],
+      ['KHARADI', 'BANER'],
+    ];
+
+    const activeNode = hoveredPropertyLoc || hoveredMapNode;
+    const activeFilter = filters.location;
+
     return (
-      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", position: "relative" }}>
-        <div style={{ padding: "12px 20px", borderBottom: "1px solid rgba(197, 168, 128, 0.15)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(7, 15, 30, 0.6)" }}>
-          <span style={{ fontSize: "0.68rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: "#E6C35C", letterSpacing: "0.08em" }}>
-            📡 PUNE WEST SATELLITE COMMAND
-          </span>
-          <span style={{ fontSize: "0.62rem", background: "rgba(255,255,255,0.06)", borderRadius: "4px", padding: "2px 6px", color: "rgba(255,255,255,0.4)", fontWeight: 600 }}>
-            LIVE MAP STATUS
-          </span>
+      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', fontFamily: "'Montserrat', sans-serif" }}>
+        {/* Header */}
+        <div style={{ padding: '10px 16px', borderBottom: '1px solid rgba(197,168,128,0.12)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(4,8,20,0.8)', backdropFilter: 'blur(8px)', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
+            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              Pune West · Property Radar
+            </span>
+          </div>
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.6rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '4px', padding: '2px 7px', color: '#22c55e', fontWeight: 700 }}>
+              LIVE
+            </span>
+            <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', fontWeight: 600 }}>
+              {allRawProperties.length} listings indexed
+            </span>
+          </div>
         </div>
-        <div style={{ flex: 1, position: "relative", background: "#040814" }}>
-          <svg viewBox="0 0 500 500" style={{ width: "100%", height: "100%", background: "radial-gradient(circle at center, #071226 0%, #03060c 100%)" }}>
+
+        {/* SVG Map Area */}
+        <div style={{ flex: 1, position: 'relative', background: '#02060f', overflow: 'hidden', minHeight: 0 }}>
+          <svg viewBox="0 0 500 460" style={{ width: '100%', height: '100%' }}>
             <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.015)" strokeWidth="1" />
+              <pattern id="mapgrid" width="30" height="30" patternUnits="userSpaceOnUse">
+                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.018)" strokeWidth="0.8" />
               </pattern>
+              <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#071226" />
+                <stop offset="100%" stopColor="#02060f" />
+              </radialGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="softglow">
+                <feGaussianBlur stdDeviation="6" result="coloredBlur" />
+                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
             </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-            <line x1="120" y1="130" x2="230" y2="200" stroke="rgba(197,168,128,0.2)" strokeWidth="3" strokeDasharray="6,4" />
-            <line x1="230" y1="200" x2="340" y2="280" stroke="rgba(197,168,128,0.2)" strokeWidth="3" strokeDasharray="6,4" />
-            <line x1="340" y1="280" x2="380" y2="350" stroke="rgba(197,168,128,0.2)" strokeWidth="3" strokeDasharray="6,4" />
-            <line x1="100" y1="320" x2="230" y2="200" stroke="rgba(197,168,128,0.15)" strokeWidth="2" strokeDasharray="4,4" />
-            <line x1="200" y1="360" x2="100" y2="320" stroke="rgba(197,168,128,0.15)" strokeWidth="2" strokeDasharray="4,4" />
-            <line x1="200" y1="360" x2="230" y2="200" stroke="rgba(197,168,128,0.15)" strokeWidth="2" strokeDasharray="4,4" />
-            <text x="390" y="80" fill="rgba(255,255,255,0.12)" fontSize="9" fontFamily="monospace">GRID_SEC_E</text>
-            <text x="40" y="440" fill="rgba(255,255,255,0.12)" fontSize="9" fontFamily="monospace">GRID_SEC_W</text>
+
+            <rect width="100%" height="100%" fill="url(#bgGrad)" />
+            <rect width="100%" height="100%" fill="url(#mapgrid)" />
+
+            {/* Terrain watermark */}
+            <text x="250" y="240" textAnchor="middle" fill="rgba(197,168,128,0.03)" fontSize="80" fontWeight="900" fontFamily="'Montserrat',sans-serif" style={{ userSelect: 'none' }}>PUNE</text>
+
+            {/* Grid labels */}
+            <text x="445" y="16" fill="rgba(255,255,255,0.07)" fontSize="7" fontFamily="monospace">SEC_E</text>
+            <text x="8" y="452" fill="rgba(255,255,255,0.07)" fontSize="7" fontFamily="monospace">SEC_W</text>
+            <text x="8" y="16" fill="rgba(255,255,255,0.07)" fontSize="7" fontFamily="monospace">SEC_NW</text>
+
+            {/* Corridor connection lines */}
+            {connections.map(([fromId, toId]) => {
+              const from = mapNodes.find(n => n.id === fromId);
+              const to = mapNodes.find(n => n.id === toId);
+              if (!from || !to) return null;
+              const isHighlighted = activeFilter === fromId || activeFilter === toId || activeNode === fromId || activeNode === toId;
+              return (
+                <line
+                  key={`${fromId}-${toId}`}
+                  x1={from.x} y1={from.y}
+                  x2={to.x} y2={to.y}
+                  stroke={isHighlighted ? 'rgba(230,195,92,0.55)' : 'rgba(197,168,128,0.1)'}
+                  strokeWidth={isHighlighted ? '2' : '1.2'}
+                  strokeDasharray={isHighlighted ? 'none' : '5,4'}
+                  style={{ transition: 'all 0.35s ease' }}
+                />
+              );
+            })}
+
+            {/* Map Nodes */}
             {mapNodes.map((node) => {
-              const isActive = filters.location === node.id;
-              const nodePropsCount = allRawProperties.filter(p => p.location === node.id).length;
+              const isActive = activeFilter === node.id;
+              const isHovered = activeNode === node.id;
+              const isLit = isActive || isHovered;
+              const nodeCount = allRawProperties.filter(p => p.location === node.id).length;
+
               return (
                 <g
                   key={node.id}
                   onClick={() => {
-                    setFilters(prev => ({ ...prev, location: isActive ? "" : node.id }));
+                    setFilters(prev => ({ ...prev, location: isActive ? '' : node.id }));
                     setPage(0);
                   }}
-                  style={{ cursor: "pointer" }}
+                  onMouseEnter={() => setHoveredMapNode(node.id)}
+                  onMouseLeave={() => setHoveredMapNode(null)}
+                  style={{ cursor: 'pointer' }}
                 >
-                  <circle cx={node.x} cy={node.y} r={isActive ? "24" : "16"} fill="none" stroke={isActive ? "#E6C35C" : "rgba(197, 168, 128, 0.3)"} strokeWidth="1.5" strokeDasharray={isActive ? "none" : "3,3"} style={{ transition: "all 0.3s ease" }} />
-                  <circle cx={node.x} cy={node.y} r={isActive ? "9" : "6"} fill={isActive ? "#E6C35C" : "rgba(7, 15, 30, 0.9)"} stroke={isActive ? "none" : "#C5A880"} strokeWidth="2" style={{ transition: "all 0.3s ease" }} />
-                  {isActive && <circle cx={node.x} cy={node.y} r="3.5" fill="#040814" />}
-                  <text x={node.x} y={node.y - (isActive ? 30 : 22)} textAnchor="middle" fill={isActive ? "#E6C35C" : "#A0AEC0"} fontSize={isActive ? "10.5" : "9"} fontWeight={isActive ? "700" : "600"} fontFamily="'Montserrat', sans-serif" style={{ transition: "all 0.3s ease", textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
-                    {node.name.toUpperCase()} ({nodePropsCount})
+                  {/* Outer pulse rings */}
+                  {isLit && (
+                    <>
+                      <circle cx={node.x} cy={node.y} r="28" fill="none"
+                        stroke={isActive ? 'rgba(230,195,92,0.3)' : 'rgba(230,195,92,0.18)'}
+                        strokeWidth="1"
+                        style={{ animation: 'mapPulse 2s ease-in-out infinite', transformOrigin: `${node.x}px ${node.y}px` }} />
+                      <circle cx={node.x} cy={node.y} r="40" fill="none"
+                        stroke={isActive ? 'rgba(230,195,92,0.12)' : 'rgba(230,195,92,0.07)'}
+                        strokeWidth="0.8"
+                        style={{ animation: 'mapPulse2 2.8s ease-in-out infinite', transformOrigin: `${node.x}px ${node.y}px` }} />
+                    </>
+                  )}
+
+                  {/* Halo fill */}
+                  <circle
+                    cx={node.x} cy={node.y}
+                    r={isLit ? 20 : 13}
+                    fill={isLit ? 'rgba(230,195,92,0.07)' : 'rgba(7,15,30,0.6)'}
+                    stroke={isLit ? 'rgba(230,195,92,0.55)' : 'rgba(197,168,128,0.22)'}
+                    strokeWidth="1.5"
+                    strokeDasharray={isLit ? 'none' : '4,3'}
+                    style={{ transition: 'all 0.3s ease' }}
+                    filter={isLit ? 'url(#softglow)' : 'none'}
+                  />
+
+                  {/* Center dot */}
+                  <circle
+                    cx={node.x} cy={node.y}
+                    r={isLit ? 7 : 4.5}
+                    fill={isLit ? '#E6C35C' : 'rgba(7,15,30,0.9)'}
+                    stroke={isLit ? 'none' : '#C5A880'}
+                    strokeWidth="1.8"
+                    style={{ transition: 'all 0.3s ease' }}
+                    filter={isLit ? 'url(#glow)' : 'none'}
+                  />
+                  {isLit && <circle cx={node.x} cy={node.y} r="3" fill="#040814" />}
+
+                  {/* Location name */}
+                  <text
+                    x={node.x} y={node.y - (isLit ? 27 : 19)}
+                    textAnchor="middle"
+                    fill={isLit ? '#E6C35C' : '#7a90a4'}
+                    fontSize={isLit ? '10' : '8.5'}
+                    fontWeight={isLit ? '800' : '600'}
+                    fontFamily="'Montserrat', sans-serif"
+                    style={{ transition: 'all 0.3s ease' }}
+                  >
+                    {node.name.toUpperCase()}
                   </text>
-                  <text x={node.x} y={node.y + 22} textAnchor="middle" fill="rgba(197,168,128,0.7)" fontSize="7.5" fontFamily="monospace" style={{ opacity: isActive ? 1 : 0.6, transition: "all 0.2s ease" }}>
-                    {node.price} | {node.growth}
+
+                  {/* Listing count */}
+                  {nodeCount > 0 && (
+                    <text
+                      x={node.x} y={node.y - (isLit ? 17 : 11)}
+                      textAnchor="middle"
+                      fill={isLit ? 'rgba(230,195,92,0.85)' : 'rgba(197,168,128,0.45)'}
+                      fontSize="7"
+                      fontFamily="'Montserrat', sans-serif"
+                      fontWeight="700"
+                      style={{ transition: 'all 0.3s ease' }}
+                    >
+                      {nodeCount} listing{nodeCount !== 1 ? 's' : ''}
+                    </text>
+                  )}
+
+                  {/* Price + growth below node */}
+                  <text
+                    x={node.x} y={node.y + (isLit ? 24 : 19)}
+                    textAnchor="middle"
+                    fill="rgba(197,168,128,0.55)"
+                    fontSize="7"
+                    fontFamily="monospace"
+                    style={{ opacity: isLit ? 1 : 0.45, transition: 'all 0.25s ease' }}
+                  >
+                    ₹{node.price}/sqft · {node.growth}
                   </text>
                 </g>
               );
             })}
           </svg>
-          <div style={{ position: "absolute", bottom: "16px", left: "16px", background: "rgba(7,15,30,0.85)", border: "1px solid rgba(197,168,128,0.2)", borderRadius: "8px", padding: "8px 12px", fontSize: "0.62rem", color: "rgba(255,255,255,0.5)", pointerEvents: "none" }}>
-            <div style={{ fontWeight: 700, color: "#E6C35C", marginBottom: "3px" }}>📡 SATELLITE RADAR</div>
-            <div>• Click nodes to filter corridor</div>
-            <div>• Metrics: Avg Price | 5-Yr Growth</div>
+
+          {/* Floating tooltip for hovered map node */}
+          {hoveredMapNode && (() => {
+            const node = mapNodes.find(n => n.id === hoveredMapNode);
+            if (!node) return null;
+            const count = allRawProperties.filter(p => p.location === node.id).length;
+            const tooltipRight = node.x < 320;
+            return (
+              <div style={{
+                position: 'absolute',
+                top: `${(node.y / 460) * 100}%`,
+                ...(tooltipRight
+                  ? { left: `calc(${(node.x / 500) * 100}% + 28px)` }
+                  : { right: `calc(${(1 - node.x / 500) * 100}% + 28px)` }),
+                transform: 'translateY(-50%)',
+                background: 'rgba(4,8,20,0.97)',
+                border: '1px solid rgba(230,195,92,0.3)',
+                borderRadius: '10px',
+                padding: '11px 14px',
+                minWidth: '158px',
+                pointerEvents: 'none',
+                zIndex: 20,
+                boxShadow: '0 8px 32px rgba(0,0,0,0.8)',
+                backdropFilter: 'blur(16px)',
+              }}>
+                <div style={{ fontSize: '0.58rem', color: 'rgba(230,195,92,0.55)', fontWeight: 800, letterSpacing: '0.1em', marginBottom: '3px', textTransform: 'uppercase' }}>{node.tag}</div>
+                <div style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 800, marginBottom: '8px' }}>{node.name}</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '7px 10px' }}>
+                  {[
+                    { label: 'Avg Price', val: `₹${node.price}/sqft`, color: '#E6C35C' },
+                    { label: '5-Yr Growth', val: node.growth, color: '#22c55e' },
+                    { label: 'Rental Yield', val: node.yield, color: '#60a5fa' },
+                    { label: 'Listings', val: `${count} active`, color: '#e2e8f0' },
+                  ].map(({ label, val, color }) => (
+                    <div key={label}>
+                      <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.3)', marginBottom: '2px' }}>{label}</div>
+                      <div style={{ fontSize: '0.72rem', color, fontWeight: 700 }}>{val}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop: '9px', padding: '5px 8px', background: 'rgba(230,195,92,0.07)', border: '1px solid rgba(230,195,92,0.18)', borderRadius: '6px', fontSize: '0.6rem', color: 'rgba(230,195,92,0.75)', fontWeight: 700, textAlign: 'center', letterSpacing: '0.04em' }}>
+                  Click pin to filter listings →
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Legend */}
+          <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(4,8,20,0.9)', border: '1px solid rgba(197,168,128,0.14)', borderRadius: '8px', padding: '8px 11px', pointerEvents: 'none', backdropFilter: 'blur(8px)' }}>
+            <div style={{ fontSize: '0.57rem', fontWeight: 800, color: 'rgba(230,195,92,0.6)', letterSpacing: '0.08em', marginBottom: '5px', textTransform: 'uppercase' }}>Map Legend</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {[
+                { dot: { width: '8px', height: '8px', borderRadius: '50%', background: '#E6C35C', boxShadow: '0 0 6px #E6C35C' }, label: 'Active / Hovered' },
+                { dot: { width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(7,15,30,0.9)', border: '1.5px solid #C5A880' }, label: 'Available zone' },
+              ].map(({ dot, label }) => (
+                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={dot} />
+                  <span style={{ fontSize: '0.59rem', color: 'rgba(255,255,255,0.45)' }}>{label}</span>
+                </div>
+              ))}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ width: '18px', height: '0', borderTop: '1.5px dashed rgba(197,168,128,0.35)' }} />
+                <span style={{ fontSize: '0.59rem', color: 'rgba(255,255,255,0.45)' }}>Connectivity belt</span>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Bottom live corridor stats bar */}
+        {activeNode ? (() => {
+          const node = mapNodes.find(n => n.id === activeNode);
+          if (!node) return null;
+          const count = allRawProperties.filter(p => p.location === node.id).length;
+          const prices = allRawProperties.filter(p => p.location === node.id && p.price);
+          const minPrice = prices.length > 0 ? Math.min(...prices.map(p => Number(p.price))) : null;
+          return (
+            <div style={{ flexShrink: 0, borderTop: '1px solid rgba(197,168,128,0.1)', background: 'rgba(4,8,20,0.95)', padding: '9px 14px', display: 'flex', gap: '14px', alignItems: 'center', overflowX: 'auto', scrollbarWidth: 'none' }}>
+              <div style={{ flexShrink: 0 }}>
+                <div style={{ fontSize: '0.58rem', color: 'rgba(230,195,92,0.65)', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '1px' }}>📍 {node.name}</div>
+                <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)' }}>{node.tag}</div>
+              </div>
+              <div style={{ width: '1px', height: '26px', background: 'rgba(197,168,128,0.12)', flexShrink: 0 }} />
+              {[
+                { label: 'Avg Price', value: `₹${node.price}/sqft`, color: '#E6C35C' },
+                { label: '5-Yr Growth', value: node.growth, color: '#22c55e' },
+                { label: 'Rental Yield', value: node.yield, color: '#60a5fa' },
+                { label: 'Active', value: `${count}`, color: '#fff' },
+                ...(minPrice ? [{ label: 'From', value: formatPrice(minPrice), color: 'rgba(255,255,255,0.6)' }] : []),
+              ].map(({ label, value, color }) => (
+                <div key={label} style={{ flexShrink: 0, textAlign: 'center', minWidth: '58px' }}>
+                  <div style={{ fontSize: '0.56rem', color: 'rgba(255,255,255,0.3)', marginBottom: '2px', whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</div>
+                  <div style={{ fontSize: '0.72rem', color, fontWeight: 700, whiteSpace: 'nowrap' }}>{value}</div>
+                </div>
+              ))}
+            </div>
+          );
+        })() : (
+          <div style={{ flexShrink: 0, borderTop: '1px solid rgba(197,168,128,0.08)', background: 'rgba(4,8,20,0.9)', padding: '9px 16px' }}>
+            <span style={{ fontSize: '0.6rem', color: 'rgba(197,168,128,0.35)', fontWeight: 600 }}>
+              💡 Hover a property card or map pin to explore corridor stats
+            </span>
+          </div>
+        )}
       </div>
     );
   };
@@ -2968,21 +3196,27 @@ export default function Portal({ onViewChange }) {
                     <div style={{ flex: "1", maxHeight: "80vh", overflowY: "auto", paddingRight: "8px", scrollbarWidth: "thin" }}>
                       <div className="properties-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" }}>
                         {properties.map((property) => (
-                          <PropertyCard
-                            key={property.id}
-                            property={property}
-                            isHnwiMode={isHnwiMode}
-                            isCompared={selectedForCompare.some(p => p.id === property.id)}
-                            isWishlisted={wishlistIds.includes(property.id)}
-                            formatPrice={formatPrice}
-                            onToggleCompare={handleToggleCompare}
-                            onToggleWishlist={handleToggleWishlist}
-                            onOpenRera={handleOpenReraDrawer}
-                            onOpenDetail={(prop) => {
-                              setSelectedPropertyDetail(prop);
-                              window.scrollTo({ top: 300, behavior: "smooth" });
-                            }}
-                          />
+                          <div 
+                            key={property.id} 
+                            onMouseEnter={() => setHoveredPropertyLoc(property.location)} 
+                            onMouseLeave={() => setHoveredPropertyLoc(null)}
+                            style={{ transition: 'transform 0.25s ease' }}
+                          >
+                            <PropertyCard
+                              property={property}
+                              isHnwiMode={isHnwiMode}
+                              isCompared={selectedForCompare.some(p => p.id === property.id)}
+                              isWishlisted={wishlistIds.includes(property.id)}
+                              formatPrice={formatPrice}
+                              onToggleCompare={handleToggleCompare}
+                              onToggleWishlist={handleToggleWishlist}
+                              onOpenRera={handleOpenReraDrawer}
+                              onOpenDetail={(prop) => {
+                                setSelectedPropertyDetail(prop);
+                                window.scrollTo({ top: 300, behavior: "smooth" });
+                              }}
+                            />
+                          </div>
                         ))}
                       </div>
                     </div>

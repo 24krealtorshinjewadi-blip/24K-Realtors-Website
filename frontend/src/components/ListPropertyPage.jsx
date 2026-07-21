@@ -165,7 +165,7 @@ function TerminalLogsSimulation() {
       </div>
       {logs.map((log, idx) => (
         <div key={idx} style={{ display: 'flex', gap: '8px' }}>
-          <span style={{ color: 'rgba(197, 168, 128, 0.6)' }}>></span>
+          <span style={{ color: 'rgba(197, 168, 128, 0.6)' }}>{'>'}</span>
           <span>{log}</span>
         </div>
       ))}
