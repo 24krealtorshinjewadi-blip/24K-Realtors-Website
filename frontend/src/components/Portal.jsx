@@ -243,6 +243,8 @@ export default function Portal({ onViewChange }) {
   const [viewMode, setViewMode] = useState('GRID'); // GRID | MAP
   const [hoveredPropertyLoc, setHoveredPropertyLoc] = useState(null);
   const [hoveredMapNode, setHoveredMapNode] = useState(null);
+  const [mapSource, setMapSource] = useState('GOOGLE'); // GOOGLE | VECTOR
+  const [googleMapType, setGoogleMapType] = useState('m'); // m = Roadmap, k = Satellite
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [aiStep, setAiStep] = useState(1);
   const [advisoryTab, setAdvisoryTab] = useState('buyer');
@@ -896,13 +898,13 @@ export default function Portal({ onViewChange }) {
 
   const renderInteractiveVectorMap = () => {
     const mapNodes = [
-      { id: 'BANER', name: 'Baner', x: 380, y: 350, price: '11.5K', growth: '+16%', yield: '3.8%', tag: 'Established' },
-      { id: 'BALEWADI', name: 'Balewadi', x: 340, y: 280, price: '10.2K', growth: '+13%', yield: '4.0%', tag: 'Premium' },
-      { id: 'WAKAD', name: 'Wakad', x: 230, y: 200, price: '8.2K', growth: '+14%', yield: '4.5%', tag: 'High Growth' },
-      { id: 'TATHAWADE', name: 'Tathawade', x: 120, y: 130, price: '7.2K', growth: '+15%', yield: '4.8%', tag: 'Emerging' },
-      { id: 'HINJEWADI', name: 'Hinjewadi', x: 100, y: 320, price: '7.8K', growth: '+11%', yield: '5.2%', tag: 'IT Hub' },
-      { id: 'MAHALUNGE', name: 'Mahalunge', x: 200, y: 360, price: '6.9K', growth: '+18%', yield: '5.5%', tag: 'Best Value' },
-      { id: 'KHARADI', name: 'Kharadi', x: 430, y: 160, price: '9.8K', growth: '+12%', yield: '4.2%', tag: 'EON IT Park' },
+      { id: 'BANER', name: 'Baner', x: 380, y: 350, price: '11.5K', growth: '+16%', yield: '3.8%', tag: 'Established', query: 'Baner, Pune, Maharashtra' },
+      { id: 'BALEWADI', name: 'Balewadi', x: 340, y: 280, price: '10.2K', growth: '+13%', yield: '4.0%', tag: 'Premium', query: 'Balewadi High Street, Pune, Maharashtra' },
+      { id: 'WAKAD', name: 'Wakad', x: 230, y: 200, price: '8.2K', growth: '+14%', yield: '4.5%', tag: 'High Growth', query: 'Wakad, Pune, Maharashtra' },
+      { id: 'TATHAWADE', name: 'Tathawade', x: 120, y: 130, price: '7.2K', growth: '+15%', yield: '4.8%', tag: 'Emerging', query: 'Tathawade, Pune, Maharashtra' },
+      { id: 'HINJEWADI', name: 'Hinjewadi', x: 100, y: 320, price: '7.8K', growth: '+11%', yield: '5.2%', tag: 'IT Hub', query: 'Hinjewadi Phase 1, Pune, Maharashtra' },
+      { id: 'MAHALUNGE', name: 'Mahalunge', x: 200, y: 360, price: '6.9K', growth: '+18%', yield: '5.5%', tag: 'Best Value', query: 'Mahalunge, Pune, Maharashtra' },
+      { id: 'KHARADI', name: 'Kharadi', x: 430, y: 160, price: '9.8K', growth: '+12%', yield: '4.2%', tag: 'EON IT Park', query: 'Kharadi, Pune, Maharashtra' },
     ];
 
     const connections = [
@@ -914,179 +916,335 @@ export default function Portal({ onViewChange }) {
     const activeNode = hoveredPropertyLoc || hoveredMapNode;
     const activeFilter = filters.location;
 
+    // Determine target location for Google Map query
+    const targetLocObj = mapNodes.find(n => n.id === (activeFilter || activeNode));
+    const activeLocName = targetLocObj ? targetLocObj.name : 'Pune West';
+    const googleMapQueryStr = encodeURIComponent(
+      targetLocObj ? targetLocObj.query : 'Hinjewadi, Baner, Wakad, Pune, Maharashtra'
+    );
+    const googleMapEmbedUrl = `https://maps.google.com/maps?q=${googleMapQueryStr}&t=${googleMapType}&z=13&ie=UTF8&iwloc=&output=embed`;
+    const googleMapDirectUrl = `https://www.google.com/maps/search/?api=1&query=${googleMapQueryStr}`;
+
     return (
       <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', fontFamily: "'Montserrat', sans-serif" }}>
-        {/* Header */}
-        <div style={{ padding: '10px 16px', borderBottom: '1px solid rgba(197,168,128,0.12)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(4,8,20,0.8)', backdropFilter: 'blur(8px)', flexShrink: 0 }}>
+        {/* Header with Mode Switchers */}
+        <div style={{ padding: '10px 14px', borderBottom: '1px solid rgba(197,168,128,0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', background: 'rgba(4,8,20,0.92)', backdropFilter: 'blur(10px)', flexShrink: 0, zIndex: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
-            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-              Pune West · Property Radar
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#4285F4', boxShadow: '0 0 8px #4285F4' }} />
+            <span style={{ fontSize: '0.66rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              📍 {activeLocName} · Google Map Search
             </span>
           </div>
-          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.6rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '4px', padding: '2px 7px', color: '#22c55e', fontWeight: 700 }}>
-              LIVE
-            </span>
-            <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', fontWeight: 600 }}>
-              {allRawProperties.length} listings indexed
-            </span>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            {/* Map Source Switcher: Google Maps vs SVG Radar */}
+            <div style={{ display: 'inline-flex', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(197,168,128,0.2)', borderRadius: '30px', padding: '2px' }}>
+              <button
+                type="button"
+                onClick={() => setMapSource('GOOGLE')}
+                style={{
+                  background: mapSource === 'GOOGLE' ? 'linear-gradient(135deg, #4285F4, #34A853)' : 'transparent',
+                  border: 'none',
+                  color: mapSource === 'GOOGLE' ? '#fff' : 'rgba(255,255,255,0.5)',
+                  padding: '3px 10px',
+                  borderRadius: '30px',
+                  fontSize: '0.58rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                🗺️ Google Maps
+              </button>
+              <button
+                type="button"
+                onClick={() => setMapSource('VECTOR')}
+                style={{
+                  background: mapSource === 'VECTOR' ? 'linear-gradient(135deg, #E6C35C, #C59B27)' : 'transparent',
+                  border: 'none',
+                  color: mapSource === 'VECTOR' ? '#040814' : 'rgba(255,255,255,0.5)',
+                  padding: '3px 10px',
+                  borderRadius: '30px',
+                  fontSize: '0.58rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                📡 Vector Radar
+              </button>
+            </div>
+
+            {/* Satellite vs Roadmap button when Google Maps is active */}
+            {mapSource === 'GOOGLE' && (
+              <button
+                type="button"
+                onClick={() => setGoogleMapType(prev => prev === 'm' ? 'k' : 'm')}
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  color: '#E6C35C',
+                  padding: '3px 9px',
+                  borderRadius: '6px',
+                  fontSize: '0.58rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+                title="Toggle Satellite / Map view"
+              >
+                {googleMapType === 'm' ? '🛰️ Satellite' : '🗺️ Map View'}
+              </button>
+            )}
+
+            {/* Open Direct Google Maps */}
+            <a
+              href={googleMapDirectUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: '0.58rem',
+                color: 'rgba(255,255,255,0.7)',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '6px',
+                padding: '3px 8px',
+                textDecoration: 'none',
+                fontWeight: 600
+              }}
+            >
+              ↗️ Google
+            </a>
           </div>
         </div>
 
-        {/* SVG Map Area */}
+        {/* Locality Quick Pills Selector Bar */}
+        <div style={{ padding: '6px 12px', background: 'rgba(7,15,30,0.95)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '6px', overflowX: 'auto', scrollbarWidth: 'none', flexShrink: 0, zIndex: 5 }}>
+          {mapNodes.map(node => {
+            const isSelected = activeFilter === node.id || activeNode === node.id;
+            const count = allRawProperties.filter(p => p.location === node.id).length;
+            return (
+              <button
+                key={node.id}
+                type="button"
+                onClick={() => {
+                  setFilters(prev => ({ ...prev, location: activeFilter === node.id ? '' : node.id }));
+                  setPage(0);
+                }}
+                onMouseEnter={() => setHoveredMapNode(node.id)}
+                onMouseLeave={() => setHoveredMapNode(null)}
+                style={{
+                  background: isSelected ? 'linear-gradient(135deg, rgba(230,195,92,0.25), rgba(212,175,55,0.12))' : 'rgba(255,255,255,0.03)',
+                  border: isSelected ? '1px solid #E6C35C' : '1px solid rgba(255,255,255,0.08)',
+                  color: isSelected ? '#E6C35C' : 'rgba(255,255,255,0.6)',
+                  padding: '3px 9px',
+                  borderRadius: '20px',
+                  fontSize: '0.6rem',
+                  fontWeight: isSelected ? 800 : 600,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span>📍 {node.name}</span>
+                <span style={{ fontSize: '0.55rem', opacity: 0.7 }}>({count})</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Main Map Render: GOOGLE vs VECTOR */}
         <div style={{ flex: 1, position: 'relative', background: '#02060f', overflow: 'hidden', minHeight: 0 }}>
-          <svg viewBox="0 0 500 460" style={{ width: '100%', height: '100%' }}>
-            <defs>
-              <pattern id="mapgrid" width="30" height="30" patternUnits="userSpaceOnUse">
-                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.018)" strokeWidth="0.8" />
-              </pattern>
-              <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#071226" />
-                <stop offset="100%" stopColor="#02060f" />
-              </radialGradient>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-              <filter id="softglow">
-                <feGaussianBlur stdDeviation="6" result="coloredBlur" />
-                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
+          {mapSource === 'GOOGLE' ? (
+            <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+              <iframe
+                title="Google Maps Pune West Real Estate Radar"
+                width="100%"
+                height="100%"
+                style={{ border: 0, filter: 'contrast(1.05) saturate(1.1)' }}
+                loading="lazy"
+                allowFullScreen
+                src={googleMapEmbedUrl}
+              />
+              <div style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                background: 'rgba(4,8,20,0.85)',
+                border: '1px solid rgba(230,195,92,0.25)',
+                borderRadius: '8px',
+                padding: '6px 10px',
+                fontSize: '0.6rem',
+                color: '#E6C35C',
+                fontWeight: 700,
+                pointerEvents: 'none',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.6)',
+                backdropFilter: 'blur(8px)'
+              }}>
+                ⚡ Live Google Maps Engine Active
+              </div>
+            </div>
+          ) : (
+            <svg viewBox="0 0 500 460" style={{ width: '100%', height: '100%' }}>
+              <defs>
+                <pattern id="mapgrid" width="30" height="30" patternUnits="userSpaceOnUse">
+                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.018)" strokeWidth="0.8" />
+                </pattern>
+                <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#071226" />
+                  <stop offset="100%" stopColor="#02060f" />
+                </radialGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                  <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <filter id="softglow">
+                  <feGaussianBlur stdDeviation="6" result="coloredBlur" />
+                  <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
 
-            <rect width="100%" height="100%" fill="url(#bgGrad)" />
-            <rect width="100%" height="100%" fill="url(#mapgrid)" />
+              <rect width="100%" height="100%" fill="url(#bgGrad)" />
+              <rect width="100%" height="100%" fill="url(#mapgrid)" />
 
-            {/* Terrain watermark */}
-            <text x="250" y="240" textAnchor="middle" fill="rgba(197,168,128,0.03)" fontSize="80" fontWeight="900" fontFamily="'Montserrat',sans-serif" style={{ userSelect: 'none' }}>PUNE</text>
+              {/* Terrain watermark */}
+              <text x="250" y="240" textAnchor="middle" fill="rgba(197,168,128,0.03)" fontSize="80" fontWeight="900" fontFamily="'Montserrat',sans-serif" style={{ userSelect: 'none' }}>PUNE</text>
 
-            {/* Grid labels */}
-            <text x="445" y="16" fill="rgba(255,255,255,0.07)" fontSize="7" fontFamily="monospace">SEC_E</text>
-            <text x="8" y="452" fill="rgba(255,255,255,0.07)" fontSize="7" fontFamily="monospace">SEC_W</text>
-            <text x="8" y="16" fill="rgba(255,255,255,0.07)" fontSize="7" fontFamily="monospace">SEC_NW</text>
+              {/* Grid labels */}
+              <text x="445" y="16" fill="rgba(255,255,255,0.07)" fontSize="7" fontFamily="monospace">SEC_E</text>
+              <text x="8" y="452" fill="rgba(255,255,255,0.07)" fontSize="7" fontFamily="monospace">SEC_W</text>
+              <text x="8" y="16" fill="rgba(255,255,255,0.07)" fontSize="7" fontFamily="monospace">SEC_NW</text>
 
-            {/* Corridor connection lines */}
-            {connections.map(([fromId, toId]) => {
-              const from = mapNodes.find(n => n.id === fromId);
-              const to = mapNodes.find(n => n.id === toId);
-              if (!from || !to) return null;
-              const isHighlighted = activeFilter === fromId || activeFilter === toId || activeNode === fromId || activeNode === toId;
-              return (
-                <line
-                  key={`${fromId}-${toId}`}
-                  x1={from.x} y1={from.y}
-                  x2={to.x} y2={to.y}
-                  stroke={isHighlighted ? 'rgba(230,195,92,0.55)' : 'rgba(197,168,128,0.1)'}
-                  strokeWidth={isHighlighted ? '2' : '1.2'}
-                  strokeDasharray={isHighlighted ? 'none' : '5,4'}
-                  style={{ transition: 'all 0.35s ease' }}
-                />
-              );
-            })}
-
-            {/* Map Nodes */}
-            {mapNodes.map((node) => {
-              const isActive = activeFilter === node.id;
-              const isHovered = activeNode === node.id;
-              const isLit = isActive || isHovered;
-              const nodeCount = allRawProperties.filter(p => p.location === node.id).length;
-
-              return (
-                <g
-                  key={node.id}
-                  onClick={() => {
-                    setFilters(prev => ({ ...prev, location: isActive ? '' : node.id }));
-                    setPage(0);
-                  }}
-                  onMouseEnter={() => setHoveredMapNode(node.id)}
-                  onMouseLeave={() => setHoveredMapNode(null)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {/* Outer pulse rings */}
-                  {isLit && (
-                    <>
-                      <circle cx={node.x} cy={node.y} r="28" fill="none"
-                        stroke={isActive ? 'rgba(230,195,92,0.3)' : 'rgba(230,195,92,0.18)'}
-                        strokeWidth="1"
-                        style={{ animation: 'mapPulse 2s ease-in-out infinite', transformOrigin: `${node.x}px ${node.y}px` }} />
-                      <circle cx={node.x} cy={node.y} r="40" fill="none"
-                        stroke={isActive ? 'rgba(230,195,92,0.12)' : 'rgba(230,195,92,0.07)'}
-                        strokeWidth="0.8"
-                        style={{ animation: 'mapPulse2 2.8s ease-in-out infinite', transformOrigin: `${node.x}px ${node.y}px` }} />
-                    </>
-                  )}
-
-                  {/* Halo fill */}
-                  <circle
-                    cx={node.x} cy={node.y}
-                    r={isLit ? 20 : 13}
-                    fill={isLit ? 'rgba(230,195,92,0.07)' : 'rgba(7,15,30,0.6)'}
-                    stroke={isLit ? 'rgba(230,195,92,0.55)' : 'rgba(197,168,128,0.22)'}
-                    strokeWidth="1.5"
-                    strokeDasharray={isLit ? 'none' : '4,3'}
-                    style={{ transition: 'all 0.3s ease' }}
-                    filter={isLit ? 'url(#softglow)' : 'none'}
+              {/* Corridor connection lines */}
+              {connections.map(([fromId, toId]) => {
+                const from = mapNodes.find(n => n.id === fromId);
+                const to = mapNodes.find(n => n.id === toId);
+                if (!from || !to) return null;
+                const isHighlighted = activeFilter === fromId || activeFilter === toId || activeNode === fromId || activeNode === toId;
+                return (
+                  <line
+                    key={`${fromId}-${toId}`}
+                    x1={from.x} y1={from.y}
+                    x2={to.x} y2={to.y}
+                    stroke={isHighlighted ? 'rgba(230,195,92,0.55)' : 'rgba(197,168,128,0.1)'}
+                    strokeWidth={isHighlighted ? '2' : '1.2'}
+                    strokeDasharray={isHighlighted ? 'none' : '5,4'}
+                    style={{ transition: 'all 0.35s ease' }}
                   />
+                );
+              })}
 
-                  {/* Center dot */}
-                  <circle
-                    cx={node.x} cy={node.y}
-                    r={isLit ? 7 : 4.5}
-                    fill={isLit ? '#E6C35C' : 'rgba(7,15,30,0.9)'}
-                    stroke={isLit ? 'none' : '#C5A880'}
-                    strokeWidth="1.8"
-                    style={{ transition: 'all 0.3s ease' }}
-                    filter={isLit ? 'url(#glow)' : 'none'}
-                  />
-                  {isLit && <circle cx={node.x} cy={node.y} r="3" fill="#040814" />}
+              {/* Map Nodes */}
+              {mapNodes.map((node) => {
+                const isActive = activeFilter === node.id;
+                const isHovered = activeNode === node.id;
+                const isLit = isActive || isHovered;
+                const nodeCount = allRawProperties.filter(p => p.location === node.id).length;
 
-                  {/* Location name */}
-                  <text
-                    x={node.x} y={node.y - (isLit ? 27 : 19)}
-                    textAnchor="middle"
-                    fill={isLit ? '#E6C35C' : '#7a90a4'}
-                    fontSize={isLit ? '10' : '8.5'}
-                    fontWeight={isLit ? '800' : '600'}
-                    fontFamily="'Montserrat', sans-serif"
-                    style={{ transition: 'all 0.3s ease' }}
+                return (
+                  <g
+                    key={node.id}
+                    onClick={() => {
+                      setFilters(prev => ({ ...prev, location: isActive ? '' : node.id }));
+                      setPage(0);
+                    }}
+                    onMouseEnter={() => setHoveredMapNode(node.id)}
+                    onMouseLeave={() => setHoveredMapNode(null)}
+                    style={{ cursor: 'pointer' }}
                   >
-                    {node.name.toUpperCase()}
-                  </text>
+                    {/* Outer pulse rings */}
+                    {isLit && (
+                      <>
+                        <circle cx={node.x} cy={node.y} r="28" fill="none"
+                          stroke={isActive ? 'rgba(230,195,92,0.3)' : 'rgba(230,195,92,0.18)'}
+                          strokeWidth="1"
+                          style={{ animation: 'mapPulse 2s ease-in-out infinite', transformOrigin: `${node.x}px ${node.y}px` }} />
+                        <circle cx={node.x} cy={node.y} r="40" fill="none"
+                          stroke={isActive ? 'rgba(230,195,92,0.12)' : 'rgba(230,195,92,0.07)'}
+                          strokeWidth="0.8"
+                          style={{ animation: 'mapPulse2 2.8s ease-in-out infinite', transformOrigin: `${node.x}px ${node.y}px` }} />
+                      </>
+                    )}
 
-                  {/* Listing count */}
-                  {nodeCount > 0 && (
+                    {/* Halo fill */}
+                    <circle
+                      cx={node.x} cy={node.y}
+                      r={isLit ? 20 : 13}
+                      fill={isLit ? 'rgba(230,195,92,0.07)' : 'rgba(7,15,30,0.6)'}
+                      stroke={isLit ? 'rgba(230,195,92,0.55)' : 'rgba(197,168,128,0.22)'}
+                      strokeWidth="1.5"
+                      strokeDasharray={isLit ? 'none' : '4,3'}
+                      style={{ transition: 'all 0.3s ease' }}
+                      filter={isLit ? 'url(#softglow)' : 'none'}
+                    />
+
+                    {/* Center dot */}
+                    <circle
+                      cx={node.x} cy={node.y}
+                      r={isLit ? 7 : 4.5}
+                      fill={isLit ? '#E6C35C' : 'rgba(7,15,30,0.9)'}
+                      stroke={isLit ? 'none' : '#C5A880'}
+                      strokeWidth="1.8"
+                      style={{ transition: 'all 0.3s ease' }}
+                      filter={isLit ? 'url(#glow)' : 'none'}
+                    />
+                    {isLit && <circle cx={node.x} cy={node.y} r="3" fill="#040814" />}
+
+                    {/* Location name */}
                     <text
-                      x={node.x} y={node.y - (isLit ? 17 : 11)}
+                      x={node.x} y={node.y - (isLit ? 27 : 19)}
                       textAnchor="middle"
-                      fill={isLit ? 'rgba(230,195,92,0.85)' : 'rgba(197,168,128,0.45)'}
-                      fontSize="7"
+                      fill={isLit ? '#E6C35C' : '#7a90a4'}
+                      fontSize={isLit ? '10' : '8.5'}
+                      fontWeight={isLit ? '800' : '600'}
                       fontFamily="'Montserrat', sans-serif"
-                      fontWeight="700"
                       style={{ transition: 'all 0.3s ease' }}
                     >
-                      {nodeCount} listing{nodeCount !== 1 ? 's' : ''}
+                      {node.name.toUpperCase()}
                     </text>
-                  )}
 
-                  {/* Price + growth below node */}
-                  <text
-                    x={node.x} y={node.y + (isLit ? 24 : 19)}
-                    textAnchor="middle"
-                    fill="rgba(197,168,128,0.55)"
-                    fontSize="7"
-                    fontFamily="monospace"
-                    style={{ opacity: isLit ? 1 : 0.45, transition: 'all 0.25s ease' }}
-                  >
-                    ₹{node.price}/sqft · {node.growth}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+                    {/* Listing count */}
+                    {nodeCount > 0 && (
+                      <text
+                        x={node.x} y={node.y - (isLit ? 17 : 11)}
+                        textAnchor="middle"
+                        fill={isLit ? 'rgba(230,195,92,0.85)' : 'rgba(197,168,128,0.45)'}
+                        fontSize="7"
+                        fontFamily="'Montserrat', sans-serif"
+                        fontWeight="700"
+                        style={{ transition: 'all 0.3s ease' }}
+                      >
+                        {nodeCount} listing{nodeCount !== 1 ? 's' : ''}
+                      </text>
+                    )}
 
-          {/* Floating tooltip for hovered map node */}
-          {hoveredMapNode && (() => {
+                    {/* Price + growth below node */}
+                    <text
+                      x={node.x} y={node.y + (isLit ? 24 : 19)}
+                      textAnchor="middle"
+                      fill="rgba(197,168,128,0.55)"
+                      fontSize="7"
+                      fontFamily="monospace"
+                      style={{ opacity: isLit ? 1 : 0.45, transition: 'all 0.25s ease' }}
+                    >
+                      ₹{node.price}/sqft · {node.growth}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          )}
+
+          {/* Floating tooltip for hovered map node in Vector mode */}
+          {mapSource === 'VECTOR' && hoveredMapNode && (() => {
             const node = mapNodes.find(n => n.id === hoveredMapNode);
             if (!node) return null;
             const count = allRawProperties.filter(p => p.location === node.id).length;
@@ -1130,26 +1288,6 @@ export default function Portal({ onViewChange }) {
               </div>
             );
           })()}
-
-          {/* Legend */}
-          <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(4,8,20,0.9)', border: '1px solid rgba(197,168,128,0.14)', borderRadius: '8px', padding: '8px 11px', pointerEvents: 'none', backdropFilter: 'blur(8px)' }}>
-            <div style={{ fontSize: '0.57rem', fontWeight: 800, color: 'rgba(230,195,92,0.6)', letterSpacing: '0.08em', marginBottom: '5px', textTransform: 'uppercase' }}>Map Legend</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {[
-                { dot: { width: '8px', height: '8px', borderRadius: '50%', background: '#E6C35C', boxShadow: '0 0 6px #E6C35C' }, label: 'Active / Hovered' },
-                { dot: { width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(7,15,30,0.9)', border: '1.5px solid #C5A880' }, label: 'Available zone' },
-              ].map(({ dot, label }) => (
-                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <div style={dot} />
-                  <span style={{ fontSize: '0.59rem', color: 'rgba(255,255,255,0.45)' }}>{label}</span>
-                </div>
-              ))}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <div style={{ width: '18px', height: '0', borderTop: '1.5px dashed rgba(197,168,128,0.35)' }} />
-                <span style={{ fontSize: '0.59rem', color: 'rgba(255,255,255,0.45)' }}>Connectivity belt</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Bottom live corridor stats bar */}
@@ -1181,9 +1319,9 @@ export default function Portal({ onViewChange }) {
             </div>
           );
         })() : (
-          <div style={{ flexShrink: 0, borderTop: '1px solid rgba(197,168,128,0.08)', background: 'rgba(4,8,20,0.9)', padding: '9px 16px' }}>
+          <div style={{ flexShrink: 0, borderTop: '1px solid rgba(197,168,128,0.08)', background: 'rgba(4,8,20,0.9)', padding: '9px 14px' }}>
             <span style={{ fontSize: '0.6rem', color: 'rgba(197,168,128,0.35)', fontWeight: 600 }}>
-              💡 Hover a property card or map pin to explore corridor stats
+              💡 Select a locality chip or hover a property card to auto-center Google Maps
             </span>
           </div>
         )}
