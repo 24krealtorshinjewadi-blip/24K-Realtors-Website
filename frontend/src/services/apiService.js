@@ -1124,26 +1124,43 @@ const isMockToken = () => {
   return token && token.startsWith('mock-');
 };
 
+let isBackendOfflineCached = false;
+let offlineCacheResetTimer = null;
+
 // Generic runner that automatically falls back to client database on network errors
 const runWithFallback = async (apiFn, fallbackFn, bypassMockCheck = false) => {
   if (isMockToken() && !bypassMockCheck) {
-    console.info('[OFFLINE SYNC] Active session is mock. Bypassing backend API.');
+    return fallbackFn();
+  }
+  if (isBackendOfflineCached) {
     return fallbackFn();
   }
   try {
     const result = await apiFn();
+    isBackendOfflineCached = false;
     localStorage.setItem('OFFLINE_MODE_ACTIVE', 'false');
     return result;
   } catch (err) {
     const isNetworkError = err.name === 'TypeError' || 
-                           err.message.includes('Failed to fetch') || 
-                           err.message.includes('NetworkError') || 
-                           err.message.includes('Failed to execute') ||
-                           err.message.includes('network error');
+                           (err.message && (
+                             err.message.includes('Failed to fetch') || 
+                             err.message.includes('NetworkError') || 
+                             err.message.includes('Failed to execute') ||
+                             err.message.includes('network error')
+                           ));
                            
     if (isNetworkError) {
-      console.warn("[OFFLINE SYNC] Spring Boot server unreachable. Falling back to local browser-based database.", err);
-      localStorage.setItem('OFFLINE_MODE_ACTIVE', 'true');
+      if (!isBackendOfflineCached) {
+        console.warn("[OFFLINE SYNC] Spring Boot server unreachable. Falling back to local browser-based database.");
+        isBackendOfflineCached = true;
+        localStorage.setItem('OFFLINE_MODE_ACTIVE', 'true');
+        if (!offlineCacheResetTimer) {
+          offlineCacheResetTimer = setTimeout(() => {
+            isBackendOfflineCached = false;
+            offlineCacheResetTimer = null;
+          }, 30000);
+        }
+      }
       return fallbackFn();
     }
     localStorage.setItem('OFFLINE_MODE_ACTIVE', 'false');
