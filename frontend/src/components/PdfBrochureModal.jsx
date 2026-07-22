@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Printer, Share2, ShieldCheck, MapPin, CheckCircle, Phone, Award, Sparkles, QrCode } from 'lucide-react';
+import { X, Printer, Share2, ShieldCheck, MapPin, CheckCircle, Phone, Award, Sparkles, QrCode, Download } from 'lucide-react';
 import CompanyLogo from './CompanyLogo';
 
 export default function PdfBrochureModal({ property, onClose, formatPrice, onOpenInquiry }) {
@@ -7,6 +7,87 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPdf = () => {
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>24K Realtors — ${property.title} Brochure</title>
+        <style>
+          @page { size: A4 portrait; margin: 0; }
+          body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #070F1E; color: #ffffff; padding: 40px; margin: 0; }
+          .gold { color: #E6C35C; }
+          .card { background: rgba(197,168,128,0.05); border: 1px solid rgba(197,168,128,0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+          .header { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(197,168,128,0.3); padding-bottom: 15px; margin-bottom: 20px; }
+          .title { font-size: 24px; font-weight: bold; margin: 10px 0; color: #ffffff; }
+          .price { font-size: 28px; font-weight: bold; color: #C5A880; }
+          .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+          .spec-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; text-align: center; }
+          .img-box { width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(197,168,128,0.3); }
+          .footer { border-top: 1px solid rgba(197,168,128,0.3); padding-top: 15px; font-size: 12px; color: rgba(255,255,255,0.6); }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 style="margin:0; font-size: 20px; color:#E6C35C;">24K REALTORS</h1>
+            <div style="font-size: 11px; color: #C5A880;">PUNE WEST LUXURY REAL ESTATE ADVISORY</div>
+          </div>
+          <div style="text-align: right; font-size: 12px;">
+            <div class="gold">MahaRERA: ${property.reraNumber || 'P52100028461'}</div>
+            <div style="opacity: 0.6;">Ref: 24K-${property.id || 'LISTING'}</div>
+          </div>
+        </div>
+
+        <img src="${property.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'}" class="img-box" />
+
+        <div class="card">
+          <div class="gold" style="font-size: 12px; text-transform: uppercase;">${property.propertyType || 'RESIDENTIAL'} • FOR ${property.transactionType || 'BUY'}</div>
+          <div class="title">${property.title}</div>
+          <div style="font-size: 14px; opacity: 0.7;">📍 ${property.location} Corridor (${property.address || 'Pune West'})</div>
+          <div class="price" style="margin-top: 15px;">${formatPrice ? formatPrice(property.price) : '₹' + property.price}</div>
+        </div>
+
+        <div class="grid">
+          <div class="spec-box"><div style="font-size:11px; opacity:0.6;">BEDROOMS</div><div style="font-size:16px; font-weight:bold;">${property.bedrooms || 2} BHK</div></div>
+          <div class="spec-box"><div style="font-size:11px; opacity:0.6;">CARPET AREA</div><div style="font-size:16px; font-weight:bold;">${property.areaSquareFeet || 1000} sq.ft</div></div>
+          <div class="spec-box"><div style="font-size:11px; opacity:0.6;">FURNISHING</div><div style="font-size:16px; font-weight:bold;">${(property.furnishingStatus || 'SEMI_FURNISHED').replace(/_/g, ' ')}</div></div>
+          <div class="spec-box"><div style="font-size:11px; opacity:0.6;">PIPED GAS</div><div style="font-size:16px; font-weight:bold;">${property.gasPipeline ? 'Available ✓' : 'N/A'}</div></div>
+        </div>
+
+        <div class="card">
+          <h3 class="gold" style="margin-top:0; font-size:14px;">EXECUTIVE SUMMARY</h3>
+          <p style="font-size: 12px; line-height: 1.6; opacity: 0.8; margin: 0;">${property.description || 'Premium residential property with modular kitchen, continuous power backup, and strategic proximity to prime IT corridors.'}</p>
+        </div>
+
+        <div class="footer">
+          <div><strong>24K REALTORS ADVISORY DESK</strong> | Hotline: +91 96730 00053 | Email: advisory@24krealtors.com</div>
+          <div style="margin-top: 4px;">MahaRERA License: A52100028461 • Hinjewadi, Wakad & Baner Corridors</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            window.print();
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, '_blank');
+    if (!win) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `24K_Realtors_Brochure_${(property.title || 'Property').replace(/[^a-zA-Z0-9]/g, '_')}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   const handleShareWhatsApp = () => {
@@ -82,7 +163,7 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <button
-              onClick={handlePrint}
+              onClick={handleDownloadPdf}
               style={{
                 background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
                 border: 'none',
@@ -98,7 +179,27 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
                 fontFamily: "'Montserrat', sans-serif"
               }}
             >
-              <Printer size={14} /> Print / Save as PDF
+              <Download size={14} /> Download Brochure PDF
+            </button>
+
+            <button
+              onClick={handlePrint}
+              style={{
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(197, 168, 128, 0.3)',
+                color: '#E6C35C',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontFamily: "'Montserrat', sans-serif"
+              }}
+            >
+              <Printer size={14} /> Print
             </button>
 
             <button
