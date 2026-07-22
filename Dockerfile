@@ -10,11 +10,11 @@ COPY pom.xml ./pom.xml
 
 # Copy backend pom.xml to cache Maven dependencies separately
 COPY backend/pom.xml ./backend/pom.xml
-RUN mvn -f backend/pom.xml dependency:go-offline -B -q 2>/dev/null || true
+RUN mvn -f backend/pom.xml dependency:go-offline -B || true
 
 # Copy full source and compile
 COPY backend/src ./backend/src
-RUN mvn -f backend/pom.xml clean package -DskipTests -B -q
+RUN mvn -f backend/pom.xml clean package -DskipTests -B
 
 # ====================================================================
 # Stage 2: Minimal JRE runtime image
