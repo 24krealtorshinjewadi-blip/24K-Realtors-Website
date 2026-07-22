@@ -134,6 +134,16 @@ export default class ErrorBoundary extends React.Component {
                 📞 Call Support
               </a>
             </div>
+
+            {this.state.error && (
+              <details style={{ marginTop: '24px', textAlign: 'left', background: 'rgba(0,0,0,0.6)', padding: '12px 14px', borderRadius: '10px', border: '1px solid rgba(212,175,55,0.2)', color: '#fca5a5', fontSize: '0.74rem', fontFamily: 'monospace' }}>
+                <summary style={{ cursor: 'pointer', color: 'rgba(212,175,55,0.8)', fontWeight: 600 }}>Technical Diagnostics (Click to view error log)</summary>
+                <div style={{ marginTop: '10px', wordBreak: 'break-word', whiteSpace: 'pre-wrap', maxHeight: '180px', overflowY: 'auto' }}>
+                  {this.state.error.toString()}
+                  {this.state.errorInfo?.componentStack}
+                </div>
+              </details>
+            )}
           </div>
         </div>
       );
