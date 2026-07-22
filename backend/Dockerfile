@@ -1,17 +1,45 @@
-# Build Stage
+# ====================================================================
+# 24K Realtors — Backend Spring Boot API Dockerfile (standalone)
+# ====================================================================
+# Stage 1: Maven Build
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
 
-# Run Stage
+# Copy pom.xml first for dependency caching
+COPY pom.xml .
+RUN mvn dependency:go-offline -B || true
+
+# Copy source and compile
+COPY src ./src
+RUN mvn clean package -DskipTests -B
+
+# ====================================================================
+# Stage 2: Minimal JRE runtime
+# ====================================================================
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
+
+# Install wget for health checks
+RUN apk add --no-cache wget
+
+# Security: non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Copy JAR
 COPY --from=build /app/target/*.jar app.jar
+
+# Uploads directory
+RUN mkdir -p /app/uploads && chown -R appuser:appgroup /app
+
+USER appuser
+
 EXPOSE 8080
 
-# Environment variables default setup
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+  CMD wget -qO- http://localhost:${PORT:-8080}/actuator/health 2>/dev/null | grep -q '"status":"UP"' || exit 1
+
+# Railway profile for production Postgres
 ENV SPRING_PROFILES_ACTIVE=railway
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xmx400m", "-Xms128m", "-XX:+UseContainerSupport", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
