@@ -4540,19 +4540,7 @@ export default function Portal({ onViewChange }) {
           </div>
         </div>
       )}
-      {/* Sticky Floating Advisory CTA */}
-      {!selectedPropertyDetail && !selectedSocietyDetail && !selectedBuilderDetail && !selectedLocalityDetail && !selectedBlogDetail && (
-        <button
-          onClick={() => handleOpenInquiry(properties[0] || allRawProperties[0] || { id: null, title: 'Advisory Consultation', price: '0', location: 'HINJEWADI', transactionType: 'BUY' })}
-          title="Schedule Portfolio Advisory"
-          style={{ position: 'fixed', bottom: '100px', right: '24px', zIndex: 990, background: 'linear-gradient(135deg, #0f1c2e 0%, #09111f 100%)', border: '1px solid rgba(197,168,128,0.4)', borderRadius: '50px', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', boxShadow: '0 8px 28px rgba(0,0,0,0.5)', transition: 'all 0.3s ease' }}
-          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.7)'; }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.4)'; }}
-        >
-          <Calendar size={15} color="#C5A880" />
-          <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.72rem', fontWeight: 700, color: '#C5A880', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Schedule Advisory</span>
-        </button>
-      )}
+
       <PortalFooter />
 
     </div>
