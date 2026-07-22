@@ -19,6 +19,7 @@ const PropertyDetailView = lazy(() => import('./PropertyDetailView'));
 const CompareOverlay = lazy(() => import('./CompareOverlay'));
 const ReraDrawer = lazy(() => import('./ReraDrawer'));
 const ChatWidget = lazy(() => import('./ChatWidget'));
+import PdfBrochureModal from './PdfBrochureModal';
 
 
 
@@ -235,7 +236,8 @@ export default function Portal({ onViewChange }) {
   });
   
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [notification, setNotification] = useState(null);
+  const [selectedBrochureProperty, setSelectedBrochureProperty] = useState(null);
+
   const [exclusiveTab, setExclusiveTab] = useState('BUY');
   const [showAllGrid, setShowAllGrid] = useState(false);
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
@@ -4539,6 +4541,92 @@ export default function Portal({ onViewChange }) {
             )}
           </div>
         </div>
+      )}
+
+      {/* Floating Bottom Compare Action Bar */}
+      {selectedForCompare.length > 0 && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '28px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 995,
+            background: 'rgba(7, 15, 30, 0.92)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(212, 175, 55, 0.4)',
+            borderRadius: '50px',
+            padding: '10px 24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            boxShadow: '0 16px 50px rgba(0,0,0,0.8), 0 0 20px rgba(212,175,55,0.2)'
+          }}
+        >
+          <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ color: '#E6C35C' }}>⚔️</span>
+            <span>{selectedForCompare.length} {selectedForCompare.length === 1 ? 'Property' : 'Properties'} Selected</span>
+          </div>
+
+          <button
+            onClick={() => setIsCompareOpen(true)}
+            style={{
+              background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+              border: 'none',
+              color: '#040814',
+              padding: '8px 18px',
+              borderRadius: '50px',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              fontFamily: "'Montserrat', sans-serif"
+            }}
+          >
+            Compare Matrix →
+          </button>
+
+          <button
+            onClick={() => setSelectedForCompare([])}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.4)',
+              fontSize: '0.75rem',
+              cursor: 'pointer',
+              textDecoration: 'underline'
+            }}
+          >
+            Clear All
+          </button>
+        </div>
+      )}
+
+      {/* Compare Matrix Modal Overlay */}
+      {isCompareOpen && (
+        <Suspense fallback={null}>
+          <CompareOverlay
+            isOpen={isCompareOpen}
+            selectedForCompare={selectedForCompare}
+            onClose={() => setIsCompareOpen(false)}
+            formatPrice={formatPrice}
+            onOpenInquiry={handleOpenInquiry}
+            onOpenBrochure={(prop) => {
+              setIsCompareOpen(false);
+              setSelectedBrochureProperty(prop);
+            }}
+          />
+        </Suspense>
+      )}
+
+      {/* Instant 1-Page PDF Brochure Modal */}
+      {selectedBrochureProperty && (
+        <PdfBrochureModal
+          property={selectedBrochureProperty}
+          onClose={() => setSelectedBrochureProperty(null)}
+          formatPrice={formatPrice}
+          onOpenInquiry={handleOpenInquiry}
+        />
       )}
 
       <PortalFooter />

@@ -192,7 +192,7 @@ function Lightbox({ images, startIndex, onClose }) {
 /* ═══════════════════════════════════════════════════════════
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════ */
-export default function PropertyDetailView({ property, onBack, onOpenInquiry, onOpenChauffeur, formatPrice, getEmbedVideoUrl, allProperties = [] }) {
+export default function PropertyDetailView({ property, onBack, onOpenInquiry, onOpenChauffeur, onOpenBrochure, formatPrice, getEmbedVideoUrl, allProperties = [] }) {
   const [activeSlide, setActiveSlide]     = useState(0);
   const [downPayment, setDownPayment]     = useState(20);
   const [interestRate, setInterestRate]   = useState(8.5);
@@ -640,6 +640,13 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                   style={{ width: '100%', padding: '12px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', border: 'none', color: '#070F1E', fontWeight: 800, fontSize: '0.84rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px' }}>
                   🏢 Book Site Visit
                 </motion.button>
+                <button
+                  type="button"
+                  onClick={() => onOpenBrochure && onOpenBrochure(property)}
+                  style={{ width: '100%', padding: '11px', borderRadius: '10px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(197,168,128,0.3)', color: 'var(--gold-primary)', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '2px' }}
+                >
+                  📄 Download One-Pager PDF Brochure
+                </button>
                 <a href={waLink} target="_blank" rel="noopener noreferrer"
                   style={{ width: '100%', padding: '12px', borderRadius: '10px', background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.3)', color: '#25D366', fontWeight: 700, fontSize: '0.84rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px', textDecoration: 'none', boxSizing: 'border-box' }}>
                   <MessageSquare size={14}/> WhatsApp Us

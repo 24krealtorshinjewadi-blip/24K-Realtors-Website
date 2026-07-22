@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, ShieldCheck, Sliders, Heart, ArrowRight } from 'lucide-react';
+import { MapPin, ShieldCheck, Sliders, Heart, ArrowRight, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const getOptimizedImgUrl = (url, width) => {
@@ -31,7 +31,8 @@ export default function PropertyCard({
   onToggleCompare, 
   onToggleWishlist,
   onOpenDetail,
-  onOpenRera
+  onOpenRera,
+  onOpenBrochure
 }) {
   const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
   const builderName = getBuilderName(property.title, property.description);
@@ -175,6 +176,32 @@ export default function PropertyCard({
             aria-label={isCompared ? `Remove ${property.title} from compare list` : `Add ${property.title} to compare list`}
           >
             <Sliders size={14} />
+          </button>
+
+          {/* Instant PDF Brochure Button */}
+          <button 
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              if (onOpenBrochure) onOpenBrochure(property); 
+            }}
+            style={{
+              background: 'rgba(7, 15, 30, 0.7)',
+              border: '1px solid rgba(197, 168, 128, 0.3)',
+              borderRadius: '50%',
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#E6C35C',
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+            }}
+            title="Download Instant 1-Page PDF Brochure"
+            aria-label={`Download PDF Brochure for ${property.title}`}
+          >
+            <FileText size={14} />
           </button>
         </div>
 

@@ -94,7 +94,7 @@ function SpecRow({ label, values, winnerIdx, format }) {
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-export default function CompareOverlay({ isOpen, selectedForCompare, onClose, formatPrice, onOpenInquiry }) {
+export default function CompareOverlay({ isOpen, selectedForCompare, onClose, formatPrice, onOpenInquiry, onOpenBrochure }) {
   const [mobileIdx, setMobileIdx] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -325,32 +325,56 @@ export default function CompareOverlay({ isOpen, selectedForCompare, onClose, fo
                       <ScoreBar label="Appreciation"   value={sc.appreciation}   maxValue={25}  isWinner={actualIdx === apprecWinner} />
                       <ScoreBar label="Rental Yield"   value={sc.yield}          maxValue={8}   isWinner={actualIdx === yieldWinner} />
 
-                      {/* CTA */}
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={() => { onClose(); onOpenInquiry(p); }}
-                        style={{
-                          marginTop: '14px',
-                          width: '100%',
-                          padding: '11px',
-                          background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))',
-                          border: 'none',
-                          borderRadius: '8px',
-                          color: '#070F1E',
-                          fontWeight: 700,
-                          fontSize: '0.82rem',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '6px',
-                          fontFamily: 'var(--font-sans)',
-                          letterSpacing: '0.03em',
-                        }}
-                      >
-                        Request Presentation <ArrowRight size={13} />
-                      </motion.button>
+                      {/* CTA Buttons */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px' }}>
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => { onClose(); onOpenInquiry(p); }}
+                          style={{
+                            width: '100%',
+                            padding: '11px',
+                            background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))',
+                            border: 'none',
+                            borderRadius: '8px',
+                            color: '#070F1E',
+                            fontWeight: 700,
+                            fontSize: '0.82rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '6px',
+                            fontFamily: 'var(--font-sans)',
+                            letterSpacing: '0.03em',
+                          }}
+                        >
+                          Request Presentation <ArrowRight size={13} />
+                        </motion.button>
+
+                        <button
+                          type="button"
+                          onClick={() => { onOpenBrochure && onOpenBrochure(p); }}
+                          style={{
+                            width: '100%',
+                            padding: '8px',
+                            background: 'rgba(255,255,255,0.04)',
+                            border: '1px solid rgba(197,168,128,0.3)',
+                            borderRadius: '8px',
+                            color: 'var(--gold-primary)',
+                            fontWeight: 600,
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '6px',
+                            fontFamily: 'var(--font-sans)',
+                          }}
+                        >
+                          📄 1-Page PDF Brochure
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 );
