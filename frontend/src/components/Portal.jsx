@@ -236,6 +236,7 @@ export default function Portal({ onViewChange }) {
   });
   
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [notification, setNotification] = useState(null);
   const [selectedBrochureProperty, setSelectedBrochureProperty] = useState(null);
 
   const [exclusiveTab, setExclusiveTab] = useState('BUY');
