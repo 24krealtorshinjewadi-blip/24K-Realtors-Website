@@ -195,28 +195,6 @@ export default function ListPropertyPage({ onBack }) {
     return `₹${p.toLocaleString('en-IN')}`;
   };
 
-  const getAiValuation = () => {
-    const areaVal = parseFloat(form.area) || 0;
-    const rates = {
-      HINJEWADI: 7800,
-      WAKAD: 8200,
-      BANER: 11500,
-      BALEWADI: 10200,
-      TATHAWADE: 7200,
-      MAHALUNGE: 6900
-    };
-    const rate = rates[form.location] || 7500;
-    const baseVal = areaVal * rate;
-    const low = baseVal * 0.93;
-    const high = baseVal * 1.07;
-    return {
-      rate,
-      low: Math.round(low),
-      high: Math.round(high),
-      avg: Math.round(baseVal)
-    };
-  };
-
   const [openFaq, setOpenFaq] = useState(null);
 
   const [form, setForm] = useState({
@@ -245,6 +223,28 @@ export default function ListPropertyPage({ onBack }) {
     callTime: 'MORNING',
     alternatePhone: '',
   });
+
+  const getAiValuation = () => {
+    const areaVal = parseFloat(form.area) || 0;
+    const rates = {
+      HINJEWADI: 7800,
+      WAKAD: 8200,
+      BANER: 11500,
+      BALEWADI: 10200,
+      TATHAWADE: 7200,
+      MAHALUNGE: 6900
+    };
+    const rate = rates[form.location] || 7500;
+    const baseVal = areaVal * rate;
+    const low = baseVal * 0.93;
+    const high = baseVal * 1.07;
+    return {
+      rate,
+      low: Math.round(low),
+      high: Math.round(high),
+      avg: Math.round(baseVal)
+    };
+  };
 
   const update = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
