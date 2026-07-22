@@ -17,8 +17,8 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
         <meta charset="utf-8" />
         <title>24K Realtors — ${property.title} Brochure</title>
         <style>
-          @page { size: A4 portrait; margin: 0; }
-          body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #070F1E; color: #ffffff; padding: 40px; margin: 0; }
+          @page { size: A4 portrait; margin: 15mm; }
+          body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #070F1E; color: #ffffff; padding: 25px; margin: 0; }
           .gold { color: #E6C35C; }
           .card { background: rgba(197,168,128,0.05); border: 1px solid rgba(197,168,128,0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
           .header { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(197,168,128,0.3); padding-bottom: 15px; margin-bottom: 20px; }
@@ -26,7 +26,7 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
           .price { font-size: 28px; font-weight: bold; color: #C5A880; }
           .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
           .spec-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; text-align: center; }
-          .img-box { width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(197,168,128,0.3); }
+          .img-box { width: 100%; max-height: 300px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(197,168,128,0.3); }
           .footer { border-top: 1px solid rgba(197,168,128,0.3); padding-top: 15px; font-size: 12px; color: rgba(255,255,255,0.6); }
         </style>
       </head>
@@ -67,26 +67,36 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
           <div><strong>24K REALTORS ADVISORY DESK</strong> | Hotline: +91 96730 00053 | Email: advisory@24krealtors.com</div>
           <div style="margin-top: 4px;">MahaRERA License: A52100028461 • Hinjewadi, Wakad & Baner Corridors</div>
         </div>
-
-        <script>
-          window.onload = function() {
-            window.print();
-          };
-        </script>
       </body>
       </html>
     `;
 
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const win = window.open(url, '_blank');
-    if (!win) {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `24K_Realtors_Brochure_${(property.title || 'Property').replace(/[^a-zA-Z0-9]/g, '_')}.html`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+    try {
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0px';
+      iframe.style.height = '0px';
+      iframe.style.border = '0px';
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write(htmlContent);
+      doc.close();
+
+      setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        setTimeout(() => {
+          if (iframe && iframe.parentNode) {
+            iframe.parentNode.removeChild(iframe);
+          }
+        }, 2000);
+      }, 350);
+    } catch (e) {
+      window.print();
     }
   };
 
