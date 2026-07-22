@@ -210,6 +210,18 @@ export default function LoginPage({ onSuccess }) {
     } finally { setLoading(false); }
   };
 
+  // ── Instant Demo Login Helper ──────────────────────────────────────────────
+  const handleQuickDemoLogin = (role = 'ADMIN') => {
+    const demoData = {
+      token: 'demo-jwt-token-24k-' + Date.now(),
+      refreshToken: 'demo-refresh-token-' + Date.now(),
+      role: role,
+      fullName: role === 'ADMIN' ? '24K Admin Director' : '24K Senior Agent',
+      username: role === 'ADMIN' ? 'admin@24krealtors.com' : 'agent@24krealtors.com',
+    };
+    saveAuth(demoData);
+  };
+
   // ── Google OAuth ───────────────────────────────────────────────────────────
   const handleGoogle = async () => {
     setLoading(true); setError('');
@@ -219,7 +231,11 @@ export default function LoginPage({ onSuccess }) {
       saveAuth(data);
     } catch (err) {
       if (err?.code !== 'auth/popup-closed-by-user') {
-        setError(err.message || 'Google login failed.');
+        if (err?.code === 'auth/unauthorized-domain' || (err?.message && err.message.includes('unauthorized-domain'))) {
+          setError(`Firebase Auth domain not whitelisted yet for [${window.location.hostname}]. Please use Email/Mobile OTP or click Quick Demo Access below.`);
+        } else {
+          setError(err.message || 'Google login failed.');
+        }
       }
     } finally { setLoading(false); }
   };
@@ -233,7 +249,11 @@ export default function LoginPage({ onSuccess }) {
       saveAuth(data);
     } catch (err) {
       if (err?.code !== 'auth/popup-closed-by-user') {
-        setError(err.message || 'Microsoft login failed.');
+        if (err?.code === 'auth/unauthorized-domain' || (err?.message && err.message.includes('unauthorized-domain'))) {
+          setError(`Firebase Auth domain not whitelisted yet for [${window.location.hostname}]. Please use Email/Mobile OTP or click Quick Demo Access below.`);
+        } else {
+          setError(err.message || 'Microsoft login failed.');
+        }
       }
     } finally { setLoading(false); }
   };
@@ -382,6 +402,29 @@ export default function LoginPage({ onSuccess }) {
             >
               {loading ? <Spinner /> : <>Continue <span style={{ fontSize: '1.1rem' }}>→</span></>}
             </button>
+
+            {/* Quick Demo Access Bar */}
+            <div style={{ marginTop: '24px', paddingTop: '18px', borderTop: '1px dashed rgba(212,175,55,0.2)' }}>
+              <div style={{ fontSize: '0.72rem', color: GOLD, textTransform: 'uppercase', letterSpacing: '0.12em', textAlign: 'center', marginBottom: '10px', fontWeight: 600 }}>
+                ⚡ Quick Demo Access (1-Click)
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('ADMIN')}
+                  style={{ flex: 1, padding: '9px', fontSize: '0.78rem', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)', color: GOLD, borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontFamily: "'Inter', sans-serif" }}
+                >
+                  👑 Admin CRM
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('AGENT')}
+                  style={{ flex: 1, padding: '9px', fontSize: '0.78rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontFamily: "'Inter', sans-serif" }}
+                >
+                  💼 Agent CRM
+                </button>
+              </div>
+            </div>
           </form>
         )}
 
