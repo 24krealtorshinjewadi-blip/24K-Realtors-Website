@@ -351,15 +351,46 @@ export default function PropertyCard({
           )}
         </div>
 
-        {/* Sleek CTA */}
+        {/* Sleek CTA Bar with WhatsApp Direct Inquiry */}
         <div 
           style={{
             display: 'flex',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: '8px'
+            marginTop: '12px',
+            paddingTop: '8px',
+            borderTop: '1px solid rgba(255,255,255,0.05)'
           }}
         >
+          {/* WhatsApp Direct Inquiry Button */}
+          <a
+            href={`https://wa.me/919673000053?text=${encodeURIComponent(
+              `Namaste 24K Realtors! 🏠\n\nI am interested in:\n📌 *${property.title}*\n📍 Location: ${property.location}\n💰 Price: ${formatPrice ? formatPrice(property.price) : property.price}\n🛡️ RERA: ${property.reraNumber || 'Verified'}\n\nPlease share floor plans, pricing breakup, and available site visit slots.`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              background: 'rgba(37, 211, 102, 0.1)',
+              border: '1px solid rgba(37, 211, 102, 0.35)',
+              borderRadius: '6px',
+              padding: '4px 10px',
+              color: '#25D366',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              textDecoration: 'none',
+              transition: 'all 0.2s ease'
+            }}
+            title="Chat on WhatsApp for instant property details"
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37, 211, 102, 0.2)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(37, 211, 102, 0.1)'; }}
+          >
+            <span>💬 WhatsApp</span>
+          </a>
+
           <span 
             className="view-details-cta"
             style={{
