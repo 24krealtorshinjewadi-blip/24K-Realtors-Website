@@ -76,6 +76,7 @@ export default function PropertyCard({
           sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
           alt={`Exterior of ${property.title}`} 
           loading="lazy" 
+          decoding="async"
           className="card-main-image"
           style={{ 
             width: '100%', 
