@@ -243,6 +243,7 @@ export default function Portal({ onViewChange }) {
   const [showAllGrid, setShowAllGrid] = useState(false);
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
   const [spotlightQuery, setSpotlightQuery] = useState('');
+  const [spotlightIndex, setSpotlightIndex] = useState(0);
   const [viewMode, setViewMode] = useState('GRID'); // GRID | MAP
   const [hoveredPropertyLoc, setHoveredPropertyLoc] = useState(null);
   const [hoveredMapNode, setHoveredMapNode] = useState(null);
@@ -284,9 +285,10 @@ export default function Portal({ onViewChange }) {
   // Spotlight Keyboard Shortcut & Natural Query Parser
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setIsSpotlightOpen(prev => !prev);
+        setSpotlightIndex(0);
       }
       if (e.key === 'Escape') {
         setIsSpotlightOpen(false);
@@ -295,6 +297,7 @@ export default function Portal({ onViewChange }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
 
   const parseNaturalQuery = (queryStr) => {
     const q = queryStr.toLowerCase().trim();
@@ -2617,6 +2620,7 @@ export default function Portal({ onViewChange }) {
         activeSubView={activeSubView}
         onViewChange={onViewChange} 
         onBookVisitClick={() => { handleOpenInquiry(properties[0] || allRawProperties[0] || { id: null, title: 'Advisory Consultation', price: '0', location: 'HINJEWADI', transactionType: 'BUY' }); }}
+        onOpenSpotlight={() => setIsSpotlightOpen(true)}
         exclusiveTab={exclusiveTab}
         onTabChange={handleTabChange}
         activeSection={activeSection}
@@ -4351,35 +4355,109 @@ export default function Portal({ onViewChange }) {
           </svg>
         </a>
       )}
-      {/* Spotlight Command Palette (Ctrl+K Overlay) */}
+      {/* Spotlight Command Palette (Ctrl+K / Cmd+K Overlay) */}
       {isSpotlightOpen && (
         <div
-          onClick={e => { if (e.target === e.currentTarget) { setIsSpotlightOpen(false); setSpotlightQuery(""); } }}
-          style={{ position: "fixed", inset: 0, background: "rgba(4,8,20,0.85)", backdropFilter: "blur(20px)", zIndex: 10000, display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "12vh", paddingLeft: "20px", paddingRight: "20px" }}
+          onClick={e => { if (e.target === e.currentTarget) { setIsSpotlightOpen(false); setSpotlightQuery(""); setSpotlightIndex(0); } }}
+          style={{ position: "fixed", inset: 0, background: "rgba(4,8,20,0.88)", backdropFilter: "blur(20px)", zIndex: 10000, display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "10vh", paddingLeft: "20px", paddingRight: "20px" }}
         >
-          <div style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1a30 100%)", border: "1px solid rgba(197,168,128,0.25)", borderRadius: "20px", width: "100%", maxWidth: "680px", boxShadow: "0 24px 80px rgba(0,0,0,0.8)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            
+          <div style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1a30 100%)", border: "1px solid rgba(197,168,128,0.3)", borderRadius: "20px", width: "100%", maxWidth: "700px", boxShadow: "0 32px 90px rgba(0,0,0,0.85), 0 0 0 1px rgba(230,195,92,0.1)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+
             {/* Input Bar */}
-            <div style={{ display: "flex", alignItems: "center", borderBottom: "1px solid rgba(197,168,128,0.15)", padding: "18px 24px", gap: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", borderBottom: "1px solid rgba(197,168,128,0.15)", padding: "18px 24px", gap: "14px", background: "rgba(255,255,255,0.02)" }}>
               <span style={{ fontSize: "1.2rem", color: "#E6C35C" }}>🔍</span>
               <input
                 type="text"
                 autoFocus
                 value={spotlightQuery}
-                onChange={e => setSpotlightQuery(e.target.value)}
-                placeholder="Type a query (e.g. 3 BHK Baner under 2Cr, rent Wakad)..."
+                onChange={e => { setSpotlightQuery(e.target.value); setSpotlightIndex(0); }}
+                onKeyDown={e => {
+                  const filtered = allRawProperties.filter(p => {
+                    if (!spotlightQuery.trim()) return true;
+                    const parsed = parseNaturalQuery(spotlightQuery);
+                    if (parsed.location && p.location !== parsed.location) return false;
+                    if (parsed.bedrooms && p.bedrooms !== Number(parsed.bedrooms)) return false;
+                    if (parsed.propertyType && p.propertyType !== parsed.propertyType) return false;
+                    if (parsed.transactionType && p.transactionType !== parsed.transactionType) return false;
+                    if (parsed.maxPrice && p.price > Number(parsed.maxPrice)) return false;
+                    if (parsed.query && !p.title.toLowerCase().includes(parsed.query.toLowerCase()) && !(p.description || '').toLowerCase().includes(parsed.query.toLowerCase())) return false;
+                    return true;
+                  }).slice(0, 6);
+
+                  if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    setSpotlightIndex(prev => (prev + 1) % Math.max(1, filtered.length));
+                  } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    setSpotlightIndex(prev => (prev - 1 + filtered.length) % Math.max(1, filtered.length));
+                  } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (filtered[spotlightIndex]) {
+                      setSelectedPropertyDetail(filtered[spotlightIndex]);
+                      setIsSpotlightOpen(false);
+                      setSpotlightQuery("");
+                      window.scrollTo({ top: 300, behavior: "smooth" });
+                    } else if (spotlightQuery.trim()) {
+                      const parsed = parseNaturalQuery(spotlightQuery);
+                      setFilters(prev => ({ ...prev, ...parsed }));
+                      setIsSpotlightOpen(false);
+                      setSpotlightQuery("");
+                      setActiveSection("listings");
+                      setPage(0);
+                    }
+                  }
+                }}
+                placeholder="Type to search (e.g. 3 BHK Hinjewadi under 1 Cr, rent Wakad)..."
                 style={{ flex: 1, background: "none", border: "none", color: "#fff", fontFamily: "'Montserrat', sans-serif", fontSize: "1.05rem", fontWeight: 500, outline: "none" }}
               />
-              <button onClick={() => { setIsSpotlightOpen(false); setSpotlightQuery(""); }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", color: "rgba(255,255,255,0.5)", cursor: "pointer", fontSize: "0.68rem", fontWeight: 700, padding: "4px 8px", textTransform: "uppercase" }}>ESC</button>
+              <button onClick={() => { setIsSpotlightOpen(false); setSpotlightQuery(""); setSpotlightIndex(0); }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", color: "rgba(255,255,255,0.5)", cursor: "pointer", fontSize: "0.68rem", fontWeight: 700, padding: "4px 8px", textTransform: "uppercase" }}>ESC</button>
             </div>
-            
-            {/* suggestions list */}
-            <div style={{ maxHeight: "420px", overflowY: "auto", padding: "16px 24px" }}>
-              
+
+            {/* Suggestions list */}
+            <div style={{ maxHeight: "450px", overflowY: "auto", padding: "16px 24px" }}>
+
+              {/* Quick Chip Shortcuts when query is empty */}
+              {!spotlightQuery.trim() && (
+                <div style={{ marginBottom: "20px" }}>
+                  <span style={{ fontSize: "0.62rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: "rgba(197,168,128,0.6)", letterSpacing: "0.08em", display: "block", marginBottom: "10px", textTransform: "uppercase" }}>⚡ POPULAR QUICK FILTERS</span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                    {[
+                      { label: "🏡 3 BHK Hinjewadi", query: "3 BHK Hinjewadi" },
+                      { label: "📍 Wakad Flats", query: "Wakad" },
+                      { label: "💰 Under ₹1 Cr", query: "under 1 Cr" },
+                      { label: "🔑 For Rent", query: "rent" },
+                      { label: "🏬 Commercial", query: "commercial" },
+                      { label: "🛡️ MahaRERA Verified", query: "verified" },
+                    ].map(chip => (
+                      <button
+                        key={chip.query}
+                        onClick={() => setSpotlightQuery(chip.query)}
+                        style={{
+                          background: "rgba(255,255,255,0.04)",
+                          border: "1px solid rgba(197,168,128,0.2)",
+                          borderRadius: "20px",
+                          padding: "6px 14px",
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: '0.74rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          fontFamily: "'Montserrat', sans-serif",
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = "#E6C35C"; e.currentTarget.style.color = "#E6C35C"; e.currentTarget.style.background = "rgba(230,195,92,0.1)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(197,168,128,0.2)"; e.currentTarget.style.color = "rgba(255,255,255,0.85)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                      >
+                        {chip.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* AI Parser Active Recommendation Chip */}
               {spotlightQuery.trim().length > 0 && (
-                <div style={{ marginBottom: "20px" }}>
-                  <span style={{ fontSize: "0.62rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: "rgba(197,168,128,0.6)", letterSpacing: "0.08em", display: "block", marginBottom: "8px", textTransform: "uppercase" }}>🤖 AI COMMAND DETECTED</span>
+                <div style={{ marginBottom: "18px" }}>
+                  <span style={{ fontSize: "0.62rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: "rgba(197,168,128,0.6)", letterSpacing: "0.08em", display: "block", marginBottom: "8px", textTransform: "uppercase" }}>🤖 AI NATURAL LANGUAGE INTENT</span>
                   <button
                     onClick={() => {
                       const parsed = parseNaturalQuery(spotlightQuery);
@@ -4399,77 +4477,102 @@ export default function Portal({ onViewChange }) {
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                       <span style={{ fontSize: "1rem" }}>⚡</span>
-                      <span style={{ fontSize: "0.86rem", fontWeight: 600 }}>
-                        Apply AI Filters: {Object.entries(parseNaturalQuery(spotlightQuery)).filter(([k,v]) => v).map(([k,v]) => `${k.toUpperCase()}: ${v}`).join(", ")}
+                      <span style={{ fontSize: "0.85rem", fontWeight: 600 }}>
+                        Apply Smart Filters: {Object.entries(parseNaturalQuery(spotlightQuery)).filter(([k,v]) => v).map(([k,v]) => `${k.toUpperCase()}: ${v}`).join(", ") || spotlightQuery}
                       </span>
                     </div>
-                    <span style={{ fontSize: "0.78rem", fontWeight: 700 }}>Apply ↵</span>
+                    <span style={{ fontSize: "0.76rem", fontWeight: 800 }}>Apply ↵</span>
                   </button>
                 </div>
               )}
-              
+
               {/* Live Preview List */}
-              <div>
-                <span style={{ fontSize: "0.62rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: "rgba(197,168,128,0.6)", letterSpacing: "0.08em", display: "block", marginBottom: "12px", textTransform: "uppercase" }}>🏢 MATCHING PROPERTIES ({
-                  allRawProperties.filter(p => {
-                    if (!spotlightQuery.trim()) return true;
-                    const parsed = parseNaturalQuery(spotlightQuery);
-                    if (parsed.location && p.location !== parsed.location) return false;
-                    if (parsed.bedrooms && p.bedrooms !== Number(parsed.bedrooms)) return false;
-                    if (parsed.propertyType && p.propertyType !== parsed.propertyType) return false;
-                    if (parsed.transactionType && p.transactionType !== parsed.transactionType) return false;
-                    if (parsed.maxPrice && p.price > Number(parsed.maxPrice)) return false;
-                    if (parsed.query && !p.title.toLowerCase().includes(parsed.query.toLowerCase()) && !p.description.toLowerCase().includes(parsed.query.toLowerCase())) return false;
-                    return true;
-                  }).length
-                })</span>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {allRawProperties.filter(p => {
-                    if (!spotlightQuery.trim()) return true;
-                    const parsed = parseNaturalQuery(spotlightQuery);
-                    if (parsed.location && p.location !== parsed.location) return false;
-                    if (parsed.bedrooms && p.bedrooms !== Number(parsed.bedrooms)) return false;
-                    if (parsed.propertyType && p.propertyType !== parsed.propertyType) return false;
-                    if (parsed.transactionType && p.transactionType !== parsed.transactionType) return false;
-                    if (parsed.maxPrice && p.price > Number(parsed.maxPrice)) return false;
-                    if (parsed.query && !p.title.toLowerCase().includes(parsed.query.toLowerCase()) && !p.description.toLowerCase().includes(parsed.query.toLowerCase())) return false;
-                    return true;
-                  }).slice(0, 5).map(p => (
-                    <div
-                      key={p.id}
-                      onClick={() => {
-                        setSelectedPropertyDetail(p);
-                        setIsSpotlightOpen(false);
-                        setSpotlightQuery("");
-                        window.scrollTo({ top: 300, behavior: "smooth" });
-                      }}
-                      style={{ display: "flex", alignItems: "center", justifySpace: "space-between", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "10px 14px", cursor: "pointer", transition: "all 0.2s ease", justifyContent: "space-between" }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(197,168,128,0.4)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <img src={p.imageUrl} alt={p.title} style={{ width: "40px", height: "40px", borderRadius: "6px", objectFit: "cover" }} />
-                        <div>
-                          <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#fff" }}>{p.title}</div>
-                          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.45)" }}>{p.location} corridor · {p.bedrooms} BHK</div>
-                        </div>
+              {(() => {
+                const matches = allRawProperties.filter(p => {
+                  if (!spotlightQuery.trim()) return true;
+                  const parsed = parseNaturalQuery(spotlightQuery);
+                  if (parsed.location && p.location !== parsed.location) return false;
+                  if (parsed.bedrooms && p.bedrooms !== Number(parsed.bedrooms)) return false;
+                  if (parsed.propertyType && p.propertyType !== parsed.propertyType) return false;
+                  if (parsed.transactionType && p.transactionType !== parsed.transactionType) return false;
+                  if (parsed.maxPrice && p.price > Number(parsed.maxPrice)) return false;
+                  if (parsed.query && !p.title.toLowerCase().includes(parsed.query.toLowerCase()) && !(p.description || '').toLowerCase().includes(parsed.query.toLowerCase())) return false;
+                  return true;
+                }).slice(0, 6);
+
+                return (
+                  <div>
+                    <span style={{ fontSize: "0.62rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: "rgba(197,168,128,0.6)", letterSpacing: "0.08em", display: "block", marginBottom: "12px", textTransform: "uppercase" }}>
+                      🏢 MATCHING RESIDENCES ({matches.length})
+                    </span>
+
+                    {matches.length === 0 ? (
+                      <div style={{ padding: '24px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.84rem' }}>
+                        No exact property matches found. Press <strong>Enter</strong> to apply natural language filter to full database.
                       </div>
-                      <div style={{ fontSize: "0.8rem", fontWeight: 800, color: "#E6C35C" }}>{formatPrice(p.price)}</div>
-                    </div>
-                  ))}
+                    ) : (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                        {matches.map((p, idx) => {
+                          const isSelected = idx === spotlightIndex;
+                          return (
+                            <div
+                              key={p.id}
+                              onClick={() => {
+                                setSelectedPropertyDetail(p);
+                                setIsSpotlightOpen(false);
+                                setSpotlightQuery("");
+                                window.scrollTo({ top: 300, behavior: "smooth" });
+                              }}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                background: isSelected ? "rgba(230,195,92,0.12)" : "rgba(255,255,255,0.02)",
+                                border: `1px solid ${isSelected ? "rgba(230,195,92,0.4)" : "rgba(255,255,255,0.06)"}`,
+                                borderRadius: "10px",
+                                padding: "10px 14px",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease"
+                              }}
+                              onMouseEnter={() => setSpotlightIndex(idx)}
+                            >
+                              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                <img src={p.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=100&q=70'} alt={p.title} style={{ width: "42px", height: "42px", borderRadius: "8px", objectFit: "cover" }} />
+                                <div>
+                                  <div style={{ fontSize: "0.84rem", fontWeight: 700, color: isSelected ? "#E6C35C" : "#fff" }}>{p.title}</div>
+                                  <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.45)" }}>
+                                    {p.location} Corridor · {p.bedrooms ? `${p.bedrooms} BHK` : p.propertyType} · {p.transactionType || 'BUY'}
+                                  </div>
+                                </div>
+                              </div>
+                              <div style={{ textAlign: 'right' }}>
+                                <div style={{ fontSize: "0.84rem", fontWeight: 800, color: "#E6C35C" }}>{formatPrice(p.price)}</div>
+                                {isSelected && <span style={{ fontSize: '0.6rem', color: '#E6C35C', fontWeight: 800 }}>PRESS ↵</span>}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Bottom Hotkeys Helper */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "20px", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "14px", color: "rgba(255,255,255,0.4)", fontSize: "0.68rem" }}>
+                <div style={{ display: "flex", gap: "14px" }}>
+                  <span><kbd style={{ background: 'rgba(255,255,255,0.1)', padding: '1px 4px', borderRadius: '3px' }}>↑↓</kbd> Navigate</span>
+                  <span><kbd style={{ background: 'rgba(255,255,255,0.1)', padding: '1px 4px', borderRadius: '3px' }}>↵</kbd> Select</span>
+                  <span><kbd style={{ background: 'rgba(255,255,255,0.1)', padding: '1px 4px', borderRadius: '3px' }}>ESC</kbd> Close</span>
                 </div>
+                <span style={{ color: "rgba(230,195,92,0.7)", fontWeight: 600 }}>24K Spotlight Engine v2.0</span>
               </div>
-              
-              {/* Bottom Hotkeys */}
-              <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "24px", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "14px", color: "rgba(255,255,255,0.3)", fontSize: "0.68rem" }}>
-                <span>↕️ Navigate</span>
-                <span>↵ Select</span>
-                <span>ESC Close</span>
-              </div>
+
             </div>
           </div>
         </div>
       )}
+
       {isAiModalOpen && (
         <div
           onClick={e => { if (e.target === e.currentTarget) { setIsAiModalOpen(false); setAiStep(1); } }}
