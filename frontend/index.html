@@ -27,35 +27,99 @@
 
     <!-- ===== Twitter Card ===== -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="24K Realtors Pune | Premium Real Estate Advisory" />
-    <meta name="twitter:description" content="100% MahaRERA verified properties in Hinjewadi, Wakad & Baner. Gold-standard real estate advisory." />
+    <meta name="twitter:site" content="@24krealtorspune" />
+    <meta name="twitter:title" content="24K Realtors Pune | Luxury Flats in Hinjewadi, Wakad & Baner" />
+    <meta name="twitter:description" content="100% MahaRERA verified properties in Pune West. 2 & 3 BHK luxury flats. Free site visit. RERA: A52100028461." />
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80" />
 
-    <!-- ===== Schema.org Structured Data ===== -->
+    <!-- ===== Schema.org — LocalBusiness ===== -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "RealEstateAgent",
+      "@type": ["RealEstateAgent", "LocalBusiness"],
       "name": "24K Realtors Pune",
-      "description": "Pune West's premium location-centric real estate advisory — 100% MahaRERA verified properties in Hinjewadi, Wakad and Baner.",
+      "description": "Pune West's #1 MahaRERA verified real estate advisory. Luxury 2 & 3 BHK flats in Hinjewadi, Wakad, Baner and Kharadi corridors.",
       "url": "https://real-estate-digital-marketing.vercel.app/",
       "logo": "https://real-estate-digital-marketing.vercel.app/favicon.svg",
+      "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
       "telephone": "+91-96730-00053",
-      "email": "contact@24krealtors.in",
-      "areaServed": {
-        "@type": "City",
-        "name": "Pune",
-        "addressCountry": "IN"
-      },
+      "email": "advisory@24krealtors.com",
       "address": {
         "@type": "PostalAddress",
+        "streetAddress": "Hinjewadi Phase 1",
         "addressLocality": "Pune",
         "addressRegion": "Maharashtra",
+        "postalCode": "411057",
         "addressCountry": "IN"
       },
-      "sameAs": [],
-      "priceRange": "₹65L - ₹3.8Cr",
-      "openingHours": "Mo-Sa 09:00-19:00"
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 18.5975,
+        "longitude": 73.7376
+      },
+      "areaServed": [
+        {"@type": "City", "name": "Hinjewadi", "addressCountry": "IN"},
+        {"@type": "City", "name": "Wakad",     "addressCountry": "IN"},
+        {"@type": "City", "name": "Baner",     "addressCountry": "IN"},
+        {"@type": "City", "name": "Kharadi",   "addressCountry": "IN"},
+        {"@type": "City", "name": "Balewadi",  "addressCountry": "IN"},
+        {"@type": "City", "name": "Tathawade", "addressCountry": "IN"}
+      ],
+      "priceRange": "₹65L – ₹3.8Cr",
+      "openingHours": ["Mo-Sa 09:00-19:00"],
+      "hasMap": "https://maps.google.com/?q=Hinjewadi+Phase+1+Pune",
+      "sameAs": [
+        "https://www.instagram.com/24krealtorspune",
+        "https://www.facebook.com/24krealtorspune"
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "127",
+        "bestRating": "5"
+      }
+    }
+    </script>
+
+    <!-- ===== Schema.org — FAQPage (Featured Snippets) ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which are the best areas to buy flats in Pune West?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The top areas to buy premium flats in Pune West are Hinjewadi (IT hub, 14.2% appreciation), Wakad (highway connectivity), Baner (16.5% appreciation, social infrastructure), and Balewadi (stadium corridor). 24K Realtors specialises in all these premium corridors."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are all properties listed by 24K Realtors MahaRERA verified?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Every property listed by 24K Realtors is 100% MahaRERA verified. Our RERA Agent Registration Number is A52100028461. All project RERA numbers are prominently displayed on each listing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the price range of flats in Hinjewadi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Flats in Hinjewadi range from ₹65 Lakhs for a 1 BHK to ₹2.5 Crores for a premium 4 BHK in gated communities like Joyville Vyomora by Shapoorji Pallonji. 24K Realtors offers listings across all budget segments."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I calculate EMI for a home loan in Pune?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can use the built-in EMI Calculator on 24K Realtors' property detail pages. Enter your down payment (10–60%), select your preferred bank's interest rate (SBI, HDFC, ICICI, Axis), and choose your loan tenure (5–30 years) to get an instant monthly EMI breakdown with Principal vs Interest split."
+          }
+        }
+      ]
     }
     </script>
 
@@ -71,7 +135,7 @@
     <link rel="dns-prefetch" href="https://twentyfourk-backend-production.up.railway.app" />
     <link rel="dns-prefetch" href="https://images.unsplash.com" />
 
-    <!-- ===== Fonts: Single Canonical Import ===== -->
+    <!-- ===== Fonts ===== -->
     <link
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap"
       rel="stylesheet"
