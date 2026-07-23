@@ -4327,19 +4327,14 @@ export default function Portal({ onViewChange }) {
         </div>
       )}
 
-      {/* Floating chatbot widget — hidden on subpages/detail pages */}
-      {!selectedPropertyDetail && !selectedSocietyDetail && !selectedBuilderDetail && !selectedLocalityDetail && !selectedBlogDetail && (
-        <Suspense fallback={null}>
-          <ChatWidget 
-            isOpen={isChatWidgetOpen}
-            setIsOpen={setIsChatWidgetOpen}
-            chatMessages={chatMessages}
-            chatInput={chatInput}
-            setChatInput={setChatInput}
-            onSubmit={handleChatSubmit}
-          />
-        </Suspense>
-      )}
+      {/* 🤖 Ultra-Luxury 24K AI Assistant Chatbot */}
+      <Suspense fallback={null}>
+        <ChatWidget 
+          isOpen={isChatWidgetOpen}
+          setIsOpen={setIsChatWidgetOpen}
+          activeProperty={selectedPropertyDetail}
+        />
+      </Suspense>
 
       {/* Sticky Floating WhatsApp */}
       {!selectedPropertyDetail && !selectedSocietyDetail && !selectedBuilderDetail && !selectedLocalityDetail && !selectedBlogDetail && (
