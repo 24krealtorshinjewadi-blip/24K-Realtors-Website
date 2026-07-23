@@ -1115,34 +1115,177 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
             <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: 0 }}>{builder.desc}</p>
           </div>
 
-          {/* EMI Calculator */}
-          <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '18px', padding: '24px' }}>
-            <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.9rem', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Calculator size={15}/> Mortgage Calculator
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {/* ═══ PREMIUM EMI CALCULATOR ═══ */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(10,18,36,0.95), rgba(7,15,30,0.98))', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '20px', padding: '28px', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '22px', borderBottom: '1px solid rgba(212,175,55,0.1)', paddingBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05))', border: '1px solid rgba(212,175,55,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Calculator size={16} color="var(--gold-primary)" />
+              </div>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', marginBottom: '7px' }}>
-                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Down Payment ({downPayment}%)</span>
-                  <strong style={{ color: '#fff' }}>{formatPrice(Number(property.price) * (downPayment / 100))}</strong>
-                </div>
-                <input type="range" min="10" max="60" value={downPayment} onChange={e => setDownPayment(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--gold-primary)', cursor: 'pointer' }}/>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                {[{ label: 'Rate (%)', value: interestRate, set: setInterestRate, step: 0.1 }, { label: 'Term (Yrs)', value: loanTerm, set: setLoanTerm, step: 1 }].map(({ label, value, set, step }) => (
-                  <div key={label}>
-                    <label style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</label>
-                    <input type="number" step={step} value={value} onChange={e => set(Number(e.target.value))} className="form-input" style={{ width: '100%', margin: 0, padding: '8px 10px', boxSizing: 'border-box' }}/>
-                  </div>
-                ))}
-              </div>
-              <div style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02))', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '16px', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block' }}>Monthly EMI</span>
-                <strong style={{ fontSize: '1.5rem', color: 'var(--gold-primary)', display: 'block', margin: '5px 0 3px', lineHeight: 1 }}>{formatPrice(emi)}<span style={{ fontSize: '0.78rem', fontWeight: 400 }}>/mo</span></strong>
-                <span style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.35)' }}>Principal: {formatPrice(principal)}</span>
+                <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.95rem', margin: 0, letterSpacing: '0.04em' }}>EMI Calculator</h3>
+                <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Home Loan Mortgage Planner</span>
               </div>
             </div>
+
+            {/* ── Sliders ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
+
+              {/* Down Payment */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', marginBottom: '8px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.55)' }}>Down Payment</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ color: 'var(--gold-primary)', fontWeight: 700 }}>{downPayment}%</span>
+                    <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.68rem' }}>({formatPrice(Number(property.price) * (downPayment / 100))})</span>
+                  </div>
+                </div>
+                <input type="range" min="10" max="60" step="5" value={downPayment}
+                  onChange={e => setDownPayment(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: 'var(--gold-primary)', cursor: 'pointer', height: '4px' }}/>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', color: 'rgba(255,255,255,0.2)', marginTop: '3px' }}>
+                  <span>10%</span><span>60%</span>
+                </div>
+              </div>
+
+              {/* Interest Rate */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', marginBottom: '8px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.55)' }}>Interest Rate</span>
+                  <span style={{ color: 'var(--gold-primary)', fontWeight: 700 }}>{interestRate}% p.a.</span>
+                </div>
+                <input type="range" min="6" max="14" step="0.1" value={interestRate}
+                  onChange={e => setInterestRate(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: 'var(--gold-primary)', cursor: 'pointer', height: '4px' }}/>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', color: 'rgba(255,255,255,0.2)', marginTop: '3px' }}>
+                  <span>6%</span><span>14%</span>
+                </div>
+              </div>
+
+              {/* Loan Term */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', marginBottom: '8px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.55)' }}>Loan Tenure</span>
+                  <span style={{ color: 'var(--gold-primary)', fontWeight: 700 }}>{loanTerm} Years</span>
+                </div>
+                <input type="range" min="5" max="30" step="1" value={loanTerm}
+                  onChange={e => setLoanTerm(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: 'var(--gold-primary)', cursor: 'pointer', height: '4px' }}/>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', color: 'rgba(255,255,255,0.2)', marginTop: '3px' }}>
+                  <span>5 Yrs</span><span>30 Yrs</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── EMI Result Card ── */}
+            {(() => {
+              const loanAmt = Number(property.price) * (1 - downPayment / 100);
+              const mR = (interestRate / 12) / 100;
+              const nm = loanTerm * 12;
+              const monthlyEmi = mR > 0 ? (loanAmt * mR * Math.pow(1 + mR, nm)) / (Math.pow(1 + mR, nm) - 1) : loanAmt / nm;
+              const totalPay = monthlyEmi * nm;
+              const totalInt = totalPay - loanAmt;
+              const principalPct = Math.round((loanAmt / totalPay) * 100);
+              const interestPct = 100 - principalPct;
+              // SVG donut
+              const r = 38, cx = 48, cy = 48, circ = 2 * Math.PI * r;
+              const pDash = (principalPct / 100) * circ;
+              const iDash = (interestPct / 100) * circ;
+
+              return (
+                <>
+                  {/* Main EMI display */}
+                  <div style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.08), rgba(212,175,55,0.03))', border: '1px solid rgba(212,175,55,0.18)', borderRadius: '14px', padding: '18px', marginBottom: '16px', textAlign: 'center' }}>
+                    <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.12em', display: 'block', marginBottom: '6px' }}>Monthly EMI</span>
+                    <strong style={{ fontSize: '1.8rem', color: 'var(--gold-primary)', display: 'block', lineHeight: 1, fontFamily: 'var(--font-title)' }}>
+                      {formatPrice(monthlyEmi)}<span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'rgba(255,255,255,0.4)' }}>/mo</span>
+                    </strong>
+                    <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '4px', display: 'block' }}>
+                      Loan Amount: {formatPrice(loanAmt)}
+                    </span>
+                  </div>
+
+                  {/* Donut + Breakdown */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '96px 1fr', gap: '16px', alignItems: 'center', marginBottom: '16px' }}>
+                    {/* SVG Donut */}
+                    <svg width="96" height="96" viewBox="0 0 96 96">
+                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="12"/>
+                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(212,175,55,0.85)" strokeWidth="12"
+                        strokeDasharray={`${pDash} ${circ}`} strokeDashoffset={circ * 0.25}
+                        style={{ transition: 'stroke-dasharray 0.6s ease' }} strokeLinecap="round"/>
+                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(239,68,68,0.6)" strokeWidth="12"
+                        strokeDasharray={`${iDash} ${circ}`} strokeDashoffset={circ * 0.25 - pDash}
+                        style={{ transition: 'stroke-dasharray 0.6s ease' }} strokeLinecap="round"/>
+                      <text x={cx} y={cy - 4} textAnchor="middle" fill="var(--gold-primary)" fontSize="11" fontWeight="bold">{principalPct}%</text>
+                      <text x={cx} y={cy + 10} textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="7">principal</text>
+                    </svg>
+
+                    {/* Breakdown stats */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(212,175,55,0.85)' }}/>
+                          <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)' }}>Principal</span>
+                        </div>
+                        <strong style={{ fontSize: '0.78rem', color: '#fff' }}>{formatPrice(loanAmt)}</strong>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(239,68,68,0.7)' }}/>
+                          <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)' }}>Total Interest</span>
+                        </div>
+                        <strong style={{ fontSize: '0.78rem', color: 'rgba(239,100,100,0.9)' }}>{formatPrice(totalInt)}</strong>
+                      </div>
+                      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>Total Payable</span>
+                        <strong style={{ fontSize: '0.82rem', color: 'var(--gold-primary)' }}>{formatPrice(totalPay)}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bank Rate Comparison */}
+                  <div style={{ marginBottom: '14px' }}>
+                    <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>🏦 Bank Rate Comparison</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      {[
+                        { bank: 'SBI Home Loan', rate: 8.50 },
+                        { bank: 'HDFC Ltd', rate: 8.75 },
+                        { bank: 'ICICI Bank', rate: 9.00 },
+                        { bank: 'Axis Bank', rate: 8.85 },
+                      ].map(({ bank, rate }) => {
+                        const mRb = (rate / 12) / 100;
+                        const bmEmi = mRb > 0 ? (loanAmt * mRb * Math.pow(1 + mRb, nm)) / (Math.pow(1 + mRb, nm) - 1) : loanAmt / nm;
+                        const isSelected = Math.abs(rate - interestRate) < 0.26;
+                        return (
+                          <div key={bank}
+                            onClick={() => setInterestRate(rate)}
+                            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', border: `1px solid ${isSelected ? 'rgba(212,175,55,0.4)' : 'rgba(255,255,255,0.05)'}`, background: isSelected ? 'rgba(212,175,55,0.06)' : 'rgba(255,255,255,0.02)', transition: 'all 0.2s' }}>
+                            <div>
+                              <span style={{ fontSize: '0.72rem', color: isSelected ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', fontWeight: isSelected ? 700 : 400 }}>{bank}</span>
+                              {isSelected && <span style={{ marginLeft: '6px', fontSize: '0.58rem', background: 'var(--gold-primary)', color: '#070f1e', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }}>SELECTED</span>}
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--gold-secondary)', fontWeight: 700 }}>{rate}%</div>
+                              <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)' }}>{formatPrice(bmEmi)}/mo</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Share on WhatsApp */}
+                  <a
+                    href={`https://wa.me/919673000053?text=${encodeURIComponent(`Hi 24K Realtors,\n\nI've calculated my Home Loan EMI:\n📌 Property: ${property.title}\n💰 Property Price: ${formatPrice(property.price)}\n🏦 Down Payment: ${downPayment}% (${formatPrice(Number(property.price) * downPayment / 100)})\n📊 Loan Amount: ${formatPrice(loanAmt)}\n📈 Interest Rate: ${interestRate}% p.a.\n⏳ Tenure: ${loanTerm} Years\n💳 Monthly EMI: ${formatPrice(monthlyEmi)}/mo\n\nPlease help me with the next steps!`)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '10px', borderRadius: '10px', background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.25)', color: '#25D366', fontWeight: 700, fontSize: '0.78rem', textDecoration: 'none', boxSizing: 'border-box', transition: 'all 0.2s', marginTop: '4px' }}>
+                    <MessageSquare size={14}/> Share EMI Plan on WhatsApp
+                  </a>
+                </>
+              );
+            })()}
           </div>
+
 
           {/* Cost Breakdown */}
           <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '18px', padding: '24px' }}>
