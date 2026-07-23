@@ -1355,7 +1355,7 @@ export default function Portal({ onViewChange }) {
               <div id="editorial-carousel-track" style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '8px' }}>
                 {displayData.slice(0, 10).map(property => (
                   <div key={property.id} style={{ flexShrink: 0, width: 'clamp(280px, 25vw, 360px)' }}>
-                    <PropertyCard property={property} isHnwiMode={isHnwiMode} isCompared={selectedForCompare.some(p => p.id === property.id)} isWishlisted={wishlistIds.includes(property.id)} formatPrice={formatPrice} onToggleCompare={handleToggleCompare} onToggleWishlist={handleToggleWishlist} onOpenRera={handleOpenReraDrawer} onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 300, behavior: 'smooth' }); }} />
+                    <PropertyCard property={property} isHnwiMode={isHnwiMode} isCompared={selectedForCompare.some(p => p.id === property.id)} isWishlisted={wishlistIds.includes(property.id)} formatPrice={formatPrice} onToggleCompare={handleToggleCompare} onToggleWishlist={handleToggleWishlist} onOpenRera={handleOpenReraDrawer} onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)} onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 300, behavior: 'smooth' }); }} />
                   </div>
                 ))}
               </div>
@@ -2000,6 +2000,7 @@ export default function Portal({ onViewChange }) {
                   onToggleCompare={handleToggleCompare}
                   onToggleWishlist={handleToggleWishlist}
                   onOpenRera={handleOpenReraDrawer}
+                  onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                   onOpenDetail={(prop) => { 
                     setSelectedPropertyDetail(prop); 
                     setActiveSection('listings'); 
@@ -2037,6 +2038,7 @@ export default function Portal({ onViewChange }) {
                   onToggleCompare={handleToggleCompare}
                   onToggleWishlist={handleToggleWishlist}
                   onOpenRera={handleOpenReraDrawer}
+                  onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                   onOpenDetail={(prop) => { 
                     setSelectedPropertyDetail(prop); 
                     setActiveSection('listings'); 
@@ -2075,6 +2077,7 @@ export default function Portal({ onViewChange }) {
                     onToggleCompare={handleToggleCompare}
                     onToggleWishlist={handleToggleWishlist}
                     onOpenRera={handleOpenReraDrawer}
+                    onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                     onOpenDetail={(prop) => { 
                       setSelectedPropertyDetail(prop); 
                       setActiveSection('listings'); 
@@ -3321,6 +3324,7 @@ export default function Portal({ onViewChange }) {
                         onToggleCompare={handleToggleCompare}
                         onToggleWishlist={handleToggleWishlist}
                         onOpenRera={handleOpenReraDrawer}
+                        onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                         onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 300, behavior: 'smooth' }); }}
                       />
                     ))}
@@ -3352,6 +3356,7 @@ export default function Portal({ onViewChange }) {
                               onToggleCompare={handleToggleCompare}
                               onToggleWishlist={handleToggleWishlist}
                               onOpenRera={handleOpenReraDrawer}
+                              onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                               onOpenDetail={(prop) => {
                                 setSelectedPropertyDetail(prop);
                                 window.scrollTo({ top: 300, behavior: "smooth" });
@@ -3378,6 +3383,7 @@ export default function Portal({ onViewChange }) {
                         onToggleCompare={handleToggleCompare}
                         onToggleWishlist={handleToggleWishlist}
                         onOpenRera={handleOpenReraDrawer}
+                        onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                         onOpenDetail={(prop) => {
                           setSelectedPropertyDetail(prop);
                           window.scrollTo({ top: 300, behavior: "smooth" });
