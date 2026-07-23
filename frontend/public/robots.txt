@@ -1,0 +1,30 @@
+# ══════════════════════════════════════════════
+# robots.txt — 24K Realtors Pune
+# Vercel Production: real-estate-digital-marketing.vercel.app
+# ══════════════════════════════════════════════
+
+# Allow all crawlers (Googlebot, Bingbot, etc.)
+User-agent: *
+Allow: /
+
+# Block internal/admin routes from indexing
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Allow Google to index assets
+User-agent: Googlebot
+Allow: /*.js$
+Allow: /*.css$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.svg$
+Allow: /*.webp$
+
+# Sitemap location
+Sitemap: https://real-estate-digital-marketing.vercel.app/sitemap.xml
+
+# Crawl delay (optional — polite crawling)
+Crawl-delay: 2

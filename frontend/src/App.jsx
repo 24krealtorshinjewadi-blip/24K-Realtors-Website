@@ -5,7 +5,9 @@ import CompanyLogo from './components/CompanyLogo';
 import { auth, subscribeToNotifications, onForegroundMessage } from './services/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Lenis from 'lenis';
+import { useSEO, SEO_CONFIGS } from './services/seoService';
 import './App.css';
+
 
 // Lazy load heavy components — reduces initial bundle
 const Portal = lazy(() => import('./components/Portal'));
@@ -85,6 +87,15 @@ export default function App() {
   const [showLoginModal, setShowLoginModal] = useState(false); // legacy fallback
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
+
+  // ── Dynamic SEO per view ─────────────────────────────────────────────────
+  const seoConfig = currentView === 'portal'        ? SEO_CONFIGS.portal
+                  : currentView === 'dashboard'     ? SEO_CONFIGS.dashboard
+                  : currentView === 'login'         ? SEO_CONFIGS.login
+                  : currentView === 'list-property' ? SEO_CONFIGS.listProperty
+                  : SEO_CONFIGS.portal;
+  useSEO(seoConfig);
+
 
   // Firebase Auth State Listener
   useEffect(() => {

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
+import { useSEO, buildPropertySEO } from '../services/seoService';
 
 /* ─── Builder lookup ──────────────────────────────────────── */
 const getBuilderInfo = (title = '') => {
@@ -230,6 +231,10 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const isCommercial = property.propertyType === 'COMMERCIAL';
   const builder      = getBuilderInfo(property.title);
   const corridor     = getCorridorData(property.location);
+
+  // ── Dynamic SEO for this property ────────────────────────────────────────────
+  useSEO(buildPropertySEO(property));
+
 
   const slideshowImages = property.slideshowImages || [
     property.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
