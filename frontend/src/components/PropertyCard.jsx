@@ -50,15 +50,18 @@ export default function PropertyCard({
         position: 'relative',
         borderRadius: '16px',
         overflow: 'hidden',
-        background: 'rgba(10, 18, 36, 0.45)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+        background: 'rgba(7, 15, 30, 0.75)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        border: '1px solid rgba(197, 168, 128, 0.22)',
+        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         cursor: 'pointer',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+        boxShadow: '0 12px 35px rgba(0, 0, 0, 0.45)',
       }}
       onClick={() => onOpenDetail ? onOpenDetail(property) : null}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.5)'; e.currentTarget.style.boxShadow = '0 18px 45px rgba(0,0,0,0.65), 0 0 25px rgba(212, 175, 55, 0.15)'; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(197, 168, 128, 0.22)'; e.currentTarget.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.45)'; }}
     >
-      
       {/* 1. Large Premium Image Container */}
       <div 
         className="property-image-container" 

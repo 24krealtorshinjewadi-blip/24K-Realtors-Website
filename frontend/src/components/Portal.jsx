@@ -3199,13 +3199,38 @@ export default function Portal({ onViewChange }) {
         </div>
       </section>
 
-      {/* Main Listings and Directories Container */}
-      <div className="main-portal-listings-section" style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px' }}>
-          
-          {activeSection === 'listings' && (
-            <>
-              {/* Dynamic Advanced Filtering */}
-              <section className="filter-section" id="listings-anchor">
+      {/* Main Listings and Directories Container with Luxury Ambient Background */}
+      <div className="subpage-ambient-bg">
+        <div className="main-portal-listings-section" style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px' }}>
+            
+            {activeSection === 'listings' && (
+              <>
+                {/* Ultra-Premium Subpage Header Banner */}
+                <div className="subpage-header-banner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+                  <div>
+                    <h2 style={{ margin: 0, fontFamily: "'Cinzel', serif", fontSize: '1.45rem', color: '#fff', letterSpacing: '0.04em' }}>
+                      ⚜️ Verified Estates & Luxury Portfolios
+                    </h2>
+                    <span style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.78)', fontFamily: "'Montserrat', sans-serif", marginTop: '2px', display: 'block' }}>
+                      Curated 100% MahaRERA verified residences in Hinjewadi, Wakad, Baner & Pune West
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    <div className="subpage-stats-badge">
+                      <span>📌 {allRawProperties.length || 22}+ Verified Portfolios</span>
+                    </div>
+                    <div className="subpage-stats-badge" style={{ background: 'rgba(37, 211, 102, 0.08)', borderColor: 'rgba(37, 211, 102, 0.3)', color: '#25D366' }}>
+                      <span>🛡️ 100% MahaRERA Certified</span>
+                    </div>
+                    <div className="subpage-stats-badge" style={{ background: 'rgba(46, 196, 182, 0.08)', borderColor: 'rgba(46, 196, 182, 0.3)', color: '#2EC4B6' }}>
+                      <span>💎 0% Brokerage Direct Mandates</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dynamic Advanced Filtering */}
+                <section className="filter-section" id="listings-anchor">
                 <h2 className="filter-title">
                   <Search size={18} />
                   Refine Your Property Search
@@ -4265,6 +4290,7 @@ export default function Portal({ onViewChange }) {
           </div>
         </div>
       </section>
+        </div>
 
       {/* Modular Comparison Overlay Modal */}
       <Suspense fallback={null}>

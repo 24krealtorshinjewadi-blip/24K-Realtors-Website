@@ -327,7 +327,16 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}
-      style={{ color: 'var(--text-light)', paddingBottom: '100px' }}>
+      style={{
+        position: 'relative',
+        color: 'var(--text-light)',
+        paddingBottom: '100px',
+        background: 'radial-gradient(ellipse at top center, rgba(14, 28, 54, 0.94) 0%, rgba(4, 8, 20, 0.98) 80%)',
+        borderRadius: '20px',
+        border: '1px solid rgba(212, 175, 55, 0.18)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+        overflow: 'hidden'
+      }}>
 
       {/* ══ TOP NAV BAR ══ */}
       <div style={{

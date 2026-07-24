@@ -5498,3 +5498,39 @@
 .portal-hero {
   transition: background-position 0.1s linear;
 }
+
+/* ===== Subpage Ultra-Premium Ambient Styling ===== */
+.subpage-ambient-bg {
+  position: relative;
+  width: 100%;
+  background: radial-gradient(ellipse at top center, rgba(14, 28, 54, 0.92) 0%, rgba(4, 8, 20, 0.98) 70%),
+              url('/hero_bg.jpg') no-repeat center center / cover attachment fixed;
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 40px 0 60px 0;
+  transition: all 0.3s ease;
+}
+
+.subpage-header-banner {
+  background: rgba(7, 15, 30, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 20px;
+  padding: 24px 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 175, 55, 0.06);
+}
+
+.subpage-stats-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 30px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: #E6C35C;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
