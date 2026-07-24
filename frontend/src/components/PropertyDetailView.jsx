@@ -221,6 +221,14 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     catch { return false; }
   });
 
+  // Mobile breakpoint — reactive
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     const go = async () => { try { setMarketTrends(await apiService.getMarketTrends(property.location)); } catch {} };
     go();
@@ -374,12 +382,12 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
       </div>
 
       {/* ══ HERO SPLIT GRID + RIGHT SIDEBAR ══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '0', padding: '0' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 340px', gap: '0', padding: '0' }}>
 
         {/* Left: Hero Split Grid */}
-        <div style={{ padding: '20px 20px 20px 32px' }}>
+        <div style={{ padding: isMobile ? '16px 14px' : '20px 20px 20px 32px' }}>
           {/* Image Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 0.42fr', gap: '8px', borderRadius: '18px', overflow: 'hidden', height: '420px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 0.42fr', gap: '8px', borderRadius: '18px', overflow: 'hidden', height: isMobile ? '240px' : '420px' }}>
             {/* Main big image */}
             <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
               onClick={() => { setLightboxStart(activeSlide); setLightboxOpen(true); }}>
