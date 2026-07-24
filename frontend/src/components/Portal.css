@@ -5824,3 +5824,32 @@
   }
 }
 
+/* ── Map View Layout: column on mobile, row on desktop ── */
+.map-view-layout {
+  flex-direction: row;
+}
+@media (max-width: 991px) {
+  .map-view-layout {
+    flex-direction: column !important;
+    min-height: unset !important;
+  }
+  .map-view-layout > div:last-child {
+    position: relative !important;
+    top: unset !important;
+    height: 320px !important;
+  }
+}
+@media (max-width: 480px) {
+  .map-view-layout > div:last-child {
+    height: 260px !important;
+  }
+}
+
+/* ── Subpage banner badges: hide on phones, show on tablet+ ── */
+@media (max-width: 480px) {
+  .subpage-banner-badges {
+    display: none !important;
+  }
+}
+
+

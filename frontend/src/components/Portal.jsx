@@ -1388,7 +1388,7 @@ export default function Portal({ onViewChange }) {
             <div style={{ position: 'relative' }}>
               <div id="editorial-carousel-track" style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '8px' }}>
                 {displayData.slice(0, 10).map(property => (
-                  <div key={property.id} style={{ flexShrink: 0, width: 'clamp(280px, 25vw, 360px)' }}>
+                  <div key={property.id} style={{ flexShrink: 0, width: 'clamp(270px, 75vw, 360px)' }}>
                     <PropertyCard property={property} isHnwiMode={isHnwiMode} isCompared={selectedForCompare.some(p => p.id === property.id)} isWishlisted={wishlistIds.includes(property.id)} formatPrice={formatPrice} onToggleCompare={handleToggleCompare} onToggleWishlist={handleToggleWishlist} onOpenRera={handleOpenReraDrawer} onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)} onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 300, behavior: 'smooth' }); }} />
                   </div>
                 ))}
@@ -3206,25 +3206,25 @@ export default function Portal({ onViewChange }) {
             {activeSection === 'listings' && (
               <>
                 {/* Ultra-Premium Subpage Header Banner */}
-                <div className="subpage-header-banner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-                  <div>
-                    <h2 style={{ margin: 0, fontFamily: "'Cinzel', serif", fontSize: '1.45rem', color: '#fff', letterSpacing: '0.04em' }}>
-                      ⚜️ Verified Estates & Luxury Portfolios
+                <div className="subpage-header-banner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h2 style={{ margin: 0, fontFamily: "'Cinzel', serif", fontSize: 'clamp(1rem, 4vw, 1.45rem)', color: '#fff', letterSpacing: '0.03em' }}>
+                      ⚜️ Verified Estates &amp; Luxury Portfolios
                     </h2>
-                    <span style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.78)', fontFamily: "'Montserrat', sans-serif", marginTop: '2px', display: 'block' }}>
-                      Curated 100% MahaRERA verified residences in Hinjewadi, Wakad, Baner & Pune West
+                    <span style={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.65)', fontFamily: "'Montserrat', sans-serif", marginTop: '4px', display: 'block', lineHeight: 1.5 }}>
+                      Curated MahaRERA verified residences · Hinjewadi, Wakad, Baner
                     </span>
                   </div>
-
-                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  {/* Badges — hide on very small mobile, show on tablet+ */}
+                  <div className="subpage-banner-badges" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     <div className="subpage-stats-badge">
-                      <span>📌 {allRawProperties.length || 22}+ Verified Portfolios</span>
+                      <span>📌 {allRawProperties.length || 22}+ Listings</span>
                     </div>
-                    <div className="subpage-stats-badge" style={{ background: 'rgba(37, 211, 102, 0.08)', borderColor: 'rgba(37, 211, 102, 0.3)', color: '#25D366' }}>
-                      <span>🛡️ 100% MahaRERA Certified</span>
+                    <div className="subpage-stats-badge" style={{ background: 'rgba(37,211,102,0.08)', borderColor: 'rgba(37,211,102,0.3)', color: '#25D366' }}>
+                      <span>🛡️ MahaRERA</span>
                     </div>
-                    <div className="subpage-stats-badge" style={{ background: 'rgba(46, 196, 182, 0.08)', borderColor: 'rgba(46, 196, 182, 0.3)', color: '#2EC4B6' }}>
-                      <span>💎 0% Brokerage Direct Mandates</span>
+                    <div className="subpage-stats-badge" style={{ background: 'rgba(46,196,182,0.08)', borderColor: 'rgba(46,196,182,0.3)', color: '#2EC4B6' }}>
+                      <span>💎 0% Brokerage</span>
                     </div>
                   </div>
                 </div>
@@ -3299,51 +3299,53 @@ export default function Portal({ onViewChange }) {
                 </form>
               </section>
 
-              {/* Listings Header Row */}
-              <div className="listings-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "30px" }}>
-                <span className="total-found-badge" style={{ margin: 0 }}>
-                  🏢 {totalElements} Verified listings found in {filters.location || "Pune West"}
-                </span>
-                <div style={{ display: "flex", background: "rgba(7,15,30,0.6)", border: "1px solid rgba(197,168,128,0.15)", borderRadius: "50px", padding: "4px", gap: "2px" }}>
-                  <button
-                    onClick={() => setViewMode("GRID")}
-                    type="button"
-                    style={{ background: viewMode === "GRID" ? "linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))" : "transparent", border: viewMode === "GRID" ? "1px solid rgba(197,168,128,0.35)" : "1px solid transparent", color: viewMode === "GRID" ? "#E6C35C" : "rgba(255,255,255,0.45)", padding: "8px 18px", borderRadius: "50px", fontSize: "0.72rem", fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: "0.05em", cursor: "pointer", transition: "all 0.25s ease", whiteSpace: "nowrap" }}
-                  >
-                    ☰ Grid View
-                  </button>
-                  <button
-                    onClick={() => setViewMode("MAP")}
-                    type="button"
-                    style={{ background: viewMode === "MAP" ? "linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))" : "transparent", border: viewMode === "MAP" ? "1px solid rgba(197,168,128,0.35)" : "1px solid transparent", color: viewMode === "MAP" ? "#E6C35C" : "rgba(255,255,255,0.45)", padding: "8px 18px", borderRadius: "50px", fontSize: "0.72rem", fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: "0.05em", cursor: "pointer", transition: "all 0.25s ease", whiteSpace: "nowrap" }}
-                  >
-                    🗺️ Interactive Map
-                  </button>
+              {/* Listings Controls — Responsive two-row layout */}
+              <div style={{ marginBottom: '24px' }}>
+                {/* Row 1: Count + View Toggle */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
+                  <span className="total-found-badge" style={{ margin: 0, fontSize: 'clamp(0.72rem, 2.5vw, 0.8rem)' }}>
+                    🏢 {totalElements} listings · {filters.location || 'Pune West'}
+                  </span>
+                  <div style={{ display: 'flex', background: 'rgba(7,15,30,0.6)', border: '1px solid rgba(197,168,128,0.15)', borderRadius: '50px', padding: '3px', gap: '2px' }}>
+                    <button
+                      onClick={() => setViewMode('GRID')}
+                      type="button"
+                      style={{ background: viewMode === 'GRID' ? 'linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))' : 'transparent', border: viewMode === 'GRID' ? '1px solid rgba(197,168,128,0.35)' : '1px solid transparent', color: viewMode === 'GRID' ? '#E6C35C' : 'rgba(255,255,255,0.45)', padding: '7px 14px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", cursor: 'pointer', transition: 'all 0.25s ease', whiteSpace: 'nowrap' }}
+                    >
+                      ☰ Grid
+                    </button>
+                    <button
+                      onClick={() => setViewMode('MAP')}
+                      type="button"
+                      style={{ background: viewMode === 'MAP' ? 'linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))' : 'transparent', border: viewMode === 'MAP' ? '1px solid rgba(197,168,128,0.35)' : '1px solid transparent', color: viewMode === 'MAP' ? '#E6C35C' : 'rgba(255,255,255,0.45)', padding: '7px 14px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", cursor: 'pointer', transition: 'all 0.25s ease', whiteSpace: 'nowrap' }}
+                    >
+                      🗺️ Map
+                    </button>
+                  </div>
                 </div>
-                
-                {/* USA-style Segmented Controls with live counts */}
-                <div className="luxury-segmented-controls" style={{ overflowX: "auto", paddingBottom: "4px", scrollbarWidth: "none", msOverflowStyle: "none", gap: "6px" }}>
+                {/* Row 2: Segmented Category Pills — full width horizontal scroll */}
+                <div className="luxury-segmented-controls" style={{ display: 'flex', overflowX: 'auto', paddingBottom: '6px', scrollbarWidth: 'none', msOverflowStyle: 'none', gap: '6px', flexWrap: 'nowrap' }}>
                   {[
-                    { id: 'ALL', label: 'All Luxury', icon: '\u2726', count: allRawProperties.length },
+                    { id: 'ALL', label: 'All', icon: '\u2726', count: allRawProperties.length },
                     { id: 'APARTMENT', label: 'Apartments', icon: '\ud83c\udfe2', count: allRawProperties.filter(p => p.propertyType === 'RESIDENTIAL' && (p.bedrooms || 0) <= 3).length },
-                    { id: 'VILLA', label: 'Luxury Villas', icon: '\ud83c\udfe1', count: allRawProperties.filter(p => (p.bedrooms || 0) >= 4 && p.propertyType === 'RESIDENTIAL').length },
+                    { id: 'VILLA', label: 'Villas', icon: '\ud83c\udfe1', count: allRawProperties.filter(p => (p.bedrooms || 0) >= 4 && p.propertyType === 'RESIDENTIAL').length },
                     { id: 'PENTHOUSE', label: 'Penthouse', icon: '\ud83c\udf06', count: allRawProperties.filter(p => (p.bedrooms || 0) >= 4).length },
                     { id: 'COMMERCIAL', label: 'Commercial', icon: '\ud83c\udfe6', count: allRawProperties.filter(p => p.propertyType === 'COMMERCIAL').length },
-                    { id: 'READY', label: 'Ready To Move', icon: '\u2705', count: allRawProperties.filter(p => p.status === 'AVAILABLE' && p.transactionType === 'BUY').length },
-                    { id: 'NEW', label: 'New Launches', icon: '\ud83d\ude80', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('vyomora') || (p.title || '').toLowerCase().includes('ivara') || (p.title || '').toLowerCase().includes('joyville') || (p.title || '').toLowerCase().includes('elements')).length },
-                    { id: 'RENT', label: 'For Rent', icon: '🔑', count: allRawProperties.filter(p => p.transactionType === 'RENT').length },
+                    { id: 'READY', label: 'Ready', icon: '\u2705', count: allRawProperties.filter(p => p.status === 'AVAILABLE' && p.transactionType === 'BUY').length },
+                    { id: 'NEW', label: 'New Launch', icon: '\ud83d\ude80', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('vyomora') || (p.title || '').toLowerCase().includes('ivara') || (p.title || '').toLowerCase().includes('joyville') || (p.title || '').toLowerCase().includes('elements')).length },
+                    { id: 'RENT', label: 'Rent', icon: '\ud83d\udd11', count: allRawProperties.filter(p => p.transactionType === 'RENT').length },
                     { id: 'WISHLIST', label: 'Saved', icon: '\u2665', count: wishlistIds.length },
                   ].map(({ id, label, icon, count }) => (
                     <button
                       key={id}
                       onClick={() => handleCollectionChange(id)}
-                      className={`luxury-segment-btn ${activeCollection === id ? "active" : ""}`}
-                      style={{ display: "inline-flex", alignItems: "center", gap: "6px", flexShrink: 0 }}
+                      className={`luxury-segment-btn ${activeCollection === id ? 'active' : ''}`}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}
                     >
-                      <span style={{ fontSize: "0.85em" }}>{icon}</span>
+                      <span style={{ fontSize: '0.82em' }}>{icon}</span>
                       {label}
                       {count > 0 && (
-                        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: "18px", height: "18px", borderRadius: "50px", padding: "0 5px", fontSize: "0.6rem", fontWeight: 800, background: activeCollection === id ? "rgba(7,15,30,0.5)" : "rgba(197,168,128,0.08)", color: activeCollection === id ? "#E6C35C" : "rgba(197,168,128,0.5)", border: `1px solid ${activeCollection === id ? "rgba(230,195,92,0.4)" : "rgba(197,168,128,0.2)"}`, marginLeft: "2px" }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: '17px', height: '17px', borderRadius: '50px', padding: '0 4px', fontSize: '0.58rem', fontWeight: 800, background: activeCollection === id ? 'rgba(7,15,30,0.5)' : 'rgba(197,168,128,0.08)', color: activeCollection === id ? '#E6C35C' : 'rgba(197,168,128,0.5)', border: `1px solid ${activeCollection === id ? 'rgba(230,195,92,0.4)' : 'rgba(197,168,128,0.2)'}`, marginLeft: '2px' }}>
                           {count}
                         </span>
                       )}
@@ -3401,7 +3403,7 @@ export default function Portal({ onViewChange }) {
                 </div>
               ) : (
                 viewMode === "MAP" ? (
-                  <div style={{ display: "flex", gap: "30px", alignItems: "stretch", minHeight: "600px", flexDirection: window.innerWidth < 992 ? "column" : "row", marginTop: "20px" }}>
+                  <div className="map-view-layout" style={{ display: 'flex', gap: '20px', alignItems: 'stretch', minHeight: '500px', marginTop: '20px' }}>
                     <div style={{ flex: "1", maxHeight: "80vh", overflowY: "auto", paddingRight: "8px", scrollbarWidth: "thin" }}>
                       <div className="properties-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" }}>
                         {properties.map((property) => (
