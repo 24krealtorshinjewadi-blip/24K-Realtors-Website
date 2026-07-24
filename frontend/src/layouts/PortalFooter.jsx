@@ -9,13 +9,14 @@ const FooterLink = ({ href = '#', children }) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        color: hover ? 'var(--gold-primary)' : 'var(--text-muted)',
-        fontSize: '0.82rem',
+        color: hover ? '#E6C35C' : 'rgba(255, 255, 255, 0.82)',
+        fontSize: '0.86rem',
+        fontWeight: 500,
         textDecoration: 'none',
-        transition: 'color 0.2s ease',
+        transition: 'all 0.2s ease',
         cursor: 'pointer',
         display: 'block',
-        padding: '4px 0'
+        padding: '5px 0'
       }}
     >
       {children}
@@ -175,22 +176,22 @@ export default function PortalFooter() {
           gap: '20px',
           paddingLeft: '5%',
           paddingRight: '5%',
-          fontSize: '0.78rem',
-          color: 'var(--text-muted)'
+          fontSize: '0.82rem',
+          color: 'rgba(255, 255, 255, 0.8)'
         }}
       >
         <div style={{ flex: 1, minWidth: '280px' }}>
-          <p style={{ margin: 0, lineHeight: 1.5 }}>
+          <p style={{ margin: 0, lineHeight: 1.6 }}>
             All trademarks, logos, and developer registries are the property of their respective owners. 
-            24K Realtors is an authorized location-advisory firm under MahaRERA license: <strong style={{ color: 'var(--gold-primary)' }}>A52100028461</strong>. 
+            24K Realtors is an authorized location-advisory firm under MahaRERA license: <strong style={{ color: '#E6C35C', fontWeight: 700 }}>A52100028461</strong>. 
             Pricing and layouts are subject to developer adjustments.
           </p>
         </div>
         <div style={{ textAlign: 'right', minWidth: '200px' }}>
-          <p style={{ margin: 0 }}>
+          <p style={{ margin: 0, lineHeight: 1.6 }}>
             © 2026 24K Realtors Pune. All rights reserved. 
             <br />
-            A Naukri / Info Edge Associated Digital mandate.
+            <span style={{ color: 'rgba(255, 255, 255, 0.65)' }}>A Naukri / Info Edge Associated Digital mandate.</span>
           </p>
         </div>
       </div>

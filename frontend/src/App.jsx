@@ -146,7 +146,13 @@ export default function App() {
     };
   }, []);
 
+  // ── Scroll to top whenever view changes ─────────────────────────────────
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentView]);
+
   const handleViewChange = useCallback((view) => {
+    window.scrollTo(0, 0);
     if (view === 'dashboard') {
       const token = localStorage.getItem('token');
       if (!token) {
