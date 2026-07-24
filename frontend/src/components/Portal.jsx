@@ -282,6 +282,37 @@ export default function Portal({ onViewChange }) {
     setSelectedBlogDetail(null);
   }, [activeSection]);
 
+  // ── SPA History & Hash Listener for Property Details (Browser Back ← / Forward →) ──
+  useEffect(() => {
+    const handlePortalHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash.startsWith('property/')) {
+        const propId = hash.replace('property/', '');
+        if (allRawProperties && allRawProperties.length > 0) {
+          const found = allRawProperties.find(p => String(p.id) === String(propId));
+          if (found) {
+            setSelectedPropertyDetail(found);
+            window.scrollTo(0, 0);
+          }
+        }
+      } else if (hash === 'portal' || hash === '' || hash === 'listings') {
+        setSelectedPropertyDetail(null);
+      }
+    };
+
+    window.addEventListener('hashchange', handlePortalHashChange);
+    window.addEventListener('popstate', handlePortalHashChange);
+
+    if (allRawProperties && allRawProperties.length > 0) {
+      handlePortalHashChange();
+    }
+
+    return () => {
+      window.removeEventListener('hashchange', handlePortalHashChange);
+      window.removeEventListener('popstate', handlePortalHashChange);
+    };
+  }, [allRawProperties]);
+
   // Spotlight Keyboard Shortcut & Natural Query Parser
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -2618,7 +2649,10 @@ export default function Portal({ onViewChange }) {
         setIsHnwiMode={setIsHnwiMode} 
         filters={filters}
         activeSubView={activeSubView}
-        onViewChange={onViewChange} 
+        onViewChange={(view) => {
+          setSelectedPropertyDetail(null);
+          if (onViewChange) onViewChange(view);
+        }} 
         onBookVisitClick={() => { handleOpenInquiry(properties[0] || allRawProperties[0] || { id: null, title: 'Advisory Consultation', price: '0', location: 'HINJEWADI', transactionType: 'BUY' }); }}
         onOpenSpotlight={() => setIsSpotlightOpen(true)}
         exclusiveTab={exclusiveTab}
@@ -2668,6 +2702,7 @@ export default function Portal({ onViewChange }) {
               }}
               onOpenInquiry={handleOpenInquiry}
               onOpenChauffeur={handleOpenInquiry}
+              onOpenBrochure={(prop) => setSelectedBrochureProperty(prop || selectedPropertyDetail)}
               formatPrice={formatPrice}
               getEmbedVideoUrl={getEmbedVideoUrl}
               allProperties={allRawProperties}
@@ -3363,7 +3398,8 @@ export default function Portal({ onViewChange }) {
                               onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                               onOpenDetail={(prop) => {
                                 setSelectedPropertyDetail(prop);
-                                window.scrollTo({ top: 300, behavior: "smooth" });
+                                window.location.hash = `property/${prop.id}`;
+                                window.scrollTo({ top: 0, behavior: "smooth" });
                               }}
                             />
                           </div>
@@ -3390,7 +3426,8 @@ export default function Portal({ onViewChange }) {
                         onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                         onOpenDetail={(prop) => {
                           setSelectedPropertyDetail(prop);
-                          window.scrollTo({ top: 300, behavior: "smooth" });
+                          window.location.hash = `property/${prop.id}`;
+                          window.scrollTo({ top: 0, behavior: "smooth" });
                         }}
                       />
                     ))}

@@ -146,6 +146,36 @@ export default function App() {
     };
   }, []);
 
+  // ── Browser Back (←) and Forward (→) History & Hash Routing ────────────────
+  useEffect(() => {
+    const handleHashOrPopState = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'list-property') {
+        setCurrentView('list-property');
+      } else if (hash === 'login') {
+        setCurrentView('login');
+      } else if (hash === 'dashboard') {
+        setCurrentView('dashboard');
+      } else {
+        setCurrentView('portal');
+      }
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener('popstate', handleHashOrPopState);
+    window.addEventListener('hashchange', handleHashOrPopState);
+
+    // Initial check on load
+    if (window.location.hash) {
+      handleHashOrPopState();
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handleHashOrPopState);
+      window.removeEventListener('hashchange', handleHashOrPopState);
+    };
+  }, []);
+
   // ── Scroll to top whenever view changes ─────────────────────────────────
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -156,7 +186,7 @@ export default function App() {
     if (view === 'dashboard') {
       const token = localStorage.getItem('token');
       if (!token) {
-        // Use new full-page login instead of modal
+        window.location.hash = 'login';
         setCurrentView('login');
         return;
       }
@@ -167,9 +197,11 @@ export default function App() {
       localStorage.removeItem('userRole');
       localStorage.removeItem('userFullName');
       localStorage.removeItem('username');
+      window.location.hash = 'portal';
       setCurrentView('portal');
       return;
     }
+    window.location.hash = view;
     setCurrentView(view);
   }, []);
 
