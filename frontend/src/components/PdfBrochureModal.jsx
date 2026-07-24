@@ -1,220 +1,57 @@
-import React from 'react';
-import { X, Printer, Share2, ShieldCheck, MapPin, CheckCircle, Sparkles, Download } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { X, Printer, Share2, ShieldCheck, MapPin, CheckCircle, Sparkles, Download, Loader2 } from 'lucide-react';
 import CompanyLogo from './CompanyLogo';
 
 export default function PdfBrochureModal({ property, onClose, formatPrice, onOpenInquiry }) {
+  const brochureRef = useRef(null);
+  const [downloading, setDownloading] = useState(false);
+
   if (!property) return null;
 
   const handlePrint = () => {
     window.print();
   };
 
-  // Real PDF file download using jsPDF — no print dialog, direct .pdf file saved
-  const handleDownloadPdf = () => {
-    import('jspdf').then(({ jsPDF }) => {
-      const doc = new jsPDF('p', 'mm', 'a4');
-      const pageW = doc.internal.pageSize.getWidth();
-      const pageH = doc.internal.pageSize.getHeight();
-      const margin = 15;
-      let y = margin;
+  // High-fidelity PDF download matching the luxury brochure modal 100%
+  const handleDownloadPdf = async () => {
+    if (!brochureRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      const [{ jsPDF }, html2canvasModule] = await Promise.all([
+        import('jspdf'),
+        import('html2canvas')
+      ]);
+      const html2canvas = html2canvasModule.default || html2canvasModule;
 
-      // Dark navy background
-      doc.setFillColor(7, 15, 30);
-      doc.rect(0, 0, pageW, pageH, 'F');
+      const element = brochureRef.current;
 
-      // Gold top strip
-      doc.setFillColor(197, 168, 128);
-      doc.rect(0, 0, pageW, 2, 'F');
-
-      // ── Header ──────────────────────────────────────────────
-      y += 5;
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(20);
-      doc.setTextColor(230, 195, 92);
-      doc.text('24K REALTORS', margin, y + 8);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7);
-      doc.setTextColor(197, 168, 128);
-      doc.text('PUNE WEST LUXURY REAL ESTATE ADVISORY', margin, y + 14);
-
-      // RERA (top-right)
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
-      doc.setTextColor(230, 195, 92);
-      doc.text(`MahaRERA: ${property.reraNumber || 'P52100028461'}`, pageW - margin, y + 8, { align: 'right' });
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7);
-      doc.setTextColor(150, 150, 150);
-      const shortId = (property.id || 'LISTING').toString().substring(0, 8).toUpperCase();
-      doc.text(`Ref: 24K-${shortId}`, pageW - margin, y + 14, { align: 'right' });
-
-      // Divider
-      y += 22;
-      doc.setDrawColor(197, 168, 128);
-      doc.setLineWidth(0.3);
-      doc.line(margin, y, pageW - margin, y);
-      y += 8;
-
-      // ── Property Type Badge ──────────────────────────────────
-      doc.setFillColor(30, 45, 70);
-      doc.setDrawColor(197, 168, 128);
-      doc.setLineWidth(0.2);
-      doc.roundedRect(margin, y, 70, 7, 2, 2, 'FD');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7);
-      doc.setTextColor(230, 195, 92);
-      doc.text(
-        `${property.propertyType || 'RESIDENTIAL'}  •  FOR ${property.transactionType || 'SALE'}`,
-        margin + 3, y + 4.8
-      );
-
-      // ── Property Title ───────────────────────────────────────
-      y += 11;
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(17);
-      doc.setTextColor(255, 255, 255);
-      const titleLines = doc.splitTextToSize(property.title || 'Luxury Property', pageW - margin * 2);
-      doc.text(titleLines, margin, y);
-      y += titleLines.length * 7;
-
-      // Address
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(160, 160, 160);
-      doc.text(
-        `${property.location} Corridor  —  ${property.address || 'Pune West'}`,
-        margin, y + 1
-      );
-      y += 8;
-
-      // ── Price ────────────────────────────────────────────────
-      const priceStr = formatPrice
-        ? formatPrice(property.price)
-        : `Rs. ${(property.price || 0).toLocaleString('en-IN')}`;
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(22);
-      doc.setTextColor(197, 168, 128);
-      doc.text(priceStr, margin, y + 9);
-
-      const ppsf = property.areaSquareFeet
-        ? Math.round(property.price / property.areaSquareFeet)
-        : 0;
-      if (ppsf > 0) {
-        doc.setFontSize(8);
-        doc.setTextColor(230, 195, 92);
-        doc.text(`Rs. ${ppsf.toLocaleString('en-IN')} / sq.ft`, margin, y + 16);
-      }
-      y += 23;
-
-      // ── Spec Grid (4 boxes) ──────────────────────────────────
-      const specs = [
-        { label: 'BEDROOMS', val: `${property.bedrooms || 2} BHK` },
-        { label: 'CARPET AREA', val: `${property.areaSquareFeet || 1000} sq.ft` },
-        { label: 'FURNISHING', val: (property.furnishingStatus || 'SEMI FURNISHED').replace(/_/g, ' ') },
-        { label: 'PIPED GAS', val: property.gasPipeline ? 'Available' : 'N/A' },
-      ];
-      const boxW = (pageW - margin * 2 - 9) / 4;
-      specs.forEach((spec, i) => {
-        const bx = margin + i * (boxW + 3);
-        doc.setFillColor(20, 30, 50);
-        doc.setDrawColor(55, 65, 90);
-        doc.setLineWidth(0.2);
-        doc.roundedRect(bx, y, boxW, 17, 2, 2, 'FD');
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(6.5);
-        doc.setTextColor(110, 115, 140);
-        doc.text(spec.label, bx + boxW / 2, y + 5.5, { align: 'center' });
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(9.5);
-        doc.setTextColor(240, 240, 240);
-        doc.text(spec.val, bx + boxW / 2, y + 13, { align: 'center' });
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#070F1E',
+        logging: false
       });
-      y += 24;
 
-      // ── Executive Summary ────────────────────────────────────
-      doc.setFillColor(15, 25, 45);
-      doc.setDrawColor(197, 168, 128);
-      doc.setLineWidth(0.2);
-      doc.roundedRect(margin, y, pageW - margin * 2, 36, 3, 3, 'FD');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
-      doc.setTextColor(197, 168, 128);
-      doc.text('EXECUTIVE SUMMARY', margin + 5, y + 7);
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
 
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7.5);
-      doc.setTextColor(200, 200, 200);
-      const desc = property.description ||
-        'Premium residential property with modular kitchen, continuous power backup, and strategic proximity to prime IT corridors and international schools.';
-      const descLines = doc.splitTextToSize(desc, pageW - margin * 2 - 12);
-      doc.text(descLines.slice(0, 4), margin + 5, y + 14);
-      y += 43;
-
-      // ── Amenities ────────────────────────────────────────────
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
-      doc.setTextColor(197, 168, 128);
-      doc.text('KEY AMENITIES & FEATURES', margin, y);
-      y += 5;
-
-      const amenities = [
-        '100% Power Backup',
-        '24/7 Security & CCTV',
-        'Clubhouse & Gym',
-        'Modular Kitchen',
-        'Reserved Parking',
-        'High-Speed Lifts',
-      ];
-      const aBoxW = (pageW - margin * 2 - 10) / 3;
-      amenities.forEach((a, i) => {
-        const row = Math.floor(i / 3);
-        const col = i % 3;
-        const ax = margin + col * (aBoxW + 5);
-        const ay = y + row * 10;
-        doc.setFillColor(18, 28, 48);
-        doc.setDrawColor(38, 50, 75);
-        doc.setLineWidth(0.2);
-        doc.roundedRect(ax, ay, aBoxW, 8, 1.5, 1.5, 'FD');
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7);
-        doc.setTextColor(195, 195, 195);
-        doc.text(`• ${a}`, ax + 3, ay + 5.2);
-      });
-      y += 26;
-
-      // ── Footer ───────────────────────────────────────────────
-      doc.setDrawColor(197, 168, 128);
-      doc.setLineWidth(0.3);
-      doc.line(margin, y, pageW - margin, y);
-      y += 7;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.setTextColor(255, 255, 255);
-      doc.text('24K REALTORS ADVISORY DESK', margin, y);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7);
-      doc.setTextColor(140, 140, 140);
-      doc.text('Hotline: +91 96730 00053  |  Email: advisory@24krealtors.com', margin, y + 6);
-      doc.text('MahaRERA Agent Reg: A52100028461  •  Hinjewadi, Wakad & Baner Corridors', margin, y + 11);
-
-      // Gold bottom strip
-      doc.setFillColor(197, 168, 128);
-      doc.rect(0, pageH - 2, pageW, 2, 'F');
-
-      // ── Save .pdf directly ───────────────────────────────────
       const safeName = (property.title || 'Property')
         .replace(/[^a-zA-Z0-9\s]/g, '')
         .replace(/\s+/g, '_')
         .substring(0, 50);
-      doc.save(`24K_Realtors_Brochure_${safeName}.pdf`);
-    }).catch(() => {
-      // Fallback to print if jsPDF fails to load
+
+      pdf.save(`24K_Realtors_Brochure_${safeName}.pdf`);
+    } catch (err) {
+      console.error('HTML canvas PDF export error, falling back to print:', err);
       window.print();
-    });
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handleShareWhatsApp = () => {
@@ -291,6 +128,7 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
             {/* PRIMARY: Download PDF */}
             <button
               onClick={handleDownloadPdf}
+              disabled={downloading}
               style={{
                 background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
                 border: 'none',
@@ -299,15 +137,24 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
                 borderRadius: '8px',
                 fontSize: '0.8rem',
                 fontWeight: 800,
-                cursor: 'pointer',
+                cursor: downloading ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '7px',
                 fontFamily: "'Montserrat', sans-serif",
-                boxShadow: '0 4px 14px rgba(197,168,128,0.35)'
+                boxShadow: '0 4px 14px rgba(197,168,128,0.35)',
+                opacity: downloading ? 0.8 : 1
               }}
             >
-              <Download size={15} /> Download PDF
+              {downloading ? (
+                <>
+                  <Loader2 size={15} className="animate-spin" /> Generating PDF...
+                </>
+              ) : (
+                <>
+                  <Download size={15} /> Download PDF
+                </>
+              )}
             </button>
 
             {/* Print */}
@@ -373,8 +220,8 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
           </div>
         </div>
 
-        {/* ── Brochure Preview Body ── */}
-        <div style={{ padding: '36px 40px' }} className="brochure-print-body">
+        {/* ── Brochure Preview Body (Targeted for high-fidelity PDF capture) ── */}
+        <div ref={brochureRef} style={{ padding: '36px 40px', background: '#070F1E' }} className="brochure-print-body">
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid rgba(197, 168, 128, 0.2)', paddingBottom: '20px', marginBottom: '24px' }}>
             <div>
@@ -399,6 +246,7 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
               <img
                 src={property.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'}
                 alt={property.title}
+                crossOrigin="anonymous"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
               <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(4, 8, 20, 0.85)', backdropFilter: 'blur(8px)', border: '1px solid rgba(197,168,128,0.3)', borderRadius: '8px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#fff', fontWeight: 600 }}>
@@ -523,3 +371,4 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
     </div>
   );
 }
+
