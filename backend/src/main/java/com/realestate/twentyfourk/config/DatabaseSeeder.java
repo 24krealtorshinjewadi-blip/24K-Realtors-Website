@@ -1,4 +1,4 @@
-﻿package com.realestate.twentyfourk.config;
+package com.realestate.twentyfourk.config;
 
 import com.realestate.twentyfourk.domain.agent.Agent;
 import com.realestate.twentyfourk.domain.agent.AgentRepository;
