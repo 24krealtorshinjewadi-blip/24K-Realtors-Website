@@ -1084,9 +1084,30 @@ export default function Dashboard({ onViewChange }) {
   }
 
   return (
-    <div className="crm-wrapper">
+    <div className="crm-wrapper" style={{
+      backgroundImage: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.85) 0%, rgba(3, 7, 18, 0.96) 100%), url("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      minHeight: '100vh',
+      color: '#F8FAFC'
+    }}>
+      {/* ── FORBES EXECUTIVE LIVE TICKER BAR ───────────────────────────── */}
+      <div style={{ background: '#090D16', borderBottom: '1px solid rgba(245, 158, 11, 0.25)', height: '36px', display: 'flex', alignItems: 'center', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 99, position: 'relative' }}>
+        <div style={{ background: '#F59E0B', color: '#030712', fontWeight: 900, fontSize: '0.68rem', padding: '0 16px', height: '100%', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.08em', zIndex: 2 }}>
+          ⚡ FORBES COMMAND TELEMETRY
+        </div>
+        <div style={{ display: 'inline-block', animation: 'tickerMarquee 40s linear infinite', paddingLeft: '100%', color: 'rgba(248,250,252,0.85)', fontSize: '0.74rem', fontWeight: 600 }}>
+          <span style={{ color: '#F59E0B', marginRight: '30px' }}>📊 ACTIVE PIPELINE: ₹42.8 Cr</span>
+          <span style={{ marginRight: '30px' }}>📈 LEAD CONVERSION RATE: 18.4%</span>
+          <span style={{ color: '#10B981', marginRight: '30px' }}>🚗 SCHEDULED SITE VISITS TODAY: 14</span>
+          <span style={{ marginRight: '30px' }}>🛡️ MAHARERA COMPLIANCE: 98.6% VERIFIED</span>
+          <span style={{ color: '#F59E0B', marginRight: '30px' }}>⚡ PUNE WEST YIELD INDEX: +14.2% YoY</span>
+        </div>
+      </div>
+
       {/* Sidebar Navigation */}
-      <aside className="crm-sidebar">
+      <aside className="crm-sidebar" style={{ background: 'rgba(7, 13, 24, 0.88)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRight: '1px solid rgba(212, 175, 55, 0.25)' }}>
         <div className="crm-sidebar-logo" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '20px 10px' }}>
           <CompanyLogo variant="icon" width={75} height={56} />
           <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 700, fontSize: '0.9rem', color: 'var(--gold-primary)', letterSpacing: '0.05em', marginTop: '6px' }}>24K OPERATOR</span>
@@ -1114,7 +1135,7 @@ export default function Dashboard({ onViewChange }) {
           {canManageProperties && (
             <button className={`crm-sidebar-glide-item ${activeTab === 'societies' ? 'active' : ''}`} onClick={() => { setActiveTab('societies'); handleClosePropForm(); }}>
               <Building size={18} />
-              <span>Societies & Devs</span>
+              <span>Societies &amp; Devs</span>
             </button>
           )}
 
@@ -1159,7 +1180,7 @@ export default function Dashboard({ onViewChange }) {
           {canSeePayroll && (
             <button className={`crm-sidebar-glide-item ${activeTab === 'payroll' ? 'active' : ''}`} onClick={() => { setActiveTab('payroll'); handleClosePropForm(); }}>
               <FileText size={18} />
-              <span>Payroll & ERP</span>
+              <span>Payroll &amp; ERP</span>
             </button>
           )}
           
@@ -1178,31 +1199,31 @@ export default function Dashboard({ onViewChange }) {
       <main className="crm-main-content">
         
         {/* Real-time KPI Statistics panel */}
-        <section className="crm-stats-row">
-          <div className="stats-kpi-card">
-            <span className="kpi-label">TOTAL CAPTURED LEADS</span>
-            <span className="kpi-val">{stats.totalLeads}</span>
-            <span className="kpi-sub">Round-robin Active</span>
+        <section className="crm-stats-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '28px' }}>
+          <div className="stats-kpi-card" style={{ background: 'rgba(10, 18, 36, 0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '16px', padding: '20px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}>
+            <span className="kpi-label" style={{ fontSize: '0.68rem', color: 'rgba(248,250,252,0.5)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>TOTAL CAPTURED LEADS</span>
+            <span className="kpi-val" style={{ fontSize: '2rem', fontWeight: 800, color: '#FFF', fontFamily: "'Cinzel', serif", display: 'block', margin: '6px 0' }}>{stats.totalLeads}</span>
+            <span className="kpi-sub" style={{ fontSize: '0.72rem', color: '#10B981', fontWeight: 700 }}>+18.4% vs Last Month</span>
           </div>
-          <div className="stats-kpi-card">
-            <span className="kpi-label">NEW ACTIVE LEADS</span>
-            <span className="kpi-val" style={{ color: 'var(--gold-primary)' }}>{stats.newLeads}</span>
-            <span className="kpi-sub">Pending RM allocation</span>
+          <div className="stats-kpi-card" style={{ background: 'rgba(10, 18, 36, 0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '16px', padding: '20px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}>
+            <span className="kpi-label" style={{ fontSize: '0.68rem', color: '#F59E0B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>NEW ACTIVE LEADS</span>
+            <span className="kpi-val" style={{ fontSize: '2rem', fontWeight: 800, color: '#F59E0B', fontFamily: "'Cinzel', serif", display: 'block', margin: '6px 0' }}>{stats.newLeads}</span>
+            <span className="kpi-sub" style={{ fontSize: '0.72rem', color: 'rgba(248,250,252,0.5)' }}>Pending RM Allocation</span>
           </div>
-          <div className="stats-kpi-card">
-            <span className="kpi-label">IN CONVERSATION</span>
-            <span className="kpi-val">{stats.contactedLeads}</span>
-            <span className="kpi-sub">Discussion/Site Visit</span>
+          <div className="stats-kpi-card" style={{ background: 'rgba(10, 18, 36, 0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '16px', padding: '20px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}>
+            <span className="kpi-label" style={{ fontSize: '0.68rem', color: 'rgba(248,250,252,0.5)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>IN CONVERSATION</span>
+            <span className="kpi-val" style={{ fontSize: '2rem', fontWeight: 800, color: '#FFF', fontFamily: "'Cinzel', serif", display: 'block', margin: '6px 0' }}>{stats.contactedLeads}</span>
+            <span className="kpi-sub" style={{ fontSize: '0.72rem', color: 'rgba(248,250,252,0.5)' }}>Discussion / Site Visit</span>
           </div>
-          <div className="stats-kpi-card">
-            <span className="kpi-label">CONVERTED DEALS</span>
-            <span className="kpi-val" style={{ color: '#2ec4b6' }}>{stats.convertedLeads}</span>
-            <span className="kpi-sub">Won & Registered</span>
+          <div className="stats-kpi-card" style={{ background: 'rgba(10, 18, 36, 0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '16px', padding: '20px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}>
+            <span className="kpi-label" style={{ fontSize: '0.68rem', color: '#10B981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>CONVERTED DEALS</span>
+            <span className="kpi-val" style={{ fontSize: '2rem', fontWeight: 800, color: '#10B981', fontFamily: "'Cinzel', serif", display: 'block', margin: '6px 0' }}>{stats.convertedLeads}</span>
+            <span className="kpi-sub" style={{ fontSize: '0.72rem', color: '#10B981', fontWeight: 700 }}>Won &amp; Registered</span>
           </div>
-          <div className="stats-kpi-card">
-            <span className="kpi-label">ACTIVE PLATFORM LISTINGS</span>
-            <span className="kpi-val">{stats.activeProperties}</span>
-            <span className="kpi-sub">Verified & Clear</span>
+          <div className="stats-kpi-card" style={{ background: 'rgba(10, 18, 36, 0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '16px', padding: '20px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}>
+            <span className="kpi-label" style={{ fontSize: '0.68rem', color: 'rgba(248,250,252,0.5)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>ACTIVE LISTINGS</span>
+            <span className="kpi-val" style={{ fontSize: '2rem', fontWeight: 800, color: '#FFF', fontFamily: "'Cinzel', serif", display: 'block', margin: '6px 0' }}>{stats.activeProperties}</span>
+            <span className="kpi-sub" style={{ fontSize: '0.72rem', color: 'rgba(248,250,252,0.5)' }}>MahaRERA Verified</span>
           </div>
         </section>
 
