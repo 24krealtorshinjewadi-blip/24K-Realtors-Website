@@ -313,7 +313,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const displayedAmenities = showAllAmenities ? amenityList : amenityList.slice(0, 9);
 
   const Card = ({ children, style = {} }) => (
-    <div style={{ background: 'rgba(10,18,36,0.55)', border: '1px solid rgba(255,255,255,0.065)', borderRadius: '20px', padding: '28px', ...style }}>
+    <div style={{ background: 'rgba(10,18,36,0.65)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '20px', padding: '28px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)', ...style }}>
       {children}
     </div>
   );
@@ -339,10 +339,13 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
         position: 'relative',
         color: 'var(--text-light)',
         paddingBottom: '100px',
-        background: 'radial-gradient(ellipse at top center, rgba(14, 28, 54, 0.94) 0%, rgba(4, 8, 20, 0.98) 80%)',
+        backgroundImage: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.85) 0%, rgba(3, 7, 18, 0.96) 100%), url("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
         borderRadius: '20px',
-        border: '1px solid rgba(212, 175, 55, 0.18)',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+        border: '1px solid rgba(212, 175, 55, 0.25)',
+        boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
         overflow: 'hidden'
       }}>
 

@@ -287,7 +287,11 @@ export default function LoginPage({ onSuccess }) {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div id="login-page" style={{
-      minHeight: '100vh', background: DARK_BG,
+      minHeight: '100vh',
+      backgroundImage: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.82) 0%, rgba(3, 7, 18, 0.95) 100%), url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontFamily: "'Inter', -apple-system, sans-serif",
       position: 'relative', overflow: 'hidden',
@@ -309,10 +313,10 @@ export default function LoginPage({ onSuccess }) {
       {/* Card */}
       <div style={{
         width: '100%', maxWidth: '420px', margin: '20px',
-        background: CARD_BG, backdropFilter: 'blur(24px)',
-        border: '1px solid rgba(212,175,55,0.15)',
+        background: 'rgba(10,18,35,0.78)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
+        border: '1px solid rgba(212,175,55,0.3)',
         borderRadius: '24px', padding: '44px 36px',
-        boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,175,55,0.05)',
+        boxShadow: '0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(212,175,55,0.1)',
         position: 'relative', zIndex: 1,
       }}>
         {/* Logo + Brand */}
