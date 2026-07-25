@@ -183,6 +183,13 @@ export default function App() {
 
   const handleViewChange = useCallback((view) => {
     window.scrollTo(0, 0);
+    if (view === 'portal') {
+      if (window.location.hash && window.location.hash !== '#portal') {
+        window.history.pushState('', document.title, window.location.pathname + window.location.search);
+      }
+      setCurrentView('portal');
+      return;
+    }
     if (view === 'dashboard') {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -197,7 +204,7 @@ export default function App() {
       localStorage.removeItem('userRole');
       localStorage.removeItem('userFullName');
       localStorage.removeItem('username');
-      window.location.hash = 'portal';
+      window.history.pushState('', document.title, window.location.pathname + window.location.search);
       setCurrentView('portal');
       return;
     }
@@ -227,7 +234,7 @@ export default function App() {
                 setCurrentView('dashboard');
               }} />
             ) : currentView === 'list-property' ? (
-              <ListPropertyPage onBack={() => setCurrentView('portal')} />
+              <ListPropertyPage onBack={() => handleViewChange('portal')} />
             ) : currentView === 'portal' ? (
               <Portal onViewChange={handleViewChange} />
             ) : (

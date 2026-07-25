@@ -253,7 +253,23 @@ export default function Portal({ onViewChange }) {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [aiStep, setAiStep] = useState(1);
   const [advisoryTab, setAdvisoryTab] = useState('buyer');
-  const [activeSection, setActiveSection] = useState('listings');
+  const [activeSection, setActiveSection] = useState(() => {
+    try {
+      const hash = window.location.hash.replace('#', '');
+      if (['listings', 'market-intelligence', 'properties-sale', 'properties-rent', 'saved-properties'].includes(hash)) {
+        return hash;
+      }
+      return sessionStorage.getItem('24k_active_section') || 'listings';
+    } catch {
+      return 'listings';
+    }
+  });
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('24k_active_section', activeSection);
+    } catch (e) {}
+  }, [activeSection]);
   const [heroSearchText, setHeroSearchText] = useState('');
   const [heroTab, setHeroTab] = useState('BUY');
   const [searchLocation, setSearchLocation] = useState('');
