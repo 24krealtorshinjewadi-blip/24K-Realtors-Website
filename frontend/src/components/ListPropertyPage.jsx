@@ -2,8 +2,8 @@ import React, { useState, useRef, useCallback } from 'react';
 import { 
   ArrowLeft, ArrowRight, Upload, X, Check, Home, IndianRupee,
   MapPin, Camera, Video, Phone, Mail, Clock, ChevronDown, ChevronUp,
-  Star, Shield, Award, Building2, Sparkles, CheckCircle, 
-  AlertCircle, Eye, Link2, FileImage, User, Users, Calendar,
+  Star, Shield, ShieldCheck, Award, Building2, Sparkles, CheckCircle, 
+  AlertCircle, Eye, Link2, FileImage, User, Users, Calendar, Key,
   BedDouble, Ruler, Layers, TrendingUp, BarChart2, HelpCircle,
   Quote, Zap, CheckCircle2, Percent, Share2, FileText, CheckSquare
 } from 'lucide-react';
