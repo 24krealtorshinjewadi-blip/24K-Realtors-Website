@@ -2335,7 +2335,7 @@ export default function Portal({ onViewChange }) {
     }
     setVipSubmitting(true);
     try {
-      const notesMsg = "VIP 60-Second Callback Request. Urgently contact customer for property guidance.";
+      const notesMsg = "VIP Priority Advisory Callback Request. Urgently contact customer for property guidance.";
       await apiService.submitLead({
         name: vipForm.name,
         phone: vipForm.phone,
@@ -4087,10 +4087,10 @@ export default function Portal({ onViewChange }) {
           <div className="callback-card" style={{ margin: 0, height: '100%', borderRadius: '16px', border: '1px solid rgba(212,175,55,0.15)', background: 'linear-gradient(135deg, rgba(12,24,48,0.6) 0%, rgba(6,12,24,0.8) 100%)' }}>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '6px' }}>
               <Clock size={18} className="animate-pulse" />
-              <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>⚡ 60-Second Callback</h3>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>⚡ Instant Priority Callback</h3>
             </div>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '16px' }}>
-              Drop your number — our Pune IT area specialist calls you within 60 seconds. Available Mon–Sun, 9am to 9pm.
+              Drop your number — our Pune IT locality director will connect with you immediately. Available Mon–Sun, 9am to 9pm.
             </p>
             <form onSubmit={handleVipSubmit}>
               <div className="form-group-floating">
