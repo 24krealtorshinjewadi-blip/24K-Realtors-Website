@@ -19,6 +19,7 @@ const PropertyDetailView = lazy(() => import('./PropertyDetailView'));
 const CompareOverlay = lazy(() => import('./CompareOverlay'));
 const ReraDrawer = lazy(() => import('./ReraDrawer'));
 const ChatWidget = lazy(() => import('./ChatWidget'));
+const DataLabsView = lazy(() => import('./DataLabsView'));
 import PdfBrochureModal from './PdfBrochureModal';
 
 
@@ -1868,144 +1869,14 @@ export default function Portal({ onViewChange }) {
     switch (activeSubView) {
       case "market-intelligence":
         return (
-          <div className="subview-container" style={{ padding: "120px 20px 80px 20px", maxWidth: "1200px", margin: "0 auto", minHeight: "80vh" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "36px", borderBottom: "1px solid rgba(197,168,128,0.15)", paddingBottom: "18px" }}>
-              <div>
-                <span className="hero-gold-badge" style={{ marginBottom: "10px", background: "rgba(46,196,182,0.15)", color: "#2ec4b6" }}>🛰️ 24K DATA LABS v2.4</span>
-                <h2 style={{ fontFamily: "var(--font-title)", fontSize: "2.2rem", color: "#fff", margin: 0 }}>Pune West Market Intelligence</h2>
-                <p style={{ margin: "5px 0 0 0", color: "var(--text-muted)", fontSize: "0.9rem" }}>Data-first real estate analytics index for Hinjewadi, Wakad, Baner & prime western hubs.</p>
+          <div className="subview-container" style={{ padding: '80px 0 60px 0', minHeight: '80vh' }}>
+            <Suspense fallback={
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', color: '#E6C35C' }}>
+                <Loader className="animate-spin" size={32} />
               </div>
-              <button className="btn-outline" onClick={handleBackToHome}>← Back to Portal</button>
-            </div>
-
-            {/* Key stats HUD */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "40px" }}>
-              {[
-                { label: "Closed Volume", value: "₹512 Cr+", desc: "Verified escrow contracts" },
-                { label: "Active Investors", value: "4,218 HNWIs", desc: "Corporate tech profile pool" },
-                { label: "Avg Rental Yield", value: "4.52%", desc: "Hinjewadi peak yield at 5.2%" },
-                { label: "5-Yr Appreciation", value: "+14.6% YoY", desc: "Highest index in Pune region" }
-              ].map((stat, i) => (
-                <div key={i} style={{ background: "rgba(7, 15, 30, 0.45)", border: "1px solid rgba(197, 168, 128, 0.2)", borderRadius: "12px", padding: "20px", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}>
-                  <span style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", fontWeight: 700 }}>{stat.label}</span>
-                  <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "#E6C35C", margin: "4px 0" }}>{stat.value}</div>
-                  <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.3)" }}>{stat.desc}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Charts Section */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(480px, 1fr))", gap: "30px", marginBottom: "50px" }}>
-              
-              {/* SVG Price Appreciation Line Chart */}
-              <div style={{ background: "rgba(7, 15, 30, 0.45)", border: "1px solid rgba(197, 168, 128, 0.22)", borderRadius: "16px", padding: "24px", display: "flex", flexDirection: "column" }}>
-                <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1.1rem", color: "#fff", margin: "0 0 16px 0", letterSpacing: "0.02em" }}>📈 Price Appreciation Index (5-Yr)</h3>
-                <div style={{ flex: 1, height: "260px", position: "relative" }}>
-                  <svg viewBox="0 0 500 220" style={{ width: "100%", height: "100%" }}>
-                    {/* Chart lines grid */}
-                    <line x1="50" y1="180" x2="450" y2="180" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                    <line x1="50" y1="130" x2="450" y2="130" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                    <line x1="50" y1="80" x2="450" y2="80" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                    <line x1="50" y1="30" x2="450" y2="30" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                    
-                    {/* Trend Line (Appreciation) */}
-                    <path d="M 50 170 Q 150 150 250 110 T 450 40" fill="none" stroke="#E6C35C" strokeWidth="3" />
-                    <path d="M 50 170 Q 150 150 250 110 T 450 40 L 450 180 L 50 180 Z" fill="url(#grad)" opacity="0.08" />
-                    
-                    {/* Interactive dots */}
-                    <circle cx="50" cy="170" r="5" fill="#E6C35C" />
-                    <circle cx="150" cy="150" r="5" fill="#E6C35C" />
-                    <circle cx="250" cy="110" r="5" fill="#E6C35C" />
-                    <circle cx="350" cy="80" r="5" fill="#E6C35C" />
-                    <circle cx="450" cy="40" r="5" fill="#E6C35C" />
-                    
-                    {/* Labels */}
-                    <text x="50" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2022</text>
-                    <text x="150" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2023</text>
-                    <text x="250" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2024</text>
-                    <text x="350" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2025</text>
-                    <text x="450" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">2026</text>
-                    
-                    <text x="40" y="174" fill="#A0AEC0" fontSize="9" textAnchor="end">₹6.2K</text>
-                    <text x="40" y="114" fill="#A0AEC0" fontSize="9" textAnchor="end">₹8.9K</text>
-                    <text x="40" y="44" fill="#A0AEC0" fontSize="9" textAnchor="end">₹12.5K</text>
-                    
-                    <defs>
-                      <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="#E6C35C" />
-                        <stop offset="100%" stopColor="transparent" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </div>
-                <p style={{ margin: "16px 0 0 0", fontSize: "0.78rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}>
-                  *Average price calculation across premium residentials in Pune West. Data source: MahaRERA public records & internal transaction index.
-                </p>
-              </div>
-              
-              {/* SVG Rental Yield Bar Chart */}
-              <div style={{ background: "rgba(7, 15, 30, 0.45)", border: "1px solid rgba(197, 168, 128, 0.22)", borderRadius: "16px", padding: "24px", display: "flex", flexDirection: "column" }}>
-                <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1.1rem", color: "#fff", margin: "0 0 16px 0", letterSpacing: "0.02em" }}>💰 Average Rental Yield (%)</h3>
-                <div style={{ flex: 1, height: "260px", position: "relative" }}>
-                  <svg viewBox="0 0 500 220" style={{ width: "100%", height: "100%" }}>
-                    {/* Grid */}
-                    <line x1="50" y1="180" x2="450" y2="180" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                    <line x1="50" y1="130" x2="450" y2="130" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                    <line x1="50" y1="80" x2="450" y2="80" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                    <line x1="50" y1="30" x2="450" y2="30" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                    
-                    {/* Bars: [Hinjewadi: 5.2%, Wakad: 4.5%, Balewadi: 4.0%, Baner: 3.8%] */}
-                    {/* Hinjewadi bar */}
-                    <rect x="80" y="54" width="45" height="126" fill="url(#barGrad1)" rx="4" style={{ transition: "all 0.3s ease" }} />
-                    <text x="102.5" y="44" fill="#2ec4b6" fontSize="10" fontWeight="bold" textAnchor="middle">5.2%</text>
-                    <text x="102.5" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">Hinjewadi</text>
-                    
-                    {/* Wakad bar */}
-                    <rect x="180" y="75" width="45" height="105" fill="url(#barGrad2)" rx="4" />
-                    <text x="202.5" y="65" fill="#E6C35C" fontSize="10" fontWeight="bold" textAnchor="middle">4.5%</text>
-                    <text x="202.5" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">Wakad</text>
-                    
-                    {/* Balewadi bar */}
-                    <rect x="280" y="90" width="45" height="90" fill="url(#barGrad2)" rx="4" />
-                    <text x="302.5" y="80" fill="#E6C35C" fontSize="10" fontWeight="bold" textAnchor="middle">4.0%</text>
-                    <text x="302.5" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">Balewadi</text>
-                    
-                    {/* Baner bar */}
-                    <rect x="380" y="96" width="45" height="84" fill="url(#barGrad2)" rx="4" />
-                    <text x="402.5" y="86" fill="#E6C35C" fontSize="10" fontWeight="bold" textAnchor="middle">3.8%</text>
-                    <text x="402.5" y="200" fill="rgba(255,255,255,0.4)" fontSize="9.5" textAnchor="middle">Baner</text>
-                    
-                    <defs>
-                      <linearGradient id="barGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="#2ec4b6" />
-                        <stop offset="100%" stopColor="transparent" />
-                      </linearGradient>
-                      <linearGradient id="barGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="#E6C35C" />
-                        <stop offset="100%" stopColor="transparent" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </div>
-                <p style={{ margin: "16px 0 0 0", fontSize: "0.78rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}>
-                  *Average annual gross rental yield (yearly rent divided by purchase price). Tech zone proximity drives Hinjewadi yields.
-                </p>
-              </div>
-            </div>
-
-            {/* Data Labs Footer CTA */}
-            <div style={{ background: "linear-gradient(135deg, #09111F 0%, #162438 100%)", border: "1px solid rgba(197,168,128,0.35)", borderRadius: "20px", padding: "40px", textAlign: "center", boxShadow: "0 16px 48px rgba(0,0,0,0.5)" }}>
-              <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1.6rem", color: "#fff", margin: "0 0 10px 0" }}>Request Customized Yield Report</h3>
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 28px auto", lineHeight: 1.6 }}>
-                Planning to invest in Pune West? Get a customized yield map and price forecast docket curated by our analytics team.
-              </p>
-              <button
-                onClick={() => handleOpenInquiry({ id: null, title: "Custom Yield Analysis Request", price: "0", location: "HINJEWADI", transactionType: "BUY" })}
-                style={{ background: "linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)", border: "none", color: "#040814", padding: "14px 36px", borderRadius: "50px", fontSize: "0.85rem", fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: "0.06em", cursor: "pointer", boxShadow: "0 8px 24px rgba(230,195,92,0.3)" }}
-              >
-                Schedule Advisory Call
-              </button>
-            </div>
+            }>
+              <DataLabsView onBack={handleBackToHome} onOpenInquiry={handleOpenInquiry} />
+            </Suspense>
           </div>
         );
       case 'properties-sale':
