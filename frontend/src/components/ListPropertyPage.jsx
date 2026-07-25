@@ -427,22 +427,26 @@ export default function ListPropertyPage({ onBack }) {
           loop
           muted
           playsInline
+          onLoadedData={e => e.target.play()}
           poster="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80"
           style={{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            filter: 'brightness(0.5) contrast(1.2) saturate(1.2)',
+            filter: 'brightness(0.65) contrast(1.15) saturate(1.2)',
             transform: 'scale(1.04)'
           }}
         >
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-modern-luxury-house-exterior-at-night-41558-large.mp4" type="video/mp4" />
+          <source src="https://cdn.coverr.co/videos/coverr-a-modern-house-5197/1080p.mp4" type="video/mp4" />
+          <source src="https://player.vimeo.com/external/370467553.hd.mp4?s=7b239a74aa9fb7181c0022f4621c4b75a1334c4b&profile_id=172" type="video/mp4" />
         </video>
+
+        {/* Ambient Dark Gradient Overlay (Balanced for high video visibility) */}
         <div 
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.72) 0%, rgba(3, 7, 18, 0.94) 100%)'
+            background: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.45) 0%, rgba(3, 7, 18, 0.75) 100%)'
           }} 
         />
       </div>
