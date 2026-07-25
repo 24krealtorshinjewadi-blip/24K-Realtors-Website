@@ -413,10 +413,18 @@ export default function ListPropertyPage({ onBack }) {
     : (form.expectedPrice ? formatPrice(Number(form.expectedPrice)) : '₹85.00 Lakh');
 
   return (
-    <div style={{ minHeight: '100vh', background: '#030712', color: '#F8FAFC', fontFamily: "'Inter', 'Montserrat', sans-serif" }}>
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundImage: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.82) 0%, rgba(3, 7, 18, 0.95) 100%), url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      color: '#F8FAFC', 
+      fontFamily: "'Inter', 'Montserrat', sans-serif" 
+    }}>
       
       {/* ── FORBES LUXURY TOPBAR ─────────────────────────────────────────── */}
-      <div style={{ height: '64px', background: '#0F172A', borderBottom: '1px solid rgba(245, 158, 11, 0.25)', display: 'flex', alignItems: 'center', padding: '0 24px', position: 'sticky', top: 0, zIndex: 100 }}>
+      <div style={{ height: '64px', background: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(245, 158, 11, 0.25)', display: 'flex', alignItems: 'center', padding: '0 24px', position: 'sticky', top: 0, zIndex: 100 }}>
         <button onClick={onBack} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '6px', padding: '7px 14px', color: '#F59E0B', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
           <ArrowLeft size={14} /> Back to Advisor
         </button>
@@ -433,7 +441,7 @@ export default function ListPropertyPage({ onBack }) {
       </div>
 
       {/* ── HERO BANNER & MODE SWITCHER ───────────────────────────────────── */}
-      <div style={{ background: 'linear-gradient(180deg, #090D16 0%, #030712 100%)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '40px 24px 32px', textAlign: 'center' }}>
+      <div style={{ background: 'rgba(9, 13, 22, 0.55)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '40px 24px 32px', textAlign: 'center' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '30px', padding: '6px 16px', marginBottom: '16px', color: '#F59E0B', fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.08em' }}>
           <Sparkles size={14} /> FORBES &amp; SAAS GRADE PROPERTY LISTING PORTAL
         </div>
@@ -490,7 +498,7 @@ export default function ListPropertyPage({ onBack }) {
       </div>
 
       {/* ── STEP NAVIGATION BAR ─────────────────────────────────────────── */}
-      <div style={{ background: '#0F172A', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '0 24px' }}>
+      <div style={{ background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '0 24px' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {STEPS.map((s, i) => {
             const Icon = s.icon;
@@ -528,7 +536,7 @@ export default function ListPropertyPage({ onBack }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '32px', alignItems: 'start' }}>
           
           {/* LEFT FORM PANEL */}
-          <div style={{ background: '#0F172A', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', padding: '32px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
+          <div style={{ background: 'rgba(15, 23, 42, 0.78)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '20px', padding: '32px', boxShadow: '0 24px 80px rgba(0,0,0,0.6)' }}>
             
             {/* Step 1: Property Details */}
             {step === 1 && (
@@ -723,7 +731,7 @@ export default function ListPropertyPage({ onBack }) {
 
           {/* RIGHT LIVE LISTING CARD PREVIEW */}
           <div style={{ position: 'sticky', top: '84px' }}>
-            <div style={{ background: '#0F172A', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '20px', padding: '24px', boxShadow: '0 20px 60px rgba(0,0,0,0.6)' }}>
+            <div style={{ background: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '20px', padding: '24px', boxShadow: '0 24px 80px rgba(0,0,0,0.7)' }}>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <span style={{ fontSize: '0.68rem', color: '#F59E0B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '4px' }}>
