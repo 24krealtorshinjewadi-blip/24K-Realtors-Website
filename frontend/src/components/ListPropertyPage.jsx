@@ -420,7 +420,7 @@ export default function ListPropertyPage({ onBack }) {
       fontFamily: "'Inter', 'Montserrat', sans-serif",
       overflowX: 'hidden'
     }}>
-      {/* 🎥 CINEMATIC LUXURY REAL ESTATE VIDEO BACKGROUND */}
+      {/* 🎥 CINEMATIC LUXURY REAL ESTATE VIDEO BACKGROUND (V24-DEPLOY-20260725) */}
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
         <video
           autoPlay
