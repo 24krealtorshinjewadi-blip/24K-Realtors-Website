@@ -472,7 +472,7 @@ export default function ListPropertyPage({ onBack }) {
       {/* ── HERO BANNER & MODE SWITCHER ───────────────────────────────────── */}
       <div style={{ background: 'rgba(9, 13, 22, 0.55)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '40px 24px 32px', textAlign: 'center' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '30px', padding: '6px 16px', marginBottom: '16px', color: '#F59E0B', fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.08em' }}>
-          <Sparkles size={14} /> FORBES &amp; SAAS GRADE PROPERTY LISTING PORTAL
+          <Sparkles size={14} /> 24K LUXURY PROPERTY LISTING PORTAL
         </div>
         
         <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: '#FFF', margin: '0 0 10px 0', fontWeight: 800 }}>
