@@ -415,19 +415,44 @@ export default function ListPropertyPage({ onBack }) {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      backgroundImage: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.82) 0%, rgba(3, 7, 18, 0.95) 100%), url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
+      position: 'relative',
       color: '#F8FAFC', 
-      fontFamily: "'Inter', 'Montserrat', sans-serif" 
+      fontFamily: "'Inter', 'Montserrat', sans-serif",
+      overflowX: 'hidden'
     }}>
-      
-      {/* ── FORBES LUXURY TOPBAR ─────────────────────────────────────────── */}
-      <div style={{ height: '64px', background: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(245, 158, 11, 0.25)', display: 'flex', alignItems: 'center', padding: '0 24px', position: 'sticky', top: 0, zIndex: 100 }}>
-        <button onClick={onBack} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '6px', padding: '7px 14px', color: '#F59E0B', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
-          <ArrowLeft size={14} /> Back to Advisor
-        </button>
+      {/* 🎥 CINEMATIC LUXURY REAL ESTATE VIDEO BACKGROUND */}
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            filter: 'brightness(0.5) contrast(1.2) saturate(1.2)',
+            transform: 'scale(1.04)'
+          }}
+        >
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-modern-luxury-house-exterior-at-night-41558-large.mp4" type="video/mp4" />
+        </video>
+        <div 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.72) 0%, rgba(3, 7, 18, 0.94) 100%)'
+          }} 
+        />
+      </div>
+
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        {/* ── FORBES LUXURY TOPBAR ─────────────────────────────────────────── */}
+        <div style={{ height: '64px', background: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(245, 158, 11, 0.25)', display: 'flex', alignItems: 'center', padding: '0 24px', position: 'sticky', top: 0, zIndex: 100 }}>
+          <button onClick={onBack} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '6px', padding: '7px 14px', color: '#F59E0B', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
+            <ArrowLeft size={14} /> Back to Advisor
+          </button>
 
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
           <CompanyLogo variant="compact" />
@@ -790,7 +815,7 @@ export default function ListPropertyPage({ onBack }) {
 
         </div>
       </div>
-
+    </div>
     </div>
   );
 }
