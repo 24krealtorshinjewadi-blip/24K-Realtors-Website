@@ -200,6 +200,16 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [lightboxOpen, setLightboxOpen]   = useState(false);
   const [lightboxStart, setLightboxStart] = useState(0);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
+  const [hoveredTrendPoint, setHoveredTrendPoint] = useState(null);
+
+  const trendData = [
+    { year: '2021', price: '₹6,200/sqft', growth: 'Base', x: 40, y: 110 },
+    { year: '2022', price: '₹6,800/sqft', growth: '+9.6%', x: 120, y: 95 },
+    { year: '2023', price: '₹7,500/sqft', growth: '+10.2%', x: 200, y: 78 },
+    { year: '2024', price: '₹8,400/sqft', growth: '+12.0%', x: 280, y: 58 },
+    { year: '2025', price: '₹9,300/sqft', growth: '+10.7%', x: 360, y: 40 },
+    { year: '2026', price: '₹10,500/sqft', growth: '+12.9%', x: 440, y: 20 },
+  ];
 
   const [isWishlisted, setIsWishlisted] = useState(() => {
     try { const s = localStorage.getItem('wishlist_properties'); return (s ? JSON.parse(s) : []).includes(property.id); }
