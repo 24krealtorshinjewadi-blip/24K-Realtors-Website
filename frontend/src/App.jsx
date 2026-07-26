@@ -150,6 +150,11 @@ export default function App() {
   useEffect(() => {
     const handleHashOrPopState = () => {
       const hash = window.location.hash.replace('#', '');
+      if (hash.startsWith('property/')) {
+        // Keep portal view active when opening property detail subpage
+        setCurrentView('portal');
+        return;
+      }
       if (hash === 'list-property') {
         setCurrentView('list-property');
       } else if (hash === 'login') {

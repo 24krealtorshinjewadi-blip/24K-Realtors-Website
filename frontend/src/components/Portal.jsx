@@ -3312,7 +3312,6 @@ export default function Portal({ onViewChange }) {
                               onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                               onOpenDetail={(prop) => {
                                 setSelectedPropertyDetail(prop);
-                                window.location.hash = `property/${prop.id}`;
                                 window.scrollTo({ top: 0, behavior: "smooth" });
                               }}
                             />
@@ -3340,7 +3339,6 @@ export default function Portal({ onViewChange }) {
                         onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                         onOpenDetail={(prop) => {
                           setSelectedPropertyDetail(prop);
-                          window.location.hash = `property/${prop.id}`;
                           window.scrollTo({ top: 0, behavior: "smooth" });
                         }}
                       />
