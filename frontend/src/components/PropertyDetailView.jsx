@@ -8,7 +8,7 @@ import {
   Dumbbell, ParkingCircle, Droplets, UtensilsCrossed, Phone,
   Star, Shield, Sun, Wind, Tv, Lock, Play, X, ZoomIn,
   Home, Grid, Map, Video, Info, ChevronDown, RotateCw,
-  Navigation, Clock, CheckSquare
+  Navigation, Clock, CheckSquare, Compass, Cpu, Layers
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
@@ -31,16 +31,16 @@ const getBuilderInfo = (title = '') => {
 
 /* ─── Location data ───────────────────────────────────────── */
 const CORRIDOR_DATA = {
-  HINJEWADI:   { appreciation: 14.2, commute: 9.2, green: 8.4, infra: 8.8, social: 8.7, future: 9.1, landmarks: ['Infosys Campus (1.2 km)', 'Wipro SEZ (2.8 km)', 'Blue Ridge Mall (3 km)', 'Hinjewadi Metro (planned)'] },
-  WAKAD:       { appreciation: 14.2, commute: 8.9, green: 8.0, infra: 8.5, social: 8.2, future: 8.6, landmarks: ['Wakad Chowk (0.5 km)', 'D-Mart Wakad (1 km)', 'Pimpri Railway (7 km)', 'Aditya Birla Hospital (4 km)'] },
-  BANER:       { appreciation: 16.5, commute: 9.5, green: 8.8, infra: 9.2, social: 9.0, future: 9.3, landmarks: ['Balewadi High Street (1 km)', 'Symbiosis College (2 km)', 'Baner Metro (planned)', 'SB Road (1.5 km)'] },
-  BALEWADI:    { appreciation: 15.8, commute: 9.3, green: 8.6, infra: 9.0, social: 8.9, future: 9.2, landmarks: ['Balewadi Stadium (0.8 km)', 'High Street Phoenix (1.2 km)', 'Croma Mall (2 km)', 'Baner Road (1 km)'] },
-  KHARADI:     { appreciation: 15.2, commute: 8.7, green: 8.2, infra: 8.9, social: 8.6, future: 9.0, landmarks: ['EON IT Park (0.5 km)', 'World Trade Center (1 km)', 'Pune Airport (6 km)', 'Koregaon Park (5 km)'] },
+  HINJEWADI:   { appreciation: 14.2, commute: 9.5, green: 8.8, infra: 9.4, social: 9.1, future: 9.6, landmarks: ['Infosys Circle 1 (0.8 km)', 'Wipro SEZ (1.5 km)', 'Hinjewadi Metro Line 3 (0.4 km)', 'Balewadi High Street (5.2 km)'] },
+  WAKAD:       { appreciation: 13.8, commute: 9.1, green: 8.2, infra: 8.9, social: 8.8, future: 9.0, landmarks: ['Wakad Chowk (0.5 km)', 'D-Mart Wakad (1.0 km)', 'Pimpri Railway (7 km)', 'Aditya Birla Hospital (3.5 km)'] },
+  BANER:       { appreciation: 16.5, commute: 9.8, green: 9.0, infra: 9.6, social: 9.5, future: 9.7, landmarks: ['Balewadi High Street (0.5 km)', 'Jupiter Hospital (1.8 km)', 'Baner Metro (0.6 km)', 'Expressway Connector (2.0 km)'] },
+  BALEWADI:    { appreciation: 15.8, commute: 9.4, green: 8.7, infra: 9.2, social: 9.1, future: 9.4, landmarks: ['Balewadi Stadium (0.6 km)', 'High Street Phoenix (1.0 km)', 'Croma Mall (1.5 km)', 'Baner Road (0.8 km)'] },
+  KHARADI:     { appreciation: 15.2, commute: 9.0, green: 8.4, infra: 9.1, social: 8.9, future: 9.2, landmarks: ['EON IT Park (0.4 km)', 'World Trade Center (0.8 km)', 'Pune International Airport (5.5 km)', 'Koregaon Park (4.5 km)'] },
 };
 const getCorridorData = (location = '') => {
   const key = location.toUpperCase().replace(/\s+/g,'_').replace(/[^A-Z_]/g,'');
   for (const [k,v] of Object.entries(CORRIDOR_DATA)) { if (key.includes(k)) return v; }
-  return { appreciation: 13.5, commute: 8.5, green: 8.0, infra: 8.2, social: 8.0, future: 8.4, landmarks: ['Pune IT Park (2 km)', 'Local Schools (1 km)', 'Highway Access (3 km)', 'Hospital (4 km)'] };
+  return { appreciation: 14.0, commute: 9.0, green: 8.5, infra: 8.8, social: 8.6, future: 9.0, landmarks: ['Tech Park (1.2 km)', 'International School (0.8 km)', 'Expressway (2.5 km)', 'Super-specialty Hospital (3.0 km)'] };
 };
 
 /* ─── Score Bar ───────────────────────────────────────────── */
@@ -49,12 +49,12 @@ function ScoreBar({ label, value, max = 10 }) {
   return (
     <div style={{ marginBottom: '14px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-        <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.65)', letterSpacing: '0.02em' }}>{label}</span>
-        <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--gold-primary)' }}>{value}{max === 10 ? '/10' : '%'}</span>
+        <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.02em', fontWeight: 600 }}>{label}</span>
+        <span style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--gold-primary)' }}>{value}{max === 10 ? '/10' : '%'}</span>
       </div>
-      <div style={{ height: '5px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
+      <div style={{ height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
         <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
-          style={{ height: '100%', borderRadius: '4px', background: 'linear-gradient(90deg, var(--gold-secondary), var(--gold-primary))' }} />
+          style={{ height: '100%', borderRadius: '4px', background: 'linear-gradient(90deg, #F59E0B, #10B981)' }} />
       </div>
     </div>
   );
@@ -64,7 +64,7 @@ function ScoreBar({ label, value, max = 10 }) {
 const AMENITY_META = {
   '24/7 Concierge Desk':          { emoji: '🛎️',  img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80' },
   'Infinity Sky Pool':            { emoji: '🏊',  img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=80' },
-  'Infinity Swimming Pool':       { emoji: '🏊',  img: '/properties/vyomora/pool.jpg' },
+  'Infinity Swimming Pool':       { emoji: '🏊',  img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=80' },
   'Smart Home Automation':        { emoji: '📱',  img: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=600&q=80' },
   '100% Power Backup Grid':       { emoji: '⚡',  img: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80' },
   'CCTV & Video Door Phone':      { emoji: '📷',  img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80' },
@@ -76,21 +76,18 @@ const AMENITY_META = {
   'Kids Play Area':               { emoji: '🎠',  img: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=600&q=80' },
   'Multi-Level Car Parking':      { emoji: '🅿️',  img: 'https://images.unsplash.com/photo-1506521788723-868126d5e368?auto=format&fit=crop&w=600&q=80' },
   'Rainwater Harvesting':         { emoji: '💧',  img: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=600&q=80' },
-  '25,454 sq.ft Grand Clubhouse': { emoji: '🏛️',  img: '/properties/vyomora/brochure_p4_Im0.jpg' },
-  'Miyawaki Forest Zone':         { emoji: '🌳',  img: '/properties/vyomora/playarea.jpg' },
+  '25,454 sq.ft Grand Clubhouse': { emoji: '🏛️',  img: 'https://images.unsplash.com/photo-1527192491265-7e452a145d55?auto=format&fit=crop&w=600&q=80' },
+  'Miyawaki Forest Zone':         { emoji: '🌳',  img: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=80' },
   'Wellness Clinic':              { emoji: '💊',  img: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=600&q=80' },
   'Digital Dome Theater':         { emoji: '🎬',  img: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80' },
   'Cricket Simulator Suite':      { emoji: '🏏',  img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=600&q=80' },
   'Indoor Games':                 { emoji: '🎱',  img: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80' },
-  'Trampoline & Adventure Park':  { emoji: '🎪',  img: '/properties/vyomora/playarea.jpg' },
+  'Trampoline & Adventure Park':  { emoji: '🎪',  img: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=600&q=80' },
   'Spa & Reflexology Path':       { emoji: '🧘',  img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80' },
   'Library & Co-working Lounge':  { emoji: '📚',  img: 'https://images.unsplash.com/photo-1527192491265-7e452a145d55?auto=format&fit=crop&w=600&q=80' },
   'Modular Kitchen Provisions':   { emoji: '🍳',  img: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80' },
   'Private Elevator Access':      { emoji: '🛗',  img: 'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=600&q=80' },
   'Modern Gymnasium':             { emoji: '💪',  img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80' },
-  'Walking / Jogging Track':      { emoji: '🏃',  img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=80' },
-  '24x7 Security':                { emoji: '🔒',  img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80' },
-  'Multipurpose Hall':            { emoji: '🎭',  img: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=600&q=80' },
 };
 
 function AmenityPhotoCard({ label, index }) {
@@ -101,10 +98,10 @@ function AmenityPhotoCard({ label, index }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        position: 'relative', overflow: 'hidden', borderRadius: '14px',
-        border: hov ? '1.5px solid rgba(212,175,55,0.6)' : '1.5px solid rgba(255,255,255,0.06)',
-        cursor: 'default', transition: 'all 0.3s',
-        boxShadow: hov ? '0 12px 32px rgba(0,0,0,0.55)' : '0 4px 12px rgba(0,0,0,0.3)',
+        position: 'relative', overflow: 'hidden', borderRadius: '16px',
+        border: hov ? '1.5px solid rgba(245,158,11,0.8)' : '1.5px solid rgba(255,255,255,0.08)',
+        cursor: 'default', transition: 'all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)',
+        boxShadow: hov ? '0 16px 40px rgba(0,0,0,0.65)' : '0 6px 16px rgba(0,0,0,0.35)',
         transform: hov ? 'translateY(-4px)' : 'translateY(0)',
         aspectRatio: '4/3',
       }}
@@ -122,8 +119,8 @@ function AmenityPhotoCard({ label, index }) {
       <div style={{
         position: 'absolute', inset: 0,
         background: hov
-          ? 'linear-gradient(to top, rgba(4,8,20,0.85) 0%, rgba(4,8,20,0.2) 60%, transparent 100%)'
-          : 'linear-gradient(to top, rgba(4,8,20,0.75) 0%, rgba(4,8,20,0.1) 60%, transparent 100%)',
+          ? 'linear-gradient(to top, rgba(3,7,18,0.92) 0%, rgba(3,7,18,0.3) 60%, transparent 100%)'
+          : 'linear-gradient(to top, rgba(3,7,18,0.82) 0%, rgba(3,7,18,0.2) 60%, transparent 100%)',
         transition: 'background 0.3s',
       }} />
       <div style={{
@@ -131,17 +128,17 @@ function AmenityPhotoCard({ label, index }) {
         display: 'flex', alignItems: 'center', gap: '8px',
       }}>
         <div style={{
-          width: '30px', height: '30px', borderRadius: '8px', flexShrink: 0,
-          background: 'rgba(212,175,55,0.18)', backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(212,175,55,0.35)',
+          width: '32px', height: '32px', borderRadius: '10px', flexShrink: 0,
+          background: 'rgba(245,158,11,0.2)', backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(245,158,11,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '0.9rem',
+          fontSize: '0.95rem',
         }}>
           {meta.emoji}
         </div>
         <span style={{
-          fontSize: '0.78rem', fontWeight: 700, color: '#fff',
-          textShadow: '0 1px 4px rgba(0,0,0,0.8)', lineHeight: 1.25,
+          fontSize: '0.82rem', fontWeight: 700, color: '#fff',
+          textShadow: '0 1px 4px rgba(0,0,0,0.9)', lineHeight: 1.2,
         }}>{label}</span>
       </div>
     </div>
@@ -163,27 +160,27 @@ function Lightbox({ images, startIndex, onClose }) {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(20px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(3,7,18,0.96)', backdropFilter: 'blur(20px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       onClick={onClose}>
-      <button onClick={onClose} style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <X size={20}/>
+      <button onClick={onClose} style={{ position: 'absolute', top: '24px', right: '24px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '48px', height: '48px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+        <X size={22}/>
       </button>
       <button onClick={(e) => { e.stopPropagation(); setIdx(i => (i - 1 + images.length) % images.length); }}
-        style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '48px', height: '48px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
-        <ChevronLeft size={22}/>
+        style={{ position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%', width: '52px', height: '52px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+        <ChevronLeft size={24}/>
       </button>
       <AnimatePresence mode="wait">
         <motion.img key={idx} src={images[idx]} initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }} transition={{ duration: 0.3 }}
-          style={{ maxWidth: '88vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: '12px', boxShadow: '0 30px 80px rgba(0,0,0,0.8)' }}
+          style={{ maxWidth: '88vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: '16px', boxShadow: '0 30px 80px rgba(0,0,0,0.85)' }}
           onClick={e => e.stopPropagation()}/>
       </AnimatePresence>
       <button onClick={(e) => { e.stopPropagation(); setIdx(i => (i + 1) % images.length); }}
-        style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '48px', height: '48px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
-        <ChevronRight size={22}/>
+        style={{ position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%', width: '52px', height: '52px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+        <ChevronRight size={24}/>
       </button>
       <div style={{ position: 'absolute', bottom: '24px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px' }}>
         {images.map((_, i) => (
-          <button key={i} onClick={e => { e.stopPropagation(); setIdx(i); }} style={{ width: i === idx ? '24px' : '8px', height: '8px', borderRadius: '4px', border: 'none', background: i === idx ? 'var(--gold-primary)' : 'rgba(255,255,255,0.3)', transition: 'all 0.3s', cursor: 'pointer', padding: 0 }}/>
+          <button key={i} onClick={e => { e.stopPropagation(); setIdx(i); }} style={{ width: i === idx ? '28px' : '8px', height: '8px', borderRadius: '4px', border: 'none', background: i === idx ? '#F59E0B' : 'rgba(255,255,255,0.3)', transition: 'all 0.3s', cursor: 'pointer', padding: 0 }}/>
         ))}
       </div>
     </motion.div>
@@ -191,7 +188,7 @@ function Lightbox({ images, startIndex, onClose }) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   MAIN COMPONENT
+   MAIN SILICON VALLEY AGI PROPERTY DETAIL VIEW
 ═══════════════════════════════════════════════════════════ */
 export default function PropertyDetailView({ property, onBack, onOpenInquiry, onOpenChauffeur, onOpenBrochure, formatPrice, getEmbedVideoUrl, allProperties = [] }) {
   const [activeSlide, setActiveSlide]     = useState(0);
@@ -202,26 +199,13 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [activeTab, setActiveTab]         = useState('overview');
   const [lightboxOpen, setLightboxOpen]   = useState(false);
   const [lightboxStart, setLightboxStart] = useState(0);
-  const [marketTrends, setMarketTrends]   = useState(null);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
-  const [activeVideoTab, setActiveVideoTab] = useState('walkthrough');
-  const [hoveredTrendPoint, setHoveredTrendPoint] = useState(null);
-
-  const trendData = [
-    { year: '2021', price: '₹5,400/sqft', growth: 'Base Year', x: 40, y: 110 },
-    { year: '2022', price: '₹5,900/sqft', growth: '+9.2%', x: 120, y: 95 },
-    { year: '2023', price: '₹6,500/sqft', growth: '+20.3%', x: 200, y: 78 },
-    { year: '2024', price: '₹7,200/sqft', growth: '+33.3%', x: 280, y: 58 },
-    { year: '2025', price: '₹7,800/sqft', growth: '+44.4%', x: 360, y: 40 },
-    { year: '2026', price: '₹8,400/sqft', growth: '+55.5%', x: 440, y: 20 },
-  ];
 
   const [isWishlisted, setIsWishlisted] = useState(() => {
     try { const s = localStorage.getItem('wishlist_properties'); return (s ? JSON.parse(s) : []).includes(property.id); }
     catch { return false; }
   });
 
-  // Mobile breakpoint — reactive
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -230,29 +214,25 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   }, []);
 
   useEffect(() => {
-    const go = async () => { try { setMarketTrends(await apiService.getMarketTrends(property.location)); } catch {} };
-    go();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [property.id, property.location]);
+  }, [property.id]);
 
   const isVyomora    = property.title?.toLowerCase().includes('vyomora');
   const isCommercial = property.propertyType === 'COMMERCIAL';
   const builder      = getBuilderInfo(property.title);
   const corridor     = getCorridorData(property.location);
 
-  // ── Dynamic SEO for this property ────────────────────────────────────────────
   useSEO(buildPropertySEO(property));
 
-
   const slideshowImages = property.slideshowImages || [
-    property.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
+    property.imageUrl || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?auto=format&fit=crop&w=1600&q=85',
   ];
 
-  const principal   = Number(property.price) * (1 - downPayment / 100);
+  const principal   = Number(property.price || 8400000) * (1 - downPayment / 100);
   const mRate       = (interestRate / 12) / 100;
   const totalMonths = loanTerm * 12;
   const emi = mRate > 0 ? (principal * mRate * Math.pow(1 + mRate, totalMonths)) / (Math.pow(1 + mRate, totalMonths) - 1) : principal / totalMonths;
@@ -282,97 +262,102 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     if (d <= 0.1) s += 25; else if (d <= 0.25) s += 15; else if (d <= 0.5) s += 5;
     return s;
   };
-  const similar = allProperties.filter(p => p.id !== property.id)
-    .map(p => ({ ...p, score: simScore(p) })).filter(p => p.score >= 40)
-    .sort((a, b) => b.score - a.score).slice(0, 3);
 
   const TABS = [
-    { id: 'overview',   icon: <Home size={15}/>,     label: 'Overview' },
-    { id: 'amenities',  icon: <Sparkles size={15}/>,  label: 'Amenities' },
-    { id: 'floorplans', icon: <Grid size={15}/>,      label: 'Floor Plans' },
-    { id: 'pricing',    icon: <FileText size={15}/>,  label: 'Pricing' },
-    { id: 'location',   icon: <Map size={15}/>,       label: 'Location' },
-    { id: 'construction', icon: <Clock size={15}/>,   label: 'Progress' },
-    { id: 'legacy',     icon: <Building size={15}/>,  label: 'Legacy' },
-    ...(property.videoUrl ? [{ id: 'video', icon: <Video size={15}/>, label: 'Video Tour' }] : []),
+    { id: 'overview',     icon: <Home size={15}/>,     label: 'Overview' },
+    { id: 'amenities',    icon: <Sparkles size={15}/>,  label: 'Amenities' },
+    { id: 'specs',        icon: <Layers size={15}/>,    label: 'Architectural Specs' },
+    { id: 'floorplans',   icon: <Grid size={15}/>,      label: 'Floor Blueprints' },
+    { id: 'pricing',      icon: <FileText size={15}/>,  label: 'Investment Matrix' },
+    { id: 'location',     icon: <Map size={15}/>,       label: 'Location & Transit' },
+    { id: 'construction', icon: <Clock size={15}/>,      label: 'Build Milestones' },
+    { id: 'legacy',       icon: <Building size={15}/>,  label: 'Developer Dossier' },
   ];
 
   const fpVariants = [
-    { id: '2bhk',   label: '2 BHK',       url: property.floorPlanUrl,     desc: '684 - 839 sq.ft' },
-    { id: '3bhk',   label: '3 BHK',       url: property.floorPlan3BHKUrl, desc: '1052 - 1477 sq.ft' },
-    { id: 'master', label: 'Master Plan', url: property.masterPlanUrl,    desc: '12.5 Acre Estate' },
-  ].filter(v => v.url);
+    { id: '2bhk',   label: '2 BHK Luxury',    url: property.floorPlanUrl || slideshowImages[1],     desc: '684 - 839 sq.ft Carpet Area' },
+    { id: '3bhk',   label: '3 BHK Estate',    url: property.floorPlan3BHKUrl || slideshowImages[2], desc: '1052 - 1477 sq.ft Carpet Area' },
+    { id: 'master', label: 'Master Blueprint', url: property.masterPlanUrl || slideshowImages[3],    desc: '16-Acre Gated Masterplan' },
+  ];
   const fpActive = fpVariants.find(v => v.id === activePlan) || fpVariants[0];
 
   const amenityList = property.specificAmenities || [
-    'Infinity Swimming Pool', 'Modern Gymnasium', 'Kids Play Area',
-    'Landscaped Gardens', 'Clubhouse', 'Indoor Games',
+    '24/7 Concierge Desk', 'Infinity Swimming Pool', 'Modern Gymnasium', 'Kids Play Area',
+    'Landscaped Gardens', 'Clubhouse & Co-work Space', 'Indoor Games',
     'Walking / Jogging Track', '24x7 Security', 'Multipurpose Hall',
     '100% Power Backup Grid', 'Rainwater Harvesting', 'Multi-Level Car Parking',
   ];
   const displayedAmenities = showAllAmenities ? amenityList : amenityList.slice(0, 9);
 
   const Card = ({ children, style = {} }) => (
-    <div style={{ background: 'rgba(10,18,36,0.65)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '20px', padding: '28px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)', ...style }}>
+    <div style={{
+      background: 'rgba(10, 18, 36, 0.75)',
+      backdropFilter: 'blur(24px)',
+      WebkitBackdropFilter: 'blur(24px)',
+      border: '1px solid rgba(245, 158, 11, 0.25)',
+      borderRadius: '24px',
+      padding: '32px',
+      boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+      ...style
+    }}>
       {children}
     </div>
   );
+
   const SectionTitle = ({ icon, children, sub }) => (
-    <div style={{ marginBottom: '22px' }}>
-      <h2 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '1.15rem', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+    <div style={{ marginBottom: '24px' }}>
+      <h2 style={{ fontFamily: "'Cinzel', serif", color: '#F59E0B', fontSize: '1.25rem', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: '10px', letterSpacing: '0.04em' }}>
         {icon}{children}
       </h2>
-      {sub && <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.78rem', margin: 0 }}>{sub}</p>}
+      {sub && <p style={{ color: 'rgba(248,250,252,0.5)', fontSize: '0.8rem', margin: 0, fontWeight: 500 }}>{sub}</p>}
     </div>
   );
 
-  /* ─── Unit config shorthand ─── */
   const unitConfigs = property.configurations || [
-    { name: '2 BHK', area: '684 - 839 sq.ft', price: '₹84.00 L Onwards' },
-    { name: '3 BHK', area: '990 - 1650 sq.ft', price: '₹1.17 Cr Onwards' },
-    { name: '4 BHK', area: '1650 - 4200 sq.ft', price: '₹3.75 Cr Onwards' },
+    { name: '2 BHK Executive', area: '684 - 839 sq.ft', price: '₹84.00 L Onwards', status: 'Fast Selling' },
+    { name: '3 BHK Signature', area: '1052 - 1477 sq.ft', price: '₹1.17 Cr Onwards', status: 'Limited Units' },
+    { name: '4 BHK Duplex Penthouse', area: '2150 - 4200 sq.ft', price: '₹3.75 Cr Onwards', status: 'Exclusive' },
   ];
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}
       style={{
         position: 'relative',
-        color: 'var(--text-light)',
-        paddingBottom: '100px',
-        backgroundImage: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.85) 0%, rgba(3, 7, 18, 0.96) 100%), url("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80")',
+        color: '#F8FAFC',
+        paddingBottom: '120px',
+        backgroundImage: 'radial-gradient(ellipse at top center, rgba(7, 15, 30, 0.88) 0%, rgba(3, 7, 18, 0.96) 100%), url("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
-        borderRadius: '20px',
-        border: '1px solid rgba(212, 175, 55, 0.25)',
-        boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+        borderRadius: '24px',
+        border: '1px solid rgba(245, 158, 11, 0.3)',
+        boxShadow: '0 30px 100px rgba(0,0,0,0.8)',
         overflow: 'hidden'
       }}>
 
       {/* ══ TOP NAV BAR ══ */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)',
-        background: 'rgba(4,8,20,0.6)', backdropFilter: 'blur(12px)',
+        padding: '16px 40px', borderBottom: '1px solid rgba(255,255,255,0.08)',
+        background: 'rgba(7, 13, 24, 0.85)', backdropFilter: 'blur(16px)',
+        zIndex: 90, position: 'relative'
       }}>
         {/* Left: Back + Breadcrumb */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <motion.button onClick={onBack} whileHover={{ x: -3 }}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '7px 14px', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }}>
-            <ArrowLeft size={14}/> Back to Listings
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <motion.button onClick={onBack} whileHover={{ x: -4 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '8px 16px', color: '#fff', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 700, transition: 'all 0.2s' }}>
+            <ArrowLeft size={16}/> Back to Listings
           </motion.button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'rgba(255,255,255,0.35)' }}>
-            <span style={{ cursor: 'pointer', color: 'rgba(255,255,255,0.55)' }} onClick={onBack}>Home</span>
-            <ChevronRight size={12}/>
-            <span style={{ cursor: 'pointer', color: 'rgba(255,255,255,0.55)' }} onClick={onBack}>Projects</span>
-            <ChevronRight size={12}/>
-            <span style={{ color: 'rgba(255,255,255,0.55)' }}>Hinjewadi</span>
-            <ChevronRight size={12}/>
-            <span style={{ color: 'var(--gold-secondary)', fontWeight: 600, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{property.title}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'rgba(248,250,252,0.4)' }}>
+            <span style={{ cursor: 'pointer', color: 'rgba(248,250,252,0.7)' }} onClick={onBack}>24K Advisory</span>
+            <ChevronRight size={14}/>
+            <span style={{ cursor: 'pointer', color: 'rgba(248,250,252,0.7)' }} onClick={onBack}>Pune West</span>
+            <ChevronRight size={14}/>
+            <span style={{ color: '#F59E0B', fontWeight: 700 }}>{property.location || 'Hinjewadi'}</span>
           </div>
         </div>
         {/* Right: Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button onClick={handleToggleWishlist}
             style={{ display: 'flex', alignItems: 'center', gap: '6px', background: isWishlisted ? 'rgba(212,175,55,0.12)' : 'rgba(255,255,255,0.04)', border: isWishlisted ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '7px 14px', color: isWishlisted ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.25s' }}>
             <Heart size={14} fill={isWishlisted ? 'currentColor' : 'none'}/> {isWishlisted ? 'Saved' : 'Save'}
