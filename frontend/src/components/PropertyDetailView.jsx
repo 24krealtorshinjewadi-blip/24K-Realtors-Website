@@ -201,6 +201,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [lightboxStart, setLightboxStart] = useState(0);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const [hoveredTrendPoint, setHoveredTrendPoint] = useState(null);
+  const [activeVideoTab, setActiveVideoTab] = useState('walkthrough');
 
   const trendData = [
     { year: '2021', price: '₹6,200/sqft', growth: 'Base', x: 40, y: 110 },
@@ -210,6 +211,9 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     { year: '2025', price: '₹9,300/sqft', growth: '+10.7%', x: 360, y: 40 },
     { year: '2026', price: '₹10,500/sqft', growth: '+12.9%', x: 440, y: 20 },
   ];
+
+  // marketTrends: optional prop or null (no crash if absent)
+  const marketTrends = property.marketTrends || null;
 
   const [isWishlisted, setIsWishlisted] = useState(() => {
     try { const s = localStorage.getItem('wishlist_properties'); return (s ? JSON.parse(s) : []).includes(property.id); }
@@ -328,6 +332,14 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     { name: '3 BHK Signature', area: '1052 - 1477 sq.ft', price: '₹1.17 Cr Onwards', status: 'Limited Units' },
     { name: '4 BHK Duplex Penthouse', area: '2150 - 4200 sq.ft', price: '₹3.75 Cr Onwards', status: 'Exclusive' },
   ];
+
+  // Similar properties derived from allProperties
+  const similar = allProperties
+    .filter(p => p.id !== property.id)
+    .map(p => ({ ...p, score: simScore(p) }))
+    .filter(p => p.score >= 20)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}
@@ -696,23 +708,102 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           {/* anchor to allow Overview tab scroll behavior */}
           <div id="sec-overview" style={{ scrollMarginTop: '80px' }} />
 
-          {/* Amenities — 3×3 Photo Grid */}
+          {/* ══ AMENITIES — Premium Professional Section ══ */}
           <div id="sec-amenities">
-            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.07)' }}>
-              <SectionTitle icon={<Sparkles size={17} color="var(--gold-primary)"/>} sub="World-class lifestyle amenities for you and your family">Amenities</SectionTitle>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '18px' }}>
-                {displayedAmenities.map((a, i) => (
-                  <AmenityPhotoCard key={a} label={a} index={i}/>
-                ))}
+            <Card style={{ background: 'linear-gradient(135deg, rgba(8,16,36,0.92) 0%, rgba(4,10,24,0.96) 100%)', border: '1px solid rgba(212,175,55,0.15)', padding: '36px' }}>
+              {/* Header */}
+              <div style={{ marginBottom: '28px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
+                  <div>
+                    <h2 style={{ fontFamily: "'Cinzel', serif", color: 'var(--gold-primary)', fontSize: '1.25rem', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: '10px', letterSpacing: '0.04em' }}>
+                      <Sparkles size={18}/> World-Class Amenities
+                    </h2>
+                    <p style={{ color: 'rgba(248,250,252,0.45)', fontSize: '0.78rem', margin: 0 }}>Curated lifestyle infrastructure for you and your family</p>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {[
+                      { label: `${amenityList.length}+ Amenities`, color: 'rgba(212,175,55,0.15)', border: 'rgba(212,175,55,0.3)', text: 'var(--gold-primary)' },
+                      { label: '25K sq.ft Club', color: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.25)', text: '#10b981' },
+                      { label: '24×7 Security', color: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', text: '#ef4444' },
+                    ].map(b => (
+                      <span key={b.label} style={{ fontSize: '0.7rem', fontWeight: 700, padding: '4px 12px', borderRadius: '20px', background: b.color, border: `1px solid ${b.border}`, color: b.text }}>{b.label}</span>
+                    ))}
+                  </div>
+                </div>
+                {/* Stats Row */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '24px' }}>
+                  {[
+                    { icon: '🏊', val: '5', label: 'Water Features' },
+                    { icon: '🌿', val: '70%', label: 'Green Spaces' },
+                    { icon: '💪', val: '8', label: 'Fitness Zones' },
+                    { icon: '🎭', val: '12', label: 'Social Spaces' },
+                  ].map(s => (
+                    <div key={s.label} style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '14px 10px', textAlign: 'center' }}>
+                      <div style={{ fontSize: '1.4rem', marginBottom: '4px' }}>{s.icon}</div>
+                      <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--gold-primary)' }}>{s.val}</div>
+                      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px', lineHeight: 1.2 }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              {amenityList.length > 9 && (
-                <button onClick={() => setShowAllAmenities(!showAllAmenities)}
-                  style={{ display: 'flex', alignItems: 'center', gap: '7px', background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '10px', padding: '11px 20px', color: 'var(--gold-secondary)', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
-                  onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.12)'; }}
-                  onMouseOut={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.06)'; }}>
-                  {showAllAmenities ? 'Show Less ↑' : `View All Amenities (${amenityList.length}) →`}
-                </button>
-              )}
+
+              {/* Amenity Categories */}
+              {[
+                {
+                  cat: '🏊 Aqua & Recreation', color: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.2)', items:
+                    amenityList.filter(a => /(pool|swim|aqua|water|jacuzzi)/i.test(a)).slice(0, 6),
+                },
+                {
+                  cat: '💪 Fitness & Wellness', color: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)', items:
+                    amenityList.filter(a => /(gym|fitness|yoga|spa|walk|jog|sport|dumbbell|reflexo)/i.test(a)).slice(0, 6),
+                },
+                {
+                  cat: '🌿 Nature & Green', color: 'rgba(132,204,22,0.08)', border: 'rgba(132,204,22,0.2)', items:
+                    amenityList.filter(a => /(garden|green|forest|park|landscape|miyawaki|nature)/i.test(a)).slice(0, 6),
+                },
+                {
+                  cat: '🏛️ Social & Lifestyle', color: 'rgba(168,85,247,0.08)', border: 'rgba(168,85,247,0.2)', items:
+                    amenityList.filter(a => /(club|lounge|co.work|party|theater|library|indoor|game|banquet|multipurpose)/i.test(a)).slice(0, 6),
+                },
+                {
+                  cat: '🛡️ Safety & Infrastructure', color: 'rgba(239,68,68,0.07)', border: 'rgba(239,68,68,0.2)', items:
+                    amenityList.filter(a => /(security|cctv|power|backup|parking|concierge|intercom|rain)/i.test(a)).slice(0, 6),
+                },
+              ].filter(c => c.items.length > 0).map((cat, ci) => (
+                <div key={ci} style={{ marginBottom: '20px' }}>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+                    <span style={{ padding: '3px 10px', borderRadius: '6px', background: cat.color, border: `1px solid ${cat.border}`, fontSize: '0.72rem', color: '#fff' }}>{cat.cat}</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px' }}>
+                    {cat.items.map((item, ii) => (
+                      <div key={ii} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '10px 12px', transition: 'all 0.2s', cursor: 'default' }}
+                        onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; e.currentTarget.style.background = 'rgba(212,175,55,0.04)'; }}
+                        onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.025)'; }}>
+                        <span style={{ fontSize: '0.9rem' }}>{(AMENITY_META[item] || {}).emoji || '✨'}</span>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.85)', lineHeight: 1.3 }}>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* Photo Grid — key amenities visual showcase */}
+              <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '24px' }}>
+                <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '14px' }}>📸 Visual Amenity Showcase</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+                  {displayedAmenities.slice(0, showAllAmenities ? amenityList.length : 6).map((a, i) => (
+                    <AmenityPhotoCard key={a} label={a} index={i}/>
+                  ))}
+                </div>
+                {amenityList.length > 6 && (
+                  <button onClick={() => setShowAllAmenities(!showAllAmenities)}
+                    style={{ marginTop: '14px', display: 'flex', alignItems: 'center', gap: '7px', background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '10px', padding: '11px 22px', color: 'var(--gold-secondary)', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
+                    onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.14)'; }}
+                    onMouseOut={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.06)'; }}>
+                    {showAllAmenities ? '↑ Show Less' : `View All ${amenityList.length} Amenities →`}
+                  </button>
+                )}
+              </div>
             </Card>
           </div>
 
@@ -903,28 +994,107 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
             </div>
           )}
 
-          {/* Location */}
+          {/* ══ LOCATION & CONNECTIVITY — Google Maps + Transit ══ */}
           <div id="sec-location">
-            <Card style={{ background: 'linear-gradient(135deg, rgba(12,24,48,0.7) 0%, rgba(6,12,24,0.85) 100%)', border: '1px solid rgba(255,255,255,0.07)' }}>
-              <SectionTitle icon={<MapPin size={17} color="var(--gold-primary)"/>} sub="Strategically located in the heart of Hinjewadi">Location & Connectivity</SectionTitle>
-              {property.locationMapUrl && (
-                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '14px', marginBottom: '22px', border: '1px solid rgba(212,175,55,0.2)', cursor: 'pointer' }} onClick={() => window.open(property.locationMapUrl, '_blank')}>
-                  <img src={property.locationMapUrl} alt="Location Map" style={{ width: '100%', display: 'block', maxHeight: '280px', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.03)'}
-                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,8,20,0.5), transparent)', pointerEvents: 'none' }}/>
-                  <div style={{ position: 'absolute', bottom: '14px', right: '14px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '8px', padding: '6px 14px', fontSize: '0.78rem', fontWeight: 800 }}>Open in Google Maps ↗</div>
-                </div>
-              )}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
-                {corridor.landmarks.map((l, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '11px', padding: '12px 14px', gap: '10px', transition: 'all 0.2s' }}
-                    onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'}
-                    onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.1)'}>
-                    <span style={{ fontSize: '0.83rem', color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>📍 {l.split('(')[0].trim()}</span>
-                    <span style={{ fontSize: '0.74rem', color: 'var(--gold-secondary)', fontWeight: 800, padding: '3px 8px', background: 'rgba(212,175,55,0.06)', borderRadius: '6px', whiteSpace: 'nowrap' }}>{l.includes('(') ? l.split('(')[1].replace(')','') : '—'}</span>
+            <Card style={{ background: 'linear-gradient(135deg, rgba(8,16,36,0.92) 0%, rgba(4,10,24,0.96) 100%)', border: '1px solid rgba(212,175,55,0.15)', padding: '36px' }}>
+              {/* Header */}
+              <div style={{ marginBottom: '24px' }}>
+                <h2 style={{ fontFamily: "'Cinzel', serif", color: 'var(--gold-primary)', fontSize: '1.25rem', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: '10px', letterSpacing: '0.04em' }}>
+                  <MapPin size={18}/> Location & Connectivity
+                </h2>
+                <p style={{ color: 'rgba(248,250,252,0.45)', fontSize: '0.78rem', margin: 0 }}>
+                  📍 {property.address || property.location}, Pune, Maharashtra
+                </p>
+              </div>
+
+              {/* Google Maps Embed */}
+              <div style={{ position: 'relative', borderRadius: '18px', overflow: 'hidden', border: '1px solid rgba(212,175,55,0.25)', marginBottom: '22px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
+                {property.latitude && property.longitude ? (
+                  <iframe
+                    title={`${property.title} Location Map`}
+                    width="100%"
+                    height="360"
+                    frameBorder="0"
+                    style={{ display: 'block', border: 0, borderRadius: '18px' }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={`https://maps.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed&maptype=roadmap`}
+                  />
+                ) : property.locationMapUrl ? (
+                  <img src={property.locationMapUrl} alt="Location Map"
+                    style={{ width: '100%', height: '360px', objectFit: 'cover', display: 'block' }}/>
+                ) : (
+                  <div style={{ height: '360px', background: 'rgba(255,255,255,0.03)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                    <MapPin size={32} color="rgba(212,175,55,0.4)"/>
+                    <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.84rem' }}>Map location coming soon</span>
+                  </div>
+                )}
+                {/* Open in Maps Button */}
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${property.latitude || ''},${property.longitude || ''}&query_place_id=${encodeURIComponent(property.address || property.title)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ position: 'absolute', bottom: '14px', right: '14px', background: 'rgba(7,15,30,0.92)', backdropFilter: 'blur(8px)', border: '1px solid rgba(212,175,55,0.4)', color: 'var(--gold-primary)', borderRadius: '10px', padding: '8px 16px', fontSize: '0.76rem', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 16px rgba(0,0,0,0.5)', transition: 'all 0.2s' }}
+                  onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.15)'; }}
+                  onMouseOut={e => { e.currentTarget.style.background = 'rgba(7,15,30,0.92)'; }}>
+                  <Navigation size={12}/> Open in Google Maps ↗
+                </a>
+              </div>
+
+              {/* Connectivity Stats */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '22px' }}>
+                {[
+                  { icon: '🚇', val: corridor.commute + '/10', label: 'Transit Score' },
+                  { icon: '🏗️', val: corridor.infra + '/10', label: 'Infrastructure' },
+                  { icon: '🌿', val: corridor.green + '/10', label: 'Green Index' },
+                  { icon: '📈', val: corridor.appreciation + '%', label: 'Appreciation p.a.' },
+                ].map(s => (
+                  <div key={s.label} style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(212,175,55,0.12)', borderRadius: '12px', padding: '14px 10px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '1.3rem', marginBottom: '4px' }}>{s.icon}</div>
+                    <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--gold-primary)' }}>{s.val}</div>
+                    <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px', lineHeight: 1.2 }}>{s.label}</div>
                   </div>
                 ))}
+              </div>
+
+              {/* Nearby Landmarks Table */}
+              <div>
+                <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>🗺️ Key Nearby Destinations</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px' }}>
+                  {corridor.landmarks.map((l, i) => {
+                    const name = l.split('(')[0].trim();
+                    const dist = l.includes('(') ? l.split('(')[1].replace(')', '') : '—';
+                    const icons = ['🖥️','🏨','🚉','🏥','🛒','🎓','✈️','🏪'];
+                    return (
+                      <div key={i}
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(212,175,55,0.08)', borderRadius: '12px', padding: '12px 16px', gap: '10px', transition: 'all 0.25s', cursor: 'default' }}
+                        onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; e.currentTarget.style.background = 'rgba(212,175,55,0.04)'; }}
+                        onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(212,175,55,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.025)'; }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', flexShrink: 0 }}>
+                            {icons[i % icons.length]}
+                          </div>
+                          <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.85)', fontWeight: 600, lineHeight: 1.3 }}>{name}</span>
+                        </div>
+                        <span style={{ fontSize: '0.74rem', color: 'var(--gold-primary)', fontWeight: 800, background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', padding: '4px 10px', borderRadius: '8px', whiteSpace: 'nowrap', flexShrink: 0 }}>{dist}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Get Directions CTA */}
+              <div style={{ marginTop: '20px', padding: '16px 20px', borderRadius: '14px', background: 'linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02))', border: '1px solid rgba(212,175,55,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+                <div>
+                  <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem', marginBottom: '3px' }}>📍 Get Directions to this Property</div>
+                  <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem' }}>Navigate directly from your current location</div>
+                </div>
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${property.latitude || 18.5913},${property.longitude || 73.7389}`}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ padding: '10px 22px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', color: '#070f1e', fontWeight: 800, fontSize: '0.82rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '7px', whiteSpace: 'nowrap' }}>
+                  <Navigation size={14}/> Get Directions
+                </a>
               </div>
             </Card>
           </div>

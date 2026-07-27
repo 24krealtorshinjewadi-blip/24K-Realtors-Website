@@ -1,15 +1,13 @@
 -- Migration V26: Seed 100% Original Authentic Pune West Property Catalog
 -- Covers Kolte-Patil 24K, Shapoorji Pallonji, Godrej Properties, VTP, Kasturi & Gera Flagship Projects
 
--- Use individual upserts per row to avoid Flyway multi-row ON CONFLICT parse errors
-
 -- 1. Kolte-Patil 24K Opula Sky Suites 3 BHK
-INSERT INTO properties (
+MERGE INTO properties (
   id, title, description, property_type, transaction_type, price, area_square_feet,
   location, address, latitude, longitude, bedrooms, bathrooms, status, verified_listing,
   exclusive_deal, no_brokerage, rera_number, image_url, video_url, three_d_tour_url,
   furnishing_status, gas_pipeline
-) VALUES (
+) KEY (id) VALUES (
   '00000000-0000-0000-0000-000000000101',
   'Kolte-Patil 24K Opula Sky Suites 3 BHK',
   'Luxurious residential sky suites with Italian marble flooring, Siemens modular kitchens, 11-ft clear ceiling heights, and private balcony decks. Located on prime Baner-Balewadi Link Road.',
@@ -20,19 +18,15 @@ INSERT INTO properties (
   'https://www.youtube.com/embed/LXb3EKWsInQ',
   'https://my.matterport.com/show/?m=JGPmBB6q58g',
   'FULLY_FURNISHED', true
-) ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
-  price = EXCLUDED.price,
-  image_url = EXCLUDED.image_url;
+);
 
 -- 2. Kolte-Patil 24K Sereno Executive 2 BHK
-INSERT INTO properties (
+MERGE INTO properties (
   id, title, description, property_type, transaction_type, price, area_square_feet,
   location, address, latitude, longitude, bedrooms, bathrooms, status, verified_listing,
   exclusive_deal, no_brokerage, rera_number, image_url, video_url, three_d_tour_url,
   furnishing_status, gas_pipeline
-) VALUES (
+) KEY (id) VALUES (
   '00000000-0000-0000-0000-000000000102',
   'Kolte-Patil 24K Sereno Executive 2 BHK',
   'Biophilic luxury residences set against Baner hills. Private elevator access, temperature-controlled infinity pool, smart automation by Schneider, and EV charging points.',
@@ -43,19 +37,15 @@ INSERT INTO properties (
   'https://www.youtube.com/embed/LXb3EKWsInQ',
   'https://my.matterport.com/show/?m=JGPmBB6q58g',
   'SEMI_FURNISHED', true
-) ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
-  price = EXCLUDED.price,
-  image_url = EXCLUDED.image_url;
+);
 
 -- 3. Shapoorji Pallonji Joyville Vyomora 3 BHK
-INSERT INTO properties (
+MERGE INTO properties (
   id, title, description, property_type, transaction_type, price, area_square_feet,
   location, address, latitude, longitude, bedrooms, bathrooms, status, verified_listing,
   exclusive_deal, no_brokerage, rera_number, image_url, video_url, three_d_tour_url,
   furnishing_status, gas_pipeline
-) VALUES (
+) KEY (id) VALUES (
   '00000000-0000-0000-0000-000000000103',
   'Shapoorji Pallonji Joyville Vyomora 3 BHK',
   'Ultra-spacious luxury residences with Air Purification technology, 75% open greens, clubhouse by international designers, and direct Hinjewadi Expressway connectivity.',
@@ -66,19 +56,15 @@ INSERT INTO properties (
   'https://www.youtube.com/embed/LXb3EKWsInQ',
   'https://my.matterport.com/show/?m=JGPmBB6q58g',
   'FULLY_FURNISHED', true
-) ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
-  price = EXCLUDED.price,
-  image_url = EXCLUDED.image_url;
+);
 
 -- 4. Godrej Ivara Smart Living Suites 2 BHK
-INSERT INTO properties (
+MERGE INTO properties (
   id, title, description, property_type, transaction_type, price, area_square_feet,
   location, address, latitude, longitude, bedrooms, bathrooms, status, verified_listing,
   exclusive_deal, no_brokerage, rera_number, image_url, video_url, three_d_tour_url,
   furnishing_status, gas_pipeline
-) VALUES (
+) KEY (id) VALUES (
   '00000000-0000-0000-0000-000000000104',
   'Godrej Ivara Smart Living Suites 2 BHK',
   'Modern 2 BHK apartments in central Wakad. Smart lock security, Olympic-length swimming pool, co-working lounge, and direct access to Datta Mandir road.',
@@ -89,19 +75,15 @@ INSERT INTO properties (
   'https://www.youtube.com/embed/LXb3EKWsInQ',
   'https://my.matterport.com/show/?m=JGPmBB6q58g',
   'SEMI_FURNISHED', true
-) ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
-  price = EXCLUDED.price,
-  image_url = EXCLUDED.image_url;
+);
 
 -- 5. VTP Bellissimo High-Tech 3 BHK
-INSERT INTO properties (
+MERGE INTO properties (
   id, title, description, property_type, transaction_type, price, area_square_feet,
   location, address, latitude, longitude, bedrooms, bathrooms, status, verified_listing,
   exclusive_deal, no_brokerage, rera_number, image_url, video_url, three_d_tour_url,
   furnishing_status, gas_pipeline
-) VALUES (
+) KEY (id) VALUES (
   '00000000-0000-0000-0000-000000000105',
   'VTP Bellissimo High-Tech 3 BHK',
   'High-rise smart homes overlooking the Mula river corridor. Touchscreen home automation, 5-tier security grid, and walking distance to Wipro and Infosys Phase 1.',
@@ -112,19 +94,15 @@ INSERT INTO properties (
   'https://www.youtube.com/embed/LXb3EKWsInQ',
   'https://my.matterport.com/show/?m=JGPmBB6q58g',
   'FULLY_FURNISHED', true
-) ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
-  price = EXCLUDED.price,
-  image_url = EXCLUDED.image_url;
+);
 
 -- 6. Kasturi Apostrophe Luxury 4 BHK Sky Duplex
-INSERT INTO properties (
+MERGE INTO properties (
   id, title, description, property_type, transaction_type, price, area_square_feet,
   location, address, latitude, longitude, bedrooms, bathrooms, status, verified_listing,
   exclusive_deal, no_brokerage, rera_number, image_url, video_url, three_d_tour_url,
   furnishing_status, gas_pipeline
-) VALUES (
+) KEY (id) VALUES (
   '00000000-0000-0000-0000-000000000106',
   'Kasturi Apostrophe Luxury 4 BHK Sky Duplex',
   'Boutique luxury 4 BHK sky duplex with zero-wastage floor plans, Schindler high-speed elevators, Grohe sanitaryware, and private balcony Jacuzzi deck.',
@@ -135,8 +113,4 @@ INSERT INTO properties (
   'https://www.youtube.com/embed/LXb3EKWsInQ',
   'https://my.matterport.com/show/?m=JGPmBB6q58g',
   'FULLY_FURNISHED', true
-) ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
-  price = EXCLUDED.price,
-  image_url = EXCLUDED.image_url;
+);

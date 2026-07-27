@@ -3308,4 +3308,201 @@ export const apiService = {
     if (!response.ok) throw new Error('Failed to delete user');
     return response.json();
   },
+
+  // ─── LEADS API ─────────────────────────────────────────────────────────────
+  async getLeads({ status, preferredLocation, page = 0, size = 10, sortBy = 'createdDate', direction = 'desc' } = {}) {
+    let url = `${BASE_URL}/leads?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`;
+    if (status && status !== 'ALL') url += `&status=${status}`;
+    if (preferredLocation) url += `&preferredLocation=${preferredLocation}`;
+
+    const response = await fetch(url, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch leads');
+    return response.json();
+  },
+
+  async getLeadById(id) {
+    const response = await fetch(`${BASE_URL}/leads/${id}`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch lead');
+    return response.json();
+  },
+
+  async createLead(leadData) {
+    const response = await fetch(`${BASE_URL}/leads`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(leadData)
+    });
+    if (!response.ok) throw new Error('Failed to create lead');
+    return response.json();
+  },
+
+  async updateLeadStatus(id, status) {
+    const response = await fetch(`${BASE_URL}/leads/${id}/status?status=${status}`, {
+      method: 'PATCH',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to update lead status');
+    return response.json();
+  },
+
+  async assignLeadAgent(id, agentId) {
+    const response = await fetch(`${BASE_URL}/leads/${id}/assign/${agentId}`, {
+      method: 'PATCH',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to assign agent');
+    return response.json();
+  },
+
+  async deleteLead(id) {
+    const response = await fetch(`${BASE_URL}/leads/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to delete lead');
+    return true;
+  },
+
+  // ─── DASHBOARD & ANALYTICS API ─────────────────────────────────────────────
+  async getDashboardStats() {
+    const response = await fetch(`${BASE_URL}/dashboard/stats`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch dashboard stats');
+    return response.json();
+  },
+
+  async getCrmAnalytics() {
+    const response = await fetch(`${BASE_URL}/crm/analytics/pipeline`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch CRM analytics');
+    return response.json();
+  },
+
+  // ─── EMPLOYEES & AGENTS API ────────────────────────────────────────────────
+  async getAgents() {
+    const response = await fetch(`${BASE_URL}/agents`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch agents');
+    return response.json();
+  },
+
+  async getEmployees() {
+    const response = await fetch(`${BASE_URL}/employees`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch employees');
+    return response.json();
+  },
+
+  // ─── SOCIETIES API ────────────────────────────────────────────────────────
+  async getSocieties() {
+    const response = await fetch(`${BASE_URL}/societies`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch societies');
+    return response.json();
+  },
+
+  // ─── ATTENDANCE & LEAVES API ───────────────────────────────────────────────
+  async getAttendance({ employeeId, date } = {}) {
+    let url = `${BASE_URL}/attendance`;
+    const params = [];
+    if (employeeId) params.push(`employeeId=${employeeId}`);
+    if (date) params.push(`date=${date}`);
+    if (params.length > 0) url += `?${params.join('&')}`;
+
+    const response = await fetch(url, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch attendance');
+    return response.json();
+  },
+
+  async getLeaves() {
+    const response = await fetch(`${BASE_URL}/leaves`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch leaves');
+    return response.json();
+  },
+
+  // ─── AUDIT LOGS API ────────────────────────────────────────────────────────
+  async getAuditLogs({ page = 0, size = 20 } = {}) {
+    const response = await fetch(`${BASE_URL}/audit-logs?page=${page}&size=${size}`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch audit logs');
+    return response.json();
+  },
+
+  // ─── TASKS & SITE VISITS API ──────────────────────────────────────────────
+  async getTasks({ leadId, status } = {}) {
+    let url = `${BASE_URL}/tasks`;
+    if (leadId) url += `?leadId=${leadId}`;
+    const response = await fetch(url, { headers: { ...getAuthHeaders() } });
+    if (!response.ok) throw new Error('Failed to fetch tasks');
+    return response.json();
+  },
+
+  async createTask(taskData) {
+    const response = await fetch(`${BASE_URL}/tasks`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(taskData)
+    });
+    if (!response.ok) throw new Error('Failed to create task');
+    return response.json();
+  },
+
+  async updateTaskStatus(id, status) {
+    const response = await fetch(`${BASE_URL}/tasks/${id}/status?status=${status}`, {
+      method: 'PATCH',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to update task status');
+    return response.json();
+  },
+
+  // ─── BLOGS & ARTICLES API ──────────────────────────────────────────────────
+  async getBlogs() {
+    const response = await fetch(`${BASE_URL}/blogs`, { headers: { ...getAuthHeaders() } });
+    if (!response.ok) throw new Error('Failed to fetch blogs');
+    return response.json();
+  },
+
+  async createBlog(blogData) {
+    const response = await fetch(`${BASE_URL}/blogs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(blogData)
+    });
+    if (!response.ok) throw new Error('Failed to create blog');
+    return response.json();
+  },
+
+  // ─── WHATSAPP & CAMPAIGNS API ─────────────────────────────────────────────
+  async sendCampaign(campaignData) {
+    const response = await fetch(`${BASE_URL}/whatsapp/send-bulk`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(campaignData)
+    });
+    if (!response.ok) throw new Error('Failed to trigger campaign');
+    return response.json();
+  },
+
+  async getWhatsAppLogs() {
+    const response = await fetch(`${BASE_URL}/whatsapp/logs`, { headers: { ...getAuthHeaders() } });
+    if (!response.ok) throw new Error('Failed to fetch whatsapp logs');
+    return response.json();
+  }
 };
+
+

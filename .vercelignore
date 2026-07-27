@@ -1,0 +1,36 @@
+# Large files
+*.zip
+*.tar.gz
+*.rar
+
+# Java/Backend (Vercel only serves frontend)
+backend/
+target/
+*.class
+*.jar
+*.war
+mvnw
+mvnw.cmd
+pom.xml
+Dockerfile
+docker-compose.yml
+railway.json
+Procfile
+.mvn/
+
+# Dev artifacts
+frontend/node_modules/
+uploads/
+testing/
+
+# IDE & OS
+.vscode/
+.idea/
+*.log
+Thumbs.db
+.DS_Store
+
+# Env files (use Vercel dashboard for env vars)
+.env
+.env.local
+.env.backend.example
