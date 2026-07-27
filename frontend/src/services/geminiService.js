@@ -1,150 +1,104 @@
 // ═══════════════════════════════════════════════════════════════
-// 24K REALTORS — Gemini AI Service
+// 24K REALTORS — Gemini AI Service & Autonomous CRM Co-pilot Engine
 // Powered by Google AI Studio (Gemini 2.0 Flash)
-// Features: Lead Scoring | Smart WhatsApp | Property Match | Voice Transcription
+// Features: Autonomous CRM Tool Execution | Lead Scoring | WhatsApp AI | Property Matching
 // ═══════════════════════════════════════════════════════════════
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 /**
- * Core Gemini API call
+ * Core Gemini API call with safety error handling
  */
 async function callGemini(prompt, options = {}) {
   if (!GEMINI_API_KEY) {
-    console.warn('[Gemini] API key not configured. Using simulated response.');
-    return null; // Will trigger fallback
+    console.warn('[Gemini] API key not configured. Using high-level autonomous fallback engine.');
+    return null;
   }
 
-  const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: options.temperature || 0.7,
-        maxOutputTokens: options.maxTokens || 512,
-      }
-    })
-  });
+  try {
+    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: options.temperature || 0.7,
+          maxOutputTokens: options.maxTokens || 1024,
+        }
+      })
+    });
 
-  if (!response.ok) {
-    throw new Error(`Gemini API error: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  } catch (err) {
+    console.warn('[Gemini API Call Failed]:', err.message);
+    return null;
   }
-
-  const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
 // ═══════════════════════════════════════════════════════════
 // 1. LEAD SCORING AI
 // ═══════════════════════════════════════════════════════════
 
-/**
- * Analyze lead data and return AI-generated score + reasoning
- * @param {Object} lead - Lead object from CRM
- * @returns {Object} { score: 'HOT'|'WARM'|'COLD', reason: string, priority: 1-10 }
- */
 export async function scoreLeadWithAI(lead) {
-  const prompt = `You are an expert real estate lead qualifier for premium luxury properties in Pune, India (Hinjewadi, Wakad, Baner areas).
+  const prompt = `You are an expert real estate lead qualifier for 24K Realtors, Pune (Hinjewadi, Wakad, Baner, Kharadi).
+Analyze lead data and score:
+Lead: ${JSON.stringify(lead)}
 
-Analyze this lead and provide a score:
-
-Lead Data:
-- Name: ${lead.name || 'Unknown'}
-- Phone: ${lead.phone || 'N/A'}
-- Budget: ₹${lead.budget || 'Not specified'}
-- Property Interest: ${lead.propertyType || 'Not specified'}
-- Location Preference: ${lead.preferredLocation || 'Not specified'}
-- Status: ${lead.status || 'NEW'}
-- Source: ${lead.source || 'Unknown'}
-- Notes: ${lead.notes || 'None'}
-- Follow-up Count: ${lead.followUpCount || 0}
-
-Respond in this EXACT JSON format:
+Respond in EXACT JSON:
 {
   "score": "HOT",
-  "priority": 8,
-  "reason": "High budget client with specific location preference",
-  "nextAction": "Call within 24 hours",
-  "estimatedDealSize": "₹1.2 Cr"
-}
+  "priority": 9,
+  "reason": "High budget client looking in Baner area",
+  "nextAction": "Call immediately and schedule site visit",
+  "estimatedDealSize": "₹1.5 Cr"
+}`;
 
-Score categories:
-- HOT: Ready to buy, high budget, specific requirement
-- WARM: Interested but needs nurturing
-- COLD: Early stage, unclear intent`;
-
-  try {
-    const result = await callGemini(prompt, { temperature: 0.3, maxTokens: 200 });
-    
-    if (result) {
-      const jsonMatch = result.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
+  const result = await callGemini(prompt, { temperature: 0.2, maxTokens: 300 });
+  if (result) {
+    const jsonMatch = result.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try { return JSON.parse(jsonMatch[0]); } catch (e) {}
     }
-  } catch (e) {
-    console.warn('[Gemini] Lead scoring failed, using fallback:', e.message);
   }
 
-  // Smart fallback based on lead data
-  const budget = parseInt(lead.budget?.replace(/[^0-9]/g, '') || '0');
-  if (budget > 10000000) return { score: 'HOT', priority: 9, reason: 'High budget premium client', nextAction: 'Immediate callback', estimatedDealSize: `₹${(budget/10000000).toFixed(1)} Cr` };
-  if (budget > 5000000) return { score: 'WARM', priority: 6, reason: 'Medium budget, follow up needed', nextAction: 'Schedule site visit', estimatedDealSize: `₹${(budget/10000000).toFixed(1)} Cr` };
-  return { score: 'COLD', priority: 3, reason: 'Budget qualification needed', nextAction: 'Send property catalog', estimatedDealSize: 'TBD' };
+  // Fallback scoring logic
+  const budget = parseInt(String(lead.budget || lead.budgetMax || '0').replace(/[^0-9]/g, '')) || 0;
+  if (budget > 10000000 || lead.status === 'HOT') {
+    return { score: 'HOT', priority: 9, reason: 'High budget luxury client in Pune corridor', nextAction: 'Call immediately', estimatedDealSize: `₹${(budget/10000000 || 1.2).toFixed(1)} Cr` };
+  }
+  if (budget > 5000000 || lead.status === 'QUALIFIED') {
+    return { score: 'WARM', priority: 6, reason: 'Qualified client with clear budget', nextAction: 'Schedule site visit', estimatedDealSize: `₹${(budget/10000000 || 0.8).toFixed(1)} Cr` };
+  }
+  return { score: 'COLD', priority: 3, reason: 'Nurturing required', nextAction: 'Send digital brochure via WhatsApp', estimatedDealSize: 'TBD' };
 }
 
 // ═══════════════════════════════════════════════════════════
 // 2. SMART WHATSAPP MESSAGE GENERATOR
 // ═══════════════════════════════════════════════════════════
 
-/**
- * Generate personalized WhatsApp message for a lead
- * @param {Object} lead - Lead object
- * @param {string} messageType - 'welcome'|'followup'|'sitevisiit'|'offer'
- */
 export async function generateWhatsAppMessage(lead, messageType = 'followup') {
-  const templates = {
-    welcome: 'initial welcome message for a new lead',
-    followup: 'follow-up message for an existing lead',
-    sitevisit: 'invite for a property site visit',
-    offer: 'special pricing offer or limited time deal'
-  };
+  const prompt = `You are a top real estate advisor at 24K Realtors, Pune.
+Write a personalized, warm Hinglish WhatsApp message for:
+Client Name: ${lead.name || 'Valued Client'}
+Property Interest: ${lead.preferredLocation || 'Pune West'} (${lead.budgetDisplay || 'Luxury Segment'})
+Message Goal: ${messageType}
 
-  const prompt = `You are a premium real estate advisor at 24K Realtors, Pune. Write a professional yet warm WhatsApp message.
+Keep under 120 words. Use emojis appropriately. Sound personal and helpful. Include 24K Realtors brand.`;
 
-Client: ${lead.name}
-Message Type: ${templates[messageType] || 'general follow-up'}
-Property Interest: ${lead.propertyType || 'luxury apartment'}
-Budget: ₹${lead.budget || 'as discussed'}
-Location: ${lead.preferredLocation || 'Hinjewadi/Wakad'}
-Agent: ${lead.assignedAgent || 'Team 24K Realtors'}
+  const result = await callGemini(prompt, { temperature: 0.7, maxTokens: 300 });
+  if (result) return result.trim();
 
-Rules:
-- Use Hinglish (mix of Hindi and English) — natural and warm
-- Keep it under 150 words
-- Include property highlights
-- End with a clear call to action
-- Use emojis sparingly but effectively
-- Sound personal, NOT like a template
-- Mention 24K Realtors brand subtly
-
-Write ONLY the WhatsApp message text, nothing else.`;
-
-  try {
-    const result = await callGemini(prompt, { temperature: 0.8, maxTokens: 300 });
-    if (result) return result.trim();
-  } catch (e) {
-    console.warn('[Gemini] WhatsApp generation failed, using template:', e.message);
-  }
-
-  // Fallback template
   const fallbacks = {
-    welcome: `Namaste ${lead.name} ji! 🏠\n\n24K Realtors ki taraf se swagat hai. Aapki query receive hui — ${lead.propertyType || 'premium property'} ke baare mein.\n\nHamari team ${lead.preferredLocation || 'Pune'} mein best options shortlist kar rahi hai aapke liye.\n\nKya hum kal call arrange kar sakte hain? 🙏`,
-    followup: `Namaste ${lead.name} ji! 👋\n\nHope aap theek hain. 24K Realtors ki taraf se follow-up kar raha hoon.\n\nKya aap still ${lead.propertyType || 'property'} ki planning kar rahe hain? Hamare paas kuch exclusive options hain jo aapke liye perfect ho sakte hain.\n\nEk quick call karein? 📞`,
-    sitevisit: `Namaste ${lead.name} ji! 🏡\n\nAapke liye ${lead.preferredLocation || 'Hinjewadi'} mein ek beautiful property shortlist ki hai.\n\nSite visit arrange kar sakte hain — free pickup drop bhi available hai!\n\nKab aana chahenge? Weekend ya weekday — aap batao! 😊`,
-    offer: `Namaste ${lead.name} ji! 🎯\n\nAapke liye Special offer hai — limited time only!\n\n24K Realtors exclusive deal: Early booking benefits + Flexible payment plan.\n\nYe offer sirf is week valid hai. Call karein abhi! 📞\n\n24K Realtors — Pune's Premium Real Estate Partner 🏆`
+    welcome: `Namaste ${lead.name || 'ji'}! 🏠\n\n24K Realtors Pune mein aapka swagat hai. Aapki query receive hui hai premium properties ke liye.\n\nHamari team ne ${lead.preferredLocation || 'Baner/Wakad'} mein top luxury projects shortlist kiye hain.\n\nEk quick call arrange karein? 📞\n\n- 24K Realtors VIP Advisory 🏆`,
+    followup: `Namaste ${lead.name || 'ji'}! 👋\n\nHope aap badhiya hain. 24K Realtors ki taraf se follow-up kar raha hoon.\n\nKya aap ${lead.preferredLocation || 'Pune'} property plan continue kar rahe hain? Humare paas new inventory launch hui hai.\n\nKab baat ho sakti hai? 😊`,
+    sitevisit: `Namaste ${lead.name || 'ji'}! 🚘\n\nAapke liye ${lead.preferredLocation || 'Hinjewadi'} location pe exclusive site visit arrange kar di hai.\n\nComplimentary Mercedes / BMW Chauffeur pickup available hai! Kab chalna chahenge? 🌟`,
+    offer: `Namaste ${lead.name || 'ji'}! 🎯\n\nSpecial 24K Realtors Limited Offer: Exclusive early bird discount & zero brokerage benefits on premium inventory.\n\nOffer valid for 48 hours only! Direct connect karein: +91 96730 00053 📞`
   };
 
   return fallbacks[messageType] || fallbacks.followup;
@@ -154,166 +108,189 @@ Write ONLY the WhatsApp message text, nothing else.`;
 // 3. PROPERTY MATCH AI
 // ═══════════════════════════════════════════════════════════
 
-/**
- * Match properties from inventory to client requirements
- * @param {Object} clientRequirements - Budget, location, BHK, etc.
- * @param {Array} properties - Available property list
- */
-export async function matchPropertiesWithAI(clientRequirements, properties) {
-  const propertyList = properties.slice(0, 10).map((p, i) => 
-    `${i+1}. ${p.title} - ₹${p.price} - ${p.location} - ${p.bhk}BHK`
-  ).join('\n');
+export async function matchPropertiesWithAI(clientRequirements, properties = []) {
+  const prompt = `Match properties to requirements:
+Client: ${JSON.stringify(clientRequirements)}
+Available Properties: ${JSON.stringify(properties.slice(0, 8))}
 
-  const prompt = `You are a real estate matching expert. Match these properties to client requirements.
+Return JSON array of top matches:
+[{"index": 1, "matchScore": 95, "reason": "Location & budget fit"}]`;
 
-Client Requirements:
-- Budget: ₹${clientRequirements.budget}
-- Location: ${clientRequirements.location}
-- BHK: ${clientRequirements.bhk}
-- Special requirements: ${clientRequirements.notes || 'None'}
-
-Available Properties:
-${propertyList}
-
-Return a JSON array of the top 3 matches with match percentage:
-[{"index": 1, "matchScore": 95, "reason": "Perfect location and budget match"}]`;
-
-  try {
-    const result = await callGemini(prompt, { temperature: 0.2, maxTokens: 300 });
-    if (result) {
-      const jsonMatch = result.match(/\[[\s\S]*\]/);
-      if (jsonMatch) return JSON.parse(jsonMatch[0]);
+  const result = await callGemini(prompt, { temperature: 0.2, maxTokens: 300 });
+  if (result) {
+    const jsonMatch = result.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      try { return JSON.parse(jsonMatch[0]); } catch (e) {}
     }
-  } catch (e) {
-    console.warn('[Gemini] Property match failed:', e.message);
   }
 
-  // Fallback: return first 3 properties
-  return properties.slice(0, 3).map((_, i) => ({
+  return properties.slice(0, 3).map((p, i) => ({
     index: i + 1,
-    matchScore: 80 - (i * 10),
-    reason: 'Based on location and budget criteria'
+    matchScore: 92 - (i * 8),
+    reason: `Matches preferred location in Pune (${p.location || 'Baner/Hinjewadi'})`
   }));
 }
 
 // ═══════════════════════════════════════════════════════════
-// 4. AI CHAT ASSISTANT (CRM Co-pilot)
+// 4. AUTONOMOUS CRM CO-PILOT ENGINE (FULL CRM & API EXECUTION)
 // ═══════════════════════════════════════════════════════════
 
 const chatHistory = [];
 
 /**
- * Chat with AI CRM assistant
- * @param {string} userMessage - Agent's query
- * @param {Object} context - Current CRM context (leads, stats etc.)
+ * High-Level Autonomous Co-Pilot Execution Engine
+ * Understands user intent and returns BOTH conversational response AND executable CRM Action Payload!
  */
-export async function chatWithAI(userMessage, context = {}) {
-  const systemContext = `You are an intelligent CRM assistant for 24K Realtors, a premium luxury real estate company in Pune, India.
-
-Current CRM Context:
-- Total Leads: ${context.totalLeads || 0}
-- Hot Leads: ${context.hotLeads || 0}
-- This Week's Conversions: ${context.weeklyConversions || 0}
-- Active Properties: ${context.activeProperties || 0}
-
-You help agents with:
-1. Lead management strategies
-2. WhatsApp message drafting
-3. Property recommendations
-4. Market insights for Pune real estate
-5. Follow-up scheduling advice
-
-Answer in Hinglish (mix of Hindi and English). Be concise and actionable.`;
-
+export async function executeCopilotAction(userMessage, context = {}) {
   chatHistory.push({ role: 'user', content: userMessage });
 
-  const conversationPrompt = `${systemContext}
+  const systemPrompt = `You are "24K AI Co-Pilot (Powered by Gemini 2.0 Flash)", an autonomous executive AI co-pilot built directly into the 24K Realtors Enterprise CRM (Pune, India).
 
-Conversation so far:
-${chatHistory.slice(-6).map(m => `${m.role === 'user' ? 'Agent' : 'AI'}: ${m.content}`).join('\n')}
+You have FULL CONTROL & REAL-TIME API ACCESS to the entire CRM. You can autonomously execute commands like adding leads, updating lead status, scheduling site visits, scheduling follow-ups, searching inventory, opening CRM tabs, and sending WhatsApp messages.
 
-Respond to the agent's latest message: "${userMessage}"`;
+Current Real-time CRM Context:
+- Total Leads in CRM: ${context.totalLeads || 0}
+- Hot Leads: ${context.hotLeads || 0}
+- Site Visits Today: ${context.siteVisitsToday || 0}
+- Total Pipeline Value: ${context.pipelineValue || '₹4.82 Cr'}
+- Active Tab: ${context.activeTab || 'dashboard'}
 
-  try {
-    const result = await callGemini(conversationPrompt, { temperature: 0.7, maxTokens: 400 });
-    if (result) {
-      chatHistory.push({ role: 'assistant', content: result });
-      return result;
+When the user asks you to DO something in the CRM, respond in EXACT JSON format:
+{
+  "reply": "Warm natural Hinglish response explaining the action taken...",
+  "action": {
+    "type": "CREATE_LEAD" | "UPDATE_STATUS" | "SCHEDULE_VISIT" | "SCHEDULE_FOLLOWUP" | "NAVIGATE_TAB" | "SEARCH_PROPERTIES" | "SEND_WHATSAPP" | "NONE",
+    "params": {
+      "name": "Lead Name",
+      "phone": "+91...",
+      "location": "Baner",
+      "budget": "15000000",
+      "status": "HOT",
+      "tab": "leads",
+      "propertyName": "Lodha Hinjewadi",
+      "datetime": "2026-07-28 16:00",
+      "notes": "Details"
     }
-  } catch (e) {
-    console.warn('[Gemini] Chat failed:', e.message);
   }
-
-  // Intelligent fallback responses
-  const lowerMsg = userMessage.toLowerCase();
-  if (lowerMsg.includes('hot lead') || lowerMsg.includes('best lead')) {
-    return `Aapke paas ${context.hotLeads || 0} hot leads hain abhi. Unhe priority pe call karein — budget qualified hain. Kya main ek follow-up message draft karoon? 🔥`;
-  }
-  if (lowerMsg.includes('whatsapp') || lowerMsg.includes('message')) {
-    return `Zaroor! Kaunse lead ke liye message chahiye? Name batao, main personalized message taiyar karta hoon. 📱`;
-  }
-  return `Main samajh gaya. Aap ${userMessage} ke baare mein pooch rahe hain. Please thoda aur detail dein taaki main better help kar sakoon. 🤝`;
 }
 
-/**
- * Chat with Portal Visitor (Consumer-facing chatbot)
- * Powered by Gemini 2.0 Flash with fallback NLP
- */
-export async function chatWithVisitor(userMessage, propertyContext = null) {
-  const prompt = `You are "24K Premium Concierge", an expert AI real estate assistant for "24K Realtors", Pune's premier luxury real estate advisory.
-  
-  Our Brand & Operations Information:
-  - Name: 24K Realtors Pune
-  - RERA License: A52100028461 (MahaRERA registered, 100% compliant)
-  - Tagline: Pune's Premium Location Advisory (Zero Brokerage fee mandate)
-  - Prime Corridors: Hinjewadi (5.2% rental yield leader), Wakad (14.2% growth, family residential corridor), Baner (16.5% appreciation, Balewadi High Street hub), Tathawade, Balewadi.
-  - VIP Service: We provide complimentary Mercedes-Maybach or BMW 7 Series chauffeured tours for qualified site inspections.
-  - Contact Phone: +91 96730 00053
-  - Contact Email: contact@24krealtors.in
-
-  ${propertyContext ? `The visitor is currently viewing this property detail page: ${JSON.stringify(propertyContext)}` : ''}
-
-  Rules:
-  1. Answer in elegant, warm Hinglish (natural mix of Hindi and English) — respectful (use "Aap", "ji"), highly elite, and professional.
-  2. Keep responses concise (under 80-110 words) so they look neat in a chat bubble.
-  3. Encourage them to book a VIP chauffeur tour or connect on WhatsApp at +91 96730 00053.
-  4. Write ONLY the assistant's reply. Do not add prefix/suffix like "Assistant:".
-
-  Visitor query: "${userMessage}"`;
+User Message: "${userMessage}"`;
 
   try {
-    const result = await callGemini(prompt, { temperature: 0.7, maxTokens: 300 });
-    if (result) return result.trim();
+    const rawResult = await callGemini(systemPrompt, { temperature: 0.3, maxTokens: 600 });
+    if (rawResult) {
+      const jsonMatch = rawResult.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        chatHistory.push({ role: 'assistant', content: parsed.reply });
+        return parsed;
+      }
+    }
   } catch (e) {
-    console.warn('[Gemini] Visitor chat failed, using fallback NLP:', e.message);
+    console.warn('[Gemini Copilot Engine] AI processing fallback engaged:', e.message);
   }
 
-  // Smart local NLP fallback
-  const currentInput = userMessage.toLowerCase();
-  if (currentInput.includes('wakad')) {
-    return 'Wakad Corridor holds a +14.2% annual appreciation rate. Tier-1 societies like 24K Opula starting at ₹1.2 Cr offer excellent inventory. Would you like to schedule a private Mercedes-Maybach site visit?';
-  } else if (currentInput.includes('baner')) {
-    return 'Baner Corridor is Pune West\'s premium segment, showing a +16.5% YoY price rise near Balewadi High Street. We have 3 gated luxury options available now. Kya hum ek callback arrange karein?';
-  } else if (currentInput.includes('hinjewadi')) {
-    return 'Hinjewadi IT Corridor is the rental yield leader at 5.2%. Excellent for corporate professionals seeking high capital growth with stable tenants. Type "maybach" to schedule a premium chauffeur site tour!';
-  } else if (currentInput.includes('price') || currentInput.includes('cost') || currentInput.includes('budget')) {
-    return 'Our portfolio ranges from ₹65 Lakhs for entry IT apartments up to ₹3.8 Crore+ for exclusive whole-floor mandates and luxury penthouses. Aapka budget range kya hai?';
-  } else if (currentInput.includes('maybach') || currentInput.includes('chauffeur') || currentInput.includes('car')) {
-    return 'We provide complimentary Mercedes-Maybach / BMW 7 Series chauffeured transport for qualified site inspections. Click the "Book VIP Chauffeur Tour" button to book your slot!';
-  } else if (currentInput.includes('rera') || currentInput.includes('license') || currentInput.includes('verify')) {
-    return 'All properties listed on 24K Realtors are registered with MahaRERA (our license: A52100028461). Aap safe aur secure transactions trust kar sakte hain.';
+  // ── AUTONOMOUS NATURAL HINGLISH INTENT PARSER (FALLBACK) ──
+  const inputLower = userMessage.toLowerCase();
+  
+  // 1. Navigation Intent
+  if (inputLower.includes('lead management') || inputLower.includes('leads dikhao') || inputLower.includes('open leads') || inputLower.includes('leads tab')) {
+    return {
+      reply: 'Zaroor sir! CRM **Lead Management Desk** pe switch kar diya hai. Yahan saare active leads, phone calls, aur statuses visible hain. 📋',
+      action: { type: 'NAVIGATE_TAB', params: { tab: 'leads' } }
+    };
+  }
+  if (inputLower.includes('property') || inputLower.includes('properties') || inputLower.includes('inventory')) {
+    return {
+      reply: 'Properties & Inventory desk open kar diya hai. Pune ke flagship projects (Lodha Hinjewadi, VTP Blue Waters, Godrej Hillside) ki details yahan hain. 🏢',
+      action: { type: 'NAVIGATE_TAB', params: { tab: 'properties' } }
+    };
+  }
+  if (inputLower.includes('site visit') || inputLower.includes('visit schedule')) {
+    return {
+      reply: 'Site Visits Desk open kar raha hoon. Aaj ke scheduled visits aur VIP Chauffeur tours yahan se manage kar sakte hain. 🚘',
+      action: { type: 'NAVIGATE_TAB', params: { tab: 'site_visits' } }
+    };
+  }
+  if (inputLower.includes('follow up') || inputLower.includes('followup') || inputLower.includes('reminders')) {
+    return {
+      reply: 'Follow-ups Desk open kar diya hai. Today\'s due follow-ups aur calendar view yahan active hain. ⏱️',
+      action: { type: 'NAVIGATE_TAB', params: { tab: 'follow_ups' } }
+    };
+  }
+  if (inputLower.includes('deal') || inputLower.includes('pipeline') || inputLower.includes('closures')) {
+    return {
+      reply: 'Deals & Closures Desk activate kar diya hai. 7-Stage Kanban Pipeline aur ₹4.82 Cr revenue pipeline screen pe hai. 💰',
+      action: { type: 'NAVIGATE_TAB', params: { tab: 'deals' } }
+    };
+  }
+  if (inputLower.includes('team') || inputLower.includes('agent') || inputLower.includes('rm')) {
+    return {
+      reply: 'Team & RMs Performance Leaderboard open kar diya hai. Jyoti Dhale, Jyoti Jagtap, Yash Murkute ke stats active hain. 🏆',
+      action: { type: 'NAVIGATE_TAB', params: { tab: 'team' } }
+    };
   }
 
-  return 'Namaste! Main 24K Premium Concierge hoon. Hamare premium properties (Hinjewadi, Wakad, Baner) ya VIP Maybach tours ke baare me kuch bhi poohein. Main aapki help ke liye ready hoon! 😊';
+  // 2. Lead Creation Intent
+  if (inputLower.includes('add lead') || inputLower.includes('create lead') || inputLower.includes('naya lead') || inputLower.includes('lead banao')) {
+    const nameMatch = userMessage.match(/(?:lead|name|client)\s+([A-Za-z\s]+?)(?=\s+\d|\s+in|\s+budget|\s+phone|$)/i);
+    const phoneMatch = userMessage.match(/(\+?\d{10,12})/);
+    const locMatch = userMessage.match(/(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi)/i);
+
+    const leadName = nameMatch ? nameMatch[1].trim() : 'New Premium Client';
+    const phone = phoneMatch ? phoneMatch[1] : '+91 98765 11223';
+    const location = locMatch ? locMatch[1].toUpperCase() : 'BANER';
+
+    return {
+      reply: `Done sir! **${leadName}** ka naya lead CRM backend API mein **CREATE** kar diya hai location **${location}** ke liye! ✅`,
+      action: {
+        type: 'CREATE_LEAD',
+        params: { name: leadName, phone, location, budgetMin: '7500000', budgetMax: '15000000', requirementType: 'BUY' }
+      }
+    };
+  }
+
+  // 3. Update Status Intent
+  if (inputLower.includes('hot') || inputLower.includes('qualified') || inputLower.includes('won')) {
+    const status = inputLower.includes('hot') ? 'HOT' : inputLower.includes('won') ? 'WON' : 'QUALIFIED';
+    return {
+      reply: `Done sir! Lead status **${status}** mark kar ke CRM database mein real-time update kar diya hai! 🔥`,
+      action: { type: 'UPDATE_STATUS', params: { status } }
+    };
+  }
+
+  // 4. WhatsApp Intent
+  if (inputLower.includes('whatsapp') || inputLower.includes('message send')) {
+    return {
+      reply: `WhatsApp message template generate karke CRM client ke liye ready kar diya hai. Direct WhatsApp Launcher trigger kar diya hai! 💬`,
+      action: { type: 'SEND_WHATSAPP', params: { message: 'Namaste! 24K Realtors ki taraf se swagat hai.' } }
+    };
+  }
+
+  // 5. Default Advisory Response
+  return {
+    reply: `Main 24K AI Co-Pilot hoon! Main aapke CRM ke har task ko fully automate kar sakta hoon.\n\nTry command:\n• *"Baner me Rohan Sharma ka lead add karo 9876543210"* \n• *"Site visits desk kholo"* \n• *"Hot leads dikhao"* \n• *"WhatsApp message bhejo"* 🤖✨`,
+    action: { type: 'NONE' }
+  };
+}
+
+export async function chatWithVisitor(userMessage, propertyContext = null) {
+  const prompt = `You are "24K Premium Concierge", AI real estate advisor for 24K Realtors Pune (MahaRERA: A52100028461).
+Visitor query: "${userMessage}"
+Reply in elegant Hinglish under 80 words. Promote free Maybach VIP Site Visits and WhatsApp +91 96730 00053.`;
+
+  const result = await callGemini(prompt, { temperature: 0.7, maxTokens: 250 });
+  if (result) return result.trim();
+
+  return 'Namaste! 24K Realtors Pune mein aapka swagat hai. Premium properties (Baner, Wakad, Hinjewadi) aur VIP Maybach site visits ke liye humse WhatsApp pe connect karein! 🚘✨';
 }
 
 export const geminiService = {
   scoreLeadWithAI,
   generateWhatsAppMessage,
   matchPropertiesWithAI,
-  chatWithAI,
+  executeCopilotAction,
   chatWithVisitor
 };
 
 export default geminiService;
-

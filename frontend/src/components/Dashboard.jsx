@@ -25,6 +25,7 @@ import SiteVisitsTab from './SiteVisitsTab';
 import PropertiesTab from './PropertiesTab';
 import FollowUpsTab from './FollowUpsTab';
 import DealsTab from './DealsTab';
+import AiAssistantPanel from './AiAssistantPanel';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -1927,6 +1928,17 @@ export default function Dashboard({ onViewChange }) {
         </div>
       )}
 
+      {/* ── 24K AI CO-PILOT (POWERED BY GEMINI 2.0 FLASH) ── */}
+      <AiAssistantPanel 
+        leads={leads} 
+        selectedLead={selectedLeadDetail} 
+        activeTab={activeTab} 
+        onCommand={(cmd) => {
+          if (cmd && cmd.action === 'NAVIGATE') {
+            setActiveTab(cmd.target);
+          }
+        }} 
+      />
     </div>
   );
 }
