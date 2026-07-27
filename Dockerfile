@@ -4,7 +4,7 @@
 # ====================================================================
 
 # Stage 1: Build stage
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Copy pom files and source

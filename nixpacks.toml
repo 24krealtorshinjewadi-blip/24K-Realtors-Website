@@ -1,0 +1,16 @@
+# Nixpacks configuration for Railway deployment of 24K Realtors Spring Boot API (Java 21)
+
+[providers]
+providers = ["java"]
+
+[variables]
+NIXPACKS_JDK_VERSION = "21"
+
+[phases.setup]
+nixPkgs = ["jdk21", "maven"]
+
+[phases.build]
+cmds = ["mvn clean package -DskipTests -B"]
+
+[start]
+cmd = "java -Xmx400m -Xms128m -XX:+UseContainerSupport -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=railway -jar backend/target/twentyfourk-0.0.1-SNAPSHOT.jar"
