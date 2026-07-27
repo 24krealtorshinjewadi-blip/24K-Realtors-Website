@@ -26,6 +26,7 @@ import PropertiesTab from './PropertiesTab';
 import FollowUpsTab from './FollowUpsTab';
 import DealsTab from './DealsTab';
 import AiAssistantPanel from './AiAssistantPanel';
+import SettingsTab from './SettingsTab';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -654,6 +655,7 @@ export default function Dashboard({ onViewChange }) {
               inventory: 'Inventory / Projects',
               attendance: 'Attendance',
               leaves: 'HR & Leaves',
+              settings: 'CRM Settings',
             }[activeTab] || '24K Realtors CRM'}
           </span>
           <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)' }}>
@@ -670,6 +672,7 @@ export default function Dashboard({ onViewChange }) {
               inventory: 'Builder Projects & Property Catalog',
               attendance: 'Team Checkin & Working Hours',
               leaves: 'Leave Requests & HR Management',
+              settings: 'Company, Users, Security & Integrations',
             }[activeTab] || 'Pune Real Estate Operations'}
           </span>
         </div>
@@ -774,6 +777,7 @@ export default function Dashboard({ onViewChange }) {
             { id: 'inventory', label: 'Inventory / Projects', icon: Building },
             { id: 'attendance', label: 'Attendance', icon: CheckSquare },
             { id: 'leaves', label: 'HR & Leaves', icon: ShieldCheck },
+            { id: 'settings', label: 'Settings', icon: Settings },
           ].map(item => {
             const IconComp = item.icon;
             const isActive = activeTab === item.id || (item.isAi && isAiPanelOpen);
@@ -811,8 +815,11 @@ export default function Dashboard({ onViewChange }) {
 
           <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '10px 0' }} />
 
-          <button style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '8px', border: 'none', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: '0.82rem', cursor: 'pointer' }}>
-            <Settings size={16} />
+          <button
+            onClick={() => setActiveTab('settings')}
+            style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '8px', border: activeTab === 'settings' ? '1px solid rgba(212,175,55,0.35)' : 'none', background: activeTab === 'settings' ? 'rgba(212,175,55,0.12)' : 'transparent', color: activeTab === 'settings' ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', fontSize: '0.82rem', cursor: 'pointer', fontWeight: activeTab === 'settings' ? 700 : 400 }}
+          >
+            <Settings size={16} color={activeTab === 'settings' ? 'var(--gold-primary)' : 'rgba(255,255,255,0.5)'} />
             <span>Settings</span>
           </button>
           <button style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '8px', border: 'none', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: '0.82rem', cursor: 'pointer' }}>
@@ -1681,6 +1688,7 @@ export default function Dashboard({ onViewChange }) {
           {activeTab === 'follow_ups' && <FollowUpsTab />}
           {activeTab === 'deals' && <DealsTab />}
           {activeTab === 'team' && <EmployeesTab />}
+          {activeTab === 'settings' && <SettingsTab />}
 
           {/* TAB: ANALYTICS & REPORTS - Full Inline Analytics Dashboard */}
           {activeTab === 'analytics' && (
