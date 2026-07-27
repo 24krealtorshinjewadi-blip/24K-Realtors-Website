@@ -23,6 +23,7 @@ import BlogsTab from './BlogsTab';
 import CampaignsTab from './CampaignsTab';
 import SiteVisitsTab from './SiteVisitsTab';
 import PropertiesTab from './PropertiesTab';
+import FollowUpsTab from './FollowUpsTab';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -1642,7 +1643,7 @@ export default function Dashboard({ onViewChange }) {
           {activeTab === 'inventory' && <SocietiesTab />}
           {activeTab === 'analytics' && <BlogsTab />}
           {activeTab === 'site_visits' && <SiteVisitsTab leads={leads} agents={agents} />}
-          {activeTab === 'follow_ups' && <CampaignsTab leads={leads} agents={agents} />}
+          {activeTab === 'follow_ups' && <FollowUpsTab />}
           {activeTab === 'deals' && <CampaignsTab leads={leads} agents={agents} />}
           {activeTab === 'team' && <EmployeesTab />}
 
