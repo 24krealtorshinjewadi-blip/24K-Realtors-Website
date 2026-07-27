@@ -27,6 +27,7 @@ import FollowUpsTab from './FollowUpsTab';
 import DealsTab from './DealsTab';
 import AiAssistantPanel from './AiAssistantPanel';
 import SettingsTab from './SettingsTab';
+import HelpSupportTab from './HelpSupportTab';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -656,6 +657,7 @@ export default function Dashboard({ onViewChange }) {
               attendance: 'Attendance',
               leaves: 'HR & Leaves',
               settings: 'CRM Settings',
+              help: 'Help & Support Center',
             }[activeTab] || '24K Realtors CRM'}
           </span>
           <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)' }}>
@@ -673,6 +675,7 @@ export default function Dashboard({ onViewChange }) {
               attendance: 'Team Checkin & Working Hours',
               leaves: 'Leave Requests & HR Management',
               settings: 'Company, Users, Security & Integrations',
+              help: 'Quick Start, FAQ, AI Commands & Contact',
             }[activeTab] || 'Pune Real Estate Operations'}
           </span>
         </div>
@@ -822,8 +825,11 @@ export default function Dashboard({ onViewChange }) {
             <Settings size={16} color={activeTab === 'settings' ? 'var(--gold-primary)' : 'rgba(255,255,255,0.5)'} />
             <span>Settings</span>
           </button>
-          <button style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '8px', border: 'none', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: '0.82rem', cursor: 'pointer' }}>
-            <HelpCircle size={16} />
+          <button
+            onClick={() => setActiveTab('help')}
+            style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '8px', border: activeTab === 'help' ? '1px solid rgba(212,175,55,0.35)' : 'none', background: activeTab === 'help' ? 'rgba(212,175,55,0.12)' : 'transparent', color: activeTab === 'help' ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', fontSize: '0.82rem', cursor: 'pointer', fontWeight: activeTab === 'help' ? 700 : 400 }}
+          >
+            <HelpCircle size={16} color={activeTab === 'help' ? 'var(--gold-primary)' : 'rgba(255,255,255,0.5)'} />
             <span>Help &amp; Support</span>
           </button>
 
@@ -1689,6 +1695,7 @@ export default function Dashboard({ onViewChange }) {
           {activeTab === 'deals' && <DealsTab />}
           {activeTab === 'team' && <EmployeesTab />}
           {activeTab === 'settings' && <SettingsTab />}
+          {activeTab === 'help' && <HelpSupportTab />}
 
           {/* TAB: ANALYTICS & REPORTS - Full Inline Analytics Dashboard */}
           {activeTab === 'analytics' && (
