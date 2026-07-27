@@ -15,8 +15,10 @@ import {
 
 const GOLD = '#D4AF37';
 
-export default function AiAssistantPanel({ leads = [], selectedLead = null, onCommand, activeTab }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function AiAssistantPanel({ leads = [], selectedLead = null, onCommand, activeTab, isOpenProp, setIsOpenProp }) {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const isOpen = isOpenProp !== undefined ? isOpenProp : internalIsOpen;
+  const setIsOpen = setIsOpenProp || setInternalIsOpen;
   const [panelTab, setPanelTab] = useState('chat');
   const [messages, setMessages] = useState([
     { 

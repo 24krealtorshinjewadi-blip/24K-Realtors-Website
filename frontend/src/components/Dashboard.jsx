@@ -6,7 +6,7 @@ import {
   Search, Bell, Phone, MessageSquare, Filter, Download, ChevronRight, Star,
   CheckCircle2, BarChart3, PieChart, Briefcase, ShieldCheck, Layers, Settings, HelpCircle,
   MoreVertical, ArrowUpRight, UserCheck, CheckSquare, DollarSign, Award, ChevronLeft,
-  X, Mail, MessageCircle, Sliders, LayoutGrid, List, ChevronDown, UserPlus, Trophy
+  X, Mail, MessageCircle, Sliders, LayoutGrid, List, ChevronDown, UserPlus, Trophy, Sparkles
 } from 'lucide-react';
 import './Dashboard.css';
 import CompanyLogo from './CompanyLogo';
@@ -361,6 +361,7 @@ export default function Dashboard({ onViewChange }) {
   const [selectedLeadDetail, setSelectedLeadDetail] = useState(initialNormalizedLeads[0]);
 
   // Lead Modal & Action States
+  const [isAiPanelOpen, setIsAiPanelOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
   const [isEditLeadModalOpen, setIsEditLeadModalOpen] = useState(false);
@@ -734,6 +735,7 @@ export default function Dashboard({ onViewChange }) {
           boxSizing: 'border-box'
         }}>
           {[
+            { id: 'ai_copilot', label: '24K AI Co-pilot', icon: Sparkles, isAi: true },
             { id: 'dashboard', label: 'Executive Dashboard', icon: BarChart3 },
             { id: 'leads', label: 'Lead Management', icon: Users },
             { id: 'properties', label: 'Properties', icon: Home },
@@ -748,11 +750,17 @@ export default function Dashboard({ onViewChange }) {
             { id: 'leaves', label: 'HR & Leaves', icon: ShieldCheck },
           ].map(item => {
             const IconComp = item.icon;
-            const isActive = activeTab === item.id;
+            const isActive = activeTab === item.id || (item.isAi && isAiPanelOpen);
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  if (item.isAi) {
+                    setIsAiPanelOpen(prev => !prev);
+                  } else {
+                    setActiveTab(item.id);
+                  }
+                }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -1933,6 +1941,8 @@ export default function Dashboard({ onViewChange }) {
         leads={leads} 
         selectedLead={selectedLeadDetail} 
         activeTab={activeTab} 
+        isOpenProp={isAiPanelOpen}
+        setIsOpenProp={setIsAiPanelOpen}
         onCommand={(cmd) => {
           if (!cmd) return;
           if (cmd.action === 'NAVIGATE' && cmd.target) {
