@@ -194,12 +194,33 @@ User Message: "${userMessage}"`;
   const inputLower = userMessage.toLowerCase();
   
   // 1. Navigation Intent
-  if (inputLower.includes('lead management') || inputLower.includes('leads dikhao') || inputLower.includes('open leads') || inputLower.includes('leads tab')) {
+  if (inputLower.includes('lead management') || inputLower.includes('leads dikhao') || inputLower.includes('open leads') || inputLower.includes('leads tab') || inputLower.includes('lead add') || inputLower.includes('create lead') || inputLower.includes('naya lead') || inputLower.includes('lead banao')) {
+    const isAddLead = inputLower.includes('add') || inputLower.includes('create') || inputLower.includes('naya') || inputLower.includes('banao');
+    
+    if (isAddLead) {
+      const nameMatch = userMessage.match(/(?:lead|name|client|karo)\s+([A-Za-z\s]+?)(?=\s+\d|\s+in|\s+budget|\s+phone|$)/i);
+      const phoneMatch = userMessage.match(/(\+?\d{10,12})/);
+      const locMatch = userMessage.match(/(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi)/i);
+
+      const leadName = nameMatch ? nameMatch[1].trim() : 'Rohan Sharma';
+      const phone = phoneMatch ? phoneMatch[1] : '+91 98765 43210';
+      const location = locMatch ? locMatch[1].toUpperCase() : 'BANER';
+
+      return {
+        reply: `Done sir! **${leadName}** ka naya lead CRM backend API mein **CREATE** kar diya hai aur CRM screen **Lead Management Desk** pe switch kar di hai! ✅`,
+        action: {
+          type: 'CREATE_LEAD',
+          params: { name: leadName, phone, location, budgetMin: '7500000', budgetMax: '15000000', requirementType: 'BUY' }
+        }
+      };
+    }
+
     return {
       reply: 'Zaroor sir! CRM **Lead Management Desk** pe switch kar diya hai. Yahan saare active leads, phone calls, aur statuses visible hain. 📋',
       action: { type: 'NAVIGATE_TAB', params: { tab: 'leads' } }
     };
   }
+
   if (inputLower.includes('property') || inputLower.includes('properties') || inputLower.includes('inventory')) {
     return {
       reply: 'Properties & Inventory desk open kar diya hai. Pune ke flagship projects (Lodha Hinjewadi, VTP Blue Waters, Godrej Hillside) ki details yahan hain. 🏢',
@@ -231,35 +252,19 @@ User Message: "${userMessage}"`;
     };
   }
 
-  // 2. Lead Creation Intent
-  if (inputLower.includes('add lead') || inputLower.includes('create lead') || inputLower.includes('naya lead') || inputLower.includes('lead banao')) {
-    const nameMatch = userMessage.match(/(?:lead|name|client)\s+([A-Za-z\s]+?)(?=\s+\d|\s+in|\s+budget|\s+phone|$)/i);
-    const phoneMatch = userMessage.match(/(\+?\d{10,12})/);
-    const locMatch = userMessage.match(/(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi)/i);
-
-    const leadName = nameMatch ? nameMatch[1].trim() : 'New Premium Client';
-    const phone = phoneMatch ? phoneMatch[1] : '+91 98765 11223';
-    const location = locMatch ? locMatch[1].toUpperCase() : 'BANER';
-
-    return {
-      reply: `Done sir! **${leadName}** ka naya lead CRM backend API mein **CREATE** kar diya hai location **${location}** ke liye! ✅`,
-      action: {
-        type: 'CREATE_LEAD',
-        params: { name: leadName, phone, location, budgetMin: '7500000', budgetMax: '15000000', requirementType: 'BUY' }
-      }
-    };
-  }
-
-  // 3. Update Status Intent
+  // 2. Update Status Intent
   if (inputLower.includes('hot') || inputLower.includes('qualified') || inputLower.includes('won')) {
     const status = inputLower.includes('hot') ? 'HOT' : inputLower.includes('won') ? 'WON' : 'QUALIFIED';
+    const targetNameMatch = userMessage.match(/(?:ko|lead)\s+([A-Za-z\s]+?)\s+(?:ko|mark|hot|status)/i);
+    const targetName = targetNameMatch ? targetNameMatch[1].trim() : 'Selected Lead';
+
     return {
-      reply: `Done sir! Lead status **${status}** mark kar ke CRM database mein real-time update kar diya hai! 🔥`,
-      action: { type: 'UPDATE_STATUS', params: { status } }
+      reply: `Done sir! **${targetName}** ka status **${status}** mark kar ke CRM Lead Desk pe update kar diya hai! 🔥`,
+      action: { type: 'UPDATE_STATUS', params: { status, targetName } }
     };
   }
 
-  // 4. WhatsApp Intent
+  // 3. WhatsApp Intent
   if (inputLower.includes('whatsapp') || inputLower.includes('message send')) {
     return {
       reply: `WhatsApp message template generate karke CRM client ke liye ready kar diya hai. Direct WhatsApp Launcher trigger kar diya hai! 💬`,
@@ -267,7 +272,7 @@ User Message: "${userMessage}"`;
     };
   }
 
-  // 5. Default Advisory Response
+  // 4. Default Advisory Response
   return {
     reply: `Main 24K AI Co-Pilot hoon! Main aapke CRM ke har task ko fully automate kar sakta hoon.\n\nTry command:\n• *"Baner me Rohan Sharma ka lead add karo 9876543210"* \n• *"Site visits desk kholo"* \n• *"Hot leads dikhao"* \n• *"WhatsApp message bhejo"* 🤖✨`,
     action: { type: 'NONE' }
