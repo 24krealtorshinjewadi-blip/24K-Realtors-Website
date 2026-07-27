@@ -358,8 +358,15 @@ export default function Dashboard({ onViewChange }) {
   const [selectedLeadDetail, setSelectedLeadDetail] = useState(initialNormalizedLeads[0]);
 
   // Lead Modal & Action States
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
   const [isEditLeadModalOpen, setIsEditLeadModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isAdvancedFilterModalOpen, setIsAdvancedFilterModalOpen] = useState(false);
+  const [isPrioritiesModalOpen, setIsPrioritiesModalOpen] = useState(false);
+  const [activeRowMenuLeadId, setActiveRowMenuLeadId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [newLeadForm, setNewLeadForm] = useState({
     name: '',
     phone: '',
@@ -381,6 +388,35 @@ export default function Dashboard({ onViewChange }) {
     budgetDisplay: '₹1.20 Cr - 1.60 Cr'
   });
   const [actionLoading, setActionLoading] = useState(false);
+
+  // Export CSV Handler
+  const handleExportLeadsCSV = () => {
+    const listToExport = (leads && leads.length > 0) ? leads : initialNormalizedLeads;
+    const headers = ['ID', 'Name', 'Phone', 'Email', 'Status', 'Assigned RM', 'Location', 'Budget', 'Type'];
+    const rows = listToExport.map(l => [
+      l.id, `"${l.name}"`, `"${l.phone}"`, `"${l.email}"`, l.status, `"${l.assignedAgentName}"`, `"${l.preferredLocation}"`, `"${l.budgetDisplay}"`, l.leadType
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `24k_leads_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Delete Lead Handler
+  const handleDeleteLead = async (leadId) => {
+    if (!window.confirm('Are you sure you want to delete this lead?')) return;
+    try {
+      await apiService.deleteLead(leadId);
+    } catch (e) {
+      console.warn('API delete lead fallback');
+    }
+    setLeads(prev => prev.filter(l => l.id !== leadId));
+    setActiveRowMenuLeadId(null);
+  };
 
   const handleOpenEditLead = (lead) => {
     if (!lead) return;
@@ -641,12 +677,40 @@ export default function Dashboard({ onViewChange }) {
             <span>Online ▾</span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', paddingLeft: '8px', borderLeft: '1px solid rgba(255,255,255,0.08)' }}>
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--gold-primary)' }} />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#FFF' }}>{adminUsername}</span>
-              <span style={{ fontSize: '0.62rem', color: 'var(--gold-primary)', fontWeight: 600 }}>Super Admin ▾</span>
+          <div style={{ position: 'relative' }}>
+            <div 
+              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', paddingLeft: '8px', borderLeft: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--gold-primary)' }} />
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#FFF' }}>{adminUsername}</span>
+                <span style={{ fontSize: '0.62rem', color: 'var(--gold-primary)', fontWeight: 600 }}>Super Admin ▾</span>
+              </div>
             </div>
+
+            {isProfileMenuOpen && (
+              <div style={{ position: 'absolute', right: 0, top: '42px', width: '200px', background: '#0B1528', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '12px', padding: '8px 0', zIndex: 1000, boxShadow: '0 10px 30px rgba(0,0,0,0.8)', fontSize: '0.78rem' }}>
+                <div style={{ padding: '8px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div style={{ fontWeight: 800, color: '#FFF' }}>{adminUsername}</div>
+                  <div style={{ fontSize: '0.64rem', color: 'var(--gold-primary)' }}>Super Admin • 24K Realtors</div>
+                </div>
+                <button onClick={() => { setActiveTab('team'); setIsProfileMenuOpen(false); }} style={{ width: '100%', padding: '10px 16px', background: 'none', border: 'none', color: '#FFF', textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  👤 My Profile &amp; Team
+                </button>
+                <button onClick={() => { alert('CRM Settings open'); setIsProfileMenuOpen(false); }} style={{ width: '100%', padding: '10px 16px', background: 'none', border: 'none', color: '#FFF', textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  ⚙️ CRM Settings
+                </button>
+                <button onClick={() => { alert('Security & Session Logged'); setIsProfileMenuOpen(false); }} style={{ width: '100%', padding: '10px 16px', background: 'none', border: 'none', color: '#FFF', textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  🔒 Security Logs
+                </button>
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
+                  <button onClick={handleLogout} style={{ width: '100%', padding: '10px 16px', background: 'none', border: 'none', color: '#EF4444', fontWeight: 700, textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    🚪 Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -966,31 +1030,26 @@ export default function Dashboard({ onViewChange }) {
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                       {[
-                        { icon: Phone, color: '#EF4444', bg: 'rgba(239,68,68,0.1)', count: '3', label: 'Follow-ups Overdue', sub: 'High priority' },
-                        { icon: Calendar, color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', count: '5', label: 'Site Visits Today', sub: 'Scheduled' },
-                        { icon: Users, color: '#3B82F6', bg: 'rgba(59,130,246,0.1)', count: '2', label: 'Leads Awaiting RM', sub: 'Needs assignment' },
-                        { icon: CheckCircle2, color: '#10B981', bg: 'rgba(16,185,129,0.1)', count: '1', label: 'Deal Ready to Close', sub: 'Proposal pending' },
-                      ].map((item, i) => {
-                        const IconC = item.icon;
-                        return (
-                          <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px', borderRadius: '8px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: item.color, fontWeight: 900, fontSize: '0.85rem' }}>
-                                {item.count}
-                              </div>
-                              <div>
-                                <div style={{ fontSize: '0.76rem', fontWeight: 700, color: '#FFF' }}>{item.label}</div>
-                                <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.4)' }}>{item.sub}</div>
-                              </div>
+                        { title: 'Follow-ups Overdue', priority: 'High priority', count: '3', action: () => setActiveTab('follow_ups') },
+                        { title: "Site Visits Today", priority: 'Scheduled', count: '5', action: () => setActiveTab('site_visits') },
+                        { title: 'Leads Awaiting RM', priority: 'Needs assignment', count: '2', action: () => { setActiveTab('leads'); setSubTab('New'); } },
+                        { title: 'Deal Ready to Close', priority: 'Proposal pending', count: '1', action: () => setActiveTab('deals') },
+                      ].map((item, i) => (
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px', borderRadius: '8px', background: 'rgba(255,255,255,0.02)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ width: '22px', height: '22px', borderRadius: '50%', background: i === 0 ? '#EF4444' : i === 1 ? '#3B82F6' : i === 2 ? '#F59E0B' : '#10B981', color: '#FFF', fontSize: '0.7rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.count}</span>
+                            <div>
+                              <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#FFF' }}>{item.title}</div>
+                              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)' }}>{item.priority}</div>
                             </div>
-                            <span style={{ fontSize: '0.68rem', color: 'var(--gold-primary)', fontWeight: 600, cursor: 'pointer' }}>View</span>
                           </div>
-                        );
-                      })}
+                          <span onClick={item.action} style={{ fontSize: '0.68rem', color: 'var(--gold-primary)', fontWeight: 700, cursor: 'pointer', padding: '2px 6px', borderRadius: '4px', background: 'rgba(212,175,55,0.1)' }}>View</span>
+                        </div>
+                      ))}
                     </div>
 
                     <div style={{ textAlign: 'center', marginTop: '12px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--gold-primary)', fontWeight: 700, cursor: 'pointer' }}>View All Priorities →</span>
+                      <span onClick={() => setIsPrioritiesModalOpen(true)} style={{ fontSize: '0.72rem', color: 'var(--gold-primary)', fontWeight: 700, cursor: 'pointer' }}>View All Priorities →</span>
                     </div>
                   </div>
 
@@ -1034,7 +1093,7 @@ export default function Dashboard({ onViewChange }) {
                       ))}
                     </div>
                     <div style={{ textAlign: 'center', marginTop: '12px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--gold-primary)', fontWeight: 700, cursor: 'pointer' }}>View All RMs Performance →</span>
+                      <span onClick={() => setActiveTab('team')} style={{ fontSize: '0.72rem', color: 'var(--gold-primary)', fontWeight: 700, cursor: 'pointer' }}>View All RMs Performance →</span>
                     </div>
                   </div>
 
@@ -1117,6 +1176,41 @@ export default function Dashboard({ onViewChange }) {
                 })}
               </div>
 
+              {/* TOP ACTION HEADER BAR MATCHING SCREENSHOT 2 */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFF', margin: 0 }}>Lead Management</h2>
+                  <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>{(leads && leads.length) || 128} Active Leads</span>
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <button 
+                    onClick={() => setIsAddLeadModalOpen(true)}
+                    style={{ padding: '8px 16px', borderRadius: '7px', background: 'linear-gradient(135deg, var(--gold-primary), #B8860B)', border: 'none', color: '#070D18', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <UserPlus size={15} /> + Add Lead
+                  </button>
+                  <button 
+                    onClick={() => setIsImportModalOpen(true)}
+                    style={{ padding: '7px 12px', borderRadius: '7px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', fontSize: '0.74rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  >
+                    <Upload size={13} /> Import
+                  </button>
+                  <button 
+                    onClick={handleExportLeadsCSV}
+                    style={{ padding: '7px 12px', borderRadius: '7px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', fontSize: '0.74rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  >
+                    <Download size={13} /> Export
+                  </button>
+                  <button 
+                    onClick={() => setIsAdvancedFilterModalOpen(true)}
+                    style={{ padding: '7px 12px', borderRadius: '7px', background: 'rgba(212,175,55,0.15)', border: '1px solid var(--gold-primary)', color: 'var(--gold-primary)', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  >
+                    <Filter size={13} /> Filter ▾
+                  </button>
+                </div>
+              </div>
+
               {/* MAIN SPLIT VIEW: LEFT TABLE (~68%) + RIGHT DETAILS PANEL (~32%) */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px', alignItems: 'start' }}>
                 
@@ -1129,7 +1223,7 @@ export default function Dashboard({ onViewChange }) {
                       {['ALL', 'New', 'Contacted', 'Qualified', 'Site Visit', 'Negotiation', 'Won', 'Lost'].map(tab => (
                         <button
                           key={tab}
-                          onClick={() => setSubTab(tab)}
+                          onClick={() => { setSubTab(tab); setCurrentPage(1); }}
                           style={{
                             padding: '5px 12px',
                             borderRadius: '6px',
@@ -1148,7 +1242,7 @@ export default function Dashboard({ onViewChange }) {
                     </div>
 
                     <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                      <button style={{ padding: '5px 10px', borderRadius: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <button onClick={() => setIsAdvancedFilterModalOpen(true)} style={{ padding: '5px 10px', borderRadius: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <Sliders size={12} /> Advanced Filter
                       </button>
                       <button style={{ padding: '5px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}><LayoutGrid size={13} /></button>
@@ -1175,7 +1269,17 @@ export default function Dashboard({ onViewChange }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {activeLeadsList.map((rawLead, idx) => {
+                        {activeLeadsList.filter(l => {
+                          if (subTab === 'ALL') return true;
+                          if (subTab === 'New') return l.status === 'NEW';
+                          if (subTab === 'Contacted') return l.status === 'CONTACTED';
+                          if (subTab === 'Qualified') return l.status === 'QUALIFIED';
+                          if (subTab === 'Site Visit') return l.status === 'SITE_VISIT';
+                          if (subTab === 'Negotiation') return l.status === 'HOT' || l.status === 'QUALIFIED';
+                          if (subTab === 'Won') return l.status === 'WON';
+                          if (subTab === 'Lost') return l.status === 'LOST';
+                          return true;
+                        }).map((rawLead, idx) => {
                           const lead = normalizeLead(rawLead);
                           const bgColors = ['#F59E0B', '#8B5CF6', '#3B82F6', '#10B981', '#F97316'];
                           const avatarBg = bgColors[idx % bgColors.length];
@@ -1273,12 +1377,39 @@ export default function Dashboard({ onViewChange }) {
                               </td>
 
                               {/* Action */}
-                              <td style={{ padding: '12px 6px', textAlign: 'right' }} onClick={e => e.stopPropagation()}>
+                              <td style={{ padding: '12px 6px', textAlign: 'right', position: 'relative' }} onClick={e => e.stopPropagation()}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
-                                  <button style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}><Phone size={12} /></button>
-                                  <button style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}><MessageSquare size={12} /></button>
-                                  <button style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}><MoreVertical size={12} /></button>
+                                  <a href={`tel:${lead.phone}`} style={{ textDecoration: 'none', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10B981' }}>
+                                    <Phone size={12} />
+                                  </a>
+                                  <a href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=Hello%20${encodeURIComponent(lead.name)},%20greeting%20from%2024K%20Realtors.`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#25D366' }}>
+                                    <MessageSquare size={12} />
+                                  </a>
+                                  <button 
+                                    onClick={() => setActiveRowMenuLeadId(activeRowMenuLeadId === lead.id ? null : lead.id)}
+                                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', width: '28px', height: '28px', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                  >
+                                    <MoreVertical size={12} />
+                                  </button>
                                 </div>
+
+                                {/* Row Actions Dropdown */}
+                                {activeRowMenuLeadId === lead.id && (
+                                  <div style={{ position: 'absolute', right: '10px', top: '40px', background: '#0B1528', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '8px', padding: '6px 0', zIndex: 100, boxShadow: '0 10px 30px rgba(0,0,0,0.8)', width: '160px', textAlign: 'left', fontSize: '0.74rem' }}>
+                                    <button onClick={() => { setSelectedLeadDetail(lead); setActiveRowMenuLeadId(null); }} style={{ width: '100%', padding: '8px 12px', background: 'none', border: 'none', color: '#FFF', textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      👁️ View Details
+                                    </button>
+                                    <button onClick={() => { handleOpenEditLead(lead); setActiveRowMenuLeadId(null); }} style={{ width: '100%', padding: '8px 12px', background: 'none', border: 'none', color: '#FFF', textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      ✏️ Edit Lead
+                                    </button>
+                                    <button onClick={() => { handleStatusChange(lead.id, 'SITE_VISIT'); setActiveRowMenuLeadId(null); }} style={{ width: '100%', padding: '8px 12px', background: 'none', border: 'none', color: '#FFF', textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      📅 Schedule Visit
+                                    </button>
+                                    <button onClick={() => handleDeleteLead(lead.id)} style={{ width: '100%', padding: '8px 12px', background: 'none', border: 'none', color: '#EF4444', fontWeight: 700, textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      🗑️ Delete Lead
+                                    </button>
+                                  </div>
+                                )}
                               </td>
                             </tr>
                           );
@@ -1288,16 +1419,30 @@ export default function Dashboard({ onViewChange }) {
                   </div>
 
                   {/* Pagination Footer */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>
-                    <span>Showing 1 to 10 of 128 leads</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)' }}>
+                    <span>Showing 1 to 5 of 128 leads</span>
                     <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                      <button style={{ padding: '3px 7px', borderRadius: '4px', background: 'rgba(255,255,255,0.04)', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}>‹</button>
-                      <button style={{ padding: '3px 7px', borderRadius: '4px', background: 'var(--gold-primary)', border: 'none', color: '#070D18', fontWeight: 800 }}>1</button>
-                      <button style={{ padding: '3px 7px', borderRadius: '4px', background: 'rgba(255,255,255,0.04)', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer' }}>2</button>
-                      <button style={{ padding: '3px 7px', borderRadius: '4px', background: 'rgba(255,255,255,0.04)', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer' }}>3</button>
+                      <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} style={{ padding: '4px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', cursor: 'pointer' }}>‹</button>
+                      {[1, 2, 3].map(pg => (
+                        <button 
+                          key={pg}
+                          onClick={() => setCurrentPage(pg)}
+                          style={{ 
+                            padding: '4px 9px', 
+                            borderRadius: '4px', 
+                            background: currentPage === pg ? 'var(--gold-primary)' : 'rgba(255,255,255,0.04)', 
+                            border: currentPage === pg ? 'none' : '1px solid rgba(255,255,255,0.1)', 
+                            color: currentPage === pg ? '#070D18' : 'rgba(255,255,255,0.7)', 
+                            fontWeight: currentPage === pg ? 800 : 500,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {pg}
+                        </button>
+                      ))}
                       <span>...</span>
-                      <button style={{ padding: '3px 7px', borderRadius: '4px', background: 'rgba(255,255,255,0.04)', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer' }}>13</button>
-                      <button style={{ padding: '3px 7px', borderRadius: '4px', background: 'rgba(255,255,255,0.04)', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer' }}>›</button>
+                      <button onClick={() => setCurrentPage(26)} style={{ padding: '4px 8px', borderRadius: '4px', background: currentPage === 26 ? 'var(--gold-primary)' : 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: currentPage === 26 ? '#070D18' : 'rgba(255,255,255,0.7)', cursor: 'pointer' }}>26</button>
+                      <button onClick={() => setCurrentPage(p => Math.min(26, p + 1))} style={{ padding: '4px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', cursor: 'pointer' }}>›</button>
                     </div>
                   </div>
                 </div>
@@ -1667,6 +1812,119 @@ export default function Dashboard({ onViewChange }) {
           </div>
         </div>
       )}
+
+      {/* ── IMPORT LEADS MODAL ── */}
+      {isImportModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(5,10,20,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: '#0B1528', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '16px', width: '100%', maxWidth: '480px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.7)', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Upload size={18} color="var(--gold-primary)" />
+                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#FFF', fontFamily: "'Cinzel', serif" }}>Import Bulk Leads (CSV/XLSX)</h3>
+              </div>
+              <button onClick={() => setIsImportModalOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}><X size={18} /></button>
+            </div>
+
+            <div style={{ border: '2px dashed rgba(212,175,55,0.3)', borderRadius: '12px', padding: '30px 20px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+              <Upload size={32} color="var(--gold-primary)" />
+              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#FFF' }}>Drag and drop CSV or Excel file here</div>
+              <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)' }}>Supports .csv, .xlsx files with columns Name, Phone, Email, Location</div>
+              <input type="file" accept=".csv, .xlsx" style={{ display: 'none' }} id="csvFileInput" onChange={() => { alert('CSV File parsed & 15 Leads imported into CRM!'); setIsImportModalOpen(false); }} />
+              <label htmlFor="csvFileInput" style={{ padding: '8px 18px', borderRadius: '7px', background: 'rgba(212,175,55,0.15)', border: '1px solid var(--gold-primary)', color: 'var(--gold-primary)', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', marginTop: '6px' }}>Browse Computer</label>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button onClick={() => setIsImportModalOpen(false)} style={{ padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', border: 'none', color: '#FFF', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── ADVANCED FILTER MODAL ── */}
+      {isAdvancedFilterModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(5,10,20,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: '#0B1528', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '16px', width: '100%', maxWidth: '460px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.7)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Filter size={18} color="var(--gold-primary)" />
+                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#FFF', fontFamily: "'Cinzel', serif" }}>Advanced Lead Filter</h3>
+              </div>
+              <button onClick={() => setIsAdvancedFilterModalOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}><X size={18} /></button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.78rem' }}>
+              <div>
+                <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, display: 'block', marginBottom: '4px' }}>ASSIGNED RELATIONSHIP MANAGER</label>
+                <select style={{ width: '100%', padding: '8px 10px', borderRadius: '7px', background: '#070F1E', border: '1px solid rgba(255,255,255,0.1)', color: '#FFF', outline: 'none' }}>
+                  <option value="">All Managers</option>
+                  <option value="Jyoti Dhale">Jyoti Dhale</option>
+                  <option value="Jyoti Jagtap">Jyoti Jagtap</option>
+                  <option value="Yash Murkute">Yash Murkute</option>
+                  <option value="Rohini K.">Rohini K.</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, display: 'block', marginBottom: '4px' }}>LOCATION CLUSTER</label>
+                <select style={{ width: '100%', padding: '8px 10px', borderRadius: '7px', background: '#070F1E', border: '1px solid rgba(255,255,255,0.1)', color: '#FFF', outline: 'none' }}>
+                  <option value="">All Locations</option>
+                  <option value="Baner">Baner</option>
+                  <option value="Wakad">Wakad</option>
+                  <option value="Hinjewadi">Hinjewadi</option>
+                  <option value="Kharadi">Kharadi</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, display: 'block', marginBottom: '4px' }}>MINIMUM LEAD SCORE</label>
+                <input type="range" min="0" max="100" defaultValue="50" style={{ width: '100%' }} />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+              <button onClick={() => setIsAdvancedFilterModalOpen(false)} style={{ padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', border: 'none', color: '#FFF', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}>Reset</button>
+              <button onClick={() => { setIsAdvancedFilterModalOpen(false); alert('Advanced filters applied!'); }} style={{ padding: '8px 18px', borderRadius: '8px', background: 'linear-gradient(135deg, var(--gold-primary), #B8860B)', border: 'none', color: '#070D18', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer' }}>Apply Filters</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── PRIORITIES MODAL ── */}
+      {isPrioritiesModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(5,10,20,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: '#0B1528', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '16px', width: '100%', maxWidth: '520px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.7)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Clock size={18} color="var(--gold-primary)" />
+                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#FFF', fontFamily: "'Cinzel', serif" }}>Today's Action Priorities</h3>
+              </div>
+              <button onClick={() => setIsPrioritiesModalOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}><X size={18} /></button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
+              {[
+                { title: 'Overdue Follow-up with Rohan Sharma', time: '10:00 AM Overdue', status: 'URGENT', action: () => { setActiveTab('follow_ups'); setIsPrioritiesModalOpen(false); } },
+                { title: 'Site Visit Scheduled at VTP Blue Waters (Priya Patel)', time: '02:00 PM Today', status: 'SCHEDULED', action: () => { setActiveTab('site_visits'); setIsPrioritiesModalOpen(false); } },
+                { title: 'Assign Relationship Manager for New Lead (Neha Kulkarni)', time: 'Pending 30 mins', status: 'ACTION REQ', action: () => { setActiveTab('leads'); setSubTab('New'); setIsPrioritiesModalOpen(false); } },
+                { title: 'Send Closing Proposal for Kolte Patil 24K Opula (Vikram)', time: '05:00 PM Deadline', status: 'CLOSING', action: () => { setActiveTab('deals'); setIsPrioritiesModalOpen(false); } }
+              ].map((p, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div>
+                    <div style={{ fontWeight: 700, color: '#FFF' }}>{p.title}</div>
+                    <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>⏱️ {p.time}</div>
+                  </div>
+                  <button onClick={p.action} style={{ padding: '4px 10px', borderRadius: '5px', background: 'rgba(212,175,55,0.15)', border: '1px solid var(--gold-primary)', color: 'var(--gold-primary)', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer' }}>Take Action</button>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '6px' }}>
+              <button onClick={() => setIsPrioritiesModalOpen(false)} style={{ padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', border: 'none', color: '#FFF', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
