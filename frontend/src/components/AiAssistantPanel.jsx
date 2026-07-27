@@ -59,15 +59,15 @@ export default function AiAssistantPanel({ leads = [], selectedLead = null, onCo
           notes: 'Auto-created by 24K AI Co-pilot'
         };
         try { await apiService.createLead(leadPayload); } catch (err) {}
-        if (onCommand) onCommand({ action: 'NAVIGATE', target: 'leads' });
+        if (onCommand) onCommand({ action: 'ADD_LEAD', payload: leadPayload, target: 'leads' });
         return `✅ Lead "${leadPayload.name}" created & navigated to Lead Desk!`;
       }
 
       if (type === 'UPDATE_STATUS') {
         const targetStatus = params.status || 'HOT';
-        const targetLeadId = selectedLead ? selectedLead.id : 2; // Priya Patel default if not selected
+        const targetLeadId = selectedLead ? selectedLead.id : 2;
         try { await apiService.updateLeadStatus(targetLeadId, targetStatus); } catch (err) {}
-        if (onCommand) onCommand({ action: 'NAVIGATE', target: 'leads' });
+        if (onCommand) onCommand({ action: 'UPDATE_STATUS', leadName: params.targetName || 'Priya Patel', status: targetStatus, target: 'leads' });
         return `✅ Lead status updated to ${targetStatus} in CRM!`;
       }
 

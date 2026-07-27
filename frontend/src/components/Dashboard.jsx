@@ -1934,8 +1934,26 @@ export default function Dashboard({ onViewChange }) {
         selectedLead={selectedLeadDetail} 
         activeTab={activeTab} 
         onCommand={(cmd) => {
-          if (cmd && cmd.action === 'NAVIGATE') {
+          if (!cmd) return;
+          if (cmd.action === 'NAVIGATE' && cmd.target) {
             setActiveTab(cmd.target);
+          }
+          if (cmd.action === 'ADD_LEAD' && cmd.payload) {
+            const newNormLead = normalizeLead({
+              id: Date.now(),
+              ...cmd.payload
+            });
+            setLeads(prev => [newNormLead, ...prev]);
+            setSubTab('ALL');
+            setActiveTab('leads');
+          }
+          if (cmd.action === 'UPDATE_STATUS') {
+            setLeads(prev => prev.map(l => 
+              (l.name && l.name.toLowerCase().includes((cmd.leadName || '').toLowerCase())) || l.id === cmd.leadId
+                ? { ...l, status: cmd.status }
+                : l
+            ));
+            setActiveTab('leads');
           }
         }} 
       />

@@ -193,28 +193,35 @@ User Message: "${userMessage}"`;
   // ── AUTONOMOUS NATURAL HINGLISH INTENT PARSER (FALLBACK) ──
   const inputLower = userMessage.toLowerCase();
   
-  // 1. Navigation Intent
-  if (inputLower.includes('lead management') || inputLower.includes('leads dikhao') || inputLower.includes('open leads') || inputLower.includes('leads tab') || inputLower.includes('lead add') || inputLower.includes('create lead') || inputLower.includes('naya lead') || inputLower.includes('lead banao')) {
-    const isAddLead = inputLower.includes('add') || inputLower.includes('create') || inputLower.includes('naya') || inputLower.includes('banao');
-    
-    if (isAddLead) {
-      const nameMatch = userMessage.match(/(?:lead|name|client|karo)\s+([A-Za-z\s]+?)(?=\s+\d|\s+in|\s+budget|\s+phone|$)/i);
-      const phoneMatch = userMessage.match(/(\+?\d{10,12})/);
-      const locMatch = userMessage.match(/(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi)/i);
+  // 1. Lead Creation Intent (Check FIRST before navigation)
+  const isAddLead = /\b(add|create|naya|new|banao)\b/i.test(inputLower) && /\b(lead|client|customer)\b/i.test(inputLower);
+  if (isAddLead) {
+    const phoneMatch = userMessage.match(/(\+?\d{10,12})/);
+    const locMatch = userMessage.match(/(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi)/i);
 
-      const leadName = nameMatch ? nameMatch[1].trim() : 'Rohan Sharma';
-      const phone = phoneMatch ? phoneMatch[1] : '+91 98765 43210';
-      const location = locMatch ? locMatch[1].toUpperCase() : 'BANER';
+    // Extract name by removing common command keywords and phone/locations
+    const cleanedName = userMessage
+      .replace(/(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi)/gi, '')
+      .replace(/(add|create|lead|banao|karo|naya|new|in|me|ka|ko|budget|phone|\+?\d{10,12})/gi, '')
+      .replace(/[^a-zA-Z\s]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-      return {
-        reply: `Done sir! **${leadName}** ka naya lead CRM backend API mein **CREATE** kar diya hai aur CRM screen **Lead Management Desk** pe switch kar di hai! ✅`,
-        action: {
-          type: 'CREATE_LEAD',
-          params: { name: leadName, phone, location, budgetMin: '7500000', budgetMax: '15000000', requirementType: 'BUY' }
-        }
-      };
-    }
+    const leadName = cleanedName.length >= 2 ? cleanedName : 'Rohan Sharma';
+    const phone = phoneMatch ? phoneMatch[1] : '+91 98765 43210';
+    const location = locMatch ? locMatch[1].toUpperCase() : 'BANER';
 
+    return {
+      reply: `Done sir! **${leadName}** ka naya lead CRM backend API mein **CREATE** kar diya hai location **${location}** ke liye! ✅`,
+      action: {
+        type: 'CREATE_LEAD',
+        params: { name: leadName, phone, location, budgetMin: '7500000', budgetMax: '15000000', requirementType: 'BUY' }
+      }
+    };
+  }
+
+  // 2. Navigation Intent
+  if (inputLower.includes('lead management') || inputLower.includes('leads dikhao') || inputLower.includes('open leads') || inputLower.includes('leads tab')) {
     return {
       reply: 'Zaroor sir! CRM **Lead Management Desk** pe switch kar diya hai. Yahan saare active leads, phone calls, aur statuses visible hain. 📋',
       action: { type: 'NAVIGATE_TAB', params: { tab: 'leads' } }
@@ -245,14 +252,14 @@ User Message: "${userMessage}"`;
       action: { type: 'NAVIGATE_TAB', params: { tab: 'deals' } }
     };
   }
-  if (inputLower.includes('team') || inputLower.includes('agent') || inputLower.includes('rm')) {
+  if (/\b(team|agents|rms|leaderboard)\b/i.test(inputLower)) {
     return {
       reply: 'Team & RMs Performance Leaderboard open kar diya hai. Jyoti Dhale, Jyoti Jagtap, Yash Murkute ke stats active hain. 🏆',
       action: { type: 'NAVIGATE_TAB', params: { tab: 'team' } }
     };
   }
 
-  // 2. Update Status Intent
+  // 3. Update Status Intent
   if (inputLower.includes('hot') || inputLower.includes('qualified') || inputLower.includes('won')) {
     const status = inputLower.includes('hot') ? 'HOT' : inputLower.includes('won') ? 'WON' : 'QUALIFIED';
     const targetNameMatch = userMessage.match(/(?:ko|lead)\s+([A-Za-z\s]+?)\s+(?:ko|mark|hot|status)/i);
