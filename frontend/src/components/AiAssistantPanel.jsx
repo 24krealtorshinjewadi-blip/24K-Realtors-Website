@@ -206,52 +206,22 @@ export default function AiAssistantPanel({ leads = [], selectedLead = null, onCo
 
   return (
     <>
-      {/* ── FLOATING LAUNCHER BUTTON ── */}
-      <motion.button
-        whileHover={{ scale: 1.06, boxShadow: `0 0 25px ${GOLD}80` }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          zIndex: 999,
-          padding: '12px 20px',
-          borderRadius: '50px',
-          background: 'linear-gradient(135deg, #0B1528 0%, #152540 100%)',
-          border: `1.5px solid ${GOLD}`,
-          color: GOLD,
-          fontWeight: 800,
-          fontSize: '0.84rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          cursor: 'pointer',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(10px)'
-        }}
-      >
-        <Sparkles size={18} color={GOLD} className="animate-pulse" />
-        <span>24K AI Co-pilot</span>
-        <span style={{ fontSize: '0.62rem', background: GOLD, color: '#070D18', padding: '2px 6px', borderRadius: '10px', fontWeight: 900 }}>GEMINI 2.0</span>
-      </motion.button>
-
-      {/* ── EXPANDED PANEL ── */}
+      {/* ── AI CO-PILOT PANEL (sidebar-controlled, no floating button) ── */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, x: 40, scale: 0.96 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 40, scale: 0.96 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
             style={{
               position: 'fixed',
-              bottom: '84px',
-              right: '24px',
-              zIndex: 999,
+              bottom: '20px',
+              right: '20px',
+              zIndex: 998,
               width: '420px',
-              height: '600px',
-              maxHeight: '80vh',
+              height: 'calc(100vh - 100px)',
+              maxHeight: '680px',
               background: 'linear-gradient(180deg, #070F1E 0%, #0B1528 100%)',
               border: `1px solid ${GOLD}40`,
               borderRadius: '20px',
@@ -330,13 +300,17 @@ export default function AiAssistantPanel({ leads = [], selectedLead = null, onCo
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
                 
                 {/* Quick Action Chips Bar */}
-                <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.04)', display: 'flex', gap: '6px', overflowX: 'auto' }}>
+                <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.04)', display: 'flex', gap: '6px', overflowX: 'auto', flexWrap: 'nowrap' }}>
                   {[
-                    { label: '➕ Create Lead', cmd: 'Baner me Rohan Sharma ka lead add karo 9876543210' },
-                    { label: '🚘 Site Visits', cmd: 'Site visits desk dikhao' },
-                    { label: '🔥 Hot Leads', cmd: 'Hot leads dikhao' },
+                    { label: '➕ Lead Add', cmd: 'Baner me Arjun Mehta ka lead add karo 9876543210' },
+                    { label: '📋 Leads', cmd: 'Lead management desk dikhao' },
+                    { label: '🚘 Site Visit', cmd: 'Site visits desk dikhao' },
                     { label: '⏱️ Follow-ups', cmd: 'Follow ups desk open karo' },
-                    { label: '💰 Deals Pipeline', cmd: 'Deals pipeline dikhao' }
+                    { label: '💰 Deals', cmd: 'Deals pipeline dikhao' },
+                    { label: '📊 Analytics', cmd: 'Analytics reports dikhao' },
+                    { label: '✅ Attendance', cmd: 'Attendance dashboard dikhao' },
+                    { label: '👥 Team', cmd: 'Team performance dikhao' },
+                    { label: '💳 Commissions', cmd: 'Commissions payroll dikhao' },
                   ].map((chip, idx) => (
                     <button
                       key={idx}
@@ -348,6 +322,7 @@ export default function AiAssistantPanel({ leads = [], selectedLead = null, onCo
                         border: `1px solid ${GOLD}30`,
                         color: GOLD,
                         fontSize: '0.66rem',
+                        flexShrink: 0,
                         fontWeight: 700,
                         whiteSpace: 'nowrap',
                         cursor: 'pointer'

@@ -638,13 +638,39 @@ export default function Dashboard({ onViewChange }) {
           </div>
         </div>
 
-        {/* View Header Title */}
+        {/* View Header Title - Dynamic for all 12 tabs */}
         <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10px' }}>
           <span style={{ fontSize: '0.98rem', fontWeight: 800, color: '#FFF' }}>
-            {activeTab === 'leads' ? 'Lead Management' : 'Executive Dashboard'}
+            {{
+              dashboard: 'Executive Dashboard',
+              leads: 'Lead Management',
+              properties: 'Properties & Inventory',
+              site_visits: 'Site Visits',
+              follow_ups: 'Follow-ups',
+              deals: 'Deals & Closures',
+              team: 'Team & RMs',
+              commissions: 'Commissions & Payroll',
+              analytics: 'Analytics & Reports',
+              inventory: 'Inventory / Projects',
+              attendance: 'Attendance',
+              leaves: 'HR & Leaves',
+            }[activeTab] || '24K Realtors CRM'}
           </span>
           <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)' }}>
-            {activeTab === 'leads' ? 'Manage, Track & Convert Your Leads Efficiently' : 'Monday, 27 July 2026'}
+            {{
+              dashboard: 'Live Executive Metrics & KPIs',
+              leads: 'Manage, Track & Convert Your Leads Efficiently',
+              properties: 'All Active Projects & Inventory',
+              site_visits: 'Scheduled Visits & VIP Chauffeur Tours',
+              follow_ups: 'Due Reminders & Callback Tracker',
+              deals: '7-Stage Kanban Pipeline — Rs.4.82 Cr',
+              team: 'Agents, RMs & Sales Leaderboard',
+              commissions: 'Team Earnings & Incentive Reports',
+              analytics: 'CRM Performance Charts & Insights',
+              inventory: 'Builder Projects & Property Catalog',
+              attendance: 'Team Checkin & Working Hours',
+              leaves: 'Leave Requests & HR Management',
+            }[activeTab] || 'Pune Real Estate Operations'}
           </span>
         </div>
 
@@ -1651,11 +1677,114 @@ export default function Dashboard({ onViewChange }) {
           {activeTab === 'leaves' && <LeavesTab />}
           {activeTab === 'commissions' && <PayrollTab />}
           {activeTab === 'inventory' && <SocietiesTab />}
-          {activeTab === 'analytics' && <BlogsTab />}
           {activeTab === 'site_visits' && <SiteVisitsTab leads={leads} agents={agents} />}
           {activeTab === 'follow_ups' && <FollowUpsTab />}
           {activeTab === 'deals' && <DealsTab />}
           {activeTab === 'team' && <EmployeesTab />}
+
+          {/* TAB: ANALYTICS & REPORTS - Full Inline Analytics Dashboard */}
+          {activeTab === 'analytics' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+                {[
+                  { label: 'TOTAL REVENUE', val: 'Rs.8.4 Cr', change: '↑ 23.5% vs last month', color: '#F59E0B' },
+                  { label: 'LEAD CONVERSION', val: '17.5%', change: '↑ 16.7% vs last month', color: '#10B981' },
+                  { label: 'AVG DEAL SIZE', val: 'Rs.1.2 Cr', change: '↑ 8.2% vs last month', color: '#3B82F6' },
+                  { label: 'SITE VISITS', val: '124', change: '↑ 31.2% vs last month', color: '#8B5CF6' },
+                ].map((kpi, i) => (
+                  <div key={i} style={{ background: 'rgba(10,18,36,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '18px' }}>
+                    <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.45)', fontWeight: 700, letterSpacing: '0.06em', marginBottom: '6px' }}>{kpi.label}</div>
+                    <div style={{ fontSize: '1.7rem', fontWeight: 900, color: '#FFF', fontFamily: "'Cinzel', serif", lineHeight: 1 }}>{kpi.val}</div>
+                    <div style={{ fontSize: '0.66rem', color: kpi.color, fontWeight: 700, marginTop: '6px' }}>{kpi.change}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div style={{ background: 'rgba(10,18,36,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '20px' }}>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#FFF', marginBottom: '16px' }}>Lead Funnel — This Month</div>
+                  {[
+                    { stage: 'Total Leads', val: leads.length || 128, pct: 100, color: '#F59E0B' },
+                    { stage: 'Contacted', val: 76, pct: 59, color: '#3B82F6' },
+                    { stage: 'Qualified', val: 42, pct: 33, color: '#8B5CF6' },
+                    { stage: 'Site Visit', val: 18, pct: 14, color: '#10B981' },
+                    { stage: 'Deals Won', val: 7, pct: 5.5, color: '#F97316' },
+                  ].map((f, i) => (
+                    <div key={i} style={{ marginBottom: '10px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', color: '#FFF', marginBottom: '4px' }}>
+                        <span>{f.stage}</span>
+                        <span style={{ fontWeight: 700, color: f.color }}>{f.val}</span>
+                      </div>
+                      <div style={{ height: '8px', borderRadius: '4px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${f.pct}%`, background: f.color, borderRadius: '4px', transition: 'width 0.8s ease' }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: 'rgba(10,18,36,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '20px' }}>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#FFF', marginBottom: '16px' }}>Lead Sources — Distribution</div>
+                  {[
+                    { source: 'Website', leads: 42, pct: 32, color: '#F59E0B' },
+                    { source: 'WhatsApp', leads: 35, pct: 27, color: '#25D366' },
+                    { source: 'Instagram', leads: 18, pct: 14, color: '#EC4899' },
+                    { source: '99acres', leads: 15, pct: 12, color: '#3B82F6' },
+                    { source: 'Referral', leads: 10, pct: 8, color: '#10B981' },
+                    { source: 'MagicBricks', leads: 8, pct: 6, color: '#F97316' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: s.color, flexShrink: 0 }} />
+                      <div style={{ flex: 1, fontSize: '0.76rem', color: '#FFF' }}>{s.source}</div>
+                      <div style={{ fontSize: '0.76rem', fontWeight: 700, color: s.color }}>{s.leads}</div>
+                      <div style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.4)' }}>{s.pct}%</div>
+                      <div style={{ width: '80px', height: '6px', borderRadius: '3px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${s.pct * 3}px`, background: s.color, borderRadius: '3px' }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div style={{ background: 'rgba(10,18,36,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '20px' }}>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#FFF', marginBottom: '16px' }}>Top RM Performance</div>
+                  {[
+                    { name: 'Jyoti Dhale', deals: 4, revenue: 'Rs.4.8 Cr', score: 95 },
+                    { name: 'Jyoti Jagtap', deals: 2, revenue: 'Rs.2.4 Cr', score: 78 },
+                    { name: 'Yash Murkute', deals: 1, revenue: 'Rs.1.2 Cr', score: 65 },
+                  ].map((rm, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: ['#F59E0B', '#3B82F6', '#8B5CF6'][i], display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#070D18', fontWeight: 800, fontSize: '0.72rem' }}>{rm.name.charAt(0)}</div>
+                        <div>
+                          <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#FFF' }}>{rm.name}</div>
+                          <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)' }}>{rm.deals} deals • {rm.revenue}</div>
+                        </div>
+                      </div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#F59E0B' }}>{rm.score}%</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: 'rgba(10,18,36,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '20px' }}>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#FFF', marginBottom: '16px' }}>Monthly Revenue Trend</div>
+                  {[
+                    { month: 'Apr', val: 4.2 }, { month: 'May', val: 5.8 }, { month: 'Jun', val: 6.1 },
+                    { month: 'Jul', val: 8.4 }
+                  ].map((m, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                      <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', width: '28px' }}>{m.month}</div>
+                      <div style={{ flex: 1, height: '24px', borderRadius: '6px', background: 'rgba(255,255,255,0.04)', overflow: 'hidden', position: 'relative' }}>
+                        <div style={{ height: '100%', width: `${(m.val / 10) * 100}%`, background: 'linear-gradient(90deg, #F59E0B, #B8860B)', borderRadius: '6px', display: 'flex', alignItems: 'center', paddingLeft: '8px' }}>
+                          <span style={{ fontSize: '0.66rem', fontWeight: 800, color: '#070D18' }}>Rs.{m.val} Cr</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
         </main>
       </div>

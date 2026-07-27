@@ -12,7 +12,7 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
  */
 async function callGemini(prompt, options = {}) {
   if (!GEMINI_API_KEY) {
-    console.warn('[Gemini] API key not configured. Using high-level autonomous fallback engine.');
+    console.warn('[Gemini] API key not configured. Using autonomous fallback engine.');
     return null;
   }
 
@@ -41,9 +41,9 @@ async function callGemini(prompt, options = {}) {
   }
 }
 
-// ═══════════════════════════════════════════════════════════
+// ===============================================================
 // 1. LEAD SCORING AI
-// ═══════════════════════════════════════════════════════════
+// ===============================================================
 
 export async function scoreLeadWithAI(lead) {
   const prompt = `You are an expert real estate lead qualifier for 24K Realtors, Pune (Hinjewadi, Wakad, Baner, Kharadi).
@@ -56,7 +56,7 @@ Respond in EXACT JSON:
   "priority": 9,
   "reason": "High budget client looking in Baner area",
   "nextAction": "Call immediately and schedule site visit",
-  "estimatedDealSize": "₹1.5 Cr"
+  "estimatedDealSize": "Rs.1.5 Cr"
 }`;
 
   const result = await callGemini(prompt, { temperature: 0.2, maxTokens: 300 });
@@ -67,20 +67,19 @@ Respond in EXACT JSON:
     }
   }
 
-  // Fallback scoring logic
   const budget = parseInt(String(lead.budget || lead.budgetMax || '0').replace(/[^0-9]/g, '')) || 0;
   if (budget > 10000000 || lead.status === 'HOT') {
-    return { score: 'HOT', priority: 9, reason: 'High budget luxury client in Pune corridor', nextAction: 'Call immediately', estimatedDealSize: `₹${(budget/10000000 || 1.2).toFixed(1)} Cr` };
+    return { score: 'HOT', priority: 9, reason: 'High budget luxury client in Pune corridor', nextAction: 'Call immediately', estimatedDealSize: `Rs.${(budget/10000000 || 1.2).toFixed(1)} Cr` };
   }
   if (budget > 5000000 || lead.status === 'QUALIFIED') {
-    return { score: 'WARM', priority: 6, reason: 'Qualified client with clear budget', nextAction: 'Schedule site visit', estimatedDealSize: `₹${(budget/10000000 || 0.8).toFixed(1)} Cr` };
+    return { score: 'WARM', priority: 6, reason: 'Qualified client with clear budget', nextAction: 'Schedule site visit', estimatedDealSize: `Rs.${(budget/10000000 || 0.8).toFixed(1)} Cr` };
   }
   return { score: 'COLD', priority: 3, reason: 'Nurturing required', nextAction: 'Send digital brochure via WhatsApp', estimatedDealSize: 'TBD' };
 }
 
-// ═══════════════════════════════════════════════════════════
+// ===============================================================
 // 2. SMART WHATSAPP MESSAGE GENERATOR
-// ═══════════════════════════════════════════════════════════
+// ===============================================================
 
 export async function generateWhatsAppMessage(lead, messageType = 'followup') {
   const prompt = `You are a top real estate advisor at 24K Realtors, Pune.
@@ -98,15 +97,15 @@ Keep under 120 words. Use emojis appropriately. Sound personal and helpful. Incl
     welcome: `Namaste ${lead.name || 'ji'}! 🏠\n\n24K Realtors Pune mein aapka swagat hai. Aapki query receive hui hai premium properties ke liye.\n\nHamari team ne ${lead.preferredLocation || 'Baner/Wakad'} mein top luxury projects shortlist kiye hain.\n\nEk quick call arrange karein? 📞\n\n- 24K Realtors VIP Advisory 🏆`,
     followup: `Namaste ${lead.name || 'ji'}! 👋\n\nHope aap badhiya hain. 24K Realtors ki taraf se follow-up kar raha hoon.\n\nKya aap ${lead.preferredLocation || 'Pune'} property plan continue kar rahe hain? Humare paas new inventory launch hui hai.\n\nKab baat ho sakti hai? 😊`,
     sitevisit: `Namaste ${lead.name || 'ji'}! 🚘\n\nAapke liye ${lead.preferredLocation || 'Hinjewadi'} location pe exclusive site visit arrange kar di hai.\n\nComplimentary Mercedes / BMW Chauffeur pickup available hai! Kab chalna chahenge? 🌟`,
-    offer: `Namaste ${lead.name || 'ji'}! 🎯\n\nSpecial 24K Realtors Limited Offer: Exclusive early bird discount & zero brokerage benefits on premium inventory.\n\nOffer valid for 48 hours only! Direct connect karein: +91 96730 00053 📞`
+    offer: `Namaste ${lead.name || 'ji'}! 🎯\n\nSpecial 24K Realtors Limited Offer: Exclusive early bird discount and zero brokerage benefits on premium inventory.\n\nOffer valid for 48 hours only! Direct connect karein: +91 96730 00053 📞`
   };
 
   return fallbacks[messageType] || fallbacks.followup;
 }
 
-// ═══════════════════════════════════════════════════════════
+// ===============================================================
 // 3. PROPERTY MATCH AI
-// ═══════════════════════════════════════════════════════════
+// ===============================================================
 
 export async function matchPropertiesWithAI(clientRequirements, properties = []) {
   const prompt = `Match properties to requirements:
@@ -114,7 +113,7 @@ Client: ${JSON.stringify(clientRequirements)}
 Available Properties: ${JSON.stringify(properties.slice(0, 8))}
 
 Return JSON array of top matches:
-[{"index": 1, "matchScore": 95, "reason": "Location & budget fit"}]`;
+[{"index": 1, "matchScore": 95, "reason": "Location and budget fit"}]`;
 
   const result = await callGemini(prompt, { temperature: 0.2, maxTokens: 300 });
   if (result) {
@@ -131,11 +130,75 @@ Return JSON array of top matches:
   }));
 }
 
-// ═══════════════════════════════════════════════════════════
+// ===============================================================
 // 4. AUTONOMOUS CRM CO-PILOT ENGINE (FULL CRM & API EXECUTION)
-// ═══════════════════════════════════════════════════════════
+// ===============================================================
 
 const chatHistory = [];
+
+// Tab navigation config - maps keywords to CRM tab IDs
+const TAB_NAVIGATION_MAP = [
+  {
+    keywords: ['lead management', 'leads dikhao', 'open leads', 'leads tab', 'lead desk', 'lead list', 'all leads', 'leads dekho', 'lead dekho'],
+    tab: 'leads',
+    reply: 'Lead Management Desk pe switch kar diya! Saare active leads, pipeline aur contact history yahan hain. 📋'
+  },
+  {
+    keywords: ['propert', 'inventory project', 'flat', 'apartment', 'society', 'lodha', 'shapoorji', 'vyomora', 'godrej', 'new project'],
+    tab: 'properties',
+    reply: 'Properties Desk open kar diya! Pune ke flagship projects yahan hain. 🏢'
+  },
+  {
+    keywords: ['site visit', 'visit schedul', 'site tour', 'property visit', 'chauffeur', 'site dekhna', 'location visit'],
+    tab: 'site_visits',
+    reply: 'Site Visits Desk open! Aaj ke scheduled visits aur VIP Chauffeur tours manage kar sakte hain. 🚘'
+  },
+  {
+    keywords: ['follow up', 'followup', 'reminder', 'callback', 'call back', 'follow-up', 'yaad dilao', 'call schedule'],
+    tab: 'follow_ups',
+    reply: 'Follow-ups Desk open! Today ke due reminders aur callback schedule yahan active hain. Taka-tak karo! ⏱️'
+  },
+  {
+    keywords: ['deal', 'pipeline', 'closure', 'kanban', 'negotiation', 'agreement', 'booking', 'close', 'winning'],
+    tab: 'deals',
+    reply: 'Deals and Closures Desk! 7-Stage Kanban Pipeline aur Rs.4.82 Cr revenue visible hai. 💰'
+  },
+  {
+    keywords: ['team', 'agent', 'rm performance', 'relationship manager', 'leaderboard', 'staff', 'sales team', 'team performance'],
+    tab: 'team',
+    reply: 'Team and RMs Leaderboard open! Jyoti Dhale, Jyoti Jagtap, Yash Murkute ke stats active hain. 🏆'
+  },
+  {
+    keywords: ['commission', 'payroll', 'salary', 'incentive', 'earning', 'payout', 'revenue share', 'payment'],
+    tab: 'commissions',
+    reply: 'Commissions and Payroll Desk open! Team earnings aur incentive breakdowns yahan hain. 💳'
+  },
+  {
+    keywords: ['analytic', 'report', 'chart', 'graph', 'insight', 'performance report', 'metric', 'data studio'],
+    tab: 'analytics',
+    reply: 'Analytics and Reports Desk open! CRM performance metrics, lead funnel, aur revenue charts yahan hain. 📊'
+  },
+  {
+    keywords: ['attendance', 'check-in', 'checkin', 'upasthiti', 'login time', 'kab aaya', 'office time'],
+    tab: 'attendance',
+    reply: 'Attendance Dashboard open! Team checkin aur working hours tracker yahan hai. ✅'
+  },
+  {
+    keywords: ['leave', 'hr module', 'holiday', 'absent', 'chutti', 'vacation', 'sick leave', 'hr'],
+    tab: 'leaves',
+    reply: 'HR and Leaves Module open! Leave requests aur approvals yahan manage kar sakte hain. 📅'
+  },
+  {
+    keywords: ['inventory', 'project list', 'builder list', 'societies', 'housing project', 'project catalog'],
+    tab: 'inventory',
+    reply: 'Inventory / Projects Desk open! All active builder projects aur availability yahan hain. 🏗️'
+  },
+  {
+    keywords: ['dashboard', 'home screen', 'overview', 'executive', 'main screen', 'kpi', 'summary', 'wapas', 'back to home'],
+    tab: 'dashboard',
+    reply: 'Executive Dashboard pe wapas aa gaye! KPI summary aur live metrics yahan hain. 📈'
+  },
+];
 
 /**
  * High-Level Autonomous Co-Pilot Execution Engine
@@ -146,20 +209,22 @@ export async function executeCopilotAction(userMessage, context = {}) {
 
   const systemPrompt = `You are "24K AI Co-Pilot (Powered by Gemini 2.0 Flash)", an autonomous executive AI co-pilot built directly into the 24K Realtors Enterprise CRM (Pune, India).
 
-You have FULL CONTROL & REAL-TIME API ACCESS to the entire CRM. You can autonomously execute commands like adding leads, updating lead status, scheduling site visits, scheduling follow-ups, searching inventory, opening CRM tabs, and sending WhatsApp messages.
+You have FULL CONTROL and REAL-TIME API ACCESS to the entire CRM. You can autonomously execute commands like adding leads, updating lead status, scheduling site visits, scheduling follow-ups, searching inventory, opening CRM tabs, and sending WhatsApp messages.
 
 Current Real-time CRM Context:
 - Total Leads in CRM: ${context.totalLeads || 0}
 - Hot Leads: ${context.hotLeads || 0}
 - Site Visits Today: ${context.siteVisitsToday || 0}
-- Total Pipeline Value: ${context.pipelineValue || '₹4.82 Cr'}
+- Total Pipeline Value: ${context.pipelineValue || 'Rs.4.82 Cr'}
 - Active Tab: ${context.activeTab || 'dashboard'}
+
+Available CRM Tabs: dashboard, leads, properties, site_visits, follow_ups, deals, team, commissions, analytics, inventory, attendance, leaves
 
 When the user asks you to DO something in the CRM, respond in EXACT JSON format:
 {
   "reply": "Warm natural Hinglish response explaining the action taken...",
   "action": {
-    "type": "CREATE_LEAD" | "UPDATE_STATUS" | "SCHEDULE_VISIT" | "SCHEDULE_FOLLOWUP" | "NAVIGATE_TAB" | "SEARCH_PROPERTIES" | "SEND_WHATSAPP" | "NONE",
+    "type": "CREATE_LEAD | UPDATE_STATUS | SCHEDULE_VISIT | SCHEDULE_FOLLOWUP | NAVIGATE_TAB | SEARCH_PROPERTIES | SEND_WHATSAPP | NONE",
     "params": {
       "name": "Lead Name",
       "phone": "+91...",
@@ -190,29 +255,32 @@ User Message: "${userMessage}"`;
     console.warn('[Gemini Copilot Engine] AI processing fallback engaged:', e.message);
   }
 
-  // ── AUTONOMOUS NATURAL HINGLISH INTENT PARSER (FALLBACK) ──
+  // AUTONOMOUS NATURAL HINGLISH INTENT PARSER (FALLBACK)
   const inputLower = userMessage.toLowerCase();
-  
-  // 1. Lead Creation Intent (Check FIRST before navigation)
-  const isAddLead = /\b(add|create|naya|new|banao)\b/i.test(inputLower) && /\b(lead|client|customer)\b/i.test(inputLower);
+
+  // 1. Lead Creation Intent (HIGHEST PRIORITY - check first)
+  const isAddLead = /\b(add|create|naya|new|banao|jodo|register|daalo)\b/i.test(inputLower) &&
+    /\b(lead|client|customer|inquiry|enquiry)\b/i.test(inputLower);
+
   if (isAddLead) {
     const phoneMatch = userMessage.match(/(\+?\d{10,12})/);
-    const locMatch = userMessage.match(/(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi)/i);
+    const locMatch = userMessage.match(/\b(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi|hadapsar|magarpatta|aundh|pune)\b/i);
 
-    // Extract name by removing common command keywords and phone/locations
-    const cleanedName = userMessage
-      .replace(/(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi)/gi, '')
-      .replace(/(add|create|lead|banao|karo|naya|new|in|me|ka|ko|budget|phone|\+?\d{10,12})/gi, '')
+    // Extract name by removing stop words, numbers, locations
+    const cleaned = userMessage
+      .replace(/\b(baner|wakad|hinjewadi|kharadi|pimple saudagar|balewadi|hadapsar|magarpatta|aundh|pune)\b/gi, '')
+      .replace(/(\+?\d+)/g, '')
+      .replace(/\b(add|create|lead|banao|karo|naya|new|daalo|in|me|ka|ko|budget|phone|cr|lakh|hai|aur|ke|liye|se|ne|ek|jo|wala|ki|the|a|an|is|it|for|with|at|and|or|to|of|on|by|please|sir|ji|hello|namaste|ok|bhi|yahan|wahan|usko|uski)\b/gi, '')
       .replace(/[^a-zA-Z\s]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
 
-    const leadName = cleanedName.length >= 2 ? cleanedName : 'Rohan Sharma';
+    const leadName = cleaned.length >= 3 ? cleaned.replace(/\b\w/g, c => c.toUpperCase()) : 'New Lead';
     const phone = phoneMatch ? phoneMatch[1] : '+91 98765 43210';
     const location = locMatch ? locMatch[1].toUpperCase() : 'BANER';
 
     return {
-      reply: `Done sir! **${leadName}** ka naya lead CRM backend API mein **CREATE** kar diya hai location **${location}** ke liye! ✅`,
+      reply: `Done sir! **${leadName}** ka naya lead CRM mein CREATE kar diya hai! Location: **${location}**, Phone: **${phone}** ✅\n\nLead Management Desk pe top row mein visible hai!`,
       action: {
         type: 'CREATE_LEAD',
         params: { name: leadName, phone, location, budgetMin: '7500000', budgetMax: '15000000', requirementType: 'BUY' }
@@ -220,68 +288,59 @@ User Message: "${userMessage}"`;
     };
   }
 
-  // 2. Navigation Intent
-  if (inputLower.includes('lead management') || inputLower.includes('leads dikhao') || inputLower.includes('open leads') || inputLower.includes('leads tab')) {
+  // 2. Status Update Intent
+  const statusWords = { hot: 'HOT', qualified: 'QUALIFIED', 'site visit': 'SITE_VISIT', contacted: 'CONTACTED', won: 'WON', lost: 'LOST', new: 'NEW' };
+  let detectedStatus = null;
+  for (const [word, val] of Object.entries(statusWords)) {
+    if (inputLower.includes(word)) { detectedStatus = val; break; }
+  }
+
+  if (detectedStatus && /\b(ko|mark|kar|set|update|change|karo|karna|bana)\b/i.test(inputLower)) {
+    const namePatterns = [
+      /([A-Z][a-z]+\s+[A-Z][a-z]+)/,
+      /([A-Za-z]{3,}\s+[A-Za-z]{3,})/,
+    ];
+    let targetName = 'Selected Lead';
+    for (const pat of namePatterns) {
+      const m = userMessage.match(pat);
+      if (m) { targetName = m[1].trim(); break; }
+    }
+
     return {
-      reply: 'Zaroor sir! CRM **Lead Management Desk** pe switch kar diya hai. Yahan saare active leads, phone calls, aur statuses visible hain. 📋',
-      action: { type: 'NAVIGATE_TAB', params: { tab: 'leads' } }
+      reply: `Done sir! **${targetName}** ka status **${detectedStatus}** update kar diya hai CRM mein! 🔥 Lead Management Desk pe reflect ho gaya hai.`,
+      action: { type: 'UPDATE_STATUS', params: { status: detectedStatus, targetName } }
     };
   }
 
-  if (inputLower.includes('property') || inputLower.includes('properties') || inputLower.includes('inventory')) {
-    return {
-      reply: 'Properties & Inventory desk open kar diya hai. Pune ke flagship projects (Lodha Hinjewadi, VTP Blue Waters, Godrej Hillside) ki details yahan hain. 🏢',
-      action: { type: 'NAVIGATE_TAB', params: { tab: 'properties' } }
-    };
+  // 3. Tab Navigation Intent
+  for (const mapping of TAB_NAVIGATION_MAP) {
+    if (mapping.keywords.some(kw => inputLower.includes(kw))) {
+      return {
+        reply: mapping.reply,
+        action: { type: 'NAVIGATE_TAB', params: { tab: mapping.tab } }
+      };
+    }
   }
-  if (inputLower.includes('site visit') || inputLower.includes('visit schedule')) {
+
+  // 4. WhatsApp Intent
+  if (inputLower.includes('whatsapp') || inputLower.includes('msg bhejo') || inputLower.includes('message bhejo') || inputLower.includes('message send')) {
     return {
-      reply: 'Site Visits Desk open kar raha hoon. Aaj ke scheduled visits aur VIP Chauffeur tours yahan se manage kar sakte hain. 🚘',
-      action: { type: 'NAVIGATE_TAB', params: { tab: 'site_visits' } }
-    };
-  }
-  if (inputLower.includes('follow up') || inputLower.includes('followup') || inputLower.includes('reminders')) {
-    return {
-      reply: 'Follow-ups Desk open kar diya hai. Today\'s due follow-ups aur calendar view yahan active hain. ⏱️',
-      action: { type: 'NAVIGATE_TAB', params: { tab: 'follow_ups' } }
-    };
-  }
-  if (inputLower.includes('deal') || inputLower.includes('pipeline') || inputLower.includes('closures')) {
-    return {
-      reply: 'Deals & Closures Desk activate kar diya hai. 7-Stage Kanban Pipeline aur ₹4.82 Cr revenue pipeline screen pe hai. 💰',
-      action: { type: 'NAVIGATE_TAB', params: { tab: 'deals' } }
-    };
-  }
-  if (/\b(team|agents|rms|leaderboard)\b/i.test(inputLower)) {
-    return {
-      reply: 'Team & RMs Performance Leaderboard open kar diya hai. Jyoti Dhale, Jyoti Jagtap, Yash Murkute ke stats active hain. 🏆',
-      action: { type: 'NAVIGATE_TAB', params: { tab: 'team' } }
+      reply: `WhatsApp message template generate karke client ke liye ready kar diya! WhatsApp Launcher trigger ho gaya. 💬`,
+      action: { type: 'SEND_WHATSAPP', params: { message: 'Namaste! 24K Realtors ki taraf se swagat hai. Aapke liye exclusive property showcase ready hai!' } }
     };
   }
 
-  // 3. Update Status Intent
-  if (inputLower.includes('hot') || inputLower.includes('qualified') || inputLower.includes('won')) {
-    const status = inputLower.includes('hot') ? 'HOT' : inputLower.includes('won') ? 'WON' : 'QUALIFIED';
-    const targetNameMatch = userMessage.match(/(?:ko|lead)\s+([A-Za-z\s]+?)\s+(?:ko|mark|hot|status)/i);
-    const targetName = targetNameMatch ? targetNameMatch[1].trim() : 'Selected Lead';
-
+  // 5. CRM Stats Query
+  if (inputLower.includes('kitne lead') || inputLower.includes('total lead') || inputLower.includes('how many') || inputLower.includes('crm status') || inputLower.includes('summary')) {
     return {
-      reply: `Done sir! **${targetName}** ka status **${status}** mark kar ke CRM Lead Desk pe update kar diya hai! 🔥`,
-      action: { type: 'UPDATE_STATUS', params: { status, targetName } }
+      reply: `📊 **CRM Live Status:**\n• Total Leads: **${context.totalLeads || 5}**\n• Hot Leads: **${context.hotLeads || 2}**\n• Pipeline Value: **${context.pipelineValue || 'Rs.4.82 Cr'}**\n• Site Visits Today: **${context.siteVisitsToday || 3}**\n\nKoi action execute karun? 🤖`,
+      action: { type: 'NONE' }
     };
   }
 
-  // 3. WhatsApp Intent
-  if (inputLower.includes('whatsapp') || inputLower.includes('message send')) {
-    return {
-      reply: `WhatsApp message template generate karke CRM client ke liye ready kar diya hai. Direct WhatsApp Launcher trigger kar diya hai! 💬`,
-      action: { type: 'SEND_WHATSAPP', params: { message: 'Namaste! 24K Realtors ki taraf se swagat hai.' } }
-    };
-  }
-
-  // 4. Default Advisory Response
+  // 6. Default Advisory
   return {
-    reply: `Main 24K AI Co-Pilot hoon! Main aapke CRM ke har task ko fully automate kar sakta hoon.\n\nTry command:\n• *"Baner me Rohan Sharma ka lead add karo 9876543210"* \n• *"Site visits desk kholo"* \n• *"Hot leads dikhao"* \n• *"WhatsApp message bhejo"* 🤖✨`,
+    reply: `Main 24K AI Co-Pilot hoon! CRM ke saare tasks automate kar sakta hoon.\n\n✨ Try karo:\n• *"Baner me Rahul Sharma ka lead add karo 9876543210"*\n• *"Deals pipeline dikhao"*\n• *"Priya Patel ko HOT mark karo"*\n• *"Analytics reports dekho"*\n• *"Attendance check karo"*\n• *"Follow-ups kholo"* 🤖`,
     action: { type: 'NONE' }
   };
 }
