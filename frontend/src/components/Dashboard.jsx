@@ -264,15 +264,6 @@ export default function Dashboard({ onViewChange }) {
   const userRole = localStorage.getItem('role') || 'SUPER_ADMIN';
   const adminUsername = localStorage.getItem('username') || 'Manish Rai';
 
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [subTab, setSubTab] = useState('ALL');
-
-  const [leads, setLeads] = useState([]);
-  const [leadsLoading, setLeadsLoading] = useState(false);
-  const [selectedLead, setSelectedLead] = useState(null);
-  const [agents, setAgents] = useState([]);
-  const [properties, setProperties] = useState([]);
-
   // Mock leads array normalized for safety
   const rawMockLeads = [
     {
@@ -358,6 +349,15 @@ export default function Dashboard({ onViewChange }) {
   ];
 
   const initialNormalizedLeads = rawMockLeads.map(normalizeLead);
+
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [subTab, setSubTab] = useState('ALL');
+
+  const [leads, setLeads] = useState(initialNormalizedLeads);
+  const [leadsLoading, setLeadsLoading] = useState(false);
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [agents, setAgents] = useState([]);
+  const [properties, setProperties] = useState([]);
   const [selectedLeadDetail, setSelectedLeadDetail] = useState(initialNormalizedLeads[0]);
 
   // Lead Modal & Action States
