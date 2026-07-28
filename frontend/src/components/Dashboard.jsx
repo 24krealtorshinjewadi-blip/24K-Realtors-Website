@@ -28,6 +28,7 @@ import DealsTab from './DealsTab';
 import AiAssistantPanel from './AiAssistantPanel';
 import SettingsTab from './SettingsTab';
 import HelpSupportTab from './HelpSupportTab';
+import CommissionsTab from './CommissionsTab';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -1688,7 +1689,7 @@ export default function Dashboard({ onViewChange }) {
 
           {activeTab === 'attendance' && <AttendanceTab />}
           {activeTab === 'leaves' && <LeavesTab />}
-          {activeTab === 'commissions' && <PayrollTab />}
+          {activeTab === 'commissions' && <CommissionsTab />}
           {activeTab === 'inventory' && <SocietiesTab />}
           {activeTab === 'site_visits' && <SiteVisitsTab leads={leads} agents={agents} />}
           {activeTab === 'follow_ups' && <FollowUpsTab />}
