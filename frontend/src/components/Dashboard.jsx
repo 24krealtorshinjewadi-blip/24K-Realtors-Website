@@ -31,6 +31,7 @@ import HelpSupportTab from './HelpSupportTab';
 import CommissionsTab from './CommissionsTab';
 import AnalyticsTab from './AnalyticsTab';
 import InventoryTab from './InventoryTab';
+import EmployeeDashboard from './EmployeeDashboard';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -643,6 +644,7 @@ export default function Dashboard({ onViewChange }) {
         <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10px' }}>
           <span style={{ fontSize: '0.98rem', fontWeight: 800, color: '#FFF' }}>
             {{
+              employee_dashboard: 'My Workspace Dashboard',
               dashboard: 'Executive Dashboard',
               leads: 'Lead Management',
               properties: 'Properties & Inventory',
@@ -661,6 +663,7 @@ export default function Dashboard({ onViewChange }) {
           </span>
           <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)' }}>
             {{
+              employee_dashboard: 'Personalized Sales RM Dashboard & Quick Actions',
               dashboard: 'Live Executive Metrics & KPIs',
               leads: 'Manage, Track & Convert Your Leads Efficiently',
               properties: 'All Active Projects & Inventory',
@@ -767,19 +770,19 @@ export default function Dashboard({ onViewChange }) {
         }}>
           {[
             { id: 'ai_copilot', label: '24K AI Co-pilot', icon: Sparkles, isAi: true },
-            { id: 'dashboard', label: 'Executive Dashboard', icon: BarChart3 },
-            { id: 'leads', label: 'Lead Management', icon: Users },
-            { id: 'properties', label: 'Properties', icon: Home },
-            { id: 'site_visits', label: 'Site Visits', icon: Calendar },
+            { id: 'employee_dashboard', label: 'My Dashboard (RM)', icon: LayoutGrid },
+            { id: 'dashboard', label: 'Executive Dashboard (Owner)', icon: BarChart3 },
+            { id: 'leads', label: 'My Leads', icon: Users },
             { id: 'follow_ups', label: 'Follow-ups', icon: Clock },
+            { id: 'site_visits', label: 'Site Visits', icon: Calendar },
+            { id: 'properties', label: 'Properties', icon: Home },
             { id: 'deals', label: 'Deals & Closures', icon: DollarSign },
-            { id: 'team', label: 'Team & RMs', icon: UserCheck },
-            { id: 'commissions', label: 'Commissions', icon: Award },
-            { id: 'analytics', label: 'Analytics & Reports', icon: TrendingUp },
-            { id: 'inventory', label: 'Inventory / Projects', icon: Building },
+            { id: 'commissions', label: 'My Commissions', icon: Award },
             { id: 'attendance', label: 'Attendance', icon: CheckSquare },
             { id: 'leaves', label: 'HR & Leaves', icon: ShieldCheck },
-            { id: 'settings', label: 'Settings', icon: Settings },
+            { id: 'team', label: 'Team & RMs', icon: UserCheck },
+            { id: 'analytics', label: 'Analytics & Reports', icon: TrendingUp },
+            { id: 'inventory', label: 'Inventory / Projects', icon: Building },
           ].map(item => {
             const IconComp = item.icon;
             const isActive = activeTab === item.id || (item.isAi && isAiPanelOpen);
@@ -1695,6 +1698,15 @@ export default function Dashboard({ onViewChange }) {
           {activeTab === 'team' && <EmployeesTab />}
           {activeTab === 'settings' && <SettingsTab />}
           {activeTab === 'help' && <HelpSupportTab />}
+
+          {/* TAB: EMPLOYEE WORKSPACE DASHBOARD */}
+          {activeTab === 'employee_dashboard' && (
+            <EmployeeDashboard 
+              onNavigate={(tab) => setActiveTab(tab)} 
+              onOpenAddLead={() => setIsAddLeadModalOpen(true)} 
+              onOpenScheduleVisit={() => setIsScheduleVisitOpen(true)} 
+            />
+          )}
 
           {/* TAB: ANALYTICS & REPORTS - Full Analytics Dashboard */}
           {activeTab === 'analytics' && <AnalyticsTab />}
