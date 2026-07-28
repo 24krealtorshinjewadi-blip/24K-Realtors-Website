@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { signInWithGoogle, signInWithMicrosoft } from '../services/firebaseConfig';
-import { Crown, Shield, Users, User, Lock, Eye, EyeOff, Check, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import CompanyLogo from './CompanyLogo';
+import { signInWithGoogle } from '../services/firebaseConfig';
+import { Crown, Shield, Users, User, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    24K REALTORS — SaaS Enterprise Dual-Panel Login Page
@@ -34,8 +35,8 @@ async function apiPost(path, body) {
 
 // ─── Logo Component ─────────────────────────────────────────────────────────
 const BrandLogo = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '12px' }}>
-    <img src="/logo.png" alt="24K Realtors Logo" style={{ width: 190, height: 'auto', objectFit: 'contain' }} />
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '8px' }}>
+    <CompanyLogo variant="full" width={270} />
   </div>
 );
 

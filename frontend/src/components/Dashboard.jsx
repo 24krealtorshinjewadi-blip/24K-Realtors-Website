@@ -636,7 +636,7 @@ export default function Dashboard({ onViewChange }) {
       }}>
         {/* Brand Logo & Title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: '220px' }}>
-          <img src="/logo.png" alt="24K Realtors Logo" style={{ height: '36px', width: 'auto', objectFit: 'contain' }} />
+          <CompanyLogo variant="compact" width={185} />
         </div>
 
         {/* View Header Title - Dynamic for all 12 tabs */}
