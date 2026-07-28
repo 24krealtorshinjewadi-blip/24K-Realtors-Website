@@ -35,18 +35,7 @@ async function apiPost(path, body) {
 // ─── Logo Component ─────────────────────────────────────────────────────────
 const BrandLogo = () => (
   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '12px' }}>
-    <svg width="60" height="42" viewBox="0 0 100 70" fill="none">
-      <path d="M50 8 L15 38 L25 38 L50 16 L75 38 L85 38 Z" fill={GOLD} />
-      <path d="M50 20 L28 40 L72 40 Z" fill={GOLD} opacity="0.8" />
-      <circle cx="50" cy="48" r="6" fill={GOLD} />
-      <path d="M38 58 L62 58 L50 48 Z" fill={GOLD} />
-    </svg>
-    <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', fontWeight: 900, color: GOLD, letterSpacing: '0.15em', marginTop: '2px' }}>
-      24K REALTORS
-    </div>
-    <div style={{ fontSize: '0.52rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: '2px' }}>
-      FIND YOUR SELF AT HOME
-    </div>
+    <img src="/logo.png" alt="24K Realtors Logo" style={{ width: 190, height: 'auto', objectFit: 'contain' }} />
   </div>
 );
 

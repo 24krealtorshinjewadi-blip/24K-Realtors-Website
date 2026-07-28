@@ -636,11 +636,7 @@ export default function Dashboard({ onViewChange }) {
       }}>
         {/* Brand Logo & Title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: '220px' }}>
-          <CompanyLogo variant="icon" width={38} height={28} />
-          <div>
-            <div style={{ fontFamily: "'Cinzel', serif", fontWeight: 800, fontSize: '1.02rem', color: 'var(--gold-primary)', letterSpacing: '0.05em', lineHeight: 1.1 }}>24K REALTORS</div>
-            <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.14em', fontWeight: 700 }}>ENTERPRISE CRM</div>
-          </div>
+          <img src="/logo.png" alt="24K Realtors Logo" style={{ height: '36px', width: 'auto', objectFit: 'contain' }} />
         </div>
 
         {/* View Header Title - Dynamic for all 12 tabs */}
