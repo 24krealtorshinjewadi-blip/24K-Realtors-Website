@@ -62,6 +62,7 @@ export default function LoginPage({ onSuccess }) {
     localStorage.setItem('token', data.token);
     localStorage.setItem('refreshToken', data.refreshToken);
     localStorage.setItem('userRole', data.role);
+    localStorage.setItem('role', data.role);
     localStorage.setItem('userFullName', data.fullName || data.username);
     localStorage.setItem('username', data.username);
     onSuccess(data);

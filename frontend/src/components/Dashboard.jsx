@@ -267,8 +267,9 @@ export default function Dashboard({ onViewChange }) {
   const [authForm, setAuthForm] = useState({ username: '', password: '' });
   const [authLoading, setAuthLoading] = useState(false);
 
-  const userRole = localStorage.getItem('role') || 'SUPER_ADMIN';
-  const adminUsername = localStorage.getItem('username') || 'Manish Rai';
+  const userRole = localStorage.getItem('role') || localStorage.getItem('userRole') || 'SUPER_ADMIN';
+  const adminUsername = localStorage.getItem('userFullName') || localStorage.getItem('username') || (userRole === 'AGENT' ? 'Jyoti Dhale' : 'Manish Rai');
+  const isAgentMode = userRole === 'AGENT' || userRole === 'EMPLOYEE';
 
   // Mock leads array normalized for safety
   const rawMockLeads = [
@@ -356,7 +357,7 @@ export default function Dashboard({ onViewChange }) {
 
   const initialNormalizedLeads = rawMockLeads.map(normalizeLead);
 
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState((userRole === 'AGENT' || userRole === 'EMPLOYEE') ? 'employee_dashboard' : 'dashboard');
   const [subTab, setSubTab] = useState('ALL');
 
   const [leads, setLeads] = useState(initialNormalizedLeads);
@@ -768,10 +769,9 @@ export default function Dashboard({ onViewChange }) {
           gap: '4px',
           boxSizing: 'border-box'
         }}>
-          {[
+          {(isAgentMode ? [
             { id: 'ai_copilot', label: '24K AI Co-pilot', icon: Sparkles, isAi: true },
-            { id: 'employee_dashboard', label: 'My Dashboard (RM)', icon: LayoutGrid },
-            { id: 'dashboard', label: 'Executive Dashboard (Owner)', icon: BarChart3 },
+            { id: 'employee_dashboard', label: 'My Dashboard', icon: LayoutGrid },
             { id: 'leads', label: 'My Leads', icon: Users },
             { id: 'follow_ups', label: 'Follow-ups', icon: Clock },
             { id: 'site_visits', label: 'Site Visits', icon: Calendar },
@@ -780,10 +780,24 @@ export default function Dashboard({ onViewChange }) {
             { id: 'commissions', label: 'My Commissions', icon: Award },
             { id: 'attendance', label: 'Attendance', icon: CheckSquare },
             { id: 'leaves', label: 'HR & Leaves', icon: ShieldCheck },
+            { id: 'help', label: 'Help & Support', icon: HelpCircle },
+          ] : [
+            { id: 'ai_copilot', label: '24K AI Co-pilot', icon: Sparkles, isAi: true },
+            { id: 'dashboard', label: 'Executive Dashboard', icon: BarChart3 },
+            { id: 'leads', label: 'Lead Management', icon: Users },
+            { id: 'properties', label: 'Properties', icon: Home },
+            { id: 'site_visits', label: 'Site Visits', icon: Calendar },
+            { id: 'follow_ups', label: 'Follow-ups', icon: Clock },
+            { id: 'deals', label: 'Deals & Closures', icon: DollarSign },
             { id: 'team', label: 'Team & RMs', icon: UserCheck },
+            { id: 'commissions', label: 'Commissions & Payroll', icon: Award },
             { id: 'analytics', label: 'Analytics & Reports', icon: TrendingUp },
             { id: 'inventory', label: 'Inventory / Projects', icon: Building },
-          ].map(item => {
+            { id: 'attendance', label: 'Attendance', icon: CheckSquare },
+            { id: 'leaves', label: 'HR & Leaves', icon: ShieldCheck },
+            { id: 'settings', label: 'Settings', icon: Settings },
+            { id: 'help', label: 'Help & Support', icon: HelpCircle },
+          ]).map(item => {
             const IconComp = item.icon;
             const isActive = activeTab === item.id || (item.isAi && isAiPanelOpen);
             return (
@@ -818,22 +832,7 @@ export default function Dashboard({ onViewChange }) {
             );
           })}
 
-          <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '10px 0' }} />
-
-          <button
-            onClick={() => setActiveTab('settings')}
-            style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '8px', border: activeTab === 'settings' ? '1px solid rgba(212,175,55,0.35)' : 'none', background: activeTab === 'settings' ? 'rgba(212,175,55,0.12)' : 'transparent', color: activeTab === 'settings' ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', fontSize: '0.82rem', cursor: 'pointer', fontWeight: activeTab === 'settings' ? 700 : 400 }}
-          >
-            <Settings size={16} color={activeTab === 'settings' ? 'var(--gold-primary)' : 'rgba(255,255,255,0.5)'} />
-            <span>Settings</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('help')}
-            style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '8px', border: activeTab === 'help' ? '1px solid rgba(212,175,55,0.35)' : 'none', background: activeTab === 'help' ? 'rgba(212,175,55,0.12)' : 'transparent', color: activeTab === 'help' ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', fontSize: '0.82rem', cursor: 'pointer', fontWeight: activeTab === 'help' ? 700 : 400 }}
-          >
-            <HelpCircle size={16} color={activeTab === 'help' ? 'var(--gold-primary)' : 'rgba(255,255,255,0.5)'} />
-            <span>Help &amp; Support</span>
-          </button>
+          {/* Bottom branding footer */}
 
           <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
