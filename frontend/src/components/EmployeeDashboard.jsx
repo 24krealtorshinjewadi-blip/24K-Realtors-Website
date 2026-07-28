@@ -28,7 +28,7 @@ const Sparkline = ({ color }) => (
   </svg>
 );
 
-export default function EmployeeDashboard({ onNavigate, onOpenAddLead, onOpenScheduleVisit }) {
+export default function EmployeeDashboard({ agentName = localStorage.getItem('userFullName') || 'Jyoti Dhale', onNavigate, onOpenAddLead, onOpenScheduleVisit }) {
   const [clockInState, setClockInState] = useState(true);
   const [secondsWorking, setSecondsWorking] = useState(13530); // 03h 45m 30s initial
 
@@ -55,7 +55,7 @@ export default function EmployeeDashboard({ onNavigate, onOpenAddLead, onOpenSch
       {/* ── TOP GREETING HEADER ── */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#FFF' }}>Good Morning, Manish Rai 👋</div>
+          <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#FFF' }}>Good Morning, {agentName} 👋</div>
           <div style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>Here's what's happening with your business today.</div>
         </div>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>

@@ -1701,6 +1701,7 @@ export default function Dashboard({ onViewChange }) {
           {/* TAB: EMPLOYEE WORKSPACE DASHBOARD */}
           {activeTab === 'employee_dashboard' && (
             <EmployeeDashboard 
+              agentName={adminUsername}
               onNavigate={(tab) => setActiveTab(tab)} 
               onOpenAddLead={() => setIsAddLeadModalOpen(true)} 
               onOpenScheduleVisit={() => setIsScheduleVisitOpen(true)} 
