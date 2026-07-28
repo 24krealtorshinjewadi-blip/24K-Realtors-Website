@@ -93,8 +93,9 @@ export default function LoginPage({ onSuccess }) {
       token: 'demo-jwt-token-24k-' + Date.now(),
       refreshToken: 'demo-refresh-token-' + Date.now(),
       role: role,
-      fullName: role === 'ADMIN' ? 'Manish Rai' : 'Jyoti Dhale',
-      username: identifier.trim() || (role === 'ADMIN' ? 'manish@24krealtors.com' : 'jyoti@24krealtors.com'),
+      fullName: role === 'ADMIN' ? 'Neeraj Giri' : 'Manish Rai',
+      username: identifier.trim() || (role === 'ADMIN' ? 'neeraj@24krealtors.com' : 'manish@24krealtors.com'),
+      title: role === 'ADMIN' ? 'Super Admin / Owner' : 'Sales Consultant',
     };
     saveAuth(demoData);
   };

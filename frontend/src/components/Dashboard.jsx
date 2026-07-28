@@ -32,6 +32,7 @@ import CommissionsTab from './CommissionsTab';
 import AnalyticsTab from './AnalyticsTab';
 import InventoryTab from './InventoryTab';
 import EmployeeDashboard from './EmployeeDashboard';
+import MyLeadsTab from './MyLeadsTab';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -724,7 +725,7 @@ export default function Dashboard({ onViewChange }) {
               <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--gold-primary)' }} />
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#FFF' }}>{adminUsername}</span>
-                <span style={{ fontSize: '0.62rem', color: 'var(--gold-primary)', fontWeight: 600 }}>Super Admin ▾</span>
+                <span style={{ fontSize: '0.62rem', color: 'var(--gold-primary)', fontWeight: 600 }}>{isAgentMode ? 'Sales Consultant ▾' : 'Super Admin / Owner ▾'}</span>
               </div>
             </div>
 
@@ -732,7 +733,7 @@ export default function Dashboard({ onViewChange }) {
               <div style={{ position: 'absolute', right: 0, top: '42px', width: '200px', background: '#0B1528', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '12px', padding: '8px 0', zIndex: 1000, boxShadow: '0 10px 30px rgba(0,0,0,0.8)', fontSize: '0.78rem' }}>
                 <div style={{ padding: '8px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                   <div style={{ fontWeight: 800, color: '#FFF' }}>{adminUsername}</div>
-                  <div style={{ fontSize: '0.64rem', color: 'var(--gold-primary)' }}>Super Admin • 24K Realtors</div>
+                  <div style={{ fontSize: '0.64rem', color: 'var(--gold-primary)' }}>{isAgentMode ? 'Sales Consultant • 24K Realtors' : 'Super Admin / Owner • 24K Realtors'}</div>
                 </div>
                 <button onClick={() => { setActiveTab('team'); setIsProfileMenuOpen(false); }} style={{ width: '100%', padding: '10px 16px', background: 'none', border: 'none', color: '#FFF', textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   👤 My Profile &amp; Team
@@ -1684,8 +1685,13 @@ export default function Dashboard({ onViewChange }) {
             </div>
           )}
 
-          {/* TAB: OTHER DESKS & MODULES */}
-          {activeTab === 'properties' && <PropertiesTab />}
+          {/* TAB: MY LEADS */}
+          {activeTab === 'leads' && (
+            <MyLeadsTab 
+              onOpenAddLead={() => setIsAddLeadModalOpen(true)} 
+              onSelectLead={(lead) => setSelectedLead(lead)} 
+            />
+          )}
 
           {activeTab === 'attendance' && <AttendanceTab />}
           {activeTab === 'leaves' && <LeavesTab />}
