@@ -30,6 +30,7 @@ import SettingsTab from './SettingsTab';
 import HelpSupportTab from './HelpSupportTab';
 import CommissionsTab from './CommissionsTab';
 import AnalyticsTab from './AnalyticsTab';
+import InventoryTab from './InventoryTab';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -1691,7 +1692,7 @@ export default function Dashboard({ onViewChange }) {
           {activeTab === 'attendance' && <AttendanceTab />}
           {activeTab === 'leaves' && <LeavesTab />}
           {activeTab === 'commissions' && <CommissionsTab />}
-          {activeTab === 'inventory' && <SocietiesTab />}
+          {activeTab === 'inventory' && <InventoryTab />}
           {activeTab === 'site_visits' && <SiteVisitsTab leads={leads} agents={agents} />}
           {activeTab === 'follow_ups' && <FollowUpsTab />}
           {activeTab === 'deals' && <DealsTab />}
