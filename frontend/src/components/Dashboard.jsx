@@ -771,17 +771,20 @@ export default function Dashboard({ onViewChange }) {
           boxSizing: 'border-box'
         }}>
           {(isAgentMode ? [
-            { id: 'ai_copilot', label: '24K AI Co-pilot', icon: Sparkles, isAi: true },
             { id: 'employee_dashboard', label: 'My Dashboard', icon: LayoutGrid },
             { id: 'leads', label: 'My Leads', icon: Users },
             { id: 'follow_ups', label: 'Follow-ups', icon: Clock },
             { id: 'site_visits', label: 'Site Visits', icon: Calendar },
             { id: 'properties', label: 'Properties', icon: Home },
-            { id: 'deals', label: 'Deals & Closures', icon: DollarSign },
+            { id: 'deals', label: 'Deals', icon: DollarSign },
             { id: 'commissions', label: 'My Commissions', icon: Award },
             { id: 'attendance', label: 'Attendance', icon: CheckSquare },
             { id: 'leaves', label: 'HR & Leaves', icon: ShieldCheck },
-            { id: 'help', label: 'Help & Support', icon: HelpCircle },
+            { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+            { id: 'analytics', label: 'Reports', icon: BarChart3 },
+            { id: 'notifications', label: 'Notifications', icon: Bell, badge: '8' },
+            { id: 'profile', label: 'My Profile', icon: UserCheck },
+            { id: 'settings', label: 'Settings', icon: Settings },
           ] : [
             { id: 'ai_copilot', label: '24K AI Co-pilot', icon: Sparkles, isAi: true },
             { id: 'dashboard', label: 'Executive Dashboard', icon: BarChart3 },
@@ -828,7 +831,12 @@ export default function Dashboard({ onViewChange }) {
                 }}
               >
                 <IconComp size={16} color={isActive ? 'var(--gold-primary)' : 'rgba(255,255,255,0.5)'} />
-                <span>{item.label}</span>
+                <span style={{ flex: 1 }}>{item.label}</span>
+                {item.badge && (
+                  <span style={{ padding: '2px 6px', borderRadius: '50%', background: '#EF4444', color: '#FFF', fontSize: '0.6rem', fontWeight: 800 }}>
+                    {item.badge}
+                  </span>
+                )}
               </button>
             );
           })}
