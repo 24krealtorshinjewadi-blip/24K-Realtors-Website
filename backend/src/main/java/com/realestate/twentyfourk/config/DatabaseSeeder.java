@@ -96,33 +96,54 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedSystemUsers() {
-        // 1. Super Admin (Manish)
-        User admin = userRepository.findByUsername("Manish").orElse(null);
+        // 1. Super Admin (Neeraj Giri)
+        User admin = userRepository.findByUsername("Neeraj").orElse(null);
         if (admin == null) {
             admin = User.builder()
-                    .username("Manish")
-                    .password(passwordEncoder.encode("Manish@993100"))
+                    .username("Neeraj")
+                    .password(passwordEncoder.encode("Neeraj@24K2026!"))
                     .role(UserRole.SUPER_ADMIN)
-                    .fullName("Manish Kumar Rai")
-                    .email("24krealtorshinjewadi@gmail.com")
-                    .phone("+919673000053")
-                    .designation("CEO & Principal Partner")
+                    .fullName("Neeraj Giri")
+                    .email("neeraj@24krealtors.com")
+                    .phone("+919876543210")
+                    .designation("Owner & Principal Partner")
                     .department("Management")
                     .dateOfJoining(java.time.LocalDate.of(2026, 1, 1))
-                    .salaryBase(new BigDecimal("250000.00"))
+                    .salaryBase(new BigDecimal("350000.00"))
                     .build();
             userRepository.save(admin);
-            log.info("Super Admin (Manish) created successfully.");
+            log.info("Super Admin (Neeraj Giri) created successfully.");
         } else {
             admin.setRole(UserRole.SUPER_ADMIN);
-            admin.setEmail("24krealtorshinjewadi@gmail.com");
-            admin.setPhone("+919673000053");
-            admin.setFullName("Manish Kumar Rai");
-            if (!passwordEncoder.matches("Manish@993100", admin.getPassword())) {
-                admin.setPassword(passwordEncoder.encode("Manish@993100"));
-            }
+            admin.setEmail("neeraj@24krealtors.com");
+            admin.setFullName("Neeraj Giri");
             userRepository.save(admin);
-            log.info("Super Admin (Manish) credentials synchronized.");
+            log.info("Super Admin (Neeraj Giri) credentials synchronized.");
+        }
+
+        // 2. Sales Consultant Employee (Manish Rai)
+        User rm = userRepository.findByUsername("Manish").orElse(null);
+        if (rm == null) {
+            rm = User.builder()
+                    .username("Manish")
+                    .password(passwordEncoder.encode("Manish@24K2026!"))
+                    .role(UserRole.RELATIONSHIP_MANAGER)
+                    .fullName("Manish Rai")
+                    .email("manish@24krealtors.com")
+                    .phone("+919673000053")
+                    .designation("Senior Sales Consultant")
+                    .department("Sales")
+                    .dateOfJoining(java.time.LocalDate.of(2026, 1, 1))
+                    .salaryBase(new BigDecimal("120000.00"))
+                    .build();
+            userRepository.save(rm);
+            log.info("Sales RM (Manish Rai) created successfully.");
+        } else {
+            rm.setRole(UserRole.RELATIONSHIP_MANAGER);
+            rm.setEmail("manish@24krealtors.com");
+            rm.setFullName("Manish Rai");
+            userRepository.save(rm);
+            log.info("Sales RM (Manish Rai) synchronized.");
         }
 
         // Keep Manishrai07 synchronized as well
