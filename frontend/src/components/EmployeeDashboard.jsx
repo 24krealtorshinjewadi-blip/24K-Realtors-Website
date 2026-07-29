@@ -65,30 +65,32 @@ export default function EmployeeDashboard({ agentName = localStorage.getItem('us
         </div>
       </div>
 
-      {/* ── 6 KPI SPARKLINE CARDS ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '12px' }}>
+      {/* ── 8 RM WORKSPACE KPI SPARKLINE CARDS ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '10px' }}>
         {[
           { label: 'Total Leads', val: '128', change: '↑ 18% vs last month', color: GOLD, icon: Users },
-          { label: 'Site Visits', val: '32', change: '↑ 14% vs last month', color: '#3B82F6', icon: Calendar },
+          { label: 'New Leads', val: '32', change: '↑ 14% vs last month', color: '#3B82F6', icon: Users },
+          { label: 'Active Leads', val: '56', change: '↑ 9% vs last month', color: '#14B8A6', icon: Users },
+          { label: 'Site Visits', val: '32', change: '↑ 14% vs last month', color: '#8B5CF6', icon: Calendar },
+          { label: 'Upcoming Follow-ups', val: '5', change: 'Scheduled today', color: '#EC4899', icon: Clock },
           { label: 'Active Deals', val: '14', change: '↑ 7% vs last month', color: '#F59E0B', icon: TrendingUp },
-          { label: 'Deals Won', val: '6', change: '↑ 20% vs last month', color: '#10B981', icon: Award },
-          { label: 'Revenue Generated', val: '₹ 12,45,000', change: '↑ 16% vs last month', color: GOLD, icon: DollarSign },
-          { label: 'Commission Earned', val: '₹ 1,24,500', change: '↑ 18% vs last month', color: '#8B5CF6', icon: Wallet },
+          { label: 'Won Deals', val: '6', change: '↑ 20% vs last month', color: '#10B981', icon: Award },
+          { label: 'Commission', val: '₹ 1.24L', change: '78% target hit', color: GOLD, icon: Wallet },
         ].map((kpi, i) => {
           const IconC = kpi.icon;
           return (
-            <div key={i} style={{ background: 'rgba(10,18,36,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div key={i} style={{ background: 'rgba(10,18,36,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '12px 14px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                  <div style={{ width: 24, height: 24, borderRadius: '6px', background: `${kpi.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <IconC size={12} color={kpi.color} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '4px' }}>
+                  <div style={{ width: 22, height: 22, borderRadius: '5px', background: `${kpi.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconC size={11} color={kpi.color} />
                   </div>
-                  <span style={{ fontSize: '0.62rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em' }}>{kpi.label}</span>
+                  <span style={{ fontSize: '0.58rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.03em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{kpi.label}</span>
                 </div>
-                <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#FFF', marginBottom: '3px' }}>{kpi.val}</div>
-                <div style={{ fontSize: '0.64rem', color: '#10B981', fontWeight: 700 }}>{kpi.change}</div>
+                <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#FFF', marginBottom: '2px' }}>{kpi.val}</div>
+                <div style={{ fontSize: '0.58rem', color: '#10B981', fontWeight: 700 }}>{kpi.change}</div>
               </div>
-              <div style={{ marginTop: '8px' }}>
+              <div style={{ marginTop: '6px' }}>
                 <Sparkline color={kpi.color} />
               </div>
             </div>
