@@ -4387,16 +4387,17 @@
     margin-right: auto !important;
   }
 
-  /* Mobile Navbar: Hide search button & phone pill from header (moved inside drawer) */
+  /* Mobile Navbar: Hide search, phone pill, and header ENQUIRE button (moved inside drawer) */
   .nav-spotlight-btn,
-  .nav-phone-pill {
+  .nav-phone-pill,
+  .desktop-only-enquire {
     display: none !important;
   }
 
   .nav-container {
-    padding: 0 10px !important;
-    gap: 6px !important;
+    padding: 0 16px !important;
     justify-content: space-between !important;
+    gap: 12px !important;
   }
 
   .nav-logo {
@@ -4405,19 +4406,12 @@
     flex-shrink: 0 !important;
   }
 
-  .nav-pill-book {
-    padding: 7px 12px !important;
-    font-size: 0.72rem !important;
-    flex-shrink: 0 !important;
-    white-space: nowrap !important;
-  }
-
-  /* Nav pill book text stays visible next to logo on mobile */
-  .nav-pill-book span {
-    display: inline-block !important;
-    font-size: 0.7rem !important;
-    font-weight: 800 !important;
-    white-space: nowrap !important;
+  /* Center Signature Collection Segmented Controls & Property Cards on Mobile */
+  .luxury-segmented-controls {
+    justify-content: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-bottom: 8px !important;
   }
 
   /* Stats bar */

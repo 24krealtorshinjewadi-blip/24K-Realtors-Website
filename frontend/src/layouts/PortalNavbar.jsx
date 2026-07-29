@@ -289,10 +289,10 @@ export default function PortalNavbar({
             </a>
 
 
-            {/* Book Site Visit CTA Button */}
+            {/* Book Site Visit CTA Button (Desktop Only Header) */}
             <button 
               onClick={onBookVisitClick} 
-              className="nav-pill-book"
+              className="nav-pill-book desktop-only-enquire"
               style={{
                 background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
                 border: 'none',
@@ -302,7 +302,6 @@ export default function PortalNavbar({
                 fontSize: '0.8rem',
                 fontWeight: 700,
                 letterSpacing: '0.04em',
-                display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
                 cursor: 'pointer',
@@ -344,6 +343,33 @@ export default function PortalNavbar({
 
         <div className="drawer-links-section">
           
+          {/* Prominent Golden Enquire CTA inside Mobile Menu Drawer */}
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onBookVisitClick && onBookVisitClick(); }} 
+            className="drawer-enquire-btn"
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+              border: 'none',
+              color: '#040814',
+              padding: '14px 20px',
+              borderRadius: '12px',
+              fontSize: '0.86rem',
+              fontWeight: 800,
+              letterSpacing: '0.06em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              boxShadow: '0 6px 20px rgba(230, 195, 92, 0.3)',
+              marginBottom: '20px'
+            }}
+          >
+            <Calendar size={16} />
+            <span>ENQUIRE NOW / BOOK SITE VISIT</span>
+          </button>
+
           <div className="drawer-section-title">🔍 QUICK SEARCH &amp; ASSIST</div>
 
           <button 
