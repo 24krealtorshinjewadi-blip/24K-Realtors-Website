@@ -2616,74 +2616,13 @@ export default function Portal({ onViewChange }) {
               background: 'linear-gradient(to right, rgba(4, 8, 20, 0.78) 0%, rgba(4, 8, 20, 0.20) 55%, rgba(4, 8, 20, 0.35) 100%), linear-gradient(to bottom, rgba(4, 8, 20, 0.25) 0%, rgba(4, 8, 20, 0.75) 100%)',
               zIndex: 1
             }} />
-            {/* Flashing System Status & Real-time Ticker Ribbon */}
-            <div style={{
-              position: "absolute",
-              top: "20px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 3,
-              width: "94%",
-              maxWidth: "1410px",
-              background: "rgba(7, 15, 30, 0.75)",
-              backdropFilter: "blur(16px)",
-              border: "1px solid rgba(197, 168, 128, 0.18)",
-              borderRadius: "50px",
-              padding: "10px 24px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "20px",
-              overflow: "hidden",
-              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)"
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
-                <span className="live-pulse-dot" style={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  background: "#25D366",
-                  boxShadow: "0 0 10px #25D366",
-                  display: "inline-block",
-                  animation: "pulseGlow 2s infinite"
-                }} />
-                <span style={{ fontSize: "0.65rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: "rgba(255,255,255,0.7)", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                  SYSTEM STATUS: <span style={{ color: "#25D366" }}>ONLINE & SYNCED</span>
-                </span>
-              </div>
-              <div className="ticker-container" style={{ flex: 1, overflow: "hidden", whiteSpace: "nowrap", display: "flex", alignItems: "center" }}>
-                <div className="ticker-text" style={{
-                  display: "inline-block",
-                  fontSize: "0.68rem",
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: 600,
-                  color: "rgba(255, 255, 255, 0.5)",
-                  letterSpacing: "0.04em",
-                  animation: "marqueeText 30s linear infinite",
-                  paddingLeft: "100%"
-                }}>
-                  ✦ [LIVE METRIC] BANER avg price: ₹11,500/sqft (+1.6% this week) &nbsp;&nbsp;&nbsp;&nbsp; ✦ [LIVE DEALS] Hinjewadi IT Plaza Office Space leased by Tech MNC &nbsp;&nbsp;&nbsp;&nbsp; ✦ [MARKET] Hinjewadi rental yields reach 5.2% high index &nbsp;&nbsp;&nbsp;&nbsp; ✦ [PORTFOLIO] 24K Altura Smart 2 BHK demand is up 14% &nbsp;&nbsp;&nbsp;&nbsp; ✦ [VALUATION] AI Compute Engine update complete v2.4
-                </div>
-              </div>
-              <style>{`
-                @keyframes pulseGlow {
-                  0%, 100% { opacity: 0.5; transform: scale(0.9); }
-                  50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 14px #25D366; }
-                }
-                @keyframes marqueeText {
-                  0% { transform: translate3d(0, 0, 0); }
-                  100% { transform: translate3d(-100%, 0, 0); }
-                }
-              `}</style>
-            </div>
-            
             <div className="hero-content" style={{ 
               position: 'relative',
               zIndex: 2,
               width: '100%',
               maxWidth: '94%',
               margin: '0 auto',
-              padding: '120px 0 60px 0'
+              padding: '100px 0 50px 0'
             }}>
               <div className="hero-text-block" style={{ maxWidth: '650px', marginBottom: '40px' }}>
                 <span className="hero-gold-badge" style={{
@@ -2723,17 +2662,17 @@ export default function Portal({ onViewChange }) {
                 <p className="hero-subtext" style={{ 
                   fontFamily: "'Playfair Display', serif",
                   fontStyle: 'italic',
-                  fontSize: 'clamp(1rem, 1.3vw, 1.2rem)', 
-                  color: 'rgba(255, 255, 255, 0.72)', 
+                  fontSize: 'clamp(1rem, 1.3vw, 1.25rem)', 
+                  color: 'rgba(255, 255, 255, 0.85)', 
                   lineHeight: 1.7, 
                   marginBottom: '36px',
                   textShadow: '0 2px 5px rgba(0,0,0,0.5)',
-                  maxWidth: '520px'
+                  maxWidth: '540px'
                 }}>
-                  Where legacy builders meet verified portfolios — Hinjewadi, Wakad, Baner & Pune's most prestigious areas.
+                  Where legacy builders meet verified portfolios — Hinjewadi, Wakad, Baner &amp; Pune's most prestigious areas.
                 </p>
 
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <div className="hero-cta-group" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                   <button 
                     onClick={() => {
                       const el = document.getElementById('listings-anchor');
@@ -2811,7 +2750,7 @@ export default function Portal({ onViewChange }) {
                 </svg>
               </div>
 
-              {/* Futuristic Raycast Command Bar */}
+              {/* Raycast Command Bar */}
               <div
                 onClick={() => setIsSpotlightOpen(true)}
                 className="tech-command-bar"
@@ -2843,11 +2782,14 @@ export default function Portal({ onViewChange }) {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "14px", color: "rgba(255, 255, 255, 0.5)" }}>
                   <span style={{ color: "#E6C35C", fontSize: "1.1rem" }}>🔍</span>
-                  <span style={{ fontSize: "0.92rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 500, letterSpacing: "0.02em", color: "#fff" }}>
+                  <span className="search-text-desktop" style={{ fontSize: "0.92rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 500, letterSpacing: "0.02em", color: "#fff" }}>
                     Search listings, developers, or type a command...
                   </span>
+                  <span className="search-text-mobile" style={{ fontSize: "0.92rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: "#fff", display: "none" }}>
+                    Search...
+                  </span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div className="search-kbd-badges" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <span style={{ fontSize: "0.68rem", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "3px 8px", color: "rgba(255,255,255,0.4)", fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}>
                     CTRL
                   </span>
@@ -2978,14 +2920,14 @@ export default function Portal({ onViewChange }) {
           </section>
 
       {/* MahaRERA Authorized Trust Banner */}
-      <div id="maharera-trust-banner" className="maharera-trust-banner" style={{ border: '2px solid rgba(212,175,55,0.4)', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', borderRadius: '12px', padding: '24px 30px', margin: '30px auto', maxWidth: '1410px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
-        <div className="maharera-content" style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
-          <div style={{ background: 'rgba(212,175,55,0.1)', padding: '15px', borderRadius: '50%', border: '1px solid var(--gold-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <ShieldCheck size={36} color="var(--gold-primary)" className="trust-shield-icon" style={{ filter: 'drop-shadow(0 0 8px var(--gold-primary))' }} />
+      <div id="maharera-trust-banner" className="maharera-trust-banner" style={{ border: '2px solid rgba(212,175,55,0.4)', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', borderRadius: '12px', padding: '30px 24px', margin: '30px auto', maxWidth: '1410px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', textAlign: 'center' }}>
+        <div className="maharera-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: '16px' }}>
+          <div style={{ background: 'rgba(212,175,55,0.1)', padding: '16px', borderRadius: '50%', border: '1px solid var(--gold-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
+            <ShieldCheck size={40} color="var(--gold-primary)" className="trust-shield-icon" style={{ filter: 'drop-shadow(0 0 12px var(--gold-primary))' }} />
           </div>
-          <div style={{ flex: 1, minWidth: '280px' }}>
-            <h4 style={{ margin: '0 0 6px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)', color: 'var(--text-light)', letterSpacing: '0.04em' }}>⚜️ MahaRERA Registered Authorized Portfolio Advisory</h4>
-            <p style={{ margin: 0, fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Authorized Broker License Registration Number: <strong style={{ color: 'var(--gold-primary)' }}>A52100028461</strong>. 24K Realtors strictly complies with Maharashtra Real Estate Regulatory Authority guidelines. All pricing, layout structures, and inventories are verified directly with builder RERA registries prior to listing onboarding.</p>
+          <div style={{ maxWidth: '850px', margin: '0 auto' }}>
+            <h4 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)', color: 'var(--text-light)', letterSpacing: '0.04em', textAlign: 'center' }}>⚜️ MahaRERA Registered Authorized Portfolio Advisory</h4>
+            <p style={{ margin: 0, fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.6, textAlign: 'center' }}>Authorized Broker License Registration Number: <strong style={{ color: 'var(--gold-primary)' }}>A52100028461</strong>. 24K Realtors strictly complies with Maharashtra Real Estate Regulatory Authority guidelines. All pricing, layout structures, and inventories are verified directly with builder RERA registries prior to listing onboarding.</p>
           </div>
         </div>
       </div>

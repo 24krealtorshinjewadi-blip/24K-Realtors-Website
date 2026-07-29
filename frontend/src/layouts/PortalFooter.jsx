@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 const FooterLink = ({ href = '#', children, external = false, onClick }) => {
   const [hover, setHover] = React.useState(false);
@@ -117,15 +117,19 @@ export default function PortalFooter({ onViewChange }) {
             <span style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.6)', display: 'block', marginBottom: '10px', lineHeight: 1.5, cursor: 'pointer' }}>📍 Office No. 19, Ground Floor,<br/>Prem Mairah, Hinjewadi Phase 1,<br/>Pune – 411057</span>
           </a>
           <span style={{ fontSize: '0.8rem', color: 'var(--text-light)', display: 'block', marginBottom: '8px' }}>✉️ <a href="mailto:contact@24krealestate.com" style={{ color: 'var(--gold-secondary)', textDecoration: 'none' }}>contact@24krealestate.com</a></span>
-          <a href="https://wa.me/919673000053?text=Hi%2C%20I%20am%20looking%20for%20property%20in%20Pune" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.35)', borderRadius: '6px', padding: '6px 12px', color: '#25D366', fontSize: '0.75rem', fontWeight: 700, textDecoration: 'none', marginBottom: '18px', cursor: 'pointer' }}>
+          <a href="https://wa.me/919673000053?text=Hi%2C%20I%20am%20looking%20for%20property%20in%20Pune" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.35)', borderRadius: '6px', padding: '6px 12px', color: '#25D366', fontSize: '0.75rem', fontWeight: 700, textDecoration: 'none', cursor: 'pointer' }}>
             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371a9.98 9.98 0 0 0 4.779 1.217h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2z"/></svg>
             WhatsApp Us Now
           </a>
-          <h5 style={{ color: '#fff', fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.04em', margin: '0 0 12px 0' }}>Download the App</h5>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <AppButton store="google" name="Google Play" subtitle="Get it on" href="https://play.google.com/store/search?q=real+estate+pune&c=apps" />
-            <AppButton store="apple" name="App Store" subtitle="Download on the" href="https://apps.apple.com/in/charts/iphone/real-estate-apps/12012" />
-          </div>
+        </div>
+      </div>
+
+      {/* 📱 App Store & Google Play Download Section (Centered Desktop & Mobile) */}
+      <div style={{ maxWidth: '100%', margin: '36px auto 10px auto', padding: '24px 20px 0 20px', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
+        <h5 style={{ color: '#E6C35C', fontFamily: 'var(--font-title)', fontSize: '0.88rem', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 14px 0', textAlign: 'center' }}>Download 24K Realtors Mobile App</h5>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '14px', flexWrap: 'wrap', margin: '0 auto' }}>
+          <AppButton store="google" name="Google Play" subtitle="Get it on" href="https://play.google.com/store/search?q=real+estate+pune&c=apps" />
+          <AppButton store="apple" name="App Store" subtitle="Download on the" href="https://apps.apple.com/in/charts/iphone/real-estate-apps/12012" />
         </div>
       </div>
 

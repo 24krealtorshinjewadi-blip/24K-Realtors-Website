@@ -4364,6 +4364,29 @@
   /* Mega dropdown — HIDE completely on mobile */
   .mega-dropdown-menu { display: none !important; }
 
+  /* Mobile Hero Search & CTA alignment */
+  .search-text-desktop { display: none !important; }
+  .search-text-mobile { display: inline-block !important; }
+  .search-kbd-badges { display: none !important; }
+
+  .hero-text-block {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .hero-subtext {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+  }
+
+  .hero-cta-group {
+    justify-content: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
   /* Mobile Navbar: Hide search button & phone pill from header (moved inside drawer) */
   .nav-spotlight-btn,
   .nav-phone-pill {
@@ -4371,20 +4394,30 @@
   }
 
   .nav-container {
-    padding: 0 14px !important;
-    gap: 8px !important;
+    padding: 0 10px !important;
+    gap: 6px !important;
+    justify-content: space-between !important;
+  }
+
+  .nav-logo {
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
   }
 
   .nav-pill-book {
-    padding: 8px 14px !important;
-    font-size: 0.74rem !important;
+    padding: 7px 12px !important;
+    font-size: 0.72rem !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
   }
 
   /* Nav pill book text stays visible next to logo on mobile */
   .nav-pill-book span {
     display: inline-block !important;
-    font-size: 0.72rem !important;
+    font-size: 0.7rem !important;
     font-weight: 800 !important;
+    white-space: nowrap !important;
   }
 
   /* Stats bar */

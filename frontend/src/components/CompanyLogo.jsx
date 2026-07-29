@@ -82,18 +82,18 @@ export default function CompanyLogo({ variant = 'full', width, height, className
 
   if (variant === 'compact') {
     return (
-      <div className={className} style={{ display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
-        <svg viewBox="0 0 160 120" width={width || 56} height={height || 42} style={{ display: 'inline-block' }}>
+      <div className={className} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+        <svg viewBox="0 0 160 120" width={width || 44} height={height || 34} style={{ display: 'inline-block', flexShrink: 0 }}>
           <Gradients />
           <g transform="translate(-120, -20) scale(0.7)">
             <CrossedKeysEmblem />
           </g>
         </svg>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 900, fontSize: '1.15rem', color: '#F5D061', letterSpacing: '0.12em', lineHeight: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+          <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 900, fontSize: '1.02rem', color: '#F5D061', letterSpacing: '0.1em', lineHeight: 1, whiteSpace: 'nowrap' }}>
             24K REALTORS
           </span>
-          <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: '0.52rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.22em', marginTop: '3px' }}>
+          <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: '0.46rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.18em', marginTop: '2px', whiteSpace: 'nowrap' }}>
             FIND YOUR SELF AT HOME
           </span>
         </div>
