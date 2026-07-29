@@ -4001,8 +4001,6 @@
 .mega-dropdown-menu {
   position: absolute;
   top: 100%;
-  left: 0;
-  transform: translateY(12px);
   width: min(860px, 88vw);
   background: rgba(7, 15, 30, 0.96);
   backdrop-filter: blur(25px) saturate(180%);
@@ -4017,6 +4015,18 @@
   transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1100;
   margin-top: 4px;
+}
+
+/* BUY mega menu opens to the RIGHT of BUY button */
+.mega-dropdown-menu.mega-menu-buy {
+  left: 0;
+  transform: translateY(12px);
+}
+
+/* RENT mega menu aligns smoothly under transaction tabs */
+.mega-dropdown-menu.mega-menu-rent {
+  left: -70px;
+  transform: translateY(12px);
 }
 
 /* Hover bridge pseudo-element to prevent hover flicker */

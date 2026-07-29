@@ -122,7 +122,7 @@ export default function PortalNavbar({
                 <span>BUY</span>
                 <ChevronDown size={11} style={{ opacity: 0.8 }} />
               </button>
-              <div className="mega-dropdown-menu">
+              <div className="mega-dropdown-menu mega-menu-buy">
                 <div className="mega-menu-grid">
                   <div className="mega-menu-column">
                     <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', status: 'AVAILABLE' }, 'listings', null, 'properties-sale'); }}>Properties for Sale</h5>
@@ -165,7 +165,7 @@ export default function PortalNavbar({
                 <span>RENT</span>
                 <ChevronDown size={11} style={{ opacity: 0.8 }} />
               </button>
-              <div className="mega-dropdown-menu">
+              <div className="mega-dropdown-menu mega-menu-rent">
                 <div className="mega-menu-grid">
                   <div className="mega-menu-column">
                     <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', status: 'AVAILABLE' }, 'listings', null, 'properties-rent'); }}>Apartments for Rent</h5>
