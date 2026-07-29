@@ -265,9 +265,12 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
             <option value="New" style={{ background: '#070F1E' }}>New</option>
             <option value="Contacted" style={{ background: '#070F1E' }}>Contacted</option>
             <option value="Qualified" style={{ background: '#070F1E' }}>Qualified</option>
+            <option value="Follow-up" style={{ background: '#070F1E' }}>Follow-up</option>
             <option value="Site Visit" style={{ background: '#070F1E' }}>Site Visit</option>
             <option value="Negotiation" style={{ background: '#070F1E' }}>Negotiation</option>
-            <option value="Converted" style={{ background: '#070F1E' }}>Converted</option>
+            <option value="Won" style={{ background: '#070F1E' }}>Won</option>
+            <option value="Lost" style={{ background: '#070F1E' }}>Lost</option>
+            <option value="Dormant" style={{ background: '#070F1E' }}>Dormant</option>
           </select>
 
           {/* Property Interest */}
