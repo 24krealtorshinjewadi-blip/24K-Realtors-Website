@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import CompanyDeskModal from '../components/CompanyDeskModal';
 
 const FooterLink = ({ href = '#', children, external = false, onClick }) => {
   const [hover, setHover] = React.useState(false);
@@ -57,8 +58,16 @@ const AppButton = ({ store, name, subtitle, href }) => {
 };
 
 export default function PortalFooter({ onViewChange }) {
+  const [modalTab, setModalTab] = useState(null);
+
+  const openTab = (tabId) => (e) => {
+    e.preventDefault();
+    setModalTab(tabId);
+  };
+
   return (
     <footer className="footer" style={{ borderTop: '1px solid rgba(212,175,55,0.25)', background: 'radial-gradient(circle at bottom, rgba(15,23,42,0.98) 0%, rgba(7,15,30,1) 100%)', padding: '50px 30px 30px 30px', marginTop: '60px', position: 'relative', zIndex: 2 }}>
+      <CompanyDeskModal isOpen={Boolean(modalTab)} onClose={() => setModalTab(null)} initialTab={modalTab || 'about'} />
       <div style={{ maxWidth: '100%', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '40px', paddingBottom: '40px', paddingLeft: '5%', paddingRight: '5%', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
 
         {/* Column 1: 24K Realtors */}
@@ -79,13 +88,13 @@ export default function PortalFooter({ onViewChange }) {
         <div>
           <h4 style={{ color: 'var(--gold-primary)', fontFamily: 'var(--font-title)', fontSize: '0.95rem', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '16px' }}>Company Desk</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <FooterLink href="https://wa.me/919673000053?text=Tell%20me%20about%2024K%20Realtors" external>About 24K Realtors</FooterLink>
-            <FooterLink href="https://wa.me/919673000053?text=I%20need%20a%20locality%20advisor%20for%20Pune%20real%20estate" external>Contact Locality Advisor</FooterLink>
-            <FooterLink href="https://www.naukri.com/24k-realtors-jobs" external>Careers at 24K Group</FooterLink>
-            <FooterLink href="https://maharera.maharashtra.gov.in/public/Documents/Terms_Conditions.pdf" external>Terms &amp; Conditions</FooterLink>
-            <FooterLink href="https://maharera.maharashtra.gov.in/public/Documents/Privacy_Policy.pdf" external>Privacy Policy Registry</FooterLink>
-            <FooterLink href="https://maharera.maharashtra.gov.in/public/en-US/Grievance/GrievanceAdd" external>Grievance Redressal Officer</FooterLink>
-            <FooterLink href="https://maharera.maharashtra.gov.in/public/en-US/Home/HomeBuyerGuide" external>Summons &amp; Safety Guide</FooterLink>
+            <FooterLink href="#" onClick={openTab('about')}>About 24K Realtors</FooterLink>
+            <FooterLink href="#" onClick={openTab('advisor')}>Contact Locality Advisor</FooterLink>
+            <FooterLink href="#" onClick={openTab('careers')}>Careers at 24K Group</FooterLink>
+            <FooterLink href="#" onClick={openTab('terms')}>Terms &amp; Conditions</FooterLink>
+            <FooterLink href="#" onClick={openTab('privacy')}>Privacy Policy Registry</FooterLink>
+            <FooterLink href="#" onClick={openTab('grievance')}>Grievance Redressal Officer</FooterLink>
+            <FooterLink href="#" onClick={openTab('summons')}>Summons &amp; Safety Guide</FooterLink>
             <a href="#login" onClick={() => window.location.hash = 'login'} style={{ color: '#E6C35C', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700, marginTop: '8px', display: 'inline-block' }}>
               ⚜️ Staff &amp; Agent Portal Login
             </a>
