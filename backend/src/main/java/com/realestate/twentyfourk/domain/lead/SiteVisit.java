@@ -49,7 +49,7 @@ public class SiteVisit {
 
     @Column(name = "status", nullable = false, length = 50)
     @Builder.Default
-    private String status = "SCHEDULED"; // SCHEDULED, COMPLETED, CANCELLED
+    private String status = "SCHEDULED"; // SCHEDULED, CONFIRMED, COMPLETED, RESCHEDULED, CANCELLED, NO_SHOW
 
     @Column(name = "feedback", columnDefinition = "TEXT")
     private String feedback;
