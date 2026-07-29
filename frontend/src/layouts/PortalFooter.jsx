@@ -86,6 +86,9 @@ export default function PortalFooter({ onViewChange }) {
             <FooterLink href="https://maharera.maharashtra.gov.in/public/Documents/Privacy_Policy.pdf" external>Privacy Policy Registry</FooterLink>
             <FooterLink href="https://maharera.maharashtra.gov.in/public/en-US/Grievance/GrievanceAdd" external>Grievance Redressal Officer</FooterLink>
             <FooterLink href="https://maharera.maharashtra.gov.in/public/en-US/Home/HomeBuyerGuide" external>Summons &amp; Safety Guide</FooterLink>
+            <a href="#login" onClick={() => window.location.hash = 'login'} style={{ color: '#E6C35C', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700, marginTop: '8px', display: 'inline-block' }}>
+              ⚜️ Staff &amp; Agent Portal Login
+            </a>
           </div>
         </div>
 
