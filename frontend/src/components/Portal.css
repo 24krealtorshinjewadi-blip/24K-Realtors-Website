@@ -4364,6 +4364,29 @@
   /* Mega dropdown — HIDE completely on mobile */
   .mega-dropdown-menu { display: none !important; }
 
+  /* Mobile Navbar: Hide search button & phone pill from header (moved inside drawer) */
+  .nav-spotlight-btn,
+  .nav-phone-pill {
+    display: none !important;
+  }
+
+  .nav-container {
+    padding: 0 14px !important;
+    gap: 8px !important;
+  }
+
+  .nav-pill-book {
+    padding: 8px 14px !important;
+    font-size: 0.74rem !important;
+  }
+
+  /* Nav pill book text stays visible next to logo on mobile */
+  .nav-pill-book span {
+    display: inline-block !important;
+    font-size: 0.72rem !important;
+    font-weight: 800 !important;
+  }
+
   /* Stats bar */
   .stats-ticker-bar {
     flex-wrap: wrap;
@@ -4452,9 +4475,6 @@
   .hero-subtext {
     font-size: 0.92rem !important;
   }
-
-  /* Nav pill book */
-  .nav-pill-book span { display: none; } /* Icon only on small screens */
 
   /* Property card actions */
   .property-card .btn-outline,

@@ -240,7 +240,7 @@ export default function DataLabsView({ onBack, onOpenInquiry }) {
               <Globe size={15} /> FORBES &amp; SAAS REAL ESTATE INTELLIGENCE SUITE
             </div>
             <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#FFFFFF', margin: 0, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.15 }}>
-              24K DATA LABS <span style={{ color: '#F59E0B' }}>v3.4 PRO</span>
+              24K MARKET TRENDS <span style={{ color: '#F59E0B' }}>v3.4 PRO</span>
             </h1>
             <p style={{ color: 'rgba(248,250,252,0.6)', fontSize: '0.94rem', maxWidth: '750px', marginTop: '8px', lineHeight: 1.6 }}>
               Institutional-grade property market telemetry, predictive machine learning valuation models, and MahaRERA audit metrics for Pune West.

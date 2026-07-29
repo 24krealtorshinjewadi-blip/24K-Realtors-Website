@@ -2508,8 +2508,8 @@ export default function Portal({ onViewChange }) {
 
   return (
     <div className="portal-container" style={{ paddingTop: '80px' }}>
-      {/* Railway Wake Loader */}
-      {loadingElapsed > 3 && <RailwayWakeLoader elapsed={loadingElapsed} />}
+      {/* Railway Wake Loader — Suppressed when mock/cached data exists or load takes <8s */}
+      {loadingElapsed > 8 && allRawProperties.length === 0 && <RailwayWakeLoader elapsed={loadingElapsed} />}
       
       {/* Toast Notification */}
       {notification && (

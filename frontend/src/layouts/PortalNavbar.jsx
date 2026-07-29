@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
   UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building,
-  Home, Search, Heart, ChevronDown
+  Home, Search, Heart, ChevronDown, TrendingUp
 } from 'lucide-react';
 
 import CompanyLogo from '../components/CompanyLogo';
@@ -209,9 +209,10 @@ export default function PortalNavbar({
             <button 
               className={activeSection === 'listings' && activeSubView === 'market-intelligence' ? 'active' : ''} 
               onClick={() => onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, 'market-intelligence')}
-              style={{ color: '#2ec4b6', fontWeight: 600 }}
+              style={{ color: '#2ec4b6', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
             >
-              📊 DATA LABS
+              <TrendingUp size={13} />
+              <span>TRENDS</span>
             </button>
             <button 
               onClick={() => onViewChange && onViewChange('list-property')}
@@ -343,42 +344,42 @@ export default function PortalNavbar({
 
         <div className="drawer-links-section">
           
-          <div className="drawer-section-title">⚜️ PRIVATE CLIENT ACCESS</div>
-          
+          <div className="drawer-section-title">🔍 QUICK SEARCH &amp; ASSIST</div>
+
           <button 
-            onClick={() => { setIsDrawerOpen(false); onViewChange && onViewChange('dashboard'); }} 
+            onClick={() => { setIsDrawerOpen(false); onOpenSpotlight && onOpenSpotlight(); }} 
             className="drawer-item-link"
-            style={{ width: '100%', border: 'none', background: 'rgba(255, 255, 255, 0.02)' }}
+            style={{ width: '100%', border: 'none', background: 'rgba(230, 195, 92, 0.08)', textAlign: 'left' }}
           >
-            <LayoutDashboard size={18} color="#d4af37" />
+            <Search size={18} color="#E6C35C" />
             <div className="drawer-item-text">
-              <strong>CRM Operator Console</strong>
-              <span>Lead routing & properties inventory panel</span>
+              <strong style={{ color: '#E6C35C' }}>Search Properties</strong>
+              <span>Search by locality, BHK, builder or price</span>
             </div>
-            <ArrowRight size={14} className="arrow-icon" />
+            <ArrowRight size={14} className="arrow-icon" color="#E6C35C" />
           </button>
+
+          <a href="tel:+919673000053" className="drawer-item-link" style={{ textDecoration: 'none', background: 'rgba(46, 196, 182, 0.08)' }}>
+            <Phone size={18} color="#2ec4b6" />
+            <div className="drawer-item-text">
+              <strong style={{ color: '#2ec4b6' }}>Call Advisory Line</strong>
+              <span>+91 96730 00053 (Direct Assistance)</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" color="#2ec4b6" />
+          </a>
 
           <button 
             onClick={() => { setIsDrawerOpen(false); onBookVisitClick && onBookVisitClick(); }} 
             className="drawer-item-link"
-            style={{ width: '100%', border: 'none', background: 'rgba(255, 255, 255, 0.02)' }}
+            style={{ width: '100%', border: 'none', background: 'rgba(255, 255, 255, 0.02)', textAlign: 'left' }}
           >
             <Calendar size={18} color="#d4af37" />
             <div className="drawer-item-text">
               <strong>Schedule Site Visit</strong>
-              <span>Request pricing & tour booking</span>
+              <span>Request pricing &amp; tour booking</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </button>
-
-          <a href="tel:+919673000053" className="drawer-item-link" style={{ textDecoration: 'none' }}>
-            <Phone size={18} color="#2ec4b6" />
-            <div className="drawer-item-text">
-              <strong>Call Director Helpline</strong>
-              <span>+91 96730 00053 (Direct Advisory Line)</span>
-            </div>
-            <ArrowRight size={14} className="arrow-icon" />
-          </a>
 
           <div className="drawer-section-title">🏢 EXPLORE PROPERTIES</div>
           
@@ -403,7 +404,7 @@ export default function PortalNavbar({
             <Compass size={18} color="#d4af37" />
             <div className="drawer-item-text">
               <strong>Rent a Property</strong>
-              <span>Premium furnished & unfurnished rentals</span>
+              <span>Premium furnished &amp; unfurnished rentals</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </button>
@@ -416,7 +417,20 @@ export default function PortalNavbar({
             <Building size={18} color="#d4af37" />
             <div className="drawer-item-text">
               <strong>Commercial Spaces</strong>
-              <span>Office, retail & investment assets</span>
+              <span>Office, retail &amp; investment assets</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" />
+          </button>
+
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, 'market-intelligence'); }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
+          >
+            <TrendingUp size={18} color="#2ec4b6" />
+            <div className="drawer-item-text">
+              <strong>Market Trends &amp; Analytics</strong>
+              <span>Rental yields, price growth &amp; area telemetry</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </button>
@@ -451,6 +465,7 @@ export default function PortalNavbar({
           <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>The Gold Standard of Advisory</span>
         </div>
       </div>
+
       {/* Mobile Bottom Tab Bar */}
       <div className="mobile-bottom-tab-bar" role="navigation" aria-label="Mobile navigation bar">
         <button 
