@@ -360,33 +360,35 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
       {/* ══ TOP NAV BAR ══ */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '16px 40px', borderBottom: '1px solid rgba(255,255,255,0.08)',
+        padding: isMobile ? '12px 14px' : '16px 40px', borderBottom: '1px solid rgba(255,255,255,0.08)',
         background: 'rgba(7, 13, 24, 0.85)', backdropFilter: 'blur(16px)',
-        zIndex: 90, position: 'relative'
+        zIndex: 90, position: 'relative', flexWrap: 'wrap', gap: '10px'
       }}>
         {/* Left: Back + Breadcrumb */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <motion.button onClick={onBack} whileHover={{ x: -4 }}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '8px 16px', color: '#fff', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 700, transition: 'all 0.2s' }}>
-            <ArrowLeft size={16}/> Back to Listings
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '8px 14px', color: '#fff', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 700, transition: 'all 0.2s' }}>
+            <ArrowLeft size={15}/> Back
           </motion.button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'rgba(248,250,252,0.4)' }}>
-            <span style={{ cursor: 'pointer', color: 'rgba(248,250,252,0.7)' }} onClick={onBack}>24K Advisory</span>
-            <ChevronRight size={14}/>
-            <span style={{ cursor: 'pointer', color: 'rgba(248,250,252,0.7)' }} onClick={onBack}>Pune West</span>
-            <ChevronRight size={14}/>
-            <span style={{ color: '#F59E0B', fontWeight: 700 }}>{property.location || 'Hinjewadi'}</span>
-          </div>
+          {!isMobile && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'rgba(248,250,252,0.4)' }}>
+              <span style={{ cursor: 'pointer', color: 'rgba(248,250,252,0.7)' }} onClick={onBack}>24K Advisory</span>
+              <ChevronRight size={13}/>
+              <span style={{ cursor: 'pointer', color: 'rgba(248,250,252,0.7)' }} onClick={onBack}>Pune West</span>
+              <ChevronRight size={13}/>
+              <span style={{ color: '#F59E0B', fontWeight: 700 }}>{property.location || 'Hinjewadi'}</span>
+            </div>
+          )}
         </div>
         {/* Right: Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button onClick={handleToggleWishlist}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: isWishlisted ? 'rgba(212,175,55,0.12)' : 'rgba(255,255,255,0.04)', border: isWishlisted ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '7px 14px', color: isWishlisted ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.25s' }}>
-            <Heart size={14} fill={isWishlisted ? 'currentColor' : 'none'}/> {isWishlisted ? 'Saved' : 'Save'}
+            style={{ display: 'flex', alignItems: 'center', gap: '5px', background: isWishlisted ? 'rgba(212,175,55,0.12)' : 'rgba(255,255,255,0.04)', border: isWishlisted ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '6px 12px', color: isWishlisted ? 'var(--gold-primary)' : 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '0.76rem', fontWeight: 600, transition: 'all 0.25s' }}>
+            <Heart size={13} fill={isWishlisted ? 'currentColor' : 'none'}/> {isWishlisted ? 'Saved' : 'Save'}
           </button>
           <button onClick={() => navigator.share?.({ title: property.title, url: window.location.href }).catch(() => {})}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '7px 14px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
-            <Share2 size={14}/> Share
+            style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '6px 12px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: '0.76rem', fontWeight: 600 }}>
+            <Share2 size={13}/> Share
           </button>
         </div>
       </div>
@@ -1525,44 +1527,46 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
       )}
 
       {/* ══ STICKY BOTTOM BAR (Premium Style) ══ */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(4,8,20,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(212,175,55,0.15)', padding: '12px 32px', zIndex: 999, boxShadow: '0 -12px 40px rgba(0,0,0,0.5)' }} className="sticky-booking-bar">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
-          {/* Info pills */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ShieldCheck size={16} color="var(--gold-primary)"/>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(4,8,20,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(212,175,55,0.15)', padding: isMobile ? '10px 14px' : '12px 32px', zIndex: 999, boxShadow: '0 -12px 40px rgba(0,0,0,0.5)' }} className="sticky-booking-bar">
+        <div style={{ display: 'flex', justifyContent: isMobile ? 'center' : 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto', gap: '12px' }}>
+          {/* Info pills (Desktop only) */}
+          {!isMobile && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <ShieldCheck size={16} color="var(--gold-primary)"/>
+                <div>
+                  <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>MahaRERA Certified</div>
+                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#fff' }}>{builder.reraId}</div>
+                </div>
+              </div>
+              <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}/>
               <div>
-                <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>MahaRERA Certified</div>
-                <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#fff' }}>{builder.reraId}</div>
+                <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>RERA Carpet Area</div>
+                <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#fff' }}>684 - 4200 sq.ft.</div>
+              </div>
+              <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}/>
+              <div>
+                <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>Price Range</div>
+                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--gold-primary)' }}>₹84 L – ₹3.75 Cr*</div>
+              </div>
+              <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}/>
+              <div>
+                <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>Launch Offer</div>
+                <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#10b981' }}>Limited Period Benefits*</div>
               </div>
             </div>
-            <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}/>
-            <div>
-              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>RERA Carpet Area</div>
-              <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#fff' }}>684 - 4200 sq.ft.</div>
-            </div>
-            <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}/>
-            <div>
-              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>Price Range</div>
-              <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--gold-primary)' }}>₹84 L – ₹3.75 Cr*</div>
-            </div>
-            <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}/>
-            <div>
-              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>Launch Offer</div>
-              <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#10b981' }}>Limited Period Benefits*</div>
-            </div>
-          </div>
+          )}
           {/* CTA Buttons */}
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexShrink: 0 }}>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', width: isMobile ? '100%' : 'auto' }}>
             <button onClick={() => onOpenInquiry(property)}
-              style={{ padding: '10px 22px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', border: 'none', color: '#070F1E', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              style={{ flex: isMobile ? 1 : 'none', padding: '12px 18px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--gold-primary), var(--gold-secondary))', border: 'none', color: '#070F1E', fontWeight: 800, fontSize: isMobile ? '0.78rem' : '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
               onMouseOver={e => e.currentTarget.style.boxShadow = '0 0 18px rgba(212,175,55,0.5)'}
               onMouseOut={e => e.currentTarget.style.boxShadow = 'none'}>
-              🏢 Book Site Visit
+              🏢 Book Visit
             </button>
             <a href={waLink} target="_blank" rel="noopener noreferrer"
-              style={{ padding: '10px 20px', borderRadius: '10px', background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.3)', color: '#25D366', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>
-              <MessageSquare size={14}/> WhatsApp Us
+              style={{ flex: isMobile ? 1 : 'none', padding: '12px 16px', borderRadius: '10px', background: 'rgba(37,211,102,0.12)', border: '1px solid rgba(37,211,102,0.4)', color: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: isMobile ? '0.78rem' : '0.85rem', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+              <MessageSquare size={14}/> WhatsApp
             </a>
           </div>
         </div>
