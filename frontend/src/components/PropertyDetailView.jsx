@@ -451,7 +451,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
       <div id="sec-hero" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 340px', gap: '0', padding: '0' }}>
 
         {/* Left: Hero Split Grid */}
-        <div style={{ padding: isMobile ? '16px 14px' : '20px 20px 20px 32px' }}>
+        <div style={{ padding: isMobile ? '8px 6px' : '20px 20px 20px 32px' }}>
           {/* Image Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 0.42fr', gap: '8px', borderRadius: '18px', overflow: 'hidden', height: isMobile ? '240px' : '420px' }}>
             {/* Main big image */}
@@ -756,7 +756,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
       </div>
 
       {/* ══ BODY: LEFT CONTENT + RIGHT SIDEBAR ══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,1.65fr) minmax(0,1fr)', gap: isMobile ? '16px' : '28px', padding: isMobile ? '16px 12px 0' : '32px 32px 0', alignItems: 'start' }} className="detail-two-col">
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,1.65fr) minmax(0,1fr)', gap: isMobile ? '12px' : '28px', padding: isMobile ? '8px 6px 0' : '32px 32px 0', alignItems: 'start' }} className="detail-two-col">
 
         {/* ── LEFT COLUMN ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>

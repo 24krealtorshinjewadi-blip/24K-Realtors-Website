@@ -5618,7 +5618,10 @@
 
   /* --- Main portal section padding --- */
   .main-portal-listings-section {
-    padding: 0 12px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
   }
 
   /* --- Societies/Builders/Localities grids --- */
