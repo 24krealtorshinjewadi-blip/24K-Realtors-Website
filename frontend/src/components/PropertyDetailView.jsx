@@ -309,11 +309,12 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
       background: 'rgba(10, 18, 36, 0.75)',
       backdropFilter: 'blur(24px)',
       WebkitBackdropFilter: 'blur(24px)',
-      border: '1px solid rgba(245, 158, 11, 0.25)',
-      borderRadius: isMobile ? '16px' : '24px',
-      padding: isMobile ? '16px 12px' : '32px',
+      border: isMobile ? '1px solid rgba(245, 158, 11, 0.15)' : '1px solid rgba(245, 158, 11, 0.25)',
+      borderRadius: isMobile ? '12px' : '24px',
+      padding: isMobile ? '14px 10px' : '32px',
       boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
       maxWidth: '100%',
+      width: '100%',
       boxSizing: 'border-box',
       overflow: 'hidden',
       ...style
@@ -355,9 +356,11 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
-        borderRadius: '24px',
-        border: '1px solid rgba(245, 158, 11, 0.3)',
-        boxShadow: '0 30px 100px rgba(0,0,0,0.8)',
+        borderRadius: isMobile ? '0' : '24px',
+        border: isMobile ? 'none' : '1px solid rgba(245, 158, 11, 0.3)',
+        boxShadow: isMobile ? 'none' : '0 30px 100px rgba(0,0,0,0.8)',
+        width: '100%',
+        boxSizing: 'border-box',
         overflow: 'hidden'
       }}>
 
@@ -1204,13 +1207,13 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                 ].map((m, i) => (
                   <div key={i} style={{ display: 'flex', gap: '16px', position: 'relative' }}>
                     <div style={{ position: 'absolute', left: '-22px', top: '5px', width: '12px', height: '12px', borderRadius: '50%', background: m.pct === 100 ? '#10b981' : m.pct > 0 ? 'var(--gold-primary)' : 'rgba(255,255,255,0.15)', border: '2.5px solid #070f1e', zIndex: 2 }}/>
-                    <div style={{ flex: 1, background: 'rgba(255,255,255,0.015)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '12px', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ flex: 1, background: 'rgba(255,255,255,0.015)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '12px', padding: isMobile ? '10px 12px' : '14px 18px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: '8px' }}>
                       <div>
-                        <div style={{ fontSize: '0.86rem', fontWeight: 700, color: '#fff' }}>{m.title}</div>
+                        <div style={{ fontSize: '0.86rem', fontWeight: 700, color: '#fff', wordBreak: 'break-word' }}>{m.title}</div>
                         <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', marginTop: '3px' }}>Target Schedule: {m.date}</div>
                       </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: m.pct === 100 ? 'rgba(16,185,129,0.1)' : m.pct > 0 ? 'rgba(212,175,55,0.1)' : 'rgba(255,255,255,0.05)', color: m.pct === 100 ? '#10b981' : m.pct > 0 ? 'var(--gold-secondary)' : 'rgba(255,255,255,0.4)' }}>
+                      <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
+                        <span style={{ fontSize: '0.68rem', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: m.pct === 100 ? 'rgba(16,185,129,0.1)' : m.pct > 0 ? 'rgba(212,175,55,0.1)' : 'rgba(255,255,255,0.05)', color: m.pct === 100 ? '#10b981' : m.pct > 0 ? 'var(--gold-secondary)' : 'rgba(255,255,255,0.4)', display: 'inline-block' }}>
                           {m.pct}% {m.status}
                         </span>
                       </div>

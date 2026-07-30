@@ -2569,7 +2569,7 @@ export default function Portal({ onViewChange }) {
       />
 
       {selectedPropertyDetail ? (
-        <div className="main-portal-listings-section" style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px', paddingTop: '20px' }}>
+        <div className="main-portal-listings-section" style={{ maxWidth: isMobile ? '100%' : '1410px', width: '100%', margin: '0 auto', padding: isMobile ? '0' : '0 20px', paddingTop: isMobile ? '0' : '20px', boxSizing: 'border-box' }}>
           <Suspense fallback={
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
               <Loader className="animate-spin" size={36} color="var(--gold-primary)" />
