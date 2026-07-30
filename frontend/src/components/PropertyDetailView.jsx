@@ -199,6 +199,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [activeTab, setActiveTab]         = useState('overview');
   const [lightboxOpen, setLightboxOpen]   = useState(false);
   const [lightboxStart, setLightboxStart] = useState(0);
+  const [floorplanZoomOpen, setFloorplanZoomOpen] = useState(false);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const [hoveredTrendPoint, setHoveredTrendPoint] = useState(null);
   const [activeVideoTab, setActiveVideoTab] = useState('walkthrough');
@@ -309,9 +310,12 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
       backdropFilter: 'blur(24px)',
       WebkitBackdropFilter: 'blur(24px)',
       border: '1px solid rgba(245, 158, 11, 0.25)',
-      borderRadius: '24px',
-      padding: '32px',
+      borderRadius: isMobile ? '16px' : '24px',
+      padding: isMobile ? '16px 12px' : '32px',
       boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+      maxWidth: '100%',
+      boxSizing: 'border-box',
+      overflow: 'hidden',
       ...style
     }}>
       {children}
@@ -836,14 +840,14 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                   )}
 
                   {/* Main Plan Viewer */}
-                  <div onClick={() => setLightboxOpen(true)}
-                    style={{ position: 'relative', background: '#fff', borderRadius: '14px', border: '2px solid rgba(212,175,55,0.2)', boxShadow: '0 12px 40px rgba(0,0,0,0.5)', overflow: 'hidden', cursor: 'zoom-in', marginBottom: '16px', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div onClick={() => setFloorplanZoomOpen(true)}
+                    style={{ position: 'relative', background: '#fff', borderRadius: '14px', border: '2px solid rgba(212,175,55,0.2)', boxShadow: '0 12px 40px rgba(0,0,0,0.5)', overflow: 'hidden', cursor: 'zoom-in', marginBottom: '16px', minHeight: isMobile ? '220px' : '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px' }}>
                     <img src={fpActive.url} alt={`${fpActive.label} Floor Plan`}
-                      style={{ width: '100%', maxHeight: '480px', objectFit: 'contain', display: 'block', transition: 'transform 0.4s ease' }}
+                      style={{ width: '100%', maxHeight: isMobile ? '320px' : '480px', objectFit: 'contain', display: 'block', transition: 'transform 0.4s ease' }}
                       onMouseOver={e => e.currentTarget.style.transform = 'scale(1.02)'}
                       onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}/>
-                    <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(7,15,30,0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '8px', padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.7rem', fontWeight: 700, color: 'var(--gold-secondary)', pointerEvents: 'none' }}>
-                      <ZoomIn size={12}/> Click to zoom
+                    <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(7,15,30,0.85)', backdropFilter: 'blur(8px)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '8px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', fontWeight: 700, color: 'var(--gold-secondary)' }}>
+                      <ZoomIn size={14}/> Tap to zoom blueprint
                     </div>
                     <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '7px', padding: '4px 12px', fontSize: '0.75rem', fontWeight: 800 }}>
                       {fpActive.label} · {fpActive.desc}
@@ -874,30 +878,30 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                 </div>
               )}
 
-              {/* Inline Zoom Lightbox */}
-              {lightboxOpen && fpActive && (
-                <div onClick={() => setLightboxOpen(false)}
-                  style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(4,8,20,0.96)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}>
-                  <button onClick={e => { e.stopPropagation(); setLightboxOpen(false); }}
-                    style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.4rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+              {/* Floor Plan Dedicated Zoom Lightbox */}
+              {floorplanZoomOpen && fpActive && (
+                <div onClick={() => setFloorplanZoomOpen(false)}
+                  style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(4,8,20,0.96)', backdropFilter: 'blur(16px)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out', padding: '16px' }}>
+                  <button onClick={e => { e.stopPropagation(); setFloorplanZoomOpen(false); }}
+                    style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.4rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000 }}>
                     ×
                   </button>
                   {fpVariants.length > 1 && (
                     <>
                       <button onClick={e => { e.stopPropagation(); const idx = fpVariants.findIndex(v => v.id === activePlan); setActivePlan(fpVariants[(idx - 1 + fpVariants.length) % fpVariants.length].id); }}
-                        style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>‹</button>
+                        style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000 }}>‹</button>
                       <button onClick={e => { e.stopPropagation(); const idx = fpVariants.findIndex(v => v.id === activePlan); setActivePlan(fpVariants[(idx + 1) % fpVariants.length].id); }}
-                        style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>›</button>
+                        style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000 }}>›</button>
                     </>
                   )}
-                  <div onClick={e => e.stopPropagation()} style={{ maxWidth: '90vw', maxHeight: '90vh', background: '#fff', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 40px 80px rgba(0,0,0,0.8)', position: 'relative' }}>
-                    <img src={fpActive.url} alt={`${fpActive.label} Floor Plan`} style={{ display: 'block', maxWidth: '90vw', maxHeight: '88vh', objectFit: 'contain' }}/>
-                    <div style={{ position: 'absolute', bottom: '14px', left: '14px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '8px', padding: '5px 14px', fontSize: '0.78rem', fontWeight: 800 }}>
-                      {fpActive.label} · {fpActive.desc}
+                  <div onClick={e => e.stopPropagation()} style={{ maxWidth: '92vw', maxHeight: '88vh', background: '#fff', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 40px 80px rgba(0,0,0,0.85)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px' }}>
+                    <img src={fpActive.url} alt={`${fpActive.label} Floor Plan`} style={{ display: 'block', maxWidth: '88vw', maxHeight: '80vh', objectFit: 'contain' }}/>
+                    <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'var(--gold-primary)', color: '#070f1e', borderRadius: '8px', padding: '6px 14px', fontSize: '0.78rem', fontWeight: 800 }}>
+                      📐 {fpActive.label} · {fpActive.desc}
                     </div>
                   </div>
-                  <div style={{ position: 'absolute', bottom: '18px', left: '50%', transform: 'translateX(-50%)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)' }}>
-                    Click anywhere to close · Use ‹ › to switch plans
+                  <div style={{ position: 'absolute', bottom: '18px', left: '50%', transform: 'translateX(-50%)', fontSize: '0.74rem', color: 'rgba(255,255,255,0.6)', background: 'rgba(0,0,0,0.6)', padding: '4px 12px', borderRadius: '20px' }}>
+                    Tap anywhere to close · Use ‹ › to switch layout blueprints
                   </div>
                 </div>
               )}
@@ -914,40 +918,76 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                     🛡️ MahaRERA Escrow Protected
                   </span>
                 </div>
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '460px' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-muted)', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                        {['Unit Type','Super Carpet Area','Investment Estimate','Status','Action'].map((h, i) => <th key={h} style={{ padding: '14px 16px', textAlign: i === 4 ? 'right' : 'left' }}>{h}</th>)}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {property.configurations.map((c, idx) => {
-                        const fast = c.status?.includes('Fast') || c.status?.includes('Exclusive');
-                        const lim  = c.status?.includes('Limited') || c.status?.includes('Premium');
-                        return (
-                          <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', fontSize: '0.88rem', transition: 'all 0.25s' }}
-                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.04)'; e.currentTarget.style.borderLeft = '2px solid var(--gold-primary)'; }}
-                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderLeft = 'none'; }}>
-                            <td style={{ padding: '16px 16px', fontWeight: 700, color: '#fff' }}>{c.name}</td>
-                            <td style={{ padding: '16px 16px', color: 'rgba(255,255,255,0.7)' }}>{c.area}</td>
-                            <td style={{ padding: '16px 16px', color: 'var(--gold-primary)', fontWeight: 800, fontSize: '0.98rem' }}>{c.price}</td>
-                            <td style={{ padding: '16px 16px' }}>
-                              {c.status && <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '4px 12px', borderRadius: '20px', background: fast ? 'rgba(239,68,68,0.12)' : lim ? 'rgba(251,191,36,0.12)' : 'rgba(16,185,129,0.12)', color: fast ? '#ef4444' : lim ? '#fbbf24' : '#10b981', border: `1px solid ${fast ? 'rgba(239,68,68,0.2)' : lim ? 'rgba(251,191,36,0.2)' : 'rgba(16,185,129,0.2)'}`, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{c.status}</span>}
-                            </td>
-                            <td style={{ padding: '16px 16px', textAlign: 'right' }}>
-                              <button onClick={() => onOpenInquiry(property)} style={{ background: 'var(--gold-primary)', color: '#070f1e', border: 'none', borderRadius: '8px', padding: '8px 18px', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '5px', transition: 'all 0.2s' }}
-                                onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 0 14px rgba(212,175,55,0.5)'; }}
-                                onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}>
-                                Request Call <ArrowRight size={12}/>
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                {isMobile ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {property.configurations.map((c, idx) => {
+                      const fast = c.status?.includes('Fast') || c.status?.includes('Exclusive');
+                      const lim  = c.status?.includes('Limited') || c.status?.includes('Premium');
+                      return (
+                        <div key={idx} style={{
+                          background: 'rgba(255,255,255,0.03)',
+                          border: '1px solid rgba(212,175,55,0.2)',
+                          borderRadius: '12px',
+                          padding: '14px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '10px'
+                        }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.95rem', fontWeight: 800, color: '#fff' }}>{c.name}</span>
+                            {c.status && (
+                              <span style={{ fontSize: '0.65rem', fontWeight: 800, padding: '3px 8px', borderRadius: '12px', background: fast ? 'rgba(239,68,68,0.15)' : lim ? 'rgba(251,191,36,0.15)' : 'rgba(16,185,129,0.15)', color: fast ? '#ef4444' : lim ? '#fbbf24' : '#10b981', border: `1px solid ${fast ? 'rgba(239,68,68,0.3)' : lim ? 'rgba(251,191,36,0.3)' : 'rgba(16,185,129,0.3)'}` }}>
+                                {c.status}
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem' }}>
+                            <span style={{ color: 'rgba(255,255,255,0.6)' }}>Super Carpet: <strong style={{ color: '#fff' }}>{c.area}</strong></span>
+                            <span style={{ color: 'var(--gold-primary)', fontWeight: 800, fontSize: '0.96rem' }}>{c.price}</span>
+                          </div>
+                          <button onClick={() => onOpenInquiry(property)} style={{ width: '100%', background: 'var(--gold-primary)', color: '#070f1e', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                            Request Call <ArrowRight size={13}/>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '460px' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-muted)', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                          {['Unit Type','Super Carpet Area','Investment Estimate','Status','Action'].map((h, i) => <th key={h} style={{ padding: '14px 16px', textAlign: i === 4 ? 'right' : 'left' }}>{h}</th>)}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {property.configurations.map((c, idx) => {
+                          const fast = c.status?.includes('Fast') || c.status?.includes('Exclusive');
+                          const lim  = c.status?.includes('Limited') || c.status?.includes('Premium');
+                          return (
+                            <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', fontSize: '0.88rem', transition: 'all 0.25s' }}
+                              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.04)'; e.currentTarget.style.borderLeft = '2px solid var(--gold-primary)'; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderLeft = 'none'; }}>
+                              <td style={{ padding: '16px 16px', fontWeight: 700, color: '#fff' }}>{c.name}</td>
+                              <td style={{ padding: '16px 16px', color: 'rgba(255,255,255,0.7)' }}>{c.area}</td>
+                              <td style={{ padding: '16px 16px', color: 'var(--gold-primary)', fontWeight: 800, fontSize: '0.98rem' }}>{c.price}</td>
+                              <td style={{ padding: '16px 16px' }}>
+                                {c.status && <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '4px 12px', borderRadius: '20px', background: fast ? 'rgba(239,68,68,0.12)' : lim ? 'rgba(251,191,36,0.12)' : 'rgba(16,185,129,0.12)', color: fast ? '#ef4444' : lim ? '#fbbf24' : '#10b981', border: `1px solid ${fast ? 'rgba(239,68,68,0.2)' : lim ? 'rgba(251,191,36,0.2)' : 'rgba(16,185,129,0.2)'}`, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{c.status}</span>}
+                              </td>
+                              <td style={{ padding: '16px 16px', textAlign: 'right' }}>
+                                <button onClick={() => onOpenInquiry(property)} style={{ background: 'var(--gold-primary)', color: '#070f1e', border: 'none', borderRadius: '8px', padding: '8px 18px', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '5px', transition: 'all 0.2s' }}
+                                  onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 0 14px rgba(212,175,55,0.5)'; }}
+                                  onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                                  Request Call <ArrowRight size={12}/>
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </Card>
             </div>
           )}
@@ -1231,7 +1271,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
         </div>
 
         {/* ── RIGHT COLUMN (STICKY SIDEBAR) ── */}
-        <div style={{ position: 'sticky', top: '56px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        <div style={{ position: isMobile ? 'static' : 'sticky', top: '56px', display: 'flex', flexDirection: 'column', gap: '18px', padding: isMobile ? '16px 14px' : '20px 32px 20px 10px' }}>
 
           {/* Location Intelligence */}
           <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(212,175,55,0.18)', borderRadius: '18px', padding: '24px' }}>
