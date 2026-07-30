@@ -500,6 +500,13 @@ export default function Portal({ onViewChange }) {
   const [isReraDrawerOpen, setIsReraDrawerOpen] = useState(false);
   const [selectedReraProperty, setSelectedReraProperty] = useState(null);
 
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const [appreciationYears, setAppreciationYears] = useState(5);
   const [mortgageDetails, setMortgageDetails] = useState({
     downPaymentPercent: 20,
