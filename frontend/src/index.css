@@ -544,3 +544,49 @@ a:focus-visible {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* ===== MOBILE FIRST & TOUCH PERFECTION ENHANCEMENTS ===== */
+@media (max-width: 768px) {
+  /* Company Desk Modal Mobile Full-Screen Layout */
+  .company-desk-modal-container {
+    width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+
+  .company-desk-modal-body {
+    flex-direction: column !important;
+  }
+
+  .company-desk-tabs-bar {
+    width: 100% !important;
+    min-width: 100% !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    padding: 8px !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .company-desk-tabs-bar button {
+    flex-shrink: 0 !important;
+    padding: 8px 12px !important;
+  }
+
+  /* Minimum 44px Touch Zone for Inputs & Action Buttons */
+  button, a, input, select {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  /* Prevent iOS Auto-Zoom on Input Focus */
+  input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+    font-size: 16px !important;
+  }
+}
+

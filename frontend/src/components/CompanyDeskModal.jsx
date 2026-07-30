@@ -46,19 +46,19 @@ export default function CompanyDeskModal({ isOpen, onClose, initialTab = 'about'
       right: 0,
       bottom: 0,
       zIndex: 99999,
-      background: 'rgba(3, 7, 18, 0.88)',
-      backdropFilter: 'blur(12px)',
+      background: 'rgba(3, 7, 18, 0.92)',
+      backdropFilter: 'blur(14px)',
       display: 'flex',
       alignItems: 'center',
-      justify: 'center',
-      padding: '20px',
+      justifyContent: 'center',
+      padding: '12px',
       boxSizing: 'border-box'
     }}>
-      <div style={{
+      <div className="company-desk-modal-container" style={{
         width: '1000px',
-        maxWidth: '96vw',
-        height: '85vh',
-        maxHeight: '750px',
+        maxWidth: '100%',
+        height: '90vh',
+        maxHeight: '780px',
         background: '#070F1E',
         border: `1px solid rgba(212,175,55,0.35)`,
         borderRadius: '16px',
@@ -70,42 +70,42 @@ export default function CompanyDeskModal({ isOpen, onClose, initialTab = 'about'
 
         {/* ── MODAL HEADER ── */}
         <div style={{
-          padding: '18px 24px',
+          padding: '16px 20px',
           background: 'linear-gradient(90deg, #0A1224 0%, #060C17 100%)',
           borderBottom: '1px solid rgba(255,255,255,0.08)',
           display: 'flex',
           justify: 'space-between',
           alignItems: 'center'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: 36, height: 36, borderRadius: '8px', background: 'rgba(212,175,55,0.12)', border: `1px solid ${GOLD}40`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: 36, height: 36, borderRadius: '8px', background: 'rgba(212,175,55,0.12)', border: `1px solid ${GOLD}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Building2 size={20} color={GOLD} />
             </div>
             <div>
-              <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#FFF', letterSpacing: '0.02em' }}>
-                24K REALTORS <span style={{ fontSize: '0.74rem', color: GOLD, fontWeight: 700 }}>• Official Company Desk</span>
+              <div style={{ fontSize: '1.05rem', fontWeight: 900, color: '#FFF', letterSpacing: '0.02em' }}>
+                24K REALTORS <span style={{ fontSize: '0.7rem', color: GOLD, fontWeight: 700 }}>• Company Desk</span>
               </div>
-              <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>
-                MahaRERA Agent Reg. No: <strong style={{ color: GOLD }}>A52100028461</strong> | Indian Law &amp; Real Estate Compliant
+              <div style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>
+                MahaRERA: <strong style={{ color: GOLD }}>A52100028461</strong> | Indian Law Compliant
               </div>
             </div>
           </div>
 
-          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#FFF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <X size={16} />
+          <button onClick={onClose} style={{ width: 38, height: 38, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <X size={18} />
           </button>
         </div>
 
-        {/* ── MODAL BODY (LEFT TABS + RIGHT CONTENT) ── */}
-        <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* ── MODAL BODY (RESPONSIVE FLEX / STACK) ── */}
+        <div className="company-desk-modal-body" style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
 
-          {/* LEFT SIDEBAR TABS */}
-          <div style={{
+          {/* LEFT SIDEBAR / TOP MOBILE TABS */}
+          <div className="company-desk-tabs-bar" style={{
             width: '260px',
             minWidth: '260px',
             background: 'rgba(10, 18, 36, 0.95)',
             borderRight: '1px solid rgba(255,255,255,0.07)',
-            padding: '16px 12px',
+            padding: '14px 10px',
             display: 'flex',
             flexDirection: 'column',
             gap: '4px',
