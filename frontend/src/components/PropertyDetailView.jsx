@@ -397,8 +397,55 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
         </div>
       </div>
 
+      {/* ══ STICKY QUICK-JUMP ANCHOR NAVIGATION TABS ══ */}
+      <div style={{
+        position: 'sticky', top: '0px', zIndex: 85,
+        background: 'rgba(4, 8, 20, 0.95)', backdropFilter: 'blur(16px)',
+        borderBottom: '1px solid rgba(212,175,55,0.15)',
+        display: 'flex', gap: '8px', padding: '8px 14px', overflowX: 'auto',
+        scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch'
+      }}>
+        {[
+          { id: 'sec-hero', label: 'Overview', icon: '📌' },
+          { id: 'sec-highlights', label: 'Highlights', icon: '⭐' },
+          { id: 'sec-blueprints', label: 'Floor Plans', icon: '📐' },
+          { id: 'sec-pricing', label: 'Pricing', icon: '💰' },
+          { id: 'sec-amenities', label: 'Amenities', icon: '🏊' },
+          { id: 'sec-location', label: 'Location', icon: '🗺️' },
+          { id: 'sec-emi', label: 'EMI Calculator', icon: '🧮' },
+          { id: 'sec-developer', label: 'Developer', icon: '🏢' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => {
+              const el = document.getElementById(tab.id);
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+            style={{
+              flexShrink: 0,
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(212,175,55,0.2)',
+              color: 'rgba(255,255,255,0.85)',
+              padding: '6px 14px',
+              borderRadius: '20px',
+              fontSize: '0.74rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              whiteSpace: 'nowrap',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <span>{tab.icon}</span>
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
       {/* ══ HERO SPLIT GRID + RIGHT SIDEBAR ══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 340px', gap: '0', padding: '0' }}>
+      <div id="sec-hero" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 340px', gap: '0', padding: '0' }}>
 
         {/* Left: Hero Split Grid */}
         <div style={{ padding: isMobile ? '16px 14px' : '20px 20px 20px 32px' }}>
@@ -706,7 +753,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
       </div>
 
       {/* ══ BODY: LEFT CONTENT + RIGHT SIDEBAR ══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.65fr) minmax(0,1fr)', gap: '28px', padding: '32px 32px 0', alignItems: 'start' }} className="detail-two-col">
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,1.65fr) minmax(0,1fr)', gap: isMobile ? '16px' : '28px', padding: isMobile ? '16px 12px 0' : '32px 32px 0', alignItems: 'start' }} className="detail-two-col">
 
         {/* ── LEFT COLUMN ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
@@ -1274,7 +1321,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
         <div style={{ position: isMobile ? 'static' : 'sticky', top: '56px', display: 'flex', flexDirection: 'column', gap: '18px', padding: isMobile ? '16px 14px' : '20px 32px 20px 10px' }}>
 
           {/* Location Intelligence */}
-          <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(212,175,55,0.18)', borderRadius: '18px', padding: '24px' }}>
+          <div id="sec-location" style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(212,175,55,0.18)', borderRadius: '18px', padding: '24px' }}>
             <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.95rem', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               <Navigation size={15}/> Location Intelligence
             </h3>
@@ -1333,7 +1380,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
 
           {/* Developer */}
-          <div style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '18px', padding: '24px' }}>
+          <div id="sec-developer" style={{ background: 'rgba(10,18,36,0.7)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '18px', padding: '24px' }}>
             <h3 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', fontSize: '0.9rem', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Building size={15}/> Developer Dossier
             </h3>
@@ -1348,7 +1395,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
 
           {/* ═══ PREMIUM EMI CALCULATOR ═══ */}
-          <div style={{ background: 'linear-gradient(135deg, rgba(10,18,36,0.95), rgba(7,15,30,0.98))', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '20px', padding: '28px', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+          <div id="sec-emi" style={{ background: 'linear-gradient(135deg, rgba(10,18,36,0.95), rgba(7,15,30,0.98))', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '20px', padding: '28px', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '22px', borderBottom: '1px solid rgba(212,175,55,0.1)', paddingBottom: '16px' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05))', border: '1px solid rgba(212,175,55,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
