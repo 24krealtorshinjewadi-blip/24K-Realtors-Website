@@ -4217,14 +4217,6 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* 🤖 Ultra-Luxury 24K AI Assistant Chatbot */}
-      <Suspense fallback={null}>
-        <ChatWidget 
-          isOpen={isChatWidgetOpen}
-          setIsOpen={setIsChatWidgetOpen}
-          activeProperty={selectedPropertyDetail}
-        />
-      </Suspense>
-
       {/* Sticky Floating WhatsApp */}
       {!selectedPropertyDetail && !selectedSocietyDetail && !selectedBuilderDetail && !selectedLocalityDetail && !selectedBlogDetail && (
         <a
