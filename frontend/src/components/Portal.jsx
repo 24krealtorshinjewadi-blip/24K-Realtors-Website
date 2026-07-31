@@ -2772,53 +2772,110 @@ export default function Portal({ onViewChange }) {
                 </svg>
               </div>
 
-              {/* Raycast Command Bar */}
+              {/* Unified 24K Master Search & AI Bar */}
               <div
-                onClick={() => setIsSpotlightOpen(true)}
-                className="tech-command-bar"
                 style={{
                   width: "100%",
-                  maxWidth: "720px",
-                  background: "rgba(7, 15, 30, 0.45)",
+                  maxWidth: "780px",
+                  background: "rgba(7, 15, 30, 0.65)",
                   backdropFilter: "blur(24px)",
                   WebkitBackdropFilter: "blur(24px)",
-                  border: "1px solid rgba(230, 195, 92, 0.25)",
-                  borderRadius: "16px",
-                  padding: "16px 24px",
-                  margin: "40px auto 0 auto",
+                  border: "1px solid rgba(230, 195, 92, 0.35)",
+                  borderRadius: "20px",
+                  padding: "10px 12px 10px 20px",
+                  margin: "36px auto 0 auto",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  cursor: "pointer",
-                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.05), 0 0 0 1px rgba(230, 195, 92, 0.05)",
+                  gap: "12px",
+                  boxShadow: "0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255,255,255,0.08)",
                   transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)"
                 }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = "rgba(230, 195, 92, 0.5)";
-                  e.currentTarget.style.boxShadow = "0 24px 50px rgba(0, 0, 0, 0.5), 0 0 15px rgba(230, 195, 92, 0.1)";
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = "rgba(230, 195, 92, 0.25)";
-                  e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.05), 0 0 0 1px rgba(230, 195, 92, 0.05)";
-                }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "14px", color: "rgba(255, 255, 255, 0.5)" }}>
-                  <span style={{ color: "#E6C35C", fontSize: "1.1rem" }}>🔍</span>
-                  <span className="search-text-desktop" style={{ fontSize: "0.92rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 500, letterSpacing: "0.02em", color: "#fff" }}>
-                    Search listings, developers, or type a command...
+                {/* Search Text Input trigger for Spotlight / CmdK */}
+                <div
+                  onClick={() => setIsSpotlightOpen(true)}
+                  style={{ display: "flex", alignItems: "center", gap: "12px", flex: 1, cursor: "pointer", minWidth: 0 }}
+                >
+                  <span style={{ color: "#E6C35C", fontSize: "1.15rem" }}>🔍</span>
+                  <span style={{ fontSize: isMobile ? "0.82rem" : "0.92rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 500, color: "rgba(255, 255, 255, 0.8)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    Search Hinjewadi, Wakad, Baner, or type a command...
                   </span>
-                  <span className="search-text-mobile" style={{ fontSize: "0.92rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: "#fff", display: "none" }}>
-                    Search...
-                  </span>
+                  {!isMobile && (
+                    <span style={{ fontSize: "0.62rem", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "6px", padding: "2px 6px", color: "rgba(255,255,255,0.4)", fontFamily: "'Montserrat', sans-serif", fontWeight: 700, flexShrink: 0 }}>
+                      CTRL K
+                    </span>
+                  )}
                 </div>
-                <div className="search-kbd-badges" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span style={{ fontSize: "0.68rem", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "3px 8px", color: "rgba(255,255,255,0.4)", fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}>
-                    CTRL
-                  </span>
-                  <span style={{ fontSize: "0.68rem", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "3px 8px", color: "rgba(255,255,255,0.4)", fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}>
-                    K
-                  </span>
-                </div>
+
+                {/* Integrated AI Area Match Pill Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsAiModalOpen(true);
+                    setAiStep(1);
+                  }}
+                  style={{
+                    background: "linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)",
+                    border: "none",
+                    color: "#040814",
+                    padding: isMobile ? "8px 14px" : "10px 20px",
+                    borderRadius: "50px",
+                    fontSize: isMobile ? "0.74rem" : "0.82rem",
+                    fontWeight: 800,
+                    fontFamily: "'Montserrat', sans-serif",
+                    letterSpacing: "0.04em",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    boxShadow: "0 4px 16px rgba(230, 195, 92, 0.35)",
+                    transition: "all 0.3s ease",
+                    flexShrink: 0
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.04)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(230, 195, 92, 0.5)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(230, 195, 92, 0.35)"; }}
+                >
+                  <Sparkles size={15} color="#040814" />
+                  <span>✨ AI Area Match</span>
+                </button>
+              </div>
+
+              {/* Quick Corridor Filter Pills directly below Hero Search */}
+              <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap", marginTop: "16px" }}>
+                {[
+                  { label: "📍 Hinjewadi Phase 1 & 2", query: "HINJEWADI" },
+                  { label: "📍 Wakad Datta Mandir", query: "WAKAD" },
+                  { label: "📍 Mahalunge Smart City", query: "MAHALUNGE" },
+                  { label: "📍 Baner High Street", query: "BANER" },
+                ].map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      handleApplyMegaFilter({ location: item.query }, 'listings');
+                      setTimeout(() => {
+                        document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }, 100);
+                    }}
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: "50px",
+                      padding: "5px 12px",
+                      fontSize: "0.72rem",
+                      fontWeight: 600,
+                      color: "rgba(255,255,255,0.75)",
+                      cursor: "pointer",
+                      fontFamily: "'Montserrat', sans-serif",
+                      transition: "all 0.2s ease"
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(230,195,92,0.15)"; e.currentTarget.style.borderColor = "rgba(230,195,92,0.4)"; e.currentTarget.style.color = "#E6C35C"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "rgba(255,255,255,0.75)"; }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
               </div>
 
             </div>
@@ -3211,29 +3268,7 @@ export default function Portal({ onViewChange }) {
             
             {activeSection === 'listings' && (
               <>
-                {/* 24K AI Location & Investment Recommendation Teaser Panel */}
-                <div style={{ background: 'linear-gradient(135deg, rgba(7,15,30,0.95) 0%, rgba(15,28,46,0.85) 100%)', border: '1px solid rgba(230,195,92,0.25)', borderRadius: '20px', padding: isMobile ? '18px 20px' : '24px 32px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', boxShadow: '0 12px 36px rgba(0,0,0,0.5)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, minWidth: '280px' }}>
-                    <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(230,195,92,0.2) 0%, transparent 70%)', border: '1px solid rgba(230,195,92,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Sparkles size={22} color="#E6C35C" />
-                    </div>
-                    <div>
-                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(230,195,92,0.1)', borderRadius: '50px', padding: '2px 10px', marginBottom: '4px' }}>
-                        <span style={{ fontSize: '0.62rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.08em', textTransform: 'uppercase' }}>✨ 24K INTELLIGENT MATCHING</span>
-                      </div>
-                      <h3 style={{ margin: '0 0 2px 0', fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1rem' : '1.15rem', color: '#fff', fontWeight: 700, letterSpacing: '0.01em' }}>AI Area &amp; Investment Recommendation</h3>
-                      <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(255,255,255,0.55)', fontFamily: "'Montserrat', sans-serif" }}>Answer 3 quick inputs — get instant AI corridor match &amp; filtered listings</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => { setIsAiModalOpen(true); setAiStep(1); }}
-                    style={{ background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', border: 'none', color: '#040814', padding: isMobile ? '12px 20px' : '14px 28px', borderRadius: '50px', fontSize: isMobile ? '0.78rem' : '0.84rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.06em', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 6px 20px rgba(197,168,128,0.3)', transition: 'all 0.3s ease' }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(197,168,128,0.45)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(197,168,128,0.3)'; }}
-                  >
-                    ✦ Start AI Recommendation →
-                  </button>
-                </div>
+
 
                 {/* Ultra-Premium Subpage Header Banner */}
                 <div className="subpage-header-banner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
@@ -3259,11 +3294,11 @@ export default function Portal({ onViewChange }) {
                   </div>
                 </div>
 
-                {/* Dynamic Advanced Filtering */}
+                {/* Dynamic Advanced Filtering Bar */}
                 <section className="filter-section" id="listings-anchor">
-                <h2 className="filter-title">
-                  <Search size={18} />
-                  Refine Your Property Search
+                <h2 className="filter-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Search size={18} color="#E6C35C" />
+                  <span>Filter Residences</span>
                 </h2>
                 <form onSubmit={handleApplyFilters} className="filter-grid">
                   <div className="form-group">
