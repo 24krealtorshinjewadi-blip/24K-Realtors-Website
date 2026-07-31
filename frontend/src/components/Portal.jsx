@@ -2199,47 +2199,62 @@ export default function Portal({ onViewChange }) {
     setAiAnalyzing(true);
     setAiProgress(0);
     setAiReport(null);
+    setAiStep(4);
     
     let current = 0;
     const interval = setInterval(() => {
-      current += 10;
-      setAiProgress(current);
+      current += 25;
+      setAiProgress(Math.min(current, 100));
       if (current >= 100) {
         clearInterval(interval);
         setAiAnalyzing(false);
         
         let recommendedCorridor = 'WAKAD';
         let explanation = '';
-        let appreciationIndex = '14.2%';
-        let rentalYield = '4.5%';
-        let connectivityScore = '9.2/10';
+        let appreciationIndex = '14.5%';
+        let rentalYield = '4.7%';
+        let connectivityScore = '9.4/10';
+        let matchPercent = '96%';
         
-        if (aiPriority === 'yield') {
+        if (aiCorridor !== 'all' && aiCorridor) {
+          recommendedCorridor = aiCorridor.toUpperCase();
+        }
+
+        if (recommendedCorridor === 'HINJEWADI' || aiPriority === 'yield') {
           recommendedCorridor = 'HINJEWADI';
-          appreciationIndex = '11.8%';
-          rentalYield = '5.2%';
-          connectivityScore = '8.8/10';
-          explanation = 'Based on your preference for High Rental Yields, Hinjewadi is recommended. The tech hubs generate stable corporate tenant demand, pushing yields to 5.2%—the highest in Pune West.';
-        } else if (aiPriority === 'commute') {
+          appreciationIndex = '14.8%';
+          rentalYield = '5.4%';
+          connectivityScore = '9.0/10';
+          matchPercent = '98%';
+          explanation = 'Hinjewadi IT Corridor is your top match! 300,000+ tech professionals drive high rental demand, delivering Pune West’s highest rental yields (5.4%) & steady 14.8% capital growth.';
+        } else if (recommendedCorridor === 'BANER' || aiPriority === 'commute') {
           recommendedCorridor = 'BANER';
           appreciationIndex = '16.5%';
-          rentalYield = '3.8%';
-          connectivityScore = '9.5/10';
-          explanation = 'For optimized commute time and high appreciation, Baner is recommended. It lies adjacent to Balewadi High Street with excellent transit routes to IT offices.';
+          rentalYield = '4.2%';
+          connectivityScore = '9.8/10';
+          matchPercent = '97%';
+          explanation = 'Baner is your premium match! Ultra-luxury lifestyle near Balewadi High Street, top developer penthouses & fastest transit to Hinjewadi IT hubs & Expressway.';
+        } else if (aiBudget === 'under-80L' || recommendedCorridor === 'MAHALUNGE') {
+          recommendedCorridor = 'MAHALUNGE';
+          appreciationIndex = '18.5%';
+          rentalYield = '4.8%';
+          connectivityScore = '8.5/10';
+          matchPercent = '95%';
+          explanation = 'Mahalunge Smart City is your top high-appreciation choice! Outstanding 18.5% YoY growth on entry budget with 100+ acre mega township infrastructure.';
+        } else if (recommendedCorridor === 'TATHAWADE') {
+          recommendedCorridor = 'TATHAWADE';
+          appreciationIndex = '15.2%';
+          rentalYield = '4.6%';
+          connectivityScore = '8.8/10';
+          matchPercent = '94%';
+          explanation = 'Tathawade offers rapid appreciation next to education institutes & Expressway with modern high-rise gated communities.';
         } else {
-          if (aiBudget === 'under-80L') {
-            recommendedCorridor = 'MAHALUNGE';
-            appreciationIndex = '18.1%';
-            rentalYield = '4.8%';
-            connectivityScore = '8.0/10';
-            explanation = 'For maximum capital appreciation on an entry budget, Mahalunge smart city township is the optimal choice. It exhibits a high 18% YoY growth profile.';
-          } else {
-            recommendedCorridor = 'WAKAD';
-            appreciationIndex = '14.2%';
-            rentalYield = '4.5%';
-            connectivityScore = '9.2/10';
-            explanation = 'Wakad offers the most balanced profile. Excellent 14% capital appreciation combined with a solid 4.5% yield and multi-lane highway transit.';
-          }
+          recommendedCorridor = 'WAKAD';
+          appreciationIndex = '14.5%';
+          rentalYield = '4.7%';
+          connectivityScore = '9.4/10';
+          matchPercent = '96%';
+          explanation = 'Wakad Datta Mandir Rd is the most balanced investment corridor. 14.5% capital growth + 4.7% yield + instant highway & upcoming metro access.';
         }
         
         setAiReport({
@@ -2247,10 +2262,11 @@ export default function Portal({ onViewChange }) {
           appreciationIndex,
           rentalYield,
           connectivityScore,
-          explanation
+          explanation,
+          matchPercent
         });
       }
-    }, 150);
+    }, 80);
   };
 
   const handleFilterChange = (e) => {
@@ -2808,29 +2824,6 @@ export default function Portal({ onViewChange }) {
             </div>
           </section>
 
-      {/* 24K AI Location Advisor Teaser Panel */}
-      <div style={{ maxWidth: '94%', margin: '24px auto 40px auto', padding: '0 20px' }}>
-        <div style={{ background: 'linear-gradient(135deg, rgba(7,15,30,0.9) 0%, rgba(15,28,46,0.8) 100%)', border: '1px solid rgba(197,168,128,0.18)', borderRadius: '16px', padding: '28px 36px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
-            <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(197,168,128,0.12) 0%, transparent 70%)', border: '1px solid rgba(197,168,128,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Sparkles size={22} color="#E6C35C" />
-            </div>
-            <div>
-              <h3 style={{ margin: '0 0 4px 0', fontFamily: "'Cinzel', serif", fontSize: '1.05rem', color: '#fff', fontWeight: 700, letterSpacing: '0.02em' }}>AI Area Recommendation</h3>
-              <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(255,255,255,0.45)', fontFamily: "'Playfair Display', serif", fontStyle: 'italic' }}>Answer 3 questions — get your ideal Pune West location match</p>
-            </div>
-          </div>
-          <button
-            onClick={() => setIsAiModalOpen(true)}
-            style={{ background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', border: 'none', color: '#040814', padding: '12px 28px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.08em', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 4px 15px rgba(197,168,128,0.25)', transition: 'all 0.3s ease' }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(197,168,128,0.35)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(197,168,128,0.25)'; }}
-          >
-            Get My Match →
-          </button>
-        </div>
-      </div>
-
       {/* ══════════════════════════════════════════════════════════════════════
           ✦ NETFLIX-STYLE AUTHORIZED DEVELOPERS SHOWCASE
       ══════════════════════════════════════════════════════════════════════ */}
@@ -3218,6 +3211,30 @@ export default function Portal({ onViewChange }) {
             
             {activeSection === 'listings' && (
               <>
+                {/* 24K AI Location & Investment Recommendation Teaser Panel */}
+                <div style={{ background: 'linear-gradient(135deg, rgba(7,15,30,0.95) 0%, rgba(15,28,46,0.85) 100%)', border: '1px solid rgba(230,195,92,0.25)', borderRadius: '20px', padding: isMobile ? '18px 20px' : '24px 32px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', boxShadow: '0 12px 36px rgba(0,0,0,0.5)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, minWidth: '280px' }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(230,195,92,0.2) 0%, transparent 70%)', border: '1px solid rgba(230,195,92,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Sparkles size={22} color="#E6C35C" />
+                    </div>
+                    <div>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(230,195,92,0.1)', borderRadius: '50px', padding: '2px 10px', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '0.62rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.08em', textTransform: 'uppercase' }}>✨ 24K INTELLIGENT MATCHING</span>
+                      </div>
+                      <h3 style={{ margin: '0 0 2px 0', fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1rem' : '1.15rem', color: '#fff', fontWeight: 700, letterSpacing: '0.01em' }}>AI Area &amp; Investment Recommendation</h3>
+                      <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(255,255,255,0.55)', fontFamily: "'Montserrat', sans-serif" }}>Answer 3 quick inputs — get instant AI corridor match &amp; filtered listings</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { setIsAiModalOpen(true); setAiStep(1); }}
+                    style={{ background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', border: 'none', color: '#040814', padding: isMobile ? '12px 20px' : '14px 28px', borderRadius: '50px', fontSize: isMobile ? '0.78rem' : '0.84rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.06em', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 6px 20px rgba(197,168,128,0.3)', transition: 'all 0.3s ease' }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(197,168,128,0.45)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(197,168,128,0.3)'; }}
+                  >
+                    ✦ Start AI Recommendation →
+                  </button>
+                </div>
+
                 {/* Ultra-Premium Subpage Header Banner */}
                 <div className="subpage-header-banner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -4639,37 +4656,42 @@ export default function Portal({ onViewChange }) {
       {isAiModalOpen && (
         <div
           onClick={e => { if (e.target === e.currentTarget) { setIsAiModalOpen(false); setAiStep(1); } }}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(12px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(14px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
         >
-          <div style={{ background: 'linear-gradient(135deg, #070f1e 0%, #0d1a30 100%)', border: '1px solid rgba(197,168,128,0.25)', borderRadius: '20px', padding: '40px', maxWidth: '480px', width: '100%', position: 'relative', boxShadow: '0 24px 80px rgba(0,0,0,0.7)' }}>
+          <div style={{ background: 'linear-gradient(135deg, #070f1e 0%, #0d1a30 100%)', border: '1px solid rgba(230,195,92,0.3)', borderRadius: '24px', padding: isMobile ? '24px 20px' : '36px 32px', maxWidth: '520px', width: '100%', position: 'relative', boxShadow: '0 24px 80px rgba(0,0,0,0.8)' }}>
             {/* Close */}
-            <button onClick={() => { setIsAiModalOpen(false); setAiStep(1); }} style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '50%', width: '32px', height: '32px', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>✕</button>
+            <button onClick={() => { setIsAiModalOpen(false); setAiStep(1); }} style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '50%', width: '32px', height: '32px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>✕</button>
 
             {/* Header */}
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(197,168,128,0.15) 0%, transparent 70%)', border: '1px solid rgba(197,168,128,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(230,195,92,0.2) 0%, transparent 70%)', border: '1px solid rgba(230,195,92,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px auto' }}>
                 <Sparkles size={24} color="#E6C35C" />
               </div>
-              <h2 style={{ margin: '0 0 6px 0', fontFamily: "'Cinzel', serif", fontSize: '1.3rem', color: '#fff', fontWeight: 700 }}>AI Area Match</h2>
-              <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', fontFamily: "'Playfair Display', serif", fontStyle: 'italic' }}>3 questions · instant recommendation</p>
+              <h2 style={{ margin: '0 0 4px 0', fontFamily: "'Cinzel', serif", fontSize: '1.35rem', color: '#fff', fontWeight: 700 }}>24K AI Investment Advisor</h2>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontFamily: "'Montserrat', sans-serif" }}>3 quick inputs · instant market intelligence recommendation</p>
             </div>
 
             {/* Step indicator */}
-            <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '28px' }}>
-              {[1,2,3].map(s => (
-                <div key={s} style={{ width: s <= aiStep ? '28px' : '8px', height: '4px', borderRadius: '2px', background: s <= aiStep ? 'linear-gradient(90deg, #E6C35C, #C5A880)' : 'rgba(255,255,255,0.1)', transition: 'all 0.4s ease' }} />
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '24px' }}>
+              {[1, 2, 3, 4].map(s => (
+                <div key={s} style={{ width: s <= aiStep ? '28px' : '8px', height: '4px', borderRadius: '2px', background: s <= aiStep ? 'linear-gradient(90deg, #FFF4D0, #E6C35C)' : 'rgba(255,255,255,0.1)', transition: 'all 0.4s ease' }} />
               ))}
             </div>
 
             {/* Step 1 — Budget */}
             {aiStep === 1 && (
               <div>
-                <p style={{ textAlign: 'center', fontSize: '1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '20px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>What is your investment budget?</p>
+                <p style={{ textAlign: 'center', fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)', marginBottom: '18px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>1. What is your investment budget range?</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {[['under-80L','Under ₹80 Lakhs','Affordable premium apartments'],['80L-1.5Cr','₹80L – ₹1.5 Crore','Mid-luxury 2-3 BHK range'],['1.5Cr-3Cr','₹1.5 – ₹3 Crore','Luxury 3-4 BHK & penthouses'],['above-3Cr','Above ₹3 Crore','Ultra-luxury private mandates']].map(([val, label, sub]) => (
-                    <button key={val} onClick={() => { setAiBudget(val); setAiStep(2); }} style={{ background: aiBudget === val ? 'rgba(197,168,128,0.12)' : 'rgba(255,255,255,0.02)', border: `1px solid ${aiBudget === val ? 'rgba(197,168,128,0.5)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '12px', padding: '14px 18px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                  {[
+                    ['under-80L', 'Under ₹80 Lakhs', 'High-growth entry budget apartments'],
+                    ['80L-1.5Cr', '₹80L – ₹1.5 Crore', 'Mid-luxury 2 & 3 BHK gated communities'],
+                    ['1.5Cr-3Cr', '₹1.5 – ₹3 Crore', 'Luxury 3 & 4 BHK skyline residences'],
+                    ['above-3Cr', 'Above ₹3 Crore', 'Ultra-luxury penthouses & private villas']
+                  ].map(([val, label, sub]) => (
+                    <button key={val} onClick={() => { setAiBudget(val); setAiStep(2); }} style={{ background: aiBudget === val ? 'rgba(230,195,92,0.12)' : 'rgba(255,255,255,0.02)', border: `1px solid ${aiBudget === val ? '#E6C35C' : 'rgba(255,255,255,0.08)'}`, borderRadius: '14px', padding: '14px 18px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}>
                       <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.9rem', fontWeight: 700, color: aiBudget === val ? '#E6C35C' : '#fff' }}>{label}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '3px' }}>{sub}</div>
+                      <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.45)', marginTop: '3px' }}>{sub}</div>
                     </button>
                   ))}
                 </div>
@@ -4679,37 +4701,117 @@ export default function Portal({ onViewChange }) {
             {/* Step 2 — Priority */}
             {aiStep === 2 && (
               <div>
-                <p style={{ textAlign: 'center', fontSize: '1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '20px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>What matters most to you?</p>
+                <p style={{ textAlign: 'center', fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)', marginBottom: '18px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>2. What is your primary investment goal?</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {[['appreciation','📈 Capital Appreciation','Long-term asset value growth'],['yield','💰 Rental Yield','Monthly rental income focus'],['commute','🚗 Commute & Connectivity','Easy IT park / city access']].map(([val, label, sub]) => (
-                    <button key={val} onClick={() => { setAiPriority(val); setAiStep(3); }} style={{ background: aiPriority === val ? 'rgba(197,168,128,0.12)' : 'rgba(255,255,255,0.02)', border: `1px solid ${aiPriority === val ? 'rgba(197,168,128,0.5)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '12px', padding: '14px 18px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                  {[
+                    ['appreciation', '📈 Maximum Capital Appreciation', 'Focus on 15%+ YoY property price growth'],
+                    ['yield', '💰 High Rental Yield (5%+)', 'Focus on corporate tenant rental income'],
+                    ['commute', '🚗 IT Park Commute & Lifestyle', 'Direct transit to Hinjewadi IT Park & High Street']
+                  ].map(([val, label, sub]) => (
+                    <button key={val} onClick={() => { setAiPriority(val); setAiStep(3); }} style={{ background: aiPriority === val ? 'rgba(230,195,92,0.12)' : 'rgba(255,255,255,0.02)', border: `1px solid ${aiPriority === val ? '#E6C35C' : 'rgba(255,255,255,0.08)'}`, borderRadius: '14px', padding: '14px 18px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}>
                       <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.9rem', fontWeight: 700, color: aiPriority === val ? '#E6C35C' : '#fff' }}>{label}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '3px' }}>{sub}</div>
+                      <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.45)', marginTop: '3px' }}>{sub}</div>
                     </button>
                   ))}
                 </div>
-                <button onClick={() => setAiStep(1)} style={{ marginTop: '16px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.8rem', fontFamily: "'Montserrat', sans-serif" }}>← Back</button>
+                <button onClick={() => setAiStep(1)} style={{ marginTop: '16px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '0.8rem', fontFamily: "'Montserrat', sans-serif" }}>← Back to Budget</button>
               </div>
             )}
 
-            {/* Step 3 — Preferred Area + Result */}
+            {/* Step 3 — Preferred Area Selection */}
             {aiStep === 3 && (
               <div>
-                <p style={{ textAlign: 'center', fontSize: '1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '20px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>Any preferred area?</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
-                  {[['all','Any Area'],['BANER','Baner'],['WAKAD','Wakad'],['HINJEWADI','Hinjewadi'],['MAHALUNGE','Mahalunge'],['TATHAWADE','Tathawade']].map(([val, label]) => (
-                    <button key={val} onClick={() => setAiCorridor(val)} style={{ background: aiCorridor === val ? 'rgba(197,168,128,0.15)' : 'rgba(255,255,255,0.02)', border: `1px solid ${aiCorridor === val ? 'rgba(197,168,128,0.5)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '50px', padding: '8px 16px', cursor: 'pointer', fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 700, color: aiCorridor === val ? '#E6C35C' : 'rgba(255,255,255,0.6)', transition: 'all 0.2s ease' }}>{label}</button>
+                <p style={{ textAlign: 'center', fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)', marginBottom: '16px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>3. Select preferred corridor or let AI pick:</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '22px', justifyContent: 'center' }}>
+                  {[
+                    ['all', '✨ AI Best Match'],
+                    ['HINJEWADI', '💻 Hinjewadi'],
+                    ['WAKAD', '🛣️ Wakad'],
+                    ['BANER', '🏙️ Baner'],
+                    ['MAHALUNGE', '🌆 Mahalunge'],
+                    ['TATHAWADE', '🎓 Tathawade']
+                  ].map(([val, label]) => (
+                    <button key={val} onClick={() => setAiCorridor(val)} style={{ background: aiCorridor === val ? 'rgba(230,195,92,0.2)' : 'rgba(255,255,255,0.03)', border: `1px solid ${aiCorridor === val ? '#E6C35C' : 'rgba(255,255,255,0.1)'}`, borderRadius: '50px', padding: '8px 16px', cursor: 'pointer', fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 700, color: aiCorridor === val ? '#E6C35C' : 'rgba(255,255,255,0.7)', transition: 'all 0.2s ease' }}>{label}</button>
                   ))}
                 </div>
                 <button
-                  onClick={() => { handleAiAnalyze(); setIsAiModalOpen(false); setAiStep(1); document.getElementById('areas')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
-                  style={{ width: '100%', background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', border: 'none', color: '#040814', padding: '15px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.06em', cursor: 'pointer', boxShadow: '0 6px 20px rgba(197,168,128,0.3)', transition: 'all 0.3s ease' }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(197,168,128,0.4)'; }}
+                  onClick={handleAiAnalyze}
+                  style={{ width: '100%', background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', border: 'none', color: '#040814', padding: '15px', borderRadius: '14px', fontSize: '0.92rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.06em', cursor: 'pointer', boxShadow: '0 6px 20px rgba(197,168,128,0.3)', transition: 'all 0.3s ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(197,168,128,0.45)'; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(197,168,128,0.3)'; }}
                 >
-                  ✦ Compute My Match
+                  ✦ Compute AI Match Recommendation
                 </button>
-                <button onClick={() => setAiStep(2)} style={{ marginTop: '12px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.8rem', fontFamily: "'Montserrat', sans-serif", display: 'block', margin: '12px auto 0 auto' }}>← Back</button>
+                <button onClick={() => setAiStep(2)} style={{ marginTop: '14px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '0.8rem', fontFamily: "'Montserrat', sans-serif", display: 'block', margin: '14px auto 0 auto' }}>← Back to Priority</button>
+              </div>
+            )}
+
+            {/* Step 4 — AI Analysis Result Report Screen */}
+            {aiStep === 4 && (
+              <div>
+                {aiAnalyzing ? (
+                  <div style={{ textAlign: 'center', padding: '28px 0' }}>
+                    <div style={{ width: '48px', height: '48px', border: '3px solid rgba(230,195,92,0.2)', borderTop: '3px solid #E6C35C', borderRadius: '50%', margin: '0 auto 20px auto', animation: 'spin 0.8s linear infinite' }} />
+                    <p style={{ fontSize: '0.92rem', color: '#E6C35C', fontFamily: "'Montserrat', sans-serif", fontWeight: 700, margin: '0 0 6px 0' }}>Computing Market Metrics ({aiProgress}%)...</p>
+                    <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)', margin: 0 }}>Evaluating capital appreciation indices, rental yields &amp; transit scores</p>
+                  </div>
+                ) : aiReport ? (
+                  <div style={{ animation: 'fadeIn 0.35s ease' }}>
+                    <div style={{ background: 'rgba(230,195,92,0.08)', border: '1px solid rgba(230,195,92,0.35)', borderRadius: '16px', padding: '18px 20px', textAlign: 'center', marginBottom: '20px' }}>
+                      <span style={{ fontSize: '0.64rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.12em', textTransform: 'uppercase' }}>🎯 OPTIMAL AI MATCH RECOMMENDATION</span>
+                      <h3 style={{ margin: '8px 0 4px 0', fontFamily: "'Cinzel', serif", fontSize: '1.7rem', color: '#fff', fontWeight: 800 }}>
+                        {aiReport.area} <span style={{ color: '#E6C35C', fontSize: '1.15rem' }}>({aiReport.matchPercent} Match)</span>
+                      </h3>
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.55 }}>
+                        {aiReport.explanation}
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '22px', textAlign: 'center' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px 6px' }}>
+                        <div style={{ fontSize: '1rem', fontWeight: 800, color: '#34D399' }}>{aiReport.appreciationIndex}</div>
+                        <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>YoY Appreciation</div>
+                      </div>
+                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px 6px' }}>
+                        <div style={{ fontSize: '1rem', fontWeight: 800, color: '#60A5FA' }}>{aiReport.rentalYield}</div>
+                        <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>Rental Yield</div>
+                      </div>
+                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px 6px' }}>
+                        <div style={{ fontSize: '1rem', fontWeight: 800, color: '#F59E0B' }}>{aiReport.connectivityScore}</div>
+                        <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>Transit Score</div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        handleApplyMegaFilter({ location: aiReport.area }, 'listings');
+                        setIsAiModalOpen(false);
+                        setAiStep(1);
+                        setTimeout(() => {
+                          const el = document.getElementById('listings-anchor');
+                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 100);
+                      }}
+                      style={{
+                        width: '100%',
+                        background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                        border: 'none',
+                        color: '#040814',
+                        padding: '15px',
+                        borderRadius: '14px',
+                        fontSize: '0.9rem',
+                        fontWeight: 800,
+                        fontFamily: "'Montserrat', sans-serif",
+                        letterSpacing: '0.06em',
+                        cursor: 'pointer',
+                        boxShadow: '0 6px 20px rgba(197,168,128,0.3)',
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
+                      View AI Recommended Properties ({aiReport.area}) →
+                    </button>
+                  </div>
+                ) : null}
               </div>
             )}
           </div>
