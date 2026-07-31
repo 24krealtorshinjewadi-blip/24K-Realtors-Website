@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
   UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building,
-  Home, Search, Heart, ChevronDown, TrendingUp
+  Home, Search, Heart, ChevronDown, TrendingUp, Camera
 } from 'lucide-react';
 
 import CompanyLogo from '../components/CompanyLogo';
@@ -213,6 +213,16 @@ export default function PortalNavbar({
             >
               <TrendingUp size={13} />
               <span>TRENDS</span>
+            </button>
+            <button 
+              onClick={() => {
+                const el = document.getElementById('gallery-anchor');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              style={{ color: '#E6C35C', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+            >
+              <Camera size={13} />
+              <span>GALLERY</span>
             </button>
             <button 
               onClick={() => onViewChange && onViewChange('list-property')}

@@ -6,7 +6,7 @@ import {
   LineChart, Car, Users, ShieldCheck, 
   Calculator, Compass, Clock, Lock, TrendingUp, Building,
   ChevronLeft, ChevronRight, MapPin, BedDouble, Phone, Calendar,
-  Handshake, ArrowRight, Key, Home, Briefcase
+  Handshake, ArrowRight, Key, Home, Briefcase, Camera, Maximize2, X
 } from 'lucide-react';
 import './Portal.css';
 
@@ -501,6 +501,9 @@ export default function Portal({ onViewChange }) {
 
   const [isReraDrawerOpen, setIsReraDrawerOpen] = useState(false);
   const [selectedReraProperty, setSelectedReraProperty] = useState(null);
+
+  const [galleryFilter, setGalleryFilter] = useState('ALL');
+  const [selectedGalleryImage, setSelectedGalleryImage] = useState(null);
 
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
   const [isWideDesktop, setIsWideDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1400);
@@ -4766,8 +4769,384 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* ══════════════════════════════════════════════════════════════════════
-          ✦ 1. OUR EXPERTS — Senior Advisory Team (Neeraj Giri, Nilesh Rai, Jyoti Dhale)
+          ✦ 24K CINEMATIC LUXURY VISUAL GALLERY SHOWCASE
       ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (
+        <section id="gallery-anchor" style={{
+          background: 'linear-gradient(180deg, #070f1e 0%, #040814 100%)',
+          padding: isMobile ? '56px 16px' : '80px 32px',
+          borderTop: '1px solid rgba(230, 195, 92, 0.2)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Subtle Ambient Lighting Overlay */}
+          <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '80%', height: '300px', background: 'radial-gradient(ellipse at top, rgba(230, 195, 92, 0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+            {/* Section Header */}
+            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(230, 195, 92, 0.1)', border: '1px solid rgba(230, 195, 92, 0.3)', borderRadius: '50px', padding: '5px 18px', marginBottom: '14px' }}>
+                <Camera size={14} color="#E6C35C" />
+                <span style={{ color: '#E6C35C', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>📷 24K CINEMATIC VISUAL GALLERY</span>
+              </div>
+              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.7rem' : '2.5rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
+                Explore <span style={{ color: '#E6C35C' }}>Luxury Estates &amp; Interiors</span>
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.88rem', maxWidth: '580px', margin: '0 auto', lineHeight: 1.6, fontFamily: "'Montserrat', sans-serif" }}>
+                High-resolution visual tour of West Pune's finest townships, rooftop infinity pools, German show flat interiors &amp; lush podium greens.
+              </p>
+            </div>
+
+            {/* Gallery Category Filter Tabs */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '12px', flexWrap: 'wrap', marginBottom: '40px' }}>
+              {[
+                { id: 'ALL', label: '🔥 All Visuals (12)' },
+                { id: 'TOWERS', label: '🏙️ High-Rise Architecture' },
+                { id: 'AMENITIES', label: '🏊 Resort Amenities' },
+                { id: 'INTERIORS', label: '🛋️ Sample Show Flats' },
+                { id: 'GREENS', label: '🌳 Landscaped Greens' },
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setGalleryFilter(tab.id)}
+                  style={{
+                    background: galleryFilter === tab.id
+                      ? 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)'
+                      : 'rgba(255,255,255,0.03)',
+                    border: galleryFilter === tab.id
+                      ? 'none'
+                      : '1px solid rgba(255,255,255,0.12)',
+                    color: galleryFilter === tab.id ? '#040814' : 'rgba(255,255,255,0.75)',
+                    padding: isMobile ? '8px 14px' : '10px 22px',
+                    borderRadius: '50px',
+                    fontSize: isMobile ? '0.72rem' : '0.82rem',
+                    fontWeight: galleryFilter === tab.id ? 800 : 600,
+                    cursor: 'pointer',
+                    fontFamily: "'Montserrat', sans-serif",
+                    transition: 'all 0.3s ease',
+                    boxShadow: galleryFilter === tab.id ? '0 6px 20px rgba(230,195,92,0.35)' : 'none'
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Gallery Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : isWideDesktop ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
+              gap: isMobile ? '16px' : '24px'
+            }}>
+              {[
+                {
+                  id: 1,
+                  title: '24K Stargate Iconic Towers',
+                  location: 'Hinjewadi Phase 1',
+                  category: 'TOWERS',
+                  categoryLabel: '🏙️ High-Rise',
+                  dev: 'Kolte-Patil Developers',
+                  img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Double-glazed glass high-rise towers with 360° views of Hinjewadi IT Corridor and private sky terraces.'
+                },
+                {
+                  id: 2,
+                  title: 'VJ Supernova High Street',
+                  location: 'Baner Main Road',
+                  category: 'TOWERS',
+                  categoryLabel: '🏙️ High-Rise',
+                  dev: 'Vilas Javdekar (VJ)',
+                  img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Illuminated 38-story landmark glass facade situated right on Baner High Street.'
+                },
+                {
+                  id: 3,
+                  title: 'VTP Blue Waters Township',
+                  location: 'Mahalunge Smart City',
+                  category: 'TOWERS',
+                  categoryLabel: '🏙️ High-Rise',
+                  dev: 'VTP Realty',
+                  img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+                  desc: '100+ acre riverfront smart township skyline surrounded by Mula River and hill views.'
+                },
+                {
+                  id: 4,
+                  title: 'Sky Club 24K Infinity Pool',
+                  location: 'Wakad Datta Mandir',
+                  category: 'AMENITIES',
+                  categoryLabel: '🏊 Resort Amenities',
+                  dev: 'Kohinoor Group',
+                  img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Temperature-controlled rooftop infinity pool with sunken poolside cabanas and evening ambient lighting.'
+                },
+                {
+                  id: 5,
+                  title: 'Grand Olympic Fitness Arena',
+                  location: 'Hinjewadi Phase 2',
+                  category: 'AMENITIES',
+                  categoryLabel: '🏊 Resort Amenities',
+                  dev: 'Shapoorji Pallonji',
+                  img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80',
+                  desc: '3,000 sq.ft. TechnoGym equipped glasshouse fitness studio overlooking central gardens.'
+                },
+                {
+                  id: 6,
+                  title: 'Rooftop Stargazing & Lounge',
+                  location: 'Baner High Street',
+                  category: 'AMENITIES',
+                  categoryLabel: '🏊 Resort Amenities',
+                  dev: 'Kasturi Builders',
+                  img: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Private open-air stargazing telescopes, fire pits, and luxury outdoor seating for residents.'
+                },
+                {
+                  id: 7,
+                  title: 'Italian Marble 3 BHK Living Suite',
+                  location: 'Wakad Central',
+                  category: 'INTERIORS',
+                  categoryLabel: '🛋️ Show Flats',
+                  dev: 'Gera Developments',
+                  img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Expansive 1,450 sq.ft. sample living room featuring Italian Bottochino marble flooring and gold brass accents.'
+                },
+                {
+                  id: 8,
+                  title: 'Penthouse Master Bedroom Suite',
+                  location: 'Baner – Balewadi',
+                  category: 'INTERIORS',
+                  categoryLabel: '🛋️ Show Flats',
+                  dev: 'Godrej Properties',
+                  img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Full-height acoustic glass wall bedroom with walk-in wardrobe and private jacuzzi balcony.'
+                },
+                {
+                  id: 9,
+                  title: 'German Modular Island Kitchen',
+                  location: 'Hinjewadi IT Corridor',
+                  category: 'INTERIORS',
+                  categoryLabel: '🛋️ Show Flats',
+                  dev: 'Paranjape Schemes',
+                  img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Hafele fitted modular island kitchen with breakfast bar, built-in oven, and quartz countertop.'
+                },
+                {
+                  id: 10,
+                  title: 'Central Podium Green & Fountain',
+                  location: 'Hinjewadi Phase 1',
+                  category: 'GREENS',
+                  categoryLabel: '🌳 Greens',
+                  dev: 'Pharande Spaces',
+                  img: 'https://images.unsplash.com/photo-1584738766473-61c083514bf4?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Vehicle-free 2-acre elevated podium garden featuring cascading water walls and tropical palm groves.'
+                },
+                {
+                  id: 11,
+                  title: 'Zen Bamboo Meditation Walkway',
+                  location: 'Mahalunge Smart City',
+                  category: 'GREENS',
+                  categoryLabel: '🌳 Greens',
+                  dev: 'Rohan Builders',
+                  img: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Acoustic bamboo forest path with lotus koi ponds for yoga, meditation, and morning walks.'
+                },
+                {
+                  id: 12,
+                  title: 'Rubberized Turf Multi-Sports Arena',
+                  location: 'Wakad Datta Mandir',
+                  category: 'GREENS',
+                  categoryLabel: '🌳 Greens',
+                  dev: 'Kolte-Patil Developers',
+                  img: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=1200&q=80',
+                  desc: 'Floodlit box cricket pitch, basketball court, and safe children playground.'
+                }
+              ]
+                .filter(item => galleryFilter === 'ALL' || item.category === galleryFilter)
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => setSelectedGalleryImage(item)}
+                    style={{
+                      position: 'relative',
+                      borderRadius: '20px',
+                      overflow: 'hidden',
+                      height: '280px',
+                      cursor: 'pointer',
+                      border: '1px solid rgba(230, 195, 92, 0.2)',
+                      background: '#070f1e',
+                      boxShadow: '0 12px 30px rgba(0,0,0,0.5)',
+                      transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)'
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.transform = 'translateY(-6px) scale(1.02)';
+                      e.currentTarget.style.borderColor = '#E6C35C';
+                      e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(230,195,92,0.25)';
+                      const img = e.currentTarget.querySelector('img');
+                      if (img) img.style.transform = 'scale(1.1)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.2)';
+                      e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.5)';
+                      const img = e.currentTarget.querySelector('img');
+                      if (img) img.style.transform = 'scale(1)';
+                    }}
+                  >
+                    {/* Background High-Res Image */}
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)'
+                      }}
+                    />
+
+                    {/* Dark Gradient Overlay */}
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(180deg, rgba(4,8,20,0.2) 0%, rgba(4,8,20,0.4) 40%, rgba(4,8,20,0.92) 100%)'
+                    }} />
+
+                    {/* Top Badges */}
+                    <div style={{ position: 'absolute', top: '14px', left: '14px', right: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ background: 'rgba(7,15,30,0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(230,195,92,0.3)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.62rem', fontWeight: 800, color: '#E6C35C' }}>
+                        {item.categoryLabel}
+                      </span>
+                      <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(7,15,30,0.8)', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Maximize2 size={14} color="#fff" />
+                      </div>
+                    </div>
+
+                    {/* Bottom Info Overlay */}
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '18px 16px' }}>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#E6C35C', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>
+                        📍 {item.location} &nbsp;·&nbsp; {item.dev}
+                      </div>
+                      <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '1rem', fontWeight: 700, color: '#fff', margin: '0 0 4px 0', lineHeight: 1.3 }}>
+                        {item.title}
+                      </h4>
+                      <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(255,255,255,0.65)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {item.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 4K FULL-SCREEN GALLERY LIGHTBOX MODAL */}
+      {selectedGalleryImage && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 9999,
+            background: 'rgba(4, 8, 20, 0.95)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: isMobile ? '16px' : '32px'
+          }}
+          onClick={() => setSelectedGalleryImage(null)}
+        >
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '1100px',
+              background: '#070f1e',
+              border: '1px solid rgba(230, 195, 92, 0.4)',
+              borderRadius: '24px',
+              overflow: 'hidden',
+              boxShadow: '0 24px 80px rgba(0,0,0,0.9), 0 0 40px rgba(230,195,92,0.2)',
+              display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row'
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedGalleryImage(null)}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                zIndex: 10,
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'rgba(7, 15, 30, 0.85)',
+                border: '1px solid rgba(230, 195, 92, 0.4)',
+                color: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <X size={20} />
+            </button>
+
+            {/* High-Res Image Display */}
+            <div style={{ flex: 1.4, height: isMobile ? '300px' : '520px', position: 'relative', background: '#040814' }}>
+              <img
+                src={selectedGalleryImage.img}
+                alt={selectedGalleryImage.title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+              <div style={{ position: 'absolute', top: '16px', left: '16px', background: 'rgba(7,15,30,0.85)', border: '1px solid rgba(230,195,92,0.3)', borderRadius: '50px', padding: '4px 14px', fontSize: '0.7rem', fontWeight: 800, color: '#E6C35C' }}>
+                {selectedGalleryImage.categoryLabel}
+              </div>
+            </div>
+
+            {/* Details Panel */}
+            <div style={{ flex: 1, padding: isMobile ? '24px 20px' : '36px 32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#E6C35C', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
+                📍 {selectedGalleryImage.location}
+              </div>
+              <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.3rem' : '1.7rem', fontWeight: 700, color: '#fff', margin: '0 0 8px 0', lineHeight: 1.2 }}>
+                {selectedGalleryImage.title}
+              </h3>
+              <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600, marginBottom: '16px' }}>
+                Authorized Partner: <span style={{ color: '#fff' }}>{selectedGalleryImage.dev}</span>
+              </div>
+              <p style={{ fontSize: '0.86rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: '0 0 28px 0', fontFamily: "'Montserrat', sans-serif" }}>
+                {selectedGalleryImage.desc}
+              </p>
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <a
+                  href={`https://wa.me/919673000053?text=${encodeURIComponent(`Hi Neeraj, I am interested in ${selectedGalleryImage.title} in ${selectedGalleryImage.location}. Please share floor plans & pricing.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    flex: 1,
+                    background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                    color: '#040814',
+                    padding: '12px 20px',
+                    borderRadius: '50px',
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    textDecoration: 'none',
+                    textAlign: 'center',
+                    fontFamily: "'Montserrat', sans-serif"
+                  }}
+                >
+                  📞 Inquire via WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {!selectedPropertyDetail && !activeSubView && (
         <section style={{
           background: 'linear-gradient(180deg, #040814 0%, #070f1e 100%)',
