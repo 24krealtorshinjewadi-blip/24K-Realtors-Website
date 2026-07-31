@@ -31,7 +31,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'HANDOVER',
     categoryLabel: '🔑 Key Handover',
     dev: 'Neeraj Giri & Happy Homebuyers',
-    img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_key_handover.png',
     desc: 'Neeraj Giri (Senior Property Advisor) handing over VIP possession keys to happy family at Wakad Central estate.'
   },
   {
@@ -101,7 +101,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'TOWERS',
     categoryLabel: '🏙️ High-Rise',
     dev: 'Vilas Javdekar (VJ)',
-    img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_vj_supernova_tower.png',
     desc: 'Illuminated 38-story landmark glass tower facade situated right on Baner High Street.'
   },
   {
@@ -141,7 +141,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'INTERIORS',
     categoryLabel: '🏊 Resort Amenities',
     dev: 'Kohinoor Group',
-    img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_infinity_pool.png',
     desc: 'Temperature-controlled rooftop infinity pool with sunken poolside cabanas.'
   },
   {
@@ -151,7 +151,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'INTERIORS',
     categoryLabel: '🛋️ Show Flat',
     dev: 'Gera Developments',
-    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_sample_flat_interior.png',
     desc: 'Expansive 1,450 sq.ft. sample living room featuring Italian Bottochino marble flooring.'
   },
   {
@@ -5191,202 +5191,6 @@ export default function Portal({ onViewChange }) {
           </div>
         </div>
       )}
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          ✦ 24K CINEMATIC LUXURY VISUAL GALLERY SHOWCASE
-      ══════════════════════════════════════════════════════════════════════ */}
-      {!selectedPropertyDetail && !activeSubView && (
-        <section id="gallery-anchor" style={{
-          background: 'linear-gradient(180deg, #070f1e 0%, #040814 100%)',
-          padding: isMobile ? '56px 16px' : '80px 32px',
-          borderTop: '1px solid rgba(230, 195, 92, 0.2)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          {/* Subtle Ambient Lighting Overlay */}
-          <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '80%', height: '300px', background: 'radial-gradient(ellipse at top, rgba(230, 195, 92, 0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-            {/* Section Header */}
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(230, 195, 92, 0.1)', border: '1px solid rgba(230, 195, 92, 0.3)', borderRadius: '50px', padding: '5px 18px', marginBottom: '14px' }}>
-                <Camera size={14} color="#E6C35C" />
-                <span style={{ color: '#E6C35C', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>📷 24K CINEMATIC VISUAL GALLERY</span>
-              </div>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.7rem' : '2.5rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
-                Explore <span style={{ color: '#E6C35C' }}>Luxury Estates &amp; Interiors</span>
-              </h2>
-              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.88rem', maxWidth: '580px', margin: '0 auto 20px auto', lineHeight: 1.6, fontFamily: "'Montserrat', sans-serif" }}>
-                High-resolution visual tour of West Pune's finest townships, rooftop infinity pools, German show flat interiors &amp; lush podium greens.
-              </p>
-
-              {/* Upload Custom Photo Button */}
-              <button
-                onClick={() => setIsGalleryUploadOpen(true)}
-                style={{
-                  background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-                  border: 'none',
-                  color: '#040814',
-                  padding: '10px 24px',
-                  borderRadius: '50px',
-                  fontSize: '0.82rem',
-                  fontWeight: 800,
-                  fontFamily: "'Montserrat', sans-serif",
-                  letterSpacing: '0.04em',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  boxShadow: '0 6px 20px rgba(230, 195, 92, 0.35)',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(230, 195, 92, 0.5)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(230, 195, 92, 0.35)'; }}
-              >
-                <Upload size={15} color="#040814" />
-                <span>+ Upload Custom Photo to Gallery</span>
-              </button>
-            </div>
-
-            {/* Gallery Category Filter Tabs */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '12px', flexWrap: 'wrap', marginBottom: '40px' }}>
-              {[
-                { id: 'ALL', label: '🔥 All Real Media (16)' },
-                { id: 'HANDOVER', label: '🔑 Client Key Handovers' },
-                { id: 'VISITS', label: '🚗 VIP Site Visit Tours' },
-                { id: 'TOWERS', label: '🏙️ Pune High-Rises' },
-                { id: 'INTERIORS', label: '🛋️ Show Flats & Amenities' },
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setGalleryFilter(tab.id)}
-                  style={{
-                    background: galleryFilter === tab.id
-                      ? 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)'
-                      : 'rgba(255,255,255,0.03)',
-                    border: galleryFilter === tab.id
-                      ? 'none'
-                      : '1px solid rgba(255,255,255,0.12)',
-                    color: galleryFilter === tab.id ? '#040814' : 'rgba(255,255,255,0.75)',
-                    padding: isMobile ? '8px 14px' : '10px 22px',
-                    borderRadius: '50px',
-                    fontSize: isMobile ? '0.72rem' : '0.82rem',
-                    fontWeight: galleryFilter === tab.id ? 800 : 600,
-                    cursor: 'pointer',
-                    fontFamily: "'Montserrat', sans-serif",
-                    transition: 'all 0.3s ease',
-                    boxShadow: galleryFilter === tab.id ? '0 6px 20px rgba(230,195,92,0.35)' : 'none'
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Gallery Grid */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : isWideDesktop ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
-              gap: isMobile ? '16px' : '24px'
-            }}>
-              {[(Array.isArray(customGalleryItems) ? customGalleryItems : []), ...DEFAULT_GALLERY_ITEMS]
-                .filter(item => galleryFilter === 'ALL' || item.category === galleryFilter)
-                .map((item) => (
-                  <div
-                    key={item.id}
-                    onClick={() => setSelectedGalleryImage(item)}
-                    style={{
-                      position: 'relative',
-                      borderRadius: '20px',
-                      overflow: 'hidden',
-                      height: '280px',
-                      cursor: 'pointer',
-                      border: item.isCustom ? '1px solid rgba(230, 195, 92, 0.6)' : '1px solid rgba(230, 195, 92, 0.2)',
-                      background: '#070f1e',
-                      boxShadow: '0 12px 30px rgba(0,0,0,0.5)',
-                      transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)'
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.transform = 'translateY(-6px) scale(1.02)';
-                      e.currentTarget.style.borderColor = '#E6C35C';
-                      e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(230,195,92,0.25)';
-                      const img = e.currentTarget.querySelector('img');
-                      if (img) img.style.transform = 'scale(1.1)';
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.transform = 'none';
-                      e.currentTarget.style.borderColor = item.isCustom ? 'rgba(230, 195, 92, 0.6)' : 'rgba(230, 195, 92, 0.2)';
-                      e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.5)';
-                      const img = e.currentTarget.querySelector('img');
-                      if (img) img.style.transform = 'scale(1)';
-                    }}
-                  >
-                    {/* Background High-Res Image */}
-                    <img
-                      src={item.img}
-                      alt={item.title}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        transition: 'transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)'
-                      }}
-                    />
-
-                    {/* Dark Gradient Overlay */}
-                    <div style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'linear-gradient(180deg, rgba(4,8,20,0.2) 0%, rgba(4,8,20,0.4) 40%, rgba(4,8,20,0.92) 100%)'
-                    }} />
-
-                    {/* Top Badges */}
-                    <div style={{ position: 'absolute', top: '14px', left: '14px', right: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                        <span style={{ background: 'rgba(7,15,30,0.85)', backdropFilter: 'blur(10px)', border: '1px solid rgba(230,195,92,0.3)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.62rem', fontWeight: 800, color: '#E6C35C' }}>
-                          {item.categoryLabel}
-                        </span>
-                        {item.isCustom && (
-                          <span style={{ background: 'rgba(229, 9, 20, 0.85)', color: '#fff', borderRadius: '50px', padding: '3px 8px', fontSize: '0.58rem', fontWeight: 800 }}>
-                            🆕 UPLOADED
-                          </span>
-                        )}
-                      </div>
-                      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                        {item.isCustom && (
-                          <button
-                            onClick={(e) => handleDeleteCustomGalleryImage(item.id, e)}
-                            title="Delete custom upload"
-                            style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(229,9,20,0.85)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        )}
-                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(7,15,30,0.8)', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <Maximize2 size={14} color="#fff" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Bottom Info Overlay */}
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '18px 16px' }}>
-                      <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#E6C35C', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>
-                        📍 {item.location} &nbsp;·&nbsp; {item.dev}
-                      </div>
-                      <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '1rem', fontWeight: 700, color: '#fff', margin: '0 0 4px 0', lineHeight: 1.3 }}>
-                        {item.title}
-                      </h4>
-                      <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(255,255,255,0.65)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* 4K FULL-SCREEN GALLERY LIGHTBOX MODAL */}
       {selectedGalleryImage && (
         <div
