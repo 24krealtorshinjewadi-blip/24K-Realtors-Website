@@ -4934,86 +4934,105 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* ══════════════════════════════════════════════════════════════════════
-          ✦ 3. ANIMATED GOLD STATS COUNTER STRIP — Ultra-Luxury Gold Glass Strip
+          ✦ 3. NETFLIX-STYLE CINEMATIC STATS COUNTER STRIP
       ══════════════════════════════════════════════════════════════════════ */}
       {!selectedPropertyDetail && !activeSubView && (
         <div style={{
-          background: 'linear-gradient(180deg, #070f1e 0%, #040814 100%)',
-          padding: isMobile ? '40px 16px' : '56px 32px',
           position: 'relative',
+          padding: isMobile ? '48px 16px' : '64px 32px',
           overflow: 'hidden',
-          borderTop: '1px solid rgba(230, 195, 92, 0.25)',
-          borderBottom: '1px solid rgba(230, 195, 92, 0.25)',
-          boxShadow: 'inset 0 0 80px rgba(0, 0, 0, 0.8)'
+          backgroundImage: `linear-gradient(180deg, rgba(4, 8, 20, 0.92) 0%, rgba(7, 15, 30, 0.82) 50%, rgba(4, 8, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2000&q=80')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          borderTop: '1px solid rgba(230, 195, 92, 0.35)',
+          borderBottom: '1px solid rgba(230, 195, 92, 0.35)',
+          boxShadow: 'inset 0 0 100px rgba(0, 0, 0, 0.95)'
         }}>
-          {/* Ambient Gold Radial Glows */}
-          <div style={{ position: 'absolute', top: '-50%', left: '20%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(230, 195, 92, 0.12) 0%, transparent 70%)', pointerEvents: 'none', filter: 'blur(40px)' }} />
-          <div style={{ position: 'absolute', bottom: '-50%', right: '20%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(230, 195, 92, 0.1) 0%, transparent 70%)', pointerEvents: 'none', filter: 'blur(40px)' }} />
+          {/* Ambient Gold & Netflix Red Lighting Overlay */}
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(229, 9, 20, 0.08) 0%, transparent 70%), radial-gradient(circle at 80% 20%, rgba(230, 195, 92, 0.15) 0%, transparent 60%)', pointerEvents: 'none' }} />
 
-          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? '14px' : '24px', position: 'relative', zIndex: 1 }}>
-            {[
-              { icon: '🏠', value: '800+', label: 'Listings For Sale', sub: 'MahaRERA Verified', badge: 'VERIFIED PORTFOLIO' },
-              { icon: '🤝', value: '150+', label: 'Happy Families', sub: 'Homes Delivered', badge: '100% SATISFACTION' },
-              { icon: '🏢', value: '21+', label: 'Premium Projects', sub: 'Exclusive Mandates', badge: 'DIRECT DEVELOPER' },
-              { icon: '⭐', value: '4.9★', label: 'Google Rating', sub: '127+ Verified Reviews', badge: 'TOP RATED ADVISORY' },
-            ].map((stat, i) => (
-              <div
-                key={i}
-                style={{
-                  background: 'linear-gradient(135deg, rgba(230, 195, 92, 0.06) 0%, rgba(7, 15, 30, 0.6) 100%)',
-                  backdropFilter: 'blur(16px)',
-                  WebkitBackdropFilter: 'blur(16px)',
-                  border: '1px solid rgba(230, 195, 92, 0.22)',
-                  borderRadius: '20px',
-                  padding: isMobile ? '20px 14px' : '28px 24px',
-                  textAlign: 'center',
-                  boxShadow: '0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.08)',
-                  transition: 'all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)'
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-6px)';
-                  e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.55)';
-                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(230, 195, 92, 0.2)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'none';
-                  e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.22)';
-                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.08)';
-                }}
-              >
-                {/* Top Pill Badge */}
-                <div style={{ display: 'inline-block', background: 'rgba(230, 195, 92, 0.12)', border: '1px solid rgba(230, 195, 92, 0.3)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.58rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.08em', marginBottom: '12px' }}>
-                  {stat.badge}
-                </div>
-
-                {/* Icon Orb */}
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(230, 195, 92, 0.25) 0%, rgba(230, 195, 92, 0.05) 70%)', border: '1px solid rgba(230, 195, 92, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontSize: '1.4rem' }}>
-                  {stat.icon}
-                </div>
-
-                {/* Metallic Gold Counter Value */}
-                <div style={{
-                  fontSize: isMobile ? '2rem' : '2.8rem',
-                  fontWeight: 900,
-                  fontFamily: "'Cinzel', serif",
-                  background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  lineHeight: 1.1,
-                  letterSpacing: '-0.02em'
-                }}>
-                  {stat.value}
-                </div>
-
-                {/* Label & Subtext */}
-                <div style={{ fontSize: isMobile ? '0.78rem' : '0.9rem', fontWeight: 700, color: '#ffffff', marginTop: '6px', fontFamily: "'Montserrat', sans-serif" }}>
-                  {stat.label}
-                </div>
-                <div style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '2px', fontWeight: 500 }}>
-                  {stat.sub}
-                </div>
+          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+            
+            {/* Header Badge */}
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(229, 9, 20, 0.15)', border: '1px solid rgba(229, 9, 20, 0.4)', borderRadius: '50px', padding: '4px 16px', marginBottom: '8px' }}>
+                <span style={{ color: '#E50914', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase' }}>🎬 24K CINEMATIC TRACK RECORD</span>
               </div>
-            ))}
+              <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.3rem' : '1.8rem', color: '#fff', margin: 0, fontWeight: 700 }}>
+                West Pune's #1 <span style={{ color: '#E6C35C' }}>Digital Real Estate Network</span>
+              </h3>
+            </div>
+
+            {/* Grid of 4 Cinematic Glass Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? '14px' : '24px' }}>
+              {[
+                { icon: '🏠', value: '800+', label: 'Listings For Sale', sub: 'MahaRERA Certified', badge: '🔥 HOT INVENTORY' },
+                { icon: '🤝', value: '150+', label: 'Happy Families', sub: 'Homes Delivered', badge: '⭐ 100% TRUST' },
+                { icon: '🏢', value: '21+', label: 'Premium Developers', sub: 'Exclusive Mandates', badge: '👑 FLAGSHIP DIRECT' },
+                { icon: '⭐', value: '4.9★', label: 'Google Rating', sub: '127+ Verified Reviews', badge: '🏆 TOP RATED' },
+              ].map((stat, i) => (
+                <div
+                  key={i}
+                  style={{
+                    background: 'rgba(7, 15, 30, 0.65)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(230, 195, 92, 0.28)',
+                    borderRadius: '24px',
+                    padding: isMobile ? '22px 14px' : '32px 24px',
+                    textAlign: 'center',
+                    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+                    transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+                    e.currentTarget.style.borderColor = '#E6C35C';
+                    e.currentTarget.style.boxShadow = '0 24px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(230, 195, 92, 0.3)';
+                    e.currentTarget.style.background = 'rgba(12, 24, 48, 0.85)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.28)';
+                    e.currentTarget.style.boxShadow = '0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.background = 'rgba(7, 15, 30, 0.65)';
+                  }}
+                >
+                  {/* Top Netflix Badge */}
+                  <div style={{ display: 'inline-block', background: 'rgba(230, 195, 92, 0.15)', border: '1px solid rgba(230, 195, 92, 0.35)', borderRadius: '50px', padding: '3px 12px', fontSize: '0.58rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.08em', marginBottom: '14px' }}>
+                    {stat.badge}
+                  </div>
+
+                  {/* Glowing Icon Orb */}
+                  <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(230, 195, 92, 0.3) 0%, rgba(230, 195, 92, 0.05) 70%)', border: '1px solid rgba(230, 195, 92, 0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', fontSize: '1.5rem', boxShadow: '0 4px 15px rgba(230, 195, 92, 0.2)' }}>
+                    {stat.icon}
+                  </div>
+
+                  {/* 3D Metallic Gold Value */}
+                  <div style={{
+                    fontSize: isMobile ? '2.2rem' : '3.2rem',
+                    fontWeight: 900,
+                    fontFamily: "'Cinzel', serif",
+                    background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    lineHeight: 1.05,
+                    letterSpacing: '-0.03em',
+                    filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))'
+                  }}>
+                    {stat.value}
+                  </div>
+
+                  {/* Label & Subtext */}
+                  <div style={{ fontSize: isMobile ? '0.8rem' : '0.94rem', fontWeight: 700, color: '#ffffff', marginTop: '8px', fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.02em' }}>
+                    {stat.label}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.55)', marginTop: '3px', fontWeight: 500 }}>
+                    {stat.sub}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
