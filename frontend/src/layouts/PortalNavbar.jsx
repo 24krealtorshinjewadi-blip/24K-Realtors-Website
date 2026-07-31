@@ -215,9 +215,10 @@ export default function PortalNavbar({
               <span>TRENDS</span>
             </button>
             <button 
-              onClick={() => {
-                const el = document.getElementById('gallery-anchor');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              className={activeSubView === 'gallery' ? 'active' : ''}
+              onClick={(e) => {
+                e.preventDefault();
+                onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, 'gallery');
               }}
               style={{ color: '#E6C35C', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
             >
