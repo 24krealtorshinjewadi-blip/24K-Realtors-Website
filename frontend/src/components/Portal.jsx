@@ -4267,94 +4267,6 @@ export default function Portal({ onViewChange }) {
           )}
         </div>
 
-      {/* Portfolio Transaction Desk (Callback & Seller Mandate) */}
-      <section className="portfolio-transaction-section" style={{ maxWidth: isWideDesktop ? '1680px' : '1410px', margin: '60px auto 30px auto', padding: isMobile ? '0 16px' : '0 24px' }}>
-        <div className="section-header" style={{ marginBottom: '35px', textAlign: 'center' }}>
-          <h2 className="luxury-title" style={{ fontSize: '1.5rem', color: 'var(--gold-primary)' }}>⚜️ Private Client & Seller Advisory Desk</h2>
-          <p className="section-subtitle">Request instant advisory callbacks or register your property mandate directly with our West Pune locality directors</p>
-        </div>
-        <div className="transaction-desk-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '30px', alignItems: 'start' }}>
-          
-          {/* Priority Callback Desk — Pune Targeted */}
-          <div className="callback-card" style={{ margin: 0, height: '100%', borderRadius: '16px', border: '1px solid rgba(212,175,55,0.15)', background: 'linear-gradient(135deg, rgba(12,24,48,0.6) 0%, rgba(6,12,24,0.8) 100%)' }}>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '6px' }}>
-              <Clock size={18} className="animate-pulse" />
-              <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>⚡ Instant Priority Callback</h3>
-            </div>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '16px' }}>
-              Drop your number — our Pune IT locality director will connect with you immediately. Available Mon–Sun, 9am to 9pm.
-            </p>
-            <form onSubmit={handleVipSubmit}>
-              <div className="form-group-floating">
-                <input type="text" id="callbackName" className="form-input-floating" required placeholder=" "
-                  value={vipForm.name} onChange={e => setVipForm({ ...vipForm, name: e.target.value })} />
-                <label htmlFor="callbackName" className="form-label-floating">Your Full Name</label>
-              </div>
-              <div className="form-group-floating">
-                <input type="tel" id="callbackPhone" className="form-input-floating" required placeholder=" "
-                  value={vipForm.phone} onChange={e => setVipForm({ ...vipForm, phone: e.target.value })} />
-                <label htmlFor="callbackPhone" className="form-label-floating">📱 WhatsApp No. (+91)</label>
-              </div>
-              <div className="form-group" style={{ marginBottom: '14px' }}>
-                <select className="form-input" value={vipForm.location || 'HINJEWADI'}
-                  onChange={e => setVipForm({ ...vipForm, location: e.target.value })}
-                  style={{ fontSize: '0.84rem', borderRadius: '10px' }}>
-                  <option value="HINJEWADI">📍 Hinjewadi</option>
-                  <option value="BANER">📍 Baner – Balewadi</option>
-                  <option value="WAKAD">📍 Wakad – Pimple Saudagar</option>
-                  <option value="MAHALUNGE">📍 Mahalunge – Maan Road</option>
-                  <option value="KHARADI">📍 Kharadi – EON IT Park</option>
-                  <option value="UNDRI">📍 Undri – Pisoli</option>
-                  <option value="ANY">📍 Open to all Pune locations</option>
-                </select>
-              </div>
-              <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center', borderRadius: '12px' }} disabled={vipSubmitting}>
-                {vipSubmitting ? <Loader className="animate-spin" size={16} /> : '📞 Get Instant Callback'}
-              </button>
-              <p style={{ textAlign: 'center', fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '10px' }}>Zero spam · Only verified property advisors call you</p>
-            </form>
-          </div>
-
-          {/* Seller Exclusive Mandate Desk */}
-          <div id="seller-mandate-anchor" className="seller-mandate-premium" style={{ margin: 0, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '40px 30px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(7,15,30,0.95) 0%, rgba(15,28,46,0.9) 100%)', border: '1px solid rgba(197,168,128,0.25)', borderRadius: '16px' }}>
-            <div className="seller-mandate-header" style={{ marginBottom: '24px' }}>
-              <div className="seller-mandate-icon-ring" style={{ margin: '0 auto 16px auto', width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(197,168,128,0.08)', border: '1px solid rgba(197,168,128,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Building size={24} color="#E6C35C" />
-              </div>
-              <h3 className="seller-mandate-title" style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', color: '#fff', margin: '0 0 6px 0', letterSpacing: '0.04em' }}>Seller / Landlord Mandate</h3>
-              <p className="seller-mandate-subtitle" style={{ fontSize: '0.75rem', color: '#E6C35C', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>List Your Property • 0% Brokerage</p>
-            </div>
-            
-            <p className="seller-mandate-desc" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '32px' }}>
-              Direct access to premium verified buyers, institutional property funds, and HNWI investors in Baner, Wakad, and Hinjewadi. List with photos and video tour.
-            </p>
-
-            <button 
-              onClick={() => onViewChange && onViewChange('list-property')}
-              style={{
-                width: '100%',
-                background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-                border: 'none',
-                color: '#040814',
-                padding: '14px 28px',
-                borderRadius: '12px',
-                fontSize: '0.85rem',
-                fontWeight: 800,
-                fontFamily: "'Montserrat', sans-serif",
-                letterSpacing: '0.06em',
-                cursor: 'pointer',
-                boxShadow: '0 6px 20px rgba(197,168,128,0.25)',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(197,168,128,0.35)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(197,168,128,0.25)'; }}
-            >
-              Start Listing Mandate →
-            </button>
-            <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '16px' }}>MahaRERA compliant · Takes less than 2 minutes</p>
-          </div>
-        </div>
-      </section>
         </div>
 
       {/* Modular Comparison Overlay Modal */}
@@ -4854,41 +4766,11 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* ══════════════════════════════════════════════════════════════════════
-          ✦ ANIMATED STATS COUNTER BAR — Inspired by LionsCrew, 10x upgraded
-      ══════════════════════════════════════════════════════════════════════ */}
-      {!selectedPropertyDetail && !activeSubView && (
-        <div style={{
-          background: 'linear-gradient(135deg, #D4AF37 0%, #B8951A 40%, #9A7B1C 100%)',
-          padding: '32px 20px',
-          position: 'relative',
-          overflow: 'hidden',
-        }}>
-          {/* Subtle pattern overlay */}
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%), radial-gradient(circle at 80% 50%, rgba(0,0,0,0.15) 0%, transparent 60%)', pointerEvents: 'none' }} />
-          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', position: 'relative' }}>
-            {[
-              { icon: '🏠', value: '800+', label: 'Listings For Sale', sub: 'MahaRERA Verified' },
-              { icon: '🤝', value: '150+', label: 'Happy Families', sub: 'Homes Delivered' },
-              { icon: '🏢', value: '21+', label: 'Premium Projects', sub: 'Exclusive Mandates' },
-              { icon: '⭐', value: '4.9', label: 'Google Rating', sub: '127+ Reviews' },
-            ].map((stat, i) => (
-              <div key={i} style={{ textAlign: 'center', padding: '8px' }}>
-                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>{stat.icon}</div>
-                <div style={{ fontSize: isMobile ? '1.8rem' : '2.4rem', fontWeight: 900, color: '#040814', fontFamily: "'Cinzel', serif", letterSpacing: '-0.02em', lineHeight: 1 }}>{stat.value}</div>
-                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#040814', marginTop: '4px', opacity: 0.85 }}>{stat.label}</div>
-                <div style={{ fontSize: '0.68rem', color: 'rgba(4,8,20,0.55)', marginTop: '2px', fontWeight: 500 }}>{stat.sub}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          ✦ OUR EXPERTS — Advisory Team (Inspired by LionsCrew Experts section)
+          ✦ 1. OUR EXPERTS — Senior Advisory Team (Neeraj Giri, Nilesh Rai, Jyoti Dhale)
       ══════════════════════════════════════════════════════════════════════ */}
       {!selectedPropertyDetail && !activeSubView && (
         <section style={{
-          background: 'linear-gradient(180deg, #070f1e 0%, #040814 100%)',
+          background: 'linear-gradient(180deg, #040814 0%, #070f1e 100%)',
           padding: isMobile ? '48px 16px 56px' : '72px 32px 80px',
         }}>
           <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto' }}>
@@ -4956,6 +4838,129 @@ export default function Portal({ onViewChange }) {
             </div>
           </div>
         </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          ✦ 2. PORTFOLIO TRANSACTION DESK — Priority Callback & Seller Mandate
+      ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (
+        <section className="portfolio-transaction-section" style={{ maxWidth: isWideDesktop ? '1680px' : '1410px', margin: '40px auto 40px auto', padding: isMobile ? '0 16px' : '0 24px' }}>
+          <div className="section-header" style={{ marginBottom: '35px', textAlign: 'center' }}>
+            <h2 className="luxury-title" style={{ fontSize: '1.5rem', color: 'var(--gold-primary)' }}>⚜️ Private Client & Seller Advisory Desk</h2>
+            <p className="section-subtitle">Request instant advisory callbacks or register your property mandate directly with our West Pune locality directors</p>
+          </div>
+          <div className="transaction-desk-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '30px', alignItems: 'start' }}>
+            
+            {/* Priority Callback Desk — Pune Targeted */}
+            <div className="callback-card" style={{ margin: 0, height: '100%', borderRadius: '16px', border: '1px solid rgba(212,175,55,0.15)', background: 'linear-gradient(135deg, rgba(12,24,48,0.6) 0%, rgba(6,12,24,0.8) 100%)' }}>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '6px' }}>
+                <Clock size={18} className="animate-pulse" />
+                <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>⚡ Instant Priority Callback</h3>
+              </div>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '16px' }}>
+                Drop your number — our Pune IT locality director will connect with you immediately. Available Mon–Sun, 9am to 9pm.
+              </p>
+              <form onSubmit={handleVipSubmit}>
+                <div className="form-group-floating">
+                  <input type="text" id="callbackName" className="form-input-floating" required placeholder=" "
+                    value={vipForm.name} onChange={e => setVipForm({ ...vipForm, name: e.target.value })} />
+                  <label htmlFor="callbackName" className="form-label-floating">Your Full Name</label>
+                </div>
+                <div className="form-group-floating">
+                  <input type="tel" id="callbackPhone" className="form-input-floating" required placeholder=" "
+                    value={vipForm.phone} onChange={e => setVipForm({ ...vipForm, phone: e.target.value })} />
+                  <label htmlFor="callbackPhone" className="form-label-floating">📱 WhatsApp No. (+91)</label>
+                </div>
+                <div className="form-group" style={{ marginBottom: '14px' }}>
+                  <select className="form-input" value={vipForm.location || 'HINJEWADI'}
+                    onChange={e => setVipForm({ ...vipForm, location: e.target.value })}
+                    style={{ fontSize: '0.84rem', borderRadius: '10px' }}>
+                    <option value="HINJEWADI">📍 Hinjewadi</option>
+                    <option value="BANER">📍 Baner – Balewadi</option>
+                    <option value="WAKAD">📍 Wakad – Pimple Saudagar</option>
+                    <option value="MAHALUNGE">📍 Mahalunge – Maan Road</option>
+                    <option value="KHARADI">📍 Kharadi – EON IT Park</option>
+                    <option value="UNDRI">📍 Undri – Pisoli</option>
+                    <option value="ANY">📍 Open to all Pune locations</option>
+                  </select>
+                </div>
+                <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center', borderRadius: '12px' }} disabled={vipSubmitting}>
+                  {vipSubmitting ? <Loader className="animate-spin" size={16} /> : '📞 Get Instant Callback'}
+                </button>
+                <p style={{ textAlign: 'center', fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '10px' }}>Zero spam · Only verified property advisors call you</p>
+              </form>
+            </div>
+
+            {/* Seller Exclusive Mandate Desk */}
+            <div id="seller-mandate-anchor" className="seller-mandate-premium" style={{ margin: 0, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '40px 30px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(7,15,30,0.95) 0%, rgba(15,28,46,0.9) 100%)', border: '1px solid rgba(197,168,128,0.25)', borderRadius: '16px' }}>
+              <div className="seller-mandate-header" style={{ marginBottom: '24px' }}>
+                <div className="seller-mandate-icon-ring" style={{ margin: '0 auto 16px auto', width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(197,168,128,0.08)', border: '1px solid rgba(197,168,128,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Building size={24} color="#E6C35C" />
+                </div>
+                <h3 className="seller-mandate-title" style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', color: '#fff', margin: '0 0 6px 0', letterSpacing: '0.04em' }}>Seller / Landlord Mandate</h3>
+                <p className="seller-mandate-subtitle" style={{ fontSize: '0.75rem', color: '#E6C35C', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>List Your Property • 0% Brokerage</p>
+              </div>
+              
+              <p className="seller-mandate-desc" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '32px' }}>
+                Direct access to premium verified buyers, institutional property funds, and HNWI investors in Baner, Wakad, and Hinjewadi. List with photos and video tour.
+              </p>
+
+              <button 
+                onClick={() => onViewChange && onViewChange('list-property')}
+                style={{
+                  width: '100%',
+                  background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                  border: 'none',
+                  color: '#040814',
+                  padding: '14px 28px',
+                  borderRadius: '12px',
+                  fontSize: '0.85rem',
+                  fontWeight: 800,
+                  fontFamily: "'Montserrat', sans-serif",
+                  letterSpacing: '0.06em',
+                  cursor: 'pointer',
+                  boxShadow: '0 6px 20px rgba(197,168,128,0.25)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(197,168,128,0.35)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(197,168,128,0.25)'; }}
+              >
+                Start Listing Mandate →
+              </button>
+              <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '16px' }}>MahaRERA compliant · Takes less than 2 minutes</p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          ✦ 3. ANIMATED GOLD STATS COUNTER BAR — Grand closing trust strip before Footer
+      ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (
+        <div style={{
+          background: 'linear-gradient(135deg, #D4AF37 0%, #B8951A 40%, #9A7B1C 100%)',
+          padding: '32px 20px',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {/* Subtle pattern overlay */}
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%), radial-gradient(circle at 80% 50%, rgba(0,0,0,0.15) 0%, transparent 60%)', pointerEvents: 'none' }} />
+          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', position: 'relative' }}>
+            {[
+              { icon: '🏠', value: '800+', label: 'Listings For Sale', sub: 'MahaRERA Verified' },
+              { icon: '🤝', value: '150+', label: 'Happy Families', sub: 'Homes Delivered' },
+              { icon: '🏢', value: '21+', label: 'Premium Projects', sub: 'Exclusive Mandates' },
+              { icon: '⭐', value: '4.9', label: 'Google Rating', sub: '127+ Reviews' },
+            ].map((stat, i) => (
+              <div key={i} style={{ textAlign: 'center', padding: '8px' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>{stat.icon}</div>
+                <div style={{ fontSize: isMobile ? '1.8rem' : '2.4rem', fontWeight: 900, color: '#040814', fontFamily: "'Cinzel', serif", letterSpacing: '-0.02em', lineHeight: 1 }}>{stat.value}</div>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#040814', marginTop: '4px', opacity: 0.85 }}>{stat.label}</div>
+                <div style={{ fontSize: '0.68rem', color: 'rgba(4,8,20,0.55)', marginTop: '2px', fontWeight: 500 }}>{stat.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
 
