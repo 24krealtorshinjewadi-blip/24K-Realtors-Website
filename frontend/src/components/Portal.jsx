@@ -31,7 +31,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'HANDOVER',
     categoryLabel: '🔑 Key Handover',
     dev: 'Neeraj Giri & Happy Homebuyers',
-    img: '/gallery_key_handover.png',
+    img: '/gallery_handover_1.png',
     desc: 'Neeraj Giri (Senior Property Advisor) handing over VIP possession keys to happy family at Wakad Central estate.'
   },
   {
@@ -41,7 +41,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'HANDOVER',
     categoryLabel: '🔑 Key Handover',
     dev: 'Nilesh Rai & Client',
-    img: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_handover_2.png',
     desc: 'Nilesh Rai (Investment Specialist) finalizing 100% RERA verified agreement and key handover at VTP Blue Waters.'
   },
   {
@@ -51,7 +51,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'HANDOVER',
     categoryLabel: '🔑 Key Handover',
     dev: 'Jyoti Dhale & Client',
-    img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_handover_3.png',
     desc: 'Jyoti Dhale celebrating successful key handover with client at Baner High Street luxury penthouse.'
   },
   {
@@ -61,7 +61,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'HANDOVER',
     categoryLabel: '🔑 Key Handover',
     dev: '24K Senior Advisory Desk',
-    img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_handover_4.png',
     desc: 'Exclusive mandate spot booking milestone achieved for 400-acre township buyer.'
   },
   {
@@ -71,7 +71,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'VISITS',
     categoryLabel: '🚗 VIP Site Visit',
     dev: '24K Luxury Concierge Desk',
-    img: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_visit_1.png',
     desc: 'Complimentary door-to-door Mercedes pickup & drop for HNWI client inspecting Hinjewadi IT park high-rises.'
   },
   {
@@ -81,7 +81,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'VISITS',
     categoryLabel: '🚗 VIP Site Visit',
     dev: 'Neeraj Giri (Senior Advisor)',
-    img: 'https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_visit_2.png',
     desc: 'On-site technical inspection verifying RERA carpet area, parking slots & NOC legal titles.'
   },
   {
@@ -91,7 +91,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'VISITS',
     categoryLabel: '🚗 VIP Site Visit',
     dev: 'Jyoti Dhale (Site Coordinator)',
-    img: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_visit_3.png',
     desc: 'Guided tour of German show flat layout, clubhouse amenities, and upcoming metro line access.'
   },
   {
@@ -111,7 +111,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'TOWERS',
     categoryLabel: '🏙️ High-Rise',
     dev: 'Kolte-Patil Developers',
-    img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_tower_2.png',
     desc: 'Double-glazed glass high-rise towers with 360° views of Hinjewadi IT Corridor.'
   },
   {
@@ -121,7 +121,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'TOWERS',
     categoryLabel: '🏙️ High-Rise',
     dev: 'VTP Realty',
-    img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_tower_3.png',
     desc: '100+ acre riverfront smart township skyline surrounded by Mula River and hill views.'
   },
   {
@@ -131,7 +131,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'TOWERS',
     categoryLabel: '🏙️ High-Rise',
     dev: 'Shapoorji Pallonji',
-    img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_key_handover.png',
     desc: 'Premium high-rise township cluster right opposite Embassy Techzone IT Park.'
   },
   {
@@ -161,7 +161,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'INTERIORS',
     categoryLabel: '🛋️ Show Flat',
     dev: 'Godrej Properties',
-    img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_sample_flat_interior.png',
     desc: 'Full-height acoustic glass wall bedroom with walk-in wardrobe and balcony.'
   },
   {
@@ -171,7 +171,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'INTERIORS',
     categoryLabel: '🛋️ Show Flat',
     dev: 'Paranjape Schemes',
-    img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_sample_flat_interior.png',
     desc: 'Hafele fitted modular island kitchen with breakfast bar and quartz countertop.'
   },
   {
@@ -181,7 +181,7 @@ const DEFAULT_GALLERY_ITEMS = [
     category: 'INTERIORS',
     categoryLabel: '🌳 Greens',
     dev: 'Pharande Spaces',
-    img: 'https://images.unsplash.com/photo-1584738766473-61c083514bf4?auto=format&fit=crop&w=1200&q=80',
+    img: '/gallery_tower_2.png',
     desc: 'Vehicle-free 2-acre elevated podium garden featuring cascading water walls.'
   }
 ];
