@@ -503,8 +503,13 @@ export default function Portal({ onViewChange }) {
   const [selectedReraProperty, setSelectedReraProperty] = useState(null);
 
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
+  const [isWideDesktop, setIsWideDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1400);
+
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      setIsWideDesktop(window.innerWidth >= 1400);
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -2890,7 +2895,7 @@ export default function Portal({ onViewChange }) {
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
 
-          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 20px' }}>
+          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 32px' }}>
             {/* Section Header */}
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(229,9,20,0.1)', border: '1px solid rgba(229,9,20,0.3)', borderRadius: '50px', padding: '5px 16px', marginBottom: '12px' }}>
@@ -2942,7 +2947,7 @@ export default function Portal({ onViewChange }) {
             {/* Netflix Cinematic Developer Cards Grid */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gridTemplateColumns: isMobile ? '1fr' : isWideDesktop ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
               gap: isMobile ? '16px' : '24px',
               marginBottom: '44px'
             }}>
@@ -3259,7 +3264,7 @@ export default function Portal({ onViewChange }) {
 
       {/* Main Listings and Directories Container with Luxury Ambient Background */}
       <div className="subpage-ambient-bg">
-        <div className="main-portal-listings-section" style={{ maxWidth: '1410px', margin: '0 auto', padding: '0 20px' }}>
+        <div className="main-portal-listings-section" style={{ maxWidth: isWideDesktop ? '1680px' : '1410px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 24px' }}>
             
             {activeSection === 'listings' && (
               <>
@@ -4263,7 +4268,7 @@ export default function Portal({ onViewChange }) {
         </div>
 
       {/* Portfolio Transaction Desk (Callback & Seller Mandate) */}
-      <section className="portfolio-transaction-section" style={{ maxWidth: '1410px', margin: '60px auto 30px auto', padding: '0 20px' }}>
+      <section className="portfolio-transaction-section" style={{ maxWidth: isWideDesktop ? '1680px' : '1410px', margin: '60px auto 30px auto', padding: isMobile ? '0 16px' : '0 24px' }}>
         <div className="section-header" style={{ marginBottom: '35px', textAlign: 'center' }}>
           <h2 className="luxury-title" style={{ fontSize: '1.5rem', color: 'var(--gold-primary)' }}>⚜️ Private Client & Seller Advisory Desk</h2>
           <p className="section-subtitle">Request instant advisory callbacks or register your property mandate directly with our West Pune locality directors</p>
@@ -4860,7 +4865,7 @@ export default function Portal({ onViewChange }) {
         }}>
           {/* Subtle pattern overlay */}
           <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%), radial-gradient(circle at 80% 50%, rgba(0,0,0,0.15) 0%, transparent 60%)', pointerEvents: 'none' }} />
-          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', position: 'relative' }}>
+          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', position: 'relative' }}>
             {[
               { icon: '🏠', value: '800+', label: 'Listings For Sale', sub: 'MahaRERA Verified' },
               { icon: '🤝', value: '150+', label: 'Happy Families', sub: 'Homes Delivered' },
@@ -4886,7 +4891,7 @@ export default function Portal({ onViewChange }) {
           background: 'linear-gradient(180deg, #070f1e 0%, #040814 100%)',
           padding: isMobile ? '48px 16px 56px' : '72px 32px 80px',
         }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto' }}>
             {/* Section Header */}
             <div style={{ textAlign: 'center', marginBottom: '48px' }}>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '16px' }}>
