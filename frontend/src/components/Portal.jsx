@@ -223,6 +223,46 @@ const DEFAULT_GALLERY_ITEMS = [
     dev: 'Bhandari Associates',
     img: '/gallery_infinity_pool.png',
     desc: 'Resort-style 3-tier architectural water fountain wall with evening ambient LED lighting.'
+  },
+  {
+    id: 21,
+    title: 'Paranjape Blue Ridge 138-Acre Riverfront Township',
+    location: 'Hinjewadi Phase 1',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Township',
+    dev: 'Paranjape Schemes',
+    img: '/gallery_tower_3.png',
+    desc: '138-acre iconic riverfront township with 18-hole golf course, school & riverwalk promenade.'
+  },
+  {
+    id: 22,
+    title: 'Kolte-Patil Life Republic 400-Acre Smart City',
+    location: 'Hinjewadi Phase 1 Extension',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Township',
+    dev: 'Kolte-Patil Developers',
+    img: '/gallery_tower_2.png',
+    desc: '400+ acre mega township with Anisha Global School, botanical gardens & 150 ft wide spine roads.'
+  },
+  {
+    id: 23,
+    title: 'Megapolis 150-Acre High-Rise IT Township',
+    location: 'Hinjewadi Phase 3',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Township',
+    dev: 'Pegasus Properties',
+    img: '/gallery_vj_supernova_tower.png',
+    desc: 'Integrated smart township situated right next to TCS, Tech Mahindra & Cognizant IT hubs.'
+  },
+  {
+    id: 24,
+    title: 'Godrej Woodsville & Elements Luxury Township',
+    location: 'Hinjewadi Phase 1 Corridor',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Township',
+    dev: 'Godrej Properties',
+    img: '/gallery_infinity_pool.png',
+    desc: '80% open green space luxury township with elevated skywalks, lap pool & 4-tier security.'
   }
 ];
 
@@ -2521,7 +2561,8 @@ export default function Portal({ onViewChange }) {
             {/* Category Filter Tabs */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '12px', flexWrap: 'wrap', marginBottom: '40px' }}>
               {[
-                { id: 'ALL', label: '🔥 All Real Media (20)' },
+                { id: 'ALL', label: '🔥 All Real Media (24)' },
+                { id: 'HINJEWADI', label: '🏙️ Hinjewadi Townships' },
                 { id: 'HANDOVER', label: '🔑 Client Key Handovers' },
                 { id: 'VISITS', label: '🚗 VIP Site Visit Tours' },
                 { id: 'TOWERS', label: '🏙️ Pune High-Rises' },
