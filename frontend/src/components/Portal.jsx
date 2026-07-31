@@ -23,6 +23,129 @@ const ChatWidget = lazy(() => import('./ChatWidget'));
 const DataLabsView = lazy(() => import('./DataLabsView'));
 import PdfBrochureModal from './PdfBrochureModal';
 
+const DEFAULT_GALLERY_ITEMS = [
+  {
+    id: 1,
+    title: '24K Stargate Iconic Towers',
+    location: 'Hinjewadi Phase 1',
+    category: 'TOWERS',
+    categoryLabel: '🏙️ High-Rise',
+    dev: 'Kolte-Patil Developers',
+    img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Double-glazed glass high-rise towers with 360° views of Hinjewadi IT Corridor and private sky terraces.'
+  },
+  {
+    id: 2,
+    title: 'VJ Supernova High Street',
+    location: 'Baner Main Road',
+    category: 'TOWERS',
+    categoryLabel: '🏙️ High-Rise',
+    dev: 'Vilas Javdekar (VJ)',
+    img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Illuminated 38-story landmark glass facade situated right on Baner High Street.'
+  },
+  {
+    id: 3,
+    title: 'VTP Blue Waters Township',
+    location: 'Mahalunge Smart City',
+    category: 'TOWERS',
+    categoryLabel: '🏙️ High-Rise',
+    dev: 'VTP Realty',
+    img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+    desc: '100+ acre riverfront smart township skyline surrounded by Mula River and hill views.'
+  },
+  {
+    id: 4,
+    title: 'Sky Club 24K Infinity Pool',
+    location: 'Wakad Datta Mandir',
+    category: 'AMENITIES',
+    categoryLabel: '🏊 Resort Amenities',
+    dev: 'Kohinoor Group',
+    img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Temperature-controlled rooftop infinity pool with sunken poolside cabanas and evening ambient lighting.'
+  },
+  {
+    id: 5,
+    title: 'Grand Olympic Fitness Arena',
+    location: 'Hinjewadi Phase 2',
+    category: 'AMENITIES',
+    categoryLabel: '🏊 Resort Amenities',
+    dev: 'Shapoorji Pallonji',
+    img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80',
+    desc: '3,000 sq.ft. TechnoGym equipped glasshouse fitness studio overlooking central gardens.'
+  },
+  {
+    id: 6,
+    title: 'Rooftop Stargazing & Lounge',
+    location: 'Baner High Street',
+    category: 'AMENITIES',
+    categoryLabel: '🏊 Resort Amenities',
+    dev: 'Kasturi Builders',
+    img: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Private open-air stargazing telescopes, fire pits, and luxury outdoor seating for residents.'
+  },
+  {
+    id: 7,
+    title: 'Italian Marble 3 BHK Living Suite',
+    location: 'Wakad Central',
+    category: 'INTERIORS',
+    categoryLabel: '🛋️ Show Flats',
+    dev: 'Gera Developments',
+    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Expansive 1,450 sq.ft. sample living room featuring Italian Bottochino marble flooring and gold brass accents.'
+  },
+  {
+    id: 8,
+    title: 'Penthouse Master Bedroom Suite',
+    location: 'Baner – Balewadi',
+    category: 'INTERIORS',
+    categoryLabel: '🛋️ Show Flats',
+    dev: 'Godrej Properties',
+    img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Full-height acoustic glass wall bedroom with walk-in wardrobe and private jacuzzi balcony.'
+  },
+  {
+    id: 9,
+    title: 'German Modular Island Kitchen',
+    location: 'Hinjewadi IT Corridor',
+    category: 'INTERIORS',
+    categoryLabel: '🛋️ Show Flats',
+    dev: 'Paranjape Schemes',
+    img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Hafele fitted modular island kitchen with breakfast bar, built-in oven, and quartz countertop.'
+  },
+  {
+    id: 10,
+    title: 'Central Podium Green & Fountain',
+    location: 'Hinjewadi Phase 1',
+    category: 'GREENS',
+    categoryLabel: '🌳 Greens',
+    dev: 'Pharande Spaces',
+    img: 'https://images.unsplash.com/photo-1584738766473-61c083514bf4?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Vehicle-free 2-acre elevated podium garden featuring cascading water walls and tropical palm groves.'
+  },
+  {
+    id: 11,
+    title: 'Zen Bamboo Meditation Walkway',
+    location: 'Mahalunge Smart City',
+    category: 'GREENS',
+    categoryLabel: '🌳 Greens',
+    dev: 'Rohan Builders',
+    img: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Acoustic bamboo forest path with lotus koi ponds for yoga, meditation, and morning walks.'
+  },
+  {
+    id: 12,
+    title: 'Rubberized Turf Multi-Sports Arena',
+    location: 'Wakad Datta Mandir',
+    category: 'GREENS',
+    categoryLabel: '🌳 Greens',
+    dev: 'Kolte-Patil Developers',
+    img: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Floodlit box cricket pitch, basketball court, and safe children playground.'
+  }
+];
+
 
 
 
@@ -509,7 +632,8 @@ export default function Portal({ onViewChange }) {
   const [customGalleryItems, setCustomGalleryItems] = useState(() => {
     try {
       const saved = localStorage.getItem('24k_custom_gallery');
-      return saved ? JSON.parse(saved) : [];
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       return [];
     }
@@ -4943,7 +5067,7 @@ export default function Portal({ onViewChange }) {
               gridTemplateColumns: isMobile ? '1fr' : isWideDesktop ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
               gap: isMobile ? '16px' : '24px'
             }}>
-              {[...customGalleryItems, ...galleryItems]
+              {[(Array.isArray(customGalleryItems) ? customGalleryItems : []), ...DEFAULT_GALLERY_ITEMS]
                 .filter(item => galleryFilter === 'ALL' || item.category === galleryFilter)
                 .map((item) => (
                   <div
