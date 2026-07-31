@@ -2803,72 +2803,6 @@ export default function Portal({ onViewChange }) {
                 </div>
               </div>
 
-              {/* Hero Authorized Developer Partners Showcase Bar */}
-              <div style={{
-                maxWidth: '720px',
-                margin: '24px auto 0 auto',
-                background: 'rgba(7, 15, 30, 0.55)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1px solid rgba(212, 175, 55, 0.2)',
-                borderRadius: '16px',
-                padding: '16px 20px',
-                textAlign: 'center',
-                boxShadow: '0 12px 30px rgba(0, 0, 0, 0.35)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '10px' }}>
-                  <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif" }}>
-                    🤝 Authorized Partner For Pune's Top Developers
-                  </span>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px 12px' }}>
-                  {[
-                    { name: 'Kolte-Patil 24K', tag: 'Flagship' },
-                    { name: 'Shapoorji Pallonji', tag: 'Joyville' },
-                    { name: 'Godrej Properties', tag: 'Luxury' },
-                    { name: 'Kasturi Builders', tag: 'Penthouses' },
-                    { name: 'Lodha Group', tag: 'Landmark' },
-                    { name: 'Gera', tag: 'Child Centric' },
-                    { name: 'Kumar Properties', tag: 'Trusted' },
-                    { name: 'Rohan Builders', tag: 'Eco' },
-                  ].map((brand, i) => (
-                    <span key={i} style={{
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      color: 'rgba(255, 255, 255, 0.85)',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(212, 175, 55, 0.18)',
-                      borderRadius: '50px',
-                      padding: '4px 12px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      whiteSpace: 'nowrap',
-                      transition: 'all 0.2s ease',
-                      cursor: 'default'
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.background = 'rgba(212, 175, 55, 0.15)';
-                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
-                      e.currentTarget.style.color = '#FFF4D0';
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.18)';
-                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.85)';
-                    }}>
-                      <span>{brand.name}</span>
-                      <span style={{ fontSize: '0.58rem', color: '#D4AF37', background: 'rgba(212,175,55,0.15)', padding: '1px 5px', borderRadius: '4px' }}>{brand.tag}</span>
-                    </span>
-                  ))}
-                </div>
-                <div style={{ marginTop: '10px', fontSize: '0.65rem', color: 'rgba(255, 255, 255, 0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                  <span>🛡️ 100% RERA Compliant Homes</span>
-                  <span>·</span>
-                  <span>MahaRERA Reg. No. <strong style={{ color: '#D4AF37' }}>A52100028461</strong></span>
-                </div>
-              </div>
-
             </div>
           </section>
 
@@ -2895,39 +2829,140 @@ export default function Portal({ onViewChange }) {
         </div>
       </div>
 
-      {/* Interactive Corridor Cards Grid with Live Metrics */}
-      <section className="areas-section" id="areas" style={{ marginBottom: '40px' }}>
-        <div className="section-header">
-          <h2 className="luxury-title reveal-mask">
-            <span className="reveal-mask-content">Pune West Market Intelligence</span>
-          </h2>
-          <p className="section-subtitle reveal-fade-up">Select an area to explore live pricing and average appreciation index metrics</p>
-        </div>
-        
-        <div className="areas-grid">
-          {areaData.map((area) => (
-            <div 
-              key={area.id} 
-              className={`area-card ${filters.location === area.id ? 'active' : ''}`}
-              onClick={() => handleCorridorClick(area.id)}
-            >
-              <div className="area-card-glow"></div>
-              <div className="area-icon-wrapper">{area.icon}</div>
-              <div className="area-info">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                  <h3 style={{ margin: 0 }}>{area.name}</h3>
-                  <span className="growth-indicator">{area.growth}</span>
+      {/* ══════════════════════════════════════════════════════════════════════
+          ✦ BRANDS & PARTNERS — Premium Developer Showcase (Top placement)
+      ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (
+        <section style={{
+          background: 'linear-gradient(180deg, #070f1e 0%, #040814 50%, #070f1e 100%)',
+          padding: isMobile ? '40px 0 48px' : '56px 0 64px',
+          overflow: 'hidden',
+          position: 'relative',
+        }}>
+          {/* Decorative top border */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
+          {/* Decorative bottom border */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
+
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+            {/* Section Header */}
+            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
+                <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>🤝 Authorized Partners</span>
+              </div>
+              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
+                Trusted <span style={{ color: '#D4AF37' }}>Brands & Partners</span>
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.88rem', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7 }}>
+                24K Realtors is an authorized partner of Pune's most prestigious developers — ensuring verified, RERA-compliant homes.
+              </p>
+            </div>
+
+            {/* Developer Cards Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? '12px' : '20px', marginBottom: '40px' }}>
+              {[
+                { name: 'Kolte-Patil', brand: '24K Luxury', icon: '🏛️', tag: 'Flagship Partner', color: '#D4AF37', projects: '6 Projects', established: 'Since 1991', desc: 'Premium 24K brand — Opula, Sereno, Matera & more.' },
+                { name: 'Shapoorji Pallonji', brand: 'Joyville Series', icon: '🏗️', tag: 'Tier-1 Developer', color: '#60A5FA', projects: '4 Projects', established: 'Since 1865', desc: 'Vyomora, Joyville landmark projects in Hinjewadi.' },
+                { name: 'Godrej Properties', brand: 'Premium Homes', icon: '🌿', tag: 'Luxury Partner', color: '#34D399', projects: '3 Projects', established: 'Since 1897', desc: 'Godrej Ivara — ultra-premium gated communities.' },
+                { name: 'Kasturi Builders', brand: 'Signature Series', icon: '💎', tag: 'Boutique Partner', color: '#A78BFA', projects: '2 Projects', established: 'Since 1985', desc: 'Italian marble finish penthouses & villas.' },
+                { name: 'Lodha Group', brand: 'World-Class Homes', icon: '🌆', tag: 'National Partner', color: '#FB923C', projects: '2 Projects', established: 'Since 1980', desc: 'Landmark towers with premium lifestyle infrastructure.' },
+                { name: 'Gera Developments', brand: 'Child Centric Homes', icon: '🎯', tag: 'Verified Partner', color: '#F472B6', projects: '2 Projects', established: 'Since 1970', desc: 'India\'s only child-centric home concept developer.' },
+                { name: 'Kumar Properties', brand: 'Affordable Luxury', icon: '🔑', tag: 'Trusted Partner', color: '#4ADE80', projects: '3 Projects', established: 'Since 1984', desc: 'Decades of trust across Pune residential segment.' },
+                { name: 'Rohan Builders', brand: 'Green Living', icon: '🌱', tag: 'Eco Partner', color: '#2DD4BF', projects: '2 Projects', established: 'Since 1993', desc: 'Sustainable, green-certified community living.' },
+              ].map((dev, i) => (
+                <div key={i} style={{
+                  background: 'rgba(255,255,255,0.025)',
+                  border: `1px solid rgba(255,255,255,0.07)`,
+                  borderRadius: '16px',
+                  padding: isMobile ? '16px 14px' : '22px 20px',
+                  transition: 'all 0.3s ease',
+                  cursor: 'default',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = `rgba(${dev.color === '#D4AF37' ? '212,175,55' : dev.color === '#60A5FA' ? '96,165,250' : dev.color === '#34D399' ? '52,211,153' : '167,139,250'},0.08)`;
+                    e.currentTarget.style.border = `1px solid ${dev.color}44`;
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = `0 16px 40px rgba(0,0,0,0.4)`;
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.025)';
+                    e.currentTarget.style.border = '1px solid rgba(255,255,255,0.07)';
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  {/* Tag */}
+                  <div style={{ position: 'absolute', top: '12px', right: '12px', fontSize: '0.58rem', fontWeight: 700, color: dev.color, background: `${dev.color}18`, border: `1px solid ${dev.color}33`, borderRadius: '50px', padding: '2px 8px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{dev.tag}</div>
+                  {/* Icon */}
+                  <div style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', marginBottom: '12px' }}>{dev.icon}</div>
+                  {/* Name */}
+                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '0.75rem' : '0.9rem', fontWeight: 700, color: '#fff', marginBottom: '3px', lineHeight: 1.3 }}>{dev.name}</div>
+                  <div style={{ fontSize: '0.68rem', color: dev.color, fontWeight: 600, marginBottom: '8px' }}>{dev.brand}</div>
+                  {/* Desc — hidden on mobile */}
+                  {!isMobile && <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.38)', lineHeight: 1.5, marginBottom: '12px' }}>{dev.desc}</div>}
+                  {/* Meta row */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                    <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', fontWeight: 600 }}>{dev.established}</span>
+                    <span style={{ fontSize: '0.65rem', background: 'rgba(255,255,255,0.06)', borderRadius: '50px', padding: '2px 8px', color: 'rgba(255,255,255,0.5)', fontWeight: 700 }}>{dev.projects}</span>
+                  </div>
                 </div>
-                <p style={{ marginBottom: '8px' }}>{area.tagline}</p>
-                <div className="area-metrics">
-                  <span>Avg. Price: <strong>{area.pricePerSqft}/sqft</strong></span>
-                  <span>Yield: <strong>{area.yield}</strong></span>
-                </div>
+              ))}
+            </div>
+
+            {/* Auto-scroll marquee — Partner trust badges */}
+            <div style={{ position: 'relative', overflow: 'hidden', marginBottom: '36px' }}>
+              {/* Fade edges */}
+              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '80px', background: 'linear-gradient(90deg, #070f1e, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '80px', background: 'linear-gradient(-90deg, #070f1e, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+              {/* Scrolling strip */}
+              <div style={{
+                display: 'flex',
+                gap: '32px',
+                animation: 'marqueeScroll 28s linear infinite',
+                width: 'max-content',
+              }}>
+                {[...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating'],
+                  ...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating']
+                ].map((badge, i) => (
+                  <div key={i} style={{
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    background: 'rgba(212,175,55,0.06)',
+                    border: '1px solid rgba(212,175,55,0.18)',
+                    borderRadius: '50px',
+                    padding: '8px 18px',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                  }}>
+                    <span style={{ color: '#D4AF37', fontSize: '0.8rem' }}>✦</span>
+                    <span style={{ fontSize: '0.76rem', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.04em' }}>{badge}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+
+            {/* Bottom trust strip */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: isMobile ? '12px' : '24px', padding: '20px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '16px' }}>
+              {[
+                { icon: '🛡️', text: 'MahaRERA Agent', sub: 'A52100028461' },
+                { icon: '✅', text: '100% RERA Verified', sub: 'All Listings' },
+                { icon: '🏦', text: 'Bank Loan Tie-ups', sub: 'SBI · HDFC · ICICI' },
+                { icon: '📋', text: 'Legal Due Diligence', sub: 'In-house Support' },
+                { icon: '🤝', text: 'No Hidden Charges', sub: 'Transparent Deals' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
+                  <div>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#fff' }}>{item.text}</div>
+                    <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)' }}>{item.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Main Listings and Directories Container with Luxury Ambient Background */}
       <div className="subpage-ambient-bg">
@@ -4539,148 +4574,7 @@ export default function Portal({ onViewChange }) {
       )}
 
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          ✦ BRANDS & PARTNERS — Premium Developer Showcase
-      ══════════════════════════════════════════════════════════════════════ */}
-      {!selectedPropertyDetail && !activeSubView && (
-        <section style={{
-          background: 'linear-gradient(180deg, #070f1e 0%, #040814 50%, #070f1e 100%)',
-          padding: isMobile ? '52px 0 64px' : '80px 0 96px',
-          overflow: 'hidden',
-          position: 'relative',
-        }}>
-          {/* Decorative top border */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
-          {/* Decorative bottom border */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
 
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 32px' }}>
-            {/* Section Header */}
-            <div style={{ textAlign: 'center', marginBottom: '52px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '16px' }}>
-                <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>🤝 Authorized Partners</span>
-              </div>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
-                Trusted <span style={{ color: '#D4AF37' }}>Brands & Partners</span>
-              </h2>
-              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.88rem', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7 }}>
-                24K Realtors is an authorized partner of Pune's most prestigious developers — ensuring verified, RERA-compliant homes.
-              </p>
-            </div>
-
-            {/* Developer Cards Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? '12px' : '20px', marginBottom: '48px' }}>
-              {[
-                { name: 'Kolte-Patil', brand: '24K Luxury', icon: '🏛️', tag: 'Flagship Partner', color: '#D4AF37', projects: '6 Projects', established: 'Since 1991', desc: 'Premium 24K brand — Opula, Sereno, Matera & more.' },
-                { name: 'Shapoorji Pallonji', brand: 'Joyville Series', icon: '🏗️', tag: 'Tier-1 Developer', color: '#60A5FA', projects: '4 Projects', established: 'Since 1865', desc: 'Vyomora, Joyville landmark projects in Hinjewadi.' },
-                { name: 'Godrej Properties', brand: 'Premium Homes', icon: '🌿', tag: 'Luxury Partner', color: '#34D399', projects: '3 Projects', established: 'Since 1897', desc: 'Godrej Ivara — ultra-premium gated communities.' },
-                { name: 'Kasturi Builders', brand: 'Signature Series', icon: '💎', tag: 'Boutique Partner', color: '#A78BFA', projects: '2 Projects', established: 'Since 1985', desc: 'Italian marble finish penthouses & villas.' },
-                { name: 'Lodha Group', brand: 'World-Class Homes', icon: '🌆', tag: 'National Partner', color: '#FB923C', projects: '2 Projects', established: 'Since 1980', desc: 'Landmark towers with premium lifestyle infrastructure.' },
-                { name: 'Gera Developments', brand: 'Child Centric Homes', icon: '🎯', tag: 'Verified Partner', color: '#F472B6', projects: '2 Projects', established: 'Since 1970', desc: 'India\'s only child-centric home concept developer.' },
-                { name: 'Kumar Properties', brand: 'Affordable Luxury', icon: '🔑', tag: 'Trusted Partner', color: '#4ADE80', projects: '3 Projects', established: 'Since 1984', desc: 'Decades of trust across Pune residential segment.' },
-                { name: 'Rohan Builders', brand: 'Green Living', icon: '🌱', tag: 'Eco Partner', color: '#2DD4BF', projects: '2 Projects', established: 'Since 1993', desc: 'Sustainable, green-certified community living.' },
-              ].map((dev, i) => (
-                <div key={i} style={{
-                  background: 'rgba(255,255,255,0.025)',
-                  border: `1px solid rgba(255,255,255,0.07)`,
-                  borderRadius: '16px',
-                  padding: isMobile ? '16px 14px' : '22px 20px',
-                  transition: 'all 0.3s ease',
-                  cursor: 'default',
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = `rgba(${dev.color === '#D4AF37' ? '212,175,55' : dev.color === '#60A5FA' ? '96,165,250' : dev.color === '#34D399' ? '52,211,153' : '167,139,250'},0.08)`;
-                    e.currentTarget.style.border = `1px solid ${dev.color}44`;
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = `0 16px 40px rgba(0,0,0,0.4)`;
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.025)';
-                    e.currentTarget.style.border = '1px solid rgba(255,255,255,0.07)';
-                    e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}
-                >
-                  {/* Tag */}
-                  <div style={{ position: 'absolute', top: '12px', right: '12px', fontSize: '0.58rem', fontWeight: 700, color: dev.color, background: `${dev.color}18`, border: `1px solid ${dev.color}33`, borderRadius: '50px', padding: '2px 8px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{dev.tag}</div>
-                  {/* Icon */}
-                  <div style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', marginBottom: '12px' }}>{dev.icon}</div>
-                  {/* Name */}
-                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '0.75rem' : '0.9rem', fontWeight: 700, color: '#fff', marginBottom: '3px', lineHeight: 1.3 }}>{dev.name}</div>
-                  <div style={{ fontSize: '0.68rem', color: dev.color, fontWeight: 600, marginBottom: '8px' }}>{dev.brand}</div>
-                  {/* Desc — hidden on mobile */}
-                  {!isMobile && <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.38)', lineHeight: 1.5, marginBottom: '12px' }}>{dev.desc}</div>}
-                  {/* Meta row */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                    <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', fontWeight: 600 }}>{dev.established}</span>
-                    <span style={{ fontSize: '0.65rem', background: 'rgba(255,255,255,0.06)', borderRadius: '50px', padding: '2px 8px', color: 'rgba(255,255,255,0.5)', fontWeight: 700 }}>{dev.projects}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Auto-scroll marquee — Partner trust badges */}
-            <div style={{ position: 'relative', overflow: 'hidden', marginBottom: '48px' }}>
-              {/* Fade edges */}
-              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '80px', background: 'linear-gradient(90deg, #070f1e, transparent)', zIndex: 2, pointerEvents: 'none' }} />
-              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '80px', background: 'linear-gradient(-90deg, #070f1e, transparent)', zIndex: 2, pointerEvents: 'none' }} />
-              {/* Scrolling strip */}
-              <div style={{
-                display: 'flex',
-                gap: '32px',
-                animation: 'marqueeScroll 28s linear infinite',
-                width: 'max-content',
-              }}>
-                {[...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating'],
-                  ...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating']
-                ].map((badge, i) => (
-                  <div key={i} style={{
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    background: 'rgba(212,175,55,0.06)',
-                    border: '1px solid rgba(212,175,55,0.18)',
-                    borderRadius: '50px',
-                    padding: '8px 18px',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                  }}>
-                    <span style={{ color: '#D4AF37', fontSize: '0.8rem' }}>✦</span>
-                    <span style={{ fontSize: '0.76rem', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.04em' }}>{badge}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Bottom trust strip */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: isMobile ? '12px' : '24px', padding: '24px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '16px' }}>
-              {[
-                { icon: '🛡️', text: 'MahaRERA Agent', sub: 'A52100028461' },
-                { icon: '✅', text: '100% RERA Verified', sub: 'All Listings' },
-                { icon: '🏦', text: 'Bank Loan Tie-ups', sub: 'SBI · HDFC · ICICI' },
-                { icon: '📋', text: 'Legal Due Diligence', sub: 'In-house Support' },
-                { icon: '🤝', text: 'No Hidden Charges', sub: 'Transparent Deals' },
-              ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
-                  <div>
-                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#fff' }}>{item.text}</div>
-                    <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)' }}>{item.sub}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Keyframe CSS for marquee */}
-          <style>{`
-            @keyframes marqueeScroll {
-              0%   { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
-          `}</style>
-        </section>
-      )}
 
       {/* Floating Bottom Compare Action Bar */}
 
