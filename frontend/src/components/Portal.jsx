@@ -4934,29 +4934,84 @@ export default function Portal({ onViewChange }) {
       )}
 
       {/* ══════════════════════════════════════════════════════════════════════
-          ✦ 3. ANIMATED GOLD STATS COUNTER BAR — Grand closing trust strip before Footer
+          ✦ 3. ANIMATED GOLD STATS COUNTER STRIP — Ultra-Luxury Gold Glass Strip
       ══════════════════════════════════════════════════════════════════════ */}
       {!selectedPropertyDetail && !activeSubView && (
         <div style={{
-          background: 'linear-gradient(135deg, #D4AF37 0%, #B8951A 40%, #9A7B1C 100%)',
-          padding: '32px 20px',
+          background: 'linear-gradient(180deg, #070f1e 0%, #040814 100%)',
+          padding: isMobile ? '40px 16px' : '56px 32px',
           position: 'relative',
           overflow: 'hidden',
+          borderTop: '1px solid rgba(230, 195, 92, 0.25)',
+          borderBottom: '1px solid rgba(230, 195, 92, 0.25)',
+          boxShadow: 'inset 0 0 80px rgba(0, 0, 0, 0.8)'
         }}>
-          {/* Subtle pattern overlay */}
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%), radial-gradient(circle at 80% 50%, rgba(0,0,0,0.15) 0%, transparent 60%)', pointerEvents: 'none' }} />
-          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', position: 'relative' }}>
+          {/* Ambient Gold Radial Glows */}
+          <div style={{ position: 'absolute', top: '-50%', left: '20%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(230, 195, 92, 0.12) 0%, transparent 70%)', pointerEvents: 'none', filter: 'blur(40px)' }} />
+          <div style={{ position: 'absolute', bottom: '-50%', right: '20%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(230, 195, 92, 0.1) 0%, transparent 70%)', pointerEvents: 'none', filter: 'blur(40px)' }} />
+
+          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? '14px' : '24px', position: 'relative', zIndex: 1 }}>
             {[
-              { icon: '🏠', value: '800+', label: 'Listings For Sale', sub: 'MahaRERA Verified' },
-              { icon: '🤝', value: '150+', label: 'Happy Families', sub: 'Homes Delivered' },
-              { icon: '🏢', value: '21+', label: 'Premium Projects', sub: 'Exclusive Mandates' },
-              { icon: '⭐', value: '4.9', label: 'Google Rating', sub: '127+ Reviews' },
+              { icon: '🏠', value: '800+', label: 'Listings For Sale', sub: 'MahaRERA Verified', badge: 'VERIFIED PORTFOLIO' },
+              { icon: '🤝', value: '150+', label: 'Happy Families', sub: 'Homes Delivered', badge: '100% SATISFACTION' },
+              { icon: '🏢', value: '21+', label: 'Premium Projects', sub: 'Exclusive Mandates', badge: 'DIRECT DEVELOPER' },
+              { icon: '⭐', value: '4.9★', label: 'Google Rating', sub: '127+ Verified Reviews', badge: 'TOP RATED ADVISORY' },
             ].map((stat, i) => (
-              <div key={i} style={{ textAlign: 'center', padding: '8px' }}>
-                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>{stat.icon}</div>
-                <div style={{ fontSize: isMobile ? '1.8rem' : '2.4rem', fontWeight: 900, color: '#040814', fontFamily: "'Cinzel', serif", letterSpacing: '-0.02em', lineHeight: 1 }}>{stat.value}</div>
-                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#040814', marginTop: '4px', opacity: 0.85 }}>{stat.label}</div>
-                <div style={{ fontSize: '0.68rem', color: 'rgba(4,8,20,0.55)', marginTop: '2px', fontWeight: 500 }}>{stat.sub}</div>
+              <div
+                key={i}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(230, 195, 92, 0.06) 0%, rgba(7, 15, 30, 0.6) 100%)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(230, 195, 92, 0.22)',
+                  borderRadius: '20px',
+                  padding: isMobile ? '20px 14px' : '28px 24px',
+                  textAlign: 'center',
+                  boxShadow: '0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.08)',
+                  transition: 'all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-6px)';
+                  e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.55)';
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(230, 195, 92, 0.2)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.22)';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.08)';
+                }}
+              >
+                {/* Top Pill Badge */}
+                <div style={{ display: 'inline-block', background: 'rgba(230, 195, 92, 0.12)', border: '1px solid rgba(230, 195, 92, 0.3)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.58rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.08em', marginBottom: '12px' }}>
+                  {stat.badge}
+                </div>
+
+                {/* Icon Orb */}
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(230, 195, 92, 0.25) 0%, rgba(230, 195, 92, 0.05) 70%)', border: '1px solid rgba(230, 195, 92, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontSize: '1.4rem' }}>
+                  {stat.icon}
+                </div>
+
+                {/* Metallic Gold Counter Value */}
+                <div style={{
+                  fontSize: isMobile ? '2rem' : '2.8rem',
+                  fontWeight: 900,
+                  fontFamily: "'Cinzel', serif",
+                  background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.02em'
+                }}>
+                  {stat.value}
+                </div>
+
+                {/* Label & Subtext */}
+                <div style={{ fontSize: isMobile ? '0.78rem' : '0.9rem', fontWeight: 700, color: '#ffffff', marginTop: '6px', fontFamily: "'Montserrat', sans-serif" }}>
+                  {stat.label}
+                </div>
+                <div style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '2px', fontWeight: 500 }}>
+                  {stat.sub}
+                </div>
               </div>
             ))}
           </div>
