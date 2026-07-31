@@ -2806,139 +2806,8 @@ export default function Portal({ onViewChange }) {
             </div>
           </section>
 
-          {/* ⚜️ Trust statistics Counter Ribbon */}
-          <section className="trust-stats-section" style={{
-            background: 'rgba(7, 15, 30, 0.45)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(230, 195, 92, 0.15)',
-            borderRadius: '24px',
-            padding: '28px 40px',
-            maxWidth: '94%',
-            margin: '-40px auto 40px auto',
-            position: 'relative',
-            zIndex: 3,
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)'
-          }}>
-            <div className="trust-stats-grid" style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '30px',
-              alignItems: 'center'
-            }}>
-              <div className="stat-card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: 'rgba(230, 195, 92, 0.08)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(230,195,92,0.15)' }}>
-                  <Users size={24} color="#E6C35C" />
-                </div>
-                <div>
-                  <div className="stat-number" style={{ fontSize: '1.65rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>
-                    <AnimatedCounter value="500+" />
-                  </div>
-                  <div className="stat-label" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Families Assisted</div>
-                </div>
-              </div>
-              
-              <div className="stat-card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: 'rgba(230, 195, 92, 0.08)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(230,195,92,0.15)' }}>
-                  <IndianRupee size={24} color="#E6C35C" />
-                </div>
-                <div>
-                  <div className="stat-number" style={{ fontSize: '1.65rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>
-                    <AnimatedCounter value="800Cr+" />
-                  </div>
-                  <div className="stat-label" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Certified Sales</div>
-                </div>
-              </div>
-              
-              <div className="stat-card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: 'rgba(230, 195, 92, 0.08)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(230,195,92,0.15)' }}>
-                  <ShieldCheck size={24} color="#E6C35C" />
-                </div>
-                <div>
-                  <div className="stat-number" style={{ fontSize: '1.65rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>
-                    <AnimatedCounter value="100%" />
-                  </div>
-                  <div className="stat-label" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Verified Listings</div>
-                </div>
-              </div>
-              
-              <div className="stat-card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: 'rgba(230, 195, 92, 0.08)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(230,195,92,0.15)' }}>
-                  <Handshake size={24} color="#E6C35C" />
-                </div>
-                <div>
-                  <div className="stat-number" style={{ fontSize: '1.65rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>
-                    <AnimatedCounter value="15+" />
-                  </div>
-                  <div className="stat-label" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Top Builder Partnerships</div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ⚜️ Premium Builder Alliance — Thin Editorial Strip */}
-          <section className="builder-showcase-section" style={{ 
-            padding: '32px 0 48px 0',
-            borderBottom: '1px solid rgba(255,255,255,0.05)'
-          }}>
-            <div style={{ maxWidth: '94%', margin: '0 auto' }}>
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: '40px',
-                flexWrap: 'wrap'
-              }}>
-                <span style={{ 
-                  fontSize: '0.6rem', 
-                  color: 'rgba(255,255,255,0.25)',
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: 700,
-                  whiteSpace: 'nowrap'
-                }}>Authorized Advisors For</span>
-                {['LODHA', 'KOLTE-PATIL', 'GODREJ', 'VTP REALTY', 'SHAPOORJI', 'PANCHSHIL'].map(name => (
-                  <span key={name} style={{
-                    fontSize: '0.8rem',
-                    fontWeight: 800,
-                    color: 'rgba(255,255,255,0.22)',
-                    letterSpacing: '0.1em',
-                    fontFamily: "'Cinzel', serif",
-                    transition: 'color 0.3s ease, text-shadow 0.3s ease',
-                    cursor: 'default'
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.color = 'rgba(197,168,128,0.7)';
-                    e.currentTarget.style.textShadow = '0 0 12px rgba(197,168,128,0.2)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.22)';
-                    e.currentTarget.style.textShadow = 'none';
-                  }}>
-                    {name}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </section>
-
-      {/* MahaRERA Authorized Trust Banner */}
-      <div id="maharera-trust-banner" className="maharera-trust-banner" style={{ border: '2px solid rgba(212,175,55,0.4)', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', borderRadius: '12px', padding: '30px 24px', margin: '30px auto', maxWidth: '1410px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', textAlign: 'center' }}>
-        <div className="maharera-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: '16px' }}>
-          <div style={{ background: 'rgba(212,175,55,0.1)', padding: '16px', borderRadius: '50%', border: '1px solid var(--gold-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
-            <ShieldCheck size={40} color="var(--gold-primary)" className="trust-shield-icon" style={{ filter: 'drop-shadow(0 0 12px var(--gold-primary))' }} />
-          </div>
-          <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-            <h4 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)', color: 'var(--text-light)', letterSpacing: '0.04em', textAlign: 'center' }}>⚜️ MahaRERA Registered Authorized Portfolio Advisory</h4>
-            <p style={{ margin: 0, fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.6, textAlign: 'center' }}>Authorized Broker License Registration Number: <strong style={{ color: 'var(--gold-primary)' }}>A52100028461</strong>. 24K Realtors strictly complies with Maharashtra Real Estate Regulatory Authority guidelines. All pricing, layout structures, and inventories are verified directly with builder RERA registries prior to listing onboarding.</p>
-          </div>
-        </div>
-      </div>
-
-      {/* 24K AI Location Advisor Panel */}
-      {/* AI Area Match Teaser — full panel moved to floating modal */}
-      <div style={{ maxWidth: '94%', margin: '0 auto 40px auto', padding: '0 20px' }}>
+      {/* 24K AI Location Advisor Teaser Panel */}
+      <div style={{ maxWidth: '94%', margin: '24px auto 40px auto', padding: '0 20px' }}>
         <div style={{ background: 'linear-gradient(135deg, rgba(7,15,30,0.9) 0%, rgba(15,28,46,0.8) 100%)', border: '1px solid rgba(197,168,128,0.18)', borderRadius: '16px', padding: '28px 36px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
             <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(197,168,128,0.12) 0%, transparent 70%)', border: '1px solid rgba(197,168,128,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -2960,15 +2829,8 @@ export default function Portal({ onViewChange }) {
         </div>
       </div>
 
-      {/* Editorial Section Divider */}
-      <div style={{ maxWidth: '94%', margin: '0 auto 48px auto', display: 'flex', alignItems: 'center', gap: '20px', padding: '0 20px' }}>
-        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(197,168,128,0.2))' }} />
-        <span style={{ fontSize: '0.62rem', color: 'rgba(197,168,128,0.45)', letterSpacing: '0.15em', textTransform: 'uppercase', fontFamily: "'Cinzel', serif", whiteSpace: 'nowrap' }}>Live Market Intelligence</span>
-        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(197,168,128,0.2))' }} />
-      </div>
-
       {/* Interactive Corridor Cards Grid with Live Metrics */}
-      <section className="areas-section" id="areas">
+      <section className="areas-section" id="areas" style={{ marginBottom: '40px' }}>
         <div className="section-header">
           <h2 className="luxury-title reveal-mask">
             <span className="reveal-mask-content">Pune West Market Intelligence</span>
@@ -2998,37 +2860,6 @@ export default function Portal({ onViewChange }) {
               </div>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* Philosophy Section */}
-      <section className="philosophy-section" id="philosophy">
-        <div className="section-header">
-          <h2 className="luxury-title">The Best Location Depends On</h2>
-          <p className="section-subtitle">Our proprietary advice framework for premium real estate investment</p>
-        </div>
-
-        <div className="philosophy-grid">
-          <div className="philosophy-card">
-            <div className="ph-icon-wrapper"><IndianRupee size={24} /></div>
-            <h3>Your Budget</h3>
-            <p>From luxury 2 BHK apartments in Wakad to premium commercial properties in Hinjewadi to fit your goals.</p>
-          </div>
-          <div className="philosophy-card">
-            <div className="ph-icon-wrapper"><Car size={24} /></div>
-            <h3>Daily Commute</h3>
-            <p>Strategic locations offering direct access to Hinjewadi IT parks, Baner offices, and highway routes.</p>
-          </div>
-          <div className="philosophy-card">
-            <div className="ph-icon-wrapper"><Users size={24} /></div>
-            <h3>Family Needs</h3>
-            <p>Proximity to top-tier schools, premium high street retail, healthcare centers, and fitness centers.</p>
-          </div>
-          <div className="philosophy-card">
-            <div className="ph-icon-wrapper"><LineChart size={24} /></div>
-            <h3>Investment Goals</h3>
-            <p>Appreciation-rich areas delivering strong capital growth and consistent rental yields.</p>
-          </div>
         </div>
       </section>
 
@@ -4641,86 +4472,6 @@ export default function Portal({ onViewChange }) {
         </section>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          ✦ POPULAR PLACES — Locality Grid (Inspired by LionsCrew, luxury upgraded)
-      ══════════════════════════════════════════════════════════════════════ */}
-      {!selectedPropertyDetail && !activeSubView && (
-        <section style={{
-          background: 'linear-gradient(180deg, #040814 0%, #070f1e 100%)',
-          padding: isMobile ? '48px 16px 64px' : '72px 32px 88px',
-        }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            {/* Section Header */}
-            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '16px' }}>
-                <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>📍 Popular Corridors</span>
-              </div>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
-                Explore by <span style={{ color: '#D4AF37' }}>Location</span>
-              </h2>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '500px', margin: '0 auto', lineHeight: 1.6 }}>
-                Pune West's most sought-after investment corridors — click to explore verified listings.
-              </p>
-            </div>
-
-            {/* Localities Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: isMobile ? '12px' : '20px' }}>
-              {[
-                { id: 'BANER',      name: 'Baner',      emoji: '🏙️', tag: 'Most Premium', price: '₹11,500/sqft', growth: '+16.5%', listings: '185+', img: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=600&q=75' },
-                { id: 'HINJEWADI', name: 'Hinjewadi',  emoji: '💻', tag: 'IT Hub',       price: '₹7,800/sqft', growth: '+14.2%', listings: '312+', img: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=600&q=75' },
-                { id: 'WAKAD',     name: 'Wakad',       emoji: '🛣️', tag: 'Best Value',  price: '₹8,200/sqft', growth: '+13.8%', listings: '142+', img: 'https://images.unsplash.com/photo-1464938050520-ef2270bb8ce8?auto=format&fit=crop&w=600&q=75' },
-                { id: 'BALEWADI', name: 'Balewadi',    emoji: '🏟️', tag: 'Stadium Zone', price: '₹10,200/sqft', growth: '+15.8%', listings: '98+', img: 'https://images.unsplash.com/photo-1577985043696-8bd54d9f093f?auto=format&fit=crop&w=600&q=75' },
-                { id: 'TATHAWADE', name: 'Tathawade',   emoji: '🎓', tag: 'Growing Fast', price: '₹7,200/sqft', growth: '+15.0%', listings: '76+', img: 'https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=600&q=75' },
-                { id: 'MAHALUNGE', name: 'Mahalunge',   emoji: '🌆', tag: 'New Launches', price: '₹6,900/sqft', growth: '+18.0%', listings: '54+', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=75' },
-              ].map((loc) => (
-                <div key={loc.id}
-                  onClick={() => {
-                    handleApplyMegaFilter({ location: loc.id }, 'listings');
-                    setTimeout(() => { document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
-                  }}
-                  style={{
-                    position: 'relative',
-                    borderRadius: '18px',
-                    overflow: 'hidden',
-                    cursor: 'pointer',
-                    height: isMobile ? '160px' : '200px',
-                    border: '1px solid rgba(212,175,55,0.15)',
-                    transition: 'all 0.35s ease',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.border = '1px solid rgba(212,175,55,0.5)'; e.currentTarget.style.boxShadow = '0 20px 50px rgba(0,0,0,0.5)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.border = '1px solid rgba(212,175,55,0.15)'; e.currentTarget.style.boxShadow = 'none'; }}
-                >
-                  {/* Background image */}
-                  <img src={loc.img} alt={loc.name} loading="lazy"
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.08)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
-                  />
-                  {/* Dark gradient overlay */}
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,8,20,0.92) 0%, rgba(4,8,20,0.4) 50%, rgba(4,8,20,0.1) 100%)' }} />
-                  {/* Tag badge top-right */}
-                  <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(212,175,55,0.9)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.6rem', fontWeight: 700, color: '#040814', letterSpacing: '0.06em' }}>{loc.tag}</div>
-                  {/* Listings count top-left */}
-                  <div style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(4,8,20,0.8)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.6rem', fontWeight: 700, color: '#fff' }}>{loc.listings} listings</div>
-                  {/* Bottom content */}
-                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '14px 16px' }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-                      <div>
-                        <div style={{ fontSize: isMobile ? '0.95rem' : '1.1rem', fontWeight: 800, color: '#fff', fontFamily: "'Cinzel', serif" }}>{loc.emoji} {loc.name}</div>
-                        <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.55)', marginTop: '2px' }}>{loc.price}</div>
-                      </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#10B981' }}>{loc.growth}</div>
-                        <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)' }}>YoY Growth</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ══════════════════════════════════════════════════════════════════════
           ✦ BRANDS & PARTNERS — Premium Developer Showcase
