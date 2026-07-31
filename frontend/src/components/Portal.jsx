@@ -6,7 +6,8 @@ import {
   LineChart, Car, Users, ShieldCheck, 
   Calculator, Compass, Clock, Lock, TrendingUp, Building,
   ChevronLeft, ChevronRight, MapPin, BedDouble, Phone, Calendar,
-  Handshake, ArrowRight, Key, Home, Briefcase, Camera, Maximize2, X
+  Handshake, ArrowRight, Key, Home, Briefcase, Camera, Maximize2, X,
+  Upload, Trash2, Plus, Image as ImageIcon
 } from 'lucide-react';
 import './Portal.css';
 
@@ -504,6 +505,83 @@ export default function Portal({ onViewChange }) {
 
   const [galleryFilter, setGalleryFilter] = useState('ALL');
   const [selectedGalleryImage, setSelectedGalleryImage] = useState(null);
+
+  const [customGalleryItems, setCustomGalleryItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem('24k_custom_gallery');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const [isGalleryUploadOpen, setIsGalleryUploadOpen] = useState(false);
+  const [galleryUploadForm, setGalleryUploadForm] = useState({
+    title: '',
+    location: 'Hinjewadi Phase 1',
+    category: 'TOWERS',
+    dev: '24K Exclusive Mandate',
+    img: '',
+    desc: ''
+  });
+
+  const handleGalleryFileSelect = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (uploadEvent) => {
+      setGalleryUploadForm(prev => ({
+        ...prev,
+        img: uploadEvent.target.result
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddCustomGalleryImage = (e) => {
+    e.preventDefault();
+    if (!galleryUploadForm.img) {
+      alert('Please upload an image file or enter an image URL.');
+      return;
+    }
+    const newItem = {
+      id: Date.now(),
+      isCustom: true,
+      title: galleryUploadForm.title || 'Custom Property Photo',
+      location: galleryUploadForm.location || 'Hinjewadi Phase 1',
+      category: galleryUploadForm.category || 'TOWERS',
+      categoryLabel: galleryUploadForm.category === 'TOWERS' ? '🏙️ High-Rise' : galleryUploadForm.category === 'AMENITIES' ? '🏊 Amenities' : galleryUploadForm.category === 'INTERIORS' ? '🛋️ Interior' : '🌳 Greens',
+      dev: galleryUploadForm.dev || '24K Custom Photo',
+      img: galleryUploadForm.img,
+      desc: galleryUploadForm.desc || 'Custom photo uploaded to 24K Realtors Gallery.'
+    };
+    const updated = [newItem, ...customGalleryItems];
+    setCustomGalleryItems(updated);
+    try {
+      localStorage.setItem('24k_custom_gallery', JSON.stringify(updated));
+    } catch (err) {
+      console.error('Failed to save custom gallery to localStorage:', err);
+    }
+    setIsGalleryUploadOpen(false);
+    setGalleryUploadForm({ title: '', location: 'Hinjewadi Phase 1', category: 'TOWERS', dev: '24K Exclusive Mandate', img: '', desc: '' });
+  };
+
+  const handleDeleteCustomGalleryImage = (id, e) => {
+    e.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this uploaded photo from the gallery?')) {
+      const updated = customGalleryItems.filter(item => item.id !== id);
+      setCustomGalleryItems(updated);
+      try {
+        localStorage.setItem('24k_custom_gallery', JSON.stringify(updated));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
   const [isWideDesktop, setIsWideDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1400);
@@ -4792,9 +4870,36 @@ export default function Portal({ onViewChange }) {
               <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.7rem' : '2.5rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
                 Explore <span style={{ color: '#E6C35C' }}>Luxury Estates &amp; Interiors</span>
               </h2>
-              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.88rem', maxWidth: '580px', margin: '0 auto', lineHeight: 1.6, fontFamily: "'Montserrat', sans-serif" }}>
+              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.88rem', maxWidth: '580px', margin: '0 auto 20px auto', lineHeight: 1.6, fontFamily: "'Montserrat', sans-serif" }}>
                 High-resolution visual tour of West Pune's finest townships, rooftop infinity pools, German show flat interiors &amp; lush podium greens.
               </p>
+
+              {/* Upload Custom Photo Button */}
+              <button
+                onClick={() => setIsGalleryUploadOpen(true)}
+                style={{
+                  background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                  border: 'none',
+                  color: '#040814',
+                  padding: '10px 24px',
+                  borderRadius: '50px',
+                  fontSize: '0.82rem',
+                  fontWeight: 800,
+                  fontFamily: "'Montserrat', sans-serif",
+                  letterSpacing: '0.04em',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 6px 20px rgba(230, 195, 92, 0.35)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(230, 195, 92, 0.5)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(230, 195, 92, 0.35)'; }}
+              >
+                <Upload size={15} color="#040814" />
+                <span>+ Upload Custom Photo to Gallery</span>
+              </button>
             </div>
 
             {/* Gallery Category Filter Tabs */}
@@ -4838,128 +4943,7 @@ export default function Portal({ onViewChange }) {
               gridTemplateColumns: isMobile ? '1fr' : isWideDesktop ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
               gap: isMobile ? '16px' : '24px'
             }}>
-              {[
-                {
-                  id: 1,
-                  title: '24K Stargate Iconic Towers',
-                  location: 'Hinjewadi Phase 1',
-                  category: 'TOWERS',
-                  categoryLabel: '🏙️ High-Rise',
-                  dev: 'Kolte-Patil Developers',
-                  img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Double-glazed glass high-rise towers with 360° views of Hinjewadi IT Corridor and private sky terraces.'
-                },
-                {
-                  id: 2,
-                  title: 'VJ Supernova High Street',
-                  location: 'Baner Main Road',
-                  category: 'TOWERS',
-                  categoryLabel: '🏙️ High-Rise',
-                  dev: 'Vilas Javdekar (VJ)',
-                  img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Illuminated 38-story landmark glass facade situated right on Baner High Street.'
-                },
-                {
-                  id: 3,
-                  title: 'VTP Blue Waters Township',
-                  location: 'Mahalunge Smart City',
-                  category: 'TOWERS',
-                  categoryLabel: '🏙️ High-Rise',
-                  dev: 'VTP Realty',
-                  img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
-                  desc: '100+ acre riverfront smart township skyline surrounded by Mula River and hill views.'
-                },
-                {
-                  id: 4,
-                  title: 'Sky Club 24K Infinity Pool',
-                  location: 'Wakad Datta Mandir',
-                  category: 'AMENITIES',
-                  categoryLabel: '🏊 Resort Amenities',
-                  dev: 'Kohinoor Group',
-                  img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Temperature-controlled rooftop infinity pool with sunken poolside cabanas and evening ambient lighting.'
-                },
-                {
-                  id: 5,
-                  title: 'Grand Olympic Fitness Arena',
-                  location: 'Hinjewadi Phase 2',
-                  category: 'AMENITIES',
-                  categoryLabel: '🏊 Resort Amenities',
-                  dev: 'Shapoorji Pallonji',
-                  img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80',
-                  desc: '3,000 sq.ft. TechnoGym equipped glasshouse fitness studio overlooking central gardens.'
-                },
-                {
-                  id: 6,
-                  title: 'Rooftop Stargazing & Lounge',
-                  location: 'Baner High Street',
-                  category: 'AMENITIES',
-                  categoryLabel: '🏊 Resort Amenities',
-                  dev: 'Kasturi Builders',
-                  img: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Private open-air stargazing telescopes, fire pits, and luxury outdoor seating for residents.'
-                },
-                {
-                  id: 7,
-                  title: 'Italian Marble 3 BHK Living Suite',
-                  location: 'Wakad Central',
-                  category: 'INTERIORS',
-                  categoryLabel: '🛋️ Show Flats',
-                  dev: 'Gera Developments',
-                  img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Expansive 1,450 sq.ft. sample living room featuring Italian Bottochino marble flooring and gold brass accents.'
-                },
-                {
-                  id: 8,
-                  title: 'Penthouse Master Bedroom Suite',
-                  location: 'Baner – Balewadi',
-                  category: 'INTERIORS',
-                  categoryLabel: '🛋️ Show Flats',
-                  dev: 'Godrej Properties',
-                  img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Full-height acoustic glass wall bedroom with walk-in wardrobe and private jacuzzi balcony.'
-                },
-                {
-                  id: 9,
-                  title: 'German Modular Island Kitchen',
-                  location: 'Hinjewadi IT Corridor',
-                  category: 'INTERIORS',
-                  categoryLabel: '🛋️ Show Flats',
-                  dev: 'Paranjape Schemes',
-                  img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Hafele fitted modular island kitchen with breakfast bar, built-in oven, and quartz countertop.'
-                },
-                {
-                  id: 10,
-                  title: 'Central Podium Green & Fountain',
-                  location: 'Hinjewadi Phase 1',
-                  category: 'GREENS',
-                  categoryLabel: '🌳 Greens',
-                  dev: 'Pharande Spaces',
-                  img: 'https://images.unsplash.com/photo-1584738766473-61c083514bf4?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Vehicle-free 2-acre elevated podium garden featuring cascading water walls and tropical palm groves.'
-                },
-                {
-                  id: 11,
-                  title: 'Zen Bamboo Meditation Walkway',
-                  location: 'Mahalunge Smart City',
-                  category: 'GREENS',
-                  categoryLabel: '🌳 Greens',
-                  dev: 'Rohan Builders',
-                  img: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Acoustic bamboo forest path with lotus koi ponds for yoga, meditation, and morning walks.'
-                },
-                {
-                  id: 12,
-                  title: 'Rubberized Turf Multi-Sports Arena',
-                  location: 'Wakad Datta Mandir',
-                  category: 'GREENS',
-                  categoryLabel: '🌳 Greens',
-                  dev: 'Kolte-Patil Developers',
-                  img: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=1200&q=80',
-                  desc: 'Floodlit box cricket pitch, basketball court, and safe children playground.'
-                }
-              ]
+              {[...customGalleryItems, ...galleryItems]
                 .filter(item => galleryFilter === 'ALL' || item.category === galleryFilter)
                 .map((item) => (
                   <div
@@ -4971,7 +4955,7 @@ export default function Portal({ onViewChange }) {
                       overflow: 'hidden',
                       height: '280px',
                       cursor: 'pointer',
-                      border: '1px solid rgba(230, 195, 92, 0.2)',
+                      border: item.isCustom ? '1px solid rgba(230, 195, 92, 0.6)' : '1px solid rgba(230, 195, 92, 0.2)',
                       background: '#070f1e',
                       boxShadow: '0 12px 30px rgba(0,0,0,0.5)',
                       transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)'
@@ -4985,7 +4969,7 @@ export default function Portal({ onViewChange }) {
                     }}
                     onMouseLeave={e => {
                       e.currentTarget.style.transform = 'none';
-                      e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.2)';
+                      e.currentTarget.style.borderColor = item.isCustom ? 'rgba(230, 195, 92, 0.6)' : 'rgba(230, 195, 92, 0.2)';
                       e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.5)';
                       const img = e.currentTarget.querySelector('img');
                       if (img) img.style.transform = 'scale(1)';
@@ -5012,11 +4996,29 @@ export default function Portal({ onViewChange }) {
 
                     {/* Top Badges */}
                     <div style={{ position: 'absolute', top: '14px', left: '14px', right: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ background: 'rgba(7,15,30,0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(230,195,92,0.3)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.62rem', fontWeight: 800, color: '#E6C35C' }}>
-                        {item.categoryLabel}
-                      </span>
-                      <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(7,15,30,0.8)', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Maximize2 size={14} color="#fff" />
+                      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                        <span style={{ background: 'rgba(7,15,30,0.85)', backdropFilter: 'blur(10px)', border: '1px solid rgba(230,195,92,0.3)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.62rem', fontWeight: 800, color: '#E6C35C' }}>
+                          {item.categoryLabel}
+                        </span>
+                        {item.isCustom && (
+                          <span style={{ background: 'rgba(229, 9, 20, 0.85)', color: '#fff', borderRadius: '50px', padding: '3px 8px', fontSize: '0.58rem', fontWeight: 800 }}>
+                            🆕 UPLOADED
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                        {item.isCustom && (
+                          <button
+                            onClick={(e) => handleDeleteCustomGalleryImage(item.id, e)}
+                            title="Delete custom upload"
+                            style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(229,9,20,0.85)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(7,15,30,0.8)', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Maximize2 size={14} color="#fff" />
+                        </div>
                       </div>
                     </div>
 
@@ -5144,6 +5146,204 @@ export default function Portal({ onViewChange }) {
                 </a>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* CUSTOM GALLERY PHOTO UPLOAD MODAL */}
+      {isGalleryUploadOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 9999,
+            background: 'rgba(4, 8, 20, 0.92)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px'
+          }}
+          onClick={() => setIsGalleryUploadOpen(false)}
+        >
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '600px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              background: 'linear-gradient(135deg, #070f1e 0%, #0d1a30 100%)',
+              border: '1px solid rgba(230, 195, 92, 0.35)',
+              borderRadius: '24px',
+              padding: isMobile ? '24px 18px' : '32px 28px',
+              boxShadow: '0 24px 70px rgba(0, 0, 0, 0.9), 0 0 30px rgba(230, 195, 92, 0.15)'
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div>
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.3rem', color: '#fff', margin: '0 0 4px 0', fontWeight: 700 }}>
+                  📤 Upload Custom Gallery Photo
+                </h3>
+                <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(255,255,255,0.5)', fontFamily: "'Montserrat', sans-serif" }}>
+                  Select an image from your device or paste a URL to render directly in 24K Live Gallery
+                </p>
+              </div>
+              <button
+                onClick={() => setIsGalleryUploadOpen(false)}
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddCustomGalleryImage}>
+              {/* File Select & Drop Area */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#E6C35C', marginBottom: '8px' }}>
+                  1. Select Photo from Your Device
+                </label>
+                <div style={{
+                  border: '2px dashed rgba(230, 195, 92, 0.4)',
+                  borderRadius: '16px',
+                  padding: '20px',
+                  textAlign: 'center',
+                  background: 'rgba(230, 195, 92, 0.03)',
+                  cursor: 'pointer',
+                  position: 'relative'
+                }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleGalleryFileSelect}
+                    style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%' }}
+                  />
+                  {galleryUploadForm.img ? (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+                      <img src={galleryUploadForm.img} alt="Preview" style={{ width: '90px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #E6C35C' }} />
+                      <div style={{ textAlign: 'left' }}>
+                        <div style={{ color: '#25D366', fontSize: '0.78rem', fontWeight: 800 }}>✓ Image Selected</div>
+                        <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.68rem' }}>Click or drop to replace</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <Upload size={28} color="#E6C35C" style={{ margin: '0 auto 8px auto' }} />
+                      <div style={{ color: '#fff', fontSize: '0.84rem', fontWeight: 600 }}>Click to Choose Image File or Drag &amp; Drop</div>
+                      <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', marginTop: '4px' }}>PNG, JPG, WEBP up to 10MB</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* OR Image URL Input */}
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'rgba(255,255,255,0.8)', marginBottom: '6px' }}>
+                  OR Paste Image Web URL
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://images.unsplash.com/photo-..."
+                  value={galleryUploadForm.img.startsWith('data:') ? '' : galleryUploadForm.img}
+                  onChange={e => setGalleryUploadForm({ ...galleryUploadForm, img: e.target.value })}
+                  style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '0.82rem', fontFamily: "'Montserrat', sans-serif", outline: 'none' }}
+                />
+              </div>
+
+              {/* Title & Developer Row */}
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '14px', marginBottom: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: 'rgba(255,255,255,0.8)', marginBottom: '6px' }}>Photo Title *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 3 BHK Living Room View"
+                    value={galleryUploadForm.title}
+                    onChange={e => setGalleryUploadForm({ ...galleryUploadForm, title: e.target.value })}
+                    style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '0.82rem', outline: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: 'rgba(255,255,255,0.8)', marginBottom: '6px' }}>Developer / Partner</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Kolte-Patil / VTP Realty"
+                    value={galleryUploadForm.dev}
+                    onChange={e => setGalleryUploadForm({ ...galleryUploadForm, dev: e.target.value })}
+                    style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '0.82rem', outline: 'none' }}
+                  />
+                </div>
+              </div>
+
+              {/* Category & Location Row */}
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '14px', marginBottom: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: 'rgba(255,255,255,0.8)', marginBottom: '6px' }}>Category</label>
+                  <select
+                    value={galleryUploadForm.category}
+                    onChange={e => setGalleryUploadForm({ ...galleryUploadForm, category: e.target.value })}
+                    style={{ width: '100%', background: 'rgba(7,15,30,0.9)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '0.82rem', outline: 'none' }}
+                  >
+                    <option value="TOWERS">🏙️ High-Rise Architecture</option>
+                    <option value="AMENITIES">🏊 Resort Amenities</option>
+                    <option value="INTERIORS">🛋️ Sample Show Flats</option>
+                    <option value="GREENS">🌳 Landscaped Greens</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: 'rgba(255,255,255,0.8)', marginBottom: '6px' }}>Corridor Location</label>
+                  <select
+                    value={galleryUploadForm.location}
+                    onChange={e => setGalleryUploadForm({ ...galleryUploadForm, location: e.target.value })}
+                    style={{ width: '100%', background: 'rgba(7,15,30,0.9)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '0.82rem', outline: 'none' }}
+                  >
+                    <option value="Hinjewadi Phase 1">📍 Hinjewadi Phase 1</option>
+                    <option value="Hinjewadi Phase 2">📍 Hinjewadi Phase 2</option>
+                    <option value="Wakad Central">📍 Wakad Central</option>
+                    <option value="Baner High Street">📍 Baner High Street</option>
+                    <option value="Mahalunge Smart City">📍 Mahalunge Smart City</option>
+                    <option value="Balewadi">📍 Balewadi</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div style={{ marginBottom: '24px' }}>
+                <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: 'rgba(255,255,255,0.8)', marginBottom: '6px' }}>Photo Description / Notes</label>
+                <textarea
+                  rows={2}
+                  placeholder="Add details about the view, floor plan features, or amenities..."
+                  value={galleryUploadForm.desc}
+                  onChange={e => setGalleryUploadForm({ ...galleryUploadForm, desc: e.target.value })}
+                  style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '0.82rem', fontFamily: "'Montserrat', sans-serif", outline: 'none', resize: 'none' }}
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                  border: 'none',
+                  color: '#040814',
+                  padding: '14px',
+                  borderRadius: '50px',
+                  fontSize: '0.88rem',
+                  fontWeight: 800,
+                  fontFamily: "'Montserrat', sans-serif",
+                  letterSpacing: '0.04em',
+                  cursor: 'pointer',
+                  boxShadow: '0 6px 20px rgba(230,195,92,0.35)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                ✦ Save &amp; Add Photo to Live Gallery →
+              </button>
+            </form>
           </div>
         </div>
       )}
