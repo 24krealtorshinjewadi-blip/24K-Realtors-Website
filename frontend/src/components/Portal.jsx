@@ -292,6 +292,8 @@ export default function Portal({ onViewChange }) {
   const [blogs, setBlogs] = useState([]);
   const [selectedBlogDetail, setSelectedBlogDetail] = useState(null);
 
+  const [activeBrandFilter, setActiveBrandFilter] = useState('ALL');
+
   useEffect(() => {
     setSelectedSocietyDetail(null);
     setSelectedBuilderDetail(null);
@@ -2830,82 +2832,330 @@ export default function Portal({ onViewChange }) {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          ✦ BRANDS & PARTNERS — Premium Developer Showcase (Top placement)
+          ✦ NETFLIX-STYLE AUTHORIZED DEVELOPERS SHOWCASE
       ══════════════════════════════════════════════════════════════════════ */}
       {!selectedPropertyDetail && !activeSubView && (
         <section style={{
-          background: 'linear-gradient(180deg, #070f1e 0%, #040814 50%, #070f1e 100%)',
-          padding: isMobile ? '40px 0 48px' : '56px 0 64px',
-          overflow: 'hidden',
+          background: 'linear-gradient(180deg, #040814 0%, #070f1e 40%, #040814 100%)',
+          padding: isMobile ? '40px 0 52px' : '64px 0 80px',
           position: 'relative',
+          overflow: 'hidden',
         }}>
-          {/* Decorative top border */}
+          {/* Subtle gold gradient lines */}
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
-          {/* Decorative bottom border */}
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
 
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 20px' }}>
             {/* Section Header */}
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
-                <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>🤝 Authorized Partners</span>
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(229,9,20,0.1)', border: '1px solid rgba(229,9,20,0.3)', borderRadius: '50px', padding: '5px 16px', marginBottom: '12px' }}>
+                <span style={{ color: '#E50914', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase' }}>🎬 AUTHORIZED DEVELOPERS</span>
               </div>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
+              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.4rem', fontWeight: 700, color: '#fff', margin: '0 0 10px', letterSpacing: '-0.02em' }}>
                 Trusted <span style={{ color: '#D4AF37' }}>Brands & Partners</span>
               </h2>
-              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.88rem', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7 }}>
-                24K Realtors is an authorized partner of Pune's most prestigious developers — ensuring verified, RERA-compliant homes.
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.86rem', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>
+                Pune West's top RERA-certified developers across Hinjewadi, Wakad, Mahalunge & Baner. Click any builder to view available inventory.
               </p>
             </div>
 
-            {/* Developer Cards Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? '12px' : '20px', marginBottom: '40px' }}>
+            {/* Netflix Category Filter Tabs */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '12px', flexWrap: 'wrap', marginBottom: '36px' }}>
               {[
-                { name: 'Kolte-Patil', brand: '24K Luxury', icon: '🏛️', tag: 'Flagship Partner', color: '#D4AF37', projects: '6 Projects', established: 'Since 1991', desc: 'Premium 24K brand — Opula, Sereno, Matera & more.' },
-                { name: 'Shapoorji Pallonji', brand: 'Joyville Series', icon: '🏗️', tag: 'Tier-1 Developer', color: '#60A5FA', projects: '4 Projects', established: 'Since 1865', desc: 'Vyomora, Joyville landmark projects in Hinjewadi.' },
-                { name: 'Godrej Properties', brand: 'Premium Homes', icon: '🌿', tag: 'Luxury Partner', color: '#34D399', projects: '3 Projects', established: 'Since 1897', desc: 'Godrej Ivara — ultra-premium gated communities.' },
-                { name: 'Kasturi Builders', brand: 'Signature Series', icon: '💎', tag: 'Boutique Partner', color: '#A78BFA', projects: '2 Projects', established: 'Since 1985', desc: 'Italian marble finish penthouses & villas.' },
-                { name: 'Lodha Group', brand: 'World-Class Homes', icon: '🌆', tag: 'National Partner', color: '#FB923C', projects: '2 Projects', established: 'Since 1980', desc: 'Landmark towers with premium lifestyle infrastructure.' },
-                { name: 'Gera Developments', brand: 'Child Centric Homes', icon: '🎯', tag: 'Verified Partner', color: '#F472B6', projects: '2 Projects', established: 'Since 1970', desc: 'India\'s only child-centric home concept developer.' },
-                { name: 'Kumar Properties', brand: 'Affordable Luxury', icon: '🔑', tag: 'Trusted Partner', color: '#4ADE80', projects: '3 Projects', established: 'Since 1984', desc: 'Decades of trust across Pune residential segment.' },
-                { name: 'Rohan Builders', brand: 'Green Living', icon: '🌱', tag: 'Eco Partner', color: '#2DD4BF', projects: '2 Projects', established: 'Since 1993', desc: 'Sustainable, green-certified community living.' },
-              ].map((dev, i) => (
-                <div key={i} style={{
-                  background: 'rgba(255,255,255,0.025)',
-                  border: `1px solid rgba(255,255,255,0.07)`,
-                  borderRadius: '16px',
-                  padding: isMobile ? '16px 14px' : '22px 20px',
-                  transition: 'all 0.3s ease',
-                  cursor: 'default',
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = `rgba(${dev.color === '#D4AF37' ? '212,175,55' : dev.color === '#60A5FA' ? '96,165,250' : dev.color === '#34D399' ? '52,211,153' : '167,139,250'},0.08)`;
-                    e.currentTarget.style.border = `1px solid ${dev.color}44`;
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = `0 16px 40px rgba(0,0,0,0.4)`;
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.025)';
-                    e.currentTarget.style.border = '1px solid rgba(255,255,255,0.07)';
-                    e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = 'none';
+                { id: 'ALL', label: '🔥 All Developers (12)' },
+                { id: 'HINJEWADI', label: '💻 Hinjewadi IT Zone (7)' },
+                { id: 'WAKAD', label: '🛣️ Wakad Hub (6)' },
+                { id: 'MAHALUNGE', label: '🌆 Mahalunge Smart City (3)' },
+                { id: 'BANER', label: '🏙️ Baner & Balewadi (5)' },
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveBrandFilter(tab.id)}
+                  style={{
+                    background: activeBrandFilter === tab.id
+                      ? 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)'
+                      : 'rgba(255,255,255,0.03)',
+                    border: activeBrandFilter === tab.id
+                      ? 'none'
+                      : '1px solid rgba(255,255,255,0.1)',
+                    color: activeBrandFilter === tab.id ? '#040814' : 'rgba(255,255,255,0.7)',
+                    padding: isMobile ? '8px 14px' : '10px 22px',
+                    borderRadius: '50px',
+                    fontSize: isMobile ? '0.72rem' : '0.8rem',
+                    fontWeight: activeBrandFilter === tab.id ? 800 : 600,
+                    cursor: 'pointer',
+                    fontFamily: "'Montserrat', sans-serif",
+                    transition: 'all 0.3s ease',
+                    boxShadow: activeBrandFilter === tab.id ? '0 6px 20px rgba(212,175,55,0.3)' : 'none'
                   }}
                 >
-                  {/* Tag */}
-                  <div style={{ position: 'absolute', top: '12px', right: '12px', fontSize: '0.58rem', fontWeight: 700, color: dev.color, background: `${dev.color}18`, border: `1px solid ${dev.color}33`, borderRadius: '50px', padding: '2px 8px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{dev.tag}</div>
-                  {/* Icon */}
-                  <div style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', marginBottom: '12px' }}>{dev.icon}</div>
-                  {/* Name */}
-                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '0.75rem' : '0.9rem', fontWeight: 700, color: '#fff', marginBottom: '3px', lineHeight: 1.3 }}>{dev.name}</div>
-                  <div style={{ fontSize: '0.68rem', color: dev.color, fontWeight: 600, marginBottom: '8px' }}>{dev.brand}</div>
-                  {/* Desc — hidden on mobile */}
-                  {!isMobile && <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.38)', lineHeight: 1.5, marginBottom: '12px' }}>{dev.desc}</div>}
-                  {/* Meta row */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                    <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', fontWeight: 600 }}>{dev.established}</span>
-                    <span style={{ fontSize: '0.65rem', background: 'rgba(255,255,255,0.06)', borderRadius: '50px', padding: '2px 8px', color: 'rgba(255,255,255,0.5)', fontWeight: 700 }}>{dev.projects}</span>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Netflix Cinematic Developer Cards Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: isMobile ? '16px' : '24px',
+              marginBottom: '44px'
+            }}>
+              {[
+                {
+                  id: 'kolte-patil',
+                  name: 'Kolte-Patil Developers',
+                  brand: '24K Luxury Series',
+                  tag: '✦ FLAGSHIP PARTNER',
+                  color: '#E6C35C',
+                  corridors: ['HINJEWADI', 'BANER', 'WAKAD'],
+                  corridorLabels: ['📍 Hinjewadi Ph 1', '📍 Baner', '📍 Wakad'],
+                  established: 'Est. 1991',
+                  projectsCount: '6 Projects',
+                  desc: '24K Opula (Baner), Life Republic 400-Acre Hinjewadi Township, 24K Stargaze & Universe.',
+                  img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: '98% MATCH'
+                },
+                {
+                  id: 'shapoorji',
+                  name: 'Shapoorji Pallonji',
+                  brand: 'Joyville Series',
+                  tag: '✦ 150+ YRS LEGACY',
+                  color: '#60A5FA',
+                  corridors: ['HINJEWADI'],
+                  corridorLabels: ['📍 Hinjewadi Phase 1'],
+                  established: 'Est. 1865',
+                  projectsCount: '4 Projects',
+                  desc: 'Joyville Sensorium & Joyville Celestial in Hinjewadi Ph 1 with riverfront greens & smart homes.',
+                  img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'TOP TRENDING'
+                },
+                {
+                  id: 'vtp-realty',
+                  name: 'VTP Realty',
+                  brand: 'Township Codex',
+                  tag: '✦ #1 PUNE DEVELOPER',
+                  color: '#F59E0B',
+                  corridors: ['MAHALUNGE', 'WAKAD', 'HINJEWADI'],
+                  corridorLabels: ['📍 Mahalunge Smart City', '📍 Wakad', '📍 Hinjewadi'],
+                  established: 'Est. 2011',
+                  projectsCount: '8 Projects',
+                  desc: 'VTP Blue Waters 100+ acre township & VTP Earth One in Mahalunge, VTP HiLife Wakad, Bellissimo Hinjewadi.',
+                  img: 'https://images.unsplash.com/photo-1577985043696-8bd54d9f093f?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'BESTSELLER'
+                },
+                {
+                  id: 'godrej',
+                  name: 'Godrej Properties',
+                  brand: 'Godrej Living',
+                  tag: '✦ LUXURY NATIONAL',
+                  color: '#34D399',
+                  corridors: ['HINJEWADI', 'WAKAD', 'MAHALUNGE'],
+                  corridorLabels: ['📍 Hinjewadi Ph 1', '📍 Wakad', '📍 Mahalunge'],
+                  established: 'Est. 1897',
+                  projectsCount: '5 Projects',
+                  desc: 'Godrej Woodsville (Hinjewadi Ph 1), Godrej Elements (Wakad), Godrej Hillside (Mahalunge Township).',
+                  img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'TOP RATED'
+                },
+                {
+                  id: 'vilas-javdekar',
+                  name: 'Vilas Javdekar (VJ)',
+                  brand: 'Yashwin Series',
+                  tag: '✦ WAKAD CHAMPION',
+                  color: '#EC4899',
+                  corridors: ['WAKAD', 'HINJEWADI', 'BANER'],
+                  corridorLabels: ['📍 Wakad Junction', '📍 Hinjewadi', '📍 Baner'],
+                  established: 'Est. 1981',
+                  projectsCount: '7 Projects',
+                  desc: 'VJ Yashwin Enchante (Wakad Datta Mandir Rd), Yashwin Hinjewadi, VJ Yashwin Supernova Baner.',
+                  img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'MOST POPULAR'
+                },
+                {
+                  id: 'kohinoor',
+                  name: 'Kohinoor Group',
+                  brand: 'Sada Sukhi RERA',
+                  tag: '✦ WAKAD & HINJEWADI',
+                  color: '#A78BFA',
+                  corridors: ['WAKAD', 'HINJEWADI'],
+                  corridorLabels: ['📍 Wakad Datta Mandir', '📍 Hinjewadi'],
+                  established: 'Est. 1983',
+                  projectsCount: '6 Projects',
+                  desc: 'Kohinoor Courtyard One (Wakad), Kohinoor Grandeur (Hinjewadi), Presidentia & Westview Reserve.',
+                  img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'HIGH YIELD'
+                },
+                {
+                  id: 'kasturi',
+                  name: 'Kasturi Builders',
+                  brand: 'Signature Collection',
+                  tag: '✦ ULTRA-LUXURY',
+                  color: '#F472B6',
+                  corridors: ['BANER', 'WAKAD'],
+                  corridorLabels: ['📍 Baner', '📍 Wakad'],
+                  established: 'Est. 1999',
+                  projectsCount: '3 Projects',
+                  desc: 'Kasturi Apostrophe & Epitome (Wakad), Balmoral Estate (Baner High Street Italian marble penthouses).',
+                  img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'EXCLUSIVE'
+                },
+                {
+                  id: 'lodha',
+                  name: 'Lodha Group',
+                  brand: 'World-Class Towers',
+                  tag: '✦ NATIONAL LEADER',
+                  color: '#FB923C',
+                  corridors: ['HINJEWADI'],
+                  corridorLabels: ['📍 Hinjewadi Phase 1'],
+                  established: 'Est. 1980',
+                  projectsCount: '2 Projects',
+                  desc: 'Lodha Panache in Hinjewadi Ph 1 featuring 5-star private clubhouses & panoramic sky-decks.',
+                  img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'NEW RELEASE'
+                },
+                {
+                  id: 'gera',
+                  name: 'Gera Developments',
+                  brand: 'Child-Centric Homes',
+                  tag: '✦ INNOVATION LEADER',
+                  color: '#38BDF8',
+                  corridors: ['HINJEWADI'],
+                  corridorLabels: ['📍 Hinjewadi Phase 3'],
+                  established: 'Est. 1970',
+                  projectsCount: '3 Projects',
+                  desc: 'Gera’s Island of Joy in Hinjewadi Ph 3 with 5-year warranty & celebrity academies (Shiamak, Bhupathi).',
+                  img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'FAMILY CHOICE'
+                },
+                {
+                  id: 'rohan',
+                  name: 'Rohan Builders',
+                  brand: 'PLUS Eco Living',
+                  tag: '✦ GREEN ARCHITECTURE',
+                  color: '#10B981',
+                  corridors: ['TATHAWADE', 'BANER'],
+                  corridorLabels: ['📍 Tathawade', '📍 Baner'],
+                  established: 'Est. 1993',
+                  projectsCount: '4 Projects',
+                  desc: 'Rohan Ananta (Tathawade), Rohan Harita (Baner), Rohan Ekam (Balewadi) —PLUS light & air home design.',
+                  img: 'https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'GREEN CERTIFIED'
+                },
+                {
+                  id: 'paranjape',
+                  name: 'Paranjape Schemes',
+                  brand: 'Township Pioneers',
+                  tag: '✦ HINJEWADI PIONEER',
+                  color: '#818CF8',
+                  corridors: ['HINJEWADI', 'WAKAD'],
+                  corridorLabels: ['📍 Hinjewadi Phase 1', '📍 Wakad'],
+                  established: 'Est. 1987',
+                  projectsCount: '5 Projects',
+                  desc: 'Blue Ridge 138-Acre mega township in Hinjewadi Ph 1 & Paranjape Broadway Wakad.',
+                  img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'LEGACY HUB'
+                },
+                {
+                  id: 'pharande',
+                  name: 'Pharande Spaces',
+                  brand: 'Mega Gated Estates',
+                  tag: '✦ TATHAWADE & WAKAD',
+                  color: '#F43F5E',
+                  corridors: ['TATHAWADE', 'WAKAD'],
+                  corridorLabels: ['📍 Tathawade', '📍 Wakad Link'],
+                  established: 'Est. 1990',
+                  projectsCount: '4 Projects',
+                  desc: 'Puneville 28-Acre sky-bridge township in Tathawade next to Mumbai-Pune Expressway.',
+                  img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                  matchBadge: 'HIGH ROI'
+                }
+              ].filter(dev => activeBrandFilter === 'ALL' || dev.corridors.includes(activeBrandFilter)).map((dev, i) => (
+                <div key={i}
+                  onClick={() => {
+                    handleApplyMegaFilter({ query: dev.name.split(' ')[0] }, 'listings');
+                    setTimeout(() => { document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
+                  }}
+                  style={{
+                    position: 'relative',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    height: isMobile ? '230px' : '260px',
+                    border: '1px solid rgba(212,175,55,0.18)',
+                    boxShadow: '0 12px 30px rgba(0,0,0,0.5)',
+                    transition: 'all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'scale(1.03) translateY(-4px)';
+                    e.currentTarget.style.border = `1px solid ${dev.color}`;
+                    e.currentTarget.style.boxShadow = `0 20px 45px rgba(0,0,0,0.8), 0 0 20px ${dev.color}33`;
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.border = '1px solid rgba(212,175,55,0.18)';
+                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.5)';
+                  }}
+                >
+                  {/* Background Image Banner */}
+                  <img src={dev.img} alt={dev.name} loading="lazy"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                  />
+
+                  {/* Dark Vignette Gradient (Netflix Style) */}
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,8,20,0.95) 0%, rgba(4,8,20,0.65) 45%, rgba(4,8,20,0.2) 100%)' }} />
+
+                  {/* Top-Left Netflix Badge Tag */}
+                  <div style={{
+                    position: 'absolute', top: '14px', left: '14px',
+                    background: 'rgba(4,8,20,0.85)', backdropFilter: 'blur(8px)',
+                    border: `1px solid ${dev.color}66`, borderRadius: '50px',
+                    padding: '3px 10px', fontSize: '0.62rem', fontWeight: 800,
+                    color: dev.color, letterSpacing: '0.08em'
+                  }}>
+                    {dev.tag}
+                  </div>
+
+                  {/* Top-Right Match Pill */}
+                  <div style={{
+                    position: 'absolute', top: '14px', right: '14px',
+                    background: 'rgba(212,175,55,0.95)', borderRadius: '50px',
+                    padding: '3px 10px', fontSize: '0.6rem', fontWeight: 900,
+                    color: '#040814', letterSpacing: '0.06em'
+                  }}>
+                    {dev.matchBadge}
+                  </div>
+
+                  {/* Bottom Content Area */}
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '18px 20px' }}>
+                    {/* Location Badges */}
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                      {dev.corridorLabels.map((lbl, idx) => (
+                        <span key={idx} style={{ fontSize: '0.62rem', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', padding: '2px 7px', fontWeight: 600 }}>{lbl}</span>
+                      ))}
+                    </div>
+
+                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.05rem' : '1.25rem', fontWeight: 800, color: '#fff', lineHeight: 1.2, marginBottom: '2px' }}>
+                      {dev.name}
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: dev.color, fontWeight: 700, marginBottom: '8px' }}>
+                      {dev.brand} &nbsp;·&nbsp; <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>{dev.established}</span>
+                    </div>
+
+                    {/* Desc */}
+                    <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.4, marginBottom: '12px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {dev.desc}
+                    </div>
+
+                    {/* CTA Button Row */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.68rem', color: '#D4AF37', fontWeight: 800 }}>{dev.projectsCount}</span>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#040814', background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', borderRadius: '50px', padding: '4px 14px', display: 'inline-flex', alignItems: 'center', gap: '4px', boxShadow: '0 4px 12px rgba(212,175,55,0.3)' }}>
+                        Explore Projects →
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -2913,18 +3163,16 @@ export default function Portal({ onViewChange }) {
 
             {/* Auto-scroll marquee — Partner trust badges */}
             <div style={{ position: 'relative', overflow: 'hidden', marginBottom: '36px' }}>
-              {/* Fade edges */}
               <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '80px', background: 'linear-gradient(90deg, #070f1e, transparent)', zIndex: 2, pointerEvents: 'none' }} />
               <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '80px', background: 'linear-gradient(-90deg, #070f1e, transparent)', zIndex: 2, pointerEvents: 'none' }} />
-              {/* Scrolling strip */}
               <div style={{
                 display: 'flex',
                 gap: '32px',
                 animation: 'marqueeScroll 28s linear infinite',
                 width: 'max-content',
               }}>
-                {[...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating'],
-                  ...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating']
+                {[...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating'],
+                  ...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating']
                 ].map((badge, i) => (
                   <div key={i} style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
