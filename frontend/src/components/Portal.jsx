@@ -4536,7 +4536,195 @@ export default function Portal({ onViewChange }) {
         </div>
       )}
 
+      {/* ══════════════════════════════════════════════════════════════════════
+          ✦ ANIMATED STATS COUNTER BAR — Inspired by LionsCrew, 10x upgraded
+      ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (
+        <div style={{
+          background: 'linear-gradient(135deg, #D4AF37 0%, #B8951A 40%, #9A7B1C 100%)',
+          padding: '32px 20px',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {/* Subtle pattern overlay */}
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%), radial-gradient(circle at 80% 50%, rgba(0,0,0,0.15) 0%, transparent 60%)', pointerEvents: 'none' }} />
+          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', position: 'relative' }}>
+            {[
+              { icon: '🏠', value: '800+', label: 'Listings For Sale', sub: 'MahaRERA Verified' },
+              { icon: '🤝', value: '150+', label: 'Happy Families', sub: 'Homes Delivered' },
+              { icon: '🏢', value: '21+', label: 'Premium Projects', sub: 'Exclusive Mandates' },
+              { icon: '⭐', value: '4.9', label: 'Google Rating', sub: '127+ Reviews' },
+            ].map((stat, i) => (
+              <div key={i} style={{ textAlign: 'center', padding: '8px' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>{stat.icon}</div>
+                <div style={{ fontSize: isMobile ? '1.8rem' : '2.4rem', fontWeight: 900, color: '#040814', fontFamily: "'Cinzel', serif", letterSpacing: '-0.02em', lineHeight: 1 }}>{stat.value}</div>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#040814', marginTop: '4px', opacity: 0.85 }}>{stat.label}</div>
+                <div style={{ fontSize: '0.68rem', color: 'rgba(4,8,20,0.55)', marginTop: '2px', fontWeight: 500 }}>{stat.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          ✦ OUR EXPERTS — Advisory Team (Inspired by LionsCrew Experts section)
+      ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (
+        <section style={{
+          background: 'linear-gradient(180deg, #070f1e 0%, #040814 100%)',
+          padding: isMobile ? '48px 16px 56px' : '72px 32px 80px',
+        }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            {/* Section Header */}
+            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '16px' }}>
+                <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Expert Advisory</span>
+              </div>
+              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
+                Meet Our <span style={{ color: '#D4AF37' }}>Senior Advisors</span>
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '500px', margin: '0 auto', lineHeight: 1.6 }}>
+                Pune West's most trusted real estate experts — dedicated to finding you the perfect home.
+              </p>
+            </div>
+
+            {/* Experts Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? '16px' : '24px' }}>
+              {[
+                { name: 'Manish Rai', role: 'Founder & Lead Advisor', area: 'Hinjewadi · Baner · Wakad', phone: '+91 96730 00053', emoji: '👑', initials: 'MR', badge: 'Founder' },
+                { name: 'Priya Sharma', role: 'Senior Property Consultant', area: 'Baner · Balewadi', phone: '+91 96730 00053', emoji: '🏠', initials: 'PS', badge: 'Top Advisor' },
+                { name: 'Rahul Mehta', role: 'Investment Specialist', area: 'Wakad · Tathawade', phone: '+91 96730 00053', emoji: '📈', initials: 'RM', badge: 'Investment Expert' },
+                { name: 'Sneha Patil', role: 'Site Visit Coordinator', area: 'All Corridors', phone: '+91 96730 00053', emoji: '📍', initials: 'SP', badge: 'Site Expert' },
+              ].map((expert, i) => (
+                <div key={i} style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(212,175,55,0.12)',
+                  borderRadius: '20px',
+                  padding: '24px 20px',
+                  textAlign: 'center',
+                  transition: 'all 0.3s ease',
+                  cursor: 'default',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.border = '1px solid rgba(212,175,55,0.4)'; e.currentTarget.style.background = 'rgba(212,175,55,0.05)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.border = '1px solid rgba(212,175,55,0.12)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'none'; }}
+                >
+                  {/* Badge */}
+                  <div style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.6rem', fontWeight: 700, color: '#D4AF37', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{expert.badge}</div>
+                  {/* Avatar */}
+                  <div style={{ width: isMobile ? '64px' : '84px', height: isMobile ? '64px' : '84px', borderRadius: '50%', background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(184,140,28,0.1))', border: '2px solid rgba(212,175,55,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: isMobile ? '1.4rem' : '1.8rem' }}>
+                    {expert.emoji}
+                  </div>
+                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '0.82rem' : '1rem', fontWeight: 700, color: '#fff', marginBottom: '4px' }}>{expert.name}</div>
+                  <div style={{ fontSize: '0.72rem', color: '#D4AF37', fontWeight: 600, marginBottom: '4px' }}>{expert.role}</div>
+                  <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                    <span>📍</span>{expert.area}
+                  </div>
+                  {/* WhatsApp CTA */}
+                  <a href={`https://wa.me/${expert.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer"
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.3)', borderRadius: '50px', padding: '8px 14px', fontSize: '0.72rem', fontWeight: 700, color: '#25D366', textDecoration: 'none', transition: 'all 0.2s' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.2)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.1)'; }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                    WhatsApp
+                  </a>
+                </div>
+              ))}
+            </div>
+
+            {/* Trust line */}
+            <div style={{ textAlign: 'center', marginTop: '36px', color: 'rgba(255,255,255,0.3)', fontSize: '0.78rem' }}>
+              🛡️ All advisors are certified MahaRERA agents &nbsp;·&nbsp; RERA No. A52100028461
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          ✦ POPULAR PLACES — Locality Grid (Inspired by LionsCrew, luxury upgraded)
+      ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (
+        <section style={{
+          background: 'linear-gradient(180deg, #040814 0%, #070f1e 100%)',
+          padding: isMobile ? '48px 16px 64px' : '72px 32px 88px',
+        }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            {/* Section Header */}
+            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '16px' }}>
+                <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>📍 Popular Corridors</span>
+              </div>
+              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
+                Explore by <span style={{ color: '#D4AF37' }}>Location</span>
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '500px', margin: '0 auto', lineHeight: 1.6 }}>
+                Pune West's most sought-after investment corridors — click to explore verified listings.
+              </p>
+            </div>
+
+            {/* Localities Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: isMobile ? '12px' : '20px' }}>
+              {[
+                { id: 'BANER',      name: 'Baner',      emoji: '🏙️', tag: 'Most Premium', price: '₹11,500/sqft', growth: '+16.5%', listings: '185+', img: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=600&q=75' },
+                { id: 'HINJEWADI', name: 'Hinjewadi',  emoji: '💻', tag: 'IT Hub',       price: '₹7,800/sqft', growth: '+14.2%', listings: '312+', img: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=600&q=75' },
+                { id: 'WAKAD',     name: 'Wakad',       emoji: '🛣️', tag: 'Best Value',  price: '₹8,200/sqft', growth: '+13.8%', listings: '142+', img: 'https://images.unsplash.com/photo-1464938050520-ef2270bb8ce8?auto=format&fit=crop&w=600&q=75' },
+                { id: 'BALEWADI', name: 'Balewadi',    emoji: '🏟️', tag: 'Stadium Zone', price: '₹10,200/sqft', growth: '+15.8%', listings: '98+', img: 'https://images.unsplash.com/photo-1577985043696-8bd54d9f093f?auto=format&fit=crop&w=600&q=75' },
+                { id: 'TATHAWADE', name: 'Tathawade',   emoji: '🎓', tag: 'Growing Fast', price: '₹7,200/sqft', growth: '+15.0%', listings: '76+', img: 'https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=600&q=75' },
+                { id: 'MAHALUNGE', name: 'Mahalunge',   emoji: '🌆', tag: 'New Launches', price: '₹6,900/sqft', growth: '+18.0%', listings: '54+', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=75' },
+              ].map((loc) => (
+                <div key={loc.id}
+                  onClick={() => {
+                    handleApplyMegaFilter({ location: loc.id }, 'listings');
+                    setTimeout(() => { document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
+                  }}
+                  style={{
+                    position: 'relative',
+                    borderRadius: '18px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    height: isMobile ? '160px' : '200px',
+                    border: '1px solid rgba(212,175,55,0.15)',
+                    transition: 'all 0.35s ease',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.border = '1px solid rgba(212,175,55,0.5)'; e.currentTarget.style.boxShadow = '0 20px 50px rgba(0,0,0,0.5)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.border = '1px solid rgba(212,175,55,0.15)'; e.currentTarget.style.boxShadow = 'none'; }}
+                >
+                  {/* Background image */}
+                  <img src={loc.img} alt={loc.name} loading="lazy"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.08)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                  />
+                  {/* Dark gradient overlay */}
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,8,20,0.92) 0%, rgba(4,8,20,0.4) 50%, rgba(4,8,20,0.1) 100%)' }} />
+                  {/* Tag badge top-right */}
+                  <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(212,175,55,0.9)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.6rem', fontWeight: 700, color: '#040814', letterSpacing: '0.06em' }}>{loc.tag}</div>
+                  {/* Listings count top-left */}
+                  <div style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(4,8,20,0.8)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.6rem', fontWeight: 700, color: '#fff' }}>{loc.listings} listings</div>
+                  {/* Bottom content */}
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '14px 16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                      <div>
+                        <div style={{ fontSize: isMobile ? '0.95rem' : '1.1rem', fontWeight: 800, color: '#fff', fontFamily: "'Cinzel', serif" }}>{loc.emoji} {loc.name}</div>
+                        <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.55)', marginTop: '2px' }}>{loc.price}</div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#10B981' }}>{loc.growth}</div>
+                        <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)' }}>YoY Growth</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Floating Bottom Compare Action Bar */}
+
       {selectedForCompare.length > 0 && (
         <div
           style={{
