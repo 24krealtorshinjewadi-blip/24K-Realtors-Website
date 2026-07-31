@@ -263,6 +263,66 @@ const DEFAULT_GALLERY_ITEMS = [
     dev: 'Godrej Properties',
     img: '/gallery_infinity_pool.png',
     desc: '80% open green space luxury township with elevated skywalks, lap pool & 4-tier security.'
+  },
+  {
+    id: 25,
+    title: 'TCG Crown Greens Aerial Drone View',
+    location: 'Hinjewadi Phase 3',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Aerial View',
+    dev: 'TCG Real Estate',
+    img: '/gallery_tower_2.png',
+    desc: 'High-altitude aerial drone view of high-rise towers nestled next to green hills & IT park.'
+  },
+  {
+    id: 26,
+    title: 'Kohinoor Coral & Famville 22-Story Skyline',
+    location: 'Hinjewadi Phase 2',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Aerial View',
+    dev: 'Kohinoor Group',
+    img: '/gallery_vj_supernova_tower.png',
+    desc: 'Drone view of twin 22-story luxury towers featuring podium amenities and sports arena.'
+  },
+  {
+    id: 27,
+    title: 'Kasturi EON Homes 4-Acre Central Courtyard',
+    location: 'Hinjewadi Phase 3',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Aerial View',
+    dev: 'Kasturi Housing',
+    img: '/gallery_tower_3.png',
+    desc: 'Bird-eye aerial view of luxury glass towers surrounding 4-acre central landscaped courtyard.'
+  },
+  {
+    id: 28,
+    title: 'Shapoorji Joyville Sensorium Riverfront Deck',
+    location: 'Hinjewadi Phase 2',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Aerial View',
+    dev: 'Shapoorji Pallonji',
+    img: '/gallery_tower_2.png',
+    desc: 'Aerial view of smart home towers with sunken riverfront deck and infinity view pool.'
+  },
+  {
+    id: 29,
+    title: 'VTP Earth One High-Altitude Drone Panorama',
+    location: 'Mahalunge-Hinjewadi Smart Corridor',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Aerial View',
+    dev: 'VTP Realty',
+    img: '/gallery_tower_3.png',
+    desc: 'Panoramic aerial drone panorama capturing Mula River bend & 34-story high-rise cluster.'
+  },
+  {
+    id: 30,
+    title: 'Pride Purple Park Connect 30-Story Drone View',
+    location: 'Hinjewadi – Wakad Connector',
+    category: 'HINJEWADI',
+    categoryLabel: '🏙️ Hinjewadi Aerial View',
+    dev: 'Pride Purple Group',
+    img: '/gallery_vj_supernova_tower.png',
+    desc: 'High-definition aerial drone perspective of 30-story towers connected to Mumbai-Pune Expressway.'
   }
 ];
 
@@ -2561,8 +2621,8 @@ export default function Portal({ onViewChange }) {
             {/* Category Filter Tabs */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '12px', flexWrap: 'wrap', marginBottom: '40px' }}>
               {[
-                { id: 'ALL', label: '🔥 All Real Media (24)' },
-                { id: 'HINJEWADI', label: '🏙️ Hinjewadi Townships' },
+                { id: 'ALL', label: '🔥 All Real Media (30)' },
+                { id: 'HINJEWADI', label: '🏙️ Hinjewadi Societies & Aerial Views' },
                 { id: 'HANDOVER', label: '🔑 Client Key Handovers' },
                 { id: 'VISITS', label: '🚗 VIP Site Visit Tours' },
                 { id: 'TOWERS', label: '🏙️ Pune High-Rises' },
