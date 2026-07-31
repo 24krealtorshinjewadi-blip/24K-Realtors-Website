@@ -2803,6 +2803,72 @@ export default function Portal({ onViewChange }) {
                 </div>
               </div>
 
+              {/* Hero Authorized Developer Partners Showcase Bar */}
+              <div style={{
+                maxWidth: '720px',
+                margin: '24px auto 0 auto',
+                background: 'rgba(7, 15, 30, 0.55)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1px solid rgba(212, 175, 55, 0.2)',
+                borderRadius: '16px',
+                padding: '16px 20px',
+                textAlign: 'center',
+                boxShadow: '0 12px 30px rgba(0, 0, 0, 0.35)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '10px' }}>
+                  <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif" }}>
+                    🤝 Authorized Partner For Pune's Top Developers
+                  </span>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px 12px' }}>
+                  {[
+                    { name: 'Kolte-Patil 24K', tag: 'Flagship' },
+                    { name: 'Shapoorji Pallonji', tag: 'Joyville' },
+                    { name: 'Godrej Properties', tag: 'Luxury' },
+                    { name: 'Kasturi Builders', tag: 'Penthouses' },
+                    { name: 'Lodha Group', tag: 'Landmark' },
+                    { name: 'Gera', tag: 'Child Centric' },
+                    { name: 'Kumar Properties', tag: 'Trusted' },
+                    { name: 'Rohan Builders', tag: 'Eco' },
+                  ].map((brand, i) => (
+                    <span key={i} style={{
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      color: 'rgba(255, 255, 255, 0.85)',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid rgba(212, 175, 55, 0.18)',
+                      borderRadius: '50px',
+                      padding: '4px 12px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      whiteSpace: 'nowrap',
+                      transition: 'all 0.2s ease',
+                      cursor: 'default'
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'rgba(212, 175, 55, 0.15)';
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+                      e.currentTarget.style.color = '#FFF4D0';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.18)';
+                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.85)';
+                    }}>
+                      <span>{brand.name}</span>
+                      <span style={{ fontSize: '0.58rem', color: '#D4AF37', background: 'rgba(212,175,55,0.15)', padding: '1px 5px', borderRadius: '4px' }}>{brand.tag}</span>
+                    </span>
+                  ))}
+                </div>
+                <div style={{ marginTop: '10px', fontSize: '0.65rem', color: 'rgba(255, 255, 255, 0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                  <span>🛡️ 100% RERA Compliant Homes</span>
+                  <span>·</span>
+                  <span>MahaRERA Reg. No. <strong style={{ color: '#D4AF37' }}>A52100028461</strong></span>
+                </div>
+              </div>
+
             </div>
           </section>
 
