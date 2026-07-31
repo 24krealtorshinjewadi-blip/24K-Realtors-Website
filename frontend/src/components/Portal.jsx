@@ -2797,15 +2797,10 @@ export default function Portal({ onViewChange }) {
                   onClick={() => setIsSpotlightOpen(true)}
                   style={{ display: "flex", alignItems: "center", gap: "12px", flex: 1, cursor: "pointer", minWidth: 0 }}
                 >
-                  <span style={{ color: "#E6C35C", fontSize: "1.15rem" }}>🔍</span>
-                  <span style={{ fontSize: isMobile ? "0.82rem" : "0.92rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 500, color: "rgba(255, 255, 255, 0.8)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    Search Hinjewadi, Wakad, Baner, or type a command...
+                  <span style={{ fontSize: "1.25rem" }}>🏠</span>
+                  <span style={{ fontSize: isMobile ? "0.84rem" : "0.94rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    Search Hinjewadi, Wakad, Baner...
                   </span>
-                  {!isMobile && (
-                    <span style={{ fontSize: "0.62rem", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "6px", padding: "2px 6px", color: "rgba(255,255,255,0.4)", fontFamily: "'Montserrat', sans-serif", fontWeight: 700, flexShrink: 0 }}>
-                      CTRL K
-                    </span>
-                  )}
                 </div>
 
                 {/* Integrated AI Area Match Pill Button */}
