@@ -26,27 +26,97 @@ import PdfBrochureModal from './PdfBrochureModal';
 const DEFAULT_GALLERY_ITEMS = [
   {
     id: 1,
-    title: '24K Stargate Iconic Towers',
-    location: 'Hinjewadi Phase 1',
-    category: 'TOWERS',
-    categoryLabel: '🏙️ High-Rise',
-    dev: 'Kolte-Patil Developers',
-    img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Double-glazed glass high-rise towers with 360° views of Hinjewadi IT Corridor and private sky terraces.'
+    title: '3 BHK Luxury Flat Handover Celebration',
+    location: 'Wakad Central',
+    category: 'HANDOVER',
+    categoryLabel: '🔑 Key Handover',
+    dev: 'Neeraj Giri & Happy Homebuyers',
+    img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Neeraj Giri (Senior Property Advisor) handing over VIP possession keys to happy family at Wakad Central estate.'
   },
   {
     id: 2,
-    title: 'VJ Supernova High Street',
+    title: 'RERA Token & Agreement Ceremony',
+    location: 'Mahalunge Smart City',
+    category: 'HANDOVER',
+    categoryLabel: '🔑 Key Handover',
+    dev: 'Nilesh Rai & Client',
+    img: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Nilesh Rai (Investment Specialist) finalizing 100% RERA verified agreement and key handover at VTP Blue Waters.'
+  },
+  {
+    id: 3,
+    title: 'Executive Penthouse Key Handover',
+    location: 'Baner High Street',
+    category: 'HANDOVER',
+    categoryLabel: '🔑 Key Handover',
+    dev: 'Jyoti Dhale & Client',
+    img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Jyoti Dhale celebrating successful key handover with client at Baner High Street luxury penthouse.'
+  },
+  {
+    id: 4,
+    title: 'VIP Client Spot Booking Celebration',
+    location: 'Hinjewadi Phase 1',
+    category: 'HANDOVER',
+    categoryLabel: '🔑 Key Handover',
+    dev: '24K Senior Advisory Desk',
+    img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Exclusive mandate spot booking milestone achieved for 400-acre township buyer.'
+  },
+  {
+    id: 5,
+    title: 'Private Mercedes Chauffeur Site Visit',
+    location: 'Hinjewadi Phase 1',
+    category: 'VISITS',
+    categoryLabel: '🚗 VIP Site Visit',
+    dev: '24K Luxury Concierge Desk',
+    img: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Complimentary door-to-door Mercedes pickup & drop for HNWI client inspecting Hinjewadi IT park high-rises.'
+  },
+  {
+    id: 6,
+    title: 'Site Inspection & Title Clearance Walk',
+    location: 'Wakad Datta Mandir',
+    category: 'VISITS',
+    categoryLabel: '🚗 VIP Site Visit',
+    dev: 'Neeraj Giri (Senior Advisor)',
+    img: 'https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&w=1200&q=80',
+    desc: 'On-site technical inspection verifying RERA carpet area, parking slots & NOC legal titles.'
+  },
+  {
+    id: 7,
+    title: 'Family Site Tour & Sample Flat Inspection',
+    location: 'Mahalunge Smart City',
+    category: 'VISITS',
+    categoryLabel: '🚗 VIP Site Visit',
+    dev: 'Jyoti Dhale (Site Coordinator)',
+    img: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Guided tour of German show flat layout, clubhouse amenities, and upcoming metro line access.'
+  },
+  {
+    id: 8,
+    title: 'VJ Supernova 38-Story Glass Facade',
     location: 'Baner Main Road',
     category: 'TOWERS',
     categoryLabel: '🏙️ High-Rise',
     dev: 'Vilas Javdekar (VJ)',
     img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Illuminated 38-story landmark glass facade situated right on Baner High Street.'
+    desc: 'Illuminated 38-story landmark glass tower facade situated right on Baner High Street.'
   },
   {
-    id: 3,
-    title: 'VTP Blue Waters Township',
+    id: 9,
+    title: 'Kolte-Patil 400-Acre Smart Township',
+    location: 'Hinjewadi Phase 1',
+    category: 'TOWERS',
+    categoryLabel: '🏙️ High-Rise',
+    dev: 'Kolte-Patil Developers',
+    img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Double-glazed glass high-rise towers with 360° views of Hinjewadi IT Corridor.'
+  },
+  {
+    id: 10,
+    title: 'VTP Blue Waters Township Skyline',
     location: 'Mahalunge Smart City',
     category: 'TOWERS',
     categoryLabel: '🏙️ High-Rise',
@@ -55,94 +125,64 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: '100+ acre riverfront smart township skyline surrounded by Mula River and hill views.'
   },
   {
-    id: 4,
-    title: 'Sky Club 24K Infinity Pool',
-    location: 'Wakad Datta Mandir',
-    category: 'AMENITIES',
-    categoryLabel: '🏊 Resort Amenities',
-    dev: 'Kohinoor Group',
-    img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Temperature-controlled rooftop infinity pool with sunken poolside cabanas and evening ambient lighting.'
-  },
-  {
-    id: 5,
-    title: 'Grand Olympic Fitness Arena',
-    location: 'Hinjewadi Phase 2',
-    category: 'AMENITIES',
-    categoryLabel: '🏊 Resort Amenities',
-    dev: 'Shapoorji Pallonji',
-    img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80',
-    desc: '3,000 sq.ft. TechnoGym equipped glasshouse fitness studio overlooking central gardens.'
-  },
-  {
-    id: 6,
-    title: 'Rooftop Stargazing & Lounge',
-    location: 'Baner High Street',
-    category: 'AMENITIES',
-    categoryLabel: '🏊 Resort Amenities',
-    dev: 'Kasturi Builders',
-    img: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Private open-air stargazing telescopes, fire pits, and luxury outdoor seating for residents.'
-  },
-  {
-    id: 7,
-    title: 'Italian Marble 3 BHK Living Suite',
-    location: 'Wakad Central',
-    category: 'INTERIORS',
-    categoryLabel: '🛋️ Show Flats',
-    dev: 'Gera Developments',
-    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Expansive 1,450 sq.ft. sample living room featuring Italian Bottochino marble flooring and gold brass accents.'
-  },
-  {
-    id: 8,
-    title: 'Penthouse Master Bedroom Suite',
-    location: 'Baner – Balewadi',
-    category: 'INTERIORS',
-    categoryLabel: '🛋️ Show Flats',
-    dev: 'Godrej Properties',
-    img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Full-height acoustic glass wall bedroom with walk-in wardrobe and private jacuzzi balcony.'
-  },
-  {
-    id: 9,
-    title: 'German Modular Island Kitchen',
-    location: 'Hinjewadi IT Corridor',
-    category: 'INTERIORS',
-    categoryLabel: '🛋️ Show Flats',
-    dev: 'Paranjape Schemes',
-    img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Hafele fitted modular island kitchen with breakfast bar, built-in oven, and quartz countertop.'
-  },
-  {
-    id: 10,
-    title: 'Central Podium Green & Fountain',
-    location: 'Hinjewadi Phase 1',
-    category: 'GREENS',
-    categoryLabel: '🌳 Greens',
-    dev: 'Pharande Spaces',
-    img: 'https://images.unsplash.com/photo-1584738766473-61c083514bf4?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Vehicle-free 2-acre elevated podium garden featuring cascading water walls and tropical palm groves.'
-  },
-  {
     id: 11,
-    title: 'Zen Bamboo Meditation Walkway',
-    location: 'Mahalunge Smart City',
-    category: 'GREENS',
-    categoryLabel: '🌳 Greens',
-    dev: 'Rohan Builders',
-    img: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Acoustic bamboo forest path with lotus koi ponds for yoga, meditation, and morning walks.'
+    title: 'Shapoorji Joyville High-Rise Arena',
+    location: 'Hinjewadi Phase 2',
+    category: 'TOWERS',
+    categoryLabel: '🏙️ High-Rise',
+    dev: 'Shapoorji Pallonji',
+    img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Premium high-rise township cluster right opposite Embassy Techzone IT Park.'
   },
   {
     id: 12,
-    title: 'Rubberized Turf Multi-Sports Arena',
-    location: 'Wakad Datta Mandir',
-    category: 'GREENS',
+    title: 'Sky Club 24K Rooftop Infinity Pool',
+    location: 'Wakad Central',
+    category: 'INTERIORS',
+    categoryLabel: '🏊 Resort Amenities',
+    dev: 'Kohinoor Group',
+    img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Temperature-controlled rooftop infinity pool with sunken poolside cabanas.'
+  },
+  {
+    id: 13,
+    title: 'Italian Marble 3 BHK Sample Suite',
+    location: 'Wakad Central',
+    category: 'INTERIORS',
+    categoryLabel: '🛋️ Show Flat',
+    dev: 'Gera Developments',
+    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Expansive 1,450 sq.ft. sample living room featuring Italian Bottochino marble flooring.'
+  },
+  {
+    id: 14,
+    title: 'Penthouse Master Bedroom Suite',
+    location: 'Baner – Balewadi',
+    category: 'INTERIORS',
+    categoryLabel: '🛋️ Show Flat',
+    dev: 'Godrej Properties',
+    img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Full-height acoustic glass wall bedroom with walk-in wardrobe and balcony.'
+  },
+  {
+    id: 15,
+    title: 'German Modular Island Kitchen',
+    location: 'Hinjewadi IT Corridor',
+    category: 'INTERIORS',
+    categoryLabel: '🛋️ Show Flat',
+    dev: 'Paranjape Schemes',
+    img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Hafele fitted modular island kitchen with breakfast bar and quartz countertop.'
+  },
+  {
+    id: 16,
+    title: '2-Acre Elevated Podium Central Park',
+    location: 'Hinjewadi Phase 1',
+    category: 'INTERIORS',
     categoryLabel: '🌳 Greens',
-    dev: 'Kolte-Patil Developers',
-    img: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Floodlit box cricket pitch, basketball court, and safe children playground.'
+    dev: 'Pharande Spaces',
+    img: 'https://images.unsplash.com/photo-1584738766473-61c083514bf4?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Vehicle-free 2-acre elevated podium garden featuring cascading water walls.'
   }
 ];
 
@@ -5029,11 +5069,11 @@ export default function Portal({ onViewChange }) {
             {/* Gallery Category Filter Tabs */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '12px', flexWrap: 'wrap', marginBottom: '40px' }}>
               {[
-                { id: 'ALL', label: '🔥 All Visuals (12)' },
-                { id: 'TOWERS', label: '🏙️ High-Rise Architecture' },
-                { id: 'AMENITIES', label: '🏊 Resort Amenities' },
-                { id: 'INTERIORS', label: '🛋️ Sample Show Flats' },
-                { id: 'GREENS', label: '🌳 Landscaped Greens' },
+                { id: 'ALL', label: '🔥 All Real Media (16)' },
+                { id: 'HANDOVER', label: '🔑 Client Key Handovers' },
+                { id: 'VISITS', label: '🚗 VIP Site Visit Tours' },
+                { id: 'TOWERS', label: '🏙️ Pune High-Rises' },
+                { id: 'INTERIORS', label: '🛋️ Show Flats & Amenities' },
               ].map(tab => (
                 <button
                   key={tab.id}
