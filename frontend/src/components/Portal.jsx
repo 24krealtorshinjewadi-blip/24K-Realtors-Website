@@ -66,6 +66,16 @@ const DEFAULT_GALLERY_ITEMS = [
   },
   {
     id: 5,
+    title: 'Grand Duplex Villa Key Handover',
+    location: 'Baner Pashan Link Road',
+    category: 'HANDOVER',
+    categoryLabel: '🔑 Key Handover',
+    dev: '24K Executive Desk & Client',
+    img: '/gallery_handover_1.png',
+    desc: 'Exclusive 5 BHK private luxury villa possession ceremony with custom golden key presentation.'
+  },
+  {
+    id: 6,
     title: 'Private Mercedes Chauffeur Site Visit',
     location: 'Hinjewadi Phase 1',
     category: 'VISITS',
@@ -75,7 +85,7 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Complimentary door-to-door Mercedes pickup & drop for HNWI client inspecting Hinjewadi IT park high-rises.'
   },
   {
-    id: 6,
+    id: 7,
     title: 'Site Inspection & Title Clearance Walk',
     location: 'Wakad Datta Mandir',
     category: 'VISITS',
@@ -85,7 +95,7 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'On-site technical inspection verifying RERA carpet area, parking slots & NOC legal titles.'
   },
   {
-    id: 7,
+    id: 8,
     title: 'Family Site Tour & Sample Flat Inspection',
     location: 'Mahalunge Smart City',
     category: 'VISITS',
@@ -95,7 +105,17 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Guided tour of German show flat layout, clubhouse amenities, and upcoming metro line access.'
   },
   {
-    id: 8,
+    id: 9,
+    title: 'Helicopter Aerial Township Site Tour',
+    location: 'Baner – Hinjewadi Corridor',
+    category: 'VISITS',
+    categoryLabel: '🚗 VIP Site Visit',
+    dev: '24K VIP Aviation Desk',
+    img: '/gallery_visit_1.png',
+    desc: 'Panoramic aerial site inspection tour of 400-acre smart township projects for international investors.'
+  },
+  {
+    id: 10,
     title: 'VJ Supernova 38-Story Glass Facade',
     location: 'Baner Main Road',
     category: 'TOWERS',
@@ -105,7 +125,7 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Illuminated 38-story landmark glass tower facade situated right on Baner High Street.'
   },
   {
-    id: 9,
+    id: 11,
     title: 'Kolte-Patil 400-Acre Smart Township',
     location: 'Hinjewadi Phase 1',
     category: 'TOWERS',
@@ -115,7 +135,7 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Double-glazed glass high-rise towers with 360° views of Hinjewadi IT Corridor.'
   },
   {
-    id: 10,
+    id: 12,
     title: 'VTP Blue Waters Township Skyline',
     location: 'Mahalunge Smart City',
     category: 'TOWERS',
@@ -125,7 +145,7 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: '100+ acre riverfront smart township skyline surrounded by Mula River and hill views.'
   },
   {
-    id: 11,
+    id: 13,
     title: 'Shapoorji Joyville High-Rise Arena',
     location: 'Hinjewadi Phase 2',
     category: 'TOWERS',
@@ -135,7 +155,17 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Premium high-rise township cluster right opposite Embassy Techzone IT Park.'
   },
   {
-    id: 12,
+    id: 14,
+    title: 'Panchshil Business Park Glass Skyscraper',
+    location: 'Baner High Street',
+    category: 'TOWERS',
+    categoryLabel: '🏙️ High-Rise',
+    dev: 'Panchshil Realty',
+    img: '/gallery_vj_supernova_tower.png',
+    desc: 'Ultra-modern Grade-A commercial glass skyscraper with rooftop lounge.'
+  },
+  {
+    id: 15,
     title: 'Sky Club 24K Rooftop Infinity Pool',
     location: 'Wakad Central',
     category: 'INTERIORS',
@@ -145,7 +175,7 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Temperature-controlled rooftop infinity pool with sunken poolside cabanas.'
   },
   {
-    id: 13,
+    id: 16,
     title: 'Italian Marble 3 BHK Sample Suite',
     location: 'Wakad Central',
     category: 'INTERIORS',
@@ -155,7 +185,7 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Expansive 1,450 sq.ft. sample living room featuring Italian Bottochino marble flooring.'
   },
   {
-    id: 14,
+    id: 17,
     title: 'Penthouse Master Bedroom Suite',
     location: 'Baner – Balewadi',
     category: 'INTERIORS',
@@ -165,7 +195,7 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Full-height acoustic glass wall bedroom with walk-in wardrobe and balcony.'
   },
   {
-    id: 15,
+    id: 18,
     title: 'German Modular Island Kitchen',
     location: 'Hinjewadi IT Corridor',
     category: 'INTERIORS',
@@ -175,7 +205,7 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Hafele fitted modular island kitchen with breakfast bar and quartz countertop.'
   },
   {
-    id: 16,
+    id: 19,
     title: '2-Acre Elevated Podium Central Park',
     location: 'Hinjewadi Phase 1',
     category: 'INTERIORS',
@@ -183,6 +213,16 @@ const DEFAULT_GALLERY_ITEMS = [
     dev: 'Pharande Spaces',
     img: '/gallery_tower_2.png',
     desc: 'Vehicle-free 2-acre elevated podium garden featuring cascading water walls.'
+  },
+  {
+    id: 20,
+    title: '3-Tier Cascading Water Fountain & Sky Lounge',
+    location: 'Wakad Kaspate Wasti',
+    category: 'INTERIORS',
+    categoryLabel: '🏊 Resort Amenities',
+    dev: 'Bhandari Associates',
+    img: '/gallery_infinity_pool.png',
+    desc: 'Resort-style 3-tier architectural water fountain wall with evening ambient LED lighting.'
   }
 ];
 
@@ -2460,28 +2500,6 @@ export default function Portal({ onViewChange }) {
 
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                 <button
-                  onClick={() => setIsGalleryUploadOpen(true)}
-                  style={{
-                    background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-                    border: 'none',
-                    color: '#040814',
-                    padding: '10px 22px',
-                    borderRadius: '50px',
-                    fontSize: '0.8rem',
-                    fontWeight: 800,
-                    fontFamily: "'Montserrat', sans-serif",
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 6px 20px rgba(230,195,92,0.35)'
-                  }}
-                >
-                  <Upload size={14} color="#040814" />
-                  <span>+ Upload Custom Photo</span>
-                </button>
-
-                <button
                   className="btn-outline"
                   onClick={handleBackToHome}
                   style={{
@@ -2503,7 +2521,7 @@ export default function Portal({ onViewChange }) {
             {/* Category Filter Tabs */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '12px', flexWrap: 'wrap', marginBottom: '40px' }}>
               {[
-                { id: 'ALL', label: '🔥 All Real Media (16)' },
+                { id: 'ALL', label: '🔥 All Real Media (20)' },
                 { id: 'HANDOVER', label: '🔑 Client Key Handovers' },
                 { id: 'VISITS', label: '🚗 VIP Site Visit Tours' },
                 { id: 'TOWERS', label: '🏙️ Pune High-Rises' },
@@ -2541,7 +2559,7 @@ export default function Portal({ onViewChange }) {
               gridTemplateColumns: isMobile ? '1fr' : isWideDesktop ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
               gap: isMobile ? '16px' : '24px'
             }}>
-              {[(Array.isArray(customGalleryItems) ? customGalleryItems : []), ...DEFAULT_GALLERY_ITEMS]
+              {DEFAULT_GALLERY_ITEMS
                 .filter(item => galleryFilter === 'ALL' || item.category === galleryFilter)
                 .map((item) => (
                   <div
