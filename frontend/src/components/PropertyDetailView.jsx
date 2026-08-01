@@ -239,13 +239,20 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
   useSEO(buildPropertySEO(property));
 
-  const slideshowImages = property.slideshowImages || [
+  const slideshowImages = property.slideshowImages || (isVyomora ? [
+    '/properties/shapoorji-joyville-vyomora/vyomora_1_hero_facade.png',
+    '/properties/shapoorji-joyville-vyomora/vyomora_2_master_living.png',
+    '/properties/shapoorji-joyville-vyomora/vyomora_3_italian_kitchen.png',
+    '/properties/shapoorji-joyville-vyomora/vyomora_4_master_bedroom.png',
+    '/properties/shapoorji-joyville-vyomora/vyomora_5_sky_pool.png',
+    '/properties/shapoorji-joyville-vyomora/vyomora_6_grand_lobby.png',
+  ] : [
     property.imageUrl || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=85',
     'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?auto=format&fit=crop&w=1600&q=85',
-  ];
+  ]);
 
   const principal   = Number(property.price || 8400000) * (1 - downPayment / 100);
   const mRate       = (interestRate / 12) / 100;
