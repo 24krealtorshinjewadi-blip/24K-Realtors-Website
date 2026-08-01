@@ -115,7 +115,7 @@ const initialProperties = [
     verifiedListing: true,
     exclusiveDeal: true,
     reraNumber: "RERA-PUN-PRM-24K091",
-    imageUrl: "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/gallery/lodha_1_under_construction.png",
+    imageUrl: "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_main_s3_hero.png",
     videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ",
     threeDTourUrl: "https://my.matterport.com/show/?m=JGPmBB6q58g",
     furnishingStatus: "FULLY_FURNISHED",
