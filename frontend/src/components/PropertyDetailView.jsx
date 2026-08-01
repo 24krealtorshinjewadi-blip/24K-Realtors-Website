@@ -232,6 +232,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [property.id]);
 
+  const isOpula      = property.title?.toLowerCase().includes('opula') || property.id === 'prop-1';
   const isVyomora    = property.title?.toLowerCase().includes('vyomora');
   const isCommercial = property.propertyType === 'COMMERCIAL';
   const builder      = getBuilderInfo(property.title);
@@ -239,7 +240,16 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
   useSEO(buildPropertySEO(property));
 
-  const slideshowImages = property.slideshowImages || (isVyomora ? [
+  const slideshowImages = property.slideshowImages || (isOpula ? [
+    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_1_hero_facade.png',
+    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_2_master_living.png',
+    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_3_modular_kitchen.png',
+    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_4_presidential_suite.png',
+    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_5_infinity_pool.png',
+    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_6_double_height_lobby.png',
+    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_7_clubhouse_lounge.png',
+    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_8_penthouse_terrace.png',
+  ] : isVyomora ? [
     '/properties/shapoorji-joyville-vyomora/vyomora_1_hero_facade.png',
     '/properties/shapoorji-joyville-vyomora/vyomora_2_master_living.png',
     '/properties/shapoorji-joyville-vyomora/vyomora_3_italian_kitchen.png',
