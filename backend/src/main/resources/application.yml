@@ -51,10 +51,17 @@ management:
     mail:
       enabled: false
 
-cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
-  api-key: ${CLOUDINARY_API_KEY:}
-  api-secret: ${CLOUDINARY_API_SECRET:}
+# ─── AWS S3 Media Storage ─────────────────────────────────────────────────────
+# Create bucket in ap-south-1 (Mumbai). Set env vars in Railway dashboard.
+# Bucket: twentyfourk-realestate-media | IAM User: twentyfourk-s3-service-user
+aws:
+  s3:
+    bucket-name: ${AWS_S3_BUCKET:twentyfourk-realestate-media}
+    region: ${AWS_REGION:ap-south-1}
+    access-key: ${AWS_ACCESS_KEY_ID:}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:}
+    # Base URL for public object access (auto-built from bucket+region)
+    base-url: ${AWS_S3_BASE_URL:https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com}
 
 ---
 # Development Profile (Active by default, uses H2 database)
