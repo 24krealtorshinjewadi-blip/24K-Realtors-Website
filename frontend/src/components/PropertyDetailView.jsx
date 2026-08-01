@@ -232,37 +232,52 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [property.id]);
 
-  const isOpula      = property.title?.toLowerCase().includes('opula') || property.id === 'prop-1';
-  const isVyomora    = property.title?.toLowerCase().includes('vyomora');
+  const getPropertyS3Folder = (p) => {
+    if (!p) return '24k-opula';
+    const title = (p.title || '').toLowerCase();
+    if (title.includes('opula')) return '24k-opula';
+    if (title.includes('altura')) return '24k-altura';
+    if (title.includes('it plaza') || title.includes('hinjewadi office')) return 'hinjewadi-it-plaza';
+    if (title.includes('balewadi') && title.includes('retail')) return 'balewadi-retail';
+    if (title.includes('glitterati')) return '24k-glitterati';
+    if (title.includes('studio') || title.includes('corporate tower')) return 'baner-studio';
+    if (title.includes('mahalunge oasis')) return '24k-mahalunge-oasis';
+    if (title.includes('megapolis splendour')) return 'megapolis-splendour';
+    if (title.includes('godrej elements')) return 'godrej-elements';
+    if (title.includes('tcg') || title.includes('crown greens')) return 'tcg-crown-greens';
+    if (title.includes('kasturi') || title.includes('apostle')) return 'kasturi-apostle';
+    if (title.includes('life republic')) return 'kolte-patil-life-republic';
+    if (title.includes('gera')) return 'gera-joy-banks';
+    if (title.includes('pride purple') || title.includes('park landmark')) return 'pride-purple-park';
+    if (title.includes('megapolis sunway')) return 'megapolis-sunway';
+    if (title.includes('kohinoor') || title.includes('sportsville')) return 'kohinoor-sportsville';
+    if (title.includes('vtp') || title.includes('blue waters')) return 'vtp-blue-waters';
+    if (title.includes('vyomora') || title.includes('joyville premium')) return 'shapoorji-joyville-vyomora';
+    if (title.includes('yashwin')) return 'vilas-javdekar-yashwin';
+    if (title.includes('belmondo') || title.includes('lodha belmondo')) return 'lodha-belmondo';
+    if (title.includes('godrej ivara') || title.includes('kharadi')) return 'godrej-ivara-kharadi';
+    return '24k-opula';
+  };
+
+  const s3Slug = getPropertyS3Folder(property);
+  const s3BaseUrl = `https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/${s3Slug}`;
+
   const isCommercial = property.propertyType === 'COMMERCIAL';
   const builder      = getBuilderInfo(property.title);
   const corridor     = getCorridorData(property.location);
 
   useSEO(buildPropertySEO(property));
 
-  const slideshowImages = property.slideshowImages || (isOpula ? [
-    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_1_hero_facade.png',
-    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_2_master_living.png',
-    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_3_modular_kitchen.png',
-    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_4_presidential_suite.png',
-    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_5_infinity_pool.png',
-    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_6_double_height_lobby.png',
-    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_7_clubhouse_lounge.png',
-    'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/24k-opula/opula_8_penthouse_terrace.png',
-  ] : isVyomora ? [
-    '/properties/shapoorji-joyville-vyomora/vyomora_1_hero_facade.png',
-    '/properties/shapoorji-joyville-vyomora/vyomora_2_master_living.png',
-    '/properties/shapoorji-joyville-vyomora/vyomora_3_italian_kitchen.png',
-    '/properties/shapoorji-joyville-vyomora/vyomora_4_master_bedroom.png',
-    '/properties/shapoorji-joyville-vyomora/vyomora_5_sky_pool.png',
-    '/properties/shapoorji-joyville-vyomora/vyomora_6_grand_lobby.png',
-  ] : [
-    property.imageUrl || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85',
-    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=85',
-    'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?auto=format&fit=crop&w=1600&q=85',
-  ]);
+  const slideshowImages = property.slideshowImages || [
+    `${s3BaseUrl}/hero.png`,
+    `${s3BaseUrl}/living.png`,
+    `${s3BaseUrl}/kitchen.png`,
+    `${s3BaseUrl}/bedroom.png`,
+    `${s3BaseUrl}/pool.png`,
+    `${s3BaseUrl}/floorplan_2bhk.png`,
+    `${s3BaseUrl}/floorplan_3bhk.png`,
+    `${s3BaseUrl}/masterplan.png`,
+  ];
 
   const principal   = Number(property.price || 8400000) * (1 - downPayment / 100);
   const mRate       = (interestRate / 12) / 100;
@@ -307,9 +322,9 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   ];
 
   const fpVariants = [
-    { id: '2bhk',   label: '2 BHK Luxury',    url: property.floorPlanUrl || slideshowImages[1],     desc: '684 - 839 sq.ft Carpet Area' },
-    { id: '3bhk',   label: '3 BHK Estate',    url: property.floorPlan3BHKUrl || slideshowImages[2], desc: '1052 - 1477 sq.ft Carpet Area' },
-    { id: 'master', label: 'Master Blueprint', url: property.masterPlanUrl || slideshowImages[3],    desc: '16-Acre Gated Masterplan' },
+    { id: '2bhk',   label: '2 BHK Luxury',    url: property.floorPlanUrl || `${s3BaseUrl}/floorplan_2bhk.png`,     desc: '684 - 839 sq.ft Carpet Area' },
+    { id: '3bhk',   label: '3 BHK Estate',    url: property.floorPlan3BHKUrl || `${s3BaseUrl}/floorplan_3bhk.png`, desc: '1052 - 1477 sq.ft Carpet Area' },
+    { id: 'master', label: 'Master Blueprint', url: property.masterPlanUrl || `${s3BaseUrl}/masterplan.png`,    desc: '16-Acre Gated Masterplan' },
   ];
   const fpActive = fpVariants.find(v => v.id === activePlan) || fpVariants[0];
 
