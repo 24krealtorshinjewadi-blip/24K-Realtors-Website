@@ -323,6 +323,106 @@ const DEFAULT_GALLERY_ITEMS = [
     dev: 'Pride Purple Group',
     img: '/gallery_vj_supernova_tower.png',
     desc: 'High-definition aerial drone perspective of 30-story towers connected to Mumbai-Pune Expressway.'
+  },
+  {
+    id: 31,
+    title: 'Lodha Skyscraper Foundation & Tower Crane Stage',
+    location: 'Lodha Panache & Belmondo Corridor',
+    category: 'LODHA',
+    categoryLabel: '🏗️ Lodha Construction Stage 1',
+    dev: 'Lodha Group',
+    img: '/lodha_1_under_construction.png',
+    desc: 'Stage 1: High-rise structural steel framework and tower crane installation at golden hour sunset.'
+  },
+  {
+    id: 32,
+    title: 'Lodha Glass Facade & Mid-Stage Milestone',
+    location: 'Lodha Bella Vita, NIBM-Baner Link',
+    category: 'LODHA',
+    categoryLabel: '🏗️ Lodha Construction Stage 2',
+    dev: 'Lodha Group',
+    img: '/lodha_2_mid_construction.png',
+    desc: 'Stage 2: 25-story luxury tower mid-construction with curtain glass panels & podium deck structure.'
+  },
+  {
+    id: 33,
+    title: 'Lodha Belmondo 100-Acre Completed Drone View',
+    location: 'Gagangiri Hills, Mumbai-Pune Expressway',
+    category: 'LODHA',
+    categoryLabel: '🏰 Lodha Completed Estate',
+    dev: 'Lodha Group',
+    img: '/lodha_3_completed_aerial.png',
+    desc: 'Stage 3: Completed iconic 30-story towers overlooking 45-acre golf course & riverfront promenade.'
+  },
+  {
+    id: 34,
+    title: 'Lodha 5-Star Hotel Italian Marble Grand Lobby',
+    location: 'Lodha Panache, Baner-Balewadi High St',
+    category: 'LODHA',
+    categoryLabel: '🏛️ Lodha 5-Star Amenities',
+    dev: 'Lodha Group',
+    img: '/lodha_4_grand_lobby.png',
+    desc: 'Stage 4: Double-height entrance lobby with Italian Statuario marble, chandelier & 24/7 concierge.'
+  },
+  {
+    id: 35,
+    title: 'Lodha Ultra-Luxury 4BHK Master Living Suite',
+    location: 'Lodha Bella Vita, NIBM Corridor',
+    category: 'LODHA',
+    categoryLabel: '🛋️ Lodha Show Flat Interior',
+    dev: 'Lodha Group',
+    img: '/lodha_5_luxury_living.png',
+    desc: 'Stage 5: Floor-to-ceiling glass panoramic living room with Italian beige marble and sky deck.'
+  },
+  {
+    id: 36,
+    title: 'Lodha Designer Gourmet Italian Modular Kitchen',
+    location: 'Lodha Panache Signature Series',
+    category: 'LODHA',
+    categoryLabel: '🍳 Lodha Designer Interiors',
+    dev: 'Lodha Group',
+    img: '/lodha_6_italian_kitchen.png',
+    desc: 'Stage 6: Waterfall marble island counter, Miele appliances, & under-cabinet ambient LED illumination.'
+  },
+  {
+    id: 37,
+    title: 'Lodha Skyscraper Rooftop Infinity Swimming Pool',
+    location: 'Lodha Towers Sky Promenade',
+    category: 'LODHA',
+    categoryLabel: '🏊 Lodha Sky Resort',
+    dev: 'Lodha Group',
+    img: '/lodha_7_infinity_pool.png',
+    desc: 'Stage 7: Glass-edge infinity pool overlooking Pune skyline with submerged sun lounges.'
+  },
+  {
+    id: 38,
+    title: 'Lodha 25,000 sq.ft Clubhouse & Zen Water Gardens',
+    location: 'Lodha Belmondo Gated Estate',
+    category: 'LODHA',
+    categoryLabel: '🌿 Lodha Zen Gardens',
+    dev: 'Lodha Group',
+    img: '/lodha_8_clubhouse_gardens.png',
+    desc: 'Stage 8: Grand clubhouse with cascading fountains, Japanese zen gardens, & evening LED lighting.'
+  },
+  {
+    id: 39,
+    title: 'Lodha Presidential Master Suite & Private Terrace',
+    location: 'Lodha Panache Penthouse Suite',
+    category: 'LODHA',
+    categoryLabel: '🛏️ Lodha Penthouse Suite',
+    dev: 'Lodha Group',
+    img: '/lodha_9_master_bedroom.png',
+    desc: 'Stage 9: Velvet headboard master suite opening to private balcony with uninterrupted hill views.'
+  },
+  {
+    id: 40,
+    title: 'Lodha VIP Key Handover & Gold Box Ceremony',
+    location: 'Lodha Belmondo Grand Entrance',
+    category: 'LODHA',
+    categoryLabel: '🔑 Client Key Handover',
+    dev: 'Lodha & 24K Realtors',
+    img: '/lodha_10_key_handover.png',
+    desc: 'Stage 10: Happy executive client receiving golden key box with 24K Realtors VIP advisory team.'
   }
 ];
 
@@ -2621,7 +2721,8 @@ export default function Portal({ onViewChange }) {
             {/* Category Filter Tabs */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '12px', flexWrap: 'wrap', marginBottom: '40px' }}>
               {[
-                { id: 'ALL', label: '🔥 All Real Media (30)' },
+                { id: 'ALL', label: '🔥 All Real Media (40)' },
+                { id: 'LODHA', label: '🏰 Lodha: Construction to Delivery (10)' },
                 { id: 'HINJEWADI', label: '🏙️ Hinjewadi Societies & Aerial Views' },
                 { id: 'HANDOVER', label: '🔑 Client Key Handovers' },
                 { id: 'VISITS', label: '🚗 VIP Site Visit Tours' },
