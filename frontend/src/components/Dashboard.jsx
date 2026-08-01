@@ -33,6 +33,7 @@ import AnalyticsTab from './AnalyticsTab';
 import InventoryTab from './InventoryTab';
 import EmployeeDashboard from './EmployeeDashboard';
 import MyLeadsTab from './MyLeadsTab';
+import DamTab from './DamTab';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -659,6 +660,7 @@ export default function Dashboard({ onViewChange }) {
               inventory: 'Inventory / Projects',
               attendance: 'Attendance',
               leaves: 'HR & Leaves',
+              dam: 'Digital Asset Management (DAM)',
               settings: 'CRM Settings',
               help: 'Help & Support Center',
             }[activeTab] || '24K Realtors CRM'}
@@ -678,6 +680,7 @@ export default function Dashboard({ onViewChange }) {
               inventory: 'Builder Projects & Property Catalog',
               attendance: 'Team Checkin & Working Hours',
               leaves: 'Leave Requests & HR Management',
+              dam: 'AWS S3 Single Source of Truth for 4K Videos, Floor Plans & Assets',
               settings: 'Company, Users, Security & Integrations',
               help: 'Quick Start, FAQ, AI Commands & Contact',
             }[activeTab] || 'Pune Real Estate Operations'}
@@ -797,6 +800,7 @@ export default function Dashboard({ onViewChange }) {
             { id: 'commissions', label: 'Commissions & Payroll', icon: Award },
             { id: 'analytics', label: 'Analytics & Reports', icon: TrendingUp },
             { id: 'inventory', label: 'Inventory / Projects', icon: Building },
+            { id: 'dam', label: 'Asset Library (DAM)', icon: HardDrive },
             { id: 'attendance', label: 'Attendance', icon: CheckSquare },
             { id: 'leaves', label: 'HR & Leaves', icon: ShieldCheck },
             { id: 'settings', label: 'Settings', icon: Settings },
@@ -1711,6 +1715,7 @@ export default function Dashboard({ onViewChange }) {
           {activeTab === 'team' && <EmployeesTab />}
           {activeTab === 'settings' && <SettingsTab />}
           {activeTab === 'help' && <HelpSupportTab />}
+          {activeTab === 'dam' && <DamTab />}
 
           {/* TAB: EMPLOYEE WORKSPACE DASHBOARD */}
           {activeTab === 'employee_dashboard' && (

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Upload, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { apiService } from '../services/apiService';
 
-export default function ImageUploader({ onUploadSuccess, label = 'Upload Image', currentValue = '' }) {
+export default function ImageUploader({ onUploadSuccess, label = 'Upload Image', currentValue = '', folder = 'properties', accept = 'image/*' }) {
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
@@ -20,16 +20,24 @@ export default function ImageUploader({ onUploadSuccess, label = 'Upload Image',
 
   const processFile = async (file) => {
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      setError('Only image files are allowed.');
+
+    // Validate file type based on accept prop
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+    const isPdf   = file.type === 'application/pdf';
+
+    if (!isImage && !isVideo && !isPdf) {
+      setError('Only image, video, or PDF files are allowed.');
       return;
     }
 
     setUploading(true);
     setError(null);
     try {
-      const response = await apiService.uploadMedia(file);
-      // Backend returns relative path `/api/v1/media/files/...` if local, or direct https URL if Cloudinary
+      // Pass folder to S3 — 'properties' | 'gallery' | 'documents' | 'videos'
+      const uploadFolder = isVideo ? 'videos' : isPdf ? 'documents' : folder;
+      const response = await apiService.uploadMedia(file, uploadFolder);
+      // Backend returns S3 URL: https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/folder/uuid.ext
       const uploadedUrl = response.url;
       setSuccessUrl(uploadedUrl);
       if (onUploadSuccess) {
@@ -37,11 +45,12 @@ export default function ImageUploader({ onUploadSuccess, label = 'Upload Image',
       }
     } catch (err) {
       console.error("Upload error:", err);
-      setError(err.message || 'Failed to upload image. Please try again.');
+      setError(err.message || 'Failed to upload. Please try again.');
     } finally {
       setUploading(false);
     }
   };
+
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -153,14 +162,14 @@ export default function ImageUploader({ onUploadSuccess, label = 'Upload Image',
           {uploading ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
               <Loader2 className="animate-spin" size={24} color="var(--gold-primary, #d4af37)" />
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>Uploading image to media server...</span>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>Uploading to AWS S3...</span>
             </div>
           ) : (
             <div>
               <input 
                 type="file" 
                 id={`file-upload-${label.replace(/\s+/g, '-')}`} 
-                accept="image/*" 
+                accept={accept}
                 onChange={handleChange} 
                 style={{ display: 'none' }}
               />
@@ -173,7 +182,7 @@ export default function ImageUploader({ onUploadSuccess, label = 'Upload Image',
                   Drag & Drop or <span style={{ color: 'var(--gold-primary, #d4af37)', textDecoration: 'underline' }}>Browse</span>
                 </span>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted, #888)' }}>
-                  PNG, JPG, JPEG, or WEBP
+                  {accept === 'image/*' ? 'PNG, JPG, WEBP' : accept.includes('video') ? 'MP4, MOV, WEBM' : 'Image, Video, PDF — Uploads to AWS S3'}
                 </span>
               </label>
             </div>

@@ -3080,18 +3080,18 @@ export const apiService = {
     );
   },
 
-  async uploadMedia(file) {
+  async uploadMedia(file, folder = 'gallery') {
     return runWithFallback(
       async () => {
         const formData = new FormData();
         formData.append("file", file);
-        const res = await fetch(`${BASE_URL}/media/upload`, {
+        const res = await fetch(`${BASE_URL}/media/upload?folder=${encodeURIComponent(folder)}`, {
           method: 'POST',
           headers: getAuthHeaders(),
           body: formData
         });
         if (!res.ok) throw new Error("Failed to upload media");
-        return res.json();
+        return res.json(); // { url, key, folder }
       },
       () => {
         return new Promise((resolve) => {
@@ -3102,6 +3102,202 @@ export const apiService = {
       }
     );
   },
+
+  /* ─── Enterprise DAM (Digital Asset Management) APIs ─────────── */
+  async fetchDamAssets({ category, propertyId, search, page = 0, size = 24 } = {}) {
+    return runWithFallback(
+      async () => {
+        const params = new URLSearchParams();
+        if (category && category !== 'ALL') params.append('category', category);
+        if (propertyId) params.append('propertyId', propertyId);
+        if (search) params.append('search', search);
+        params.append('page', page);
+        params.append('size', size);
+
+        const res = await fetch(`${BASE_URL}/dam/assets?${params.toString()}`, {
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to fetch DAM assets");
+        return res.json();
+      },
+      () => {
+        return {
+          content: [
+            { id: 1, title: 'Hinjewadi 4K Drone Aerial View', category: 'DRONE_VIDEO', mimeType: 'video/mp4', fileSizeBytes: 24500000, cdnUrl: '/gallery_tower_2.png', thumbnailUrl: '/gallery_tower_2.png', createdBy: 'Admin', createdAt: new Date().toISOString() },
+            { id: 2, title: 'Baner Luxury Penthouse Hero', category: 'HERO', mimeType: 'image/webp', fileSizeBytes: 1200000, width: 3840, height: 2160, cdnUrl: '/gallery_vj_supernova_tower.png', thumbnailUrl: '/gallery_vj_supernova_tower.png', createdBy: 'Admin', createdAt: new Date().toISOString() }
+          ],
+          totalElements: 2,
+          totalPages: 1,
+          number: 0
+        };
+      }
+    );
+  },
+
+  async fetchTrashDamAssets({ page = 0, size = 24 } = {}) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/dam/assets/trash?page=${page}&size=${size}`, {
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to fetch trash assets");
+        return res.json();
+      },
+      () => ({ content: [], totalElements: 0, totalPages: 0, number: 0 })
+    );
+  },
+
+  async uploadDamAsset(file, { title, category = 'GALLERY', isPrivate = false, propertyId = null } = {}, onProgress) {
+    return runWithFallback(
+      async () => {
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          const formData = new FormData();
+          formData.append('file', file);
+          if (title) formData.append('title', title);
+          formData.append('category', category);
+          formData.append('isPrivate', isPrivate);
+          if (propertyId) formData.append('propertyId', propertyId);
+
+          xhr.open('POST', `${BASE_URL}/dam/assets/upload`);
+          const headers = getAuthHeaders();
+          Object.keys(headers).forEach(k => {
+            if (k.toLowerCase() !== 'content-type') xhr.setRequestHeader(k, headers[k]);
+          });
+
+          if (xhr.upload && onProgress) {
+            xhr.upload.onprogress = (e) => {
+              if (e.lengthComputable) {
+                const percent = Math.round((e.loaded / e.total) * 100);
+                onProgress(percent);
+              }
+            };
+          }
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try { resolve(JSON.parse(xhr.responseText)); }
+              catch { resolve({ message: "Upload success" }); }
+            } else {
+              reject(new Error("DAM Upload failed with status " + xhr.status));
+            }
+          };
+
+          xhr.onerror = () => reject(new Error("DAM Upload network error"));
+          xhr.send(formData);
+        });
+      },
+      () => ({
+        id: Date.now(),
+        title: title || file.name,
+        category,
+        cdnUrl: URL.createObjectURL(file),
+        thumbnailUrl: URL.createObjectURL(file),
+        fileSizeBytes: file.size,
+        mimeType: file.type
+      })
+    );
+  },
+
+  async replaceDamAsset(id, file) {
+    return runWithFallback(
+      async () => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await fetch(`${BASE_URL}/dam/assets/${id}/replace`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: formData
+        });
+        if (!res.ok) throw new Error("Failed to replace asset");
+        return res.json();
+      },
+      () => ({ id, versionNumber: 2, cdnUrl: URL.createObjectURL(file) })
+    );
+  },
+
+  async getDamPresignedUrl(id, durationMinutes = 60) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/dam/assets/${id}/presigned-url?durationMinutes=${durationMinutes}`, {
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to generate presigned URL");
+        return res.json();
+      },
+      () => ({ presignedUrl: "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/documents/sample.pdf" })
+    );
+  },
+
+  async softDeleteDamAsset(id) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/dam/assets/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to delete asset");
+        return res.json();
+      },
+      () => ({ message: "Moved to trash" })
+    );
+  },
+
+  async restoreDamAsset(id) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/dam/assets/${id}/restore`, {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to restore asset");
+        return res.json();
+      },
+      () => ({ message: "Restored" })
+    );
+  },
+
+  async purgeDamAsset(id) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/dam/assets/${id}/purge`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to purge asset");
+        return res.json();
+      },
+      () => ({ message: "Purged" })
+    );
+  },
+
+  async fetchDamVersions(id) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/dam/assets/${id}/versions`, {
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to fetch versions");
+        return res.json();
+      },
+      () => []
+    );
+  },
+
+  async fetchDamAuditLogs(id) {
+    return runWithFallback(
+      async () => {
+        const res = await fetch(`${BASE_URL}/dam/assets/${id}/audit-logs`, {
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to fetch audit logs");
+        return res.json();
+      },
+      () => []
+    );
+  },
+
+
 
   async addToWishlist(propertyId) {
     return runWithFallback(
