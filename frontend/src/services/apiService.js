@@ -695,7 +695,7 @@ const initialProperties = [
       "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/hero.jpg",
       "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/pool.jpg"
     ],
-    videoUrl: "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_tour.mp4",
+    videoUrl: "https://drive.google.com/file/d/1d0bs-V09UXSMugFtcKOEpNo9_Wh-5G3N/preview",
     threeDTourUrl: "https://my.matterport.com/show/?m=JGPmBB6q58g",
     furnishingStatus: "UNFURNISHED",
     gasPipeline: true,

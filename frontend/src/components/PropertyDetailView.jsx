@@ -673,7 +673,15 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           <SectionHeader label="Cinematic Video Tour" sub="Take a virtual walkthrough of the landmark towers and sky suites" align="center" />
           <div style={{ position: 'relative', borderRadius: '20px', overflow: 'hidden', aspectRatio: '16/9', maxWidth: '900px', margin: '0 auto', border: '1px solid var(--border-gold)', boxShadow: '0 30px 80px rgba(0,0,0,0.6)' }}>
             {property.videoUrl ? (
-              (property.videoUrl.endsWith('.mp4') || property.videoUrl.includes('.mp4') || property.videoUrl.startsWith('/properties/')) ? (
+              property.videoUrl.includes('drive.google.com') ? (
+                <iframe
+                  src={property.videoUrl.replace(/\/view.*$/, '/preview').replace(/\/edit.*$/, '/preview')}
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                  allow="autoplay; encrypted-media; fullscreen"
+                  allowFullScreen
+                  title="Shapoorji Joyville Vyomora Video Tour"
+                />
+              ) : (property.videoUrl.endsWith('.mp4') || property.videoUrl.includes('.mp4') || property.videoUrl.startsWith('/properties/')) ? (
                 <video
                   src={property.videoUrl}
                   controls
@@ -683,16 +691,15 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                   loop
                   poster={slideshowImages[0]}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  onError={(e) => {
-                    // Fallback to local video if S3 direct link is loading
-                    if (!e.currentTarget.dataset.fallback) {
-                      e.currentTarget.dataset.fallback = 'true';
-                      e.currentTarget.src = '/properties/vyomora/vyomora_tour.mp4';
-                    }
-                  }}
                 />
               ) : (
-                <iframe src={getEmbedVideoUrl ? getEmbedVideoUrl(property.videoUrl) : property.videoUrl} style={{ width: '100%', height: '100%', border: 'none' }} allowFullScreen title="Property Video Tour" />
+                <iframe
+                  src={getEmbedVideoUrl ? getEmbedVideoUrl(property.videoUrl) : property.videoUrl}
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                  allow="autoplay; encrypted-media; fullscreen"
+                  allowFullScreen
+                  title="Property Video Tour"
+                />
               )
             ) : (
               <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #09111F, #0F1C2E)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>

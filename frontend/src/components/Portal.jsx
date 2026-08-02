@@ -3170,7 +3170,14 @@ export default function Portal({ onViewChange }) {
   };
 
   const getEmbedVideoUrl = (url) => {
-    if (!url) return "https://www.youtube.com/embed/LXb3EKWsInQ?autoplay=1&mute=1&loop=1&playlist=LXb3EKWsInQ";
+    if (!url) return "https://drive.google.com/file/d/1d0bs-V09UXSMugFtcKOEpNo9_Wh-5G3N/preview";
+    if (url.includes("drive.google.com")) {
+      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        return `https://drive.google.com/file/d/${match[1]}/preview`;
+      }
+      return url;
+    }
     if (url.includes("/embed/")) {
       return url.includes("?") ? `${url}&autoplay=1&mute=1` : `${url}?autoplay=1&mute=1`;
     }
