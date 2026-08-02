@@ -13,6 +13,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
 import { useSEO, buildPropertySEO } from '../services/seoService';
+import CompanyLogo from './CompanyLogo';
 
 /* ─── 24K Realtors Brand CSS Injection ─────────────────── */
 if (typeof document !== 'undefined' && !document.getElementById('brand-24k-styles')) {
@@ -817,7 +818,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '36px' }}>
             <div style={{ borderRadius: '18px', overflow: 'hidden', border: '1px solid var(--border-gold)', aspectRatio: '4/3' }}>
               <iframe
-                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU3Ko_&q=${encodeURIComponent(property.address || `${property.title}, ${property.location}, Pune`)}&zoom=14`}
+                src={`https://maps.google.com/maps?t=m&z=14&ie=UTF8&iwloc=&output=embed&q=${encodeURIComponent(property.address || `${property.title}, ${property.location}, Pune`)}&zoom=14`}
                 style={{ width: '100%', height: '100%', border: 'none', filter: 'invert(1) hue-rotate(180deg) saturate(0.9)' }}
                 title="Location Map" allowFullScreen />
             </div>
