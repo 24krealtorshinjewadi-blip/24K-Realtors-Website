@@ -337,11 +337,22 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const corridor     = useMemo(() => getCorridorData(property.location), [property.location]);
   useSEO(buildPropertySEO(property));
 
-  const slideshowImages = useMemo(() => property.slideshowImages || [
-    `${s3BaseUrl}/hero.png`, `${s3BaseUrl}/living.png`, `${s3BaseUrl}/kitchen.png`,
-    `${s3BaseUrl}/bedroom.png`, `${s3BaseUrl}/pool.png`, `${s3BaseUrl}/floorplan_2bhk.png`,
-    `${s3BaseUrl}/floorplan_3bhk.png`, `${s3BaseUrl}/masterplan.png`,
-  ], [property.slideshowImages, s3BaseUrl]);
+  const slideshowImages = useMemo(() => {
+    const raw = property.slideshowImages || [];
+    const formatted = raw.map(img => {
+      if (!img) return `${s3BaseUrl}/hero.png`;
+      if (img.startsWith('http://') || img.startsWith('https://')) return img;
+      const cleanName = img.split('/').pop();
+      return `${s3BaseUrl}/${cleanName}`;
+    });
+    if (formatted.length > 0) return formatted;
+    return [
+      `${s3BaseUrl}/vyomora_hero_facade.png`, `${s3BaseUrl}/vyomora_master_living.png`,
+      `${s3BaseUrl}/vyomora_italian_kitchen.png`, `${s3BaseUrl}/vyomora_master_bedroom.png`,
+      `${s3BaseUrl}/vyomora_sky_pool.png`, `${s3BaseUrl}/vyomora_grand_lobby.png`,
+      `${s3BaseUrl}/hero.png`, `${s3BaseUrl}/hero.jpg`
+    ];
+  }, [property.slideshowImages, s3BaseUrl]);
 
   const propPrice = useMemo(() => Number(property.price || 8400000), [property.price]);
 

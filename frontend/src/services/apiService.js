@@ -684,15 +684,16 @@ const initialProperties = [
     verifiedListing: true,
     exclusiveDeal: true,
     reraNumber: "MahaRERA: PR1260002600999",
-    imageUrl: "/properties/vyomora/hero.jpg",
+    imageUrl: "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_hero_facade.png",
     slideshowImages: [
-      "/properties/vyomora/hero.jpg",
-      "/properties/vyomora/pool.jpg",
-      "/properties/vyomora/playarea.jpg",
-      "/properties/vyomora/wormeye.jpg",
-      "/properties/vyomora/livingroom.jpg",
-      "/properties/vyomora/kitchen.jpg",
-      "/properties/vyomora/bedroom.jpg"
+      "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_hero_facade.png",
+      "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_master_living.png",
+      "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_italian_kitchen.png",
+      "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_master_bedroom.png",
+      "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_sky_pool.png",
+      "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_grand_lobby.png",
+      "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/hero.jpg",
+      "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/pool.jpg"
     ],
     videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ",
     threeDTourUrl: "https://my.matterport.com/show/?m=JGPmBB6q58g",
@@ -1219,7 +1220,7 @@ const enrichVyomoraProperty = (p) => {
     return {
       ...p,
       location: "HINJEWADI",
-      imageUrl: "/properties/vyomora/hero.jpg",
+      imageUrl: "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_hero_facade.png",
       description: "Vyomora by Shapoorji Pallonji Real Estate is a landmark residential project nestled at Hinjewadi Off Maan Road, Pune's fastest appreciating IT corridor. Spread across 12.5 acres with 6 premium towers, Vyomora offers intelligently designed 2 & 3 BHK residences featuring expansive balconies, superior RCC framed structure, and a 25,454 sq.ft Grand Clubhouse with 40+ world-class amenities. Powered by 160 years of Shapoorji Pallonji engineering legacy — RERA registered & MahaRERA verified.",
       videoUrl: "https://www.youtube.com/watch?v=Sn4_9-3SXTY",
       slideshowImages: [
