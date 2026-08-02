@@ -672,18 +672,21 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
         <div style={{ marginBottom: '60px' }}>
           <SectionHeader label="Cinematic Video Tour" sub="Take a virtual walkthrough of the landmark towers and sky suites" align="center" />
           <div style={{ position: 'relative', borderRadius: '20px', overflow: 'hidden', aspectRatio: '16/9', maxWidth: '900px', margin: '0 auto', border: '1px solid var(--border-gold)', boxShadow: '0 30px 80px rgba(0,0,0,0.6)' }}>
-            {property.videoUrl ? (
-              property.videoUrl.includes('drive.google.com') ? (
-                <iframe
-                  src={property.videoUrl.replace(/\/view.*$/, '/preview').replace(/\/edit.*$/, '/preview')}
-                  style={{ width: '100%', height: '100%', border: 'none' }}
-                  allow="autoplay; encrypted-media; fullscreen"
-                  allowFullScreen
-                  title="Shapoorji Joyville Vyomora Video Tour"
-                />
-              ) : (property.videoUrl.endsWith('.mp4') || property.videoUrl.includes('.mp4') || property.videoUrl.startsWith('/properties/')) ? (
+            {(() => {
+              const driveFallback = "https://drive.google.com/file/d/1d0bs-V09UXSMugFtcKOEpNo9_Wh-5G3N/preview";
+              const s3Candidates = [
+                property.videoUrl,
+                `${s3BaseUrl}/video.mp4`,
+                `${s3BaseUrl}/vyomora_tour.mp4`,
+                `${s3BaseUrl}/tour.mp4`,
+                `${s3BaseUrl}/vyomora.mp4`,
+                `${s3BaseUrl}/hero.mp4`,
+                `/properties/vyomora/vyomora_tour.mp4`
+              ].filter(Boolean);
+
+              return (
                 <video
-                  src={property.videoUrl}
+                  src={s3Candidates[videoFallbackIndex] || property.videoUrl || `${s3BaseUrl}/video.mp4`}
                   controls
                   playsInline
                   autoPlay
@@ -691,25 +694,27 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                   loop
                   poster={slideshowImages[0]}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={(e) => {
+                    if (videoFallbackIndex < s3Candidates.length - 1) {
+                      setVideoFallbackIndex(prev => prev + 1);
+                    } else {
+                      // Switch to Google Drive iframe preview stream if S3 files are not accessible
+                      setUseDriveFallback(true);
+                    }
+                  }}
                 />
-              ) : (
-                <iframe
-                  src={getEmbedVideoUrl ? getEmbedVideoUrl(property.videoUrl) : property.videoUrl}
-                  style={{ width: '100%', height: '100%', border: 'none' }}
-                  allow="autoplay; encrypted-media; fullscreen"
-                  allowFullScreen
-                  title="Property Video Tour"
-                />
-              )
-            ) : (
-              <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #09111F, #0F1C2E)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
-                <motion.div animate={{ scale: [1, 1.08, 1] }} transition={{ repeat: Infinity, duration: 2 }}
-                  style={{ width: '76px', height: '76px', borderRadius: '50%', background: 'linear-gradient(135deg, #D4AF37, #F3E5AB)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 0 30px rgba(212,175,55,0.4)' }}>
-                  <Play size={28} color="#0D1B2A" fill="#0D1B2A" />
-                </motion.div>
-                <p style={{ fontFamily: 'var(--font-sans)', color: '#A0AEC0', fontSize: '0.88rem' }}>Private Walkthrough Tour — Enquire to receive video link</p>
-              </div>
+              );
+            })()}
+            {useDriveFallback && (
+              <iframe
+                src="https://drive.google.com/file/d/1d0bs-V09UXSMugFtcKOEpNo9_Wh-5G3N/preview"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                allow="autoplay; encrypted-media; fullscreen"
+                allowFullScreen
+                title="Shapoorji Joyville Vyomora Video Tour"
+              />
             )}
+
           </div>
         </div>
 
