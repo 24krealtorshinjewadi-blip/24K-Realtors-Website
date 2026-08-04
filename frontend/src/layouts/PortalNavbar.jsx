@@ -354,6 +354,33 @@ export default function PortalNavbar({
 
         <div className="drawer-links-section">
           
+          {/* Direct CRM Staff & Admin Login CTA for Mobile */}
+          <button 
+            onClick={() => { setIsDrawerOpen(false); onViewChange && onViewChange('login'); }} 
+            className="drawer-enquire-btn"
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, #162438 0%, #0F1C2E 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.4)',
+              color: '#F3E5AB',
+              padding: '13px 20px',
+              borderRadius: '12px',
+              fontSize: '0.86rem',
+              fontWeight: 800,
+              letterSpacing: '0.04em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 16px rgba(212, 175, 55, 0.15)',
+              marginBottom: '12px'
+            }}
+          >
+            <LayoutDashboard size={17} color="#D4AF37" />
+            <span>💼 CRM STAFF &amp; ADMIN PORTAL LOGIN</span>
+          </button>
+
           {/* Prominent Golden Enquire CTA inside Mobile Menu Drawer */}
           <button 
             onClick={() => { setIsDrawerOpen(false); onBookVisitClick && onBookVisitClick(); }} 
@@ -530,6 +557,16 @@ export default function PortalNavbar({
         >
           <Heart size={18} />
           <span>Saved</span>
+        </button>
+
+        <button 
+          onClick={() => onViewChange && onViewChange('login')}
+          className="mobile-tab-item"
+          aria-label="CRM Staff Login"
+          style={{ color: '#D4AF37' }}
+        >
+          <LayoutDashboard size={18} color="#D4AF37" />
+          <span style={{ color: '#D4AF37', fontWeight: 700 }}>CRM</span>
         </button>
 
         <button 

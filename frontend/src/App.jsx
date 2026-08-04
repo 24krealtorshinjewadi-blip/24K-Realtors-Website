@@ -122,6 +122,14 @@ export default function App() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
+    // Disable Lenis on mobile devices & touch screens to prevent touch scroll freeze on iOS / iPhone
+    const isMobileDevice = typeof window !== 'undefined' && (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      window.innerWidth <= 768 ||
+      ('ontouchstart' in window)
+    );
+    if (isMobileDevice) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

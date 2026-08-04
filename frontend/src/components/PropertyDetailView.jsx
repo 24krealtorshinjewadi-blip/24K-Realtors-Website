@@ -290,8 +290,11 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const [isWishlisted, setIsWishlisted]   = useState(() => {
-    try { const s = localStorage.getItem('wishlist_properties'); return (s ? JSON.parse(s) : []).includes(property.id); }
-    catch { return false; }
+    try { 
+      if (!property?.id) return false;
+      const s = localStorage.getItem('wishlist_properties'); 
+      return (s ? JSON.parse(s) : []).includes(property.id); 
+    } catch { return false; }
   });
 
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
@@ -301,7 +304,67 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     return () => window.removeEventListener('resize', r);
   }, []);
 
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [property.id]);
+  useEffect(() => { 
+    if (property?.id) {
+      window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    }
+  }, [property?.id]);
+
+  /* ── Fallback Guard if property is null/undefined ── */
+  if (!property) {
+    return (
+      <div style={{
+        minHeight: '75vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '60px 20px',
+        textAlign: 'center',
+        background: 'radial-gradient(circle at center, #070F1E 0%, #040814 100%)',
+        color: '#FFF',
+        fontFamily: "'Montserrat', sans-serif"
+      }}>
+        <div style={{
+          width: '72px',
+          height: '72px',
+          borderRadius: '50%',
+          background: 'rgba(212, 175, 55, 0.1)',
+          border: '1px solid rgba(212, 175, 55, 0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '32px',
+          marginBottom: '20px'
+        }}>
+          🏛️
+        </div>
+        <h2 style={{ fontFamily: "'Cinzel', serif", color: '#D4AF37', margin: '0 0 10px 0', fontSize: '1.8rem' }}>
+          Property Information Unavailable
+        </h2>
+        <p style={{ color: 'rgba(255,255,255,0.6)', maxWidth: '480px', marginBottom: '28px', lineHeight: 1.6, fontSize: '0.9rem' }}>
+          The requested luxury property details are currently updating or unavailable. Please return to our main portfolio.
+        </p>
+        <button
+          onClick={onBack}
+          style={{
+            background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+            color: '#070F1E',
+            border: 'none',
+            padding: '12px 32px',
+            borderRadius: '50px',
+            fontWeight: 800,
+            fontSize: '0.88rem',
+            cursor: 'pointer',
+            boxShadow: '0 8px 24px rgba(212,175,55,0.35)',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          ← Back to All Properties
+        </button>
+      </div>
+    );
+  }
 
   /* ── S3 Folder Resolution ── */
   const s3Slug = useMemo(() => {

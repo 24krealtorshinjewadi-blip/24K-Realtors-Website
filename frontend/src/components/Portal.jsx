@@ -2825,16 +2825,14 @@ export default function Portal({ onViewChange }) {
                         </div>
                       </div>
                     </div>
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '18px 16px' }}>
-                      <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#E6C35C', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>
-                        📍 {item.location} &nbsp;·&nbsp; {item.dev}
+                    {/* Bottom Gradient Content Overlay - Minimal & Ultra-Clean */}
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 18px', background: 'linear-gradient(to top, rgba(4,8,20,0.92) 0%, rgba(4,8,20,0.5) 60%, transparent 100%)' }}>
+                      <div style={{ fontSize: '0.66rem', fontWeight: 700, color: '#E6C35C', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
+                        📍 {item.location}
                       </div>
-                      <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.05rem', fontWeight: 700, color: '#fff', margin: '0 0 4px 0', lineHeight: 1.3 }}>
+                      <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.08rem', fontWeight: 700, color: '#fff', margin: 0, lineHeight: 1.3 }}>
                         {item.title}
                       </h4>
-                      <p style={{ margin: 0, fontSize: '0.74rem', color: 'rgba(255,255,255,0.65)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {item.desc}
-                      </p>
                     </div>
                   </div>
                 ))}
@@ -3832,31 +3830,28 @@ export default function Portal({ onViewChange }) {
                     {dev.matchBadge}
                   </div>
 
-                  {/* Bottom Content Area */}
-                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '18px 20px' }}>
-                    {/* Location Badges */}
-                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                      {dev.corridorLabels.map((lbl, idx) => (
-                        <span key={idx} style={{ fontSize: '0.62rem', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(4px)', color: '#fff', borderRadius: '4px', padding: '2px 7px', fontWeight: 600 }}>{lbl}</span>
-                      ))}
+                  {/* Bottom Content Area - Sleek & Clutter Free */}
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 20px', background: 'linear-gradient(to top, rgba(4,8,20,0.96) 0%, rgba(4,8,20,0.65) 70%, transparent 100%)' }}>
+                    {/* Clean Location Tag */}
+                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '0.64rem', background: 'rgba(7,15,30,0.75)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)', borderRadius: '50px', padding: '2px 10px', fontWeight: 600 }}>
+                        📍 {dev.corridorLabels.map(l => l.replace('📍 ', '')).slice(0, 2).join(' · ')}{dev.corridorLabels.length > 2 ? ` +${dev.corridorLabels.length - 2}` : ''}
+                      </span>
                     </div>
 
                     <div style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.05rem' : '1.25rem', fontWeight: 800, color: '#fff', lineHeight: 1.2, marginBottom: '2px' }}>
                       {dev.name}
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: dev.color, fontWeight: 700, marginBottom: '8px' }}>
-                      {dev.brand} &nbsp;·&nbsp; <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>{dev.established}</span>
-                    </div>
-
-                    {/* Desc */}
-                    <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.4, marginBottom: '12px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {dev.desc}
+                    <div style={{ fontSize: '0.72rem', color: dev.color, fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>{dev.brand}</span>
+                      <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+                      <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>{dev.established}</span>
                     </div>
 
                     {/* CTA Button Row */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.68rem', color: '#D4AF37', fontWeight: 800 }}>{dev.projectsCount}</span>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#040814', background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', borderRadius: '50px', padding: '4px 14px', display: 'inline-flex', alignItems: 'center', gap: '4px', boxShadow: '0 4px 12px rgba(212,175,55,0.3)' }}>
+                      <span style={{ fontSize: '0.7rem', color: '#D4AF37', fontWeight: 800, letterSpacing: '0.04em' }}>{dev.projectsCount}</span>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#040814', background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', borderRadius: '50px', padding: '4px 16px', display: 'inline-flex', alignItems: 'center', gap: '4px', boxShadow: '0 4px 14px rgba(212,175,55,0.35)' }}>
                         Explore Projects →
                       </span>
                     </div>

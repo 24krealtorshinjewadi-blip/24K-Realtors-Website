@@ -58,6 +58,13 @@ export default function LoginPage({ onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const saveAuth = (data) => {
     localStorage.setItem('token', data.token);
     localStorage.setItem('refreshToken', data.refreshToken);
@@ -120,11 +127,11 @@ export default function LoginPage({ onSuccess }) {
       backgroundSize: 'cover',
       backgroundPosition: 'center center',
       backgroundRepeat: 'no-repeat',
-      backgroundAttachment: 'fixed',
+      backgroundAttachment: isMobile ? 'scroll' : 'fixed',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '30px 20px',
+      padding: isMobile ? '16px 12px' : '30px 20px',
       fontFamily: "'Inter', sans-serif",
       boxSizing: 'border-box',
     }}>
@@ -133,18 +140,19 @@ export default function LoginPage({ onSuccess }) {
       <div style={{
         width: '100%',
         maxWidth: '1140px',
-        minHeight: '620px',
+        minHeight: isMobile ? 'auto' : '620px',
         margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: '1fr 480px',
-        gap: '40px',
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 480px',
+        gap: isMobile ? '24px' : '40px',
         alignItems: 'center',
-        background: 'rgba(5,11,22,0.82)',
+        background: 'rgba(5,11,22,0.88)',
         backdropFilter: 'blur(20px)',
         border: `1px solid rgba(212,175,55,0.25)`,
-        borderRadius: '24px',
-        padding: '40px 48px',
+        borderRadius: isMobile ? '16px' : '24px',
+        padding: isMobile ? '20px 16px' : '40px 48px',
         boxShadow: `0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(212,175,55,0.08)`,
+        boxSizing: 'border-box'
       }}>
 
         {/* ── LEFT COLUMN (BRANDING & ROLES INFO) ── */}
