@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CompanyLogo from './CompanyLogo';
 import { signInWithGoogle } from '../services/firebaseConfig';
 import { Crown, Shield, Users, User, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
