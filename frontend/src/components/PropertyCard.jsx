@@ -2,24 +2,51 @@ import React from 'react';
 import { MapPin, ShieldCheck, Sliders, Heart, ArrowRight, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const getOptimizedImgUrl = (url, width) => {
-  if (!url) return '';
-  if (!url.includes('unsplash.com')) return url;
-  const base = url.split('?')[0];
-  return `${base}?auto=format,compress&q=75&fm=webp&w=${width}&fit=crop`;
-};
+const getForbesTeslaPropertyImage = (property) => {
+  if (property.imageUrl && !property.imageUrl.includes('unsplash.com')) {
+    return property.imageUrl;
+  }
+  const title = (property.title || '').toLowerCase();
+  const desc = (property.description || '').toLowerCase();
 
-const getBuilderName = (title, desc) => {
-  const t = (title + ' ' + (desc || '')).toLowerCase();
-  if (t.includes('lodha')) return 'LODHA GROUP';
-  if (t.includes('godrej')) return 'GODREJ PROPERTIES';
-  if (t.includes('vtp')) return 'VTP REALTY';
-  if (t.includes('kolte') || t.includes('24k')) return 'KOLTE PATIL';
-  if (t.includes('shapoorji')) return 'SHAPOORJI PALLONJI';
-  if (t.includes('gera')) return 'GERA DEVELOPERS';
-  if (t.includes('nyati')) return 'NYATI GROUP';
-  if (t.includes('kasturi')) return 'KASTURI BUILDERS';
-  return 'PREMIUM ALLIANCE';
+  if (title.includes('opula')) return '/dev_kolte_patil_township.png';
+  if (title.includes('altura')) return '/dev_vj_building.png';
+  if (title.includes('office') || title.includes('plaza') || title.includes('commercial')) return '/dev_godrej_building.png';
+  if (title.includes('balewadi') || title.includes('retail')) return '/dev_paranjape_township.png';
+  if (title.includes('glitterati') || title.includes('penthouse')) return '/dev_lodha_tower.png';
+  if (title.includes('mahalunge') || title.includes('oasis')) return '/dev_vtp_township.png';
+  if (title.includes('studio') || title.includes('corporate')) return '/dev_kasturi_forbes.png';
+  if (title.includes('megapolis')) return '/dev_gera_tower.png';
+  if (title.includes('elements') || title.includes('godrej')) return '/dev_godrej_building.png';
+  if (title.includes('crown') || title.includes('tcg')) return '/dev_shapoorji_township.png';
+  if (title.includes('kasturi') || title.includes('apostle') || title.includes('villa')) return '/dev_kasturi_forbes.png';
+  if (title.includes('republic') || title.includes('life')) return '/dev_kolte_patil_township.png';
+  if (title.includes('gera') || title.includes('joy')) return '/dev_gera_tower.png';
+  if (title.includes('pride') || title.includes('landmark')) return '/dev_kohinoor_tower.png';
+  if (title.includes('sportsville') || title.includes('kohinoor')) return '/dev_kohinoor_tower.png';
+  if (title.includes('blue waters') || title.includes('vtp')) return '/dev_vtp_township.png';
+  if (title.includes('vyomora') || title.includes('shapoorji') || title.includes('joyville')) return '/dev_shapoorji_township.png';
+  if (title.includes('yashwin') || title.includes('vj')) return '/dev_vj_building.png';
+  if (title.includes('belmondo') || title.includes('lodha')) return '/dev_lodha_tower.png';
+  if (title.includes('rohan')) return '/dev_rohan_forbes.png';
+  if (title.includes('pharande') || title.includes('puneville')) return '/dev_pharande_building.png';
+
+  const fallbacks = [
+    '/dev_kolte_patil_township.png',
+    '/dev_godrej_building.png',
+    '/dev_vj_building.png',
+    '/dev_lodha_tower.png',
+    '/dev_vtp_township.png',
+    '/dev_shapoorji_township.png',
+    '/dev_kasturi_forbes.png',
+    '/dev_rohan_forbes.png',
+    '/dev_pharande_building.png',
+    '/dev_kohinoor_tower.png',
+    '/dev_gera_tower.png',
+    '/dev_paranjape_township.png'
+  ];
+  const numId = typeof property.id === 'number' ? property.id : (property.id ? property.id.length : 0);
+  return fallbacks[numId % fallbacks.length];
 };
 
 export default function PropertyCard({ 
@@ -34,7 +61,7 @@ export default function PropertyCard({
   onOpenRera,
   onOpenBrochure
 }) {
-  const defaultImg = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80';
+  const cardImgSrc = getForbesTeslaPropertyImage(property);
   const builderName = getBuilderName(property.title, property.description);
 
   return (
@@ -72,10 +99,8 @@ export default function PropertyCard({
         }}
       >
         <img 
-          src={property.imageUrl ? getOptimizedImgUrl(property.imageUrl, 800) : defaultImg} 
-          srcSet={property.imageUrl && property.imageUrl.includes('unsplash.com') 
-            ? `${getOptimizedImgUrl(property.imageUrl, 400)} 400w, ${getOptimizedImgUrl(property.imageUrl, 800)} 800w, ${getOptimizedImgUrl(property.imageUrl, 1200)} 1200w`
-            : undefined}
+          src={cardImgSrc} 
+          onError={e => { e.currentTarget.src = '/dev_kolte_patil_township.png'; }}
           sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
           alt={`Exterior of ${property.title}`} 
           loading="lazy" 
