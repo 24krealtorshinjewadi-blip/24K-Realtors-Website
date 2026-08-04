@@ -3700,7 +3700,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1991',
                   projectsCount: '6 Projects',
                   desc: '24K Opula (Baner), Life Republic 400-Acre Hinjewadi Township, 24K Stargaze & Universe.',
-                  img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_kolte_patil_township.png',
                   matchBadge: '98% MATCH'
                 },
                 {
@@ -3714,7 +3714,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1865',
                   projectsCount: '4 Projects',
                   desc: 'Joyville Sensorium & Joyville Celestial in Hinjewadi Ph 1 with riverfront greens & smart homes.',
-                  img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_shapoorji_township.png',
                   matchBadge: 'TOP TRENDING'
                 },
                 {
@@ -3728,7 +3728,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 2011',
                   projectsCount: '8 Projects',
                   desc: 'VTP Blue Waters 100+ acre township & VTP Earth One in Mahalunge, VTP HiLife Wakad, Bellissimo Hinjewadi.',
-                  img: 'https://images.unsplash.com/photo-1577985043696-8bd54d9f093f?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_vtp_township.png',
                   matchBadge: 'BESTSELLER'
                 },
                 {
@@ -3742,7 +3742,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1897',
                   projectsCount: '5 Projects',
                   desc: 'Godrej Woodsville (Hinjewadi Ph 1), Godrej Elements (Wakad), Godrej Hillside (Mahalunge Township).',
-                  img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_godrej_building.png',
                   matchBadge: 'TOP RATED'
                 },
                 {
@@ -3756,7 +3756,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1981',
                   projectsCount: '7 Projects',
                   desc: 'VJ Yashwin Enchante (Wakad Datta Mandir Rd), Yashwin Hinjewadi, VJ Yashwin Supernova Baner.',
-                  img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_vj_building.png',
                   matchBadge: 'MOST POPULAR'
                 },
                 {
@@ -3770,7 +3770,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1983',
                   projectsCount: '6 Projects',
                   desc: 'Kohinoor Courtyard One (Wakad), Kohinoor Grandeur (Hinjewadi), Presidentia & Westview Reserve.',
-                  img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_kohinoor_tower.png',
                   matchBadge: 'HIGH YIELD'
                 },
                 {
@@ -3784,7 +3784,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1999',
                   projectsCount: '3 Projects',
                   desc: 'Kasturi Apostrophe & Epitome (Wakad), Balmoral Estate (Baner High Street Italian marble penthouses).',
-                  img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_kasturi_forbes.png',
                   matchBadge: 'EXCLUSIVE'
                 },
                 {
@@ -3798,7 +3798,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1980',
                   projectsCount: '2 Projects',
                   desc: 'Lodha Panache in Hinjewadi Ph 1 featuring 5-star private clubhouses & panoramic sky-decks.',
-                  img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_lodha_tower.png',
                   matchBadge: 'NEW RELEASE'
                 },
                 {
@@ -3812,7 +3812,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1970',
                   projectsCount: '3 Projects',
                   desc: 'Gera’s Island of Joy in Hinjewadi Ph 3 with 5-year warranty & celebrity academies (Shiamak, Bhupathi).',
-                  img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_gera_tower.png',
                   matchBadge: 'FAMILY CHOICE'
                 },
                 {
@@ -3826,7 +3826,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1993',
                   projectsCount: '4 Projects',
                   desc: 'Rohan Ananta (Tathawade), Rohan Harita (Baner), Rohan Ekam (Balewadi) —PLUS light & air home design.',
-                  img: 'https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_rohan_forbes.png',
                   matchBadge: 'GREEN CERTIFIED'
                 },
                 {
@@ -3840,7 +3840,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1987',
                   projectsCount: '5 Projects',
                   desc: 'Blue Ridge 138-Acre mega township in Hinjewadi Ph 1 & Paranjape Broadway Wakad.',
-                  img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_paranjape_township.png',
                   matchBadge: 'LEGACY HUB'
                 },
                 {
@@ -3854,7 +3854,7 @@ export default function Portal({ onViewChange }) {
                   established: 'Est. 1990',
                   projectsCount: '4 Projects',
                   desc: 'Puneville 28-Acre sky-bridge township in Tathawade next to Mumbai-Pune Expressway.',
-                  img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                  img: '/dev_pharande_building.png',
                   matchBadge: 'HIGH ROI'
                 }
               ].filter(dev => activeBrandFilter === 'ALL' || dev.corridors.includes(activeBrandFilter)).map((dev, i) => (
