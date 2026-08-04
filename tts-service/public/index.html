@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Text to Speech Studio | Node.js TTS Engine</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1a1c2e 0%, #0d0e15 100%);
+      --card-bg: rgba(22, 25, 41, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-gold: #d4af37;
+      --accent-glow: #e2b714;
+      --primary: #6366f1;
+      --primary-glow: #818cf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: rgba(10, 12, 20, 0.6);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Background Glow */
+    .glow-orb {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 840px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 30px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--primary-glow);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    h1 {
+      font-size: 2.75rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -1px;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* Main Card */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Textarea Box */
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      background: var(--input-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.25rem;
+      color: var(--text-main);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    textarea::placeholder {
+      color: #475569;
+    }
+
+    .textarea-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .btn-clear {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .btn-clear:hover {
+      color: #ef4444;
+    }
+
+    /* Preset Chips */
+    .presets-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .presets-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-right: 0.25rem;
+    }
+
+    .chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.825rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .chip:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    /* Controls Grid */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    @media (max-width: 640px) {
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .control-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    select, input[type="range"] {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    select:focus {
+      border-color: var(--primary);
+    }
+
+    .range-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .speed-badge {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary-glow);
+      min-width: 50px;
+      text-align: center;
+    }
+
+    /* Primary Generate Button */
+    .btn-convert {
+      width: 100%;
+      padding: 1.1rem;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-convert:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px -5px rgba(124, 58, 237, 0.6);
+      filter: brightness(1.1);
+    }
+
+    .btn-convert:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-convert:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Audio Player Section */
+    .player-card {
+      margin-top: 2rem;
+      background: rgba(10, 12, 20, 0.7);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 14px;
+      padding: 1.5rem;
+      display: none;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .player-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .audio-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .audio-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(99, 102, 241, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-glow);
+    }
+
+    /* Animated Waveform Equalizer */
+    .waveform {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 24px;
+    }
+
+    .wave-bar {
+      width: 3px;
+      height: 6px;
+      background: var(--primary-glow);
+      border-radius: 3px;
+      transition: height 0.2s ease;
+    }
+
+    .playing .wave-bar {
+      animation: wave 0.8s ease-in-out infinite alternate;
+    }
+
+    .playing .wave-bar:nth-child(1) { animation-delay: 0.1s; }
+    .playing .wave-bar:nth-child(2) { animation-delay: 0.3s; }
+    .playing .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+    .playing .wave-bar:nth-child(4) { animation-delay: 0.4s; }
+    .playing .wave-bar:nth-child(5) { animation-delay: 0.15s; }
+
+    @keyframes wave {
+      0% { height: 4px; }
+      100% { height: 24px; }
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-play {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+      transition: transform 0.2s;
+    }
+
+    .btn-play:hover {
+      transform: scale(1.05);
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-glow) 100%);
+      border-radius: 3px;
+      transition: width 0.1s linear;
+    }
+
+    .time-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.775rem;
+      color: var(--text-muted);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 99;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-orb"></div>
+
+  <div class="container">
+    <header>
+      <div class="badge">
+        <span class="badge-dot"></span> Node.js TTS Engine
+      </div>
+      <h1>Text-to-Speech Studio</h1>
+      <p class="subtitle">Convert any written text into natural high-definition MP3 audio</p>
+    </header>
+
+    <div class="card">
+      <!-- Input Text Area -->
+      <div class="input-group">
+        <textarea id="textInput" placeholder="Type or paste your text here to convert into speech audio..."></textarea>
+        <div class="textarea-footer">
+          <span id="charCounter">0 characters | 0 words</span>
+          <button class="btn-clear" onclick="clearText()">
+            <i data-lucide="trash-2" style="width:14px;height:14px;"></i> Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Presets -->
+      <div class="presets-container">
+        <span class="presets-label">Try Samples:</span>
+        <button class="chip" onclick="loadSample(1)">🏠 24K Realtors Welcome</button>
+        <button class="chip" onclick="loadSample(2)">🚀 Luxury Villa Pitch</button>
+        <button class="chip" onclick="loadSample(3)">🇮🇳 Hindi Speech</button>
+      </div>
+
+      <!-- Controls Grid -->
+      <div class="controls-grid">
+        <!-- Language Select -->
+        <div class="control-item">
+          <label for="langSelect">
+            <i data-lucide="globe" style="width:16px;height:16px;color:#818cf8;"></i> Language / Accent
+          </label>
+          <select id="langSelect">
+            <option value="en" selected>English (US)</option>
+            <option value="en-gb">English (UK)</option>
+            <option value="en-in">English (India)</option>
+            <option value="hi">Hindi (हिंदी)</option>
+            <option value="mr">Marathi (मराठी)</option>
+            <option value="es">Spanish (Español)</option>
+            <option value="fr">French (Français)</option>
+            <option value="de">German (Deutsch)</option>
+            <option value="ja">Japanese (日本語)</option>
+          </select>
+        </div>
+
+        <!-- Speed Speed -->
+        <div class="control-item">
+          <label>
+            <i data-lucide="zap" style="width:16px;height:16px;color:#e2b714;"></i> Speech Pace
+          </label>
+          <div class="range-wrap">
+            <select id="speedSelect">
+              <option value="false" selected>Normal Pace (1.0x)</option>
+              <option value="true">Slow Pace (0.75x)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Convert Button -->
+      <button class="btn-convert" id="convertBtn" onclick="generateSpeech()">
+        <span class="spinner" id="btnSpinner"></span>
+        <i data-lucide="volume-2" id="btnIcon" style="width:20px;height:20px;"></i>
+        <span id="btnText">Synthesize Speech</span>
+      </button>
+
+      <!-- Audio Player Card -->
+      <div class="player-card" id="playerCard">
+        <div class="player-header">
+          <div class="audio-info">
+            <div class="audio-icon-box">
+              <i data-lucide="music" style="width:20px;height:20px;"></i>
+            </div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.95rem;">Generated Speech.mp3</div>
+              <div style="font-size: 0.775rem; color: var(--text-muted);" id="audioMeta">Audio Ready</div>
+            </div>
+          </div>
+
+          <!-- Waveform Anim -->
+          <div class="waveform" id="waveform">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+          </div>
+        </div>
+
+        <!-- Player Controls -->
+        <div class="player-controls">
+          <button class="btn-play" id="playBtn" onclick="toggleAudio()">
+            <i data-lucide="play" id="playIcon" style="width:22px;height:22px;fill:white;"></i>
+          </button>
+
+          <div class="progress-container">
+            <div class="progress-bar-bg" onclick="seekAudio(event)" id="progressBg">
+              <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="time-display">
+              <span id="currentTime">00:00</span>
+              <span id="durationTime">00:00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Actions -->
+        <div class="action-row">
+          <a class="btn-secondary" id="downloadBtn" download="speech.mp3" href="#">
+            <i data-lucide="download" style="width:16px;height:16px;"></i> Download MP3
+          </a>
+          <button class="btn-secondary" onclick="copyAudioUrl()">
+            <i data-lucide="copy" style="width:16px;height:16px;"></i> Copy Base64 URI
+          </button>
+        </div>
+
+        <!-- Hidden Native Audio Element -->
+        <audio id="audioElement"></audio>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <i data-lucide="check-circle" style="width:18px;height:18px;color:#10b981;"></i>
+    <span id="toastMsg">Audio generated successfully!</span>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const textInput = document.getElementById('textInput');
+    const charCounter = document.getElementById('charCounter');
+    const convertBtn = document.getElementById('convertBtn');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const btnIcon = document.getElementById('btnIcon');
+    const btnText = document.getElementById('btnText');
+    const playerCard = document.getElementById('playerCard');
+    const audioElement = document.getElementById('audioElement');
+    const playIcon = document.getElementById('playIcon');
+    const progressFill = document.getElementById('progressFill');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationTimeEl = document.getElementById('durationTime');
+    const waveform = document.getElementById('waveform');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+
+    let currentAudioUrl = null;
+
+    // Character Counter
+    textInput.addEventListener('input', () => {
+      const text = textInput.value;
+      const chars = text.length;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      charCounter.innerText = `${chars} characters | ${words} words`;
+    });
+
+    // Sample Presets
+    function loadSample(num) {
+      if (num === 1) {
+        textInput.value = "Welcome to 24K Realtors Pune. Discover our exclusive collection of MahaRERA verified ultra luxury 2, 3, and 4 BHK residential apartments in Hinjewadi, Wakad, and Baner.";
+        document.getElementById('langSelect').value = 'en-in';
+      } else if (num === 2) {
+        textInput.value = "Experience opulent living with panoramic skyline views, private infinity pools, and world-class amenities designed for elite homeowners.";
+        document.getElementById('langSelect').value = 'en';
+      } else if (num === 3) {
+        textInput.value = "24K रियल्टर्स पुणे में आपका स्वागत है। हिंजेवाड़ी, वाकड और बानेर में महारेरा प्रमाणित लक्जरी फ्लैट्स एक्सप्लोर करें।";
+        document.getElementById('langSelect').value = 'hi';
+      }
+      textInput.dispatchEvent(new Event('input'));
+    }
+
+    function clearText() {
+      textInput.value = '';
+      textInput.dispatchEvent(new Event('input'));
+      playerCard.style.display = 'none';
+    }
+
+    // Convert Text to Speech API Call
+    async function generateSpeech() {
+      const text = textInput.value.trim();
+      if (!text) {
+        showToast('Please enter some text to generate speech.', true);
+        return;
+      }
+
+      const lang = document.getElementById('langSelect').value;
+      const slow = document.getElementById('speedSelect').value === 'true';
+
+      // UI Loading state
+      convertBtn.disabled = true;
+      btnSpinner.style.display = 'inline-block';
+      btnIcon.style.display = 'none';
+      btnText.innerText = 'Converting Text to Speech...';
+
+      try {
+        const response = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, lang, slow, format: 'binary' })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.details || errData.error || 'Server error generating audio');
+        }
+
+        // Get Audio Blob from API response
+        const blob = await response.blob();
+        if (currentAudioUrl) {
+          URL.revokeObjectURL(currentAudioUrl);
+        }
+        currentAudioUrl = URL.createObjectURL(blob);
+
+        // Attach to audio element & player
+        audioElement.src = currentAudioUrl;
+        downloadBtn.href = currentAudioUrl;
+
+        playerCard.style.display = 'block';
+        showToast('Audio synthesized successfully!');
+
+        // Auto play
+        audioElement.play().catch(() => {});
+
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || 'Failed to connect to Node.js backend', true);
+      } finally {
+        convertBtn.disabled = false;
+        btnSpinner.style.display = 'none';
+        btnIcon.style.display = 'inline-block';
+        btnText.innerText = 'Synthesize Speech';
+      }
+    }
+
+    // Audio Play / Pause
+    function toggleAudio() {
+      if (!audioElement.src) return;
+      if (audioElement.paused) {
+        audioElement.play();
+      } else {
+        audioElement.pause();
+      }
+    }
+
+    audioElement.addEventListener('play', () => {
+      waveform.classList.add('playing');
+      playIcon.setAttribute('data-lucide', 'pause');
+      lucide.createIcons();
+    });
+
+    audioElement.addEventListener('pause', () => {
+      waveform.classList.remove('playing');
+      playIcon.setAttribute('data-lucide', 'play');
+      lucide.createIcons();
+    });
+
+    audioElement.addEventListener('ended', () => {
+      waveform.classList.remove('playing');
+      playIcon.setAttribute('data-lucide', 'play');
+      progressFill.style.width = '0%';
+      currentTimeEl.innerText = '00:00';
+      lucide.createIcons();
+    });
+
+    // Time & Progress Update
+    audioElement.addEventListener('timeupdate', () => {
+      if (!audioElement.duration) return;
+      const pct = (audioElement.currentTime / audioElement.duration) * 100;
+      progressFill.style.width = `${pct}%`;
+      currentTimeEl.innerText = formatTime(audioElement.currentTime);
+      durationTimeEl.innerText = formatTime(audioElement.duration);
+    });
+
+    function seekAudio(e) {
+      if (!audioElement.duration) return;
+      const bg = document.getElementById('progressBg');
+      const rect = bg.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const pct = clickX / rect.width;
+      audioElement.currentTime = pct * audioElement.duration;
+    }
+
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return '00:00';
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    async function copyAudioUrl() {
+      const text = textInput.value.trim();
+      const lang = document.getElementById('langSelect').value;
+      if (!text) return;
+
+      try {
+        const res = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, lang, format: 'base64' })
+        });
+        const data = await res.json();
+        if (data.audioBase64) {
+          await navigator.clipboard.writeText(data.audioBase64);
+          showToast('Base64 Audio URI copied to clipboard!');
+        }
+      } catch (e) {
+        showToast('Failed to copy base64 data', true);
+      }
+    }
+
+    function showToast(msg, isError = false) {
+      toastMsg.innerText = msg;
+      toast.style.borderColor = isError ? '#ef4444' : 'rgba(255, 255, 255, 0.15)';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // Default sample on start
+    loadSample(1);
+  </script>
+</body>
+</html>

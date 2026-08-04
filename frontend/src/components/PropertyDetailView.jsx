@@ -8,7 +8,7 @@ import {
   Dumbbell, ParkingCircle, Droplets, UtensilsCrossed, Phone,
   Star, Shield, Sun, Wind, Tv, Lock, Play, X, ZoomIn,
   Home, Grid, Map, Video, Info, ChevronDown, RotateCw,
-  Navigation, Clock, CheckSquare, Compass, Cpu, Layers
+  Navigation, Clock, CheckSquare, Compass, Cpu, Layers, Volume2, VolumeX
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
@@ -437,6 +437,54 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     return mRate > 0 ? (principal * mRate * Math.pow(1 + mRate, totalMos)) / (Math.pow(1 + mRate, totalMos) - 1) : principal / totalMos;
   }, [propPrice, downPayment, interestRate, loanTerm]);
 
+  /* ── Text to Speech Voice Overview ── */
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [audioLoading, setAudioLoading] = useState(false);
+  const audioRef = useRef(null);
+
+  const handlePlayVoiceOverview = async () => {
+    if (isPlayingAudio) {
+      if (audioRef.current) audioRef.current.pause();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    try {
+      setAudioLoading(true);
+      const textScript = `${property.title}. Located at ${property.location}. Price starting from ${fmt(propPrice)}. ${property.description || 'Discover ultra luxury residences with world class amenities in Pune.'}`;
+
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: textScript, lang: 'en', format: 'binary' })
+      }).catch(() => null);
+
+      if (res && res.ok) {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        if (!audioRef.current) audioRef.current = new Audio();
+        audioRef.current.src = url;
+        audioRef.current.play();
+        setIsPlayingAudio(true);
+        audioRef.current.onended = () => setIsPlayingAudio(false);
+      } else if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(textScript);
+        utter.rate = 0.95;
+        utter.pitch = 1.0;
+        utter.onend = () => setIsPlayingAudio(false);
+        utter.onerror = () => setIsPlayingAudio(false);
+        window.speechSynthesis.speak(utter);
+        setIsPlayingAudio(true);
+      }
+    } catch (e) {
+      console.error('Audio play error', e);
+    } finally {
+      setAudioLoading(false);
+    }
+  };
+
   /* ── Actions ── */
   const handleToggleWishlist = async () => {
     const next = !isWishlisted; setIsWishlisted(next);
@@ -546,6 +594,15 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
             <span style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.05rem' : '1.25rem', fontWeight: 700, letterSpacing: '0.04em' }} className="brand-shimmer-text">24K REALTORS</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <button onClick={handlePlayVoiceOverview} title={isPlayingAudio ? "Stop Voice Narration" : "Listen to Property Overview (AI Voice)"} style={{ background: isPlayingAudio ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.06)', border: `1px solid ${isPlayingAudio ? 'rgba(212,175,55,0.6)' : 'rgba(255,255,255,0.1)'}`, borderRadius: '50%', width: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              {audioLoading ? (
+                <RotateCw size={16} style={{ animation: 'spin 1s linear infinite' }} color="#D4AF37" />
+              ) : isPlayingAudio ? (
+                <VolumeX size={16} color="#D4AF37" />
+              ) : (
+                <Volume2 size={16} color="#FFF" />
+              )}
+            </button>
             <button onClick={handleToggleWishlist} style={{ background: isWishlisted ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.06)', border: `1px solid ${isWishlisted ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.1)'}`, borderRadius: '50%', width: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
               <Heart size={16} fill={isWishlisted ? '#EF4444' : 'none'} color={isWishlisted ? '#EF4444' : '#FFF'} />
             </button>

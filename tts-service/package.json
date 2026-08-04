@@ -1,0 +1,17 @@
+{
+  "name": "node-tts-backend",
+  "version": "1.0.0",
+  "description": "Node.js Text-to-Speech API with Express and Frontend UI",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "google-tts-api": "^2.0.2"
+  }
+}
