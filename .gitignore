@@ -29,3 +29,7 @@ uploads/
 
 .vercel
 .env*
+
+*.mp4
+
+*.mp4

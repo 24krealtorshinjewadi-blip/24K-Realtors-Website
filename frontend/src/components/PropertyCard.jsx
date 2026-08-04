@@ -49,6 +49,23 @@ const getForbesTeslaPropertyImage = (property) => {
   return fallbacks[numId % fallbacks.length];
 };
 
+const getBuilderName = (title = '', desc = '') => {
+  const t = ((title || '') + ' ' + (desc || '')).toLowerCase();
+  if (t.includes('lodha')) return 'LODHA GROUP';
+  if (t.includes('godrej')) return 'GODREJ PROPERTIES';
+  if (t.includes('vtp')) return 'VTP REALTY';
+  if (t.includes('kolte') || t.includes('24k')) return 'KOLTE PATIL';
+  if (t.includes('shapoorji') || t.includes('joyville')) return 'SHAPOORJI PALLONJI';
+  if (t.includes('gera')) return 'GERA DEVELOPERS';
+  if (t.includes('nyati')) return 'NYATI GROUP';
+  if (t.includes('kasturi')) return 'KASTURI BUILDERS';
+  if (t.includes('kohinoor')) return 'KOHINOOR GROUP';
+  if (t.includes('paranjape')) return 'PARANJAPE SCHEMES';
+  if (t.includes('pharande')) return 'PHARANDE SPACES';
+  if (t.includes('rohan')) return 'ROHAN BUILDERS';
+  return 'PREMIUM ALLIANCE';
+};
+
 export default function PropertyCard({ 
   property, 
   isHnwiMode, 
@@ -65,29 +82,24 @@ export default function PropertyCard({
   const builderName = getBuilderName(property.title, property.description);
 
   return (
-    <motion.div 
+    <div 
       className={`property-card premium-luxury-card radial-glow-card ${isCompared ? 'compared-active' : ''}`}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
-      whileHover={{ y: -12 }}
       id={`property-${property.id}`}
       style={{
         position: 'relative',
         borderRadius: '16px',
         overflow: 'hidden',
-        background: 'rgba(7, 15, 30, 0.75)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
+        background: 'rgba(7, 15, 30, 0.92)',
         border: '1px solid rgba(197, 168, 128, 0.22)',
-        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s',
         cursor: 'pointer',
         boxShadow: '0 12px 35px rgba(0, 0, 0, 0.45)',
+        transform: 'translateZ(0)',
+        willChange: 'transform'
       }}
       onClick={() => onOpenDetail ? onOpenDetail(property) : null}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.5)'; e.currentTarget.style.boxShadow = '0 18px 45px rgba(0,0,0,0.65), 0 0 25px rgba(212, 175, 55, 0.15)'; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(197, 168, 128, 0.22)'; e.currentTarget.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.45)'; }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px) translateZ(0)'; e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.5)'; e.currentTarget.style.boxShadow = '0 18px 45px rgba(0,0,0,0.65), 0 0 25px rgba(212, 175, 55, 0.15)'; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0) translateZ(0)'; e.currentTarget.style.borderColor = 'rgba(197, 168, 128, 0.22)'; e.currentTarget.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.45)'; }}
     >
       {/* 1. Large Premium Image Container */}
       <div 
@@ -185,7 +197,7 @@ export default function PropertyCard({
           <button 
             onClick={(e) => { 
               e.stopPropagation(); 
-              onToggleCompare(property); 
+              if (onToggleCompare) onToggleCompare(property); 
             }}
             style={{
               background: isCompared ? '#E6C35C' : 'rgba(7, 15, 30, 0.7)',
@@ -249,8 +261,8 @@ export default function PropertyCard({
           }}
         >
           {isHnwiMode 
-            ? `Yield: ${property.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice(property.price, property.transactionType)}` 
-            : formatPrice(property.price, property.transactionType)}
+            ? `Yield: ${property?.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice ? formatPrice(property?.price, property?.transactionType) : property?.price}` 
+            : (formatPrice ? formatPrice(property?.price, property?.transactionType) : property?.price)}
         </span>
       </div>
 
@@ -279,7 +291,7 @@ export default function PropertyCard({
           }}>
             {builderName}
           </span>
-          {property.exclusiveDeal && (
+          {property?.exclusiveDeal && (
             <span style={{
               fontSize: '0.65rem',
               fontWeight: 800,
@@ -307,7 +319,7 @@ export default function PropertyCard({
             }}
           >
             <MapPin size={12} color="#E6C35C" />
-            {property.location}
+            {property?.location}
           </span>
           
           {/* MahaRERA Code */}
@@ -315,7 +327,7 @@ export default function PropertyCard({
             className="rera-interactive-btn"
             onClick={(e) => {
               e.stopPropagation();
-              onOpenRera(property, e);
+              if (onOpenRera) onOpenRera(property, e);
             }}
             style={{
               background: 'rgba(255, 255, 255, 0.04)',
@@ -435,6 +447,6 @@ export default function PropertyCard({
           </span>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
