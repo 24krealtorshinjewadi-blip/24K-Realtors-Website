@@ -289,6 +289,8 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [lightboxOpen, setLightboxOpen]   = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
+  const [videoFallbackIndex, setVideoFallbackIndex] = useState(0);
+  const [useDriveFallback, setUseDriveFallback] = useState(false);
   const [isWishlisted, setIsWishlisted]   = useState(() => {
     try { 
       if (!property?.id) return false;
