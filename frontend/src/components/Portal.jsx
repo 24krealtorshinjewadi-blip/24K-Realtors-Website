@@ -2398,16 +2398,23 @@ export default function Portal({ onViewChange }) {
         );
       case 'properties-sale':
         return (
-          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+          <div className="subview-container" style={{ padding: isMobile ? '100px 16px 60px' : '130px 32px 80px', maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', minHeight: '85vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid rgba(212,175,55,0.25)', paddingBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
               <div>
-                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Active Portfolio</span>
-                <h2 className="reveal-mask" style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>
-                  <span className="reveal-mask-content">⚜️ Premium Properties for Sale</span>
-                </h2>
-                <p className="reveal-fade-up" style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Explore high-appreciation residential apartments and penthouses in Pune West.</p>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50px', padding: '4px 16px', marginBottom: '10px' }}>
+                  <Sparkles size={13} color="#D4AF37" />
+                  <span style={{ color: '#D4AF37', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>⚜️ ACTIVE BUYING PORTFOLIO</span>
+                </div>
+                <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.8rem' : '2.6rem', color: '#fff', margin: '0 0 6px 0', fontWeight: 700 }}>
+                  Premium Properties <span style={{ color: '#D4AF37' }}>for Sale</span>
+                </h1>
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.65)', fontSize: '0.9rem', fontFamily: "'Montserrat', sans-serif" }}>
+                  Explore high-appreciation residential apartments, penthouses, and gated township villas in Hinjewadi, Wakad &amp; Baner.
+                </p>
               </div>
-              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+              <button onClick={handleBackToHome} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37', padding: '10px 22px', borderRadius: '50px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s' }}>
+                ← Back to Main Portfolio
+              </button>
             </div>
             
             <div className="properties-subview-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '30px' }}>
@@ -2436,16 +2443,23 @@ export default function Portal({ onViewChange }) {
 
       case 'properties-rent':
         return (
-          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+          <div className="subview-container" style={{ padding: isMobile ? '100px 16px 60px' : '130px 32px 80px', maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', minHeight: '85vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid rgba(212,175,55,0.25)', paddingBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
               <div>
-                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Active Portfolio</span>
-                <h2 className="reveal-mask" style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>
-                  <span className="reveal-mask-content">⚜️ Luxury Residences for Rent</span>
-                </h2>
-                <p className="reveal-fade-up" style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Premium rental flats, corporate suites, and townhouses near IT parks.</p>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50px', padding: '4px 16px', marginBottom: '10px' }}>
+                  <Home size={13} color="#D4AF37" />
+                  <span style={{ color: '#D4AF37', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>🏢 PREMIUM RENTAL DESK</span>
+                </div>
+                <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.8rem' : '2.6rem', color: '#fff', margin: '0 0 6px 0', fontWeight: 700 }}>
+                  Luxury Residences <span style={{ color: '#D4AF37' }}>for Rent</span>
+                </h1>
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.65)', fontSize: '0.9rem', fontFamily: "'Montserrat', sans-serif" }}>
+                  Fully furnished executive flats, IT corridor suites, and gated townhouses in Pune West.
+                </p>
               </div>
-              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+              <button onClick={handleBackToHome} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37', padding: '10px 22px', borderRadius: '50px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s' }}>
+                ← Back to Main Portfolio
+              </button>
             </div>
             
             <div className="properties-subview-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '30px' }}>
@@ -2474,19 +2488,26 @@ export default function Portal({ onViewChange }) {
 
       case 'verified-flats':
         return (
-          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+          <div className="subview-container" style={{ padding: isMobile ? '100px 16px 60px' : '130px 32px 80px', maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', minHeight: '85vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid rgba(212,175,55,0.25)', paddingBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
               <div>
-                <span className="hero-gold-badge" style={{ marginBottom: '10px', background: 'rgba(46,196,182,0.15)', color: '#2ec4b6' }}>🛡️ 100% Trust Shield</span>
-                <h2 className="reveal-mask" style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>
-                  <span className="reveal-mask-content">Verified Premium Listings</span>
-                </h2>
-                <p className="reveal-fade-up" style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Properties audited for carpet layout compliance, registry status, and MahaRERA approvals.</p>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(46,196,182,0.12)', border: '1px solid rgba(46,196,182,0.3)', borderRadius: '50px', padding: '4px 16px', marginBottom: '10px' }}>
+                  <ShieldCheck size={13} color="#2ec4b6" />
+                  <span style={{ color: '#2ec4b6', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>🛡️ 100% AUDITED TRUST SHIELD</span>
+                </div>
+                <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.8rem' : '2.6rem', color: '#fff', margin: '0 0 6px 0', fontWeight: 700 }}>
+                  Verified <span style={{ color: '#D4AF37' }}>Premium Listings</span>
+                </h1>
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.65)', fontSize: '0.9rem', fontFamily: "'Montserrat', sans-serif" }}>
+                  Properties audited for physical carpet layout accuracy, title-clear registry status, and MahaRERA approvals.
+                </p>
               </div>
-              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+              <button onClick={handleBackToHome} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37', padding: '10px 22px', borderRadius: '50px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s' }}>
+                ← Back to Main Portfolio
+              </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '30px', flexWrap: 'wrap' }} className="verified-view-grid">
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 350px', gap: '30px' }} className="verified-view-grid">
               <div className="properties-subview-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '30px' }}>
                 {verifiedProps.map(property => (
                   <PropertyCard 
@@ -2509,29 +2530,29 @@ export default function Portal({ onViewChange }) {
                 ))}
               </div>
 
-              <div className="verification-checklist-panel" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '24px', height: 'fit-content' }}>
-                <h4 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', margin: '0 0 15px 0' }}>⚜️ 24K Verification Protocol</h4>
-                <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '20px' }}>Each property undergoes a strict 5-stage legal and spatial audit prior to public onboarding.</p>
+              <div className="verification-checklist-panel" style={{ background: 'radial-gradient(ellipse at top left, rgba(22, 36, 56, 0.85) 0%, rgba(9, 17, 31, 0.95) 100%)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '16px', padding: '28px', height: 'fit-content', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}>
+                <h4 style={{ fontFamily: "var(--font-title)", color: "var(--gold-primary)", margin: '0 0 15px 0', fontSize: '1.15rem' }}>⚜️ 24K Verification Protocol</h4>
+                <p style={{ fontSize: '0.84rem', color: "var(--text-muted)", lineHeight: 1.6, marginBottom: '20px' }}>Each property undergoes a strict 5-stage legal and spatial audit prior to public onboarding.</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                   <div style={{ display: 'flex', gap: '10px' }}>
                     <ShieldCheck size={16} color="#2ec4b6" style={{ flexShrink: 0, marginTop: '2px' }} />
                     <div>
-                      <strong style={{ fontSize: '0.88rem', color: 'var(--text-light)' }}>Title-Clear Registry Dossier</strong>
-                      <p style={{ margin: '3px 0 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>Verified land allocations and developer rights.</p>
+                      <strong style={{ fontSize: '0.88rem', color: "var(--text-light)" }}>Title-Clear Registry Dossier</strong>
+                      <p style={{ margin: '3px 0 0 0', fontSize: '0.78rem', color: "var(--text-muted)" }}>Verified land allocations and developer rights.</p>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '10px' }}>
                     <ShieldCheck size={16} color="#2ec4b6" style={{ flexShrink: 0, marginTop: '2px' }} />
                     <div>
-                      <strong style={{ fontSize: '0.88rem', color: 'var(--text-light)' }}>MahaRERA Status Mapping</strong>
-                      <p style={{ margin: '3px 0 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>Official registration and compliance verification.</p>
+                      <strong style={{ fontSize: '0.88rem', color: "var(--text-light)" }}>MahaRERA Status Mapping</strong>
+                      <p style={{ margin: '3px 0 0 0', fontSize: '0.78rem', color: "var(--text-muted)" }}>Official registration and compliance verification.</p>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '10px' }}>
                     <ShieldCheck size={16} color="#2ec4b6" style={{ flexShrink: 0, marginTop: '2px' }} />
                     <div>
-                      <strong style={{ fontSize: '0.88rem', color: 'var(--text-light)' }}>Carpet Audit Compliance</strong>
-                      <p style={{ margin: '3px 0 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>Physical layout matches blueprint RERA carpet.</p>
+                      <strong style={{ fontSize: '0.88rem', color: "var(--text-light)" }}>Carpet Audit Compliance</strong>
+                      <p style={{ margin: '3px 0 0 0', fontSize: '0.78rem', color: "var(--text-muted)" }}>Physical layout matches blueprint RERA carpet.</p>
                     </div>
                   </div>
                 </div>
@@ -2542,30 +2563,47 @@ export default function Portal({ onViewChange }) {
 
       case 'maharera-directory':
         return (
-          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+          <div className="subview-container" style={{ padding: isMobile ? '100px 16px 60px' : '130px 32px 80px', maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', minHeight: '85vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid rgba(212,175,55,0.25)', paddingBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
               <div>
-                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Compliance Directory</span>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ MahaRERA Onboarded Projects</h2>
-                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Verified MahaRERA registration certificates and broker license details.</p>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(46,196,182,0.12)', border: '1px solid rgba(46,196,182,0.3)', borderRadius: '50px', padding: '4px 16px', marginBottom: '10px' }}>
+                  <ShieldCheck size={13} color="#2ec4b6" />
+                  <span style={{ color: '#2ec4b6', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>🛡️ MAHARERA LEGAL COMPLIANCE DIRECTORY</span>
+                </div>
+                <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.8rem' : '2.6rem', color: '#fff', margin: '0 0 6px 0', fontWeight: 700 }}>
+                  MahaRERA <span style={{ color: '#D4AF37' }}>Verified Projects</span>
+                </h1>
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.65)', fontSize: '0.9rem', fontFamily: "'Montserrat', sans-serif" }}>
+                  Verified MahaRERA registration certificates, title-clear dossiers, and authorized broker license disclosures.
+                </p>
               </div>
-              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+              <button onClick={handleBackToHome} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37', padding: '10px 22px', borderRadius: '50px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s' }}>
+                ← Back to Main Portfolio
+              </button>
             </div>
 
-            <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '30px', marginBottom: '30px' }}>
-              <h4 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', margin: '0 0 10px 0' }}>Authorized Broker License: A52100028461</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>In compliance with Section 9 of the Real Estate (Regulation and Development) Act, 2016, all portfolios offered by 24K Realtors are registered under authorized MahaRERA directories. Buyers can cross-verify registrations via the official Maharashtra government portal.</p>
+            <div style={{ background: 'radial-gradient(ellipse at top left, rgba(22, 36, 56, 0.9) 0%, rgba(9, 17, 31, 0.98) 100%)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '20px', padding: '30px', marginBottom: '32px', boxShadow: '0 16px 40px rgba(0,0,0,0.6)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>⚖️</div>
+                <div>
+                  <h4 style={{ fontFamily: "'Cinzel', serif", color: '#D4AF37', margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Authorized Broker License: A52100028461</h4>
+                  <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.5)' }}>Government of Maharashtra Real Estate Regulatory Authority</div>
+                </div>
+              </div>
+              <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: 0 }}>
+                In compliance with Section 9 of the Real Estate (Regulation and Development) Act, 2016, all portfolios offered by 24K Realtors are registered under authorized MahaRERA directories. Buyers can cross-verify registrations via the official Maharashtra government portal.
+              </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
               {societies.map(soc => (
-                <div key={soc.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '20px' }}>
-                  <h4 style={{ color: '#fff', margin: '0 0 5px 0', fontFamily: 'var(--font-title)' }}>{soc.name}</h4>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--gold-primary)', fontWeight: 'bold' }}>{soc.reraNumber}</span>
-                  <div style={{ margin: '15px 0 0 0', fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-                    <p style={{ margin: '0 0 5px 0' }}><strong>Developer:</strong> {soc.developer || 'MahaRERA Developer'}</p>
-                    <p style={{ margin: '0 0 5px 0' }}><strong>Location:</strong> {soc.location || 'Pune West'}</p>
-                    <p style={{ margin: '0 0 5px 0' }}><strong>Status:</strong> {(soc.projectStatus || 'AVAILABLE').replace('_', ' ')}</p>
+                <div key={soc.id} style={{ background: 'rgba(22, 36, 56, 0.65)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '22px', transition: 'all 0.3s ease' }}>
+                  <h4 style={{ color: '#fff', margin: '0 0 6px 0', fontFamily: "'Cinzel', serif", fontSize: '1.15rem', fontWeight: 700 }}>{soc.name}</h4>
+                  <span style={{ fontSize: '0.74rem', color: '#D4AF37', fontWeight: 800, background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50px', padding: '3px 10px', display: 'inline-block' }}>{soc.reraNumber}</span>
+                  <div style={{ margin: '16px 0 0 0', fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <p style={{ margin: 0 }}><strong>Developer:</strong> {soc.developer || 'MahaRERA Developer'}</p>
+                    <p style={{ margin: 0 }}><strong>Location:</strong> {soc.location || 'Pune West'}</p>
+                    <p style={{ margin: 0 }}><strong>Status:</strong> <span style={{ color: '#22c55e', fontWeight: 700 }}>{(soc.projectStatus || 'AVAILABLE').replace('_', ' ')}</span></p>
                   </div>
                 </div>
               ))}
@@ -2575,17 +2613,19 @@ export default function Portal({ onViewChange }) {
 
       case 'exclusive-deals':
         return (
-          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(212,175,55,0.22)', paddingBottom: '15px' }}>
+          <div className="subview-container" style={{ padding: isMobile ? '100px 16px 60px' : '130px 32px 80px', maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', minHeight: '85vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid rgba(212,175,55,0.25)', paddingBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
               <div>
                 <span className="hero-gold-badge" style={{ marginBottom: '10px', background: 'rgba(212,175,55,0.15)', color: 'var(--gold-primary)' }}>⚜️ Private Client Desk</span>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>HNWI Mandates & Exclusive Deals</h2>
-                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Pre-release developer inventory, full-floor commercial assets, and high-yield properties.</p>
+                <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.8rem' : '2.6rem', color: '#fff', margin: 0, fontWeight: 700 }}>HNWI Mandates &amp; <span style={{ color: '#D4AF37' }}>Exclusive Deals</span></h2>
+                <p style={{ margin: '6px 0 0 0', color: 'rgba(255,255,255,0.65)', fontSize: '0.9rem' }}>Pre-release developer inventory, full-floor commercial assets, and high-yield properties.</p>
               </div>
-              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+              <button onClick={handleBackToHome} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37', padding: '10px 22px', borderRadius: '50px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s' }}>
+                ← Back to Main Portfolio
+              </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '30px' }} className="exclusive-view-grid">
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 380px', gap: '30px' }} className="exclusive-view-grid">
               <div className="properties-subview-layout" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: '30px' }}>
                 {exclusiveProps.map(property => (
                   <PropertyCard 
@@ -2598,6 +2638,7 @@ export default function Portal({ onViewChange }) {
                     onToggleCompare={handleToggleCompare}
                     onToggleWishlist={handleToggleWishlist}
                     onOpenRera={handleOpenReraDrawer}
+                    onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
                     onOpenDetail={(prop) => { 
                       setSelectedPropertyDetail(prop); 
                       setActiveSection('listings'); 
@@ -2607,19 +2648,19 @@ export default function Portal({ onViewChange }) {
                 ))}
               </div>
 
-              <div className="private-mandate-form-box" style={{ background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', border: '2px solid var(--gold-primary)', borderRadius: '12px', padding: '30px', height: 'fit-content' }}>
-                <h4 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', margin: '0 0 10px 0', fontSize: '1.2rem' }}>Request Portfolio Access</h4>
+              <div className="private-mandate-form-box" style={{ background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 0.98) 100%)', border: '2px solid var(--gold-primary)', borderRadius: '16px', padding: '30px', height: 'fit-content', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
+                <h4 style={{ fontFamily: 'var(--font-title)', color: 'var(--gold-primary)', margin: '0 0 10px 0', fontSize: '1.25rem' }}>Request Portfolio Access</h4>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '20px' }}>Submit details to receive our locked PDF brochures, yield tables, and schedule a private Maybach chauffeur site tour.</p>
                 <form onSubmit={(e) => { e.preventDefault(); setNotification('NDA request registered. A private client partner will reach out within 15 minutes.'); setTimeout(() => setNotification(null), 5000); }}>
                   <div style={{ marginBottom: '15px' }}>
                     <label style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '5px', fontWeight: 'bold' }}>FULL NAME</label>
-                    <input type="text" required style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)', color: '#fff' }} />
+                    <input type="text" required style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)', color: '#fff', outline: 'none' }} />
                   </div>
                   <div style={{ marginBottom: '15px' }}>
                     <label style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '5px', fontWeight: 'bold' }}>WHATSAPP NUMBER</label>
-                    <input type="tel" required style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)', color: '#fff' }} />
+                    <input type="tel" required style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)', color: '#fff', outline: 'none' }} />
                   </div>
-                  <button type="submit" className="btn-gold" style={{ width: '100%', padding: '12px', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>Submit NDA Request</button>
+                  <button type="submit" className="btn-gold" style={{ width: '100%', padding: '14px', fontWeight: 800, border: 'none', cursor: 'pointer', borderRadius: '50px', background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', color: '#040814' }}>Submit NDA Request</button>
                 </form>
               </div>
             </div>
@@ -2628,25 +2669,44 @@ export default function Portal({ onViewChange }) {
 
       case 'locality-guides':
         return (
-          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+          <div className="subview-container" style={{ padding: isMobile ? '100px 16px 60px' : '130px 32px 80px', maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', minHeight: '85vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '36px', borderBottom: '1px solid rgba(212,175,55,0.25)', paddingBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
               <div>
-                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Advisory Desk</span>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ Locality & Infrastructure Guides</h2>
-                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Connectivity matrices, upcoming metro updates, and school maps for Hinjewadi, Wakad & Baner.</p>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50px', padding: '4px 16px', marginBottom: '10px' }}>
+                  <Compass size={13} color="#D4AF37" />
+                  <span style={{ color: '#D4AF37', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>📍 PUNE WEST ADVISORY DESK</span>
+                </div>
+                <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.8rem' : '2.6rem', color: '#fff', margin: '0 0 6px 0', fontWeight: 700 }}>
+                  Locality &amp; <span style={{ color: '#D4AF37' }}>Infrastructure Dossiers</span>
+                </h1>
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.65)', fontSize: '0.9rem', fontFamily: "'Montserrat', sans-serif" }}>
+                  Transit connectivity matrices, Metro Line 3 updates, and investment yield scores for Hinjewadi, Wakad &amp; Baner.
+                </p>
               </div>
-              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+              <button onClick={handleBackToHome} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37', padding: '10px 22px', borderRadius: '50px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s' }}>
+                ← Back to Main Portfolio
+              </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
               {localities.map(loc => (
-                <div key={loc.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '24px' }}>
-                  <h4 style={{ color: '#fff', margin: '0 0 10px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)' }}>{loc.name} Area Profile</h4>
-                  <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '15px' }}>{loc.overview}</p>
-                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '15px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                    <p style={{ margin: '0 0 8px 0' }}><strong>Transit Connectivity:</strong> {loc.connectivityInfo}</p>
-                    <p style={{ margin: '0 0 8px 0' }}><strong>Metro Line 3 Progress:</strong> {loc.metroConnectivity}</p>
-                    <p style={{ margin: '0 0 8px 0' }}><strong>Investment Score:</strong> {loc.investmentAnalysis}</p>
+                <div key={loc.id} style={{ background: 'radial-gradient(ellipse at top left, rgba(22, 36, 56, 0.85) 0%, rgba(9, 17, 31, 0.95) 100%)', border: '1px solid rgba(212,175,55,0.22)', borderRadius: '20px', padding: '28px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)', backdropFilter: 'blur(16px)', transition: 'all 0.35s ease' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+                    <h3 style={{ color: '#fff', margin: 0, fontSize: '1.35rem', fontFamily: "'Cinzel', serif", fontWeight: 700 }}>{loc.name}</h3>
+                    <span style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37', borderRadius: '50px', padding: '3px 10px', fontSize: '0.65rem', fontWeight: 800 }}>RERA AUDITED</span>
+                  </div>
+                  <p style={{ fontSize: '0.86rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, marginBottom: '20px' }}>{loc.overview}</p>
+                  
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '18px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 14px', borderRadius: '10px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.85)' }}>
+                      <strong style={{ color: '#D4AF37' }}>Transit Connectivity:</strong> {loc.connectivityInfo}
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 14px', borderRadius: '10px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.85)' }}>
+                      <strong style={{ color: '#60A5FA' }}>Metro Line 3 Progress:</strong> {loc.metroConnectivity}
+                    </div>
+                    <div style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', padding: '10px 14px', borderRadius: '10px', fontSize: '0.82rem', color: '#FFF' }}>
+                      <strong style={{ color: '#D4AF37' }}>Investment CAGR:</strong> {loc.investmentAnalysis}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -2656,25 +2716,48 @@ export default function Portal({ onViewChange }) {
 
       case 'developer-portfolios':
         return (
-          <div className="subview-container" style={{ padding: '120px 20px 80px 20px', maxWidth: '1410px', margin: '0 auto', minHeight: '80vh' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+          <div className="subview-container" style={{ padding: isMobile ? '100px 16px 60px' : '130px 32px 80px', maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', minHeight: '85vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '36px', borderBottom: '1px solid rgba(212,175,55,0.25)', paddingBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
               <div>
-                <span className="hero-gold-badge" style={{ marginBottom: '10px' }}>Developer Directory</span>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '2.2rem', color: '#fff', margin: 0 }}>⚜️ Premium Real Estate Developers</h2>
-                <p style={{ margin: '5px 0 0 0', color: 'var(--text-muted)' }}>Profile directories of Pune West's leading certified builder groups.</p>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50px', padding: '4px 16px', marginBottom: '10px' }}>
+                  <Building size={13} color="#D4AF37" />
+                  <span style={{ color: '#D4AF37', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>🏛️ CERTIFIED DEVELOPER DIRECTORY</span>
+                </div>
+                <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.8rem' : '2.6rem', color: '#fff', margin: '0 0 6px 0', fontWeight: 700 }}>
+                  Authorized <span style={{ color: '#D4AF37' }}>Brand Partners</span>
+                </h1>
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.65)', fontSize: '0.9rem', fontFamily: "'Montserrat', sans-serif" }}>
+                  Official portfolios and active site registries of Pune West's leading Tier-1 builder groups.
+                </p>
               </div>
-              <button className="btn-outline" onClick={handleBackToHome}>Back to Advisor</button>
+              <button onClick={handleBackToHome} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.3)', color: '#D4AF37', padding: '10px 22px', borderRadius: '50px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s' }}>
+                ← Back to Main Portfolio
+              </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(350px, 1fr))', gap: '24px' }}>
               {builders.map(builder => (
-                <div key={builder.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '24px' }}>
-                  <h4 style={{ color: '#fff', margin: '0 0 5px 0', fontSize: '1.25rem', fontFamily: 'var(--font-title)' }}>{builder.name}</h4>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--gold-primary)', fontWeight: 'bold' }}>{builder.awards}</span>
-                  <div style={{ margin: '20px 0 0 0', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '15px', fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-                    <p style={{ margin: '0 0 6px 0' }}><strong>Experience Years:</strong> {builder.experienceYears} Years</p>
-                    <p style={{ margin: '0 0 6px 0' }}><strong>Completed Projects:</strong> {builder.completedProjectsCount}+ Projects</p>
-                    <p style={{ margin: '0 0 6px 0' }}><strong>Ongoing Projects:</strong> {builder.ongoingProjectsCount} Active Sites</p>
+                <div key={builder.id} style={{ background: 'radial-gradient(ellipse at top left, rgba(22, 36, 56, 0.85) 0%, rgba(9, 17, 31, 0.95) 100%)', border: '1px solid rgba(212,175,55,0.22)', borderRadius: '20px', padding: '28px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)', backdropFilter: 'blur(16px)', transition: 'all 0.35s ease' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <h3 style={{ color: '#fff', margin: 0, fontSize: '1.3rem', fontFamily: "'Cinzel', serif", fontWeight: 700 }}>{builder.name}</h3>
+                    <span style={{ fontSize: '1.2rem' }}>🏛️</span>
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: '#D4AF37', fontWeight: 800, marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>🏆 {builder.awards}</span>
+                  </div>
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '18px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', textAlign: 'center' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 6px', borderRadius: '10px' }}>
+                      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '2px' }}>Experience</div>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#FFF' }}>{builder.experienceYears} Yrs</div>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 6px', borderRadius: '10px' }}>
+                      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '2px' }}>Completed</div>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#D4AF37' }}>{builder.completedProjectsCount}+</div>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 6px', borderRadius: '10px' }}>
+                      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '2px' }}>Active Sites</div>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#60A5FA' }}>{builder.ongoingProjectsCount}</div>
+                    </div>
                   </div>
                 </div>
               ))}
