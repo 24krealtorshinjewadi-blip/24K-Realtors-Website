@@ -453,9 +453,9 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
   /* ── Floor Plans ── */
   const fpVariants = [
-    { id: '2bhk', label: '2 BHK Luxury', url: property.floorPlanUrl || `${s3BaseUrl}/floorplan_2bhk.png`, desc: '684 – 839 sq.ft Carpet' },
-    { id: '3bhk', label: '3 BHK Estate', url: property.floorPlan3BHKUrl || `${s3BaseUrl}/floorplan_3bhk.png`, desc: '1052 – 1477 sq.ft Carpet' },
-    { id: 'master', label: 'Master Layout', url: property.masterPlanUrl || `${s3BaseUrl}/masterplan.png`, desc: '16-Acre Township' },
+    { id: '2bhk', label: '2 BHK Luxury', url: property.floorPlanUrl || `${s3BaseUrl}/floorplan_2bhk.png`, fallbackUrl: '/floorplan_2bhk.png', desc: '684 – 839 sq.ft Carpet' },
+    { id: '3bhk', label: '3 BHK Estate', url: property.floorPlan3BHKUrl || `${s3BaseUrl}/floorplan_3bhk.png`, fallbackUrl: '/floorplan_3bhk.png', desc: '1052 – 1477 sq.ft Carpet' },
+    { id: 'master', label: 'Master Layout', url: property.masterPlanUrl || `${s3BaseUrl}/masterplan.png`, fallbackUrl: '/masterplan.png', desc: '16-Acre Township' },
   ];
   const fpActive = fpVariants.find(v => v.id === activePlan) || fpVariants[0];
 
@@ -820,7 +820,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
                 ))}
               </div>
               <div style={{ position: 'relative', borderRadius: '18px', overflow: 'hidden', background: '#0F1C2E', border: '1px solid var(--border-gold)', cursor: 'zoom-in' }} onClick={() => { setLightboxIndex(5); setLightboxOpen(true); }}>
-                <img src={fpActive.url} alt={fpActive.label} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'contain', padding: '16px', boxSizing: 'border-box' }} onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?auto=format&fit=crop&w=600&q=75'; }} />
+                <img src={fpActive.url} alt={fpActive.label} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'contain', padding: '16px', boxSizing: 'border-box' }} onError={e => { e.currentTarget.src = fpActive.fallbackUrl || '/floorplan_2bhk.png'; }} />
                 <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(9,17,31,0.8)', backdropFilter: 'blur(8px)', borderRadius: '8px', padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <ZoomIn size={12} color="#A0AEC0" /><span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.7rem', color: '#A0AEC0' }}>Tap to Zoom</span>
                 </div>
