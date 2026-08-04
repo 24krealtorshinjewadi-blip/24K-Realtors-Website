@@ -2284,6 +2284,7 @@ export default function Portal({ onViewChange }) {
   };
 
   const handleSectionChange = (section) => {
+    setSelectedPropertyDetail(null);
     setActiveSubView(null);
     setActiveSection(section);
     
@@ -2302,6 +2303,7 @@ export default function Portal({ onViewChange }) {
   };
 
   const handleApplyMegaFilter = (newFilters, section = 'listings', targetAnchorId = null, subView = null) => {
+    setSelectedPropertyDetail(null);
     setActiveSubView(subView);
 
     setFilters({
@@ -2561,9 +2563,9 @@ export default function Portal({ onViewChange }) {
                   <h4 style={{ color: '#fff', margin: '0 0 5px 0', fontFamily: 'var(--font-title)' }}>{soc.name}</h4>
                   <span style={{ fontSize: '0.78rem', color: 'var(--gold-primary)', fontWeight: 'bold' }}>{soc.reraNumber}</span>
                   <div style={{ margin: '15px 0 0 0', fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-                    <p style={{ margin: '0 0 5px 0' }}><strong>Developer:</strong> {soc.developer}</p>
-                    <p style={{ margin: '0 0 5px 0' }}><strong>Location:</strong> {soc.location}</p>
-                    <p style={{ margin: '0 0 5px 0' }}><strong>Status:</strong> {soc.projectStatus.replace('_', ' ')}</p>
+                    <p style={{ margin: '0 0 5px 0' }}><strong>Developer:</strong> {soc.developer || 'MahaRERA Developer'}</p>
+                    <p style={{ margin: '0 0 5px 0' }}><strong>Location:</strong> {soc.location || 'Pune West'}</p>
+                    <p style={{ margin: '0 0 5px 0' }}><strong>Status:</strong> {(soc.projectStatus || 'AVAILABLE').replace('_', ' ')}</p>
                   </div>
                 </div>
               ))}
