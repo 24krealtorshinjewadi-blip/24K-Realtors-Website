@@ -469,7 +469,11 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     const raw = property.slideshowImages || [];
     const formatted = raw.map(img => {
       if (!img) return `${s3BaseUrl}/hero.png`;
+      // Already an absolute URL (http/https)
       if (img.startsWith('http://') || img.startsWith('https://')) return img;
+      // Already a root-relative local path like /properties/megapolis-sunway/01.png
+      if (img.startsWith('/')) return img;
+      // Bare filename — prepend S3 base
       const cleanName = img.split('/').pop();
       return `${s3BaseUrl}/${cleanName}`;
     });
