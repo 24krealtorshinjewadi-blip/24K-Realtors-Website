@@ -716,31 +716,32 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '28px' }}>
               {[
                 { label: 'Starting Price', value: fmt(property.price), highlight: true },
+                { label: 'Price Per Sq.Ft', value: `₹${Math.round(propPrice / (property.areaSquareFeet || 1050)).toLocaleString('en-IN')}/sq.ft`, highlight: false },
                 { label: 'Carpet Area', value: `${property.areaSquareFeet || 990} sq.ft` },
                 { label: 'Configuration', value: isCommercial ? 'Commercial' : `${property.bedrooms || 2}, 3 & 4 BHK` },
-                { label: 'Possession Date', value: property.possessionDate || 'Dec 2027' },
+                { label: 'Possession Date', value: property.possessionDate || 'Ready to Move' },
               ].map((st, i) => (
-                <div key={i} style={{ background: 'rgba(9,17,31,0.65)', backdropFilter: 'blur(12px)', border: st.highlight ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '10px 16px', minWidth: '110px' }}>
-                  <div style={{ fontSize: '0.68rem', color: '#A0AEC0', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '3px' }}>{st.label}</div>
-                  <div style={{ fontSize: isMobile ? '0.95rem' : '1.05rem', fontWeight: 700, color: st.highlight ? '#F3E5AB' : '#FFF', fontFamily: 'var(--font-serif)' }}>{st.value}</div>
+                <div key={i} style={{ background: 'rgba(9,17,31,0.75)', backdropFilter: 'blur(16px)', border: st.highlight ? '1px solid rgba(212,175,55,0.6)' : '1px solid rgba(255,255,255,0.12)', borderRadius: '14px', padding: '12px 18px', minWidth: '115px', boxShadow: st.highlight ? '0 8px 25px rgba(212,175,55,0.2)' : 'none' }}>
+                  <div style={{ fontSize: '0.66rem', color: st.highlight ? '#D4AF37' : '#A0AEC0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>{st.label}</div>
+                  <div style={{ fontSize: isMobile ? '0.98rem' : '1.12rem', fontWeight: 700, color: st.highlight ? '#F3E5AB' : '#FFF', fontFamily: 'var(--font-serif)' }}>{st.value}</div>
                 </div>
               ))}
             </div>
 
             {/* CTA Buttons */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-              <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: isMobile ? '12px 20px' : '14px 28px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <CheckCircle size={16} /> Book Site Visit
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+              <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: isMobile ? '12px 22px' : '14px 30px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 8px 30px rgba(212,175,55,0.35)' }}>
+                <CheckCircle size={16} /> Book Private Tour
               </button>
-              <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: isMobile ? '12px 20px' : '14px 28px', borderRadius: '50px', background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.4)', color: '#25D366', textDecoration: 'none', fontSize: '0.88rem', fontWeight: 700, fontFamily: 'var(--font-sans)' }}>
-                <MessageSquare size={16} /> WhatsApp
+              <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: isMobile ? '12px 22px' : '14px 30px', borderRadius: '50px', background: 'rgba(37,211,102,0.18)', border: '1px solid rgba(37,211,102,0.5)', color: '#25D366', textDecoration: 'none', fontSize: '0.88rem', fontWeight: 700, fontFamily: 'var(--font-sans)', backdropFilter: 'blur(12px)' }}>
+                <MessageSquare size={16} /> WhatsApp Inquiry
               </a>
-              <a href={callLink} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: isMobile ? '12px 20px' : '14px 28px', borderRadius: '50px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFF', textDecoration: 'none', fontSize: '0.88rem', fontWeight: 600, fontFamily: 'var(--font-sans)' }}>
-                <Phone size={16} /> Call Now
+              <a href={callLink} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: isMobile ? '12px 22px' : '14px 30px', borderRadius: '50px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', textDecoration: 'none', fontSize: '0.88rem', fontWeight: 600, fontFamily: 'var(--font-sans)', backdropFilter: 'blur(12px)' }}>
+                <Phone size={16} color="#D4AF37" /> Call Advisor
               </a>
               {onOpenBrochure && (
-                <button onClick={onOpenBrochure} className="brand-btn-outline" style={{ padding: isMobile ? '12px 20px' : '14px 28px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Download size={16} /> Brochure
+                <button onClick={onOpenBrochure} className="brand-btn-outline" style={{ padding: isMobile ? '12px 22px' : '14px 30px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Download size={16} /> E-Brochure PDF
                 </button>
               )}
             </div>
@@ -1067,6 +1068,35 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
         </div>
 
+        {/* 6B. LUXURY ARCHITECTURAL SPECIFICATIONS MATRIX */}
+        <div style={{ marginBottom: '60px' }}>
+          <SectionHeader label="Luxury Architectural Specifications" sub="Engineering precision, premium finishes, and international fitting standards" />
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '20px' }}>
+            {[
+              { icon: '🏛️', title: 'Structure & Elevators', items: ['Mivan Aluminium Formwork Shatterproof RCC', 'High-speed Mitsubishi / Schindler Elevators', 'ARD (Automatic Rescue Device) Installed', 'Earthquake Resistant Zone IV Compliant'] },
+              { icon: '🪵', title: 'Flooring & Finishes', items: ['Imported Italian Marble in Living & Dining', 'Plush Hardwood Flooring in Master Suite', 'Anti-skid Designer Ceramic Tiles in Balconies', 'Luster Paint with Gypsum Finished Walls'] },
+              { icon: '🚿', title: 'Bathrooms & Fittings', items: ['Kohler / Grohe Thermostatic Shower Systems', 'Wall-hung Premium EWC with Soft-close Seats', 'Glass Shower Partition Enclosures', 'Solar Hot Water Grid Connection'] },
+              { icon: '🍳', title: 'Modular Kitchen', items: ['German Soft-close Drawer Systems', 'Quartz Stone Countertop with SS Sink', 'Piped Gas Connection with Gas Detector', 'Utility Balcony with Washing Machine Point'] },
+              { icon: '⚡', title: 'Electrical & Automation', items: ['Schneider / Legrand Modular Touch Switches', '100% DG Power Backup for Common Areas', 'EV Charging Point Provision per Slot', 'High-speed Fiber Optic Cable Ready'] },
+              { icon: '🔐', title: 'Safety & Security', items: ['Biometric Smart Door Lock (Fingerprint/PIN)', 'Video Door Phone with Mobile App Link', '24/7 AI-monitored Perimeter CCTV', '3-Tier Gated Security Checkpoints'] },
+            ].map((spec, i) => (
+              <div key={i} className="brand-glass-card" style={{ padding: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+                  <span style={{ fontSize: '1.5rem' }}>{spec.icon}</span>
+                  <h4 style={{ fontFamily: 'var(--font-title)', fontSize: '1.05rem', fontWeight: 700, color: '#F3E5AB', margin: 0 }}>{spec.title}</h4>
+                </div>
+                <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {spec.items.map((it, j) => (
+                    <li key={j} style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: '#A0AEC0', lineHeight: 1.5 }}>
+                      {it}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* 7. WORLD CLASS AMENITIES */}
         <div id={secId('amenities')} style={{ marginBottom: '60px' }}>
           <SectionHeader label="World-Class Photo Amenities" sub="Curated lifestyle features designed to offer complete leisure and luxury" />
@@ -1358,18 +1388,26 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
       {/* ── STICKY BOTTOM ACTION BAR ── */}
       {showBottomCTA && (
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 980, background: 'rgba(9, 17, 31, 0.98)', borderTop: '1px solid var(--border-gold)', padding: isMobile ? '12px 16px' : '14px 32px', backdropFilter: 'blur(16px)' }}>
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 980, background: 'rgba(9, 17, 31, 0.98)', borderTop: '1px solid var(--border-gold)', padding: isMobile ? '12px 16px' : '14px 32px', backdropFilter: 'blur(16px)', boxShadow: '0 -10px 40px rgba(0,0,0,0.8)' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: isMobile ? 'none' : 'block' }}>
-              <div style={{ fontFamily: 'var(--font-title)', fontSize: '0.98rem', fontWeight: 700, color: '#FFF' }}>{property.title}</div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: '#A0AEC0' }}>{fmt(propPrice)} • {property.location}, Pune</div>
+            <div style={{ display: isMobile ? 'none' : 'flex', alignItems: 'center', gap: '16px' }}>
+              <div>
+                <div style={{ fontFamily: 'var(--font-title)', fontSize: '1.02rem', fontWeight: 700, color: '#FFF' }}>{property.title}</div>
+                <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: '#A0AEC0' }}>{fmt(propPrice)} • {property.location}, Pune</div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '100px', background: 'rgba(56,176,0,0.15)', border: '1px solid rgba(56,176,0,0.3)', color: '#38B000', fontSize: '0.72rem', fontWeight: 700 }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38B000', animation: 'pulse 1.5s infinite' }} /> 24K Advisor Online Now
+              </div>
             </div>
             <div style={{ display: 'flex', gap: '10px', width: isMobile ? '100%' : 'auto' }}>
-              <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '11px 24px', fontSize: '0.85rem', flex: isMobile ? 1 : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                <CheckCircle size={15} /> Book Visit
+              <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '12px 26px', fontSize: '0.86rem', flex: isMobile ? 1 : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 18px rgba(212,175,55,0.35)' }}>
+                <CheckCircle size={15} /> Book Site Visit
               </button>
-              <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ padding: '11px 20px', borderRadius: '50px', background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.4)', color: '#25D366', textDecoration: 'none', fontWeight: 700, flex: isMobile ? 1 : 'none', textAlign: 'center', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ padding: '12px 22px', borderRadius: '50px', background: 'rgba(37,211,102,0.18)', border: '1px solid rgba(37,211,102,0.4)', color: '#25D366', textDecoration: 'none', fontWeight: 700, flex: isMobile ? 1 : 'none', textAlign: 'center', fontSize: '0.86rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
                 <MessageSquare size={15} /> WhatsApp
+              </a>
+              <a href={callLink} style={{ padding: '12px 20px', borderRadius: '50px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', textDecoration: 'none', fontWeight: 600, textAlign: 'center', fontSize: '0.86rem', display: isMobile ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <Phone size={15} color="#D4AF37" /> Call Now
               </a>
             </div>
           </div>
