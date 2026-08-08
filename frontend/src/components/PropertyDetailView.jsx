@@ -3,7 +3,7 @@ import {
   MapPin, ShieldCheck, Bed, Bath, Maximize, Sparkles,
   Car, Calculator, TrendingUp, HelpCircle,
   MessageSquare, ChevronLeft, ChevronRight, Download,
-  Building, CheckCircle, FileText, ArrowRight, ArrowLeft,
+  Building, CheckCircle, CheckCircle2, FileText, ArrowRight, ArrowLeft,
   Share2, Heart, Award, Wifi, Zap, Camera, Trees, Coffee,
   Dumbbell, ParkingCircle, Droplets, UtensilsCrossed, Phone,
   Star, Shield, Sun, Wind, Tv, Lock, Play, X, ZoomIn,
