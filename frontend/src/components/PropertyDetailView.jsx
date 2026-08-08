@@ -8,7 +8,7 @@ import {
   Dumbbell, ParkingCircle, Droplets, UtensilsCrossed, Phone,
   Star, Shield, Sun, Wind, Tv, Lock, Play, X, ZoomIn,
   Home, Grid, Map, Video, Info, ChevronDown, RotateCw,
-  Navigation, Clock, CheckSquare, Compass, Cpu, Layers, Volume2, VolumeX
+  Navigation, Clock, CheckSquare, Compass, Cpu, Layers, Volume2, VolumeX, Eye
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
