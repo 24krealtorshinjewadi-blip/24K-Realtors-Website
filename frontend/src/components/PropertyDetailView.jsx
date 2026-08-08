@@ -344,6 +344,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
 
   /* ── Interactive States ── */
   const [heroImageIdx, setHeroImageIdx]   = useState(0);
+  const [load3DTour, setLoad3DTour]       = useState(false);
   const [activeTab, setActiveTab]         = useState('overview');
   const [activePlan, setActivePlan]       = useState('2bhk');
   const [downPayment, setDownPayment]     = useState(20);
@@ -1072,22 +1073,38 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
               </div>
             </div>
 
-            {/* Right: 3D Matterport Virtual Walkthrough */}
+            {/* Right: 3D Matterport Virtual Walkthrough (On-Demand Load for Maximum Speed) */}
             <div>
               <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Compass size={14} color="#D4AF37" /> 3D Matterport Virtual Tour
               </div>
               <div style={{ position: 'relative', borderRadius: '18px', overflow: 'hidden', aspectRatio: '16/10', border: '1px solid var(--border-gold)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', background: '#0F1C2E' }}>
-                <iframe
-                  src={property.threeDTourUrl || "https://my.matterport.com/show/?m=JGPmBB6q58g"}
-                  style={{ width: '100%', height: '100%', border: 'none' }}
-                  allow="fullscreen; vr"
-                  allowFullScreen
-                  title="Megapolis 3D Spatial Walkthrough"
-                />
-                <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(9,17,31,0.85)', backdropFilter: 'blur(8px)', border: '1px solid var(--border-gold)', borderRadius: '8px', padding: '4px 10px', fontSize: '0.72rem', color: '#F3E5AB', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <RotateCw size={12} /> Drag & Pinch to Rotate 360°
-                </div>
+                {load3DTour ? (
+                  <iframe
+                    src={property.threeDTourUrl || "https://my.matterport.com/show/?m=JGPmBB6q58g"}
+                    style={{ width: '100%', height: '100%', border: 'none' }}
+                    allow="fullscreen; vr"
+                    allowFullScreen
+                    loading="lazy"
+                    title="Megapolis 3D Spatial Walkthrough"
+                  />
+                ) : (
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: `linear-gradient(rgba(9,17,31,0.7), rgba(9,17,31,0.9)), url(${slideshowImages[1] || slideshowImages[0]}) center/cover`, padding: '20px', textAlign: 'center' }}>
+                    <div style={{ width: '54px', height: '54px', borderRadius: '50%', background: 'rgba(212,175,55,0.2)', border: '1px solid #D4AF37', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
+                      <Compass size={28} color="#F3E5AB" />
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-title)', fontSize: '1.1rem', fontWeight: 700, color: '#FFF', marginBottom: '6px' }}>3D Matterport Interactive Tour</div>
+                    <p style={{ fontSize: '0.78rem', color: '#CBD5E0', maxWidth: '320px', marginBottom: '16px', lineHeight: 1.4 }}>Explore full 360° virtual walkthrough with WebGL spatial dimension controls.</p>
+                    <button onClick={() => setLoad3DTour(true)} className="brand-btn-gold" style={{ padding: '10px 22px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Play size={14} /> Launch 3D Walkthrough
+                    </button>
+                  </div>
+                )}
+                {load3DTour && (
+                  <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(9,17,31,0.85)', backdropFilter: 'blur(8px)', border: '1px solid var(--border-gold)', borderRadius: '8px', padding: '4px 10px', fontSize: '0.72rem', color: '#F3E5AB', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <RotateCw size={12} /> Drag & Pinch to Rotate 360°
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1268,6 +1285,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
               <iframe
                 src={`https://maps.google.com/maps?t=m&z=14&ie=UTF8&iwloc=&output=embed&q=${encodeURIComponent(property.address || `${property.title}, ${property.location}, Pune`)}&zoom=14`}
                 style={{ width: '100%', height: '100%', border: 'none', filter: 'invert(1) hue-rotate(180deg) saturate(0.9)' }}
+                loading="lazy"
                 title="Location Map" allowFullScreen />
             </div>
             <div>
