@@ -219,17 +219,58 @@ function Lightbox({ images, startIndex, onClose }) {
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, [images.length, onClose]);
+
+  const currentMeta = SIGNATURE_GALLERY_ITEMS[idx] || {
+    seq: String(idx + 1).padStart(2, '0'),
+    title: `Property View ${idx + 1}`,
+    desc: 'High-resolution authentic property photograph.'
+  };
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(9,17,31,0.97)', backdropFilter: 'blur(20px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
-      <button onClick={onClose} style={{ position: 'absolute', top: '24px', right: '24px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}><X size={20} /></button>
-      <div style={{ position: 'absolute', top: '24px', left: '50%', transform: 'translateX(-50%)', color: '#A0AEC0', fontFamily: 'var(--font-sans)', fontSize: '0.85rem' }}>{idx + 1} / {images.length}</div>
-      <button onClick={e => { e.stopPropagation(); setIdx(i => (i - 1 + images.length) % images.length); }} style={{ position: 'absolute', left: '24px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '48px', height: '48px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}><ChevronLeft size={24} /></button>
-      <AnimatePresence mode="wait">
-        <motion.img key={idx} src={images[idx]} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
-          style={{ maxWidth: '88vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: '16px', boxShadow: '0 30px 80px rgba(0,0,0,0.8)' }} onClick={e => e.stopPropagation()} />
-      </AnimatePresence>
-      <button onClick={e => { e.stopPropagation(); setIdx(i => (i + 1) % images.length); }} style={{ position: 'absolute', right: '24px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '48px', height: '48px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}><ChevronRight size={24} /></button>
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(9,17,31,0.98)', backdropFilter: 'blur(24px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: '24px 20px 32px' }} onClick={onClose}>
+      
+      {/* Top Header Bar */}
+      <div style={{ width: '100%', maxWidth: '1200px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }} onClick={e => e.stopPropagation()}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ background: 'rgba(212,175,55,0.18)', border: '1px solid rgba(212,175,55,0.4)', color: '#F3E5AB', padding: '4px 10px', borderRadius: '12px', fontFamily: 'var(--font-sans)', fontSize: '0.78rem', fontWeight: 800 }}>
+            {currentMeta.seq} / {images.length}
+          </span>
+          <span style={{ color: '#A0AEC0', fontFamily: 'var(--font-sans)', fontSize: '0.84rem' }}>
+            {currentMeta.label || currentMeta.title}
+          </span>
+        </div>
+        <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* Main Visual Canvas Area */}
+      <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', my: '12px' }} onClick={e => e.stopPropagation()}>
+        <button onClick={e => { e.stopPropagation(); setIdx(i => (i - 1 + images.length) % images.length); }} style={{ position: 'absolute', left: '16px', zIndex: 10, background: 'rgba(9,17,31,0.8)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '52px', height: '52px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)' }}>
+          <ChevronLeft size={26} />
+        </button>
+        
+        <AnimatePresence mode="wait">
+          <motion.img key={idx} src={images[idx]} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
+            style={{ maxWidth: '88vw', maxHeight: '72vh', objectFit: 'contain', borderRadius: '18px', border: '1px solid rgba(212,175,55,0.3)', boxShadow: '0 30px 90px rgba(0,0,0,0.9)' }} />
+        </AnimatePresence>
+
+        <button onClick={e => { e.stopPropagation(); setIdx(i => (i + 1) % images.length); }} style={{ position: 'absolute', right: '16px', zIndex: 10, background: 'rgba(9,17,31,0.8)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '52px', height: '52px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)' }}>
+          <ChevronRight size={26} />
+        </button>
+      </div>
+
+      {/* UI Caption Box OUTSIDE / Below Image */}
+      <div style={{ width: '100%', maxWidth: '800px', background: 'rgba(15,28,46,0.9)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '16px', padding: '16px 24px', textAlign: 'center', zIndex: 10, backdropFilter: 'blur(12px)' }} onClick={e => e.stopPropagation()}>
+        <h3 style={{ fontFamily: 'var(--font-title)', fontSize: '1.15rem', fontWeight: 700, color: '#FFF', margin: '0 0 4px' }}>
+          {currentMeta.title}
+        </h3>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: '#A0AEC0', margin: 0, lineHeight: 1.5 }}>
+          {currentMeta.desc}
+        </p>
+      </div>
+
     </motion.div>
   );
 }
@@ -257,6 +298,25 @@ function FAQItem({ q, a }) {
 /* ════════════════════════════════════════════════════════════
    MAIN 24K REALTORS LUXURY PROPERTY DETAIL VIEW
 ════════════════════════════════════════════════════════════ */
+
+const SIGNATURE_GALLERY_ITEMS = [
+  { seq: '01', key: '01_aerial_hero', label: '01 — Aerial Township Hero ⭐', title: 'Aerial Township View', desc: '150-Acre mega township nestled against lush green Sahyadri hills in Hinjewadi Phase 3.', isStar: true, cat: 'views' },
+  { seq: '02', key: '02_architecture', label: '02 — Main Tower Architecture', title: 'Main Tower Facade', desc: 'Sleek glass balconies, high-speed elevator shafts, and contemporary structural design.', isStar: false, cat: 'views' },
+  { seq: '03', key: '03_landscape', label: '03 — Township / Landscape', title: 'Central Landscape Park', desc: 'Podium gardens, paved walking trails, water fountains, and manicured green lawns.', isStar: false, cat: 'views' },
+  { seq: '04', key: '04_living_room', label: '04 — Living Room', title: 'Spacious Living Suite', desc: 'Italian marble flooring with floor-to-ceiling glass windows and natural ventilation.', isStar: false, cat: 'interior' },
+  { seq: '05', key: '05_balcony_view', label: '05 — Balcony + View ⭐', title: 'Scenic Balcony Vistas', desc: 'Wake up to expansive views of greenery and the surrounding mountain landscape.', isStar: true, cat: 'views' },
+  { seq: '06', key: '06_master_bedroom', label: '06 — Master Bedroom', title: 'Master Bedroom Suite', desc: 'Plush hardwood flooring, velvet headboards, and tranquil mountain horizon views.', isStar: false, cat: 'interior' },
+  { seq: '07', key: '07_kitchen', label: '07 — Kitchen', title: 'Modular Gourmet Kitchen', desc: 'Quartz island countertops, integrated appliances, and warm under-cabinet LED lighting.', isStar: false, cat: 'interior' },
+  { seq: '08', key: '08_clubhouse', label: '08 — Clubhouse', title: 'Grand Luxury Clubhouse', desc: 'Double-height glass lobby lounge, indoor sports arena, and community gathering arenas.', isStar: false, cat: 'amenities' },
+  { seq: '09', key: '09_swimming_pool', label: '09 — Swimming Pool', title: 'Resort-Style Infinity Pool', desc: 'Temperature-controlled swimming pool with sun loungers and tropical cabanas.', isStar: false, cat: 'amenities' },
+  { seq: '10', key: '10_gym', label: '10 — Gym', title: 'Technogym Fitness Studio', desc: 'State-of-the-art fitness center with floor-to-ceiling glass wall overlooking gardens.', isStar: false, cat: 'amenities' },
+  { seq: '11', key: '11_garden_kids', label: '11 — Garden / Kids Area', title: 'Children Play Lawn', desc: 'Dedicated eco-friendly play structures and manicured family green lawns.', isStar: false, cat: 'amenities' },
+  { seq: '12', key: '12_lobby', label: '12 — Lobby / Entrance', title: 'Grand Entrance Lobby', desc: 'Double-height marble lobby with 24/7 concierge reception and high-security access.', isStar: false, cat: 'interior' },
+  { seq: '13', key: '13_location_map', label: '13 — Location Map', title: 'Hinjewadi Phase 3 Location Map', desc: 'Direct 3-minute access to TCS, Wipro, Infosys, and upcoming Metro line.', isStar: false, cat: 'location' },
+  { seq: '14', key: '14_connectivity_map', label: '14 — Connectivity Map', title: 'Regional Transit Index', desc: 'Seamless connectivity to Baner, Expressway, and Pune International Airport.', isStar: false, cat: 'location' },
+  { seq: '15', key: '15_night_township', label: '15 — Evening/Night Township ⭐', title: 'Twilight Township Skyline', desc: 'Lit towers and ambient landscape illumination under serene evening skies.', isStar: true, cat: 'views' }
+];
+
 export default function PropertyDetailView({ property, onBack, onOpenInquiry, onOpenChauffeur, onOpenBrochure, formatPrice, getEmbedVideoUrl, allProperties = [] }) {
 
   /* ── Performance Throttled Scroll State ── */
@@ -290,6 +350,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const [videoFallbackIndex, setVideoFallbackIndex] = useState(0);
+  const [galleryFilter, setGalleryFilter] = useState('all');
   const [useDriveFallback, setUseDriveFallback] = useState(false);
   const [isWishlisted, setIsWishlisted]   = useState(() => {
     try { 
@@ -379,7 +440,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     if (t.includes('glitterati')) return '24k-glitterati';
     if (t.includes('studio') || t.includes('corporate tower')) return 'baner-studio';
     if (t.includes('mahalunge oasis')) return '24k-mahalunge-oasis';
-    if (t.includes('megapolis splendour')) return 'megapolis-splendour';
+    if (t.includes('megapolis')) return 'megapolis-sunway';
     if (t.includes('godrej elements')) return 'godrej-elements';
     if (t.includes('tcg') || t.includes('crown greens')) return 'tcg-crown-greens';
     if (t.includes('kasturi') || t.includes('apostle')) return 'kasturi-apostle';
@@ -412,10 +473,14 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     });
     if (formatted.length > 0) return formatted;
     return [
-      `${s3BaseUrl}/vyomora_hero_facade.png`, `${s3BaseUrl}/vyomora_master_living.png`,
-      `${s3BaseUrl}/vyomora_italian_kitchen.png`, `${s3BaseUrl}/vyomora_master_bedroom.png`,
-      `${s3BaseUrl}/vyomora_sky_pool.png`, `${s3BaseUrl}/vyomora_grand_lobby.png`,
-      `${s3BaseUrl}/hero.png`, `${s3BaseUrl}/hero.jpg`
+      `${s3BaseUrl}/01_aerial_hero.png`, `${s3BaseUrl}/02_architecture.png`,
+      `${s3BaseUrl}/03_landscape.png`, `${s3BaseUrl}/04_living_room.png`,
+      `${s3BaseUrl}/05_balcony_view.png`, `${s3BaseUrl}/06_master_bedroom.png`,
+      `${s3BaseUrl}/07_kitchen.png`, `${s3BaseUrl}/08_clubhouse.png`,
+      `${s3BaseUrl}/09_swimming_pool.png`, `${s3BaseUrl}/10_gym.png`,
+      `${s3BaseUrl}/11_garden_kids.png`, `${s3BaseUrl}/12_lobby.png`,
+      `${s3BaseUrl}/13_location_map.png`, `${s3BaseUrl}/14_connectivity_map.png`,
+      `${s3BaseUrl}/15_night_township.png`
     ];
   }, [property.slideshowImages, s3BaseUrl]);
 
@@ -718,27 +783,108 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
         </div>
 
-        {/* 2. CINEMATIC MASONRY GALLERY */}
-        <div id={secId('gallery')} style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Cinematic Property Gallery" sub="Every angle, room, and outdoor vista captured in high-definition" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '2fr 1fr 1fr', gridTemplateRows: isMobile ? 'auto' : '280px 200px', gap: '12px' }}>
-            <div onClick={() => { setLightboxIndex(0); setLightboxOpen(true); }} style={{ gridRow: isMobile ? 'auto' : '1 / 3', position: 'relative', borderRadius: '18px', overflow: 'hidden', cursor: 'zoom-in', aspectRatio: isMobile ? '4/3' : 'auto' }}>
-              <img src={slideshowImages[0]} alt="Hero View" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }} onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80'; }} />
-              <div style={{ position: 'absolute', bottom: '14px', left: '14px' }}>
-                <span className="brand-badge" style={{ background: 'rgba(9,17,31,0.8)', border: '1px solid rgba(212,175,55,0.4)', color: '#F3E5AB' }}><Play size={11} /> View Drone Video</span>
-              </div>
+        {/* 2. CINEMATIC SIGNATURE COLLECTION GALLERY (15-SEQUENCE) */}
+        <div id={secId('gallery')} style={{ marginBottom: '65px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+            <SectionHeader label="Signature Gallery & Ideal Sequence" sub="15-Stage verified tour sequence • 90-100% visual canvas • Clean exterior detail UI" />
+            
+            {/* Category Filter Pills */}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {[
+                { id: 'all', label: 'All 15 Sequence' },
+                { id: 'views', label: 'Aerial & Views ⭐' },
+                { id: 'interior', label: 'Interiors & Suites' },
+                { id: 'amenities', label: 'Club & Amenities' },
+                { id: 'location', label: 'Location & Transit' },
+              ].map(f => (
+                <button
+                  key={f.id}
+                  onClick={() => setGalleryFilter(f.id)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    background: galleryFilter === f.id ? 'var(--gold-primary)' : 'rgba(255,255,255,0.05)',
+                    color: galleryFilter === f.id ? '#09111F' : '#A0AEC0',
+                    border: galleryFilter === f.id ? '1px solid var(--gold-primary)' : '1px solid rgba(255,255,255,0.1)',
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.25s'
+                  }}
+                >
+                  {f.label}
+                </button>
+              ))}
             </div>
-            {slideshowImages.slice(1, 5).map((img, i) => (
-              <div key={i} onClick={() => { setLightboxIndex(i + 1); setLightboxOpen(true); }} style={{ position: 'relative', borderRadius: '14px', overflow: 'hidden', cursor: 'zoom-in', aspectRatio: '4/3' }}>
-                <img src={img} alt={`View ${i + 2}`} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }} loading="lazy" onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&q=75'; }} />
-                {i === 3 && (
-                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(9,17,31,0.78)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                    <span style={{ fontFamily: 'var(--font-title)', fontSize: '1.8rem', fontWeight: 700, color: '#FFF' }}>+{(slideshowImages.length - 4) || 50}</span>
-                    <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', color: '#A0AEC0', letterSpacing: '0.1em', textTransform: 'uppercase' }}>View All</span>
+          </div>
+
+          {/* 15-Item Ideal Sequence Grid — 90-100% Visual Canvas, UI Details OUTSIDE below image */}
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '24px' }}>
+            {SIGNATURE_GALLERY_ITEMS.filter(item => galleryFilter === 'all' || item.cat === galleryFilter).map((item, idx) => {
+              const imgSrc = slideshowImages[idx] || `${s3BaseUrl}/${item.key}.png`;
+              return (
+                <div
+                  key={item.seq}
+                  className="brand-glass-card"
+                  style={{
+                    borderRadius: '18px',
+                    overflow: 'hidden',
+                    background: 'var(--bg-card)',
+                    border: item.isStar ? '1px solid var(--gold-primary)' : '1px solid rgba(255,255,255,0.08)',
+                    transition: 'transform 0.3s, box-shadow 0.3s',
+                    boxShadow: item.isStar ? '0 8px 30px rgba(212,175,55,0.15)' : 'none',
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}
+                >
+                  {/* 90-100% Pure Visual Canvas Container */}
+                  <div
+                    onClick={() => { setLightboxIndex(idx); setLightboxOpen(true); }}
+                    style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden', cursor: 'zoom-in', background: '#0F1C2E' }}
+                  >
+                    <img
+                      src={imgSrc}
+                      alt={item.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                      loading="lazy"
+                      onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'; }}
+                    />
+                    
+                    {/* Minimal Top Badges (No heavy text overlay!) */}
+                    <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '6px' }}>
+                      <span className="brand-badge" style={{ background: 'rgba(9,17,31,0.85)', border: '1px solid rgba(212,175,55,0.4)', color: '#F3E5AB', fontSize: '0.7rem', fontWeight: 800 }}>
+                        {item.seq}
+                      </span>
+                      {item.isStar && (
+                        <span className="brand-badge" style={{ background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', color: '#09111F', fontSize: '0.7rem', fontWeight: 900 }}>
+                          ⭐ Prime View
+                        </span>
+                      )}
+                    </div>
+
+                    <div style={{ position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(9,17,31,0.75)', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.2)' }}>
+                      <Eye size={15} color="#F3E5AB" />
+                    </div>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {/* UI Detail Box OUTSIDE / Below Image (Portal Quality Typography) */}
+                  <div style={{ padding: '18px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--gold-primary)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>
+                        {item.label}
+                      </div>
+                      <h4 style={{ fontFamily: 'var(--font-title)', fontSize: '1.08rem', fontWeight: 700, color: '#FFF', margin: '0 0 6px', lineHeight: 1.25 }}>
+                        {item.title}
+                      </h4>
+                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: '#A0AEC0', margin: 0, lineHeight: 1.55 }}>
+                        {item.desc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
