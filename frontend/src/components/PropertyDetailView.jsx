@@ -343,6 +343,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   }, []);
 
   /* ── Interactive States ── */
+  const [heroImageIdx, setHeroImageIdx]   = useState(0);
   const [activeTab, setActiveTab]         = useState('overview');
   const [activePlan, setActivePlan]       = useState('2bhk');
   const [downPayment, setDownPayment]     = useState(20);
@@ -687,65 +688,138 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
         </div>
       </header>
 
-      {/* ── CINEMATIC BRAND HERO ── */}
-      <section style={{ position: 'relative', height: isMobile ? '72vh' : '86vh', minHeight: '540px', display: 'flex', alignItems: 'flex-end', overflow: 'hidden' }}>
-        <img src={slideshowImages[0]} alt={property.title} style={{ position: 'absolute', inset: 0, width: '100%', height: '110%', objectFit: 'cover', objectPosition: 'center' }} onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=85'; }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #09111F 0%, rgba(9,17,31,0.7) 40%, rgba(9,17,31,0.2) 100%)' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(9,17,31,0.6) 0%, transparent 60%)' }} />
+      {/* ── CINEMATIC BRAND HERO (10/10 SPLIT-SCREEN & INTERACTIVE THUMBNAILS) ── */}
+      <section style={{ position: 'relative', minHeight: isMobile ? '80vh' : '88vh', display: 'flex', alignItems: 'flex-end', overflow: 'hidden', background: '#070E1A' }}>
+        {/* Background Canvas with Smooth Fade Transition */}
+        <motion.img 
+          key={heroImageIdx}
+          src={slideshowImages[heroImageIdx] || slideshowImages[0]} 
+          alt={property.title} 
+          initial={{ opacity: 0.4, scale: 1.03 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '110%', objectFit: 'cover', objectPosition: 'center' }} 
+          onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=85'; }} 
+        />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #09111F 0%, rgba(9,17,31,0.75) 45%, rgba(9,17,31,0.3) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at top left, rgba(212,175,55,0.15) 0%, transparent 60%)' }} />
 
-        <div style={{ position: 'relative', zIndex: 10, maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '28px 16px' : '56px 24px', width: '100%', boxSizing: 'border-box' }}>
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            {/* Badges */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
-              <span className="brand-badge" style={{ background: 'rgba(56,176,0,0.18)', border: '1px solid rgba(56,176,0,0.4)', color: '#38B000' }}><ShieldCheck size={11} /> RERA Certified</span>
-              <span className="brand-badge" style={{ background: 'rgba(212,175,55,0.18)', border: '1px solid rgba(212,175,55,0.4)', color: '#F3E5AB' }}><Star size={11} /> Exclusive Portfolio</span>
-              <span className="brand-badge" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFF' }}><Building size={11} /> New Launch</span>
-            </div>
+        <div style={{ position: 'relative', zIndex: 10, maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '28px 16px' : '56px 24px', width: '100%', boxSizing: 'border-box' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.35fr 0.85fr', gap: '36px', alignItems: 'end' }}>
+            
+            {/* LEFT COLUMN: Title, Badges, Metrics & Interactive Thumbnail Strip */}
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+              {/* Badges */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
+                <span className="brand-badge" style={{ background: 'rgba(56,176,0,0.22)', border: '1px solid rgba(56,176,0,0.5)', color: '#38B000', backdropFilter: 'blur(8px)' }}><ShieldCheck size={11} /> RERA Certified • {property.reraNumber || 'A52100028461'}</span>
+                <span className="brand-badge" style={{ background: 'rgba(212,175,55,0.22)', border: '1px solid rgba(212,175,55,0.5)', color: '#F3E5AB', backdropFilter: 'blur(8px)' }}><Star size={11} /> 24K Signature Edition</span>
+                <span className="brand-badge" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', backdropFilter: 'blur(8px)' }}><Building size={11} /> 150-Acre Township</span>
+              </div>
 
-            {/* Title */}
-            <h1 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '2.1rem' : '3.4rem', fontWeight: 700, color: '#FFF', margin: '0 0 10px', lineHeight: 1.1, textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}>
-              {property.title}
-            </h1>
+              {/* Title */}
+              <h1 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '2.1rem' : '3.2rem', fontWeight: 700, color: '#FFF', margin: '0 0 10px', lineHeight: 1.15, textShadow: '0 4px 25px rgba(0,0,0,0.9)' }}>
+                {property.title}
+              </h1>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '22px' }}>
-              <MapPin size={15} color="#D4AF37" />
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: '#A0AEC0' }}>{property.address || `${property.location}, Pune, Maharashtra`}</span>
-            </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '22px' }}>
+                <MapPin size={16} color="#D4AF37" />
+                <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.92rem', color: '#CBD5E0', fontWeight: 500 }}>{property.address || `${property.location}, Hinjewadi Phase 3, Pune`}</span>
+              </div>
 
-            {/* Key Quick Stats */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '28px' }}>
-              {[
-                { label: 'Starting Price', value: fmt(property.price), highlight: true },
-                { label: 'Price Per Sq.Ft', value: `₹${Math.round(propPrice / (property.areaSquareFeet || 1050)).toLocaleString('en-IN')}/sq.ft`, highlight: false },
-                { label: 'Carpet Area', value: `${property.areaSquareFeet || 990} sq.ft` },
-                { label: 'Configuration', value: isCommercial ? 'Commercial' : `${property.bedrooms || 2}, 3 & 4 BHK` },
-                { label: 'Possession Date', value: property.possessionDate || 'Ready to Move' },
-              ].map((st, i) => (
-                <div key={i} style={{ background: 'rgba(9,17,31,0.75)', backdropFilter: 'blur(16px)', border: st.highlight ? '1px solid rgba(212,175,55,0.6)' : '1px solid rgba(255,255,255,0.12)', borderRadius: '14px', padding: '12px 18px', minWidth: '115px', boxShadow: st.highlight ? '0 8px 25px rgba(212,175,55,0.2)' : 'none' }}>
-                  <div style={{ fontSize: '0.66rem', color: st.highlight ? '#D4AF37' : '#A0AEC0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>{st.label}</div>
-                  <div style={{ fontSize: isMobile ? '0.98rem' : '1.12rem', fontWeight: 700, color: st.highlight ? '#F3E5AB' : '#FFF', fontFamily: 'var(--font-serif)' }}>{st.value}</div>
+              {/* Key Quick Stats Pills */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '24px' }}>
+                {[
+                  { label: 'Starting Price', value: fmt(property.price), highlight: true },
+                  { label: 'Price / Sq.Ft', value: `₹${Math.round(propPrice / (property.areaSquareFeet || 1050)).toLocaleString('en-IN')}/sq.ft`, highlight: false },
+                  { label: 'Carpet Area', value: `${property.areaSquareFeet || 990} sq.ft` },
+                  { label: 'Config', value: isCommercial ? 'Commercial' : `${property.bedrooms || 2}, 3 & 4 BHK` },
+                ].map((st, i) => (
+                  <div key={i} style={{ background: 'rgba(9,17,31,0.85)', backdropFilter: 'blur(16px)', border: st.highlight ? '1px solid rgba(212,175,55,0.6)' : '1px solid rgba(255,255,255,0.15)', borderRadius: '14px', padding: '12px 18px', minWidth: '110px', boxShadow: st.highlight ? '0 8px 30px rgba(212,175,55,0.25)' : 'none' }}>
+                    <div style={{ fontSize: '0.64rem', color: st.highlight ? '#D4AF37' : '#A0AEC0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '3px' }}>{st.label}</div>
+                    <div style={{ fontSize: isMobile ? '0.95rem' : '1.1rem', fontWeight: 700, color: st.highlight ? '#F3E5AB' : '#FFF', fontFamily: 'var(--font-serif)' }}>{st.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Interactive Quick Thumbnail Switcher (Switch Hero BG live) */}
+              <div style={{ marginBottom: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.74rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    📸 Interactive Tour View ({heroImageIdx + 1}/15)
+                  </span>
+                  <button onClick={() => { setLightboxIndex(heroImageIdx); setLightboxOpen(true); }} style={{ background: 'none', border: 'none', color: '#F3E5AB', fontSize: '0.74rem', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Maximize size={12} /> Full Screen Lightbox
+                  </button>
                 </div>
-              ))}
-            </div>
+                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '6px' }} className="brand-hide">
+                  {slideshowImages.slice(0, 7).map((img, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setHeroImageIdx(i)}
+                      style={{
+                        width: '64px',
+                        height: '44px',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        padding: 0,
+                        border: heroImageIdx === i ? '2px solid #D4AF37' : '1px solid rgba(255,255,255,0.2)',
+                        opacity: heroImageIdx === i ? 1 : 0.65,
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <img src={img} alt={`View ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </button>
+                  ))}
+                  {slideshowImages.length > 7 && (
+                    <button onClick={() => scrollTo('gallery')} style={{ width: '64px', height: '44px', borderRadius: '8px', background: 'rgba(212,175,55,0.15)', border: '1px solid var(--border-gold)', color: '#F3E5AB', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      +{slideshowImages.length - 7} More
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
 
-            {/* CTA Buttons */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
-              <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: isMobile ? '12px 22px' : '14px 30px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 8px 30px rgba(212,175,55,0.35)' }}>
-                <CheckCircle size={16} /> Book Private Tour
-              </button>
-              <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: isMobile ? '12px 22px' : '14px 30px', borderRadius: '50px', background: 'rgba(37,211,102,0.18)', border: '1px solid rgba(37,211,102,0.5)', color: '#25D366', textDecoration: 'none', fontSize: '0.88rem', fontWeight: 700, fontFamily: 'var(--font-sans)', backdropFilter: 'blur(12px)' }}>
-                <MessageSquare size={16} /> WhatsApp Inquiry
-              </a>
-              <a href={callLink} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: isMobile ? '12px 22px' : '14px 30px', borderRadius: '50px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', textDecoration: 'none', fontSize: '0.88rem', fontWeight: 600, fontFamily: 'var(--font-sans)', backdropFilter: 'blur(12px)' }}>
-                <Phone size={16} color="#D4AF37" /> Call Advisor
-              </a>
-              {onOpenBrochure && (
-                <button onClick={onOpenBrochure} className="brand-btn-outline" style={{ padding: isMobile ? '12px 22px' : '14px 30px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Download size={16} /> E-Brochure PDF
-                </button>
-              )}
-            </div>
-          </motion.div>
+            {/* RIGHT COLUMN: Desktop VIP Private Viewing Desk Card (10/10 Rating Feature) */}
+            {!isMobile && (
+              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }}>
+                <div style={{ background: 'rgba(15, 28, 46, 0.92)', backdropFilter: 'blur(20px)', border: '1px solid rgba(212, 175, 55, 0.4)', borderRadius: '22px', padding: '26px', boxShadow: '0 25px 60px rgba(0,0,0,0.8), 0 0 30px rgba(212,175,55,0.15)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                    <div>
+                      <div style={{ fontSize: '0.7rem', color: '#D4AF37', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em' }}>24K REALTORS PRIVATE DESK</div>
+                      <div style={{ fontSize: '1.05rem', color: '#FFF', fontWeight: 700, fontFamily: 'var(--font-title)' }}>Schedule VIP Viewing</div>
+                    </div>
+                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(56,176,0,0.15)', border: '1px solid rgba(56,176,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#38B000', animation: 'pulse 1.5s infinite' }} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: '#E2E8F0' }}>
+                      <CheckCircle2 size={16} color="#38B000" /> Free Chauffeur-Driven Mercedes Site Visit
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: '#E2E8F0' }}>
+                      <CheckCircle2 size={16} color="#38B000" /> Instant Inventory & Floor Plan WhatsApp PDF
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: '#E2E8F0' }}>
+                      <CheckCircle2 size={16} color="#38B000" /> Pre-approved Bank Loan Assistance (8.5% Rate)
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '14px', fontSize: '0.9rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 8px 24px rgba(212,175,55,0.4)' }}>
+                      <CheckCircle size={17} /> Request VIP Callback
+                    </button>
+                    <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', borderRadius: '50px', background: 'rgba(37,211,102,0.16)', border: '1px solid rgba(37,211,102,0.4)', color: '#25D366', textDecoration: 'none', fontSize: '0.86rem', fontWeight: 700, fontFamily: 'var(--font-sans)' }}>
+                      <MessageSquare size={16} /> Instant WhatsApp Price Sheet
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+          </div>
         </div>
       </section>
 
@@ -943,52 +1017,79 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
         </div>
 
-        {/* 4. VIDEO WALKTHROUGH */}
+        {/* 4. CINEMATIC VIDEO & 3D VIRTUAL MATTERPORT HUB */}
         <div style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Cinematic Video Tour" sub="Take a virtual walkthrough of the landmark towers and sky suites" align="center" />
-          <div style={{ position: 'relative', borderRadius: '20px', overflow: 'hidden', aspectRatio: '16/9', maxWidth: '900px', margin: '0 auto', border: '1px solid var(--border-gold)', boxShadow: '0 30px 80px rgba(0,0,0,0.6)' }}>
-            {(() => {
-              const driveFallback = "https://drive.google.com/file/d/1d0bs-V09UXSMugFtcKOEpNo9_Wh-5G3N/preview";
-              const s3Candidates = [
-                property.videoUrl,
-                `${s3BaseUrl}/video.mp4`,
-                `${s3BaseUrl}/vyomora_tour.mp4`,
-                `${s3BaseUrl}/tour.mp4`,
-                `${s3BaseUrl}/vyomora.mp4`,
-                `${s3BaseUrl}/hero.mp4`,
-                `/properties/vyomora/vyomora_tour.mp4`
-              ].filter(Boolean);
+          <SectionHeader label="Interactive Video & 3D Virtual Tour" sub="Explore full 360° spatial walkthroughs and ultra-high-definition property tours" align="center" />
+          
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '24px', maxWidth: '1100px', margin: '0 auto' }}>
+            
+            {/* Left: Video Tour */}
+            <div>
+              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Play size={14} color="#D4AF37" /> Cinematic Video Tour
+              </div>
+              <div style={{ position: 'relative', borderRadius: '18px', overflow: 'hidden', aspectRatio: '16/10', border: '1px solid var(--border-gold)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', background: '#000' }}>
+                {(() => {
+                  const s3Candidates = [
+                    property.videoUrl,
+                    `${s3BaseUrl}/video.mp4`,
+                    `${s3BaseUrl}/vyomora_tour.mp4`,
+                    `${s3BaseUrl}/tour.mp4`,
+                    `${s3BaseUrl}/vyomora.mp4`,
+                    `${s3BaseUrl}/hero.mp4`,
+                    `/properties/vyomora/vyomora_tour.mp4`
+                  ].filter(Boolean);
 
-              return (
-                <video
-                  src={s3Candidates[videoFallbackIndex] || property.videoUrl || `${s3BaseUrl}/video.mp4`}
-                  controls
-                  playsInline
-                  autoPlay
-                  muted
-                  loop
-                  poster={slideshowImages[0]}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  onError={(e) => {
-                    if (videoFallbackIndex < s3Candidates.length - 1) {
-                      setVideoFallbackIndex(prev => prev + 1);
-                    } else {
-                      // Switch to Google Drive iframe preview stream if S3 files are not accessible
-                      setUseDriveFallback(true);
-                    }
-                  }}
+                  return (
+                    <video
+                      src={s3Candidates[videoFallbackIndex] || property.videoUrl || `${s3BaseUrl}/video.mp4`}
+                      controls
+                      playsInline
+                      autoPlay
+                      muted
+                      loop
+                      poster={slideshowImages[0]}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => {
+                        if (videoFallbackIndex < s3Candidates.length - 1) {
+                          setVideoFallbackIndex(prev => prev + 1);
+                        } else {
+                          setUseDriveFallback(true);
+                        }
+                      }}
+                    />
+                  );
+                })()}
+                {useDriveFallback && (
+                  <iframe
+                    src="https://drive.google.com/file/d/1d0bs-V09UXSMugFtcKOEpNo9_Wh-5G3N/preview"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                    allow="autoplay; encrypted-media; fullscreen"
+                    allowFullScreen
+                    title="Megapolis Video Tour"
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Right: 3D Matterport Virtual Walkthrough */}
+            <div>
+              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Compass size={14} color="#D4AF37" /> 3D Matterport Virtual Tour
+              </div>
+              <div style={{ position: 'relative', borderRadius: '18px', overflow: 'hidden', aspectRatio: '16/10', border: '1px solid var(--border-gold)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', background: '#0F1C2E' }}>
+                <iframe
+                  src={property.threeDTourUrl || "https://my.matterport.com/show/?m=JGPmBB6q58g"}
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                  allow="fullscreen; vr"
+                  allowFullScreen
+                  title="Megapolis 3D Spatial Walkthrough"
                 />
-              );
-            })()}
-            {useDriveFallback && (
-              <iframe
-                src="https://drive.google.com/file/d/1d0bs-V09UXSMugFtcKOEpNo9_Wh-5G3N/preview"
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
-                allow="autoplay; encrypted-media; fullscreen"
-                allowFullScreen
-                title="Shapoorji Joyville Vyomora Video Tour"
-              />
-            )}
+                <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(9,17,31,0.85)', backdropFilter: 'blur(8px)', border: '1px solid var(--border-gold)', borderRadius: '8px', padding: '4px 10px', fontSize: '0.72rem', color: '#F3E5AB', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <RotateCw size={12} /> Drag & Pinch to Rotate 360°
+                </div>
+              </div>
+            </div>
 
           </div>
         </div>
