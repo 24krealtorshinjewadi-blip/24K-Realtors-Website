@@ -207,6 +207,24 @@ function AmenityPhotoCard({ label }) {
   );
 }
 
+const SIGNATURE_GALLERY_ITEMS = [
+  { seq: '01', key: '01_aerial_hero', label: '01 — Aerial Township Hero ⭐', title: 'Aerial Township View', desc: '150-Acre mega township nestled against lush green Sahyadri hills in Hinjewadi Phase 3.', isStar: true, cat: 'views' },
+  { seq: '02', key: '02_architecture', label: '02 — Main Tower Architecture', title: 'Main Tower Facade', desc: 'Sleek glass balconies, high-speed elevator shafts, and contemporary structural design.', isStar: false, cat: 'views' },
+  { seq: '03', key: '03_landscape', label: '03 — Township / Landscape', title: 'Central Landscape Park', desc: 'Podium gardens, paved walking trails, water fountains, and manicured green lawns.', isStar: false, cat: 'views' },
+  { seq: '04', key: '04_living_room', label: '04 — Living Room', title: 'Spacious Living Suite', desc: 'Italian marble flooring with floor-to-ceiling glass windows and natural ventilation.', isStar: false, cat: 'interior' },
+  { seq: '05', key: '05_balcony_view', label: '05 — Balcony + View ⭐', title: 'Scenic Balcony Vistas', desc: 'Wake up to expansive views of greenery and the surrounding mountain landscape.', isStar: true, cat: 'views' },
+  { seq: '06', key: '06_master_bedroom', label: '06 — Master Bedroom', title: 'Master Bedroom Suite', desc: 'Plush hardwood flooring, velvet headboards, and tranquil mountain horizon views.', isStar: false, cat: 'interior' },
+  { seq: '07', key: '07_kitchen', label: '07 — Kitchen', title: 'Modular Gourmet Kitchen', desc: 'Quartz island countertops, integrated appliances, and warm under-cabinet LED lighting.', isStar: false, cat: 'interior' },
+  { seq: '08', key: '08_clubhouse', label: '08 — Clubhouse', title: 'Grand Luxury Clubhouse', desc: 'Double-height glass lobby lounge, indoor sports arena, and community gathering arenas.', isStar: false, cat: 'amenities' },
+  { seq: '09', key: '09_swimming_pool', label: '09 — Swimming Pool', title: 'Resort-Style Infinity Pool', desc: 'Temperature-controlled swimming pool with sun loungers and tropical cabanas.', isStar: false, cat: 'amenities' },
+  { seq: '10', key: '10_gym', label: '10 — Gym', title: 'Technogym Fitness Studio', desc: 'State-of-the-art fitness center with floor-to-ceiling glass wall overlooking gardens.', isStar: false, cat: 'amenities' },
+  { seq: '11', key: '11_garden_kids', label: '11 — Garden / Kids Area', title: 'Children Play Lawn', desc: 'Dedicated eco-friendly play structures and manicured family green lawns.', isStar: false, cat: 'amenities' },
+  { seq: '12', key: '12_lobby', label: '12 — Lobby / Entrance', title: 'Grand Entrance Lobby', desc: 'Double-height marble lobby with 24/7 concierge reception and high-security access.', isStar: false, cat: 'interior' },
+  { seq: '13', key: '13_location_map', label: '13 — Location Map', title: 'Hinjewadi Phase 3 Location Map', desc: 'Direct 3-minute access to TCS, Wipro, Infosys, and upcoming Metro line.', isStar: false, cat: 'location' },
+  { seq: '14', key: '14_connectivity_map', label: '14 — Connectivity Map', title: 'Regional Transit Index', desc: 'Seamless connectivity to Baner, Expressway, and Pune International Airport.', isStar: false, cat: 'location' },
+  { seq: '15', key: '15_night_township', label: '15 — Evening/Night Township ⭐', title: 'Twilight Township Skyline', desc: 'Lit towers and ambient landscape illumination under serene evening skies.', isStar: true, cat: 'views' }
+];
+
 /* ── Lightbox Modal ── */
 function Lightbox({ images, startIndex, onClose }) {
   const [idx, setIdx] = useState(startIndex);
@@ -299,23 +317,7 @@ function FAQItem({ q, a }) {
    MAIN 24K REALTORS LUXURY PROPERTY DETAIL VIEW
 ════════════════════════════════════════════════════════════ */
 
-const SIGNATURE_GALLERY_ITEMS = [
-  { seq: '01', key: '01_aerial_hero', label: '01 — Aerial Township Hero ⭐', title: 'Aerial Township View', desc: '150-Acre mega township nestled against lush green Sahyadri hills in Hinjewadi Phase 3.', isStar: true, cat: 'views' },
-  { seq: '02', key: '02_architecture', label: '02 — Main Tower Architecture', title: 'Main Tower Facade', desc: 'Sleek glass balconies, high-speed elevator shafts, and contemporary structural design.', isStar: false, cat: 'views' },
-  { seq: '03', key: '03_landscape', label: '03 — Township / Landscape', title: 'Central Landscape Park', desc: 'Podium gardens, paved walking trails, water fountains, and manicured green lawns.', isStar: false, cat: 'views' },
-  { seq: '04', key: '04_living_room', label: '04 — Living Room', title: 'Spacious Living Suite', desc: 'Italian marble flooring with floor-to-ceiling glass windows and natural ventilation.', isStar: false, cat: 'interior' },
-  { seq: '05', key: '05_balcony_view', label: '05 — Balcony + View ⭐', title: 'Scenic Balcony Vistas', desc: 'Wake up to expansive views of greenery and the surrounding mountain landscape.', isStar: true, cat: 'views' },
-  { seq: '06', key: '06_master_bedroom', label: '06 — Master Bedroom', title: 'Master Bedroom Suite', desc: 'Plush hardwood flooring, velvet headboards, and tranquil mountain horizon views.', isStar: false, cat: 'interior' },
-  { seq: '07', key: '07_kitchen', label: '07 — Kitchen', title: 'Modular Gourmet Kitchen', desc: 'Quartz island countertops, integrated appliances, and warm under-cabinet LED lighting.', isStar: false, cat: 'interior' },
-  { seq: '08', key: '08_clubhouse', label: '08 — Clubhouse', title: 'Grand Luxury Clubhouse', desc: 'Double-height glass lobby lounge, indoor sports arena, and community gathering arenas.', isStar: false, cat: 'amenities' },
-  { seq: '09', key: '09_swimming_pool', label: '09 — Swimming Pool', title: 'Resort-Style Infinity Pool', desc: 'Temperature-controlled swimming pool with sun loungers and tropical cabanas.', isStar: false, cat: 'amenities' },
-  { seq: '10', key: '10_gym', label: '10 — Gym', title: 'Technogym Fitness Studio', desc: 'State-of-the-art fitness center with floor-to-ceiling glass wall overlooking gardens.', isStar: false, cat: 'amenities' },
-  { seq: '11', key: '11_garden_kids', label: '11 — Garden / Kids Area', title: 'Children Play Lawn', desc: 'Dedicated eco-friendly play structures and manicured family green lawns.', isStar: false, cat: 'amenities' },
-  { seq: '12', key: '12_lobby', label: '12 — Lobby / Entrance', title: 'Grand Entrance Lobby', desc: 'Double-height marble lobby with 24/7 concierge reception and high-security access.', isStar: false, cat: 'interior' },
-  { seq: '13', key: '13_location_map', label: '13 — Location Map', title: 'Hinjewadi Phase 3 Location Map', desc: 'Direct 3-minute access to TCS, Wipro, Infosys, and upcoming Metro line.', isStar: false, cat: 'location' },
-  { seq: '14', key: '14_connectivity_map', label: '14 — Connectivity Map', title: 'Regional Transit Index', desc: 'Seamless connectivity to Baner, Expressway, and Pune International Airport.', isStar: false, cat: 'location' },
-  { seq: '15', key: '15_night_township', label: '15 — Evening/Night Township ⭐', title: 'Twilight Township Skyline', desc: 'Lit towers and ambient landscape illumination under serene evening skies.', isStar: true, cat: 'views' }
-];
+
 
 export default function PropertyDetailView({ property, onBack, onOpenInquiry, onOpenChauffeur, onOpenBrochure, formatPrice, getEmbedVideoUrl, allProperties = [] }) {
 
