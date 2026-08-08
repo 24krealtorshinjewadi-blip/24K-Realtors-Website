@@ -6,7 +6,8 @@ import {
   Search, Bell, Phone, MessageSquare, Filter, Download, ChevronRight, Star,
   CheckCircle2, BarChart3, PieChart, Briefcase, ShieldCheck, Layers, Settings, HelpCircle,
   MoreVertical, ArrowUpRight, UserCheck, CheckSquare, DollarSign, Award, ChevronLeft,
-  X, Mail, MessageCircle, Sliders, LayoutGrid, List, ChevronDown, UserPlus, Trophy, Sparkles
+  X, Mail, MessageCircle, Sliders, LayoutGrid, List, ChevronDown, UserPlus, Trophy, Sparkles,
+  HardDrive
 } from 'lucide-react';
 import './Dashboard.css';
 import CompanyLogo from './CompanyLogo';

@@ -1,10 +1,10 @@
-// Auto-clear stale mock database from localStorage if it contains old demo agent names or lacks prop-21
+// Auto-clear stale mock database from localStorage if it contains old demo data, stale Megapolis listings or lacks v2026_megapolis_single_v5
 try {
   const mockAgentsStr = localStorage.getItem('mock_agents');
   const mockPropsStr = localStorage.getItem('mock_properties');
   if (
     (mockAgentsStr && mockAgentsStr.includes('Amit Verma')) || 
-    (mockPropsStr && !mockPropsStr.includes('prop-21'))
+    (mockPropsStr && (!mockPropsStr.includes('v2026_megapolis_single_v5') || mockPropsStr.includes('Megapolis Splendour') || mockPropsStr.includes('s3.ap-south-1.amazonaws.com/properties/megapolis-sunway/')))
   ) {
     console.info('[Cache Bust] Resetting stale localStorage keys to load fresh database updates...');
     localStorage.removeItem('mock_agents');
@@ -294,6 +294,7 @@ const initialProperties = [
     verifiedListing: true,
     exclusiveDeal: true,
     reraNumber: "RERA-PUN-PRM-24K301",
+    versionTag: "v2026_megapolis_single_v5",
     possessionDate: "Ready to Move",
     imageUrl: "/properties/megapolis-sunway/01_aerial_hero.png",
     videoUrl: null,
@@ -492,16 +493,16 @@ const initialProperties = [
   },
   {
     id: "prop-15",
-    title: "Megapolis 150-Acre Township — 3 BHK Premium",
-    description: "Signature 3 BHK premium residence at Megapolis Township, Hinjewadi Phase 3. Floor-to-ceiling windows, Italian marble living room, modular gourmet kitchen, and a panoramic Sahyadri balcony view. The township's 60+ amenities include infinity pool, Technogym, squash courts, jogging track, and dedicated EV charging.",
+    title: "Panchshil Towers Luxury 3 BHK",
+    description: "Ultra-luxury 3 BHK apartment in Panchshil Towers, Kharadi. Features contemporary architecture, VRF air conditioning, modular designer kitchen, three side open views, and concierge services.",
     propertyType: "RESIDENTIAL",
     transactionType: "BUY",
-    price: 11500000,
-    areaSquareFeet: 1450,
-    location: "HINJEWADI",
-    address: "Megapolis Township, Phase 3, Hinjewadi, Pune — 411057",
-    latitude: 18.5900,
-    longitude: 73.7050,
+    price: 24500000,
+    areaSquareFeet: 2150,
+    location: "KHARADI",
+    address: "Panchshil Towers, Kharadi, Pune — 411014",
+    latitude: 18.5520,
+    longitude: 73.9480,
     bedrooms: 3,
     bathrooms: 3,
     status: "AVAILABLE",
@@ -509,42 +510,11 @@ const initialProperties = [
     exclusiveDeal: true,
     reraNumber: "RERA-PUN-PRM-24K308",
     possessionDate: "Ready to Move",
-    imageUrl: "/properties/megapolis-sunway/01_aerial_hero.png",
+    imageUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
     videoUrl: null,
     threeDTourUrl: "https://my.matterport.com/show/?m=JGPmBB6q58g",
-    furnishingStatus: "SEMI_FURNISHED",
+    furnishingStatus: "FULLY_FURNISHED",
     gasPipeline: true,
-    amenities: [
-      "5-Star Grand Clubhouse",
-      "Resort-Style Infinity Pool",
-      "Technogym Fitness Studio",
-      "Badminton & Squash Courts",
-      "Children Dedicated Play Zone",
-      "Landscaped Central Park",
-      "24/7 Concierge Desk",
-      "Underground Parking",
-      "Jogging & Cycling Track",
-      "Solar-Powered Common Areas",
-      "EV Charging Stations",
-      "Multi-Purpose Hall"
-    ],
-    slideshowImages: [
-      "/properties/megapolis-sunway/01_aerial_hero.png",
-      "/properties/megapolis-sunway/02_architecture.png",
-      "/properties/megapolis-sunway/03_landscape.png",
-      "/properties/megapolis-sunway/04_living_room.png",
-      "/properties/megapolis-sunway/05_balcony_view.png",
-      "/properties/megapolis-sunway/06_master_bedroom.png",
-      "/properties/megapolis-sunway/07_kitchen.png",
-      "/properties/megapolis-sunway/08_clubhouse.png",
-      "/properties/megapolis-sunway/09_swimming_pool.png",
-      "/properties/megapolis-sunway/10_gym.png",
-      "/properties/megapolis-sunway/11_garden_kids.png",
-      "/properties/megapolis-sunway/12_lobby.png",
-      "/properties/megapolis-sunway/13_location_map.png",
-      "/properties/megapolis-sunway/14_connectivity_map.png",
-      "/properties/megapolis-sunway/15_night_township.png"
-    ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
   },
