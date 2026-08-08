@@ -16,7 +16,7 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('glitterati') || title.includes('penthouse')) return '/dev_lodha_tower.png';
   if (title.includes('mahalunge') || title.includes('oasis')) return '/dev_vtp_township.png';
   if (title.includes('studio') || title.includes('corporate')) return '/dev_kasturi_forbes.png';
-  if (title.includes('megapolis')) return '/dev_gera_tower.png';
+  if (title.includes('megapolis')) return 'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/megapolis-sunway/01_aerial_hero.png';
   if (title.includes('elements') || title.includes('godrej')) return '/dev_godrej_building.png';
   if (title.includes('crown') || title.includes('tcg')) return '/dev_shapoorji_township.png';
   if (title.includes('kasturi') || title.includes('apostle') || title.includes('villa')) return '/dev_kasturi_forbes.png';

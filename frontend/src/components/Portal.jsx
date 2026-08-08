@@ -246,13 +246,13 @@ const DEFAULT_GALLERY_ITEMS = [
   },
   {
     id: 23,
-    title: 'Megapolis 150-Acre High-Rise IT Township',
+    title: 'Megapolis 150-Acre Township',
     location: 'Hinjewadi Phase 3',
     category: 'HINJEWADI',
     categoryLabel: '🏙️ Hinjewadi Township',
-    dev: 'Pegasus Properties',
-    img: '/gallery_vj_supernova_tower.png',
-    desc: 'Integrated smart township situated right next to TCS, Tech Mahindra & Cognizant IT hubs.'
+    dev: 'Marvel Realtors',
+    img: 'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/megapolis-sunway/01_aerial_hero.png',
+    desc: '150-acre integrated smart township with 60+ amenities, resort pool, grand clubhouse, and direct walkability to TCS, Infosys & Wipro IT hubs.'
   },
   {
     id: 24,
