@@ -3,6 +3,7 @@ import {
   MapPin, ShieldCheck, ArrowRight,
   Heart, Share2, Play, ChevronRight, X, ChevronLeft
 } from 'lucide-react';
+import PropertyGallery from './PropertyGallery';
 
 export default function PropertyDetailView({
   property = {},
@@ -95,68 +96,8 @@ export default function PropertyDetailView({
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '12px 16px 32px' : '16px 24px 40px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.35fr 0.85fr', gap: '28px', alignItems: 'start' }}>
           
-          {/* LEFT: MAIN IMAGE SHOWCASE + VERTICAL THUMBNAIL OVERLAY STRIP */}
-          <div style={{ position: 'relative', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(212,175,55,0.25)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', aspectRatio: '16/10', background: '#000' }}>
-            <img src={images[mainImgIdx]} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            
-            {/* Top Left Premium Badge */}
-            <div style={{ position: 'absolute', top: '16px', left: '16px', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', color: '#09111F', fontSize: '0.68rem', fontWeight: 800, padding: '4px 10px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              PREMIUM RESIDENTIAL
-            </div>
-
-            {/* Vertical Thumbnail Strip (Left Overlay) */}
-            <div style={{ position: 'absolute', top: '56px', left: '16px', display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 10 }}>
-              {images.slice(0, 4).map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setMainImgIdx(idx)}
-                  style={{
-                    width: '48px',
-                    height: '36px',
-                    borderRadius: '6px',
-                    overflow: 'hidden',
-                    border: mainImgIdx === idx ? '2px solid #D4AF37' : '1px solid rgba(255,255,255,0.4)',
-                    padding: 0,
-                    cursor: 'pointer',
-                    opacity: mainImgIdx === idx ? 1 : 0.7,
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  <img src={img} alt={`Thumb ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </button>
-              ))}
-              {images.length > 4 && (
-                <button
-                  onClick={() => setLightboxOpen(true)}
-                  style={{ width: '48px', height: '36px', borderRadius: '6px', background: 'rgba(9,17,31,0.85)', border: '1px solid #D4AF37', color: '#F3E5AB', fontSize: '0.6rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                >
-                  +{images.length - 4} Photos
-                </button>
-              )}
-            </div>
-
-            {/* Center Play Button Overlay */}
-            <button
-              onClick={() => setLightboxOpen(true)}
-              style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(212,175,55,0.3)', border: '2px solid #D4AF37', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(6px)', transition: 'transform 0.2s' }}
-            >
-              <Play size={24} fill="#FFF" color="#FFF" style={{ marginLeft: '4px' }} />
-            </button>
-
-            {/* Prev / Next Arrows */}
-            <button
-              onClick={() => setMainImgIdx(prev => (prev > 0 ? prev - 1 : images.length - 1))}
-              style={{ position: 'absolute', left: '16px', bottom: '16px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(9,17,31,0.7)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button
-              onClick={() => setMainImgIdx(prev => (prev < images.length - 1 ? prev + 1 : 0))}
-              style={{ position: 'absolute', right: '16px', bottom: '16px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(9,17,31,0.7)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
+          {/* LEFT: REUSABLE STANDALONE LUXURY PROPERTY GALLERY COMPONENT */}
+          <PropertyGallery property={property} onOpenInquiry={onOpenInquiry} />
 
           {/* RIGHT: DETAILS, METRICS, CTA & META DETAILS (IMAGE 2 MATCH) */}
           <div style={{ background: 'rgba(15,28,46,0.85)', borderRadius: '20px', padding: '24px', border: '1px solid rgba(212,175,55,0.25)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
