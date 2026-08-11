@@ -185,21 +185,27 @@ export default function PropertyGallery({
   const propertyLocation = property.location || 'Hinjewadi Phase 1, Pune';
   const hasVideo         = Boolean(property.videoUrl || property.threeDTourUrl);
 
-  /* ── Normalize gallery items ── */
+  /* ── Normalize gallery items + sort exterior first ── */
   const fullGallery = useMemo(() => {
     const CATS = ['exterior', 'interior', 'amenities', 'lifestyle', 'views', 'floorplans'];
+    // Category priority: exterior always first, then interior, etc.
+    const CAT_ORDER = { exterior: 0, views: 1, interior: 2, lifestyle: 3, amenities: 4, floorplans: 5, videos: 6 };
+
+    const sortByCategory = (arr) =>
+      [...arr].sort((a, b) => (CAT_ORDER[a.category] ?? 99) - (CAT_ORDER[b.category] ?? 99));
 
     if (Array.isArray(property.gallery) && property.gallery.length > 0) {
-      return property.gallery.map((item, i) => ({
+      const mapped = property.gallery.map((item, i) => ({
         url:      item.url  || item.src || (typeof item === 'string' ? item : FALLBACK_URL),
         category: (item.category || CATS[i % CATS.length]).toLowerCase(),
         title:    item.title || `${propertyTitle} — Image ${i + 1}`,
         alt:      item.alt   || `${propertyTitle} ${item.category || 'view'} ${i + 1}`,
       }));
+      return sortByCategory(mapped);
     }
 
     if (Array.isArray(property.images) && property.images.length > 0) {
-      return property.images.map((img, i) => {
+      const mapped = property.images.map((img, i) => {
         const url = typeof img === 'string' ? img : img?.url || FALLBACK_URL;
         const cat = CATS[i % CATS.length];
         return {
@@ -209,9 +215,10 @@ export default function PropertyGallery({
           alt:      `${propertyTitle} ${cat} view`,
         };
       });
+      return sortByCategory(mapped);
     }
 
-    return FALLBACK_GALLERY;
+    return FALLBACK_GALLERY; // already sorted exterior-first
   }, [property, propertyTitle]);
 
   /* ── State ── */
@@ -493,18 +500,21 @@ export default function PropertyGallery({
               zIndex:    4,
             }}>
               <span style={{
-                display:       'inline-flex',
-                alignItems:    'center',
-                background:    'rgba(212,175,55,0.15)',
-                border:        '1px solid rgba(212,175,55,0.4)',
-                borderRadius:  '5px',
-                padding:       '2px 8px',
-                color:         '#D4AF37',
-                fontSize:      '0.61rem',
-                fontWeight:    800,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                width:         'fit-content',
+                display:        'inline-flex',
+                alignItems:     'center',
+                background:     'linear-gradient(135deg, rgba(212,175,55,0.45), rgba(212,175,55,0.25))',
+                backdropFilter: 'blur(8px)',
+                border:         '1px solid rgba(212,175,55,0.7)',
+                borderRadius:   '6px',
+                padding:        '4px 10px',
+                color:          '#FFF',
+                fontSize:       '0.65rem',
+                fontWeight:     800,
+                letterSpacing:  '0.14em',
+                textTransform:  'uppercase',
+                width:          'fit-content',
+                textShadow:     '0 1px 4px rgba(0,0,0,0.8)',
+                boxShadow:      '0 2px 8px rgba(0,0,0,0.4)',
               }}>
                 {(currentItem.category || 'EXTERIOR').toUpperCase()}
               </span>
