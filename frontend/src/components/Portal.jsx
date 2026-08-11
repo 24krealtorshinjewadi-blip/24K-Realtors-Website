@@ -3362,260 +3362,305 @@ export default function Portal({ onViewChange }) {
         </div>
       ) : activeSubView ? renderSubView() : (
         <>
-          {/* Redesigned Full-Screen Cinematic Hero Section */}
+          {/* ─── REDESIGNED CINEMATIC HERO ─ Matches reference site exactly ─── */}
           <section className="portal-hero" style={{
             position: 'relative',
-            minHeight: '85vh',
+            minHeight: '100vh',
             backgroundImage: "url('/hero_bg.jpg')",
             backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundPosition: 'center top',
             display: 'flex',
-            alignItems: 'center',
+            flexDirection: 'column',
             overflow: 'hidden'
           }}>
-            {/* Dark vignette overlay for readability */}
-            <div className="hero-vignette-overlay" style={{
-              position: 'absolute',
-              top: 0, left: 0, right: 0, bottom: 0,
-              background: 'linear-gradient(to right, rgba(4, 8, 20, 0.78) 0%, rgba(4, 8, 20, 0.20) 55%, rgba(4, 8, 20, 0.35) 100%), linear-gradient(to bottom, rgba(4, 8, 20, 0.25) 0%, rgba(4, 8, 20, 0.75) 100%)',
+            {/* Dark gradient overlay — left-heavy like reference */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+              background: 'linear-gradient(to right, rgba(4,8,20,0.88) 0%, rgba(4,8,20,0.55) 50%, rgba(4,8,20,0.30) 100%), linear-gradient(to bottom, rgba(4,8,20,0.15) 0%, rgba(4,8,20,0.70) 100%)',
               zIndex: 1
             }} />
-            <div className="hero-content" style={{ 
-              position: 'relative',
-              zIndex: 2,
+
+            {/* Main hero content row */}
+            <div style={{
+              position: 'relative', zIndex: 2,
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
               width: '100%',
               maxWidth: '94%',
               margin: '0 auto',
-              padding: '100px 0 50px 0'
+              padding: isMobile ? '100px 0 30px 0' : '110px 0 40px 0',
+              gap: '40px',
             }}>
-              <div className="hero-text-block" style={{ maxWidth: '650px', marginBottom: '40px' }}>
-                <span className="hero-gold-badge" style={{
-                  fontSize: '0.72rem',
-                  fontWeight: 600,
-                  color: '#C5A880',
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px'
+
+              {/* ── LEFT: Text + CTAs + Trust Badges ── */}
+              <div style={{ flex: '0 0 55%', maxWidth: isMobile ? '100%' : '55%' }}>
+
+                {/* "Since" badge with shield */}
+                <div style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.25)',
+                  borderRadius: '50px', padding: '5px 14px', marginBottom: '24px'
                 }}>
-                  <span style={{ width: '24px', height: '1px', background: 'rgba(197,168,128,0.6)', display: 'inline-block' }} />
-                  PUNE'S MOST TRUSTED ADVISORY SINCE 2015
-                  <span style={{ width: '24px', height: '1px', background: 'rgba(197,168,128,0.6)', display: 'inline-block' }} />
-                </span>
-                
-                <h1 style={{ 
-                  fontFamily: "'Cinzel', serif", 
-                  fontSize: 'clamp(2.4rem, 4.8vw, 4.5rem)', 
-                  color: '#fff', 
-                  lineHeight: 1.12, 
-                  margin: '22px 0 18px 0', 
-                  fontWeight: 700,
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#C5A880', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                    PUNE'S MOST TRUSTED ADVISORY SINCE 2011
+                  </span>
+                </div>
+
+                {/* H1 */}
+                <h1 style={{
+                  fontFamily: "'Cinzel', serif",
+                  fontSize: isMobile ? 'clamp(2.2rem, 7vw, 3.5rem)' : 'clamp(2.8rem, 4.5vw, 5rem)',
+                  color: '#fff', lineHeight: 1.1,
+                  margin: '0 0 18px 0', fontWeight: 700,
                   letterSpacing: '-0.01em',
-                  textShadow: '0 4px 20px rgba(0,0,0,0.5)' 
+                  textShadow: '0 4px 20px rgba(0,0,0,0.5)'
                 }}>
                   Pune's Most Coveted<br />
-                  <span style={{ 
+                  <span style={{
                     background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 40%, #C5A880 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  }}>Addresses, Curated For You</span>
+                    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
+                  }}>Addresses,<br />Curated For You</span>
                 </h1>
-                
-                <p className="hero-subtext" style={{ 
-                  fontFamily: "'Playfair Display', serif",
-                  fontStyle: 'italic',
-                  fontSize: 'clamp(1rem, 1.3vw, 1.25rem)', 
-                  color: 'rgba(255, 255, 255, 0.85)', 
-                  lineHeight: 1.7, 
-                  marginBottom: '36px',
-                  textShadow: '0 2px 5px rgba(0,0,0,0.5)',
-                  maxWidth: '540px'
+
+                <p style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontSize: isMobile ? '0.92rem' : '1.05rem',
+                  color: 'rgba(255,255,255,0.80)',
+                  lineHeight: 1.65, marginBottom: '32px',
+                  maxWidth: '480px'
                 }}>
-                  Where legacy builders meet verified portfolios — Hinjewadi, Wakad, Baner &amp; Pune's most prestigious areas.
+                  Where legacy builders meet verified portfolios in Hinjewadi, Wakad, Baner &amp; Pune's most prestigious areas.
                 </p>
 
-                <div className="hero-cta-group" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                  <button 
+                {/* CTAs */}
+                <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '36px' }}>
+                  <button
                     onClick={() => {
                       const el = document.getElementById('listings-anchor');
                       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
                     style={{
                       background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-                      border: 'none',
-                      color: '#040814',
-                      padding: '14px 32px',
-                      borderRadius: '30px',
-                      fontWeight: 700,
-                      fontFamily: "'Montserrat', sans-serif",
-                      fontSize: '0.85rem',
-                      letterSpacing: '0.06em',
-                      cursor: 'pointer',
-                      boxShadow: '0 8px 24px rgba(230, 195, 92, 0.3)',
+                      border: 'none', color: '#040814',
+                      padding: '14px 30px', borderRadius: '30px',
+                      fontWeight: 700, fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '0.84rem', letterSpacing: '0.06em', cursor: 'pointer',
+                      boxShadow: '0 8px 24px rgba(230,195,92,0.35)',
                       transition: 'all 0.3s ease',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px'
+                      display: 'inline-flex', alignItems: 'center', gap: '8px'
                     }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 12px 30px rgba(230, 195, 92, 0.4)';
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(230, 195, 92, 0.3)';
-                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 14px 32px rgba(230,195,92,0.5)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(230,195,92,0.35)'; }}
                   >
                     <span>EXPLORE PROJECTS</span>
                     <ArrowRight size={14} />
                   </button>
-                  
-                  <button 
+
+                  <button
                     onClick={handleOpenInquiry}
                     style={{
-                      background: 'rgba(255, 255, 255, 0.02)',
-                      border: '1px solid rgba(230, 195, 92, 0.3)',
-                      color: '#FFF4D0',
-                      padding: '14px 32px',
-                      borderRadius: '30px',
-                      fontWeight: 700,
-                      fontFamily: "'Montserrat', sans-serif",
-                      fontSize: '0.85rem',
-                      letterSpacing: '0.06em',
-                      cursor: 'pointer',
+                      background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(230,195,92,0.35)',
+                      color: '#FFF4D0', padding: '14px 30px', borderRadius: '30px',
+                      fontWeight: 700, fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '0.84rem', letterSpacing: '0.06em', cursor: 'pointer',
                       transition: 'all 0.3s ease',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px'
+                      display: 'inline-flex', alignItems: 'center', gap: '8px'
                     }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.background = 'rgba(230, 195, 92, 0.05)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(230,195,92,0.06)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                   >
                     <Phone size={14} style={{ color: '#E6C35C' }} />
                     <span>TALK TO EXPERT</span>
                   </button>
                 </div>
-              </div>
 
-              {/* Hero scroll indicator */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '16px', animation: 'fadeIn 2s ease 1.5s both' }}>
-                <span style={{ fontSize: '0.68rem', color: 'rgba(197,168,128,0.6)', letterSpacing: '0.1em', fontFamily: "'Montserrat', sans-serif", textTransform: 'uppercase' }}>Discover Properties</span>
-                <div style={{ width: '1px', height: '16px', background: 'rgba(197,168,128,0.3)' }} />
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(197,168,128,0.55)" strokeWidth="1.5" style={{ animation: 'float 2s ease-in-out infinite' }}>
-                  <path d="M12 5v14M5 12l7 7 7-7" />
-                </svg>
-              </div>
-
-              {/* Unified 24K Master Search & AI Bar */}
-              <div
-                style={{
-                  width: "100%",
-                  maxWidth: "780px",
-                  background: "rgba(7, 15, 30, 0.65)",
-                  backdropFilter: "blur(24px)",
-                  WebkitBackdropFilter: "blur(24px)",
-                  border: "1px solid rgba(230, 195, 92, 0.35)",
-                  borderRadius: "20px",
-                  padding: "10px 12px 10px 20px",
-                  margin: "36px auto 0 auto",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "12px",
-                  boxShadow: "0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255,255,255,0.08)",
-                  transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)"
-                }}
-              >
-                {/* Search Text Input trigger for Spotlight / CmdK */}
-                <div
-                  onClick={() => setIsSpotlightOpen(true)}
-                  style={{ display: "flex", alignItems: "center", gap: "12px", flex: 1, cursor: "pointer", minWidth: 0 }}
-                >
-                  <span style={{ fontSize: "1.25rem" }}>🏠</span>
-                  <span style={{ fontSize: isMobile ? "0.84rem" : "0.94rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    Search Hinjewadi, Wakad, Baner...
-                  </span>
+                {/* ── TRUST BADGES ROW ── */}
+                <div style={{
+                  display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center'
+                }}>
+                  {[
+                    { icon: '🛡️', label: 'VERIFIED', sub: 'PROPERTIES' },
+                    { icon: '🏷️', label: 'BEST PRICE', sub: 'GUARANTEED' },
+                    { icon: '👤', label: 'EXPERT', sub: 'GUIDANCE' },
+                    { icon: '👁️', label: 'COMPLETE', sub: 'TRANSPARENCY' },
+                  ].map((badge, i) => (
+                    <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '70px' }}>
+                      <div style={{
+                        width: '42px', height: '42px', borderRadius: '50%',
+                        border: '1px solid rgba(212,175,55,0.3)',
+                        background: 'rgba(212,175,55,0.06)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '1.1rem'
+                      }}>{badge.icon}</div>
+                      <span style={{ fontSize: '0.58rem', fontWeight: 700, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.08em', textAlign: 'center', fontFamily: "'Montserrat',sans-serif" }}>{badge.label}<br/>{badge.sub}</span>
+                    </div>
+                  ))}
                 </div>
-
-                {/* Integrated AI Area Match Pill Button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsAiModalOpen(true);
-                    setAiStep(1);
-                  }}
-                  style={{
-                    background: "linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)",
-                    border: "none",
-                    color: "#040814",
-                    padding: isMobile ? "8px 14px" : "10px 20px",
-                    borderRadius: "50px",
-                    fontSize: isMobile ? "0.74rem" : "0.82rem",
-                    fontWeight: 800,
-                    fontFamily: "'Montserrat', sans-serif",
-                    letterSpacing: "0.04em",
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    boxShadow: "0 4px 16px rgba(230, 195, 92, 0.35)",
-                    transition: "all 0.3s ease",
-                    flexShrink: 0
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.04)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(230, 195, 92, 0.5)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(230, 195, 92, 0.35)"; }}
-                >
-                  <Sparkles size={15} color="#040814" />
-                  <span>✨ AI Area Match</span>
-                </button>
               </div>
 
-              {/* Quick Corridor Filter Pills directly below Hero Search */}
-              <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap", marginTop: "16px" }}>
-                {[
-                  { label: "📍 Hinjewadi Phase 1 & 2", query: "HINJEWADI" },
-                  { label: "📍 Wakad Datta Mandir", query: "WAKAD" },
-                  { label: "📍 Mahalunge Smart City", query: "MAHALUNGE" },
-                  { label: "📍 Baner High Street", query: "BANER" },
-                ].map((item, idx) => (
+              {/* ── RIGHT: Glass Search Card ── */}
+              {!isMobile && (
+                <div style={{
+                  flex: '0 0 38%', maxWidth: '400px',
+                  background: 'rgba(7,15,30,0.75)',
+                  backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
+                  border: '1px solid rgba(212,175,55,0.25)',
+                  borderRadius: '16px',
+                  padding: '28px 24px',
+                  boxShadow: '0 32px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06)',
+                }}>
+                  <p style={{
+                    fontFamily: "'Cinzel',serif", fontSize: '0.78rem', fontWeight: 700,
+                    color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase',
+                    textAlign: 'center', marginBottom: '20px'
+                  }}>FIND YOUR PERFECT PROPERTY</p>
+
+                  {/* Location dropdown */}
+                  <div style={{ marginBottom: '12px' }}>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: '10px',
+                      background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px', padding: '12px 14px', cursor: 'pointer',
+                      transition: 'border-color 0.2s ease'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    onClick={() => { const el = document.getElementById('listings-anchor'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }}>
+                      <MapPin size={16} color="#D4AF37" />
+                      <span style={{ flex: 1, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', fontFamily: "'Montserrat',sans-serif" }}>Hinjewadi, Wakad, Baner...</span>
+                      <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
+                    </div>
+                  </div>
+
+                  {/* Property Type dropdown */}
+                  <div style={{ marginBottom: '12px' }}>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: '10px',
+                      background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px', padding: '12px 14px', cursor: 'pointer',
+                      transition: 'border-color 0.2s ease'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    onClick={() => { const el = document.getElementById('listings-anchor'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }}>
+                      <Building size={16} color="#D4AF37" />
+                      <span style={{ flex: 1, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', fontFamily: "'Montserrat',sans-serif" }}>Property Type</span>
+                      <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
+                    </div>
+                  </div>
+
+                  {/* Budget Range dropdown */}
+                  <div style={{ marginBottom: '20px' }}>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: '10px',
+                      background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px', padding: '12px 14px', cursor: 'pointer',
+                      transition: 'border-color 0.2s ease'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    onClick={() => { const el = document.getElementById('listings-anchor'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }}>
+                      <Calculator size={16} color="#D4AF37" />
+                      <span style={{ flex: 1, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', fontFamily: "'Montserrat',sans-serif" }}>Budget Range</span>
+                      <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
+                    </div>
+                  </div>
+
+                  {/* Search Button */}
                   <button
-                    key={idx}
                     onClick={() => {
-                      handleApplyMegaFilter({ location: item.query }, 'listings');
-                      setTimeout(() => {
-                        document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }, 100);
+                      const el = document.getElementById('listings-anchor');
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
                     style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: "50px",
-                      padding: "5px 12px",
-                      fontSize: "0.72rem",
-                      fontWeight: 600,
-                      color: "rgba(255,255,255,0.75)",
-                      cursor: "pointer",
-                      fontFamily: "'Montserrat', sans-serif",
-                      transition: "all 0.2s ease"
+                      width: '100%', padding: '14px',
+                      background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                      border: 'none', borderRadius: '10px',
+                      color: '#040814', fontWeight: 800,
+                      fontFamily: "'Montserrat',sans-serif",
+                      fontSize: '0.88rem', letterSpacing: '0.08em',
+                      cursor: 'pointer', boxShadow: '0 6px 20px rgba(230,195,92,0.35)',
+                      transition: 'all 0.3s ease',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(230,195,92,0.15)"; e.currentTarget.style.borderColor = "rgba(230,195,92,0.4)"; e.currentTarget.style.color = "#E6C35C"; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "rgba(255,255,255,0.75)"; }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(230,195,92,0.5)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(230,195,92,0.35)'; }}
                   >
-                    {item.label}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    SEARCH PROPERTIES
                   </button>
+
+                  {/* Popular Searches */}
+                  <div style={{ marginTop: '16px' }}>
+                    <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)', fontFamily: "'Montserrat',sans-serif", marginBottom: '8px' }}>Popular Searches:</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {['Hinjewadi Phase 1 & 2', 'Wakad Datta Mandir', 'Mahalunge Smart City', 'Baner High Street'].map((tag, i) => (
+                        <button key={i}
+                          onClick={() => { handleApplyMegaFilter({ location: tag.split(' ')[0].toUpperCase() }, 'listings'); setTimeout(() => { document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }}
+                          style={{
+                            background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                            borderRadius: '50px', padding: '4px 10px',
+                            fontSize: '0.68rem', color: 'rgba(255,255,255,0.65)',
+                            cursor: 'pointer', fontFamily: "'Montserrat',sans-serif",
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'; e.currentTarget.style.color = '#E6C35C'; }}
+                          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}
+                        >{tag}</button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ── STATS BAR — bottom of hero ── */}
+            <div style={{
+              position: 'relative', zIndex: 2,
+              width: '100%',
+              borderTop: '1px solid rgba(212,175,55,0.12)',
+              background: 'rgba(4,8,20,0.65)',
+              backdropFilter: 'blur(16px)',
+            }}>
+              <div style={{
+                maxWidth: '94%', margin: '0 auto',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-around',
+                flexWrap: 'wrap', gap: '0',
+                padding: isMobile ? '16px 0' : '18px 0',
+              }}>
+                {[
+                  { icon: '⭐', num: '10+', label: 'Years of Legacy', sub: 'Since 2011' },
+                  { icon: '🏢', num: '500+', label: 'Projects Delivered', sub: 'Across Pune' },
+                  { icon: '👥', num: '25K+', label: 'Happy Families', sub: 'Trusted by Many' },
+                  { icon: '🤝', num: '100%', label: 'Transparency', sub: 'No Hidden Deals' },
+                  { icon: '📋', num: 'RERA', label: 'Registered', sub: 'Secure & Legal' },
+                ].map((stat, i) => (
+                  <div key={i} style={{
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                    padding: isMobile ? '8px 12px' : '10px 24px',
+                    borderRight: i < 4 ? '1px solid rgba(212,175,55,0.12)' : 'none',
+                  }}>
+                    <div style={{
+                      width: '36px', height: '36px', borderRadius: '50%',
+                      border: '1px solid rgba(212,175,55,0.25)',
+                      background: 'rgba(212,175,55,0.08)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '1rem', flexShrink: 0
+                    }}>{stat.icon}</div>
+                    <div>
+                      <div style={{ fontSize: isMobile ? '1.1rem' : '1.25rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel',serif", lineHeight: 1.1 }}>{stat.num}</div>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'rgba(255,255,255,0.75)', fontFamily: "'Montserrat',sans-serif", lineHeight: 1.2 }}>{stat.label}</div>
+                      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.45)', fontFamily: "'Montserrat',sans-serif" }}>{stat.sub}</div>
+                    </div>
+                  </div>
                 ))}
               </div>
-
             </div>
+
           </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
