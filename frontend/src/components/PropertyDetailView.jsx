@@ -1,622 +1,45 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
-  MapPin, ShieldCheck, Bed, Bath, Maximize, Sparkles,
-  Car, Calculator, TrendingUp, HelpCircle,
-  MessageSquare, ChevronLeft, ChevronRight, Download,
-  Building, CheckCircle, CheckCircle2, FileText, ArrowRight, ArrowLeft,
-  Share2, Heart, Award, Wifi, Zap, Camera, Trees, Coffee,
-  Dumbbell, ParkingCircle, Droplets, UtensilsCrossed, Phone,
-  Star, Shield, Sun, Wind, Tv, Lock, Play, X, ZoomIn,
-  Home, Grid, Map, Video, Info, ChevronDown, RotateCw,
-  Navigation, Clock, CheckSquare, Compass, Cpu, Layers, Volume2, VolumeX, Eye
+  MapPin, ShieldCheck, ArrowRight,
+  Heart, Share2, Play, ChevronRight, X, ChevronLeft
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { apiService } from '../services/apiService';
-import { useSEO, buildPropertySEO } from '../services/seoService';
-import CompanyLogo from './CompanyLogo';
 
-/* ─── 24K Realtors Brand CSS Injection ─────────────────── */
-if (typeof document !== 'undefined' && !document.getElementById('brand-24k-styles')) {
-  const style = document.createElement('style');
-  style.id = 'brand-24k-styles';
-  style.textContent = `
-    :root {
-      --bg-dark: #09111F;
-      --bg-deep: #0F1C2E;
-      --bg-card: #162438;
-      --bg-card-hover: #1E2F46;
-      --gold-primary: #D4AF37;
-      --gold-light: #F3E5AB;
-      --gold-glow: rgba(212, 175, 55, 0.25);
-      --border-gold: rgba(212, 175, 55, 0.25);
-      --border-muted: rgba(255, 255, 255, 0.08);
-      --font-title: 'Cinzel', serif;
-      --font-serif: 'Playfair Display', serif;
-      --font-sans: 'Montserrat', 'Inter', sans-serif;
-    }
-    .brand-hide::-webkit-scrollbar { display: none; }
-    .brand-hide { -ms-overflow-style: none; scrollbar-width: none; }
-    .brand-glass-card {
-      background: rgba(22, 36, 56, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-gold);
-      border-radius: 18px;
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s, border-color 0.35s;
-    }
-    .brand-glass-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(212, 175, 55, 0.5);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.15);
-    }
-    .brand-shimmer-text {
-      background: linear-gradient(90deg, #D4AF37 0%, #F3E5AB 50%, #D4AF37 100%);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: brand-shimmer 3s linear infinite;
-    }
-    @keyframes brand-shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-    .brand-btn-gold {
-      background: linear-gradient(135deg, #D4AF37, #F3E5AB);
-      color: #0D1B2A;
-      border: none;
-      font-family: var(--font-sans);
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 50px;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      letter-spacing: 0.03em;
-    }
-    .brand-btn-gold:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
-      filter: brightness(1.08);
-    }
-    .brand-btn-outline {
-      background: rgba(255, 255, 255, 0.05);
-      color: #FFF;
-      border: 1px solid var(--border-gold);
-      font-family: var(--font-sans);
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 50px;
-      transition: all 0.3s;
-    }
-    .brand-btn-outline:hover {
-      background: rgba(212, 175, 55, 0.12);
-      border-color: #D4AF37;
-      color: #F3E5AB;
-      transform: translateY(-1px);
-    }
-    .brand-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 12px;
-      border-radius: 100px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      font-family: var(--font-sans);
-    }
-    .brand-range {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 5px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      outline: none;
-    }
-    .brand-range::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #D4AF37, #F3E5AB);
-      cursor: pointer;
-      box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
-    }
-  `;
-  document.head.appendChild(style);
-}
+export default function PropertyDetailView({
+  property = {},
+  onBack,
+  onOpenInquiry,
+  onOpenBrochure
+}) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
-/* ── Developer Info Lookup ── */
-const getBuilderInfo = (title = '') => {
-  if (title.includes('24K') || title.includes('Opula') || title.includes('Sereno') || title.includes('Altura') || title.includes('Glitterati') || title.includes('Mahalunge'))
-    return { name: 'Kolte-Patil Developers', brand: '24K Luxury Brand', reraId: 'A051262603190', logo: '🏛️', founded: 1991, projects: '85+', rating: 4.9, awards: ['CREDAI Award 2024', 'ET Best Luxury Brand'], desc: "Kolte-Patil's 24K flagship brand sets global benchmarks in architectural precision, smart home technology, and landmark residences across Pune West." };
-  if (title.includes('Shapoorji') || title.includes('Joyville') || title.includes('Vyomora'))
-    return { name: 'Shapoorji Pallonji Real Estate', brand: 'Joyville Signature Series', reraId: 'PR1260002600999', logo: '🏗️', founded: 1865, projects: '120+', rating: 4.8, awards: ['Construction World Award 2024'], desc: 'Shapoorji Pallonji brings 160+ years of engineering excellence, structural resilience, and luxury living to major Indian metro cities.' };
-  if (title.includes('Godrej') || title.includes('Ivara'))
-    return { name: 'Godrej Properties', brand: 'Premium Residences', reraId: 'PR1260002502426', logo: '🌿', founded: 1990, projects: '165+', rating: 4.9, awards: ['NDTV Property Award 2024'], desc: 'Godrej Properties combines trust, innovation, and sustainable luxury across premium gated townships.' };
-  if (title.includes('Kasturi'))
-    return { name: 'Kasturi Builders', brand: 'Signature Penthouses', reraId: 'A52100045231', logo: '💎', founded: 1998, projects: '42+', rating: 4.8, awards: ['Pune Luxury Realty Award'], desc: 'Kasturi is celebrated for Italian marble finishes, double-height grand lobbies, and ultra-exclusive residences.' };
-  if (title.includes('Lodha'))
-    return { name: 'Lodha Group', brand: 'World-Class Towers', reraId: 'A52100033211', logo: '🌍', founded: 1980, projects: '200+', rating: 4.8, awards: ['Developer of the Year 2024'], desc: 'Lodha Group creates iconic landmarks with premier lifestyle amenities and world-class interior standards.' };
-  return { name: 'Tier-1 Authorized Developer', brand: 'Verified Portfolio Partner', reraId: 'A051262603190', logo: '🏠', founded: 2005, projects: '30+', rating: 4.7, awards: ['Verified Developer'], desc: 'Managed under 24K Realtors authorized developer alliance.' };
-};
+  // States
+  const [activeTab, setActiveTab] = useState('overview');
+  const [saved, setSaved] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [mainImgIdx, setMainImgIdx] = useState(0);
 
-/* ── Location Intelligence ── */
-const CORRIDOR_DATA = {
-  HINJEWADI: { appreciation: 14.2, commute: 9.5, green: 8.8, infra: 9.4, social: 9.1, future: 9.6, rentalYield: 4.8, landmarks: ['Infosys Circle 1 (0.8 km)', 'Wipro SEZ (1.5 km)', 'Metro Line 3 (0.4 km)', 'Balewadi High Street (5.2 km)', 'International Airport (28 km)'] },
-  WAKAD: { appreciation: 13.8, commute: 9.1, green: 8.2, infra: 8.9, social: 8.8, future: 9.0, rentalYield: 4.5, landmarks: ['Wakad Chowk (0.5 km)', 'D-Mart Wakad (1.0 km)', 'Pimpri Railway (7 km)', 'Aditya Birla Hospital (3.5 km)'] },
-  BANER: { appreciation: 16.5, commute: 9.8, green: 9.0, infra: 9.6, social: 9.5, future: 9.7, rentalYield: 5.2, landmarks: ['Balewadi High Street (0.5 km)', 'Jupiter Hospital (1.8 km)', 'Baner Metro (0.6 km)', 'Expressway Connector (2.0 km)'] },
-  BALEWADI: { appreciation: 15.8, commute: 9.4, green: 8.7, infra: 9.2, social: 9.1, future: 9.4, rentalYield: 5.0, landmarks: ['Balewadi Stadium (0.6 km)', 'High Street Phoenix (1.0 km)', 'Croma Mall (1.5 km)', 'Baner Road (0.8 km)'] },
-  KHARADI: { appreciation: 15.2, commute: 9.0, green: 8.4, infra: 9.1, social: 8.9, future: 9.2, rentalYield: 4.9, landmarks: ['EON IT Park (0.4 km)', 'World Trade Center (0.8 km)', 'Airport (5.5 km)', 'Koregaon Park (4.5 km)'] },
-};
-const getCorridorData = (location = '') => {
-  const key = location.toUpperCase().replace(/\s+/g, '_').replace(/[^A-Z_]/g, '');
-  for (const [k, v] of Object.entries(CORRIDOR_DATA)) { if (key.includes(k)) return v; }
-  return { appreciation: 14.0, commute: 9.0, green: 8.5, infra: 8.8, social: 8.6, future: 9.0, rentalYield: 4.5, landmarks: ['Tech Park (1.2 km)', 'International School (0.8 km)', 'Expressway (2.5 km)', 'Hospital (3.0 km)'] };
-};
+  // Property Details
+  const title = property.title || 'Godrej Woodsville';
+  const location = property.location || 'Hinjewadi Phase 1, Pune';
+  const address = property.address || `${title}, Hinjewadi Phase 1, Pune`;
+  const price = property.price ? `₹${(property.price / 10000000).toFixed(2)} Cr*` : 'Price on Request*';
+  const reraNumber = property.reraNumber || 'P52100046770';
+  const possession = property.possessionDate || 'Nov 2028';
+  const projectArea = property.projectArea || '~4.54 Acres';
+  const developerName = property.builderName || (title.includes('Godrej') ? 'Godrej Properties' : 'Kolte-Patil Properties');
 
-/* ── Score Bar ── */
-function ScoreBar({ label, value, max = 10 }) {
-  const pct = Math.min((value / max) * 100, 100);
-  return (
-    <div style={{ marginBottom: '14px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-        <span style={{ fontSize: '0.8rem', color: '#A0AEC0', fontFamily: 'var(--font-sans)', fontWeight: 500 }}>{label}</span>
-        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#F3E5AB', fontFamily: 'var(--font-sans)' }}>{value}{max === 10 ? '/10' : '%'}</span>
-      </div>
-      <div style={{ height: '5px', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', overflow: 'hidden' }}>
-        <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 1.2, ease: 'easeOut', delay: 0.1 }}
-          style={{ height: '100%', borderRadius: '3px', background: 'linear-gradient(90deg, #D4AF37, #F3E5AB)' }} />
-      </div>
-    </div>
-  );
-}
-
-/* ── Amenity Photo Card ── */
-const AMENITY_META = {
-  '24/7 Concierge Desk': { emoji: '🛎️', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=75' },
-  'Infinity Sky Pool': { emoji: '🏊', img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=75' },
-  'Infinity Swimming Pool': { emoji: '🏊', img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=75' },
-  'Modern Gymnasium': { emoji: '💪', img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=75' },
-  'Smart Home Automation': { emoji: '📱', img: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=600&q=75' },
-  'Landscaped Gardens': { emoji: '🌿', img: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=75' },
-  'Clubhouse & Co-work Space': { emoji: '🏛️', img: 'https://images.unsplash.com/photo-1527192491265-7e452a145d55?auto=format&fit=crop&w=600&q=75' },
-  'Kids Play Area': { emoji: '🎠', img: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=600&q=75' },
-  'Multi-Level Car Parking': { emoji: '🅿️', img: 'https://images.unsplash.com/photo-1506521788723-868126d5e368?auto=format&fit=crop&w=600&q=75' },
-  'Rainwater Harvesting': { emoji: '💧', img: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=600&q=75' },
-  '100% Power Backup Grid': { emoji: '⚡', img: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=75' },
-  '24x7 Security': { emoji: '🛡️', img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=75' },
-  'Indoor Games': { emoji: '🎱', img: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=75' },
-};
-
-function AmenityPhotoCard({ label }) {
-  const meta = AMENITY_META[label] || { emoji: '✨', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' };
-  const [hov, setHov] = useState(false);
-  return (
-    <motion.div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}
-      style={{ position: 'relative', overflow: 'hidden', borderRadius: '16px', border: hov ? '1px solid rgba(212,175,55,0.6)' : '1px solid rgba(255,255,255,0.08)', cursor: 'default', transition: 'all 0.35s', boxShadow: hov ? '0 16px 40px rgba(0,0,0,0.6)' : '0 4px 12px rgba(0,0,0,0.3)', transform: hov ? 'translateY(-4px)' : 'translateY(0)', aspectRatio: '4/3' }}>
-      <img src={meta.img} alt={label} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hov ? 'scale(1.08)' : 'scale(1)', transition: 'transform 0.6s' }} loading="lazy" onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75'; }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(9,17,31,0.92) 0%, rgba(9,17,31,0.2) 60%, transparent 100%)' }} />
-      <div style={{ position: 'absolute', bottom: '12px', left: '12px', right: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <div style={{ width: '30px', height: '30px', borderRadius: '8px', flexShrink: 0, background: 'rgba(212,175,55,0.2)', backdropFilter: 'blur(8px)', border: '1px solid rgba(212,175,55,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem' }}>{meta.emoji}</div>
-        <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#FFF', textShadow: '0 1px 4px rgba(0,0,0,0.8)', fontFamily: 'var(--font-sans)' }}>{label}</span>
-      </div>
-    </motion.div>
-  );
-}
-
-const SIGNATURE_GALLERY_ITEMS = [
-  { seq: '01', key: '01_aerial_hero', label: '01 — Aerial Township Hero ⭐', title: 'Aerial Township View', desc: '150-Acre mega township nestled against lush green Sahyadri hills in Hinjewadi Phase 3.', isStar: true, cat: 'views' },
-  { seq: '02', key: '02_architecture', label: '02 — Main Tower Architecture', title: 'Main Tower Facade', desc: 'Sleek glass balconies, high-speed elevator shafts, and contemporary structural design.', isStar: false, cat: 'views' },
-  { seq: '03', key: '03_landscape', label: '03 — Township / Landscape', title: 'Central Landscape Park', desc: 'Podium gardens, paved walking trails, water fountains, and manicured green lawns.', isStar: false, cat: 'views' },
-  { seq: '04', key: '04_living_room', label: '04 — Living Room', title: 'Spacious Living Suite', desc: 'Italian marble flooring with floor-to-ceiling glass windows and natural ventilation.', isStar: false, cat: 'interior' },
-  { seq: '05', key: '05_balcony_view', label: '05 — Balcony + View ⭐', title: 'Scenic Balcony Vistas', desc: 'Wake up to expansive views of greenery and the surrounding mountain landscape.', isStar: true, cat: 'views' },
-  { seq: '06', key: '06_master_bedroom', label: '06 — Master Bedroom', title: 'Master Bedroom Suite', desc: 'Plush hardwood flooring, velvet headboards, and tranquil mountain horizon views.', isStar: false, cat: 'interior' },
-  { seq: '07', key: '07_kitchen', label: '07 — Kitchen', title: 'Modular Gourmet Kitchen', desc: 'Quartz island countertops, integrated appliances, and warm under-cabinet LED lighting.', isStar: false, cat: 'interior' },
-  { seq: '08', key: '08_clubhouse', label: '08 — Clubhouse', title: 'Grand Luxury Clubhouse', desc: 'Double-height glass lobby lounge, indoor sports arena, and community gathering arenas.', isStar: false, cat: 'amenities' },
-  { seq: '09', key: '09_swimming_pool', label: '09 — Swimming Pool', title: 'Resort-Style Infinity Pool', desc: 'Temperature-controlled swimming pool with sun loungers and tropical cabanas.', isStar: false, cat: 'amenities' },
-  { seq: '10', key: '10_gym', label: '10 — Gym', title: 'Technogym Fitness Studio', desc: 'State-of-the-art fitness center with floor-to-ceiling glass wall overlooking gardens.', isStar: false, cat: 'amenities' },
-  { seq: '11', key: '11_garden_kids', label: '11 — Garden / Kids Area', title: 'Children Play Lawn', desc: 'Dedicated eco-friendly play structures and manicured family green lawns.', isStar: false, cat: 'amenities' },
-  { seq: '12', key: '12_lobby', label: '12 — Lobby / Entrance', title: 'Grand Entrance Lobby', desc: 'Double-height marble lobby with 24/7 concierge reception and high-security access.', isStar: false, cat: 'interior' },
-  { seq: '13', key: '13_location_map', label: '13 — Location Map', title: 'Hinjewadi Phase 3 Location Map', desc: 'Direct 3-minute access to TCS, Wipro, Infosys, and upcoming Metro line.', isStar: false, cat: 'location' },
-  { seq: '14', key: '14_connectivity_map', label: '14 — Connectivity Map', title: 'Regional Transit Index', desc: 'Seamless connectivity to Baner, Expressway, and Pune International Airport.', isStar: false, cat: 'location' },
-  { seq: '15', key: '15_night_township', label: '15 — Evening/Night Township ⭐', title: 'Twilight Township Skyline', desc: 'Lit towers and ambient landscape illumination under serene evening skies.', isStar: true, cat: 'views' }
-];
-
-/* ── Lightbox Modal ── */
-function Lightbox({ images, startIndex, onClose }) {
-  const [idx, setIdx] = useState(startIndex);
-  useEffect(() => {
-    const h = e => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowRight') setIdx(i => (i + 1) % images.length);
-      if (e.key === 'ArrowLeft') setIdx(i => (i - 1 + images.length) % images.length);
-    };
-    window.addEventListener('keydown', h);
-    return () => window.removeEventListener('keydown', h);
-  }, [images.length, onClose]);
-
-  const currentMeta = SIGNATURE_GALLERY_ITEMS[idx] || {
-    seq: String(idx + 1).padStart(2, '0'),
-    title: `Property View ${idx + 1}`,
-    desc: 'High-resolution authentic property photograph.'
-  };
-
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(9,17,31,0.98)', backdropFilter: 'blur(24px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: '24px 20px 32px' }} onClick={onClose}>
-      
-      {/* Top Header Bar */}
-      <div style={{ width: '100%', maxWidth: '1200px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }} onClick={e => e.stopPropagation()}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ background: 'rgba(212,175,55,0.18)', border: '1px solid rgba(212,175,55,0.4)', color: '#F3E5AB', padding: '4px 10px', borderRadius: '12px', fontFamily: 'var(--font-sans)', fontSize: '0.78rem', fontWeight: 800 }}>
-            {currentMeta.seq} / {images.length}
-          </span>
-          <span style={{ color: '#A0AEC0', fontFamily: 'var(--font-sans)', fontSize: '0.84rem' }}>
-            {currentMeta.label || currentMeta.title}
-          </span>
-        </div>
-        <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '44px', height: '44px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <X size={20} />
-        </button>
-      </div>
-
-      {/* Main Visual Canvas Area */}
-      <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', my: '12px' }} onClick={e => e.stopPropagation()}>
-        <button onClick={e => { e.stopPropagation(); setIdx(i => (i - 1 + images.length) % images.length); }} style={{ position: 'absolute', left: '16px', zIndex: 10, background: 'rgba(9,17,31,0.8)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '52px', height: '52px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)' }}>
-          <ChevronLeft size={26} />
-        </button>
-        
-        <AnimatePresence mode="wait">
-          <motion.img key={idx} src={images[idx]} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
-            style={{ maxWidth: '88vw', maxHeight: '72vh', objectFit: 'contain', borderRadius: '18px', border: '1px solid rgba(212,175,55,0.3)', boxShadow: '0 30px 90px rgba(0,0,0,0.9)' }} />
-        </AnimatePresence>
-
-        <button onClick={e => { e.stopPropagation(); setIdx(i => (i + 1) % images.length); }} style={{ position: 'absolute', right: '16px', zIndex: 10, background: 'rgba(9,17,31,0.8)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '52px', height: '52px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)' }}>
-          <ChevronRight size={26} />
-        </button>
-      </div>
-
-      {/* UI Caption Box OUTSIDE / Below Image */}
-      <div style={{ width: '100%', maxWidth: '800px', background: 'rgba(15,28,46,0.9)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '16px', padding: '16px 24px', textAlign: 'center', zIndex: 10, backdropFilter: 'blur(12px)' }} onClick={e => e.stopPropagation()}>
-        <h3 style={{ fontFamily: 'var(--font-title)', fontSize: '1.15rem', fontWeight: 700, color: '#FFF', margin: '0 0 4px' }}>
-          {currentMeta.title}
-        </h3>
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: '#A0AEC0', margin: 0, lineHeight: 1.5 }}>
-          {currentMeta.desc}
-        </p>
-      </div>
-
-    </motion.div>
-  );
-}
-
-/* ── FAQ Accordion Item ── */
-function FAQItem({ q, a }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-      <button onClick={() => setOpen(!open)} style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 0', background: 'none', border: 'none', color: '#fff', cursor: 'pointer', textAlign: 'left', gap: '16px' }}>
-        <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.92rem', fontWeight: 600, color: open ? '#F3E5AB' : '#F8F9FA', transition: 'color 0.3s' }}>{q}</span>
-        <motion.div animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.2 }} style={{ width: '26px', height: '26px', borderRadius: '50%', background: open ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)', border: `1px solid ${open ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.1)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: open ? '#D4AF37' : '#888', flexShrink: 0 }}>+</motion.div>
-      </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} style={{ overflow: 'hidden' }}>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.86rem', color: '#A0AEC0', lineHeight: 1.7, paddingBottom: '18px', margin: 0 }}>{a}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════
-   MAIN 24K REALTORS LUXURY PROPERTY DETAIL VIEW
-════════════════════════════════════════════════════════════ */
-
-
-
-export default function PropertyDetailView({ property, onBack, onOpenInquiry, onOpenChauffeur, onOpenBrochure, formatPrice, getEmbedVideoUrl, allProperties = [] }) {
-
-  /* ── Performance Throttled Scroll State ── */
-  const [headerScrolled, setHeaderScrolled] = useState(false);
-  const [showBottomCTA, setShowBottomCTA]   = useState(false);
-
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const y = window.scrollY;
-          setHeaderScrolled(y > 60);
-          setShowBottomCTA(y > 500);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  /* ── Interactive States ── */
-  const [heroImageIdx, setHeroImageIdx]   = useState(0);
-  const [load3DTour, setLoad3DTour]       = useState(false);
-  const [activeTab, setActiveTab]         = useState('overview');
-  const [activePlan, setActivePlan]       = useState('2bhk');
-  const [downPayment, setDownPayment]     = useState(20);
-  const [interestRate, setInterestRate]   = useState(8.5);
-  const [loanTerm, setLoanTerm]           = useState(20);
-  const [lightboxOpen, setLightboxOpen]   = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [showAllAmenities, setShowAllAmenities] = useState(false);
-  const [videoFallbackIndex, setVideoFallbackIndex] = useState(0);
-  const [galleryFilter, setGalleryFilter] = useState('all');
-  const [useDriveFallback, setUseDriveFallback] = useState(false);
-  const [isWishlisted, setIsWishlisted]   = useState(() => {
-    try { 
-      if (!property?.id) return false;
-      const s = localStorage.getItem('wishlist_properties'); 
-      return (s ? JSON.parse(s) : []).includes(property.id); 
-    } catch { return false; }
-  });
-
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
-  useEffect(() => {
-    const r = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', r);
-    return () => window.removeEventListener('resize', r);
-  }, []);
-
-  useEffect(() => { 
-    if (property?.id) {
-      window.scrollTo({ top: 0, behavior: 'smooth' }); 
-    }
-  }, [property?.id]);
-
-  /* ── Fallback Guard if property is null/undefined ── */
-  if (!property) {
-    return (
-      <div style={{
-        minHeight: '75vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '60px 20px',
-        textAlign: 'center',
-        background: 'radial-gradient(circle at center, #070F1E 0%, #040814 100%)',
-        color: '#FFF',
-        fontFamily: "'Montserrat', sans-serif"
-      }}>
-        <div style={{
-          width: '72px',
-          height: '72px',
-          borderRadius: '50%',
-          background: 'rgba(212, 175, 55, 0.1)',
-          border: '1px solid rgba(212, 175, 55, 0.3)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '32px',
-          marginBottom: '20px'
-        }}>
-          🏛️
-        </div>
-        <h2 style={{ fontFamily: "'Cinzel', serif", color: '#D4AF37', margin: '0 0 10px 0', fontSize: '1.8rem' }}>
-          Property Information Unavailable
-        </h2>
-        <p style={{ color: 'rgba(255,255,255,0.6)', maxWidth: '480px', marginBottom: '28px', lineHeight: 1.6, fontSize: '0.9rem' }}>
-          The requested luxury property details are currently updating or unavailable. Please return to our main portfolio.
-        </p>
-        <button
-          onClick={onBack}
-          style={{
-            background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-            color: '#070F1E',
-            border: 'none',
-            padding: '12px 32px',
-            borderRadius: '50px',
-            fontWeight: 800,
-            fontSize: '0.88rem',
-            cursor: 'pointer',
-            boxShadow: '0 8px 24px rgba(212,175,55,0.35)',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          ← Back to All Properties
-        </button>
-      </div>
-    );
-  }
-
-  /* ── S3 Folder Resolution ── */
-  const s3Slug = useMemo(() => {
-    if (!property) return '24k-opula';
-    const t = (property.title || '').toLowerCase();
-    if (t.includes('opula')) return '24k-opula';
-    if (t.includes('altura')) return '24k-altura';
-    if (t.includes('it plaza') || t.includes('hinjewadi office')) return 'hinjewadi-it-plaza';
-    if (t.includes('balewadi') && t.includes('retail')) return 'balewadi-retail';
-    if (t.includes('glitterati')) return '24k-glitterati';
-    if (t.includes('studio') || t.includes('corporate tower')) return 'baner-studio';
-    if (t.includes('mahalunge oasis')) return '24k-mahalunge-oasis';
-    if (t.includes('megapolis')) return 'megapolis-sunway';
-    if (t.includes('godrej elements')) return 'godrej-elements';
-    if (t.includes('tcg') || t.includes('crown greens')) return 'tcg-crown-greens';
-    if (t.includes('kasturi') || t.includes('apostle')) return 'kasturi-apostle';
-    if (t.includes('life republic')) return 'kolte-patil-life-republic';
-    if (t.includes('gera')) return 'gera-joy-banks';
-    if (t.includes('pride purple') || t.includes('park landmark')) return 'pride-purple-park';
-    if (t.includes('megapolis sunway')) return 'megapolis-sunway';
-    if (t.includes('kohinoor') || t.includes('sportsville')) return 'kohinoor-sportsville';
-    if (t.includes('vtp') || t.includes('blue waters')) return 'vtp-blue-waters';
-    if (t.includes('vyomora') || t.includes('joyville premium')) return 'shapoorji-joyville-vyomora';
-    if (t.includes('yashwin')) return 'vilas-javdekar-yashwin';
-    if (t.includes('belmondo') || t.includes('lodha belmondo')) return 'lodha-belmondo';
-    if (t.includes('godrej ivara') || t.includes('kharadi')) return 'godrej-ivara-kharadi';
-    return '24k-opula';
-  }, [property]);
-
-  const s3BaseUrl = `https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/${s3Slug}`;
-  const isCommercial = property.propertyType === 'COMMERCIAL';
-  const builder      = useMemo(() => getBuilderInfo(property.title), [property.title]);
-  const corridor     = useMemo(() => getCorridorData(property.location), [property.location]);
-  useSEO(buildPropertySEO(property));
-
-  const slideshowImages = useMemo(() => {
-    const raw = property.slideshowImages || [];
-    const formatted = raw.map(img => {
-      if (!img) return `${s3BaseUrl}/hero.png`;
-      // Already an absolute URL (http/https)
-      if (img.startsWith('http://') || img.startsWith('https://')) return img;
-      // Already a root-relative local path like /properties/megapolis-sunway/01.png
-      if (img.startsWith('/')) return img;
-      // Bare filename — prepend S3 base
-      const cleanName = img.split('/').pop();
-      return `${s3BaseUrl}/${cleanName}`;
-    });
-    if (formatted.length > 0) return formatted;
-    return [
-      `${s3BaseUrl}/01_aerial_hero.png`, `${s3BaseUrl}/02_architecture.png`,
-      `${s3BaseUrl}/03_landscape.png`, `${s3BaseUrl}/04_living_room.png`,
-      `${s3BaseUrl}/05_balcony_view.png`, `${s3BaseUrl}/06_master_bedroom.png`,
-      `${s3BaseUrl}/07_kitchen.png`, `${s3BaseUrl}/08_clubhouse.png`,
-      `${s3BaseUrl}/09_swimming_pool.png`, `${s3BaseUrl}/10_gym.png`,
-      `${s3BaseUrl}/11_garden_kids.png`, `${s3BaseUrl}/12_lobby.png`,
-      `${s3BaseUrl}/13_location_map.png`, `${s3BaseUrl}/14_connectivity_map.png`,
-      `${s3BaseUrl}/15_night_township.png`
-    ];
-  }, [property.slideshowImages, s3BaseUrl]);
-
-  const propPrice = useMemo(() => Number(property.price || 8400000), [property.price]);
-
-  const fmt = useCallback(v => {
-    if (formatPrice) return formatPrice(v);
-    const n = Number(v);
-    if (n >= 10000000) return `₹${(n / 10000000).toFixed(2)} Cr`;
-    if (n >= 100000) return `₹${(n / 100000).toFixed(0)} L`;
-    return `₹${n.toLocaleString('en-IN')}`;
-  }, [formatPrice]);
-
-  /* ── EMI Memo ── */
-  const emiVal = useMemo(() => {
-    const principal = propPrice * (1 - downPayment / 100);
-    const mRate     = (interestRate / 12) / 100;
-    const totalMos  = loanTerm * 12;
-    return mRate > 0 ? (principal * mRate * Math.pow(1 + mRate, totalMos)) / (Math.pow(1 + mRate, totalMos) - 1) : principal / totalMos;
-  }, [propPrice, downPayment, interestRate, loanTerm]);
-
-  /* ── Text to Speech Voice Overview ── */
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [audioLoading, setAudioLoading] = useState(false);
-  const audioRef = useRef(null);
-
-  const handlePlayVoiceOverview = async () => {
-    if (isPlayingAudio) {
-      if (audioRef.current) audioRef.current.pause();
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      setIsPlayingAudio(false);
-      return;
-    }
-
-    try {
-      setAudioLoading(true);
-      const textScript = `${property.title}. Located at ${property.location}. Price starting from ${fmt(propPrice)}. ${property.description || 'Discover ultra luxury residences with world class amenities in Pune.'}`;
-
-      const res = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: textScript, lang: 'en', format: 'binary' })
-      }).catch(() => null);
-
-      if (res && res.ok) {
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        if (!audioRef.current) audioRef.current = new Audio();
-        audioRef.current.src = url;
-        audioRef.current.play();
-        setIsPlayingAudio(true);
-        audioRef.current.onended = () => setIsPlayingAudio(false);
-      } else if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(textScript);
-        utter.rate = 0.95;
-        utter.pitch = 1.0;
-        utter.onend = () => setIsPlayingAudio(false);
-        utter.onerror = () => setIsPlayingAudio(false);
-        window.speechSynthesis.speak(utter);
-        setIsPlayingAudio(true);
-      }
-    } catch (e) {
-      console.error('Audio play error', e);
-    } finally {
-      setAudioLoading(false);
-    }
-  };
-
-  /* ── Actions ── */
-  const handleToggleWishlist = async () => {
-    const next = !isWishlisted; setIsWishlisted(next);
-    try {
-      const s = localStorage.getItem('wishlist_properties'); let list = s ? JSON.parse(s) : [];
-      if (next) { if (!list.includes(property.id)) list.push(property.id); } else { list = list.filter(id => id !== property.id); }
-      localStorage.setItem('wishlist_properties', JSON.stringify(list));
-      if (next) await apiService.addToWishlist(property.id); else await apiService.removeFromWishlist(property.id);
-    } catch {}
-  };
-
-  const waLink   = `https://wa.me/919673000053?text=Hi%2024K%20Realtors,%20I'm%20interested%20in%20"${encodeURIComponent(property.title)}"%20at%20${encodeURIComponent(property.location)}.%20Please%20share%20details.`;
-  const callLink = 'tel:+919673000053';
-
-  /* ── Floor Plans ── */
-  const fpVariants = [
-    { id: '2bhk', label: '2 BHK Luxury', url: property.floorPlanUrl || `${s3BaseUrl}/floorplan_2bhk.png`, fallbackUrl: '/floorplan_2bhk.png', desc: '684 – 839 sq.ft Carpet' },
-    { id: '3bhk', label: '3 BHK Estate', url: property.floorPlan3BHKUrl || `${s3BaseUrl}/floorplan_3bhk.png`, fallbackUrl: '/floorplan_3bhk.png', desc: '1052 – 1477 sq.ft Carpet' },
-    { id: 'master', label: 'Master Layout', url: property.masterPlanUrl || `${s3BaseUrl}/masterplan.png`, fallbackUrl: '/masterplan.png', desc: '16-Acre Township' },
-  ];
-  const fpActive = fpVariants.find(v => v.id === activePlan) || fpVariants[0];
-
-  /* ── Amenities ── */
-  const amenityList = property.specificAmenities || [
-    '24/7 Concierge Desk', 'Infinity Swimming Pool', 'Modern Gymnasium', 'Kids Play Area',
-    'Landscaped Gardens', 'Clubhouse & Co-work Space', 'Indoor Games', '24x7 Security',
-    '100% Power Backup Grid', 'Rainwater Harvesting', 'Multi-Level Car Parking'
-  ];
-  const displayedAmenities = showAllAmenities ? amenityList : amenityList.slice(0, 8);
-
-  const unitConfigs = property.configurations || [
-    { name: '2 BHK Executive', area: '684 – 839 sq.ft', price: '₹84.00 L+', status: 'Fast Selling' },
-    { name: '3 BHK Signature', area: '1052 – 1477 sq.ft', price: '₹1.17 Cr+', status: 'Limited Units' },
-    { name: '4 BHK Duplex Penthouse', area: '2150 – 4200 sq.ft', price: '₹3.75 Cr+', status: 'Exclusive' },
+  // Images for Slideshow
+  const images = property.images && property.images.length > 0 ? property.images : [
+    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=85',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
+    'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1600&q=85',
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85'
   ];
 
-  /* ── Similar Properties ── */
-  const similar = useMemo(() => {
-    return allProperties
-      .filter(p => p.id !== property.id)
-      .slice(0, 3);
-  }, [allProperties, property.id]);
-
-  /* ── AI Investment Score ── */
-  const aiScore = Math.min(Math.round((corridor.appreciation / 20 * 40) + (corridor.future * 4) + (corridor.infra * 3) + (corridor.commute * 3)), 99);
-  const rentalYield = corridor.rentalYield || 4.5;
-
-  const STICKY_TABS = [
-    { id: 'overview', label: 'OVERVIEW' },
-    { id: 'highlights', label: 'HIGHLIGHTS' },
-    { id: 'amenities', label: 'AMENITIES' },
-    { id: 'location', label: 'LOCATION' },
-    { id: 'floorplans', label: 'FLOOR PLANS' },
-    { id: 'similar', label: 'SIMILAR PROPERTIES' },
-  ];
-
-  const secId = id => `sec-${id}`;
+  // Scroll to section
   const scrollTo = id => {
-    const el = document.getElementById(secId(id));
+    const el = document.getElementById(`sec-${id}`);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setActiveTab(id);
     try {
@@ -626,399 +49,289 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
     } catch (e) {}
   };
 
-  const trendPts = [
-    { year: '2021', price: 6200, x: 30, y: 140 }, { year: '2022', price: 6800, x: 110, y: 118 },
-    { year: '2023', price: 7500, x: 190, y: 95 }, { year: '2024', price: 8400, x: 270, y: 70 },
-    { year: '2025', price: 9300, x: 350, y: 46 }, { year: '2026', price: 10500, x: 430, y: 20 },
-  ];
-  const pathD = trendPts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
-
-  const faqs = [
-    { q: 'What is the possession date?', a: `Expected possession is ${property.possessionDate || 'December 2027'}. Monthly progress reports are shared with all registered buyers.` },
-    { q: 'What is the RERA registration number?', a: `RERA Registration: ${property.reraNumber || builder.reraId}. Fully verified on the official MahaRERA portal.` },
-    { q: 'What payment plans are available?', a: 'Multiple payment plans are available: Construction Linked Plan (CLP), Down Payment Plan (10-90), and Flexi Payment Plan. Home loans available from SBI, HDFC, ICICI, and Axis Bank.' },
-    { q: 'Are there any hidden charges?', a: 'Zero hidden charges. Stamp duty, registration, GST, and development fees are itemized transparently in our price breakup statement.' },
-    { q: 'Can NRIs purchase this property?', a: 'Yes. NRIs can purchase under FEMA regulations with complete end-to-end legal and documentation support from our team.' },
+  // Tabs Definition matching Image 2
+  const TABS = [
+    { id: 'overview', label: 'OVERVIEW', icon: '🖼️' },
+    { id: 'highlights', label: 'HIGHLIGHTS', icon: '✨' },
+    { id: 'amenities', label: 'AMENITIES', icon: '🏊' },
+    { id: 'location', label: 'LOCATION', icon: '📍' },
+    { id: 'floorplans', label: 'FLOOR PLANS', icon: '📐' },
+    { id: 'similar', label: 'SIMILAR PROPERTIES', icon: '🏢' },
   ];
 
-  /* ── Section Title Component ── */
-  const SectionHeader = ({ label, sub, align = 'left' }) => (
-    <div style={{ marginBottom: '36px', textAlign: align }}>
-      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-        <div style={{ width: '24px', height: '2px', background: 'linear-gradient(90deg, #D4AF37, #F3E5AB)' }} />
-        <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#D4AF37' }}>24K REALTORS</span>
-        <div style={{ width: '24px', height: '2px', background: 'linear-gradient(90deg, #F3E5AB, #D4AF37)' }} />
-      </div>
-      <h2 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.8rem' : '2.3rem', fontWeight: 700, color: '#FFF', margin: '0 0 10px', lineHeight: 1.2, letterSpacing: '0.02em' }}>{label}</h2>
-      {sub && <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: '#A0AEC0', margin: align === 'center' ? '0 auto' : 0, lineHeight: 1.6, maxWidth: '540px' }}>{sub}</p>}
-    </div>
-  );
+  // Amenities List matching Image 2
+  const AMENITIES = [
+    { title: 'Clubhouse', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Swimming Pool', img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Gymnasium', img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=75' },
+    { title: "Children's Play Area", img: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Jogging Track', img: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Multipurpose Hall', img: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=600&q=75' },
+  ];
 
-  /* ══════════════════ 24K LUXURY RENDER ══════════════════ */
+  // Similar Properties matching Image 2
+  const SIMILAR_PROPERTIES = [
+    { title: 'Godrej Greenfront', loc: 'Hinjewadi Phase 2', config: '2 & 3 BHK', area: '640 - 1200 sq.ft', price: '₹1.25 Cr*', tag: 'PREMIUM', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', area: '650 - 1300 sq.ft', price: '₹1.10 Cr*', tag: 'LUXURY', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Lodha Panache', loc: 'Hinjewadi Phase 1', config: '2, 3 & 5 BHK', area: '1100 - 1800 sq.ft', price: '₹1.32 Cr*', tag: 'PREMIUM', img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=75' },
+    { title: 'VTP Monarque', loc: 'Hinjewadi Phase 3', config: '2 & 3 BHK', area: '1200 - 1800 sq.ft', price: '₹1.28 Cr*', tag: 'LUXURY', img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=75' },
+  ];
+
   return (
-    <div style={{ background: 'var(--bg-dark)', color: '#F8F9FA', fontFamily: 'var(--font-sans)', minHeight: '100vh', paddingBottom: '90px', position: 'relative', overflowX: 'hidden' }}>
+    <div style={{ background: '#09111F', color: '#FFF', fontFamily: "'Montserrat', 'Inter', sans-serif", minHeight: '100vh' }}>
+      
+      {/* ── BREADCRUMB ── */}
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '16px 24px 8px', fontSize: '0.78rem', color: '#A0AEC0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <span style={{ cursor: 'pointer' }} onClick={onBack}>Home</span>
+        <ChevronRight size={12} />
+        <span>Projects</span>
+        <ChevronRight size={12} />
+        <span>Hinjewadi</span>
+        <ChevronRight size={12} />
+        <span style={{ color: '#D4AF37', fontWeight: 600 }}>{title} Phase 1</span>
+      </div>
 
-      {/* ── STICKY BRAND HEADER ── */}
-      <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 999, transition: 'all 0.35s', background: headerScrolled ? 'rgba(9, 17, 31, 0.95)' : 'linear-gradient(to bottom, rgba(9,17,31,0.85), transparent)', backdropFilter: headerScrolled ? 'blur(16px)' : 'none', borderBottom: headerScrolled ? '1px solid rgba(212, 175, 55, 0.2)' : 'none' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '12px 16px' : '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <button onClick={onBack} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'none', border: 'none', color: '#FFF', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 600 }}>
-            <ChevronLeft size={18} /> Back to Listings
-          </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.05rem' : '1.25rem', fontWeight: 700, letterSpacing: '0.04em' }} className="brand-shimmer-text">24K REALTORS</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <button onClick={handlePlayVoiceOverview} title={isPlayingAudio ? "Stop Voice Narration" : "Listen to Property Overview (AI Voice)"} style={{ background: isPlayingAudio ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.06)', border: `1px solid ${isPlayingAudio ? 'rgba(212,175,55,0.6)' : 'rgba(255,255,255,0.1)'}`, borderRadius: '50%', width: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-              {audioLoading ? (
-                <RotateCw size={16} style={{ animation: 'spin 1s linear infinite' }} color="#D4AF37" />
-              ) : isPlayingAudio ? (
-                <VolumeX size={16} color="#D4AF37" />
-              ) : (
-                <Volume2 size={16} color="#FFF" />
-              )}
-            </button>
-            <button onClick={handleToggleWishlist} style={{ background: isWishlisted ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.06)', border: `1px solid ${isWishlisted ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.1)'}`, borderRadius: '50%', width: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-              <Heart size={16} fill={isWishlisted ? '#EF4444' : 'none'} color={isWishlisted ? '#EF4444' : '#FFF'} />
-            </button>
-            {!isMobile && (
-              <a href={callLink} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '50px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFF', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>
-                <Phone size={14} color="#D4AF37" /> +91 96730 00053
-              </a>
-            )}
-            <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '9px 20px', fontSize: '0.82rem' }}>Enquire Now</button>
-          </div>
-        </div>
-      </header>
-
-      {/* ── CINEMATIC BRAND HERO (10/10 SPLIT-SCREEN & INTERACTIVE THUMBNAILS) ── */}
-      <section style={{ position: 'relative', minHeight: isMobile ? '80vh' : '88vh', display: 'flex', alignItems: 'flex-end', overflow: 'hidden', background: '#070E1A' }}>
-        {/* Background Canvas with Smooth Fade Transition */}
-        <motion.img 
-          key={heroImageIdx}
-          src={slideshowImages[heroImageIdx] || slideshowImages[0]} 
-          alt={property.title} 
-          initial={{ opacity: 0.4, scale: 1.03 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '110%', objectFit: 'cover', objectPosition: 'center' }} 
-          onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=85'; }} 
-        />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #09111F 0%, rgba(9,17,31,0.75) 45%, rgba(9,17,31,0.3) 100%)' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at top left, rgba(212,175,55,0.15) 0%, transparent 60%)' }} />
-
-        <div style={{ position: 'relative', zIndex: 10, maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '28px 16px' : '56px 24px', width: '100%', boxSizing: 'border-box' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.35fr 0.85fr', gap: '36px', alignItems: 'end' }}>
+      {/* ── TOP HERO SECTION (IMAGE 2 MATCH) ── */}
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '12px 16px 32px' : '16px 24px 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.35fr 0.85fr', gap: '28px', alignItems: 'start' }}>
+          
+          {/* LEFT: MAIN IMAGE SHOWCASE + VERTICAL THUMBNAIL OVERLAY STRIP */}
+          <div style={{ position: 'relative', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(212,175,55,0.25)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', aspectRatio: '16/10', background: '#000' }}>
+            <img src={images[mainImgIdx]} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             
-            {/* LEFT COLUMN: Title, Badges, Metrics & Interactive Thumbnail Strip */}
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              {/* Badges */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
-                <span className="brand-badge" style={{ background: 'rgba(56,176,0,0.22)', border: '1px solid rgba(56,176,0,0.5)', color: '#38B000', backdropFilter: 'blur(8px)' }}><ShieldCheck size={11} /> RERA Certified • {property.reraNumber || 'A051262603190'}</span>
-                <span className="brand-badge" style={{ background: 'rgba(212,175,55,0.22)', border: '1px solid rgba(212,175,55,0.5)', color: '#F3E5AB', backdropFilter: 'blur(8px)' }}><Star size={11} /> 24K Signature Edition</span>
-                <span className="brand-badge" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', backdropFilter: 'blur(8px)' }}><Building size={11} /> 150-Acre Township</span>
+            {/* Top Left Premium Badge */}
+            <div style={{ position: 'absolute', top: '16px', left: '16px', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', color: '#09111F', fontSize: '0.68rem', fontWeight: 800, padding: '4px 10px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              PREMIUM RESIDENTIAL
+            </div>
+
+            {/* Vertical Thumbnail Strip (Left Overlay) */}
+            <div style={{ position: 'absolute', top: '56px', left: '16px', display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 10 }}>
+              {images.slice(0, 4).map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setMainImgIdx(idx)}
+                  style={{
+                    width: '48px',
+                    height: '36px',
+                    borderRadius: '6px',
+                    overflow: 'hidden',
+                    border: mainImgIdx === idx ? '2px solid #D4AF37' : '1px solid rgba(255,255,255,0.4)',
+                    padding: 0,
+                    cursor: 'pointer',
+                    opacity: mainImgIdx === idx ? 1 : 0.7,
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <img src={img} alt={`Thumb ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </button>
+              ))}
+              {images.length > 4 && (
+                <button
+                  onClick={() => setLightboxOpen(true)}
+                  style={{ width: '48px', height: '36px', borderRadius: '6px', background: 'rgba(9,17,31,0.85)', border: '1px solid #D4AF37', color: '#F3E5AB', fontSize: '0.6rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  +{images.length - 4} Photos
+                </button>
+              )}
+            </div>
+
+            {/* Center Play Button Overlay */}
+            <button
+              onClick={() => setLightboxOpen(true)}
+              style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(212,175,55,0.3)', border: '2px solid #D4AF37', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(6px)', transition: 'transform 0.2s' }}
+            >
+              <Play size={24} fill="#FFF" color="#FFF" style={{ marginLeft: '4px' }} />
+            </button>
+
+            {/* Prev / Next Arrows */}
+            <button
+              onClick={() => setMainImgIdx(prev => (prev > 0 ? prev - 1 : images.length - 1))}
+              style={{ position: 'absolute', left: '16px', bottom: '16px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(9,17,31,0.7)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={() => setMainImgIdx(prev => (prev < images.length - 1 ? prev + 1 : 0))}
+              style={{ position: 'absolute', right: '16px', bottom: '16px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(9,17,31,0.7)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+
+          {/* RIGHT: DETAILS, METRICS, CTA & META DETAILS (IMAGE 2 MATCH) */}
+          <div style={{ background: 'rgba(15,28,46,0.85)', borderRadius: '20px', padding: '24px', border: '1px solid rgba(212,175,55,0.25)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            
+            <div>
+              {/* Developer Logo / Brand */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <span style={{ fontSize: '0.78rem', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                  {developerName}
+                </span>
+                <span style={{ fontSize: '1.2rem' }}>🏛️</span>
               </div>
 
-              {/* Title */}
-              <h1 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '2.1rem' : '3.2rem', fontWeight: 700, color: '#FFF', margin: '0 0 10px', lineHeight: 1.15, textShadow: '0 4px 25px rgba(0,0,0,0.9)' }}>
-                {property.title}
+              {/* Title & Location */}
+              <h1 style={{ fontFamily: 'var(--font-title)', fontSize: '2.1rem', fontWeight: 700, color: '#FFF', margin: '0 0 6px', lineHeight: 1.15 }}>
+                {title}
               </h1>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '22px' }}>
-                <MapPin size={16} color="#D4AF37" />
-                <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.92rem', color: '#CBD5E0', fontWeight: 500 }}>{property.address || `${property.location}, Hinjewadi Phase 3, Pune`}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.86rem', color: '#A0AEC0', marginBottom: '14px' }}>
+                <MapPin size={15} color="#D4AF37" />
+                <span>{location}</span>
               </div>
 
-              {/* Key Quick Stats Pills */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '24px' }}>
+              <p style={{ fontSize: '0.84rem', color: '#CBD5E0', lineHeight: 1.5, margin: '0 0 20px' }}>
+                Premium homes crafted for a life of comfort, connectivity & luxury in the heart of Hinjewadi.
+              </p>
+
+              {/* Price Block */}
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', padding: '14px 16px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', marginBottom: '18px' }}>
+                <div>
+                  <div style={{ fontFamily: 'var(--font-title)', fontSize: '1.4rem', fontWeight: 700, color: '#F3E5AB' }}>
+                    {price}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: '#A0AEC0' }}>All-inclusive starting value</div>
+                </div>
+                <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', textDecoration: 'underline' }}>
+                  View Price Breakup →
+                </button>
+              </div>
+
+              {/* 4 Metrics Row (Image 2 Match) */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '20px' }}>
                 {[
-                  { label: 'Starting Price', value: fmt(property.price), highlight: true },
-                  { label: 'Price / Sq.Ft', value: `₹${Math.round(propPrice / (property.areaSquareFeet || 1050)).toLocaleString('en-IN')}/sq.ft`, highlight: false },
-                  { label: 'Carpet Area', value: `${property.areaSquareFeet || 990} sq.ft` },
-                  { label: 'Config', value: isCommercial ? 'Commercial' : `${property.bedrooms || 2}, 3 & 4 BHK` },
-                ].map((st, i) => (
-                  <div key={i} style={{ background: 'rgba(9,17,31,0.85)', backdropFilter: 'blur(16px)', border: st.highlight ? '1px solid rgba(212,175,55,0.6)' : '1px solid rgba(255,255,255,0.15)', borderRadius: '14px', padding: '12px 18px', minWidth: '110px', boxShadow: st.highlight ? '0 8px 30px rgba(212,175,55,0.25)' : 'none' }}>
-                    <div style={{ fontSize: '0.64rem', color: st.highlight ? '#D4AF37' : '#A0AEC0', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '3px' }}>{st.label}</div>
-                    <div style={{ fontSize: isMobile ? '0.95rem' : '1.1rem', fontWeight: 700, color: st.highlight ? '#F3E5AB' : '#FFF', fontFamily: 'var(--font-serif)' }}>{st.value}</div>
+                  { icon: '🛏️', label: '2 & 3', sub: 'BHK Homes' },
+                  { icon: '📐', label: '761 - 973', sub: 'Carpet Area Sq.ft' },
+                  { icon: '🏢', label: '4', sub: 'Towers' },
+                  { icon: '🏠', label: '882', sub: 'Total Units' },
+                ].map((m, idx) => (
+                  <div key={idx} style={{ padding: '10px 8px', borderRadius: '10px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '1.1rem', marginBottom: '2px' }}>{m.icon}</div>
+                    <div style={{ fontFamily: 'var(--font-title)', fontSize: '0.88rem', fontWeight: 700, color: '#FFF' }}>{m.label}</div>
+                    <div style={{ fontSize: '0.64rem', color: '#A0AEC0' }}>{m.sub}</div>
                   </div>
                 ))}
               </div>
 
-              {/* Interactive Quick Thumbnail Switcher (Switch Hero BG live) */}
-              <div style={{ marginBottom: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.74rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                    📸 Interactive Tour View ({heroImageIdx + 1}/15)
-                  </span>
-                  <button onClick={() => { setLightboxIndex(heroImageIdx); setLightboxOpen(true); }} style={{ background: 'none', border: 'none', color: '#F3E5AB', fontSize: '0.74rem', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Maximize size={12} /> Full Screen Lightbox
-                  </button>
-                </div>
-                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '6px' }} className="brand-hide">
-                  {slideshowImages.slice(0, 7).map((img, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setHeroImageIdx(i)}
-                      style={{
-                        width: '64px',
-                        height: '44px',
-                        borderRadius: '8px',
-                        overflow: 'hidden',
-                        padding: 0,
-                        border: heroImageIdx === i ? '2px solid #D4AF37' : '1px solid rgba(255,255,255,0.2)',
-                        opacity: heroImageIdx === i ? 1 : 0.65,
-                        cursor: 'pointer',
-                        flexShrink: 0,
-                        transition: 'all 0.2s'
-                      }}
-                    >
-                      <img src={img} alt={`View ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </button>
-                  ))}
-                  {slideshowImages.length > 7 && (
-                    <button onClick={() => scrollTo('gallery')} style={{ width: '64px', height: '44px', borderRadius: '8px', background: 'rgba(212,175,55,0.15)', border: '1px solid var(--border-gold)', color: '#F3E5AB', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      +{slideshowImages.length - 7} More
-                    </button>
-                  )}
-                </div>
+              {/* Primary Action Buttons */}
+              <div style={{ display: 'flex', gap: '10px', marginBottom: '14px' }}>
+                <button
+                  onClick={onOpenInquiry}
+                  className="brand-btn-gold"
+                  style={{ flex: 1, padding: '14px', fontSize: '0.88rem', fontWeight: 800, textTransform: 'uppercase', background: 'linear-gradient(135deg, #D4AF37, #F3E5AB)', color: '#09111F', border: 'none', borderRadius: '50px', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.35)' }}
+                >
+                  ENQUIRE NOW
+                </button>
+                <button
+                  onClick={onOpenInquiry}
+                  className="brand-btn-outline"
+                  style={{ flex: 1, padding: '14px', fontSize: '0.84rem', fontWeight: 700, textTransform: 'uppercase', background: 'rgba(255,255,255,0.05)', color: '#FFF', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '50px', cursor: 'pointer' }}
+                >
+                  BOOK SITE VISIT
+                </button>
               </div>
-            </motion.div>
 
-            {/* RIGHT COLUMN: Desktop VIP Private Viewing Desk Card (10/10 Rating Feature) */}
-            {!isMobile && (
-              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }}>
-                <div style={{ background: 'rgba(15, 28, 46, 0.92)', backdropFilter: 'blur(20px)', border: '1px solid rgba(212, 175, 55, 0.4)', borderRadius: '22px', padding: '26px', boxShadow: '0 25px 60px rgba(0,0,0,0.8), 0 0 30px rgba(212,175,55,0.15)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                    <div>
-                      <div style={{ fontSize: '0.7rem', color: '#D4AF37', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em' }}>24K REALTORS PRIVATE DESK</div>
-                      <div style={{ fontSize: '1.05rem', color: '#FFF', fontWeight: 700, fontFamily: 'var(--font-title)' }}>Schedule VIP Viewing</div>
-                    </div>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(56,176,0,0.15)', border: '1px solid rgba(56,176,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#38B000', animation: 'pulse 1.5s infinite' }} />
-                    </div>
-                  </div>
+              {/* Bookmark & Share */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', paddingBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.08)', marginBottom: '16px' }}>
+                <button onClick={() => setSaved(!saved)} style={{ background: 'none', border: 'none', color: saved ? '#D4AF37' : '#A0AEC0', fontSize: '0.78rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
+                  <Heart size={14} fill={saved ? '#D4AF37' : 'none'} color={saved ? '#D4AF37' : '#A0AEC0'} /> {saved ? 'Saved' : 'Save Property'}
+                </button>
+                <button onClick={() => { if (navigator.share) navigator.share({ title, url: window.location.href }); }} style={{ background: 'none', border: 'none', color: '#A0AEC0', fontSize: '0.78rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
+                  <Share2 size={14} color="#A0AEC0" /> Share
+                </button>
+              </div>
+            </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: '#E2E8F0' }}>
-                      <CheckCircle2 size={16} color="#38B000" /> Free Chauffeur-Driven Mercedes Site Visit
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: '#E2E8F0' }}>
-                      <CheckCircle2 size={16} color="#38B000" /> Instant Inventory & Floor Plan WhatsApp PDF
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: '#E2E8F0' }}>
-                      <CheckCircle2 size={16} color="#38B000" /> Pre-approved Bank Loan Assistance (8.5% Rate)
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '14px', fontSize: '0.9rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 8px 24px rgba(212,175,55,0.4)' }}>
-                      <CheckCircle size={17} /> Request VIP Callback
-                    </button>
-                    <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', borderRadius: '50px', background: 'rgba(37,211,102,0.16)', border: '1px solid rgba(37,211,102,0.4)', color: '#25D366', textDecoration: 'none', fontSize: '0.86rem', fontWeight: 700, fontFamily: 'var(--font-sans)' }}>
-                      <MessageSquare size={16} /> Instant WhatsApp Price Sheet
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
-            )}
+            {/* 3 Meta Details Grid (Bottom of Right Box) */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', textAlign: 'center', fontSize: '0.68rem', color: '#A0AEC0' }}>
+              <div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>RERA NO.</div>
+                <div style={{ color: '#FFF', fontWeight: 700, fontSize: '0.76rem', marginTop: '2px' }}>{reraNumber}</div>
+              </div>
+              <div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>POSSESSION</div>
+                <div style={{ color: '#FFF', fontWeight: 700, fontSize: '0.76rem', marginTop: '2px' }}>{possession}</div>
+              </div>
+              <div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>PROJECT AREA</div>
+                <div style={{ color: '#FFF', fontWeight: 700, fontSize: '0.76rem', marginTop: '2px' }}>{projectArea}</div>
+              </div>
+            </div>
 
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ── STICKY NAVIGATION BAR ── */}
-      <div style={{ position: 'sticky', top: '62px', zIndex: 90, background: 'rgba(9,17,31,0.96)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', overflowX: 'auto' }} className="brand-hide">
-          <div style={{ display: 'flex', gap: 0, whiteSpace: 'nowrap' }}>
-            {STICKY_TABS.map(tab => (
-              <button key={tab.id} onClick={() => scrollTo(tab.id)}
-                style={{ padding: '16px 18px', background: 'none', border: 'none', borderBottom: activeTab === tab.id ? '2px solid #D4AF37' : '2px solid transparent', color: activeTab === tab.id ? '#F3E5AB' : '#A0AEC0', fontFamily: 'var(--font-sans)', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.25s', letterSpacing: '0.02em' }}>
-                {tab.label}
+      {/* ── STICKY TABS BAR (IMAGE 2 MATCH) ── */}
+      <div style={{ position: 'sticky', top: '0px', zIndex: 90, background: 'rgba(9,17,31,0.98)', backdropFilter: 'blur(16px)', borderTop: '1px solid rgba(212,175,55,0.2)', borderBottom: '1px solid rgba(212,175,55,0.2)' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', overflowX: 'auto' }} className="brand-hide">
+          <div style={{ display: 'flex', justifyContent: isMobile ? 'flex-start' : 'space-between', gap: '8px', whiteSpace: 'nowrap' }}>
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => scrollTo(tab.id)}
+                style={{
+                  padding: '16px 20px',
+                  background: 'none',
+                  border: 'none',
+                  borderBottom: activeTab === tab.id ? '3px solid #D4AF37' : '3px solid transparent',
+                  color: activeTab === tab.id ? '#F3E5AB' : '#A0AEC0',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontSize: '0.82rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  transition: 'all 0.25s',
+                  letterSpacing: '0.04em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ── MAIN CONTENT CONTAINER ── */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '40px 16px' : '60px 24px', boxSizing: 'border-box' }}>
+      {/* ── MAIN CONTENT SECTIONS (IMAGE 2 MATCH) ── */}
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '40px 16px' : '60px 24px' }}>
 
-        {/* 1. QUICK STATS 10-GRID */}
-        <div style={{ background: 'var(--bg-deep)', border: '1px solid var(--border-gold)', borderRadius: '20px', padding: isMobile ? '20px 12px' : '32px 24px', marginBottom: '60px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)', gap: '1px', background: 'rgba(255,255,255,0.06)' }}>
-            {[
-              { icon: '📐', label: 'Carpet Area', value: `${property.areaSquareFeet || 990} sq.ft` },
-              { icon: '🏠', label: 'Config', value: isCommercial ? 'Commercial' : `${property.bedrooms || 2} BHK` },
-              { icon: '💰', label: 'Starting Price', value: fmt(property.price) },
-              { icon: '📅', label: 'Possession', value: property.possessionDate || 'Dec 2027' },
-              { icon: '🏗️', label: 'Towers', value: 'G+22 Floors' },
-              { icon: '🏢', label: 'Total Units', value: '202 Residences' },
-              { icon: '🚗', label: 'Parking', value: '2 Covered Slots' },
-              { icon: '🌳', label: 'Open Green', value: '70% Open Space' },
-              { icon: '🏋️', label: 'Amenities', value: '30+ World Class' },
-              { icon: '⭐', label: 'Google Rating', value: '4.9 / 5.0' },
-            ].map((item, i) => (
-              <div key={i} style={{ padding: isMobile ? '16px 10px' : '20px 16px', background: 'var(--bg-card)', textAlign: 'center' }}>
-                <div style={{ fontSize: isMobile ? '1.3rem' : '1.6rem', marginBottom: '6px' }}>{item.icon}</div>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>{item.label}</div>
-                <div style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '0.88rem' : '0.98rem', fontWeight: 700, color: '#FFF' }}>{item.value}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 2. CINEMATIC SIGNATURE COLLECTION GALLERY (15-SEQUENCE) */}
-        <div id={secId('gallery')} style={{ marginBottom: '65px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-            <SectionHeader label="Signature Gallery & Ideal Sequence" sub="15-Stage verified tour sequence • 90-100% visual canvas • Clean exterior detail UI" />
-            
-            {/* Category Filter Pills */}
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {[
-                { id: 'all', label: 'All 15 Sequence' },
-                { id: 'views', label: 'Aerial & Views ⭐' },
-                { id: 'interior', label: 'Interiors & Suites' },
-                { id: 'amenities', label: 'Club & Amenities' },
-                { id: 'location', label: 'Location & Transit' },
-              ].map(f => (
-                <button
-                  key={f.id}
-                  onClick={() => setGalleryFilter(f.id)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '20px',
-                    background: galleryFilter === f.id ? 'var(--gold-primary)' : 'rgba(255,255,255,0.05)',
-                    color: galleryFilter === f.id ? '#09111F' : '#A0AEC0',
-                    border: galleryFilter === f.id ? '1px solid var(--gold-primary)' : '1px solid rgba(255,255,255,0.1)',
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    transition: 'all 0.25s'
-                  }}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 15-Item Ideal Sequence Grid — 90-100% Visual Canvas, UI Details OUTSIDE below image */}
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '24px' }}>
-            {SIGNATURE_GALLERY_ITEMS.filter(item => galleryFilter === 'all' || item.cat === galleryFilter).map((item, idx) => {
-              const imgSrc = slideshowImages[idx] || `${s3BaseUrl}/${item.key}.png`;
-              return (
-                <div
-                  key={item.seq}
-                  className="brand-glass-card"
-                  style={{
-                    borderRadius: '18px',
-                    overflow: 'hidden',
-                    background: 'var(--bg-card)',
-                    border: item.isStar ? '1px solid var(--gold-primary)' : '1px solid rgba(255,255,255,0.08)',
-                    transition: 'transform 0.3s, box-shadow 0.3s',
-                    boxShadow: item.isStar ? '0 8px 30px rgba(212,175,55,0.15)' : 'none',
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
-                >
-                  {/* 90-100% Pure Visual Canvas Container */}
-                  <div
-                    onClick={() => { setLightboxIndex(idx); setLightboxOpen(true); }}
-                    style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden', cursor: 'zoom-in', background: '#0F1C2E' }}
-                  >
-                    <img
-                      src={imgSrc}
-                      alt={item.title}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-                      loading="lazy"
-                      onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'; }}
-                    />
-                    
-                    {/* Minimal Top Badges (No heavy text overlay!) */}
-                    <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '6px' }}>
-                      <span className="brand-badge" style={{ background: 'rgba(9,17,31,0.85)', border: '1px solid rgba(212,175,55,0.4)', color: '#F3E5AB', fontSize: '0.7rem', fontWeight: 800 }}>
-                        {item.seq}
-                      </span>
-                      {item.isStar && (
-                        <span className="brand-badge" style={{ background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', color: '#09111F', fontSize: '0.7rem', fontWeight: 900 }}>
-                          ⭐ Prime View
-                        </span>
-                      )}
-                    </div>
-
-                    <div style={{ position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(9,17,31,0.75)', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.2)' }}>
-                      <Eye size={15} color="#F3E5AB" />
-                    </div>
-                  </div>
-
-                  {/* UI Detail Box OUTSIDE / Below Image (Portal Quality Typography) */}
-                  <div style={{ padding: '18px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <div>
-                      <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--gold-primary)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>
-                        {item.label}
-                      </div>
-                      <h4 style={{ fontFamily: 'var(--font-title)', fontSize: '1.08rem', fontWeight: 700, color: '#FFF', margin: '0 0 6px', lineHeight: 1.25 }}>
-                        {item.title}
-                      </h4>
-                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: '#A0AEC0', margin: 0, lineHeight: 1.55 }}>
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 3. ABOUT PROJECT & BUILDER NARRATIVE (IMAGE 2 OVERVIEW MATCH) */}
-        <div id={secId('overview')} style={{ marginBottom: '70px', paddingTop: '20px' }}>
-          <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '8px' }}>
+        {/* 1. OVERVIEW SECTION */}
+        <div id="sec-overview" style={{ marginBottom: '70px', paddingTop: '10px' }}>
+          <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '8px' }}>
             OVERVIEW
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.1fr 0.9fr', gap: '48px', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.1fr 0.9fr', gap: '40px', alignItems: 'start' }}>
             <div>
-              <h2 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.8rem' : '2.4rem', fontWeight: 700, color: '#FFF', margin: '0 0 16px', lineHeight: 1.25 }}>
+              <h2 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.8rem' : '2.3rem', fontWeight: 700, color: '#FFF', margin: '0 0 16px', lineHeight: 1.25 }}>
                 A perfect blend of nature,<br />
-                <span className="brand-shimmer-text">luxury &amp; connectivity.</span>
+                <span style={{ color: '#F3E5AB' }}>luxury &amp; connectivity.</span>
               </h2>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.94rem', color: '#CBD5E0', lineHeight: 1.85, marginBottom: '24px' }}>
-                {property.description || `${property.title} is a thoughtfully planned residential development by ${builder.name} in ${property.location}, Pune. Spread across ~4.54 acres, it offers spacious 2 & 3 BHK premium homes with world-class amenities, lush green open spaces, and excellent connectivity to IT parks, top schools, hospitals, and major expressways.`}
+              <p style={{ fontSize: '0.92rem', color: '#CBD5E0', lineHeight: 1.85, margin: '0 0 24px' }}>
+                Godrej Woodsville is a thoughtfully planned residential development by Godrej Properties in Hinjewadi Phase 1. Spread across ~4.54 acres, it offers 2 & 3 BHK premium homes with world-class amenities, lush green spaces, and excellent connectivity to IT hubs, schools, hospitals and entertainment zones.
               </p>
-              <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', color: 'rgba(243,229,171,0.95)', lineHeight: 1.8, fontStyle: 'italic', borderLeft: '3px solid #D4AF37', paddingLeft: '18px', marginBottom: '28px', background: 'rgba(212,175,55,0.04)', paddingTop: '10px', paddingBottom: '10px', borderRadius: '0 12px 12px 0' }}>
-                "Where legacy architecture meets verified portfolios — crafted for elevated Pune living."
-              </p>
-              <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-                <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '14px 28px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 8px 24px rgba(212,175,55,0.35)' }}>
-                  <CheckCircle size={16} /> Enquire Now
-                </button>
-                {onOpenBrochure && (
-                  <button onClick={onOpenBrochure} className="brand-btn-outline" style={{ padding: '14px 28px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Download size={16} /> Download Brochure
-                  </button>
-                )}
-              </div>
             </div>
 
             {/* Right: Key Facts 8-Grid Box (Image 2 Match) */}
-            <div className="brand-glass-card" style={{ padding: '26px', background: 'rgba(15,28,46,0.85)' }}>
+            <div style={{ background: 'rgba(15,28,46,0.85)', padding: '24px', borderRadius: '18px', border: '1px solid rgba(255,255,255,0.08)' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}>
                 {[
-                  { icon: '🏗️', label: 'Developer', value: builder.name.split(' ')[0] + ' Properties' },
-                  { icon: '🏠', label: 'Configuration', value: isCommercial ? 'Commercial' : `${property.bedrooms || 2} & 3 BHK` },
-                  { icon: '📐', label: 'Carpet Area', value: `${property.areaSquareFeet || 761} - 973 sq.ft` },
-                  { icon: '🏢', label: 'Total Units', value: '~882 Homes' },
-                  { icon: '🏙️', label: 'Towers', value: '4 High Rise' },
-                  { icon: '🌳', label: 'Project Area', value: '~4.54 Acres' },
-                  { icon: '📅', label: 'Possession', value: property.possessionDate || 'Nov 2028' },
-                  { icon: '📋', label: 'RERA No.', value: property.reraNumber || 'P52100046770' },
+                  { icon: '🏢', label: 'DEVELOPER', value: developerName },
+                  { icon: '🛏️', label: 'CONFIGURATION', value: '2 & 3 BHK' },
+                  { icon: '📐', label: 'CARPET AREA', value: '761 - 973 sq.ft' },
+                  { icon: '🏠', label: 'TOTAL UNITS', value: '~882 Homes' },
+                  { icon: '🏢', label: 'TOWERS', value: '4' },
+                  { icon: '🌳', label: 'PROJECT AREA', value: projectArea },
+                  { icon: '🕒', label: 'POSSESSION', value: possession },
+                  { icon: '📋', label: 'RERA NO.', value: reraNumber },
                 ].map((item, i) => (
                   <div key={i} style={{ padding: '12px 14px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                       <span style={{ fontSize: '1rem' }}>{item.icon}</span>
-                      <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.label}</span>
+                      <span style={{ fontSize: '0.66rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.label}</span>
                     </div>
-                    <div style={{ fontFamily: 'var(--font-title)', fontSize: '0.88rem', fontWeight: 700, color: '#FFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.value}</div>
+                    <div style={{ fontFamily: 'var(--font-title)', fontSize: '0.88rem', fontWeight: 700, color: '#FFF' }}>{item.value}</div>
                   </div>
                 ))}
               </div>
@@ -1026,519 +339,170 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
         </div>
 
-        {/* 4. CINEMATIC VIDEO & 3D VIRTUAL MATTERPORT HUB */}
-        <div style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Interactive Video & 3D Virtual Tour" sub="Explore full 360° spatial walkthroughs and ultra-high-definition property tours" align="center" />
-          
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '24px', maxWidth: '1100px', margin: '0 auto' }}>
-            
-            {/* Left: Video Tour */}
-            <div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Play size={14} color="#D4AF37" /> Cinematic Video Tour
-              </div>
-              <div style={{ position: 'relative', borderRadius: '18px', overflow: 'hidden', aspectRatio: '16/10', border: '1px solid var(--border-gold)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', background: '#000' }}>
-                {(() => {
-                  const s3Candidates = [
-                    property.videoUrl,
-                    `${s3BaseUrl}/video.mp4`,
-                    `${s3BaseUrl}/vyomora_tour.mp4`,
-                    `${s3BaseUrl}/tour.mp4`,
-                    `${s3BaseUrl}/vyomora.mp4`,
-                    `${s3BaseUrl}/hero.mp4`,
-                    `/properties/vyomora/vyomora_tour.mp4`
-                  ].filter(Boolean);
-
-                  return (
-                    <video
-                      src={s3Candidates[videoFallbackIndex] || property.videoUrl || `${s3BaseUrl}/video.mp4`}
-                      controls
-                      playsInline
-                      autoPlay
-                      muted
-                      loop
-                      poster={slideshowImages[0]}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => {
-                        if (videoFallbackIndex < s3Candidates.length - 1) {
-                          setVideoFallbackIndex(prev => prev + 1);
-                        } else {
-                          setUseDriveFallback(true);
-                        }
-                      }}
-                    />
-                  );
-                })()}
-                {useDriveFallback && (
-                  <iframe
-                    src="https://drive.google.com/file/d/1d0bs-V09UXSMugFtcKOEpNo9_Wh-5G3N/preview"
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
-                    allow="autoplay; encrypted-media; fullscreen"
-                    allowFullScreen
-                    title="Megapolis Video Tour"
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Right: 3D Matterport Virtual Walkthrough (On-Demand Load for Maximum Speed) */}
-            <div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Compass size={14} color="#D4AF37" /> 3D Matterport Virtual Tour
-              </div>
-              <div style={{ position: 'relative', borderRadius: '18px', overflow: 'hidden', aspectRatio: '16/10', border: '1px solid var(--border-gold)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', background: '#0F1C2E' }}>
-                {load3DTour ? (
-                  <iframe
-                    src={property.threeDTourUrl || "https://my.matterport.com/show/?m=JGPmBB6q58g"}
-                    style={{ width: '100%', height: '100%', border: 'none' }}
-                    allow="fullscreen; vr"
-                    allowFullScreen
-                    loading="lazy"
-                    title="Megapolis 3D Spatial Walkthrough"
-                  />
-                ) : (
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: `linear-gradient(rgba(9,17,31,0.7), rgba(9,17,31,0.9)), url(${slideshowImages[1] || slideshowImages[0]}) center/cover`, padding: '20px', textAlign: 'center' }}>
-                    <div style={{ width: '54px', height: '54px', borderRadius: '50%', background: 'rgba(212,175,55,0.2)', border: '1px solid #D4AF37', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
-                      <Compass size={28} color="#F3E5AB" />
-                    </div>
-                    <div style={{ fontFamily: 'var(--font-title)', fontSize: '1.1rem', fontWeight: 700, color: '#FFF', marginBottom: '6px' }}>3D Matterport Interactive Tour</div>
-                    <p style={{ fontSize: '0.78rem', color: '#CBD5E0', maxWidth: '320px', marginBottom: '16px', lineHeight: 1.4 }}>Explore full 360° virtual walkthrough with WebGL spatial dimension controls.</p>
-                    <button onClick={() => setLoad3DTour(true)} className="brand-btn-gold" style={{ padding: '10px 22px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <Play size={14} /> Launch 3D Walkthrough
-                    </button>
-                  </div>
-                )}
-                {load3DTour && (
-                  <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(9,17,31,0.85)', backdropFilter: 'blur(8px)', border: '1px solid var(--border-gold)', borderRadius: '8px', padding: '4px 10px', fontSize: '0.72rem', color: '#F3E5AB', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <RotateCw size={12} /> Drag & Pinch to Rotate 360°
-                  </div>
-                )}
-              </div>
-            </div>
-
+        {/* 2. HIGHLIGHTS SECTION */}
+        <div id="sec-highlights" style={{ marginBottom: '70px', paddingTop: '10px' }}>
+          <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>
+            HIGHLIGHTS
           </div>
-        </div>
 
-        {/* 5. PROJECT HIGHLIGHTS */}
-        <div id={secId('highlights')} style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Project Highlights" sub="Designed for high-net-worth comfort and seamless modern living" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '14px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(6, 1fr)', gap: '14px' }}>
             {[
-              { icon: '🏊', title: 'Infinity Sky Pool', desc: 'Rooftop infinity pool with panoramic views of Pune West' },
-              { icon: '🌿', title: '70% Open Space', desc: 'Miyawaki forest zones and walking tracks' },
-              { icon: '🏛️', title: 'Grand Clubhouse', desc: '25,000 sq.ft state-of-the-art lifestyle lounge' },
-              { icon: '🛡️', title: '24x7 AI Security', desc: 'CCTV surveillance with video door phone integration' },
-              { icon: '💪', title: 'Modern Gymnasium', desc: 'Fully equipped fitness center with personal trainers' },
-              { icon: '🧘', title: 'Yoga & Wellness Deck', desc: 'Dedicated meditation space amidst lush greens' },
-              { icon: '🎠', title: "Children's Play Zone", desc: 'Safe, interactive play area for kids' },
-              { icon: '⚡', title: '100% Power Backup', desc: 'Uninterrupted power grid for all apartments' },
-            ].map((h, i) => (
-              <div key={i} className="brand-glass-card" style={{ padding: isMobile ? '16px 12px' : '22px' }}>
-                <div style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', marginBottom: '10px' }}>{h.icon}</div>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: '#FFF', marginBottom: '6px' }}>{h.title}</div>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.76rem', color: '#A0AEC0', lineHeight: 1.5 }}>{h.desc}</div>
+              { icon: '📍', text: 'Prime location in Hinjewadi Phase 1' },
+              { icon: '🚆', text: 'Close to IT parks, Metro & Expressway' },
+              { icon: '🌳', text: '80%+ Open Spaces with landscaping' },
+              { icon: '🧘', text: 'Vaastu-compliant homes' },
+              { icon: '🏛️', text: 'Grand Clubhouse with modern facilities' },
+              { icon: '🏗️', text: 'Trusted developer with 125+ years of legacy' },
+            ].map((h, idx) => (
+              <div key={idx} style={{ padding: '20px 14px', borderRadius: '16px', background: 'rgba(15,28,46,0.85)', border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ fontSize: '1.8rem', marginBottom: '12px' }}>{h.icon}</div>
+                <div style={{ fontSize: '0.78rem', color: '#CBD5E0', fontWeight: 600, lineHeight: 1.4 }}>{h.text}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 6. FLOOR PLANS & CONFIGURATIONS */}
-        <div id={secId('floorplans')} style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Floor Plans & Blueprints" sub="Optimal space utility with high-ceiling luxury architecture" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '36px', alignItems: 'start' }}>
-            <div>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
-                {fpVariants.map(v => (
-                  <button key={v.id} onClick={() => setActivePlan(v.id)}
-                    style={{ padding: '9px 18px', borderRadius: '50px', fontFamily: 'var(--font-sans)', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.25s', border: 'none', background: activePlan === v.id ? 'linear-gradient(135deg, #D4AF37, #F3E5AB)' : 'rgba(255,255,255,0.06)', color: activePlan === v.id ? '#0D1B2A' : '#A0AEC0' }}>
-                    {v.label}
-                  </button>
-                ))}
-              </div>
-              <div style={{ position: 'relative', borderRadius: '18px', overflow: 'hidden', background: '#0F1C2E', border: '1px solid var(--border-gold)', cursor: 'zoom-in' }} onClick={() => { setLightboxIndex(5); setLightboxOpen(true); }}>
-                <img src={fpActive.url} alt={fpActive.label} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'contain', padding: '16px', boxSizing: 'border-box' }} onError={e => { e.currentTarget.src = fpActive.fallbackUrl || '/floorplan_2bhk.png'; }} />
-                <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(9,17,31,0.8)', backdropFilter: 'blur(8px)', borderRadius: '8px', padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <ZoomIn size={12} color="#A0AEC0" /><span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.7rem', color: '#A0AEC0' }}>Tap to Zoom</span>
+        {/* 3. AMENITIES SECTION */}
+        <div id="sec-amenities" style={{ marginBottom: '70px', paddingTop: '10px' }}>
+          <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>
+            AMENITIES
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(7, 1fr)', gap: '14px' }}>
+            {AMENITIES.map((item, idx) => (
+              <div key={idx} style={{ borderRadius: '16px', overflow: 'hidden', background: '#0F1C2E', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden' }}>
+                  <img src={item.img} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                 </div>
-                <div style={{ position: 'absolute', bottom: '12px', left: '12px' }}>
-                  <span style={{ background: 'rgba(9,17,31,0.85)', backdropFilter: 'blur(8px)', border: '1px solid var(--border-gold)', borderRadius: '8px', padding: '5px 12px', fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: '#F3E5AB', fontWeight: 700 }}>{fpActive.desc}</span>
+                <div style={{ padding: '10px 8px', textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#FFF' }}>
+                  {item.title}
                 </div>
               </div>
-              <div style={{ marginTop: '14px', display: 'flex', gap: '10px' }}>
-                <button onClick={onOpenBrochure} className="brand-btn-gold" style={{ flex: 1, padding: '12px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                  <Download size={14} /> Download PDF
-                </button>
-                <button onClick={onOpenInquiry} className="brand-btn-outline" style={{ flex: 1, padding: '12px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                  <Phone size={14} /> Get Pricing
-                </button>
+            ))}
+
+            {/* 7th Card: View All Amenities */}
+            <div onClick={onOpenInquiry} style={{ borderRadius: '16px', background: 'rgba(15,28,46,0.85)', border: '1px solid rgba(212,175,55,0.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', cursor: 'pointer' }}>
+              <div style={{ fontSize: '0.84rem', fontWeight: 800, color: '#F3E5AB', marginBottom: '6px', textAlign: 'center' }}>
+                View All Amenities
               </div>
+              <ArrowRight size={18} color="#D4AF37" />
             </div>
-            <div>
-              <h3 style={{ fontFamily: 'var(--font-title)', fontSize: '1.25rem', color: '#FFF', marginBottom: '20px', fontWeight: 700 }}>{fpActive.label} — Blueprint Details</h3>
+          </div>
+        </div>
+
+        {/* 4. LOCATION ADVANTAGE SECTION */}
+        <div id="sec-location" style={{ marginBottom: '70px', paddingTop: '10px' }}>
+          <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>
+            LOCATION ADVANTAGE
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.3fr', gap: '28px', alignItems: 'center' }}>
+            
+            {/* Left Travel Times */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {[
-                { label: 'Carpet Area', value: fpActive.id === '2bhk' ? '684 – 839 sq.ft' : fpActive.id === '3bhk' ? '1052 – 1477 sq.ft' : '16 Acres' },
-                { label: 'Super Built-up Area', value: fpActive.id === '2bhk' ? '870 – 1050 sq.ft' : fpActive.id === '3bhk' ? '1320 – 1840 sq.ft' : 'Mixed' },
-                { label: 'Bedrooms', value: fpActive.id === '2bhk' ? '2 Beds' : fpActive.id === '3bhk' ? '3 Beds' : 'Multiple' },
-                { label: 'Bathrooms', value: fpActive.id === '2bhk' ? '2 Baths' : fpActive.id === '3bhk' ? '3 Baths' : 'Multiple' },
-                { label: 'Balcony', value: '1 Extended Deck' },
-                { label: 'Parking Space', value: '2 Covered Slots' },
-                { label: 'Building Structure', value: 'G+22 Floors' },
-                { label: 'Starting Price', value: fpActive.id === '2bhk' ? '₹84.00 L*' : fpActive.id === '3bhk' ? '₹1.17 Cr*' : '₹3.75 Cr*' },
-              ].map((row, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 7 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-                  <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: '#A0AEC0' }}>{row.label}</span>
-                  <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.86rem', fontWeight: 700, color: '#FFF' }}>{row.value}</span>
+                { name: 'Hinjewadi IT Park', time: '5 mins' },
+                { name: 'Wakad Metro Station', time: '10 mins' },
+                { name: 'Pune - Mumbai Expressway', time: '10 mins' },
+                { name: 'Phoenix Mall of the Millennium', time: '15 mins' },
+                { name: 'Pune Railway Station', time: '25 mins' },
+                { name: 'Pune Airport', time: '45 mins' },
+              ].map((loc, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '12px', background: 'rgba(15,28,46,0.85)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.86rem', color: '#FFF' }}>
+                    <span style={{ fontSize: '1rem' }}>📍</span>
+                    <span>{loc.name}</span>
+                  </div>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#F3E5AB' }}>{loc.time}</span>
                 </div>
               ))}
-            </div>
-          </div>
-        </div>
 
-        {/* 6B. LUXURY ARCHITECTURAL SPECIFICATIONS MATRIX */}
-        <div style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Luxury Architectural Specifications" sub="Engineering precision, premium finishes, and international fitting standards" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '20px' }}>
-            {[
-              { icon: '🏛️', title: 'Structure & Elevators', items: ['Mivan Aluminium Formwork Shatterproof RCC', 'High-speed Mitsubishi / Schindler Elevators', 'ARD (Automatic Rescue Device) Installed', 'Earthquake Resistant Zone IV Compliant'] },
-              { icon: '🪵', title: 'Flooring & Finishes', items: ['Imported Italian Marble in Living & Dining', 'Plush Hardwood Flooring in Master Suite', 'Anti-skid Designer Ceramic Tiles in Balconies', 'Luster Paint with Gypsum Finished Walls'] },
-              { icon: '🚿', title: 'Bathrooms & Fittings', items: ['Kohler / Grohe Thermostatic Shower Systems', 'Wall-hung Premium EWC with Soft-close Seats', 'Glass Shower Partition Enclosures', 'Solar Hot Water Grid Connection'] },
-              { icon: '🍳', title: 'Modular Kitchen', items: ['German Soft-close Drawer Systems', 'Quartz Stone Countertop with SS Sink', 'Piped Gas Connection with Gas Detector', 'Utility Balcony with Washing Machine Point'] },
-              { icon: '⚡', title: 'Electrical & Automation', items: ['Schneider / Legrand Modular Touch Switches', '100% DG Power Backup for Common Areas', 'EV Charging Point Provision per Slot', 'High-speed Fiber Optic Cable Ready'] },
-              { icon: '🔐', title: 'Safety & Security', items: ['Biometric Smart Door Lock (Fingerprint/PIN)', 'Video Door Phone with Mobile App Link', '24/7 AI-monitored Perimeter CCTV', '3-Tier Gated Security Checkpoints'] },
-            ].map((spec, i) => (
-              <div key={i} className="brand-glass-card" style={{ padding: '24px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-                  <span style={{ fontSize: '1.5rem' }}>{spec.icon}</span>
-                  <h4 style={{ fontFamily: 'var(--font-title)', fontSize: '1.05rem', fontWeight: 700, color: '#F3E5AB', margin: 0 }}>{spec.title}</h4>
-                </div>
-                <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {spec.items.map((it, j) => (
-                    <li key={j} style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: '#A0AEC0', lineHeight: 1.5 }}>
-                      {it}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 7. WORLD CLASS AMENITIES */}
-        <div id={secId('amenities')} style={{ marginBottom: '60px' }}>
-          <SectionHeader label="World-Class Photo Amenities" sub="Curated lifestyle features designed to offer complete leisure and luxury" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-            {displayedAmenities.map(label => <AmenityPhotoCard key={label} label={label} />)}
-          </div>
-          {amenityList.length > 8 && (
-            <div style={{ textAlign: 'center' }}>
-              <button onClick={() => setShowAllAmenities(!showAllAmenities)} className="brand-btn-outline" style={{ padding: '12px 32px', fontSize: '0.85rem' }}>
-                {showAllAmenities ? 'Show Less' : `View All ${amenityList.length} Amenities`}
+              <button onClick={onOpenInquiry} style={{ padding: '12px', borderRadius: '50px', background: 'rgba(255,255,255,0.05)', color: '#FFF', border: '1px solid rgba(212,175,55,0.4)', fontSize: '0.82rem', marginTop: '8px', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer' }}>
+                VIEW ON MAP
               </button>
             </div>
-          )}
-        </div>
 
-        {/* 8. CONSTRUCTION PROGRESS */}
-        <div id={secId('construction')} style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Construction Progress" sub="Transparent milestone tracking for registered investors" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '36px', alignItems: 'start' }}>
-            <div>
-              {[
-                { phase: 'Foundation & Piling', date: 'Aug 2024', status: 'completed', pct: 100 },
-                { phase: 'Basement Excavation', date: 'Oct 2024', status: 'completed', pct: 100 },
-                { phase: 'Ground Floor Slab', date: 'Jan 2025', status: 'completed', pct: 100 },
-                { phase: 'Floor 1–10 Construction', date: 'Jul 2025', status: 'active', pct: 72 },
-                { phase: 'Floor 11–22 Construction', date: 'Mar 2026', status: 'upcoming', pct: 0 },
-                { phase: 'Finishing & Handover', date: 'Dec 2027', status: 'upcoming', pct: 0 },
-              ].map((item, i, arr) => (
-                <div key={i} style={{ display: 'flex', gap: '16px', marginBottom: '18px', paddingBottom: '18px', borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-                  <div style={{ flexShrink: 0, marginTop: '2px' }}>
-                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: item.status === 'completed' ? '#38B000' : item.status === 'active' ? '#D4AF37' : 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {item.status === 'completed' && <CheckCircle size={12} color="#0D1B2A" />}
-                      {item.status === 'active' && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0D1B2A' }} />}
-                    </div>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                      <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.86rem', fontWeight: 600, color: item.status === 'upcoming' ? '#666' : '#FFF' }}>{item.phase}</span>
-                      <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: item.status === 'completed' ? '#38B000' : item.status === 'active' ? '#F3E5AB' : '#666' }}>{item.date}</span>
-                    </div>
-                    {item.status !== 'upcoming' && (
-                      <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px', overflow: 'hidden' }}>
-                        <motion.div initial={{ width: 0 }} whileInView={{ width: `${item.pct}%` }} viewport={{ once: true }} transition={{ duration: 1.2 }}
-                          style={{ height: '100%', borderRadius: '2px', background: item.status === 'completed' ? 'linear-gradient(90deg, #38B000, #52B788)' : 'linear-gradient(90deg, #D4AF37, #F3E5AB)' }} />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="brand-glass-card" style={{ padding: '32px', textAlign: 'center' }}>
-              <div className="brand-shimmer-text" style={{ fontFamily: 'var(--font-title)', fontSize: '3.2rem', fontWeight: 700, marginBottom: '6px' }}>68%</div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', color: '#A0AEC0', marginBottom: '16px' }}>Overall Completion Status</div>
-              <div style={{ height: '8px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden', marginBottom: '20px' }}>
-                <motion.div initial={{ width: 0 }} whileInView={{ width: '68%' }} viewport={{ once: true }} transition={{ duration: 1.5 }}
-                  style={{ height: '100%', background: 'linear-gradient(90deg, #D4AF37, #F3E5AB)', borderRadius: '4px' }} />
-              </div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: '#A0AEC0' }}>Expected Possession: <span style={{ color: '#F3E5AB', fontWeight: 700 }}>December 2027</span></div>
-            </div>
-          </div>
-        </div>
-
-        {/* 9. LOCATION ADVANTAGE */}
-        <div id={secId('location')} style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Location Advantage & Proximity" sub="Strategically connected to Pune’s IT hubs, expressway, and top schools" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '36px' }}>
-            <div style={{ borderRadius: '18px', overflow: 'hidden', border: '1px solid var(--border-gold)', aspectRatio: '4/3' }}>
+            {/* Right Map Card */}
+            <div style={{ position: 'relative', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(212,175,55,0.3)', aspectRatio: '16/10', background: '#0F1C2E' }}>
               <iframe
-                src={`https://maps.google.com/maps?t=m&z=14&ie=UTF8&iwloc=&output=embed&q=${encodeURIComponent(property.address || `${property.title}, ${property.location}, Pune`)}&zoom=14`}
-                style={{ width: '100%', height: '100%', border: 'none', filter: 'invert(1) hue-rotate(180deg) saturate(0.9)' }}
+                src={`https://maps.google.com/maps?t=m&z=14&ie=UTF8&iwloc=&output=embed&q=${encodeURIComponent(address)}&zoom=14`}
+                style={{ width: '100%', height: '100%', border: 'none', filter: 'invert(1) hue-rotate(180deg) saturate(0.8)' }}
                 loading="lazy"
-                title="Location Map" allowFullScreen />
-            </div>
-            <div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                {corridor.landmarks.map((lm, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                    <Navigation size={15} color="#D4AF37" />
-                    <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.86rem', color: '#F8F9FA', fontWeight: 500 }}>{lm}</span>
-                  </div>
-                ))}
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
-                {[{ icon: '🏢', label: 'IT Park', time: '5 Min' }, { icon: '✈️', label: 'Airport', time: '28 Min' }, { icon: '🚇', label: 'Metro', time: '4 Min' }, { icon: '🏥', label: 'Hospital', time: '8 Min' }].map((c, i) => (
-                  <div key={i} style={{ padding: '12px 6px', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>{c.icon}</div>
-                    <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.68rem', color: '#A0AEC0', marginBottom: '2px' }}>{c.label}</div>
-                    <div style={{ fontFamily: 'var(--font-title)', fontSize: '0.85rem', fontWeight: 700, color: '#F3E5AB' }}>{c.time}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div style={{ marginTop: '32px', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '24px' }}>
-            <div className="brand-glass-card" style={{ padding: '24px' }}>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '16px' }}>Location Intelligence Scores</div>
-              <ScoreBar label="Appreciation Potential" value={corridor.appreciation} max={20} />
-              <ScoreBar label="Commute Ease" value={corridor.commute} />
-              <ScoreBar label="Green & Wellness" value={corridor.green} />
-              <ScoreBar label="Infrastructure" value={corridor.infra} />
-              <ScoreBar label="Social Infrastructure" value={corridor.social} />
-              <ScoreBar label="Future Growth" value={corridor.future} />
-            </div>
-            <div className="brand-glass-card" style={{ padding: '24px' }}>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '16px' }}>Corridor Market Metrics</div>
-              {[
-                { label: '5Y Price Appreciation (CAGR)', value: `${corridor.appreciation}%` },
-                { label: 'Estimated Rental Yield', value: `${rentalYield}%` },
-                { label: 'Avg. Micro-Market Rate', value: '₹8,200 – ₹11,500 psf' },
-                { label: 'Rental Demand Index', value: 'Very High' },
-                { label: 'Investment Grade Rating', value: '🏆 AAA Rating' },
-              ].map((r, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '11px 0', borderBottom: i < 4 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-                  <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: '#A0AEC0' }}>{r.label}</span>
-                  <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, color: r.label.includes('Rating') ? '#38B000' : '#FFF' }}>{r.value}</span>
-                </div>
-              ))}
+                title="Location Map"
+              />
             </div>
           </div>
         </div>
 
-        {/* 10. AI INVESTMENT ANALYSIS */}
-        <div id={secId('investment')} style={{ marginBottom: '60px' }}>
-          <SectionHeader label="AI Investment Analysis & Forecast" sub="Predictive price growth models backed by corridor sales data" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr', gap: '24px', marginBottom: '32px' }}>
-            <div className="brand-glass-card" style={{ padding: '32px 24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#D4AF37', marginBottom: '16px' }}>AI Investment Score</div>
-              <div style={{ position: 'relative', width: '110px', height: '110px', margin: '0 auto 12px' }}>
-                <svg viewBox="0 0 120 120" style={{ transform: 'rotate(-90deg)' }}>
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
-                  <motion.circle cx="60" cy="60" r="50" fill="none" stroke="url(#brandGrad)" strokeWidth="10" strokeLinecap="round"
-                    strokeDasharray={`${2 * Math.PI * 50}`} initial={{ strokeDashoffset: 2 * Math.PI * 50 }}
-                    whileInView={{ strokeDashoffset: 2 * Math.PI * 50 * (1 - aiScore / 100) }} viewport={{ once: true }} transition={{ duration: 1.5 }} />
-                  <defs><linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#D4AF37" /><stop offset="100%" stopColor="#F3E5AB" /></linearGradient></defs>
-                </svg>
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  <span className="brand-shimmer-text" style={{ fontFamily: 'var(--font-title)', fontSize: '1.9rem', fontWeight: 700 }}>{aiScore}</span>
-                  <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.62rem', color: '#A0AEC0' }}>/ 100</span>
-                </div>
+        {/* 5. FLOOR PLANS SECTION */}
+        <div id="sec-floorplans" style={{ marginBottom: '70px', paddingTop: '10px' }}>
+          <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>
+            FLOOR PLANS
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '20px' }}>
+            
+            {/* Card 1: 2 BHK */}
+            <div style={{ padding: '20px', borderRadius: '18px', background: 'rgba(15,28,46,0.85)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div style={{ fontFamily: 'var(--font-title)', fontSize: '1.2rem', fontWeight: 700, color: '#FFF', marginBottom: '4px' }}>2 BHK</div>
+              <div style={{ fontSize: '0.78rem', color: '#A0AEC0', marginBottom: '14px' }}>Carpet Area: 761 - 858 sq.ft</div>
+              <div style={{ borderRadius: '12px', overflow: 'hidden', background: '#000', marginBottom: '14px', aspectRatio: '4/3' }}>
+                <img src="/floorplan_2bhk.png" alt="2 BHK Floor Plan" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px' }} onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75'; }} />
               </div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, color: '#38B000', marginBottom: '4px' }}>Prime Investment</div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: '#A0AEC0' }}>Top 5% ROI Potential in Pune</div>
+              <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                View Plan →
+              </button>
             </div>
-            <div className="brand-glass-card" style={{ padding: '24px' }}>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '16px' }}>5-Year Historical Appreciation</div>
-              <div style={{ overflowX: 'auto' }}>
-                <svg viewBox="0 0 480 160" style={{ width: '100%', minWidth: '320px', height: '160px' }}>
-                  <defs>
-                    <linearGradient id="chartBg" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.25" />
-                      <stop offset="100%" stopColor="#D4AF37" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  {[20, 60, 100, 140].map(y => <line key={y} x1="30" y1={y} x2="450" y2={y} stroke="rgba(255,255,255,0.04)" strokeWidth="1" />)}
-                  <motion.path d={`M 30 140 ${trendPts.map(p => `L ${p.x} ${p.y}`).join(' ')} L 430 140 Z`} fill="url(#chartBg)" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1.2 }} />
-                  <motion.path d={pathD} fill="none" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                    initial={{ pathLength: 0, opacity: 0 }} whileInView={{ pathLength: 1, opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1.5 }} />
-                  {trendPts.map((p, i) => (
-                    <g key={i}>
-                      <circle cx={p.x} cy={p.y} r="4" fill="#09111F" stroke="#D4AF37" strokeWidth="2" />
-                      <text x={p.x} y="156" textAnchor="middle" fill="#A0AEC0" fontSize="9" fontFamily="Montserrat,sans-serif">{p.year}</text>
-                      <text x={p.x} y={p.y - 8} textAnchor="middle" fill="#F3E5AB" fontSize="8.5" fontFamily="Montserrat,sans-serif" fontWeight="600">₹{p.price.toLocaleString('en-IN')}</text>
-                    </g>
-                  ))}
-                </svg>
+
+            {/* Card 2: 3 BHK */}
+            <div style={{ padding: '20px', borderRadius: '18px', background: 'rgba(15,28,46,0.85)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div style={{ fontFamily: 'var(--font-title)', fontSize: '1.2rem', fontWeight: 700, color: '#FFF', marginBottom: '4px' }}>3 BHK</div>
+              <div style={{ fontSize: '0.78rem', color: '#A0AEC0', marginBottom: '14px' }}>Carpet Area: 904 - 973 sq.ft</div>
+              <div style={{ borderRadius: '12px', overflow: 'hidden', background: '#000', marginBottom: '14px', aspectRatio: '4/3' }}>
+                <img src="/floorplan_2bhk.png" alt="3 BHK Floor Plan" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px' }} onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=75'; }} />
               </div>
+              <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                View Plan →
+              </button>
             </div>
+
+            {/* Card 3: Need Customization? */}
+            <div style={{ padding: '28px 24px', borderRadius: '18px', background: 'rgba(15,28,46,0.85)', border: '1px solid rgba(212,175,55,0.3)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+              <h3 style={{ fontFamily: 'var(--font-title)', fontSize: '1.15rem', fontWeight: 700, color: '#FFF', margin: '0 0 8px' }}>Need Customization?</h3>
+              <p style={{ fontSize: '0.84rem', color: '#A0AEC0', margin: '0 0 20px', lineHeight: 1.5 }}>
+                Talk to our expert for your perfect home.
+              </p>
+              <button onClick={onOpenInquiry} style={{ padding: '12px 24px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #F3E5AB)', color: '#09111F', border: 'none', fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer' }}>
+                TALK TO EXPERT
+              </button>
+            </div>
+
           </div>
         </div>
 
-        {/* 11. PRICING & EMI CALCULATOR */}
-        <div id={secId('pricing')} style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Pricing Matrix & EMI Calculator" sub="Complete financial transparency with custom loan planning" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '28px' }}>
-            <div className="brand-glass-card" style={{ padding: '24px' }}>
-              <h3 style={{ fontFamily: 'var(--font-title)', fontSize: '1.15rem', fontWeight: 700, color: '#FFF', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: '8px' }}><Calculator size={18} color="#D4AF37" /> Instant EMI Calculator</h3>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: '16px' }}>
-                <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: '#A0AEC0' }}>Property Price</span>
-                <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', fontWeight: 700, color: '#F3E5AB' }}>{fmt(propPrice)}</span>
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#A0AEC0', marginBottom: '6px' }}><span>Down Payment:</span><strong style={{ color: '#FFF' }}>{downPayment}% ({fmt(propPrice * downPayment / 100)})</strong></div>
-                <input type="range" min={10} max={50} value={downPayment} onChange={e => setDownPayment(Number(e.target.value))} className="brand-range" />
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#A0AEC0', marginBottom: '6px' }}><span>Interest Rate:</span><strong style={{ color: '#FFF' }}>{interestRate}% p.a.</strong></div>
-                <input type="range" min={6.5} max={12} step={0.1} value={interestRate} onChange={e => setInterestRate(Number(e.target.value))} className="brand-range" />
-              </div>
-              <div style={{ marginBottom: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#A0AEC0', marginBottom: '6px' }}><span>Loan Tenure:</span><strong style={{ color: '#FFF' }}>{loanTerm} Years</strong></div>
-                <input type="range" min={5} max={30} value={loanTerm} onChange={e => setLoanTerm(Number(e.target.value))} className="brand-range" />
-              </div>
-              <div style={{ padding: '16px', borderRadius: '14px', background: 'rgba(212,175,55,0.08)', border: '1px solid var(--border-gold)', textAlign: 'center', marginBottom: '16px' }}>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.7rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Estimated Monthly EMI</div>
-                <div className="brand-shimmer-text" style={{ fontFamily: 'var(--font-title)', fontSize: '1.9rem', fontWeight: 700 }}>₹{Math.round(emiVal).toLocaleString('en-IN')}</div>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {[{ bank: 'SBI Home Loan', rate: '8.50%' }, { bank: 'HDFC Bank', rate: '8.75%' }, { bank: 'ICICI Bank', rate: '9.00%' }].map((b, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.02)', fontSize: '0.8rem' }}>
-                    <span style={{ color: '#A0AEC0' }}>{b.bank}</span>
-                    <strong style={{ color: '#FFF' }}>{b.rate}</strong>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="brand-glass-card" style={{ padding: '24px' }}>
-              <h3 style={{ fontFamily: 'var(--font-title)', fontSize: '1.15rem', fontWeight: 700, color: '#FFF', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: '8px' }}><FileText size={18} color="#D4AF37" /> Transparent Price Breakup</h3>
-              {[
-                { label: 'Agreement Value', value: fmt(propPrice) },
-                { label: 'Stamp Duty (6%)', value: fmt(propPrice * 0.06) },
-                { label: 'Registration (1%)', value: fmt(propPrice * 0.01) },
-                { label: 'GST (5%)', value: fmt(propPrice * 0.05) },
-                { label: 'Development & Legal', value: '₹1.50 L' },
-                { label: 'Maintenance Deposit', value: '₹75,000' },
-                { label: 'Parking Slot', value: 'Included' },
-              ].map((r, i, a) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < a.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-                  <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: '#A0AEC0' }}>{r.label}</span>
-                  <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.86rem', fontWeight: 700, color: '#FFF' }}>{r.value}</span>
-                </div>
-              ))}
-              <div style={{ marginTop: '16px', padding: '16px', borderRadius: '14px', background: 'rgba(212,175,55,0.08)', border: '1px solid var(--border-gold)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.07em' }}>All-Inclusive Total</div>
-                  <div className="brand-shimmer-text" style={{ fontFamily: 'var(--font-title)', fontSize: '1.35rem', fontWeight: 700 }}>{fmt(propPrice * 1.12 + 225000)}</div>
-                </div>
-                <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '10px 18px', fontSize: '0.82rem' }}>Get Quote</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 12. DEVELOPER DOSSIER */}
-        <div id={secId('developer')} style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Developer Profile & Legacy" sub="Decades of excellence in luxury architectural developments" />
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '28px', alignItems: 'start' }}>
-            <div className="brand-glass-card" style={{ padding: '28px' }}>
-              <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start', marginBottom: '18px' }}>
-                <div style={{ width: '56px', height: '56px', borderRadius: '14px', background: 'rgba(212,175,55,0.15)', border: '1px solid var(--border-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.7rem', flexShrink: 0 }}>{builder.logo}</div>
-                <div>
-                  <h3 style={{ fontFamily: 'var(--font-title)', fontSize: '1.05rem', fontWeight: 700, color: '#FFF', margin: '0 0 2px' }}>{builder.name}</h3>
-                  <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.76rem', color: '#D4AF37', fontWeight: 600, marginBottom: '4px' }}>{builder.brand}</div>
-                  <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
-                    {[1,2,3,4,5].map(i => <Star key={i} size={11} fill="#D4AF37" color="#D4AF37" />)}
-                    <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', color: '#A0AEC0', marginLeft: '4px' }}>{builder.rating} / 5.0</span>
-                  </div>
-                </div>
-              </div>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: '#A0AEC0', lineHeight: 1.7, marginBottom: '20px' }}>{builder.desc}</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-                {[{ label: 'Founded', value: builder.founded }, { label: 'Projects', value: builder.projects }, { label: 'Rating', value: `${builder.rating}★` }].map((s, i) => (
-                  <div key={i} style={{ padding: '12px 8px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
-                    <div style={{ fontFamily: 'var(--font-title)', fontSize: '1rem', fontWeight: 700, color: '#F3E5AB' }}>{s.value}</div>
-                    <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.68rem', color: '#A0AEC0' }}>{s.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="brand-glass-card" style={{ padding: '28px' }}>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '16px' }}>Why Buy With 24K Realtors</div>
-              {[
-                { icon: '🏆', text: '10+ Years Serving High-Net-Worth Buyers in Pune West' },
-                { icon: '📋', text: '5,000+ Happy Families Housed Across Gated Townships' },
-                { icon: '🔐', text: 'RERA Certified Transparency & Direct Builder Pricing' },
-                { icon: '🚗', text: 'Free Chauffeur-Driven Site Visit Service' },
-              ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '10px 0', borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-                  <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
-                  <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: '#F8F9FA' }}>{item.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* 13. FREQUENTLY ASKED QUESTIONS */}
-        <div style={{ marginBottom: '60px' }}>
-          <SectionHeader label="Frequently Asked Questions" sub="Clear answers to key buyer questions" align="center" />
-          <div className="brand-glass-card" style={{ padding: '8px 24px', maxWidth: '760px', margin: '0 auto' }}>
-            {faqs.map((f, i) => <FAQItem key={i} q={f.q} a={f.a} />)}
-          </div>
-        </div>
-
-        {/* 14. SIMILAR PROPERTIES (IMAGE 2 MATCH) */}
-        <div id={secId('similar')} style={{ marginBottom: '70px', paddingTop: '20px' }}>
-          <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '8px' }}>
+        {/* 6. SIMILAR PROPERTIES SECTION */}
+        <div id="sec-similar" style={{ marginBottom: '70px', paddingTop: '10px' }}>
+          <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>
             SIMILAR PROPERTIES
           </div>
-          <h2 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.6rem' : '2.1rem', fontWeight: 700, color: '#FFF', margin: '0 0 24px' }}>
-            Handpicked Alternatives in Pune West
-          </h2>
 
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)', gap: '20px' }}>
-            {[
-              { title: 'Godrej Greenfront', loc: 'Hinjewadi Phase 2', config: '2 & 3 BHK', area: '640 - 1200 sq.ft', price: '₹1.25 Cr*', tag: 'PREMIUM', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=75' },
-              { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', area: '650 - 1300 sq.ft', price: '₹1.10 Cr*', tag: 'LUXURY', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' },
-              { title: 'Lodha Panache', loc: 'Hinjewadi Phase 1', config: '2, 3 & 5 BHK', area: '1100 - 1800 sq.ft', price: '₹1.32 Cr*', tag: 'PREMIUM', img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=75' },
-              { title: 'VTP Monarque', loc: 'Hinjewadi Phase 3', config: '2 & 3 BHK', area: '1200 - 1800 sq.ft', price: '₹1.28 Cr*', tag: 'LUXURY', img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=75' },
-            ].map((item, idx) => (
-              <div key={idx} className="brand-glass-card" style={{ borderRadius: '16px', overflow: 'hidden', background: '#0F1C2E', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            {SIMILAR_PROPERTIES.map((item, idx) => (
+              <div key={idx} style={{ borderRadius: '16px', overflow: 'hidden', background: '#0F1C2E', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden' }}>
                   <img src={item.img} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                   <span style={{ position: 'absolute', top: '10px', left: '10px', background: item.tag === 'LUXURY' ? 'linear-gradient(135deg, #D4AF37, #9A7B1C)' : 'rgba(9,17,31,0.85)', color: item.tag === 'LUXURY' ? '#09111F' : '#F3E5AB', fontSize: '0.62rem', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase' }}>{item.tag}</span>
                 </div>
-                <div style={{ padding: '16px 18px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <div>
-                    <h4 style={{ fontFamily: 'var(--font-title)', fontSize: '0.98rem', fontWeight: 700, color: '#FFF', margin: '0 0 4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</h4>
-                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.76rem', color: '#A0AEC0', margin: '0 0 8px' }}>{item.loc}</p>
-                    <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)', marginBottom: '12px' }}>{item.config} · {item.area}</div>
+                    <h4 style={{ fontFamily: 'var(--font-title)', fontSize: '0.98rem', fontWeight: 700, color: '#FFF', margin: '0 0 4px' }}>{item.title}</h4>
+                    <p style={{ fontSize: '0.76rem', color: '#A0AEC0', margin: '0 0 8px' }}>{item.loc}</p>
+                    <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)', marginBottom: '12px' }}>{item.config} · {item.area}</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '10px' }}>
                     <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', fontWeight: 700, color: '#F3E5AB' }}>{item.price}</span>
-                    <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', fontFamily: "'Montserrat',sans-serif", display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                      View Details <ArrowRight size={12} />
+                    <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      View Details →
                     </button>
                   </div>
                 </div>
@@ -1547,76 +511,57 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
         </div>
 
-        {/* 15. LEAD CAPTURE BANNER (IMAGE 2 MATCH) */}
-        <div className="brand-glass-card" style={{ padding: isMobile ? '28px 18px' : '42px 48px', borderRadius: '24px', background: 'linear-gradient(135deg, rgba(15,28,46,0.95) 0%, rgba(9,17,31,0.98) 100%)', border: '1px solid rgba(212,175,55,0.3)', marginBottom: '40px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.2fr', gap: '36px', alignItems: 'center' }}>
+        {/* 7. LEAD CAPTURE BANNER (BOTTOM OF IMAGE 2) */}
+        <div style={{ padding: isMobile ? '28px 18px' : '40px 48px', borderRadius: '24px', background: 'linear-gradient(135deg, rgba(15,28,46,0.95) 0%, rgba(9,17,31,0.98) 100%)', border: '1px solid rgba(212,175,55,0.3)', marginBottom: '40px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.2fr 0.9fr', gap: '28px', alignItems: 'center' }}>
+            
             <div>
-              <h2 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#FFF', margin: '0 0 10px', lineHeight: 1.25 }}>
+              <h2 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.6rem' : '2.1rem', fontWeight: 700, color: '#FFF', margin: '0 0 8px', lineHeight: 1.25 }}>
                 Ready to find your<br />
-                <span className="brand-shimmer-text">perfect home?</span>
+                <span style={{ color: '#F3E5AB' }}>perfect home?</span>
               </h2>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: '#A0AEC0', margin: '0 0 24px', lineHeight: 1.6 }}>
-                Connect with our real estate experts and get exclusive direct builder offers.
+              <p style={{ fontSize: '0.86rem', color: '#A0AEC0', margin: 0, lineHeight: 1.5 }}>
+                Connect with our real estate experts and get the best offers.
               </p>
-
-              {/* 4 Trust Badges */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
-                {[
-                  { icon: '🛡️', text: 'Best Price Guaranteed' },
-                  { icon: '👤', text: 'Personalized Assistance' },
-                  { icon: '💡', text: 'Expert Guidance' },
-                  { icon: '🤝', text: 'No Hidden Charges' },
-                ].map((b, idx) => (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: '#CBD5E0', fontFamily: "'Montserrat',sans-serif", fontWeight: 600 }}>
-                    <span>{b.icon}</span>
-                    <span>{b.text}</span>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Form */}
-            <form onSubmit={(e) => { e.preventDefault(); onOpenInquiry(); }} style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: 'rgba(7,15,30,0.6)', padding: '24px', borderRadius: '18px', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <input type="text" placeholder="Your Name" required style={{ width: '100%', padding: '12px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.86rem', fontFamily: "'Montserrat',sans-serif", outline: 'none', boxSizing: 'border-box' }} />
-              <input type="tel" placeholder="Mobile Number" required style={{ width: '100%', padding: '12px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.86rem', fontFamily: "'Montserrat',sans-serif", outline: 'none', boxSizing: 'border-box' }} />
-              <input type="email" placeholder="Email Address" required style={{ width: '100%', padding: '12px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.86rem', fontFamily: "'Montserrat',sans-serif", outline: 'none', boxSizing: 'border-box' }} />
-              <button type="submit" className="brand-btn-gold" style={{ padding: '14px', fontSize: '0.88rem', width: '100%', fontWeight: 800, marginTop: '4px', boxShadow: '0 8px 24px rgba(212,175,55,0.35)' }}>
+            <form onSubmit={(e) => { e.preventDefault(); onOpenInquiry(); }} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <input type="text" placeholder="Your Name" required style={{ width: '100%', padding: '12px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.84rem', outline: 'none', boxSizing: 'border-box' }} />
+              <input type="tel" placeholder="Mobile Number" required style={{ width: '100%', padding: '12px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.84rem', outline: 'none', boxSizing: 'border-box' }} />
+              <input type="email" placeholder="Email Address" required style={{ width: '100%', padding: '12px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.84rem', outline: 'none', boxSizing: 'border-box' }} />
+              <button type="submit" style={{ padding: '14px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #F3E5AB)', color: '#09111F', border: 'none', fontSize: '0.88rem', width: '100%', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer' }}>
                 ENQUIRE NOW
               </button>
             </form>
+
+            {/* 4 Trust Badges Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderLeft: isMobile ? 'none' : '1px solid rgba(255,255,255,0.08)', paddingLeft: isMobile ? '0' : '20px' }}>
+              {[
+                { icon: '🛡️', text: 'Best Price Guaranteed' },
+                { icon: '👤', text: 'Personalized Assistance' },
+                { icon: '💡', text: 'Expert Guidance' },
+                { icon: '🤝', text: 'No Hidden Charges' },
+              ].map((b, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: '#CBD5E0', fontWeight: 600 }}>
+                  <span>{b.icon}</span>
+                  <span>{b.text}</span>
+                </div>
+              ))}
+            </div>
+
           </div>
         </div>
 
       </div>
 
       {/* ── LIGHTBOX ── */}
-      {lightboxOpen && <Lightbox images={slideshowImages} startIndex={lightboxIndex} onClose={() => setLightboxOpen(false)} />}
-
-      {/* ── STICKY BOTTOM ACTION BAR ── */}
-      {showBottomCTA && (
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 980, background: 'rgba(9, 17, 31, 0.98)', borderTop: '1px solid var(--border-gold)', padding: isMobile ? '12px 16px' : '14px 32px', backdropFilter: 'blur(16px)', boxShadow: '0 -10px 40px rgba(0,0,0,0.8)' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: isMobile ? 'none' : 'flex', alignItems: 'center', gap: '16px' }}>
-              <div>
-                <div style={{ fontFamily: 'var(--font-title)', fontSize: '1.02rem', fontWeight: 700, color: '#FFF' }}>{property.title}</div>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: '#A0AEC0' }}>{fmt(propPrice)} • {property.location}, Pune</div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '100px', background: 'rgba(56,176,0,0.15)', border: '1px solid rgba(56,176,0,0.3)', color: '#38B000', fontSize: '0.72rem', fontWeight: 700 }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38B000', animation: 'pulse 1.5s infinite' }} /> 24K Advisor Online Now
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '10px', width: isMobile ? '100%' : 'auto' }}>
-              <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '12px 26px', fontSize: '0.86rem', flex: isMobile ? 1 : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 18px rgba(212,175,55,0.35)' }}>
-                <CheckCircle size={15} /> Book Site Visit
-              </button>
-              <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ padding: '12px 22px', borderRadius: '50px', background: 'rgba(37,211,102,0.18)', border: '1px solid rgba(37,211,102,0.4)', color: '#25D366', textDecoration: 'none', fontWeight: 700, flex: isMobile ? 1 : 'none', textAlign: 'center', fontSize: '0.86rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                <MessageSquare size={15} /> WhatsApp
-              </a>
-              <a href={callLink} style={{ padding: '12px 20px', borderRadius: '50px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', textDecoration: 'none', fontWeight: 600, textAlign: 'center', fontSize: '0.86rem', display: isMobile ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                <Phone size={15} color="#D4AF37" /> Call Now
-              </a>
-            </div>
-          </div>
+      {lightboxOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={() => setLightboxOpen(false)} style={{ position: 'absolute', top: '24px', right: '24px', background: 'none', border: 'none', color: '#FFF', cursor: 'pointer' }}>
+            <X size={32} />
+          </button>
+          <img src={images[mainImgIdx]} alt="Full Lightbox" style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} />
         </div>
       )}
 
