@@ -130,7 +130,7 @@ if (typeof document !== 'undefined' && !document.getElementById('brand-24k-style
 /* ── Developer Info Lookup ── */
 const getBuilderInfo = (title = '') => {
   if (title.includes('24K') || title.includes('Opula') || title.includes('Sereno') || title.includes('Altura') || title.includes('Glitterati') || title.includes('Mahalunge'))
-    return { name: 'Kolte-Patil Developers', brand: '24K Luxury Brand', reraId: 'A52100028461', logo: '🏛️', founded: 1991, projects: '85+', rating: 4.9, awards: ['CREDAI Award 2024', 'ET Best Luxury Brand'], desc: "Kolte-Patil's 24K flagship brand sets global benchmarks in architectural precision, smart home technology, and landmark residences across Pune West." };
+    return { name: 'Kolte-Patil Developers', brand: '24K Luxury Brand', reraId: 'A051262603190', logo: '🏛️', founded: 1991, projects: '85+', rating: 4.9, awards: ['CREDAI Award 2024', 'ET Best Luxury Brand'], desc: "Kolte-Patil's 24K flagship brand sets global benchmarks in architectural precision, smart home technology, and landmark residences across Pune West." };
   if (title.includes('Shapoorji') || title.includes('Joyville') || title.includes('Vyomora'))
     return { name: 'Shapoorji Pallonji Real Estate', brand: 'Joyville Signature Series', reraId: 'PR1260002600999', logo: '🏗️', founded: 1865, projects: '120+', rating: 4.8, awards: ['Construction World Award 2024'], desc: 'Shapoorji Pallonji brings 160+ years of engineering excellence, structural resilience, and luxury living to major Indian metro cities.' };
   if (title.includes('Godrej') || title.includes('Ivara'))
@@ -139,7 +139,7 @@ const getBuilderInfo = (title = '') => {
     return { name: 'Kasturi Builders', brand: 'Signature Penthouses', reraId: 'A52100045231', logo: '💎', founded: 1998, projects: '42+', rating: 4.8, awards: ['Pune Luxury Realty Award'], desc: 'Kasturi is celebrated for Italian marble finishes, double-height grand lobbies, and ultra-exclusive residences.' };
   if (title.includes('Lodha'))
     return { name: 'Lodha Group', brand: 'World-Class Towers', reraId: 'A52100033211', logo: '🌍', founded: 1980, projects: '200+', rating: 4.8, awards: ['Developer of the Year 2024'], desc: 'Lodha Group creates iconic landmarks with premier lifestyle amenities and world-class interior standards.' };
-  return { name: 'Tier-1 Authorized Developer', brand: 'Verified Portfolio Partner', reraId: 'A52100028461', logo: '🏠', founded: 2005, projects: '30+', rating: 4.7, awards: ['Verified Developer'], desc: 'Managed under 24K Realtors authorized developer alliance.' };
+  return { name: 'Tier-1 Authorized Developer', brand: 'Verified Portfolio Partner', reraId: 'A051262603190', logo: '🏠', founded: 2005, projects: '30+', rating: 4.7, awards: ['Verified Developer'], desc: 'Managed under 24K Realtors authorized developer alliance.' };
 };
 
 /* ── Location Intelligence ── */
@@ -712,7 +712,7 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
               {/* Badges */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
-                <span className="brand-badge" style={{ background: 'rgba(56,176,0,0.22)', border: '1px solid rgba(56,176,0,0.5)', color: '#38B000', backdropFilter: 'blur(8px)' }}><ShieldCheck size={11} /> RERA Certified • {property.reraNumber || 'A52100028461'}</span>
+                <span className="brand-badge" style={{ background: 'rgba(56,176,0,0.22)', border: '1px solid rgba(56,176,0,0.5)', color: '#38B000', backdropFilter: 'blur(8px)' }}><ShieldCheck size={11} /> RERA Certified • {property.reraNumber || 'A051262603190'}</span>
                 <span className="brand-badge" style={{ background: 'rgba(212,175,55,0.22)', border: '1px solid rgba(212,175,55,0.5)', color: '#F3E5AB', backdropFilter: 'blur(8px)' }}><Star size={11} /> 24K Signature Edition</span>
                 <span className="brand-badge" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', backdropFilter: 'blur(8px)' }}><Building size={11} /> 150-Acre Township</span>
               </div>

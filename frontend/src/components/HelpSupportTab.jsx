@@ -724,7 +724,7 @@ export default function HelpSupportTab() {
                 <div style={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>
                   📍 Office: Baner Road, Pune 411045<br />
                   🕘 Mon–Sat: 9:00 AM – 7:00 PM IST<br />
-                  📞 RERA: A52100028461
+                  📞 RERA: A051262603190
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '10px' }}>

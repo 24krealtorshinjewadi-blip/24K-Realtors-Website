@@ -81,7 +81,7 @@ export default function SettingsTab() {
   const [company, setCompany] = useState({
     name: '24K Realtors',
     legalName: '24K Realtors Private Limited',
-    reraNumber: 'A52100028461',
+    reraNumber: 'A051262603190',
     gstNumber: '27AAHCA1234B1Z5',
     address: 'Office No. 301, Baner Road, Baner, Pune - 411045',
     city: 'Pune',

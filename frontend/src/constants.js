@@ -7,13 +7,18 @@
 // ===== Contact Information =====
 export const CONTACT_PHONE = import.meta.env.VITE_CONTACT_PHONE || '+919673000053';
 export const CONTACT_PHONE_DISPLAY = import.meta.env.VITE_CONTACT_PHONE_DISPLAY || '+91 96730 00053';
-export const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL || 'contact@24krealtors.in';
+export const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL || '24krealtorspune@gmail.com';
+export const CONTACT_WEBSITE = 'https://www.24krealtors.in';
 export const WHATSAPP_BASE = `https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}`;
 
 // ===== Business Info =====
 export const BUSINESS_NAME = '24K Realtors Pune';
-export const RERA_LICENSE = 'A52100028461';
+export const BUSINESS_TAGLINE = 'Find Yourself At Home';
+export const ADVISOR_NAME = 'Neeraj Giri';
+export const SERVING_SINCE = '2011';
+export const RERA_LICENSE = 'A051262603190';
 export const BRAND_TAGLINE = "Pune's Premium Location Advisory";
+export const OFFICE_ADDRESS = 'Office 19, Prem Mairah, Opp. VTP Bellissimo Maan Rd, Hinjewadi Phase 1, Pune 411057';
 
 // ===== API =====
 export const API_BASE_URL =

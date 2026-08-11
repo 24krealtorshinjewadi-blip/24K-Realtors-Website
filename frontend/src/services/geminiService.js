@@ -346,7 +346,7 @@ User Message: "${userMessage}"`;
 }
 
 export async function chatWithVisitor(userMessage, propertyContext = null) {
-  const prompt = `You are "24K Premium Concierge", AI real estate advisor for 24K Realtors Pune (MahaRERA: A52100028461).
+  const prompt = `You are "24K Premium Concierge", AI real estate advisor for 24K Realtors Pune (MahaRERA: A051262603190).
 Visitor query: "${userMessage}"
 Reply in elegant Hinglish under 80 words. Promote free Maybach VIP Site Visits and WhatsApp +91 96730 00053.`;
 

@@ -329,7 +329,7 @@ export default function PdfBrochureModal({ property, onClose, formatPrice, onOpe
                 📞 +91 96730 00053 | ✉️ advisory@24krealtors.com
               </div>
               <div style={{ fontSize: '0.65rem', color: 'rgba(197,168,128,0.6)', marginTop: '4px' }}>
-                MahaRERA Agent Reg: A52100028461 • Pune West
+                MahaRERA Agent Reg: A051262603190 • Pune West
               </div>
             </div>
 

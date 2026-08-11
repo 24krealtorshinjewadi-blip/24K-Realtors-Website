@@ -84,7 +84,7 @@ export function useSEO({ title, description, image, url, type = 'website', schem
 export const SEO_CONFIGS = {
   portal: {
     title: 'Luxury Properties in Hinjewadi, Wakad & Baner',
-    description: '24K Realtors — Pune West\'s leading real estate advisory. Discover 100% MahaRERA verified flats, villas & plots in Hinjewadi, Wakad, Baner & Kharadi. RERA: A52100028461.',
+    description: '24K Realtors — Pune West\'s leading real estate advisory. Discover 100% MahaRERA verified flats, villas & plots in Hinjewadi, Wakad, Baner & Kharadi. RERA: A051262603190.',
     url: '/',
     schema: {
       '@context': 'https://schema.org',

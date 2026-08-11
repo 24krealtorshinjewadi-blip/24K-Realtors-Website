@@ -126,9 +126,9 @@ export default function PortalFooter({ onViewChange }) {
           </a>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>9:30 AM to 6:30 PM (Mon–Sun)</span>
           <a href="https://maps.app.goo.gl/3gZ7F6YMXe1Y5Pfp7" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.6)', display: 'block', marginBottom: '10px', lineHeight: 1.5, cursor: 'pointer' }}>📍 Office No. 19, Ground Floor,<br/>Prem Mairah, Hinjewadi Phase 1,<br/>Pune – 411057</span>
+            <span style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.6)', display: 'block', marginBottom: '10px', lineHeight: 1.5, cursor: 'pointer' }}>📍 Office 19, Prem Mairah,<br/>Opp. VTP Bellissimo Maan Rd,<br/>Hinjewadi Phase 1, Pune 411057</span>
           </a>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-light)', display: 'block', marginBottom: '8px' }}>✉️ <a href="mailto:contact@24krealestate.com" style={{ color: 'var(--gold-secondary)', textDecoration: 'none' }}>contact@24krealestate.com</a></span>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-light)', display: 'block', marginBottom: '8px' }}>✉️ <a href="mailto:24krealtorspune@gmail.com" style={{ color: 'var(--gold-secondary)', textDecoration: 'none' }}>24krealtorspune@gmail.com</a></span>
           <a href="https://wa.me/919673000053?text=Hi%2C%20I%20am%20looking%20for%20property%20in%20Pune" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.35)', borderRadius: '6px', padding: '6px 12px', color: '#25D366', fontSize: '0.75rem', fontWeight: 700, textDecoration: 'none', cursor: 'pointer' }}>
             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.233-1.371a9.98 9.98 0 0 0 4.779 1.217h.005c5.502 0 9.987-4.476 9.988-9.986C22 7.478 17.517 2 12.012 2z"/></svg>
             WhatsApp Us Now
@@ -150,7 +150,7 @@ export default function PortalFooter({ onViewChange }) {
         <div style={{ flex: 1, minWidth: '280px' }}>
           <p style={{ margin: 0, lineHeight: 1.6 }}>
             All trademarks, logos, and developer registries are the property of their respective owners. 24K Realtors is an authorized location-advisory firm under MahaRERA license:{' '}
-            <a href="https://maharera.maharashtra.gov.in/public/en-US/Agent/AgentView/A52100028461" target="_blank" rel="noopener noreferrer" style={{ color: '#E6C35C', fontWeight: 700, textDecoration: 'underline' }}>A52100028461</a>.
+            <a href="https://maharera.maharashtra.gov.in/public/en-US/Agent/AgentView/A051262603190" target="_blank" rel="noopener noreferrer" style={{ color: '#E6C35C', fontWeight: 700, textDecoration: 'underline' }}>A051262603190</a>.
             Pricing and layouts are subject to developer adjustments.
           </p>
         </div>

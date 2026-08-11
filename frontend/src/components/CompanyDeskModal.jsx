@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // 24K REALTORS — Company Desk & Legal Subpages Modal Component
-// Full Indian Real Estate Law (MahaRERA A52100028461, DPDP Act 2023, IT Act 2000, CPC 1908) Compliance
+// Full Indian Real Estate Law (MahaRERA A051262603190, DPDP Act 2023, IT Act 2000, CPC 1908) Compliance
 // Subpages:
 //   1. About 24K Realtors
 //   2. Contact Locality Advisor
@@ -86,7 +86,7 @@ export default function CompanyDeskModal({ isOpen, onClose, initialTab = 'about'
                 24K REALTORS <span style={{ fontSize: '0.7rem', color: GOLD, fontWeight: 700 }}>• Company Desk</span>
               </div>
               <div style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>
-                MahaRERA: <strong style={{ color: GOLD }}>A52100028461</strong> | Indian Law Compliant
+                MahaRERA: <strong style={{ color: GOLD }}>A051262603190</strong> | Indian Law Compliant
               </div>
             </div>
           </div>
@@ -156,7 +156,7 @@ export default function CompanyDeskModal({ isOpen, onClose, initialTab = 'about'
                 <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(212,175,55,0.08)', border: `1px solid ${GOLD}30`, marginBottom: '18px' }}>
                   <div style={{ fontSize: '0.86rem', fontWeight: 800, color: GOLD }}>24K REALTORS — FIND YOUR SELF AT HOME</div>
                   <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.7)', marginTop: '4px' }}>
-                    MahaRERA Agent License: <strong style={{ color: '#FFF' }}>A52100028461</strong> | Headquartered in Pune, Maharashtra.
+                    MahaRERA Agent License: <strong style={{ color: '#FFF' }}>A051262603190</strong> | Headquartered in Pune, Maharashtra.
                   </div>
                 </div>
 
@@ -265,7 +265,7 @@ export default function CompanyDeskModal({ isOpen, onClose, initialTab = 'about'
 
                 <h3 style={{ fontSize: '0.9rem', color: GOLD, margin: '14px 0 6px 0' }}>1. MahaRERA Agent Mandate</h3>
                 <p style={{ margin: 0 }}>
-                  24K Realtors acts as a licensed Real Estate Agent under MahaRERA License Registration Number: <strong>A52100028461</strong>. All developer marketing, property listings, and site visits comply with MahaRERA guidelines.
+                  24K Realtors acts as a licensed Real Estate Agent under MahaRERA License Registration Number: <strong>A051262603190</strong>. All developer marketing, property listings, and site visits comply with MahaRERA guidelines.
                 </p>
 
                 <h3 style={{ fontSize: '0.9rem', color: GOLD, margin: '14px 0 6px 0' }}>2. Brokerage &amp; Service Fee Policy</h3>

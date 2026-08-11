@@ -2586,7 +2586,7 @@ export default function Portal({ onViewChange }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
                 <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>⚖️</div>
                 <div>
-                  <h4 style={{ fontFamily: "'Cinzel', serif", color: '#D4AF37', margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Authorized Broker License: A52100028461</h4>
+                  <h4 style={{ fontFamily: "'Cinzel', serif", color: '#D4AF37', margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Authorized Broker License: A051262603190</h4>
                   <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.5)' }}>Government of Maharashtra Real Estate Regulatory Authority</div>
                 </div>
               </div>
@@ -3955,8 +3955,8 @@ export default function Portal({ onViewChange }) {
                 animation: 'marqueeScroll 28s linear infinite',
                 width: 'max-content',
               }}>
-                {[...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating'],
-                  ...['MahaRERA Registered', 'RERA No. A52100028461', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating']
+                {[...['MahaRERA Registered', 'RERA No. A051262603190', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating'],
+                  ...['MahaRERA Registered', 'RERA No. A051262603190', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating']
                 ].map((badge, i) => (
                   <div key={i} style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
@@ -3977,7 +3977,7 @@ export default function Portal({ onViewChange }) {
             {/* Bottom trust strip */}
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: isMobile ? '12px' : '24px', padding: '20px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '16px' }}>
               {[
-                { icon: '🛡️', text: 'MahaRERA Agent', sub: 'A52100028461' },
+                { icon: '🛡️', text: 'MahaRERA Agent', sub: 'A051262603190' },
                 { icon: '✅', text: '100% RERA Verified', sub: 'All Listings' },
                 { icon: '🏦', text: 'Bank Loan Tie-ups', sub: 'SBI · HDFC · ICICI' },
                 { icon: '📋', text: 'Legal Due Diligence', sub: 'In-house Support' },
@@ -5870,7 +5870,7 @@ export default function Portal({ onViewChange }) {
 
             {/* Trust line */}
             <div style={{ textAlign: 'center', marginTop: '36px', color: 'rgba(255,255,255,0.3)', fontSize: '0.78rem' }}>
-              🛡️ All advisors are certified MahaRERA agents &nbsp;·&nbsp; RERA No. A52100028461
+              🛡️ All advisors are certified MahaRERA agents &nbsp;·&nbsp; RERA No. A051262603190
             </div>
           </div>
         </section>
