@@ -606,23 +606,24 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
   const rentalYield = corridor.rentalYield || 4.5;
 
   const STICKY_TABS = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'gallery', label: 'Gallery' },
-    { id: 'highlights', label: 'Highlights' },
-    { id: 'floorplans', label: 'Floor Plans' },
-    { id: 'amenities', label: 'Amenities' },
-    { id: 'construction', label: 'Progress' },
-    { id: 'location', label: 'Location' },
-    { id: 'investment', label: 'AI Investment' },
-    { id: 'pricing', label: 'Pricing & EMI' },
-    { id: 'developer', label: 'Developer' },
+    { id: 'overview', label: 'OVERVIEW' },
+    { id: 'highlights', label: 'HIGHLIGHTS' },
+    { id: 'amenities', label: 'AMENITIES' },
+    { id: 'location', label: 'LOCATION' },
+    { id: 'floorplans', label: 'FLOOR PLANS' },
+    { id: 'similar', label: 'SIMILAR PROPERTIES' },
   ];
 
-  const secId = id => `brand-sec-${id}`;
+  const secId = id => `sec-${id}`;
   const scrollTo = id => {
     const el = document.getElementById(secId(id));
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setActiveTab(id);
+    try {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', `#${id}`);
+      }
+    } catch (e) {}
   };
 
   const trendPts = [
@@ -970,49 +971,56 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           </div>
         </div>
 
-        {/* 3. ABOUT PROJECT & BUILDER NARRATIVE */}
-        <div id={secId('overview')} style={{ marginBottom: '60px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '48px', alignItems: 'start' }}>
+        {/* 3. ABOUT PROJECT & BUILDER NARRATIVE (IMAGE 2 OVERVIEW MATCH) */}
+        <div id={secId('overview')} style={{ marginBottom: '70px', paddingTop: '20px' }}>
+          <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '8px' }}>
+            OVERVIEW
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.1fr 0.9fr', gap: '48px', alignItems: 'start' }}>
             <div>
-              <SectionHeader label="About The Project" sub={`A landmark luxury address in ${property.location || 'Baner-Hinjewadi Link Road, Pune'}`} />
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.92rem', color: '#A0AEC0', lineHeight: 1.85, marginBottom: '20px' }}>
-                {property.description || `${property.title} redefines luxury living in ${property.location}, Pune. Designed with architectural precision, high-ceiling layouts, smart automation, and direct connectivity to Pune IT corridors.`}
+              <h2 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.8rem' : '2.4rem', fontWeight: 700, color: '#FFF', margin: '0 0 16px', lineHeight: 1.25 }}>
+                A perfect blend of nature,<br />
+                <span className="brand-shimmer-text">luxury &amp; connectivity.</span>
+              </h2>
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.94rem', color: '#CBD5E0', lineHeight: 1.85, marginBottom: '24px' }}>
+                {property.description || `${property.title} is a thoughtfully planned residential development by ${builder.name} in ${property.location}, Pune. Spread across ~4.54 acres, it offers spacious 2 & 3 BHK premium homes with world-class amenities, lush green open spaces, and excellent connectivity to IT parks, top schools, hospitals, and major expressways.`}
               </p>
-              <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.8, fontStyle: 'italic', borderLeft: '3px solid #D4AF37', paddingLeft: '18px', marginBottom: '28px' }}>
-                "Architecture is more than structures — it is an elevation of lifestyle. {property.title} represents standard-setting luxury."
+              <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', color: 'rgba(243,229,171,0.95)', lineHeight: 1.8, fontStyle: 'italic', borderLeft: '3px solid #D4AF37', paddingLeft: '18px', marginBottom: '28px', background: 'rgba(212,175,55,0.04)', paddingTop: '10px', paddingBottom: '10px', borderRadius: '0 12px 12px 0' }}>
+                "Where legacy architecture meets verified portfolios — crafted for elevated Pune living."
               </p>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '12px 24px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <CheckCircle size={15} /> Schedule Visit
+              <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+                <button onClick={onOpenInquiry} className="brand-btn-gold" style={{ padding: '14px 28px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 8px 24px rgba(212,175,55,0.35)' }}>
+                  <CheckCircle size={16} /> Enquire Now
                 </button>
                 {onOpenBrochure && (
-                  <button onClick={onOpenBrochure} className="brand-btn-outline" style={{ padding: '12px 24px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Download size={15} /> Download Brochure
+                  <button onClick={onOpenBrochure} className="brand-btn-outline" style={{ padding: '14px 28px', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Download size={16} /> Download Brochure
                   </button>
                 )}
               </div>
             </div>
-            <div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {unitConfigs.map((cfg, i) => (
-                  <div key={i} className="brand-glass-card" style={{ padding: '18px 22px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }} onClick={onOpenInquiry}>
-                    <div>
-                      <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: '#FFF', marginBottom: '4px' }}>{cfg.name}</div>
-                      <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: '#A0AEC0' }}>{cfg.area}</div>
+
+            {/* Right: Key Facts 8-Grid Box (Image 2 Match) */}
+            <div className="brand-glass-card" style={{ padding: '26px', background: 'rgba(15,28,46,0.85)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}>
+                {[
+                  { icon: '🏗️', label: 'Developer', value: builder.name.split(' ')[0] + ' Properties' },
+                  { icon: '🏠', label: 'Configuration', value: isCommercial ? 'Commercial' : `${property.bedrooms || 2} & 3 BHK` },
+                  { icon: '📐', label: 'Carpet Area', value: `${property.areaSquareFeet || 761} - 973 sq.ft` },
+                  { icon: '🏢', label: 'Total Units', value: '~882 Homes' },
+                  { icon: '🏙️', label: 'Towers', value: '4 High Rise' },
+                  { icon: '🌳', label: 'Project Area', value: '~4.54 Acres' },
+                  { icon: '📅', label: 'Possession', value: property.possessionDate || 'Nov 2028' },
+                  { icon: '📋', label: 'RERA No.', value: property.reraNumber || 'P52100046770' },
+                ].map((item, i) => (
+                  <div key={i} style={{ padding: '12px 14px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '1rem' }}>{item.icon}</span>
+                      <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.label}</span>
                     </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', fontWeight: 700, color: '#F3E5AB' }}>{cfg.price}</div>
-                      <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.68rem', fontWeight: 700, color: cfg.status === 'Fast Selling' ? '#38B000' : cfg.status === 'Exclusive' ? '#D4AF37' : '#FFBE0B', textTransform: 'uppercase', marginTop: '4px' }}>{cfg.status}</div>
-                    </div>
+                    <div style={{ fontFamily: 'var(--font-title)', fontSize: '0.88rem', fontWeight: 700, color: '#FFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.value}</div>
                   </div>
                 ))}
-              </div>
-              <div style={{ marginTop: '16px', padding: '16px 20px', borderRadius: '14px', background: 'rgba(212,175,55,0.08)', border: '1px solid var(--border-gold)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <ShieldCheck size={20} color="#D4AF37" />
-                <div>
-                  <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', fontWeight: 700, color: '#FFF' }}>RERA Verified Project</div>
-                  <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: '#A0AEC0' }}>Registration: {property.reraNumber || builder.reraId}</div>
-                </div>
               </div>
             </div>
           </div>
@@ -1497,6 +1505,85 @@ export default function PropertyDetailView({ property, onBack, onOpenInquiry, on
           <SectionHeader label="Frequently Asked Questions" sub="Clear answers to key buyer questions" align="center" />
           <div className="brand-glass-card" style={{ padding: '8px 24px', maxWidth: '760px', margin: '0 auto' }}>
             {faqs.map((f, i) => <FAQItem key={i} q={f.q} a={f.a} />)}
+          </div>
+        </div>
+
+        {/* 14. SIMILAR PROPERTIES (IMAGE 2 MATCH) */}
+        <div id={secId('similar')} style={{ marginBottom: '70px', paddingTop: '20px' }}>
+          <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '8px' }}>
+            SIMILAR PROPERTIES
+          </div>
+          <h2 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.6rem' : '2.1rem', fontWeight: 700, color: '#FFF', margin: '0 0 24px' }}>
+            Handpicked Alternatives in Pune West
+          </h2>
+
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)', gap: '20px' }}>
+            {[
+              { title: 'Godrej Greenfront', loc: 'Hinjewadi Phase 2', config: '2 & 3 BHK', area: '640 - 1200 sq.ft', price: '₹1.25 Cr*', tag: 'PREMIUM', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=75' },
+              { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', area: '650 - 1300 sq.ft', price: '₹1.10 Cr*', tag: 'LUXURY', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' },
+              { title: 'Lodha Panache', loc: 'Hinjewadi Phase 1', config: '2, 3 & 5 BHK', area: '1100 - 1800 sq.ft', price: '₹1.32 Cr*', tag: 'PREMIUM', img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=75' },
+              { title: 'VTP Monarque', loc: 'Hinjewadi Phase 3', config: '2 & 3 BHK', area: '1200 - 1800 sq.ft', price: '₹1.28 Cr*', tag: 'LUXURY', img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=75' },
+            ].map((item, idx) => (
+              <div key={idx} className="brand-glass-card" style={{ borderRadius: '16px', overflow: 'hidden', background: '#0F1C2E', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden' }}>
+                  <img src={item.img} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                  <span style={{ position: 'absolute', top: '10px', left: '10px', background: item.tag === 'LUXURY' ? 'linear-gradient(135deg, #D4AF37, #9A7B1C)' : 'rgba(9,17,31,0.85)', color: item.tag === 'LUXURY' ? '#09111F' : '#F3E5AB', fontSize: '0.62rem', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase' }}>{item.tag}</span>
+                </div>
+                <div style={{ padding: '16px 18px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <h4 style={{ fontFamily: 'var(--font-title)', fontSize: '0.98rem', fontWeight: 700, color: '#FFF', margin: '0 0 4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</h4>
+                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.76rem', color: '#A0AEC0', margin: '0 0 8px' }}>{item.loc}</p>
+                    <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)', marginBottom: '12px' }}>{item.config} · {item.area}</div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '10px' }}>
+                    <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', fontWeight: 700, color: '#F3E5AB' }}>{item.price}</span>
+                    <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', fontFamily: "'Montserrat',sans-serif", display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      View Details <ArrowRight size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 15. LEAD CAPTURE BANNER (IMAGE 2 MATCH) */}
+        <div className="brand-glass-card" style={{ padding: isMobile ? '28px 18px' : '42px 48px', borderRadius: '24px', background: 'linear-gradient(135deg, rgba(15,28,46,0.95) 0%, rgba(9,17,31,0.98) 100%)', border: '1px solid rgba(212,175,55,0.3)', marginBottom: '40px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.2fr', gap: '36px', alignItems: 'center' }}>
+            <div>
+              <h2 style={{ fontFamily: 'var(--font-title)', fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#FFF', margin: '0 0 10px', lineHeight: 1.25 }}>
+                Ready to find your<br />
+                <span className="brand-shimmer-text">perfect home?</span>
+              </h2>
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: '#A0AEC0', margin: '0 0 24px', lineHeight: 1.6 }}>
+                Connect with our real estate experts and get exclusive direct builder offers.
+              </p>
+
+              {/* 4 Trust Badges */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+                {[
+                  { icon: '🛡️', text: 'Best Price Guaranteed' },
+                  { icon: '👤', text: 'Personalized Assistance' },
+                  { icon: '💡', text: 'Expert Guidance' },
+                  { icon: '🤝', text: 'No Hidden Charges' },
+                ].map((b, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: '#CBD5E0', fontFamily: "'Montserrat',sans-serif", fontWeight: 600 }}>
+                    <span>{b.icon}</span>
+                    <span>{b.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={(e) => { e.preventDefault(); onOpenInquiry(); }} style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: 'rgba(7,15,30,0.6)', padding: '24px', borderRadius: '18px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <input type="text" placeholder="Your Name" required style={{ width: '100%', padding: '12px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.86rem', fontFamily: "'Montserrat',sans-serif", outline: 'none', boxSizing: 'border-box' }} />
+              <input type="tel" placeholder="Mobile Number" required style={{ width: '100%', padding: '12px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.86rem', fontFamily: "'Montserrat',sans-serif", outline: 'none', boxSizing: 'border-box' }} />
+              <input type="email" placeholder="Email Address" required style={{ width: '100%', padding: '12px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.86rem', fontFamily: "'Montserrat',sans-serif", outline: 'none', boxSizing: 'border-box' }} />
+              <button type="submit" className="brand-btn-gold" style={{ padding: '14px', fontSize: '0.88rem', width: '100%', fontWeight: 800, marginTop: '4px', boxShadow: '0 8px 24px rgba(212,175,55,0.35)' }}>
+                ENQUIRE NOW
+              </button>
+            </form>
           </div>
         </div>
 
