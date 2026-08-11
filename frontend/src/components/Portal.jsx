@@ -3502,70 +3502,143 @@ export default function Portal({ onViewChange }) {
                 </div>
               </div>
 
-              {/* ── RIGHT: Glass Search Card ── */}
+              {/* ── RIGHT: Glass AI Search Card ── */}
               {!isMobile && (
                 <div style={{
                   flex: '0 0 38%', maxWidth: '400px',
-                  background: 'rgba(7,15,30,0.75)',
-                  backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
-                  border: '1px solid rgba(212,175,55,0.25)',
-                  borderRadius: '16px',
-                  padding: '28px 24px',
-                  boxShadow: '0 32px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06)',
+                  background: 'rgba(7,15,30,0.80)',
+                  backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)',
+                  border: '1px solid rgba(212,175,55,0.3)',
+                  borderRadius: '18px',
+                  padding: '26px 24px',
+                  boxShadow: '0 32px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08)',
                 }}>
-                  <p style={{
-                    fontFamily: "'Cinzel',serif", fontSize: '0.78rem', fontWeight: 700,
-                    color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase',
-                    textAlign: 'center', marginBottom: '20px'
-                  }}>FIND YOUR PERFECT PROPERTY</p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
+                    <p style={{
+                      fontFamily: "'Cinzel',serif", fontSize: '0.78rem', fontWeight: 700,
+                      color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', margin: 0
+                    }}>FIND YOUR PERFECT PROPERTY</p>
 
-                  {/* Location dropdown */}
-                  <div style={{ marginBottom: '12px' }}>
+                    <button
+                      onClick={() => { setIsAiModalOpen(true); setAiStep(1); }}
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(230,195,92,0.2) 0%, rgba(212,175,55,0.08) 100%)',
+                        border: '1px solid rgba(230,195,92,0.4)',
+                        borderRadius: '50px', padding: '4px 10px',
+                        fontSize: '0.66rem', fontWeight: 800, color: '#FFF4D0',
+                        cursor: 'pointer', fontFamily: "'Montserrat',sans-serif",
+                        display: 'inline-flex', alignItems: 'center', gap: '4px'
+                      }}
+                      title="AI Location Intelligence Engine"
+                    >
+                      <Sparkles size={11} color="#E6C35C" />
+                      <span>AI Match</span>
+                    </button>
+                  </div>
+
+                  {/* Location Select Dropdown */}
+                  <div style={{ marginBottom: '12px', position: 'relative' }}>
                     <div style={{
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '10px', padding: '12px 14px', cursor: 'pointer',
-                      transition: 'border-color 0.2s ease'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
-                    onClick={() => { const el = document.getElementById('listings-anchor'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }}>
+                      position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
+                      pointerEvents: 'none', zIndex: 1
+                    }}>
                       <MapPin size={16} color="#D4AF37" />
-                      <span style={{ flex: 1, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', fontFamily: "'Montserrat',sans-serif" }}>Hinjewadi, Wakad, Baner...</span>
+                    </div>
+                    <select
+                      value={searchLocation}
+                      onChange={(e) => setSearchLocation(e.target.value)}
+                      style={{
+                        width: '100%',
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        borderRadius: '10px',
+                        padding: '12px 14px 12px 40px',
+                        color: searchLocation ? '#FFF' : 'rgba(255,255,255,0.7)',
+                        fontSize: '0.85rem',
+                        fontFamily: "'Montserrat',sans-serif",
+                        cursor: 'pointer',
+                        outline: 'none',
+                        appearance: 'none',
+                        WebkitAppearance: 'none'
+                      }}
+                    >
+                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>All Locations (Hinjewadi, Wakad, Baner...)</option>
+                      <option value="HINJEWADI" style={{ background: '#070f1e', color: '#fff' }}>Hinjewadi Phase 1, 2 & 3</option>
+                      <option value="WAKAD" style={{ background: '#070f1e', color: '#fff' }}>Wakad & Datta Mandir Rd</option>
+                      <option value="BANER" style={{ background: '#070f1e', color: '#fff' }}>Baner & High Street</option>
+                      <option value="MAHALUNGE" style={{ background: '#070f1e', color: '#fff' }}>Mahalunge Smart City</option>
+                      <option value="TATHAWADE" style={{ background: '#070f1e', color: '#fff' }}>Tathawade</option>
+                      <option value="BALEWADI" style={{ background: '#070f1e', color: '#fff' }}>Balewadi Stadium Corridor</option>
+                    </select>
+                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
                       <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
                     </div>
                   </div>
 
-                  {/* Property Type dropdown */}
-                  <div style={{ marginBottom: '12px' }}>
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '10px', padding: '12px 14px', cursor: 'pointer',
-                      transition: 'border-color 0.2s ease'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
-                    onClick={() => { const el = document.getElementById('listings-anchor'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }}>
+                  {/* Property Type Select Dropdown */}
+                  <div style={{ marginBottom: '12px', position: 'relative' }}>
+                    <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', zIndex: 1 }}>
                       <Building size={16} color="#D4AF37" />
-                      <span style={{ flex: 1, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', fontFamily: "'Montserrat',sans-serif" }}>Property Type</span>
+                    </div>
+                    <select
+                      value={searchPropType}
+                      onChange={(e) => setSearchPropType(e.target.value)}
+                      style={{
+                        width: '100%',
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        borderRadius: '10px',
+                        padding: '12px 14px 12px 40px',
+                        color: searchPropType ? '#FFF' : 'rgba(255,255,255,0.7)',
+                        fontSize: '0.85rem',
+                        fontFamily: "'Montserrat',sans-serif",
+                        cursor: 'pointer',
+                        outline: 'none',
+                        appearance: 'none',
+                        WebkitAppearance: 'none'
+                      }}
+                    >
+                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>All Property Types</option>
+                      <option value="RESIDENTIAL" style={{ background: '#070f1e', color: '#fff' }}>Luxury Apartments (2 & 3 BHK)</option>
+                      <option value="VILLA" style={{ background: '#070f1e', color: '#fff' }}>Gated Villas & Townhouses</option>
+                      <option value="COMMERCIAL" style={{ background: '#070f1e', color: '#fff' }}>Commercial Offices & Retail</option>
+                      <option value="PENTHOUSE" style={{ background: '#070f1e', color: '#fff' }}>Sky Penthouses</option>
+                    </select>
+                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
                       <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
                     </div>
                   </div>
 
-                  {/* Budget Range dropdown */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '10px', padding: '12px 14px', cursor: 'pointer',
-                      transition: 'border-color 0.2s ease'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
-                    onClick={() => { const el = document.getElementById('listings-anchor'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }}>
+                  {/* Budget Range Select Dropdown */}
+                  <div style={{ marginBottom: '20px', position: 'relative' }}>
+                    <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', zIndex: 1 }}>
                       <Calculator size={16} color="#D4AF37" />
-                      <span style={{ flex: 1, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', fontFamily: "'Montserrat',sans-serif" }}>Budget Range</span>
+                    </div>
+                    <select
+                      value={searchBudget}
+                      onChange={(e) => setSearchBudget(e.target.value)}
+                      style={{
+                        width: '100%',
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        borderRadius: '10px',
+                        padding: '12px 14px 12px 40px',
+                        color: searchBudget ? '#FFF' : 'rgba(255,255,255,0.7)',
+                        fontSize: '0.85rem',
+                        fontFamily: "'Montserrat',sans-serif",
+                        cursor: 'pointer',
+                        outline: 'none',
+                        appearance: 'none',
+                        WebkitAppearance: 'none'
+                      }}
+                    >
+                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>All Budget Ranges</option>
+                      <option value="50L-80L" style={{ background: '#070f1e', color: '#fff' }}>₹50 Lacs – ₹80 Lacs</option>
+                      <option value="80L-1.2CR" style={{ background: '#070f1e', color: '#fff' }}>₹80 Lacs – ₹1.2 Crores</option>
+                      <option value="1.2CR-2CR" style={{ background: '#070f1e', color: '#fff' }}>₹1.2 Crores – ₹2.0 Crores</option>
+                      <option value="2CR+" style={{ background: '#070f1e', color: '#fff' }}>₹2.0 Crores & Above (Ultra Luxury)</option>
+                    </select>
+                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
                       <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
                     </div>
                   </div>
@@ -3573,8 +3646,15 @@ export default function Portal({ onViewChange }) {
                   {/* Search Button */}
                   <button
                     onClick={() => {
-                      const el = document.getElementById('listings-anchor');
-                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      const filtersObj = {};
+                      if (searchLocation) filtersObj.location = searchLocation;
+                      if (searchPropType) filtersObj.propertyType = searchPropType;
+                      if (searchBudget) filtersObj.budgetRange = searchBudget;
+                      handleApplyMegaFilter(filtersObj, 'listings');
+                      setTimeout(() => {
+                        const el = document.getElementById('listings-anchor');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }, 100);
                     }}
                     style={{
                       width: '100%', padding: '14px',
@@ -3600,7 +3680,12 @@ export default function Portal({ onViewChange }) {
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                       {['Hinjewadi Phase 1 & 2', 'Wakad Datta Mandir', 'Mahalunge Smart City', 'Baner High Street'].map((tag, i) => (
                         <button key={i}
-                          onClick={() => { handleApplyMegaFilter({ location: tag.split(' ')[0].toUpperCase() }, 'listings'); setTimeout(() => { document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }}
+                          onClick={() => {
+                            const loc = tag.split(' ')[0].toUpperCase();
+                            setSearchLocation(loc);
+                            handleApplyMegaFilter({ location: loc }, 'listings');
+                            setTimeout(() => { document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+                          }}
                           style={{
                             background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
                             borderRadius: '50px', padding: '4px 10px',
