@@ -4135,7 +4135,7 @@ export default function Portal({ onViewChange }) {
 
 
                 {/* Ultra-Premium Subpage Header Banner */}
-                <div className="subpage-header-banner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+                <div className="subpage-header-banner" id="listings-anchor" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '24px' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <h2 style={{ margin: 0, fontFamily: "'Cinzel', serif", fontSize: 'clamp(1rem, 4vw, 1.45rem)', color: '#fff', letterSpacing: '0.03em' }}>
                       ⚜️ Verified Estates &amp; Luxury Portfolios
@@ -4157,76 +4157,6 @@ export default function Portal({ onViewChange }) {
                     </div>
                   </div>
                 </div>
-
-                {/* Dynamic Advanced Filtering Bar */}
-                <section className="filter-section" id="listings-anchor">
-                <h2 className="filter-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Search size={18} color="#E6C35C" />
-                  <span>Filter Residences</span>
-                </h2>
-                <form onSubmit={handleApplyFilters} className="filter-grid">
-                  <div className="form-group">
-                    <label className="form-label">Location Corridor</label>
-                    <select name="location" value={filters.location} onChange={handleFilterChange} className="form-input">
-                      <option value="">All Pune West Corridors</option>
-                      <option value="HINJEWADI">Hinjewadi IT Zone</option>
-                      <option value="WAKAD">Wakad Junction</option>
-                      <option value="BANER">Baner</option>
-                      <option value="BALEWADI">Balewadi High Street</option>
-                      <option value="TATHAWADE">Tathawade Hub</option>
-                      <option value="MAHALUNGE">Mahalunge Township</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Property Typology</label>
-                    <select name="propertyType" value={filters.propertyType} onChange={handleFilterChange} className="form-input">
-                      <option value="">All Types (Res. & Com.)</option>
-                      <option value="RESIDENTIAL">Residential Apartments</option>
-                      <option value="COMMERCIAL">Commercial Workspaces</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Transaction</label>
-                    <select name="transactionType" value={filters.transactionType} onChange={handleFilterChange} className="form-input">
-                      <option value="">Buy & Rent Inventory</option>
-                      <option value="BUY">For Sale (Direct Purchase)</option>
-                      <option value="RENT">To Rent (Monthly Yield)</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Bedrooms (BHK)</label>
-                    <select name="bedrooms" value={filters.bedrooms} onChange={handleFilterChange} className="form-input">
-                      <option value="">Any Layout</option>
-                      <option value="1">1 BHK Layout</option>
-                      <option value="2">2 BHK Smart layout</option>
-                      <option value="3">3 BHK Premium layout</option>
-                      <option value="4">4 BHK Penthouse/Elite</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Furnishing</label>
-                    <select name="furnishingStatus" value={filters.furnishingStatus} onChange={handleFilterChange} className="form-input">
-                      <option value="">Any furnishing</option>
-                      <option value="FULLY_FURNISHED">Fully Furnished</option>
-                      <option value="SEMI_FURNISHED">Semi Furnished</option>
-                      <option value="UNFURNISHED">Unfurnished</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group" style={{ display: 'flex', gap: '10px', alignItems: 'end' }}>
-                    <button type="submit" className="btn-gold" style={{ flexGrow: 1, height: '42px', justifyContent: 'center' }}>
-                      Apply Filter
-                    </button>
-                    <button type="button" onClick={handleResetFilters} className="btn-outline" style={{ height: '42px', padding: '0 15px' }} title="Reset Filters">
-                      Reset
-                    </button>
-                  </div>
-                </form>
-              </section>
 
               {/* Listings Controls — Responsive two-row layout */}
               <div style={{ marginBottom: '24px' }}>
