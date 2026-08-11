@@ -5,7 +5,7 @@ import {
   Search, Loader, CheckCircle, IndianRupee, Laptop, Sparkles, Activity, 
   LineChart, Car, Users, ShieldCheck, 
   Calculator, Compass, Clock, Lock, TrendingUp, Building,
-  ChevronLeft, ChevronRight, MapPin, BedDouble, Phone, Calendar,
+  ChevronLeft, ChevronRight, ChevronDown, MapPin, BedDouble, Phone, Calendar,
   Handshake, ArrowRight, Key, Home, Briefcase, Camera, Maximize2, X,
   Upload, Trash2, Plus, Image as ImageIcon
 } from 'lucide-react';
