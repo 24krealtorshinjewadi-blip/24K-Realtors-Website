@@ -3433,7 +3433,7 @@ export default function Portal({ onViewChange }) {
                   lineHeight: 1.65, marginBottom: '32px',
                   maxWidth: '480px'
                 }}>
-                  Where legacy builders meet verified portfolios in Hinjewadi, Wakad, Baner &amp; Pune's most prestigious areas.
+                  Where legacy builders meet 100% MahaRERA verified 2, 3 & 4 BHK homes in Hinjewadi Phase 1–3, Wakad, Baner, Mahalunge Smart City & Kharadi.
                 </p>
 
                 {/* CTAs */}
@@ -3474,21 +3474,21 @@ export default function Portal({ onViewChange }) {
                     onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                   >
                     <Phone size={14} style={{ color: '#E6C35C' }} />
-                    <span>TALK TO EXPERT</span>
+                    <span>TALK TO PUNE ADVISOR</span>
                   </button>
                 </div>
 
-                {/* ── TRUST BADGES ROW ── */}
+                {/* ── TRUST BADGES ROW (INDIAN BUYER TARGETED) ── */}
                 <div style={{
                   display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center'
                 }}>
                   {[
-                    { icon: '🛡️', label: 'VERIFIED', sub: 'PROPERTIES' },
-                    { icon: '🏷️', label: 'BEST PRICE', sub: 'GUARANTEED' },
-                    { icon: '👤', label: 'EXPERT', sub: 'GUIDANCE' },
-                    { icon: '👁️', label: 'COMPLETE', sub: 'TRANSPARENCY' },
+                    { icon: '🛡️', label: 'MahaRERA', sub: 'A051262603190' },
+                    { icon: '💸', label: '0% BROKERAGE', sub: 'NEW BOOKINGS' },
+                    { icon: '🏦', label: 'SBI / HDFC LOANS', sub: 'FROM 8.35% p.a.' },
+                    { icon: '✦', label: 'PMC / PMRDA', sub: 'TITLE VERIFIED' },
                   ].map((badge, i) => (
-                    <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '70px' }}>
+                    <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '76px' }}>
                       <div style={{
                         width: '42px', height: '42px', borderRadius: '50%',
                         border: '1px solid rgba(212,175,55,0.3)',
@@ -3496,7 +3496,7 @@ export default function Portal({ onViewChange }) {
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: '1.1rem'
                       }}>{badge.icon}</div>
-                      <span style={{ fontSize: '0.58rem', fontWeight: 700, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.08em', textAlign: 'center', fontFamily: "'Montserrat',sans-serif" }}>{badge.label}<br/>{badge.sub}</span>
+                      <span style={{ fontSize: '0.58rem', fontWeight: 800, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.06em', textAlign: 'center', fontFamily: "'Montserrat',sans-serif" }}>{badge.label}<br/>{badge.sub}</span>
                     </div>
                   ))}
                 </div>
