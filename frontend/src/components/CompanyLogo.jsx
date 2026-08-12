@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 /**
- * 24K REALTORS PUNE — Official Brand Logo Component
- * Renders the EXACT 3D Gold Logo Image (/24k_logo.png) uploaded by the user.
+ * 24K REALTORS PUNE — Exact User Uploaded Logo Component
+ * Renders the 100% exact high-resolution brand image (/24k_logo.png).
  */
 
 export default function CompanyLogo({
@@ -14,47 +14,39 @@ export default function CompanyLogo({
 }) {
   const [imgError, setImgError] = useState(false);
 
-  // Responsive sizes for navbar, footer, login & modals
-  const defaultWidth = variant === 'compact' ? 180 : variant === 'icon' ? 60 : 250;
-  const targetWidth = width || defaultWidth;
-
-  if (imgError) {
-    return (
-      <div style={{ display: 'inline-flex', alignItems: 'center', color: '#D4AF37', fontFamily: "'Cinzel', serif", fontWeight: 800, fontSize: '1.1rem', ...style }}>
-        <span>24K REALTORS PUNE</span>
-      </div>
-    );
-  }
-
-  // Variant specific styling for exact brand image display
+  // Default widths per placement
   const isCompact = variant === 'compact';
+  const isIcon    = variant === 'icon';
+  
+  const defaultWidth = isCompact ? 170 : isIcon ? 50 : 260;
+  const targetWidth  = width || defaultWidth;
 
   return (
     <div
-      className={`company-logo-container ${className}`}
+      className={`company-logo-badge ${className}`}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
         background: '#FFFFFF',
-        padding: isCompact ? '4px 10px' : '10px 18px',
-        borderRadius: isCompact ? '10px' : '16px',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.35), 0 0 15px rgba(212,175,55,0.25)',
-        border: '1px solid rgba(212,175,55,0.4)',
+        padding: isCompact ? '5px 12px' : '10px 20px',
+        borderRadius: isCompact ? '12px' : '18px',
+        boxShadow: '0 4px 25px rgba(0,0,0,0.45), 0 0 20px rgba(212,175,55,0.3)',
+        border: '1px solid rgba(212,175,55,0.5)',
         lineHeight: 0,
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+        transition: 'all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
         cursor: 'pointer',
         ...style
       }}
     >
       <img
-        src="/24k_logo.png"
+        src="/24k_logo.png?v=2026_final"
         alt="24K Realtors Pune — Official Logo"
         onError={() => setImgError(true)}
         style={{
           width: typeof targetWidth === 'number' ? `${targetWidth}px` : targetWidth,
           height: height ? (typeof height === 'number' ? `${height}px` : height) : 'auto',
-          maxHeight: isCompact ? '42px' : '120px',
+          maxHeight: isCompact ? '44px' : isIcon ? '32px' : '130px',
           objectFit: 'contain',
           display: 'block'
         }}
