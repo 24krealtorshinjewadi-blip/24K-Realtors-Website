@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
 /**
- * 24K REALTORS PUNE — Exact User Uploaded Logo Component
- * Renders the 100% exact high-resolution brand image (/24k_logo.png).
+ * 24K REALTORS PUNE — Transparent Brand Logo Component
+ * Renders the EXACT 3D Gold Logo image (/24k_logo_transparent.png) with background removed.
+ * Fits seamlessly onto dark and light backgrounds.
  */
 
 export default function CompanyLogo({
@@ -14,41 +15,45 @@ export default function CompanyLogo({
 }) {
   const [imgError, setImgError] = useState(false);
 
-  // Default widths per placement
+  // Default widths based on placement
   const isCompact = variant === 'compact';
   const isIcon    = variant === 'icon';
   
-  const defaultWidth = isCompact ? 170 : isIcon ? 50 : 260;
+  const defaultWidth = isCompact ? 175 : isIcon ? 46 : 240;
   const targetWidth  = width || defaultWidth;
+
+  if (imgError) {
+    return (
+      <div style={{ display: 'inline-flex', alignItems: 'center', color: '#E6C35C', fontFamily: "'Cinzel', serif", fontWeight: 800, fontSize: '1.1rem', letterSpacing: '0.05em', ...style }}>
+        <span>24K REALTORS PUNE</span>
+      </div>
+    );
+  }
 
   return (
     <div
-      className={`company-logo-badge ${className}`}
+      className={`company-logo-container ${className}`}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#FFFFFF',
-        padding: isCompact ? '5px 12px' : '10px 20px',
-        borderRadius: isCompact ? '12px' : '18px',
-        boxShadow: '0 4px 25px rgba(0,0,0,0.45), 0 0 20px rgba(212,175,55,0.3)',
-        border: '1px solid rgba(212,175,55,0.5)',
         lineHeight: 0,
-        transition: 'all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
+        transition: 'transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
         cursor: 'pointer',
         ...style
       }}
     >
       <img
-        src="/24k_logo.png?v=2026_final"
+        src="/24k_logo_transparent.png?v=2026_transparent_v1"
         alt="24K Realtors Pune — Official Logo"
         onError={() => setImgError(true)}
         style={{
           width: typeof targetWidth === 'number' ? `${targetWidth}px` : targetWidth,
           height: height ? (typeof height === 'number' ? `${height}px` : height) : 'auto',
-          maxHeight: isCompact ? '44px' : isIcon ? '32px' : '130px',
+          maxHeight: isCompact ? '48px' : isIcon ? '36px' : '140px',
           objectFit: 'contain',
-          display: 'block'
+          display: 'block',
+          filter: 'drop-shadow(0 2px 10px rgba(212,175,55,0.45))'
         }}
       />
     </div>
