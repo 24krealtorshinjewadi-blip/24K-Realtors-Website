@@ -3505,18 +3505,18 @@ export default function Portal({ onViewChange }) {
               {/* ── RIGHT: Glass AI Search Card ── */}
               {!isMobile && (
                 <div style={{
-                  flex: '0 0 38%', maxWidth: '400px',
+                  flex: '0 0 44%', maxWidth: '470px',
                   background: 'rgba(7,15,30,0.80)',
                   backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)',
                   border: '1px solid rgba(212,175,55,0.3)',
                   borderRadius: '18px',
-                  padding: '26px 24px',
+                  padding: '28px 26px',
                   boxShadow: '0 32px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08)',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                     <p style={{
-                      fontFamily: "'Cinzel',serif", fontSize: '0.78rem', fontWeight: 700,
-                      color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', margin: 0
+                      fontFamily: "'Cinzel',serif", fontSize: '0.9rem', fontWeight: 700,
+                      color: '#D4AF37', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0
                     }}>FIND YOUR PERFECT PROPERTY</p>
 
                     <button
@@ -4017,6 +4017,7 @@ export default function Portal({ onViewChange }) {
                   {/* Background Image Banner */}
                   <img src={dev.img} alt={dev.name} loading="lazy"
                     style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
+                    onError={e => { e.currentTarget.style.display='none'; e.currentTarget.parentElement.style.background=`linear-gradient(135deg, rgba(4,8,20,0.95) 0%, rgba(${dev.color === '#E6C35C' ? '230,195,92' : '60,90,160'},0.25) 100%)`; }}
                     onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
                     onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
                   />
@@ -4063,12 +4064,9 @@ export default function Portal({ onViewChange }) {
                       <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>{dev.established}</span>
                     </div>
 
-                    {/* CTA Button Row */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '0.7rem', color: '#D4AF37', fontWeight: 800, letterSpacing: '0.04em' }}>{dev.projectsCount}</span>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#040814', background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)', borderRadius: '50px', padding: '4px 16px', display: 'inline-flex', alignItems: 'center', gap: '4px', boxShadow: '0 4px 14px rgba(212,175,55,0.35)' }}>
-                        Explore Projects →
-                      </span>
+                      <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)' }}>{dev.established}</span>
                     </div>
                   </div>
                 </div>
@@ -5947,45 +5945,7 @@ export default function Portal({ onViewChange }) {
           </div>
           <div className="transaction-desk-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '30px', alignItems: 'start' }}>
             
-            {/* Priority Callback Desk — Pune Targeted */}
-            <div className="callback-card" style={{ margin: 0, height: '100%', borderRadius: '16px', border: '1px solid rgba(212,175,55,0.15)', background: 'linear-gradient(135deg, rgba(12,24,48,0.6) 0%, rgba(6,12,24,0.8) 100%)' }}>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gold-primary)', marginBottom: '6px' }}>
-                <Clock size={18} className="animate-pulse" />
-                <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-title)' }}>⚡ Instant Priority Callback</h3>
-              </div>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '16px' }}>
-                Drop your number — our Pune IT locality director will connect with you immediately. Available Mon–Sun, 9am to 9pm.
-              </p>
-              <form onSubmit={handleVipSubmit}>
-                <div className="form-group-floating">
-                  <input type="text" id="callbackName" className="form-input-floating" required placeholder=" "
-                    value={vipForm.name} onChange={e => setVipForm({ ...vipForm, name: e.target.value })} />
-                  <label htmlFor="callbackName" className="form-label-floating">Your Full Name</label>
-                </div>
-                <div className="form-group-floating">
-                  <input type="tel" id="callbackPhone" className="form-input-floating" required placeholder=" "
-                    value={vipForm.phone} onChange={e => setVipForm({ ...vipForm, phone: e.target.value })} />
-                  <label htmlFor="callbackPhone" className="form-label-floating">📱 WhatsApp No. (+91)</label>
-                </div>
-                <div className="form-group" style={{ marginBottom: '14px' }}>
-                  <select className="form-input" value={vipForm.location || 'HINJEWADI'}
-                    onChange={e => setVipForm({ ...vipForm, location: e.target.value })}
-                    style={{ fontSize: '0.84rem', borderRadius: '10px' }}>
-                    <option value="HINJEWADI">📍 Hinjewadi</option>
-                    <option value="BANER">📍 Baner – Balewadi</option>
-                    <option value="WAKAD">📍 Wakad – Pimple Saudagar</option>
-                    <option value="MAHALUNGE">📍 Mahalunge – Maan Road</option>
-                    <option value="KHARADI">📍 Kharadi – EON IT Park</option>
-                    <option value="UNDRI">📍 Undri – Pisoli</option>
-                    <option value="ANY">📍 Open to all Pune locations</option>
-                  </select>
-                </div>
-                <button type="submit" className="btn-gold" style={{ width: '100%', justifyContent: 'center', borderRadius: '12px' }} disabled={vipSubmitting}>
-                  {vipSubmitting ? <Loader className="animate-spin" size={16} /> : '📞 Get Instant Callback'}
-                </button>
-                <p style={{ textAlign: 'center', fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '10px' }}>Zero spam · Only verified property advisors call you</p>
-              </form>
-            </div>
+            {/* Priority Callback removed — now showing only Seller Mandate */}
 
             {/* Seller Exclusive Mandate Desk */}
             <div id="seller-mandate-anchor" className="seller-mandate-premium" style={{ margin: 0, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '40px 30px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(7,15,30,0.95) 0%, rgba(15,28,46,0.9) 100%)', border: '1px solid rgba(197,168,128,0.25)', borderRadius: '16px' }}>

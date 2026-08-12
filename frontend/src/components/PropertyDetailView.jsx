@@ -206,13 +206,24 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const title         = property.title        || 'Godrej Woodsville';
   const location      = property.location     || 'Hinjewadi Phase 1, Pune';
   const address       = property.address      || `${title}, Hinjewadi Phase 1, Pune`;
-  const price         = property.price
-    ? `₹${(property.price / 10000000).toFixed(2)} Cr*`
-    : '₹85 L – ₹1.15 Cr*';
+
+  // Smart price formatter: < 1 Cr → show in Lakhs
+  const formatPrice = (p) => {
+    if (!p) return '₹85 L – ₹1.15 Cr*';
+    if (p >= 10000000) return `₹${(p / 10000000).toFixed(2)} Cr*`;
+    return `₹${Math.round(p / 100000)} L*`;
+  };
+  const price         = formatPrice(property.price);
   const reraNumber    = property.reraNumber   || 'P52100046770';
-  const possession    = property.possessionDate || 'Nov 2028';
+  const possession    = property.possessionDate || property.possession || 'Nov 2028';
   const projectArea   = property.projectArea  || '4.54 Acres';
-  const developerName = property.builderName  || (title.includes('Godrej') ? 'Godrej Properties' : '24K Realtors');
+  const developerName = property.builderName  || property.developer || property.developerName
+    || (title.toLowerCase().includes('godrej') ? 'Godrej Properties'
+      : title.toLowerCase().includes('shapoorji') ? 'Shapoorji Pallonji Real Estate'
+      : title.toLowerCase().includes('kolte') ? 'Kolte-Patil Developers'
+      : title.toLowerCase().includes('vtp') ? 'VTP Realty'
+      : title.toLowerCase().includes('vilas') || title.toLowerCase().includes('yashwin') ? 'Vilas Javdekar (VJ)'
+      : '24K Realtors');
   const aiScore       = property.aiScore      || 94;
 
   /* ── AI Chat logic ── */

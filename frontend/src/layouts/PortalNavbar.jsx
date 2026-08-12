@@ -242,42 +242,7 @@ export default function PortalNavbar({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {/* Spotlight Search Trigger (Cmd+K) */}
-            <button
-              type="button"
-              onClick={onOpenSpotlight}
-              className="nav-spotlight-btn"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '7px',
-                padding: '8px 15px',
-                borderRadius: '30px',
-                border: '1px solid rgba(197, 168, 128, 0.35)',
-                background: 'rgba(7, 15, 30, 0.75)',
-                color: 'rgba(255,255,255,0.9)',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                fontFamily: 'var(--font-sans)',
-                transition: 'all 0.2s ease',
-                backdropFilter: 'blur(8px)'
-              }}
-              title="Quick Search (Press Ctrl+K or Cmd+K)"
-            >
-              <Search size={13} style={{ color: '#E6C35C' }} />
-              <span style={{ fontSize: '0.76rem' }}>Search</span>
-              <kbd style={{
-                background: 'rgba(230, 195, 92, 0.15)',
-                border: '1px solid rgba(230, 195, 92, 0.3)',
-                borderRadius: '4px',
-                fontSize: '0.62rem',
-                padding: '1px 5px',
-                color: '#E6C35C',
-                fontWeight: 800,
-                fontFamily: 'monospace'
-              }}>⌘K</kbd>
-            </button>
+            {/* Spotlight Search removed from nav — available in hero section */}
 
             {/* Contact Phone Number Pill */}
             <a href="tel:+919673000053" className="nav-phone-pill" style={{

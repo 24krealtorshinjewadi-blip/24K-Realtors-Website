@@ -66,6 +66,19 @@ const getBuilderName = (title = '', desc = '') => {
   return 'PREMIUM ALLIANCE';
 };
 
+const formatPriceFallback = (p, transactionType) => {
+  if (!p) return 'Price on Request';
+  if (typeof p === 'string' && p.includes('₹')) return p;
+  const num = Number(p);
+  if (isNaN(num)) return p;
+  if (transactionType === 'RENT') {
+    return num >= 100000 ? `₹${(num / 100000).toFixed(2)} L/mo` : `₹${num.toLocaleString('en-IN')}/mo`;
+  }
+  if (num >= 10000000) return `₹${(num / 10000000).toFixed(2)} Cr*`;
+  if (num >= 100000) return `₹${Math.round(num / 100000)} L*`;
+  return `₹${num.toLocaleString('en-IN')}`;
+};
+
 export default function PropertyCard({ 
   property, 
   isHnwiMode, 
@@ -261,8 +274,8 @@ export default function PropertyCard({
           }}
         >
           {isHnwiMode 
-            ? `Yield: ${property?.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice ? formatPrice(property?.price, property?.transactionType) : property?.price}` 
-            : (formatPrice ? formatPrice(property?.price, property?.transactionType) : property?.price)}
+            ? `Yield: ${property?.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType)}` 
+            : (formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType))}
         </span>
       </div>
 

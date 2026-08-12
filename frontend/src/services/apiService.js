@@ -718,6 +718,9 @@ const initialProperties = [
     verifiedListing: true,
     exclusiveDeal: true,
     reraNumber: "MahaRERA: PR1260002600999",
+    builderName: "Shapoorji Pallonji Real Estate",
+    possessionDate: "Dec 2028",
+    projectArea: "12.5 Acres",
     imageUrl: "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_hero_facade.png",
     slideshowImages: [
       "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_hero_facade.png",

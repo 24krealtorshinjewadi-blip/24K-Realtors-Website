@@ -279,6 +279,23 @@ export default function PropertyGallery({
     return () => { document.body.style.overflow = ''; };
   }, [lightboxOpen]);
 
+  /* ── Auto-advance slideshow every 3 seconds ── */
+  const isHoveringRef = useRef(false);
+  useEffect(() => {
+    if (lightboxOpen) return; // pause in lightbox
+    if (filteredGallery.length <= 1) return; // nothing to cycle
+    const interval = setInterval(() => {
+      if (!isHoveringRef.current) {
+        setActiveIdx(prev => {
+          const next = prev < filteredGallery.length - 1 ? prev + 1 : 0;
+          setImgKey(k => k + 1);
+          return next;
+        });
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [lightboxOpen, filteredGallery.length]);
+
   /* ── Touch swipe ── */
   const touchStartX = useRef(null);
   const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
@@ -395,6 +412,8 @@ export default function PropertyGallery({
           style={{ position: 'relative', overflow: 'hidden' }}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
+          onMouseEnter={() => { isHoveringRef.current = true; }}
+          onMouseLeave={() => { isHoveringRef.current = false; }}
         >
           {/* Aspect-ratio wrapper */}
           <div style={{
