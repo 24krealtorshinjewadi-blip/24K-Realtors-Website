@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import CompanyDeskModal from '../components/CompanyDeskModal';
+import CompanyLogo from '../components/CompanyLogo';
 
 const FooterLink = ({ href = '#', children, external = false, onClick }) => {
   const [hover, setHover] = React.useState(false);
@@ -72,7 +73,9 @@ export default function PortalFooter({ onViewChange }) {
 
         {/* Column 1: 24K Realtors */}
         <div>
-          <h4 style={{ color: 'var(--gold-primary)', fontFamily: 'var(--font-title)', fontSize: '0.95rem', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '16px' }}>24K Realtors</h4>
+          <div style={{ marginBottom: '14px' }}>
+            <CompanyLogo variant="compact" width={180} />
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <FooterLink href="https://wa.me/919673000053?text=Hi%2C%20I%20want%20to%20explore%20properties%20via%2024K%20Realtors%20mobile%20channel" external>Mobile App Portal</FooterLink>
             <FooterLink href="https://wa.me/919673000053?text=I%20need%20advisory%20services%20for%20real%20estate%20in%20Pune" external>Our Advisory Services</FooterLink>
