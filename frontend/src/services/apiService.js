@@ -3667,6 +3667,80 @@ export const apiService = {
     return response.json();
   },
 
+  // ─── LEADS DATABASE CAPTURE & SYNC API ──────────────────────────────────────
+  async submitLeadToDatabase(leadData) {
+    // 1. Format payload to match Spring Boot LeadRequest DTO
+    const cleanPhone = (leadData.phone || '').replace(/\D/g, '');
+    const formattedPhone = cleanPhone.length === 10 ? `+91${cleanPhone}` : (leadData.phone.startsWith('+') ? leadData.phone : `+91${cleanPhone}`);
+    
+    let locationEnum = 'HINJEWADI';
+    const loc = (leadData.location || leadData.preferredLocation || '').toUpperCase();
+    if (loc.includes('WAKAD')) locationEnum = 'WAKAD';
+    else if (loc.includes('BANER')) locationEnum = 'BANER';
+    else if (loc.includes('KHARADI')) locationEnum = 'KHARADI';
+    else if (loc.includes('BALEWADI')) locationEnum = 'BALEWADI';
+    else if (loc.includes('TATHAWADE')) locationEnum = 'TATHAWADE';
+
+    const payload = {
+      name: leadData.name || 'Anonymous Visitor',
+      phone: formattedPhone,
+      email: (leadData.email && leadData.email.includes('@')) ? leadData.email : `${cleanPhone || 'visitor'}@24krealtors.com`,
+      requirementType: leadData.requirementType || 'BUY_RESIDENTIAL',
+      budgetMin: leadData.budgetMin || 6500000,
+      budgetMax: leadData.budgetMax || 15000000,
+      preferredLocation: locationEnum,
+      notes: leadData.notes || `Submitted via ${leadData.source || 'Website Portal'} on ${new Date().toLocaleString()}`,
+      propertyId: leadData.propertyId || null
+    };
+
+    // 2. Also save to mock_leads in localStorage for instant CRM view sync
+    try {
+      const existingLeads = JSON.parse(localStorage.getItem('mock_leads') || '[]');
+      const newMockLead = {
+        id: `LD-${Date.now().toString().slice(-6)}`,
+        name: payload.name,
+        phone: payload.phone,
+        email: payload.email,
+        requirementType: payload.requirementType,
+        budgetMin: payload.budgetMin,
+        budgetMax: payload.budgetMax,
+        location: payload.preferredLocation,
+        status: 'NEW',
+        notes: payload.notes,
+        score: 75,
+        createdDate: new Date().toISOString(),
+        source: leadData.source || '24K Web Portal'
+      };
+      existingLeads.unshift(newMockLead);
+      localStorage.setItem('mock_leads', JSON.stringify(existingLeads.slice(0, 100)));
+    } catch (err) {
+      console.warn('[Lead Storage] LocalStorage sync skipped:', err);
+    }
+
+    // 3. POST to Spring Boot Backend DB Endpoint (/api/v1/leads)
+    try {
+      const response = await fetch(`${BASE_URL}/leads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) {
+        console.warn('[Backend API] Leads endpoint returned non-200 status:', response.status);
+        return { success: true, offline: true, payload };
+      }
+      const data = await response.json();
+      console.info('[Backend API] Lead successfully stored in DB ✓', data);
+      return { success: true, data };
+    } catch (error) {
+      console.warn('[Backend API] Network error posting lead to DB, cached in offline CRM:', error);
+      return { success: true, offline: true, payload };
+    }
+  },
+
+  async submitLead(leadData) {
+    return this.submitLeadToDatabase(leadData);
+  },
+
   // ─── AUDIT LOGS API ────────────────────────────────────────────────────────
   async getAuditLogs({ page = 0, size = 20 } = {}) {
     const response = await fetch(`${BASE_URL}/audit-logs?page=${page}&size=${size}`, {

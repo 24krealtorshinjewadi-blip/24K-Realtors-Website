@@ -31,6 +31,7 @@ import {
   Calculator, FileText, ExternalLink, Shield, QrCode
 } from 'lucide-react';
 import PropertyGallery from './PropertyGallery';
+import { apiService } from '../services/apiService';
 
 /* ── Inject CSS once ── */
 const STYLE_ID = 'pdv-styles-v3';
@@ -334,7 +335,18 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     e.preventDefault();
     if (!brochureForm.name || !brochureForm.phone) return;
     setBrochureSubmitting(true);
-    await new Promise(r => setTimeout(r, 1000));
+
+    // Save lead into Database with detailed tags
+    await apiService.submitLeadToDatabase({
+      name: brochureForm.name,
+      phone: brochureForm.phone,
+      email: brochureForm.email || '',
+      requirementType: 'BUY_RESIDENTIAL',
+      location: location,
+      notes: `Requested E-Brochure & Floor Plans for ${title}`,
+      source: 'E-Brochure Download Modal'
+    });
+
     setBrochureSubmitting(false);
     setBrochureSuccess(true);
   };
@@ -370,7 +382,18 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     const errs = validateForm();
     if (Object.keys(errs).length) { setFormErrors(errs); return; }
     setFormSubmitting(true);
-    await new Promise(r => setTimeout(r, 1200));
+
+    // Save lead into Database with detailed tags
+    await apiService.submitLeadToDatabase({
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email || '',
+      requirementType: 'BUY_RESIDENTIAL',
+      location: location,
+      notes: `Inquiry for ${title}. Notes: ${formData.notes || 'Interested in site visit'}`,
+      source: 'Property Detail Page Form'
+    });
+
     setFormSubmitting(false);
     setFormSuccess(true);
     setTimeout(() => onOpenInquiry && onOpenInquiry(), 800);
