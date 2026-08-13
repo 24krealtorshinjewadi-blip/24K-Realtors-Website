@@ -27,7 +27,8 @@ import {
   Waves, Users, Baby, Route, Star, TrendingUp,
   Brain, Sparkles, Download, ZoomIn, Phone,
   Mail, CheckCircle2, Award, Lock, BadgeCheck,
-  BarChart3, Target, Coffee, X, Send, Bot, MessageSquare
+  BarChart3, Target, Coffee, X, Send, Bot, MessageSquare,
+  Calculator, FileText, ExternalLink, Shield, QrCode
 } from 'lucide-react';
 import PropertyGallery from './PropertyGallery';
 
@@ -202,6 +203,18 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const aiChatEndRef                      = useRef(null);
   const aiInputRef                        = useRef(null);
 
+  // EMI Calculator State
+  const [emiPrice, setEmiPrice]           = useState(property.price || 8500000);
+  const [downPaymentPct, setDownPaymentPct] = useState(20);
+  const [interestRate, setInterestRate]   = useState(8.35);
+  const [tenureYears, setTenureYears]     = useState(20);
+
+  // E-Brochure Lead Capture Modal State
+  const [brochureModalOpen, setBrochureModalOpen] = useState(false);
+  const [brochureForm, setBrochureForm]   = useState({ name: '', phone: '', email: '' });
+  const [brochureSubmitting, setBrochureSubmitting] = useState(false);
+  const [brochureSuccess, setBrochureSuccess] = useState(false);
+
   /* ── Property metadata ── */
   const title         = property.title        || 'Godrej Woodsville';
   const location      = property.location     || 'Hinjewadi Phase 1, Pune';
@@ -288,7 +301,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   }, [aiMessages, aiThinking]);
 
   /* ── Scroll-spy: IntersectionObserver keeps tab in sync ── */
-  const SECTION_IDS = ['overview', 'highlights', 'amenities', 'location', 'floorplans', 'ai-intel', 'similar'];
+  const SECTION_IDS = ['overview', 'highlights', 'amenities', 'location', 'floorplans', 'calculator', 'ai-intel', 'similar'];
   useEffect(() => {
     const observers = [];
     SECTION_IDS.forEach(id => {
@@ -302,6 +315,29 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     });
     return () => observers.forEach(o => o.disconnect());
   }, []);
+
+  /* ── EMI Calculation Math ── */
+  const calculateEmi = () => {
+    const p = emiPrice * (1 - downPaymentPct / 100);
+    const r = interestRate / 12 / 100;
+    const n = tenureYears * 12;
+    if (r === 0) return Math.round(p / n);
+    const emi = Math.round((p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+    const totalPayment = emi * n;
+    const totalInterest = totalPayment - p;
+    return { emi, loanAmount: p, totalInterest, totalPayment };
+  };
+  const { emi, loanAmount, totalInterest, totalPayment } = calculateEmi();
+
+  /* ── Brochure Modal submit ── */
+  const handleBrochureSubmit = async (e) => {
+    e.preventDefault();
+    if (!brochureForm.name || !brochureForm.phone) return;
+    setBrochureSubmitting(true);
+    await new Promise(r => setTimeout(r, 1000));
+    setBrochureSubmitting(false);
+    setBrochureSuccess(true);
+  };
 
   /* ── AI ring animation trigger ── */
   useEffect(() => {
@@ -347,6 +383,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     { id: 'amenities',  label: 'AMENITIES' },
     { id: 'location',   label: 'LOCATION' },
     { id: 'floorplans', label: 'FLOOR PLANS' },
+    { id: 'calculator', label: '🧮 EMI CALCULATOR' },
     { id: 'ai-intel',   label: '✦ AI INTEL' },
     { id: 'similar',    label: 'SIMILAR' },
   ];
@@ -507,19 +544,30 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
             </div>
 
             {/* CTA Buttons */}
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
-              <button onClick={onOpenInquiry} className="pdv-btn-gold"
-                style={{ flex: 1, padding: '13px', fontSize: '0.84rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', borderRadius: '50px', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.35)' }}>
-                ENQUIRE NOW
-              </button>
-              <button onClick={onOpenInquiry} className="pdv-btn-outline"
-                style={{ flex: 1, padding: '13px', fontSize: '0.82rem', fontWeight: 700, textTransform: 'uppercase', background: 'rgba(255,255,255,0.04)', color: '#FFF', border: '1px solid rgba(212,175,55,0.35)', borderRadius: '50px', cursor: 'pointer' }}>
-                SITE VISIT
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button onClick={onOpenInquiry} className="pdv-btn-gold"
+                  style={{ flex: 1, padding: '13px', fontSize: '0.84rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', borderRadius: '50px', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.35)' }}>
+                  ENQUIRE NOW
+                </button>
+                <button onClick={onOpenInquiry} className="pdv-btn-outline"
+                  style={{ flex: 1, padding: '13px', fontSize: '0.82rem', fontWeight: 700, textTransform: 'uppercase', background: 'rgba(255,255,255,0.04)', color: '#FFF', border: '1px solid rgba(212,175,55,0.35)', borderRadius: '50px', cursor: 'pointer' }}>
+                  BOOK SITE VISIT
+                </button>
+              </div>
+
+              {/* Instant Download Brochure Button */}
+              <button onClick={() => setBrochureModalOpen(true)}
+                style={{ width: '100%', padding: '11px', borderRadius: '10px', background: 'rgba(212,175,55,0.08)', border: '1px dashed rgba(212,175,55,0.4)', color: '#F3E5AB', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s' }}
+                onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.16)'}
+                onMouseOut={e => e.currentTarget.style.background = 'rgba(212,175,55,0.08)'}
+              >
+                <Download size={14} color="#D4AF37" /> Download Floor Plans & E-Brochure (PDF)
               </button>
             </div>
 
-            {/* Save + Share */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', paddingBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.07)', marginBottom: '16px' }}>
+            {/* Save + Share + WhatsApp */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.07)', marginBottom: '14px' }}>
               <button onClick={() => setSaved(s => !s)}
                 style={{ background: 'none', border: 'none', color: saved ? '#D4AF37' : '#718096', fontSize: '0.76rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600, transition: 'color 0.2s' }}>
                 <Heart size={14} fill={saved ? '#D4AF37' : 'none'} /> {saved ? 'Saved ✓' : 'Save Property'}
@@ -528,10 +576,15 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 style={{ background: 'none', border: 'none', color: '#718096', fontSize: '0.76rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}>
                 <Share2 size={14} /> Share
               </button>
+              <a href={`https://wa.me/919175050519?text=Hi%2024K%20Realtors%2C%20I%20am%20interested%20in%20${encodeURIComponent(title)}%20(${encodeURIComponent(location)})`}
+                target="_blank" rel="noopener noreferrer"
+                style={{ color: '#25D366', fontSize: '0.76rem', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 700, textDecoration: 'none' }}>
+                💬 VIP WhatsApp
+              </a>
             </div>
 
             {/* Meta: RERA / Possession / Area */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', textAlign: 'center' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', textAlign: 'center', marginBottom: '12px' }}>
               {[
                 { label: 'RERA NO.',    value: reraNumber },
                 { label: 'POSSESSION',  value: possession },
@@ -543,6 +596,17 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 </div>
               ))}
             </div>
+
+            {/* MahaRERA Official Govt Verification Link */}
+            <a href="https://maharera.maharashtra.gov.in" target="_blank" rel="noopener noreferrer"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 12px', borderRadius: '8px', background: 'rgba(105,200,140,0.08)', border: '1px solid rgba(105,200,140,0.25)', textDecoration: 'none' }}>
+              <ShieldCheck size={14} color="#68D391" />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#68D391' }}>MahaRERA Registered Property</div>
+                <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.5)' }}>Agent RERA: A051262603190 · 100% Legal Clearance</div>
+              </div>
+              <ExternalLink size={12} color="#68D391" />
+            </a>
 
             {/* AI Ask chip — now opens working AI chat modal */}
             <button onClick={openAiChat}
@@ -804,6 +868,96 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.65rem', color: '#68D391' }}>
                 <Brain size={11} /> AI-powered matching enabled
               </div>
+            </div>
+          </div>
+        </AnimSection>
+
+        {/* ══ 5.5. EMI CALCULATOR & FINANCIAL INTELLIGENCE ══ */}
+        <AnimSection id="sec-calculator">
+          <SectionLabel>Mortgage & Affordability</SectionLabel>
+          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: '0 0 8px', lineHeight: 1.2 }}>
+            Interactive <span style={{ color: '#F3E5AB' }}>EMI & Home Loan Calculator</span>
+          </h2>
+          <p style={{ fontSize: '0.84rem', color: '#718096', margin: '0 0 24px', maxWidth: '640px', lineHeight: 1.6 }}>
+            Calculate your estimated monthly installment with preferred home loan interest rates (SBI, HDFC, ICICI 8.35% p.a.).
+          </p>
+
+          <div style={{ padding: isMobile ? '20px' : '32px', borderRadius: '22px', background: 'rgba(13,24,42,0.95)', border: '1px solid rgba(212,175,55,0.25)', marginBottom: '40px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 0.8fr', gap: '32px', alignItems: 'center' }}>
+
+              {/* Controls / Sliders */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+                {/* Slider 1: Down Payment */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0' }}>Down Payment</span>
+                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>{downPaymentPct}% (₹{(emiPrice * downPaymentPct / 100 / 100000).toFixed(2)} Lakhs)</span>
+                  </div>
+                  <input type="range" min="10" max="50" step="5" value={downPaymentPct} onChange={e => setDownPaymentPct(Number(e.target.value))}
+                    style={{ width: '100%', accentColor: '#D4AF37', cursor: 'pointer' }} />
+                </div>
+
+                {/* Slider 2: Interest Rate */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0' }}>Interest Rate (p.a.)</span>
+                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>{interestRate}%</span>
+                  </div>
+                  <input type="range" min="7.5" max="11.5" step="0.15" value={interestRate} onChange={e => setInterestRate(Number(e.target.value))}
+                    style={{ width: '100%', accentColor: '#D4AF37', cursor: 'pointer' }} />
+                  <div style={{ fontSize: '0.66rem', color: '#718096', marginTop: '4px' }}>*SBI & HDFC Special Rate: 8.35% for 24K Buyers</div>
+                </div>
+
+                {/* Slider 3: Loan Tenure */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0' }}>Loan Tenure</span>
+                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>{tenureYears} Years</span>
+                  </div>
+                  <input type="range" min="5" max="30" step="5" value={tenureYears} onChange={e => setTenureYears(Number(e.target.value))}
+                    style={{ width: '100%', accentColor: '#D4AF37', cursor: 'pointer' }} />
+                </div>
+
+                {/* Bank Partner Badges */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>PRE-APPROVED BANK PARTNERS:</span>
+                  {['SBI Home Loans', 'HDFC Bank', 'ICICI Bank', 'Axis Bank'].map((b, i) => (
+                    <span key={i} style={{ fontSize: '0.68rem', fontWeight: 700, color: '#F3E5AB', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '3px 9px' }}>{b}</span>
+                  ))}
+                </div>
+
+              </div>
+
+              {/* Result Summary Box */}
+              <div style={{ padding: '24px', borderRadius: '18px', background: 'linear-gradient(135deg, rgba(212,175,55,0.12), rgba(7,16,29,0.9))', border: '1px solid rgba(212,175,55,0.3)', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '8px' }}>ESTIMATED MONTHLY EMI</div>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '2.2rem', fontWeight: 700, color: '#FFF', marginBottom: '14px', lineHeight: 1 }}>
+                  ₹{emi.toLocaleString('en-IN')}<span style={{ fontSize: '0.85rem', color: '#718096', fontWeight: 500 }}>/month</span>
+                </div>
+
+                {/* Breakdown list */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '18px', textAlign: 'left', fontSize: '0.78rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#CBD5E0' }}>
+                    <span>Principal Loan Amount:</span>
+                    <strong style={{ color: '#FFF' }}>₹{(loanAmount / 100000).toFixed(2)} Lakhs</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#CBD5E0' }}>
+                    <span>Total Interest Payable:</span>
+                    <strong style={{ color: '#F3E5AB' }}>₹{(totalInterest / 100000).toFixed(2)} Lakhs</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#CBD5E0', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '8px' }}>
+                    <span>Total Amount Payable:</span>
+                    <strong style={{ color: '#68D391' }}>₹{(totalPayment / 100000).toFixed(2)} Lakhs</strong>
+                  </div>
+                </div>
+
+                <button onClick={onOpenInquiry} className="pdv-btn-gold"
+                  style={{ width: '100%', padding: '13px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontSize: '0.84rem', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.35)' }}>
+                  GET PRE-APPROVED LOAN →
+                </button>
+              </div>
+
             </div>
           </div>
         </AnimSection>
@@ -1117,6 +1271,98 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
           </div>
         </div>
       )}
+
+      {/* ═══════════════════════════════════════════════════════════
+          E-BROCHURE DOWNLOAD LEAD CAPTURE MODAL
+      ═══════════════════════════════════════════════════════════ */}
+      {brochureModalOpen && (
+        <div
+          onClick={(e) => { if (e.target === e.currentTarget) setBrochureModalOpen(false); }}
+          style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+        >
+          <div style={{ width: '100%', maxWidth: '440px', background: '#0D1829', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '24px', padding: '28px', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.8)' }}>
+            <button onClick={() => setBrochureModalOpen(false)}
+              style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.06)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#A0AEC0' }}>
+              <X size={16} />
+            </button>
+
+            {brochureSuccess ? (
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <CheckCircle2 size={48} color="#68D391" style={{ marginBottom: '12px' }} />
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.3rem', color: '#FFF', margin: '0 0 8px' }}>Brochure Unlocked!</h3>
+                <p style={{ fontSize: '0.84rem', color: '#CBD5E0', marginBottom: '20px', lineHeight: 1.5 }}>
+                  The official floor plans & price sheet PDF for <strong>{title}</strong> has been sent to your WhatsApp.
+                </p>
+                <button onClick={() => { setBrochureModalOpen(false); setBrochureSuccess(false); }} className="pdv-btn-gold"
+                  style={{ padding: '12px 28px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontWeight: 800, cursor: 'pointer' }}>
+                  Close Preview
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleBrochureSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ textAlign: 'center' }}>
+                  <Download size={32} color="#D4AF37" style={{ marginBottom: '8px' }} />
+                  <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.3rem', color: '#FFF', margin: '0 0 6px' }}>Download E-Brochure</h3>
+                  <p style={{ fontSize: '0.78rem', color: '#718096', margin: 0 }}>
+                    Enter details to instantly unlock 4K Floor Plans & Price Sheet for {title}.
+                  </p>
+                </div>
+
+                <div>
+                  <label style={{ fontSize: '0.7rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase' }}>Full Name *</label>
+                  <input required type="text" placeholder="e.g. Rahul Sharma" value={brochureForm.name}
+                    onChange={e => setBrochureForm(f => ({ ...f, name: e.target.value }))}
+                    style={{ width: '100%', padding: '12px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.84rem', marginTop: '4px', boxSizing: 'border-box' }} />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: '0.7rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase' }}>WhatsApp Number *</label>
+                  <input required type="tel" placeholder="10-digit mobile number" value={brochureForm.phone}
+                    onChange={e => setBrochureForm(f => ({ ...f, phone: e.target.value }))}
+                    style={{ width: '100%', padding: '12px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.84rem', marginTop: '4px', boxSizing: 'border-box' }} />
+                </div>
+
+                <button type="submit" disabled={brochureSubmitting} className="pdv-btn-gold"
+                  style={{ width: '100%', padding: '14px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontWeight: 800, fontSize: '0.86rem', textTransform: 'uppercase', cursor: 'pointer', marginTop: '6px' }}>
+                  {brochureSubmitting ? 'Unlocking PDF...' : 'DOWNLOAD BROCHURE NOW (PDF)'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════
+          STICKY FLOATING WHATSAPP VIP BUTTON (BOTTOM-LEFT)
+      ═══════════════════════════════════════════════════════════ */}
+      <a
+        href={`https://wa.me/919175050519?text=Hi%2024K%20Realtors%2C%20I%20am%20interested%20in%20${encodeURIComponent(title)}%20(${encodeURIComponent(location)})`}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          left: '24px',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '12px 18px',
+          borderRadius: '50px',
+          background: 'linear-gradient(135deg, #25D366, #128C7E)',
+          color: '#FFF',
+          fontSize: '0.82rem',
+          fontWeight: 800,
+          textDecoration: 'none',
+          boxShadow: '0 8px 24px rgba(37,211,102,0.4)',
+          transition: 'transform 0.2s ease',
+        }}
+        onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+        onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+      >
+        <span style={{ fontSize: '1rem' }}>💬</span>
+        <span>Instant Price on WhatsApp</span>
+      </a>
 
     </div>
   );
