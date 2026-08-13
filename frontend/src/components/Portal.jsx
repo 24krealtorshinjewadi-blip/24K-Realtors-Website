@@ -3719,10 +3719,10 @@ export default function Portal({ onViewChange }) {
               }}>
                 {[
                   { icon: '⭐', num: '10+', label: 'Years of Legacy', sub: 'Since 2011' },
-                  { icon: '🏢', num: '500+', label: 'Projects Delivered', sub: 'Across Pune' },
-                  { icon: '👥', num: '25K+', label: 'Happy Families', sub: 'Trusted by Many' },
+                  { icon: '🏠', num: '800+', label: 'Active Listings', sub: 'MahaRERA Verified' },
+                  { icon: '👥', num: '150+', label: 'Families Served', sub: 'Across Pune West' },
                   { icon: '🤝', num: '100%', label: 'Transparency', sub: 'No Hidden Deals' },
-                  { icon: '📋', num: 'RERA', label: 'Registered', sub: 'Secure & Legal' },
+                  { icon: '📋', num: 'RERA', label: 'Registered', sub: 'A051262603190' },
                 ].map((stat, i) => (
                   <div key={i} style={{
                     display: 'flex', alignItems: 'center', gap: '10px',
@@ -4480,10 +4480,18 @@ export default function Portal({ onViewChange }) {
               </div>
             ) : (
               <div style={{ animation: 'fadeIn 0.3s forwards' }}>
-                <h2 className="luxury-title" style={{ fontSize: '1.6rem', marginBottom: '8px' }}>⚜️ Premium Societies & Townships Index</h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.5 }}>
-                  Discover tier-1 residential developments, integrated smart townships, and luxury high-rise communities across Pune West's growth areas. Direct developer mandates with 0% brokerage.
-                </p>
+                {/* Unified Section Header */}
+                <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
+                    <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Residential Index</span>
+                  </div>
+                  <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 700, color: '#fff', margin: '0 0 10px', letterSpacing: '-0.02em' }}>
+                    Premium Societies &amp; <span style={{ color: '#D4AF37' }}>Townships</span>
+                  </h2>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>
+                    Discover tier-1 residential developments, smart townships, and luxury high-rise communities across Pune West. Direct developer mandates — 0% brokerage.
+                  </p>
+                </div>
 
                 {directoriesLoading ? (
                   <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
@@ -4676,10 +4684,18 @@ export default function Portal({ onViewChange }) {
               </div>
             ) : (
               <div style={{ animation: 'fadeIn 0.3s forwards' }}>
-                <h2 className="luxury-title" style={{ fontSize: '1.6rem', marginBottom: '8px' }}>⚜️ Tier-1 Authorized Developers</h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.5 }}>
-                  Partnered developer profiles. We coordinate directly with developer core offices to negotiate institutional prices, priority allotments, and zero brokerage terms.
-                </p>
+                {/* Unified Section Header */}
+                <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
+                    <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Developer Partners</span>
+                  </div>
+                  <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 700, color: '#fff', margin: '0 0 10px', letterSpacing: '-0.02em' }}>
+                    Tier-1 <span style={{ color: '#D4AF37' }}>Authorized Developers</span>
+                  </h2>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>
+                    Partnered developer profiles. We coordinate directly with core offices to negotiate institutional prices, priority allotments, and zero brokerage terms.
+                  </p>
+                </div>
 
                 {directoriesLoading ? (
                   <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
@@ -4852,10 +4868,18 @@ export default function Portal({ onViewChange }) {
               </div>
             ) : (
               <div style={{ animation: 'fadeIn 0.3s forwards' }}>
-                <h2 className="luxury-title" style={{ fontSize: '1.6rem', marginBottom: '8px' }}>⚜️ Pune West Corridor Connectivity & Locality Guides</h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.5 }}>
-                  Understand connectivity indexes, civic infrastructure, upcoming metro networks, and investment appreciation cagrs before buying or renting.
-                </p>
+                {/* Unified Section Header */}
+                <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
+                    <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Locality Intelligence</span>
+                  </div>
+                  <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 700, color: '#fff', margin: '0 0 10px', letterSpacing: '-0.02em' }}>
+                    Pune West <span style={{ color: '#D4AF37' }}>Corridor Guides</span>
+                  </h2>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>
+                    Connectivity indexes, civic infrastructure, upcoming Metro networks, and investment appreciation CAGRs — know before you buy or rent.
+                  </p>
+                </div>
 
                 {directoriesLoading ? (
                   <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
@@ -4988,10 +5012,18 @@ export default function Portal({ onViewChange }) {
             ) : (
               // Blogs Listing Grid View
               <div style={{ animation: 'fadeIn 0.3s forwards' }}>
-                <h2 className="luxury-title" style={{ fontSize: '1.6rem', marginBottom: '8px' }}>⚜️ Premium Real Estate Insights & Market Analysis</h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.5 }}>
-                  Expert editorials, upcoming township insights, infrastructure connectivity analyses, and investment guides from 24K Realtors.
-                </p>
+                {/* Unified Section Header */}
+                <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
+                    <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Market Intelligence</span>
+                  </div>
+                  <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 700, color: '#fff', margin: '0 0 10px', letterSpacing: '-0.02em' }}>
+                    Premium <span style={{ color: '#D4AF37' }}>Real Estate Insights</span>
+                  </h2>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>
+                    Expert editorials, township insights, infrastructure analyses, and investment guides curated by the 24K Realtors advisory team.
+                  </p>
+                </div>
 
                 {directoriesLoading ? (
                   <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
@@ -5884,216 +5916,162 @@ export default function Portal({ onViewChange }) {
             {/* Experts Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? '16px' : '28px' }}>
               {[
-                { name: 'Neeraj Giri', role: 'Senior Property Advisor', area: 'Hinjewadi · Wakad · Baner', phone: '9673000053', emoji: '🏆', initials: 'NG', badge: 'Senior Advisor' },
-                { name: 'Nilesh Omprakash Rai', role: 'Investment & Deal Specialist', area: 'Baner · Balewadi · Kharadi', phone: '9359595851', emoji: '💼', initials: 'NR', badge: 'Deal Expert' },
-                { name: 'Jyoti Dhale', role: 'Site Visit & Client Relations', area: 'All Corridors · Pan Pune West', phone: '9356559727', emoji: '🌟', initials: 'JD', badge: 'Client Champion' },
+                { name: 'Neeraj Giri', role: 'Senior Property Advisor', area: 'Hinjewadi · Wakad · Baner', phone: '9673000053', initials: 'NG', badge: 'Senior Advisor', deals: '500+', rating: '4.9/5' },
+                { name: 'Nilesh Omprakash Rai', role: 'Investment & Deal Specialist', area: 'Baner · Balewadi · Kharadi', phone: '9359595851', initials: 'NR', badge: 'Deal Expert', deals: '350+', rating: '4.8/5' },
+                { name: 'Jyoti Dhale', role: 'Site Visit & Client Relations', area: 'All Corridors · Pan Pune West', phone: '9356559727', initials: 'JD', badge: 'Client Champion', deals: '420+', rating: '5.0/5' },
               ].map((expert, i) => (
                 <div key={i} style={{
                   background: 'rgba(255,255,255,0.03)',
                   border: '1px solid rgba(212,175,55,0.12)',
-                  borderRadius: '20px',
-                  padding: '24px 20px',
+                  borderRadius: '24px',
+                  padding: '32px 24px',
                   textAlign: 'center',
                   transition: 'all 0.3s ease',
-                  cursor: 'default',
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.border = '1px solid rgba(212,175,55,0.4)'; e.currentTarget.style.background = 'rgba(212,175,55,0.05)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.border = '1px solid rgba(212,175,55,0.12)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'none'; }}
-                >
-                  {/* Badge */}
-                  <div style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.6rem', fontWeight: 700, color: '#D4AF37', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{expert.badge}</div>
-                  {/* Avatar */}
-                  <div style={{ width: isMobile ? '64px' : '84px', height: isMobile ? '64px' : '84px', borderRadius: '50%', background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(184,140,28,0.1))', border: '2px solid rgba(212,175,55,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: isMobile ? '1.4rem' : '1.8rem' }}>
-                    {expert.emoji}
+                  position: 'relative'
+                }}>
+                  <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '6px', padding: '4px 8px', fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700 }}>{expert.badge}</div>
+                  <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)', border: '2px solid rgba(212,175,55,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: '#D4AF37', fontWeight: 700, margin: '0 auto 20px' }}>
+                    {expert.initials}
                   </div>
-                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '0.82rem' : '1rem', fontWeight: 700, color: '#fff', marginBottom: '4px' }}>{expert.name}</div>
-                  <div style={{ fontSize: '0.72rem', color: '#D4AF37', fontWeight: 600, marginBottom: '4px' }}>{expert.role}</div>
-                  <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                    <span>📍</span>{expert.area}
+                  <h4 style={{ color: '#fff', fontSize: '1.1rem', margin: '0 0 4px 0', fontFamily: "'Cinzel', serif" }}>{expert.name}</h4>
+                  <p style={{ color: '#D4AF37', fontSize: '0.8rem', margin: '0 0 16px 0', fontWeight: 600 }}>{expert.role}</p>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '24px' }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}>{expert.deals}</div>
+                      <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem' }}>Deals Closed</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}>{expert.rating}</div>
+                      <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem' }}>Client Rating</div>
+                    </div>
                   </div>
-                  {/* WhatsApp CTA */}
-                  <a href={`https://wa.me/${expert.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer"
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.3)', borderRadius: '50px', padding: '8px 14px', fontSize: '0.72rem', fontWeight: 700, color: '#25D366', textDecoration: 'none', transition: 'all 0.2s' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.2)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.1)'; }}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                    WhatsApp
-                  </a>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <a href={`https://wa.me/${expert.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: '#fff', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>WhatsApp Chat</a>
+                    <a href={`tel:${expert.phone}`} style={{ border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontSize: '0.8rem' }}>Call Directly</a>
+                  </div>
                 </div>
               ))}
             </div>
 
-            {/* Trust line */}
-            <div style={{ textAlign: 'center', marginTop: '36px', color: 'rgba(255,255,255,0.3)', fontSize: '0.78rem' }}>
-              🛡️ All advisors are certified MahaRERA agents &nbsp;·&nbsp; RERA No. A051262603190
+            {/* Premium Trust Strip */}
+            <div style={{ marginTop: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '12px', padding: '14px 24px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.12)', borderRadius: '12px' }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span style={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500, textAlign: 'center' }}>
+                All advisors are <strong style={{ color: 'rgba(255,255,255,0.8)' }}>certified MahaRERA agents</strong>&nbsp;·&nbsp;RERA Reg. <strong style={{ color: '#D4AF37' }}>A051262603190</strong>&nbsp;·&nbsp;Pune West Exclusive Territory
+              </span>
             </div>
           </div>
         </section>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          ✦ 2. PORTFOLIO TRANSACTION DESK — Priority Callback & Seller Mandate
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* ── Seller / Landlord Advisory Desk — Full Width Premium Layout ── */}
       {!selectedPropertyDetail && !activeSubView && (
-        <section className="portfolio-transaction-section" style={{ maxWidth: isWideDesktop ? '1680px' : '1410px', margin: '40px auto 40px auto', padding: isMobile ? '0 16px' : '0 24px' }}>
-          <div className="section-header" style={{ marginBottom: '35px', textAlign: 'center' }}>
-            <h2 className="luxury-title" style={{ fontSize: '1.5rem', color: 'var(--gold-primary)' }}>⚜️ Private Client & Seller Advisory Desk</h2>
-            <p className="section-subtitle">Request instant advisory callbacks or register your property mandate directly with our West Pune locality directors</p>
-          </div>
-          <div className="transaction-desk-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '30px', alignItems: 'start' }}>
-            
-            {/* Priority Callback removed — now showing only Seller Mandate */}
+        <section style={{ padding: isMobile ? '48px 16px' : '64px 32px', background: 'linear-gradient(180deg, #070f1e 0%, #040814 100%)' }}>
+          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto' }}>
 
-            {/* Seller Exclusive Mandate Desk */}
-            <div id="seller-mandate-anchor" className="seller-mandate-premium" style={{ margin: 0, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '40px 30px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(7,15,30,0.95) 0%, rgba(15,28,46,0.9) 100%)', border: '1px solid rgba(197,168,128,0.25)', borderRadius: '16px' }}>
-              <div className="seller-mandate-header" style={{ marginBottom: '24px' }}>
-                <div className="seller-mandate-icon-ring" style={{ margin: '0 auto 16px auto', width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(197,168,128,0.08)', border: '1px solid rgba(197,168,128,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Building size={24} color="#E6C35C" />
-                </div>
-                <h3 className="seller-mandate-title" style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', color: '#fff', margin: '0 0 6px 0', letterSpacing: '0.04em' }}>Seller / Landlord Mandate</h3>
-                <p className="seller-mandate-subtitle" style={{ fontSize: '0.75rem', color: '#E6C35C', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>List Your Property • 0% Brokerage</p>
+            {/* Unified Section Header */}
+            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '16px' }}>
+                <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Seller Advisory</span>
               </div>
-              
-              <p className="seller-mandate-desc" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '32px' }}>
-                Direct access to premium verified buyers, institutional property funds, and HNWI investors in Baner, Wakad, and Hinjewadi. List with photos and video tour.
+              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
+                List Your Property with <span style={{ color: '#D4AF37' }}>Zero Brokerage</span>
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '520px', margin: '0 auto', lineHeight: 1.6 }}>
+                Register your mandate directly with Pune West's most trusted advisory team. Reach verified buyers, NRI investors, and institutional funds.
               </p>
+            </div>
 
-              <button 
-                onClick={() => onViewChange && onViewChange('list-property')}
-                style={{
-                  width: '100%',
-                  background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-                  border: 'none',
-                  color: '#040814',
-                  padding: '14px 28px',
-                  borderRadius: '12px',
-                  fontSize: '0.85rem',
-                  fontWeight: 800,
-                  fontFamily: "'Montserrat', sans-serif",
-                  letterSpacing: '0.06em',
-                  cursor: 'pointer',
-                  boxShadow: '0 6px 20px rgba(197,168,128,0.25)',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(197,168,128,0.35)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(197,168,128,0.25)'; }}
-              >
-                Start Listing Mandate →
-              </button>
-              <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '16px' }}>MahaRERA compliant · Takes less than 2 minutes</p>
+            {/* Full-Width Split Card */}
+            <div id="seller-mandate-anchor" style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+              gap: isMobile ? '24px' : '0',
+              background: 'linear-gradient(135deg, rgba(7,15,30,0.98) 0%, rgba(15,28,46,0.95) 100%)',
+              border: '1px solid rgba(212,175,55,0.22)',
+              borderRadius: '24px',
+              overflow: 'hidden',
+              boxShadow: '0 24px 60px rgba(0,0,0,0.5)'
+            }}>
+              {/* Left: Info Panel */}
+              <div style={{ padding: isMobile ? '32px 24px' : '48px 48px', borderRight: isMobile ? 'none' : '1px solid rgba(212,175,55,0.1)', borderBottom: isMobile ? '1px solid rgba(212,175,55,0.1)' : 'none', position: 'relative', overflow: 'hidden' }}>
+                {/* Background glow */}
+                <div style={{ position: 'absolute', top: '-40px', left: '-40px', width: '220px', height: '220px', background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
+                  <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, rgba(212,175,55,0.2), rgba(184,140,28,0.08))', border: '1px solid rgba(212,175,55,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Building size={22} color="#E6C35C" />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Seller & Landlord Desk</div>
+                    <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>MahaRERA Compliant Mandate</div>
+                  </div>
+                </div>
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.35rem' : '1.7rem', color: '#fff', margin: '0 0 14px', lineHeight: 1.25, letterSpacing: '-0.01em' }}>
+                  Your Property.<br/><span style={{ color: '#E6C35C' }}>Our Buyers.</span> Zero Brokerage.
+                </h3>
+                <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: '28px' }}>
+                  Direct access to 10,000+ verified buyer inquiries monthly, institutional property funds, NRI investors, and HNWI clients in Baner, Wakad & Hinjewadi.
+                </p>
+                {/* 3 Benefit Chips */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                  {[
+                    { icon: '✅', label: 'MahaRERA Verified' },
+                    { icon: '💸', label: '0% Brokerage' },
+                    { icon: '⚡', label: 'Live in 2 Minutes' },
+                  ].map((b, bi) => (
+                    <div key={bi} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(212,175,55,0.07)', border: '1px solid rgba(212,175,55,0.18)', borderRadius: '50px', padding: '6px 14px' }}>
+                      <span style={{ fontSize: '0.8rem' }}>{b.icon}</span>
+                      <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.04em' }}>{b.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right: CTA Panel */}
+              <div style={{ padding: isMobile ? '32px 24px' : '48px 48px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '8px' }}>
+                  {[
+                    { val: '10K+', label: 'Active Buyer Inquiries', color: '#E6C35C' },
+                    { val: '21+', label: 'Developer Partnerships', color: '#E6C35C' },
+                    { val: '4.9★', label: 'Google Rating', color: '#E6C35C' },
+                    { val: '<48h', label: 'Avg. Response Time', color: '#E6C35C' },
+                  ].map((s, si) => (
+                    <div key={si} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '14px', padding: '16px', textAlign: 'center' }}>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: "'Cinzel',serif", color: s.color, lineHeight: 1 }}>{s.val}</div>
+                      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)', marginTop: '4px', lineHeight: 1.3 }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => onViewChange && onViewChange('list-property')}
+                  style={{
+                    width: '100%', background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                    border: 'none', color: '#040814', padding: '16px 28px', borderRadius: '14px',
+                    fontSize: '0.9rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif",
+                    letterSpacing: '0.06em', cursor: 'pointer',
+                    boxShadow: '0 8px 24px rgba(197,168,128,0.3)', transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 14px 32px rgba(197,168,128,0.45)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(197,168,128,0.3)'; }}
+                >
+                  Start Free Listing →
+                </button>
+                <a
+                  href="https://wa.me/919673000053?text=Hi, I want to list my property with 24K Realtors Pune. Please guide me."
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.3)', borderRadius: '14px', padding: '14px', fontSize: '0.82rem', fontWeight: 700, color: '#25D366', textDecoration: 'none', transition: 'all 0.2s' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.18)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.1)'; }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                  Instant WhatsApp Advisory
+                </a>
+                <p style={{ textAlign: 'center', fontSize: '0.65rem', color: 'rgba(255,255,255,0.25)', margin: 0 }}>No spam · 100% confidential · MahaRERA compliant</p>
+              </div>
             </div>
           </div>
         </section>
       )}
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          ✦ 3. NETFLIX-STYLE CINEMATIC STATS COUNTER STRIP
-      ══════════════════════════════════════════════════════════════════════ */}
-      {!selectedPropertyDetail && !activeSubView && (
-        <div style={{
-          position: 'relative',
-          padding: isMobile ? '48px 16px' : '64px 32px',
-          overflow: 'hidden',
-          backgroundImage: `linear-gradient(180deg, rgba(4, 8, 20, 0.92) 0%, rgba(7, 15, 30, 0.82) 50%, rgba(4, 8, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2000&q=80')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          borderTop: '1px solid rgba(230, 195, 92, 0.35)',
-          borderBottom: '1px solid rgba(230, 195, 92, 0.35)',
-          boxShadow: 'inset 0 0 100px rgba(0, 0, 0, 0.95)'
-        }}>
-          {/* Ambient Gold & Netflix Red Lighting Overlay */}
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(229, 9, 20, 0.08) 0%, transparent 70%), radial-gradient(circle at 80% 20%, rgba(230, 195, 92, 0.15) 0%, transparent 60%)', pointerEvents: 'none' }} />
-
-          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1360px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-            
-            {/* Header Badge */}
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(229, 9, 20, 0.15)', border: '1px solid rgba(229, 9, 20, 0.4)', borderRadius: '50px', padding: '4px 16px', marginBottom: '8px' }}>
-                <span style={{ color: '#E50914', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase' }}>🎬 24K CINEMATIC TRACK RECORD</span>
-              </div>
-              <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.3rem' : '1.8rem', color: '#fff', margin: 0, fontWeight: 700 }}>
-                West Pune's #1 <span style={{ color: '#E6C35C' }}>Digital Real Estate Network</span>
-              </h3>
-            </div>
-
-            {/* Grid of 4 Cinematic Glass Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? '14px' : '24px' }}>
-              {[
-                { icon: '🏠', value: '800+', label: 'Listings For Sale', sub: 'MahaRERA Certified', badge: '🔥 HOT INVENTORY' },
-                { icon: '🤝', value: '150+', label: 'Happy Families', sub: 'Homes Delivered', badge: '⭐ 100% TRUST' },
-                { icon: '🏢', value: '21+', label: 'Premium Developers', sub: 'Exclusive Mandates', badge: '👑 FLAGSHIP DIRECT' },
-                { icon: '⭐', value: '4.9★', label: 'Google Rating', sub: '127+ Verified Reviews', badge: '🏆 TOP RATED' },
-              ].map((stat, i) => (
-                <div
-                  key={i}
-                  style={{
-                    background: 'rgba(7, 15, 30, 0.65)',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(230, 195, 92, 0.28)',
-                    borderRadius: '24px',
-                    padding: isMobile ? '22px 14px' : '32px 24px',
-                    textAlign: 'center',
-                    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
-                    transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)'
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-                    e.currentTarget.style.borderColor = '#E6C35C';
-                    e.currentTarget.style.boxShadow = '0 24px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(230, 195, 92, 0.3)';
-                    e.currentTarget.style.background = 'rgba(12, 24, 48, 0.85)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.28)';
-                    e.currentTarget.style.boxShadow = '0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.background = 'rgba(7, 15, 30, 0.65)';
-                  }}
-                >
-                  {/* Top Netflix Badge */}
-                  <div style={{ display: 'inline-block', background: 'rgba(230, 195, 92, 0.15)', border: '1px solid rgba(230, 195, 92, 0.35)', borderRadius: '50px', padding: '3px 12px', fontSize: '0.58rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.08em', marginBottom: '14px' }}>
-                    {stat.badge}
-                  </div>
-
-                  {/* Glowing Icon Orb */}
-                  <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(230, 195, 92, 0.3) 0%, rgba(230, 195, 92, 0.05) 70%)', border: '1px solid rgba(230, 195, 92, 0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', fontSize: '1.5rem', boxShadow: '0 4px 15px rgba(230, 195, 92, 0.2)' }}>
-                    {stat.icon}
-                  </div>
-
-                  {/* 3D Metallic Gold Value */}
-                  <div style={{
-                    fontSize: isMobile ? '2.2rem' : '3.2rem',
-                    fontWeight: 900,
-                    fontFamily: "'Cinzel', serif",
-                    background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    lineHeight: 1.05,
-                    letterSpacing: '-0.03em',
-                    filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))'
-                  }}>
-                    {stat.value}
-                  </div>
-
-                  {/* Label & Subtext */}
-                  <div style={{ fontSize: isMobile ? '0.8rem' : '0.94rem', fontWeight: 700, color: '#ffffff', marginTop: '8px', fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.02em' }}>
-                    {stat.label}
-                  </div>
-                  <div style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.55)', marginTop: '3px', fontWeight: 500 }}>
-                    {stat.sub}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-
 
 
       {/* Floating Bottom Compare Action Bar */}

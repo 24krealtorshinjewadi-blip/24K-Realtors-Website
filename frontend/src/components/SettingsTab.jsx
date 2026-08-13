@@ -12,6 +12,7 @@ import {
   UserPlus, Edit2, X, Plus, ToggleLeft, ToggleRight, Lock, Wifi,
   Smartphone, FileText, ChevronRight, Copy, Info
 } from 'lucide-react';
+import CompanyLogo from '../components/CompanyLogo';
 
 const GOLD = '#D4AF37';
 const INPUT_STYLE = {
@@ -742,16 +743,7 @@ export default function SettingsTab() {
                 </FieldRow>
               </GridRow>
               <FieldRow label="COMPANY LOGO (CURRENT)">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '14px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  <div style={{ width: '60px', height: '44px', background: 'linear-gradient(135deg, #D4AF37, #B8860B)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, color: '#070D18', fontSize: '0.72rem', letterSpacing: '0.05em' }}>24K</div>
-                  <div>
-                    <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#FFF' }}>24K-Realtors-Logo.png</div>
-                    <div style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.4)' }}>Recommended: 200×80px, PNG with transparent background</div>
-                  </div>
-                  <button style={{ marginLeft: 'auto', padding: '7px 14px', borderRadius: '8px', background: 'rgba(212,175,55,0.1)', border: `1px solid ${GOLD}30`, color: GOLD, fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Upload size={13} /> Replace Logo
-                  </button>
-                </div>
+                <CompanyLogo variant="icon" width={60} height={44} />
               </FieldRow>
               <FieldRow label="FAVICON (.ico or .png 32×32)">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '14px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.07)' }}>
