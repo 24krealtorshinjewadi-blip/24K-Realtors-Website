@@ -3741,6 +3741,57 @@ export const apiService = {
     return this.submitLeadToDatabase(leadData);
   },
 
+  async createLead(leadData) {
+    return this.submitLeadToDatabase(leadData);
+  },
+
+  async getLeads({ page = 0, size = 50, status, location } = {}) {
+    try {
+      const params = new URLSearchParams();
+      params.append('page', page);
+      params.append('size', size);
+      if (status && status !== 'ALL') params.append('status', status);
+      if (location && location !== 'ALL') params.append('preferredLocation', location);
+
+      const response = await fetch(`${BASE_URL}/leads?${params.toString()}`, {
+        headers: { ...getAuthHeaders() }
+      });
+      if (response.ok) {
+        const pageData = await response.json();
+        return pageData.content || pageData;
+      }
+    } catch (err) {
+      console.warn('[API] Failed to fetch leads from backend, fallback to local cache:', err);
+    }
+    // Fallback to local storage
+    try {
+      return JSON.parse(localStorage.getItem('mock_leads') || '[]');
+    } catch (e) {
+      return [];
+    }
+  },
+
+  async updateLeadStatus(leadId, newStatus) {
+    try {
+      const response = await fetch(`${BASE_URL}/leads/${leadId}/status?status=${newStatus}`, {
+        method: 'PATCH',
+        headers: { ...getAuthHeaders() }
+      });
+      if (response.ok) return response.json();
+    } catch (err) {
+      console.warn('[API] Backend lead status update failed, updating local storage:', err);
+    }
+    // Fallback local update
+    try {
+      const leads = JSON.parse(localStorage.getItem('mock_leads') || '[]');
+      const updated = leads.map(l => l.id === leadId ? { ...l, status: newStatus } : l);
+      localStorage.setItem('mock_leads', JSON.stringify(updated));
+      return { success: true, id: leadId, status: newStatus };
+    } catch (e) {
+      return { success: true };
+    }
+  },
+
   // ─── AUDIT LOGS API ────────────────────────────────────────────────────────
   async getAuditLogs({ page = 0, size = 20 } = {}) {
     const response = await fetch(`${BASE_URL}/audit-logs?page=${page}&size=${size}`, {

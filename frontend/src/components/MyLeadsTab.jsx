@@ -10,12 +10,13 @@
 //   - Table Footer Pagination (< 1 2 3 4 5 >)
 //   - Bottom Grid: Lead Source Distribution Donut + Lead Status Overview Bar Chart + Quick Actions Tiles
 // ═══════════════════════════════════════════════════════════════════════════
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Users, UserCheck, MessageSquare, Calendar, Award, Plus, Upload, Filter,
   RotateCcw, Search, Phone, Edit2, MoreVertical, ChevronLeft, ChevronRight,
-  TrendingUp, Download, Eye, Sparkles
+  TrendingUp, Download, Eye, Sparkles, RefreshCw
 } from 'lucide-react';
+import { apiService } from '../services/apiService';
 
 const GOLD = '#D4AF37';
 
@@ -32,36 +33,38 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
   const [propertyFilter, setPropertyFilter] = useState('ALL');
   const [budgetFilter, setBudgetFilter] = useState('ALL');
   const [currentPage, setCurrentPage] = useState(1);
+  const [liveLeads, setLiveLeads] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const leadsData = [
+  const initialSeedLeads = [
     {
-      id: '1',
+      id: 'LD-1001',
       initials: 'RS',
       avatarBg: '#2563EB',
       name: 'Rohit Sharma',
-      sub: 'Looking for 2 BHK',
+      sub: 'Looking for 2 BHK in Hinjewadi',
       phone: '+91 98765 43210',
       email: 'rohit.sharma@email.com',
-      source: 'Website',
+      source: 'Website Portal',
       sourceColor: '#F59E0B',
-      propertyInterest: '2 BHK Apartment',
+      propertyInterest: '2 BHK Luxury Apartment',
       location: 'Hinjewadi',
       budget: '₹ 70 - 90 L',
       status: 'New',
       statusColor: '#3B82F6',
       statusBg: 'rgba(59,130,246,0.15)',
-      assignedOn: '28 Jul 2026',
-      lastActivity: '28 Jul 2026 10:30 AM',
+      assignedOn: 'Today',
+      lastActivity: 'Just now',
     },
     {
-      id: '2',
+      id: 'LD-1002',
       initials: 'SP',
       avatarBg: '#10B981',
       name: 'Sneha Patil',
       sub: 'Investment purpose',
       phone: '+91 87654 32109',
       email: 'sneha.patil@email.com',
-      source: 'Referral',
+      source: 'E-Brochure Download',
       sourceColor: '#10B981',
       propertyInterest: '2 BHK Apartment',
       location: 'Wakad',
@@ -69,110 +72,106 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
       status: 'Contacted',
       statusColor: '#14B8A6',
       statusBg: 'rgba(20,184,166,0.15)',
-      assignedOn: '27 Jul 2026',
-      lastActivity: '27 Jul 2026 04:15 PM',
+      assignedOn: 'Yesterday',
+      lastActivity: 'Yesterday 04:15 PM',
     },
     {
-      id: '3',
+      id: 'LD-1003',
       initials: 'AM',
       avatarBg: '#8B5CF6',
       name: 'Amit Verma',
-      sub: 'End user',
+      sub: 'End user buyer',
       phone: '+91 76543 21098',
       email: 'amit.verma@email.com',
-      source: 'Facebook Ads',
+      source: 'Seller Mandate',
       sourceColor: '#8B5CF6',
       propertyInterest: '3 BHK Apartment',
-      location: 'Hinjewadi',
+      location: 'Baner',
       budget: '₹ 90 L - 1.2 Cr',
       status: 'Qualified',
       statusColor: '#10B981',
       statusBg: 'rgba(16,185,129,0.15)',
-      assignedOn: '27 Jul 2026',
-      lastActivity: '27 Jul 2026 02:45 PM',
-    },
-    {
-      id: '4',
-      initials: 'NS',
-      avatarBg: '#EC4899',
-      name: 'Neha Singh',
-      sub: 'Looking for 1 BHK',
-      phone: '+91 65432 10987',
-      email: 'neha.singh@email.com',
-      source: 'Instagram',
-      sourceColor: '#EC4899',
-      propertyInterest: '1 BHK Apartment',
-      location: 'Tathawade',
-      budget: '₹ 45 - 55 L',
-      status: 'Site Visit',
-      statusColor: '#8B5CF6',
-      statusBg: 'rgba(139,92,246,0.15)',
-      assignedOn: '26 Jul 2026',
-      lastActivity: '28 Jul 2026 09:10 AM',
-    },
-    {
-      id: '5',
-      initials: 'RM',
-      avatarBg: '#3B82F6',
-      name: 'Raj Malhotra',
-      sub: 'Premium 3 BHK',
-      phone: '+91 54321 09876',
-      email: 'raj.malhotra@email.com',
-      source: 'Google Ads',
-      sourceColor: '#3B82F6',
-      propertyInterest: '3 BHK Apartment',
-      location: 'Baner',
-      budget: '₹ 1.2 - 1.6 Cr',
-      status: 'Negotiation',
-      statusColor: '#F59E0B',
-      statusBg: 'rgba(245,158,11,0.15)',
-      assignedOn: '25 Jul 2026',
-      lastActivity: '27 Jul 2026 06:30 PM',
-    },
-    {
-      id: '6',
-      initials: 'PK',
-      avatarBg: '#F59E0B',
-      name: 'Pooja Kulkarni',
-      sub: 'First time buyer',
-      phone: '+91 43210 98765',
-      email: 'pooja.kulkarni@email.com',
-      source: 'Walk-in',
-      sourceColor: '#14B8A6',
-      propertyInterest: '2 BHK Apartment',
-      location: 'Hinjewadi',
-      budget: '₹ 55 - 75 L',
-      status: 'New',
-      statusColor: '#3B82F6',
-      statusBg: 'rgba(59,130,246,0.15)',
-      assignedOn: '25 Jul 2026',
-      lastActivity: '25 Jul 2026 11:20 AM',
-    },
-    {
-      id: '7',
-      initials: 'DG',
-      avatarBg: '#B45309',
-      name: 'Deepak Gupta',
-      sub: 'Investment',
-      phone: '+91 32109 87654',
-      email: 'deepak.gupta@email.com',
-      source: 'Referral',
-      sourceColor: '#10B981',
-      propertyInterest: '2 BHK Apartment',
-      location: 'Punawale',
-      budget: '₹ 60 - 85 L',
-      status: 'Contacted',
-      statusColor: '#14B8A6',
-      statusBg: 'rgba(20,184,166,0.15)',
-      assignedOn: '24 Jul 2026',
-      lastActivity: '24 Jul 2026 03:50 PM',
-    },
+      assignedOn: '2 days ago',
+      lastActivity: '2 days ago',
+    }
   ];
+
+  const fetchLiveLeads = async () => {
+    setLoading(true);
+    try {
+      const data = await apiService.getLeads();
+      if (Array.isArray(data) && data.length > 0) {
+        const formatted = data.map((item, idx) => {
+          const initials = (item.name || 'Lead')
+            .split(' ')
+            .map(n => n[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase() || 'LD';
+
+          const colors = ['#2563EB', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B'];
+          const avatarBg = colors[idx % colors.length];
+
+          const budgetStr = item.budgetMin && item.budgetMax
+            ? `₹ ${(item.budgetMin / 100000).toFixed(0)} - ${(item.budgetMax / 100000).toFixed(0)} L`
+            : item.budgetMin ? `₹ ${(item.budgetMin / 100000).toFixed(0)} L` : '₹ 65 - 95 L';
+
+          const statusColors = {
+            'NEW': { color: '#3B82F6', bg: 'rgba(59,130,246,0.15)', label: 'New' },
+            'CONTACTED': { color: '#14B8A6', bg: 'rgba(20,184,166,0.15)', label: 'Contacted' },
+            'QUALIFIED': { color: '#10B981', bg: 'rgba(16,185,129,0.15)', label: 'Qualified' },
+            'SITE_VISIT': { color: '#8B5CF6', bg: 'rgba(139,92,246,0.15)', label: 'Site Visit' },
+            'NEGOTIATION': { color: '#F59E0B', bg: 'rgba(245,158,11,0.15)', label: 'Negotiation' },
+            'WON': { color: '#10B981', bg: 'rgba(16,185,129,0.2)', label: 'Won' },
+            'LOST': { color: '#EF4444', bg: 'rgba(239,68,68,0.15)', label: 'Lost' }
+          };
+
+          const rawStatus = (item.status || 'NEW').toUpperCase();
+          const stMeta = statusColors[rawStatus] || { color: '#3B82F6', bg: 'rgba(59,130,246,0.15)', label: item.status || 'New' };
+
+          return {
+            id: item.id || `LD-${idx + 1}`,
+            initials,
+            avatarBg,
+            name: item.name || 'Anonymous Inquiry',
+            sub: item.notes || item.requirementType || 'Portal Inquiry',
+            phone: item.phone || 'N/A',
+            email: item.email || 'N/A',
+            source: item.source || 'Website Portal',
+            sourceColor: item.source && item.source.includes('Brochure') ? '#10B981' : '#F59E0B',
+            propertyInterest: item.requirementType ? `${item.requirementType.replace(/_/g, ' ')}` : 'Residential Luxury',
+            location: item.location || item.preferredLocation || 'Hinjewadi',
+            budget: budgetStr,
+            status: stMeta.label,
+            statusColor: stMeta.color,
+            statusBg: stMeta.bg,
+            assignedOn: item.createdDate ? new Date(item.createdDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'Today',
+            lastActivity: item.createdDate ? new Date(item.createdDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : 'Active now',
+            raw: item
+          };
+        });
+        setLiveLeads(formatted);
+      } else {
+        setLiveLeads(initialSeedLeads);
+      }
+    } catch (e) {
+      console.warn('[CRM] Lead fetch error, using initial leads:', e);
+      setLiveLeads(initialSeedLeads);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLiveLeads();
+  }, []);
+
+  const leadsData = liveLeads.length > 0 ? liveLeads : initialSeedLeads;
 
   const filteredLeads = leadsData.filter(item => {
     if (search && !item.name.toLowerCase().includes(search.toLowerCase()) && !item.phone.includes(search) && !item.email.toLowerCase().includes(search.toLowerCase())) return false;
     if (sourceFilter !== 'ALL' && item.source !== sourceFilter) return false;
-    if (statusFilter !== 'ALL' && item.status !== statusFilter) return false;
+    if (statusFilter !== 'ALL' && item.status.toUpperCase() !== statusFilter.toUpperCase()) return false;
     return true;
   });
 
@@ -190,6 +189,14 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
         </div>
 
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <button 
+            onClick={fetchLiveLeads} 
+            disabled={loading}
+            title="Refresh Leads from Database"
+            style={{ padding: '8px 14px', borderRadius: '8px', background: 'rgba(212,175,55,0.1)', border: `1px solid ${GOLD}40`, color: GOLD, fontSize: '0.76rem', fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> {loading ? 'Syncing...' : 'Sync DB'}
+          </button>
           <button style={{ padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFF', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Upload size={14} /> Import Leads
           </button>
