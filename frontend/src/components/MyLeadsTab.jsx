@@ -33,10 +33,51 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
   const [propertyFilter, setPropertyFilter] = useState('ALL');
   const [budgetFilter, setBudgetFilter] = useState('ALL');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isWebhookModalOpen, setIsWebhookModalOpen] = useState(false);
+  const [webhookUrlInput, setWebhookUrlInput] = useState(localStorage.getItem('google_sheet_webhook_url') || '');
+  const [testingWebhook, setTestingWebhook] = useState(false);
   const [importCsvText, setImportCsvText] = useState('');
   const [importing, setImporting] = useState(false);
 
   const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1Reu4yjYVHLY0DRgDN52dz9OP55wgGEWGDdPH_zvuQLM/edit?usp=sharing';
+
+  const handleSaveWebhook = () => {
+    if (webhookUrlInput.trim()) {
+      localStorage.setItem('google_sheet_webhook_url', webhookUrlInput.trim());
+      alert('✅ Google Sheets Webhook URL saved successfully!');
+    } else {
+      localStorage.removeItem('google_sheet_webhook_url');
+      alert('Webhook URL removed. Inquiries will save to Database & local cache.');
+    }
+  };
+
+  const handleTestWebhook = async () => {
+    setTestingWebhook(true);
+    try {
+      const sample = {
+        name: 'Test Customer (24K CRM)',
+        phone: '+91 96730 00053',
+        email: 'test@24krealtors.com',
+        requirementType: 'BUY_RESIDENTIAL',
+        preferredLocation: 'Hinjewadi Phase 1',
+        budgetMin: 8500000,
+        budgetMax: 12000000,
+        notes: 'Verification test from 24K Realtors CRM',
+        source: 'CRM Webhook Test'
+      };
+      
+      const res = await apiService.syncLeadToGoogleSheet(sample);
+      if (res.synced) {
+        alert('🎉 SUCCESS! Test lead sent to your Google Sheet. Please check your Google Spreadsheet tab now!');
+      } else {
+        alert('ℹ️ Webhook URL is set and saved. Check Google Sheet for incoming rows.');
+      }
+    } catch (e) {
+      alert('Error testing webhook: ' + e.message);
+    } finally {
+      setTestingWebhook(false);
+    }
+  };
 
   const handleExportCsv = () => {
     const listToExport = filteredLeads.length > 0 ? filteredLeads : leadsData;
@@ -254,6 +295,15 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
           >
             <Sparkles size={13} /> Master Google Sheet ↗
           </a>
+
+          {/* Webhook Settings Modal */}
+          <button
+            onClick={() => setIsWebhookModalOpen(true)}
+            title="Configure real-time Google Sheets Webhook URL"
+            style={{ padding: '8px 12px', borderRadius: '8px', background: 'rgba(212,175,55,0.08)', border: `1px solid ${GOLD}30`, color: GOLD, fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
+          >
+            <Settings size={13} /> Webhook URL
+          </button>
 
           {/* Export to Excel / CSV */}
           <button
@@ -661,6 +711,122 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
               >
                 {importing ? 'Importing Leads...' : 'Import to Database'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── GOOGLE SHEETS WEBHOOK SETTINGS MODAL ── */}
+      {isWebhookModalOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 99999,
+          background: 'rgba(3, 7, 18, 0.88)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px'
+        }}>
+          <div style={{
+            width: '640px',
+            maxWidth: '100%',
+            background: '#070F1E',
+            border: `1px solid rgba(212,175,55,0.35)`,
+            borderRadius: '16px',
+            boxShadow: '0 25px 80px rgba(0,0,0,0.9), 0 0 40px rgba(212,175,55,0.1)',
+            padding: '24px',
+            color: '#FFF'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Settings size={20} color={GOLD} />
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Google Sheets Auto-Sync Settings</h3>
+              </div>
+              <button onClick={() => setIsWebhookModalOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
+            </div>
+
+            <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.65)', marginBottom: '16px', lineHeight: 1.5 }}>
+              Paste your Google Apps Script Web App URL below to automatically append every website inquiry to your Google Spreadsheet in real-time.
+            </p>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', marginBottom: '6px', fontWeight: 700 }}>
+                GOOGLE APPS SCRIPT WEB APP URL
+              </label>
+              <input
+                type="text"
+                placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+                value={webhookUrlInput}
+                onChange={(e) => setWebhookUrlInput(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  color: '#FFF',
+                  fontSize: '0.78rem',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+
+            <div style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '10px', padding: '12px 14px', marginBottom: '18px', fontSize: '0.73rem', color: '#6EE7B7', lineHeight: 1.5 }}>
+              <strong>💡 1-Minute Setup Guide:</strong><br/>
+              1. Open your <a href={GOOGLE_SHEET_URL} target="_blank" rel="noreferrer" style={{ color: '#FFF', textDecoration: 'underline' }}>Master Google Sheet</a> &gt; Click <strong>Extensions &gt; Apps Script</strong>.<br/>
+              2. Paste the code from <code>google-apps-script/Code.gs</code> and click <strong>Save</strong>.<br/>
+              3. Click <strong>Deploy &gt; New deployment</strong> &gt; Type: <strong>Web app</strong> &gt; Access: <strong>Anyone</strong>.<br/>
+              4. Copy the Web app URL and paste it in the box above!
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={handleTestWebhook}
+                disabled={testingWebhook}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  background: 'rgba(16,185,129,0.15)',
+                  border: '1px solid rgba(16,185,129,0.3)',
+                  color: '#10B981',
+                  fontSize: '0.76rem',
+                  fontWeight: 700,
+                  cursor: testingWebhook ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Sparkles size={13} /> {testingWebhook ? 'Sending Test...' : 'Send Test Lead to Sheet'}
+              </button>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  onClick={() => setIsWebhookModalOpen(false)}
+                  style={{ padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFF', fontSize: '0.76rem', cursor: 'pointer' }}
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => { handleSaveWebhook(); setIsWebhookModalOpen(false); }}
+                  style={{
+                    padding: '8px 20px',
+                    borderRadius: '8px',
+                    background: `linear-gradient(135deg, ${GOLD}, #B8860B)`,
+                    border: 'none',
+                    color: '#070D18',
+                    fontSize: '0.76rem',
+                    fontWeight: 800,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Save URL
+                </button>
+              </div>
             </div>
           </div>
         </div>

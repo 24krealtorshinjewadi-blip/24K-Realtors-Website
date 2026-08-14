@@ -4,23 +4,37 @@
  * Spreadsheet: https://docs.google.com/spreadsheets/d/1Reu4yjYVHLY0DRgDN52dz9OP55wgGEWGDdPH_zvuQLM/edit
  * ═══════════════════════════════════════════════════════════════════════════
  * 
- * HOW TO SETUP (1-MINUTE GUIDE):
- * 1. Open your Google Sheet: https://docs.google.com/spreadsheets/d/1Reu4yjYVHLY0DRgDN52dz9OP55wgGEWGDdPH_zvuQLM/edit
- * 2. Click on "Extensions" > "Apps Script".
- * 3. Delete any code in the editor and paste THIS ENTIRE FILE.
- * 4. Click "Save" (💾).
- * 5. Click "Deploy" > "New deployment".
- * 6. Select type: "Web app".
- * 7. Configuration:
- *    - Description: "24K Realtors Lead Webhook"
- *    - Execute as: "Me" (your Google account)
- *    - Who has access: "Anyone"
- * 8. Click "Deploy" and Copy the "Web app URL" (starts with https://script.google.com/macros/s/...).
- * 9. In your CRM or Vercel Environment Variables:
- *    Add VITE_GOOGLE_SHEET_WEBHOOK_URL = <Your Web app URL>
+ * 🛠️ HOW TO SETUP (FOLLOW THESE 4 STEPS):
+ * 
+ * 1. Open your Google Sheet: 
+ *    👉 https://docs.google.com/spreadsheets/d/1Reu4yjYVHLY0DRgDN52dz9OP55wgGEWGDdPH_zvuQLM/edit
+ * 
+ * 2. Click on top menu: "Extensions" (या "विस्तार") > "Apps Script".
+ * 
+ * 3. Delete any default code (like myFunction) and paste THIS ENTIRE FILE.
+ *    Click "Save" (💾 icon).
+ * 
+ * 4. TO TEST DIRECTLY:
+ *    - Select "testAddSampleLead" in the function dropdown at top.
+ *    - Click "Run" (▶️ icon).
+ *    - Click "Review Permissions" > Select your Google account.
+ *    - Click "Advanced" (down below) > Click "Go to Untitled project (unsafe)".
+ *    - Click "Allow".
+ *    - Now check your Google Sheet — you will see headers and a sample lead!
+ * 
+ * 5. TO MAKE IT RECEIVE WEBSITE LEADS AUTOMATICALLY:
+ *    - Click "Deploy" (blue button at top right) > "New deployment".
+ *    - Click the Gear icon ⚙️ next to "Select type" > choose "Web app".
+ *    - Description: 24K Realtors Leads
+ *    - Execute as: "Me (your email)"
+ *    - Who has access: "Anyone" (VERY IMPORTANT: must be Anyone)
+ *    - Click "Deploy".
+ *    - Copy the "Web app URL" (starts with https://script.google.com/macros/s/...).
+ *    - Open your CRM Portal > click "⚙️ Webhook URL" > Paste the URL > Done!
  * ═══════════════════════════════════════════════════════════════════════════
  */
 
+// Function to initialize column headers
 function setupHeaders() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   if (sheet.getLastRow() === 0) {
@@ -52,15 +66,41 @@ function setupHeaders() {
   }
 }
 
+// 🧪 1-Click Test Function to verify your sheet works
+function testAddSampleLead() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  setupHeaders();
+  
+  var now = Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyy-MM-dd HH:mm:ss");
+  var sampleLeadId = "LD-" + Utilities.formatDate(new Date(), "Asia/Kolkata", "yyMMddHHmmss");
+  
+  sheet.appendRow([
+    now,
+    sampleLeadId,
+    "Rajesh Kumar (Test)",
+    "+91 98765 43210",
+    "rajesh.test@24krealtors.com",
+    "BUY_RESIDENTIAL",
+    "Hinjewadi Phase 1",
+    "₹ 75 - 95 L",
+    "NEW",
+    "Website Verification Test",
+    "Looking for 2 BHK luxury flat near IT Park"
+  ]);
+  
+  Logger.log("✅ Sample lead successfully added to Google Sheet! Check your spreadsheet tab.");
+}
+
+// Webhook endpoint to catch real leads from website
 function doPost(e) {
   try {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     setupHeaders();
     
     var data = {};
-    if (e.postData && e.postData.contents) {
+    if (e && e.postData && e.postData.contents) {
       data = JSON.parse(e.postData.contents);
-    } else if (e.parameter) {
+    } else if (e && e.parameter) {
       data = e.parameter;
     }
     
@@ -112,6 +152,7 @@ function doPost(e) {
   }
 }
 
+// Health check endpoint
 function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({
     status: "active",
