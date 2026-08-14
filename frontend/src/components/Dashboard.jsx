@@ -406,18 +406,7 @@ export default function Dashboard({ onViewChange }) {
   // Export CSV Handler
   const handleExportLeadsCSV = () => {
     const listToExport = (leads && leads.length > 0) ? leads : initialNormalizedLeads;
-    const headers = ['ID', 'Name', 'Phone', 'Email', 'Status', 'Assigned RM', 'Location', 'Budget', 'Type'];
-    const rows = listToExport.map(l => [
-      l.id, `"${l.name}"`, `"${l.phone}"`, `"${l.email}"`, l.status, `"${l.assignedAgentName}"`, `"${l.preferredLocation}"`, `"${l.budgetDisplay}"`, l.leadType
-    ]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `24k_leads_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    apiService.exportLeadsToCsv(listToExport);
   };
 
   // Delete Lead Handler

@@ -3724,6 +3724,9 @@ export const apiService = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+      // 4. Asynchronously push to Google Spreadsheet Webhook if configured
+      this.syncLeadToGoogleSheet(payload).catch(() => {});
+
       if (!response.ok) {
         console.warn('[Backend API] Leads endpoint returned non-200 status:', response.status);
         return { success: true, offline: true, payload };
@@ -3733,8 +3736,94 @@ export const apiService = {
       return { success: true, data };
     } catch (error) {
       console.warn('[Backend API] Network error posting lead to DB, cached in offline CRM:', error);
+      // Still trigger Google Sheet sync
+      this.syncLeadToGoogleSheet(payload).catch(() => {});
       return { success: true, offline: true, payload };
     }
+  },
+
+  // ─── GOOGLE SHEETS LIVE SYNC & CSV EXPORT ──────────────────────────────────
+  async syncLeadToGoogleSheet(leadPayload) {
+    const webhookUrl = localStorage.getItem('google_sheet_webhook_url') || 
+      (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK_URL : null);
+    
+    if (!webhookUrl) {
+      // Auto-fallback: Store in google_sheet_pending_queue so nothing is missed
+      try {
+        const queue = JSON.parse(localStorage.getItem('google_sheet_pending_queue') || '[]');
+        queue.push({ ...leadPayload, queuedAt: new Date().toISOString() });
+        localStorage.setItem('google_sheet_pending_queue', JSON.stringify(queue.slice(-200)));
+      } catch (e) {}
+      return { success: true, queued: true };
+    }
+
+    try {
+      await fetch(webhookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(leadPayload)
+      });
+      return { success: true, synced: true };
+    } catch (e) {
+      console.warn('[Google Sheets Sync] Webhook push failed:', e);
+      return { success: false, error: e.message };
+    }
+  },
+
+  exportLeadsToCsv(leads = []) {
+    if (!leads || leads.length === 0) return false;
+
+    const headers = [
+      'Lead ID',
+      'Date & Time',
+      'Customer Name',
+      'Phone Number',
+      'Email Address',
+      'Requirement Type',
+      'Location / Corridor',
+      'Budget Range',
+      'Status',
+      'Assigned RM',
+      'Lead Source',
+      'Inquiry Notes & Preferences'
+    ];
+
+    const escapeCsv = (str) => {
+      if (str === null || str === undefined) return '""';
+      const clean = String(str).replace(/"/g, '""').replace(/\n/g, ' ');
+      return `"${clean}"`;
+    };
+
+    const rows = leads.map(l => {
+      const budgetStr = l.budget || (l.budgetMin && l.budgetMax ? `₹${(l.budgetMin/100000).toFixed(0)}L - ${(l.budgetMax/100000).toFixed(0)}L` : 'Flexible');
+      const dateStr = l.assignedOn || l.createdDate || new Date().toLocaleDateString('en-IN');
+      return [
+        escapeCsv(l.id || 'N/A'),
+        escapeCsv(dateStr),
+        escapeCsv(l.name || 'Anonymous'),
+        escapeCsv(l.phone || 'N/A'),
+        escapeCsv(l.email || 'N/A'),
+        escapeCsv(l.propertyInterest || l.requirementType || 'Residential'),
+        escapeCsv(l.location || l.preferredLocation || 'Hinjewadi'),
+        escapeCsv(budgetStr),
+        escapeCsv(l.status || 'NEW'),
+        escapeCsv(l.assignedAgentName || 'Jyoti Dhale'),
+        escapeCsv(l.source || 'Website Portal'),
+        escapeCsv(l.sub || l.notes || '')
+      ].join(',');
+    });
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `24K_Realtors_Master_Leads_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    return true;
   },
 
   async submitLead(leadData) {

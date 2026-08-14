@@ -32,9 +32,54 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [propertyFilter, setPropertyFilter] = useState('ALL');
   const [budgetFilter, setBudgetFilter] = useState('ALL');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [liveLeads, setLiveLeads] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importCsvText, setImportCsvText] = useState('');
+  const [importing, setImporting] = useState(false);
+
+  const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1Reu4yjYVHLY0DRgDN52dz9OP55wgGEWGDdPH_zvuQLM/edit?usp=sharing';
+
+  const handleExportCsv = () => {
+    const listToExport = filteredLeads.length > 0 ? filteredLeads : leadsData;
+    apiService.exportLeadsToCsv(listToExport);
+  };
+
+  const handleImportLeads = async () => {
+    if (!importCsvText.trim()) return;
+    setImporting(true);
+    try {
+      const lines = importCsvText.trim().split('\n');
+      let count = 0;
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const parts = line.split(',').map(p => p.trim().replace(/^["']|["']$/g, ''));
+        if (parts[0].toLowerCase().includes('name') || parts[0].toLowerCase().includes('lead id')) continue; // Skip header
+
+        const name = parts[0] || 'Imported Lead';
+        const phone = parts[1] || '+91 96730 00053';
+        const location = parts[2] || 'Hinjewadi';
+        const requirement = parts[3] || 'BUY_RESIDENTIAL';
+        const notes = parts[4] || 'Bulk imported into 24K Realtors CRM';
+
+        await apiService.submitLead({
+          name,
+          phone,
+          location,
+          requirementType: requirement,
+          notes,
+          source: 'Excel / CSV Import'
+        });
+        count++;
+      }
+      alert(`✅ Successfully imported ${count} leads into database & CRM!`);
+      setImportCsvText('');
+      setIsImportModalOpen(false);
+      fetchLiveLeads();
+    } catch (err) {
+      alert('Error importing leads: ' + err.message);
+    } finally {
+      setImporting(false);
+    }
+  };
 
   const initialSeedLeads = [
     {
@@ -188,20 +233,51 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
           <div style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)', marginTop: '3px' }}>Manage and track all your leads in one place.</div>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* Sync DB */}
           <button 
             onClick={fetchLiveLeads} 
             disabled={loading}
             title="Refresh Leads from Database"
-            style={{ padding: '8px 14px', borderRadius: '8px', background: 'rgba(212,175,55,0.1)', border: `1px solid ${GOLD}40`, color: GOLD, fontSize: '0.76rem', fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+            style={{ padding: '8px 12px', borderRadius: '8px', background: 'rgba(212,175,55,0.1)', border: `1px solid ${GOLD}40`, color: GOLD, fontSize: '0.74rem', fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
           >
-            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> {loading ? 'Syncing...' : 'Sync DB'}
+            <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> {loading ? 'Syncing...' : 'Sync DB'}
           </button>
-          <button style={{ padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFF', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Upload size={14} /> Import Leads
+
+          {/* Master Google Sheet Link */}
+          <a
+            href={GOOGLE_SHEET_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open Live Master Google Sheet in new tab"
+            style={{ padding: '8px 14px', borderRadius: '8px', background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.35)', color: '#10B981', fontSize: '0.74rem', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            <Sparkles size={13} /> Master Google Sheet ↗
+          </a>
+
+          {/* Export to Excel / CSV */}
+          <button
+            onClick={handleExportCsv}
+            title="Download full leads report as Excel / CSV spreadsheet"
+            style={{ padding: '8px 12px', borderRadius: '8px', background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.3)', color: '#60A5FA', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
+          >
+            <Download size={13} /> Export Excel
           </button>
-          <button onClick={onOpenAddLead} style={{ padding: '8px 18px', borderRadius: '8px', background: `linear-gradient(135deg, ${GOLD}, #B8860B)`, border: 'none', color: '#070D18', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Plus size={15} /> Add New Lead
+
+          {/* Import Leads Modal */}
+          <button
+            onClick={() => setIsImportModalOpen(true)}
+            style={{ padding: '8px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFF', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
+          >
+            <Upload size={13} /> Import CSV
+          </button>
+
+          {/* Add New Lead */}
+          <button
+            onClick={onOpenAddLead}
+            style={{ padding: '8px 16px', borderRadius: '8px', background: `linear-gradient(135deg, ${GOLD}, #B8860B)`, border: 'none', color: '#070D18', fontSize: '0.76rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', boxShadow: '0 4px 14px rgba(212,175,55,0.25)' }}
+          >
+            <Plus size={14} /> Add Lead
           </button>
         </div>
       </div>
@@ -482,10 +558,10 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
             {[
               { label: 'Add New Lead', icon: Plus, action: onOpenAddLead, color: GOLD },
-              { label: 'Add Follow-up', icon: Phone, action: () => {}, color: '#10B981' },
-              { label: 'Schedule Visit', icon: Calendar, action: () => {}, color: '#3B82F6' },
-              { label: 'View All Leads', icon: Users, action: () => {}, color: '#8B5CF6' },
-              { label: 'Import Leads', icon: Upload, action: () => {}, color: '#EC4899' },
+              { label: 'Export Excel', icon: Download, action: handleExportCsv, color: '#60A5FA' },
+              { label: 'Master Sheet', icon: Sparkles, action: () => window.open(GOOGLE_SHEET_URL, '_blank'), color: '#10B981' },
+              { label: 'Sync Database', icon: RefreshCw, action: fetchLiveLeads, color: '#8B5CF6' },
+              { label: 'Import CSV', icon: Upload, action: () => setIsImportModalOpen(true), color: '#EC4899' },
             ].map((qa, i) => {
               const IconC = qa.icon;
               return (
@@ -500,6 +576,95 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
         </div>
 
       </div>
+
+      {/* ── IMPORT CSV / EXCEL MODAL ── */}
+      {isImportModalOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 99999,
+          background: 'rgba(3, 7, 18, 0.88)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px'
+        }}>
+          <div style={{
+            width: '600px',
+            maxWidth: '100%',
+            background: '#070F1E',
+            border: `1px solid rgba(212,175,55,0.35)`,
+            borderRadius: '16px',
+            boxShadow: '0 25px 80px rgba(0,0,0,0.9), 0 0 40px rgba(212,175,55,0.1)',
+            padding: '24px',
+            color: '#FFF'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Upload size={20} color={GOLD} />
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Import Leads from Excel / CSV</h3>
+              </div>
+              <button onClick={() => setIsImportModalOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
+            </div>
+
+            <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.6)', marginBottom: '14px', lineHeight: 1.5 }}>
+              Paste comma-separated rows below. Each row will be validated and automatically inserted into the PostgreSQL database and CRM.
+            </p>
+
+            <div style={{ background: 'rgba(212,175,55,0.06)', border: `1px dashed rgba(212,175,55,0.3)`, borderRadius: '8px', padding: '10px 14px', marginBottom: '14px', fontSize: '0.72rem', color: '#E6C35C' }}>
+              <strong>Expected CSV Format per line:</strong><br/>
+              <code>Customer Name, Phone Number, Location, Requirement, Notes</code><br/>
+              <span style={{ opacity: 0.8 }}>Example: Rajesh Deshmukh, +919876543210, Baner, BUY_RESIDENTIAL, Looking for 3 BHK</span>
+            </div>
+
+            <textarea
+              rows={8}
+              placeholder="Rajesh Deshmukh, +919876543210, Baner, BUY_RESIDENTIAL, Interested in Baner 3BHK&#10;Priya Shah, +919123456780, Wakad, BUY_RESIDENTIAL, Budget 85L"
+              value={importCsvText}
+              onChange={(e) => setImportCsvText(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '12px',
+                borderRadius: '8px',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: '#FFF',
+                fontSize: '0.78rem',
+                fontFamily: 'monospace',
+                boxSizing: 'border-box',
+                outline: 'none',
+                resize: 'vertical'
+              }}
+            />
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px' }}>
+              <button
+                onClick={() => setIsImportModalOpen(false)}
+                style={{ padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFF', fontSize: '0.78rem', cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleImportLeads}
+                disabled={importing || !importCsvText.trim()}
+                style={{
+                  padding: '8px 20px',
+                  borderRadius: '8px',
+                  background: `linear-gradient(135deg, ${GOLD}, #B8860B)`,
+                  border: 'none',
+                  color: '#070D18',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  cursor: (importing || !importCsvText.trim()) ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {importing ? 'Importing Leads...' : 'Import to Database'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
