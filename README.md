@@ -1,189 +1,260 @@
 <div align="center">
 
-# 🏠 24K Realtors — Premium Real Estate Platform
-
-**Pune's Most Trusted Real Estate Consultants**
+# 🏛️ 24K REALTORS — LUXURY REAL ESTATE & CRM PLATFORM
+### *Pune West's #1 MahaRERA Verified Real Estate Advisory & Enterprise CRM*
 
 [![CI — Build & Test](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/actions/workflows/ci.yml/badge.svg)](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
-[![React](https://img.shields.io/badge/React-18-blue?logo=react)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-5-purple?logo=vite)](https://vitejs.dev/)
+[![MahaRERA Verified](https://img.shields.io/badge/MahaRERA%20Reg-A051262603190-gold?style=flat&logo=shield)](https://maharera.mahaonline.gov.in/)
+[![Java 21](https://img.shields.io/badge/Java-21%20LTS-orange?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
+[![Spring Boot 3](https://img.shields.io/badge/Spring%20Boot-3.3-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
+[![React 18](https://img.shields.io/badge/React-18.3-61DAFB?logo=react)](https://react.dev/)
+[![Vite 5](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite)](https://vitejs.dev/)
+[![PostgreSQL 15](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql)](https://www.postgresql.org/)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)](https://real-estate-digital-marketing.vercel.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-[🌐 Live Demo](https://real-estate-digital-marketing.vercel.app) · [🐛 Report Bug](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/issues/new?template=bug_report.yml) · [✨ Request Feature](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/issues/new?template=feature_request.yml)
+**[🌐 Live Portal](https://real-estate-digital-marketing.vercel.app)** • **[📊 Master Google Sheet](https://docs.google.com/spreadsheets/d/1Reu4yjYVHLY0DRgDN52dz9OP55wgGEWGDdPH_zvuQLM/edit?usp=sharing)** • **[📖 Google Sheets Guide](./docs/GOOGLE_SHEETS_INTEGRATION_GUIDE.md)** • **[🐛 Report Issue](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/issues/new?template=bug_report.yml)**
 
 </div>
 
 ---
 
-## 📖 About
+## 📌 Overview
 
-24K Realtors is a **full-stack SaaS real estate platform** built for Pune's premium property market. It combines a consumer-facing property portal with a powerful internal CRM for managing leads, follow-ups, site visits, and agent operations.
+**24K Realtors** is an enterprise-grade, full-stack digital real estate ecosystem tailored for Pune's high-velocity luxury corridors (**Hinjewadi, Baner, Wakad, Mahalunge, Balewadi, and Kharadi**). 
 
-### Key Capabilities
-- 🏘️ **Property Portal** — Search, filter, and explore premium Pune properties
-- 📋 **Lead CRM** — Full lead lifecycle management with WhatsApp integration
-- 🔒 **OTP Authentication** — SMS-based OTP login with JWT sessions
-- 🤖 **AI Chat Assistant** — Gemini-powered property advisor for visitors
-- 📊 **Analytics Dashboard** — Live lead funnel, conversion stats, attendance
-- 📱 **WhatsApp Notifications** — Automated messages for site visits and follow-ups
+The platform bridges high-intent property buyers, investors, and HNIs with a state-of-the-art consumer experience while equipping the sales advisory team with an autonomous **Lead Management CRM, HRMS Attendance Engine, automated Google Sheets/Excel synchronization, and AI Market Analytics (Data Labs)**.
 
 ---
 
-## 🏗️ Architecture
+## 🌟 Key Platform Modules & Features
 
 ```
-┌─────────────────────────────────────────────────┐
-│                   FRONTEND                       │
-│   React 18 + Vite  →  Deployed on Vercel CDN    │
-└────────────────────┬────────────────────────────┘
-                     │ HTTPS REST API
-┌────────────────────▼────────────────────────────┐
-│                   BACKEND                        │
-│   Spring Boot 3 + Java 21  →  Railway.app       │
-│   Spring Security + JWT + OTP                   │
-└────────────────────┬────────────────────────────┘
-                     │ JDBC / JPA
-┌────────────────────▼────────────────────────────┐
-│                  DATABASE                        │
-│   PostgreSQL 15  →  Railway Managed DB          │
-│   Schema managed by Flyway migrations           │
-└─────────────────────────────────────────────────┘
+                                  ┌───────────────────────────┐
+                                  │      24K REALTORS         │
+                                  │   DIGITAL ECOSYSTEM       │
+                                  └─────────────┬─────────────┘
+                        ┌───────────────────────┴───────────────────────┐
+                        ▼                                               ▼
+         ┌──────────────────────────────┐                ┌──────────────────────────────┐
+         │  👑 LUXURY CONSUMER PORTAL   │                │   💼 ENTERPRISE SALES CRM    │
+         ├──────────────────────────────┤                ├──────────────────────────────┤
+         │ • MahaRERA Verified Listings │                │ • 360° Lead Lifecycle & RM   │
+         │ • Interactive EMI Calculator │                │ • 1-Click WhatsApp & Dialer  │
+         │ • Dynamic E-Brochure PDF Gen │                │ • Real-time Google Sheet Sync│
+         │ • Multi-Property Compare Box │                │ • HRMS Attendance & Punch-in │
+         │ • AI Natural Language Search │                │ • Site Visit Geotag Tracking │
+         │ • Floating VIP Concierge     │                │ • 1-Click Excel CSV Export   │
+         └──────────────────────────────┘                └──────────────────────────────┘
+```
+
+### 1. 🏛️ Consumer Experience (Luxury Property Portal)
+- **100% MahaRERA Verification:** Every project features official QR codes, RERA agent credentials (`A051262603190`), and developer title clearances.
+- **Financial EMI Engine:** Real-time bank rate simulations (SBI, HDFC, ICICI, Axis) with down-payment, tenure, and principal vs interest charts.
+- **Dynamic E-Brochure Generator:** Client-side PDF compilation with floorplans, amenities, pricing index, and locational advantages.
+- **Lifestyle & Corridor Filtering:** Smart search across Hinjewadi Phase 1-3, Wakad, Baner High Street, and Mahalunge Smart City.
+- **Multi-Property Comparison Matrix:** Side-by-side spec comparison across carpet area, price/sq.ft, possession timelines, and builder ratings.
+
+### 2. ⚡ Enterprise Lead Management & Sales CRM
+- **Zero-Leakage Ingestion Pipeline:** Automatic lead capture from VIP Callback, Site Visit Modals, Brochure Downloads, and Seller Mandates.
+- **Multi-Tier Redundancy Storage:**
+  1. *Cloud PostgreSQL:* Primary ACID relational database.
+  2. *Google Sheets Webhook:* Real-time master spreadsheet row population.
+  3. *Local CRM Storage:* Zero-latency offline client cache.
+  4. *Excel Export:* Instant one-click `.csv` generation for telecallers.
+- **1-Click Communication:** Direct WhatsApp template triggers and tel-URI mobile dialer integration.
+- **Site Visit Operations:** Schedule visits, pick transport modes (Self / Cab Provided), and capture GPS check-in feedback.
+
+### 3. 👥 HRMS & Operations Dashboard
+- **Daily Attendance & Punch Logs:** Agent clock-in / clock-out timestamps with status indicators (*PRESENT*, *LATE*, *HALF_DAY*, *ON_LEAVE*).
+- **Follow-up Task Scheduler:** SLA-backed automated follow-up assignments with countdown timers.
+- **Role-Based Access Control:** Super Admin, Relationship Manager (RM), and Telecaller permission scoping.
+
+### 4. 📈 AI Data Labs & Market Intelligence
+- **Corridor Price Indices:** Average ₹/sq.ft trends and quarterly capital appreciation tracking.
+- **Rental Yield Metrics:** High-ROI commercial and residential hotspot analysis for NRI/HNI portfolios.
+
+---
+
+## 🏗️ System Architecture & Cloud Topology
+
+```mermaid
+flowchart TD
+    subgraph ClientLayer ["1. Client & CDN Layer"]
+        A[Desktop & Mobile Web] -->|HTTPS / SSL| B[Vercel Global Edge Network]
+        B --> C[React 18 + Vite SPA]
+    end
+
+    subgraph APILayer ["2. Application & Auth Layer"]
+        C -->|REST API Requests /api/v1| D[Spring Boot 3 Gateway]
+        D --> E[Spring Security + Stateless JWT]
+        D --> F[OTP Authentication Engine]
+    end
+
+    subgraph ServiceLayer ["3. Business Domain Services"]
+        D --> G[LeadManagementService]
+        D --> H[PropertyCatalogService]
+        D --> I[HRMSAttendanceService]
+        D --> J[MarketAnalyticsService]
+    end
+
+    subgraph DataLayer ["4. Persistence & Integrations"]
+        G & H & I & J -->|JPA / Hibernate / Flyway| K[(PostgreSQL 15 on Railway)]
+        G -->|Apps Script Webhook| L[Google Sheets Master Database]
+        G -->|SMS / WhatsApp API| M[Fast2SMS Gateway]
+        C -->|GenAI Assistant| N[Google Gemini API]
+    end
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | React 18, Vite 5, Vanilla CSS |
-| **Backend** | Spring Boot 3, Java 21, Maven |
-| **Database** | PostgreSQL 15, Flyway Migrations |
-| **Auth** | Spring Security, JWT, OTP (SMS), Google OAuth |
-| **AI** | Google Gemini API |
-| **Notifications** | Fast2SMS (WhatsApp/SMS), JavaMail (Email) |
-| **Hosting** | Vercel (Frontend), Railway (Backend + DB) |
-| **CI/CD** | GitHub Actions |
+| Layer | Technology | Purpose / Highlights |
+| :--- | :--- | :--- |
+| **Frontend** | React 18.3, Vite 5.4 | Ultra-fast SPA, 60fps Lenis smooth scroll, Tailwind/Vanilla CSS |
+| **Icons & Typography** | Lucide React, Google Fonts | *Cinzel* (Luxury Serif), *Montserrat* (Body), *Playfair Display* |
+| **Backend** | Spring Boot 3.3, Java 21 LTS | High-throughput REST API with Lombok, Spring Data JPA |
+| **Database** | PostgreSQL 15, Flyway | Versioned SQL schema migrations, indexed lead queries |
+| **Security** | Spring Security 6, JWT, BCrypt | Stateless token authorization, CORS origin policy, CSRF disabled |
+| **Automation** | Google Apps Script (`Code.gs`) | Bi-directional webhook synchronization with Google Sheets |
+| **AI Integration** | Google Gemini 1.5 Flash | Real-time multilingual real estate conversational advisory |
+| **Hosting & CI/CD** | Vercel (FE), Railway (BE), GitHub Actions | Automated build testing, linting, and zero-downtime releases |
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Local Development Setup
 
 ### Prerequisites
-- Java 21+, Node.js 20+, Docker (for local DB)
+- **Java Development Kit (JDK):** Version 21 or newer (`java -version`)
+- **Node.js:** Version 20 LTS or newer (`node -v`)
+- **Docker & Docker Compose:** Optional for local database (`docker --version`)
 
-### 1. Clone
+---
+
+### Step 1: Clone Repository
 ```bash
 git clone https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing.git
-cd "24k-real-Estate-Digital-marketing"
+cd 24k-real-Estate-Digital-marketing
 ```
 
-### 2. Start Database
+---
+
+### Step 2: Database Initialization (Local Docker)
 ```bash
 docker run -d --name 24k-postgres \
   -e POSTGRES_DB=twentyfourk_db \
   -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=yourpassword \
+  -e POSTGRES_PASSWORD=postgres \
   -p 5432:5432 postgres:15
 ```
 
-### 3. Start Backend
+---
+
+### Step 3: Run Backend Service (Spring Boot)
 ```bash
 cd backend
-# Configure application.yml with your DB credentials
-./mvnw spring-boot:run
-# API available at: http://localhost:8080/api/v1
+# Configure your application.yml or pass environment variables
+./mvnw clean spring-boot:run
 ```
+> 📍 **Backend API Base:** `http://localhost:8080/api/v1`
 
-### 4. Start Frontend
+---
+
+### Step 4: Run Frontend Application (React + Vite)
 ```bash
-cd frontend
+cd ../frontend
 npm install
 npm run dev
-# Portal available at: http://localhost:5173
 ```
+> 📍 **Frontend URL:** `http://localhost:5173`
 
 ---
 
-## 🌍 Environment Variables
+## ⚙️ Environment Variables Reference
 
-### Backend (`backend/src/main/resources/application.yml`)
-| Variable | Description |
-|----------|-------------|
-| `spring.datasource.url` | PostgreSQL JDBC URL |
-| `spring.datasource.username` | DB username |
-| `spring.datasource.password` | DB password |
-| `app.jwt.secret` | JWT signing secret (min 32 chars) |
-| `fast2sms.api.key` | Fast2SMS API key for OTP/WhatsApp |
-| `spring.mail.*` | Gmail SMTP credentials for email |
-| `google.oauth.client-id` | Google OAuth2 Client ID |
+### Backend (`backend/src/main/resources/application.yml` or System Env)
+| Parameter | Default / Sample | Description |
+| :--- | :--- | :--- |
+| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/twentyfourk_db` | PostgreSQL connection string |
+| `SPRING_DATASOURCE_USERNAME` | `postgres` | Database user |
+| `SPRING_DATASOURCE_PASSWORD` | `postgres` | Database password |
+| `APP_JWT_SECRET` | `24kLuxuryRealtorsPuneSecureJwtSecretKeyMin32Chars` | HMAC-SHA256 signature secret |
+| `FAST2SMS_API_KEY` | `your_fast2sms_api_key` | SMS & OTP delivery gateway |
+| `SPRING_MAIL_USERNAME` | `advisory@24krealtors.com` | SMTP Email sender |
 
 ### Frontend (`frontend/.env`)
-| Variable | Description |
-|----------|-------------|
-| `VITE_API_BASE_URL` | Backend API base URL |
-| `VITE_GEMINI_API_KEY` | Google Gemini API key for AI chat |
+| Parameter | Default / Sample | Description |
+| :--- | :--- | :--- |
+| `VITE_API_BASE_URL` | `https://twentyfourk-backend-production.up.railway.app` | Production Spring Boot API URL |
+| `VITE_GOOGLE_SHEET_WEBHOOK_URL` | `https://script.google.com/macros/s/.../exec` | Real-time Google Apps Script Webhook |
+| `VITE_GEMINI_API_KEY` | `AIzaSy...` | Google Gemini API key for Chat Assistant |
 
 ---
 
-## 📁 Project Structure
+## 📡 REST API Summary
+
+| Method | Endpoint | Access Level | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/leads` | Public | Capture customer inquiry / site visit booking |
+| `GET` | `/api/v1/leads` | Admin / RM | Fetch paginated lead lists with filters |
+| `POST` | `/api/v1/auth/login` | Public | Email/Password or Phone OTP authentication |
+| `GET` | `/api/v1/properties` | Public | Retrieve verified property catalog with facets |
+| `POST` | `/api/v1/attendance/punch` | Agent | Record daily punch-in / punch-out with GPS |
+| `GET` | `/api/v1/analytics/overview` | Admin | Aggregate conversion rates, visits, and pipeline value |
+
+---
+
+## 📁 Repository Directory Structure
 
 ```
 24k-real-Estate-Digital-marketing/
-├── backend/                  # Spring Boot application
-│   ├── src/main/java/
-│   │   └── com/realestate/twentyfourk/
-│   │       ├── config/       # Spring Security, CORS config
-│   │       ├── domain/       # Feature modules (lead, property, etc.)
-│   │       └── security/     # Auth, JWT, OTP
-│   └── src/main/resources/
-│       └── db/migration/     # Flyway SQL migrations
-├── frontend/                 # React + Vite application
-│   ├── public/               # Static assets
-│   └── src/
-│       ├── components/       # All UI components
-│       ├── layouts/          # Page layouts (Navbar, etc.)
-│       └── constants.js      # API endpoints and constants
 ├── .github/
-│   ├── workflows/            # CI/CD GitHub Actions
-│   ├── ISSUE_TEMPLATE/       # Bug & Feature issue forms
-│   ├── CODEOWNERS            # Code ownership
-│   ├── dependabot.yml        # Auto dependency updates
+│   ├── workflows/             # CI/CD pipelines (ci.yml, release.yml, dependabot.yml)
+│   ├── ISSUE_TEMPLATE/        # Structured bug report & feature request templates
 │   └── pull_request_template.md
-├── CONTRIBUTING.md
-├── SECURITY.md
-└── CHANGELOG.md
+├── backend/                   # Spring Boot 3 Java Application
+│   ├── src/main/java/com/realestate/twentyfourk/
+│   │   ├── config/            # Security, CORS, OpenAPI, and WebMvc configurations
+│   │   ├── domain/            # Feature modules (lead, property, attendance, analytics)
+│   │   └── security/          # JWT filters, UserDetails, and OTP providers
+│   └── src/main/resources/
+│       ├── db/migration/      # Flyway SQL migrations (V1 to V24)
+│       └── application.yml    # Spring configuration profiles
+├── frontend/                  # React 18 + Vite Web Application
+│   ├── public/                # 100% Vector SVG logo (24k_logo.svg), favicon.svg, images
+│   └── src/
+│       ├── components/        # Portal, CRM, LeadDetails, EMI Calculator, DataLabs
+│       ├── layouts/           # Navbar, Footer, Mobile Drawer
+│       └── services/          # apiService.js, authService.js, crmService.js
+├── google-apps-script/
+│   └── Code.gs                # Google Sheets automated capture script with Golden formatting
+├── docs/
+│   └── GOOGLE_SHEETS_INTEGRATION_GUIDE.md # 1-Minute Google Sheets setup documentation
+├── CONTRIBUTING.md            # Git workflow & PR standards
+├── SECURITY.md                # Vulnerability disclosure policy
+├── CHANGELOG.md               # Version release changelog
+└── README.md                  # Master documentation
 ```
 
 ---
 
-## 🤝 Contributing
+## 🔒 Security & Quality Standards
 
-Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting a PR.
-
-**Branch naming:** `feature/*`, `fix/*`, `hotfix/*`, `chore/*`  
-**Commit format:** [Conventional Commits](https://www.conventionalcommits.org/) — `feat:`, `fix:`, `chore:`, etc.
-
----
-
-## 🔒 Security
-
-Found a vulnerability? Please read our [Security Policy](./SECURITY.md) and report responsibly via email — **do not open a public issue.**
+- **Git & Branching Model:** Strict feature branching (`feature/*`, `fix/*`, `chore/*`) with direct merge to `main` via PRs only.
+- **Enterprise Headers:** `Content-Security-Policy`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`.
+- **Environment Isolation:** Zero credentials or secrets committed in version control.
+- **Data Protection:** Customer contact details are protected via role-based access control and TLS 1.3 encryption.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the [MIT License](./LICENSE).
-
----
+This repository is distributed under the **[MIT License](./LICENSE)**.
 
 <div align="center">
 
-**Built with ❤️ for Pune's real estate market**  
-[24K Realtors](https://real-estate-digital-marketing.vercel.app) · Hinjewadi, Wakad, Baner & Beyond
+**Built with precision for Pune's Luxury Real Estate Ecosystem.**  
+*24K Realtors Pune • Hinjewadi Phase 1, Wakad, Baner High Street & Kharadi*
 
 </div>

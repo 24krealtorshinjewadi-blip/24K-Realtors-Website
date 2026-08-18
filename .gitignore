@@ -23,6 +23,9 @@ Thumbs.db
 .DS_Store
 *.timestamp-*.mjs
 *.zip
+process_logo.py
+*.pyc
+__pycache__/
 
 # Local Media Uploads
 uploads/
