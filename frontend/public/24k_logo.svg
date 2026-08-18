@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 130" width="100%" height="100%">
+  <defs>
+    <!-- Metallic Gold Gradients -->
+    <linearGradient id="goldKeyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3B0" />
+      <stop offset="25%" stop-color="#E5C158" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="75%" stop-color="#9E7820" />
+      <stop offset="100%" stop-color="#5C4207" />
+    </linearGradient>
+
+    <linearGradient id="goldTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFEBB0" />
+      <stop offset="30%" stop-color="#F2D06B" />
+      <stop offset="60%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#9E7820" />
+    </linearGradient>
+
+    <linearGradient id="goldAccentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="transparent" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="transparent" />
+    </linearGradient>
+
+    <!-- Subtle Glow Filter -->
+    <filter id="luxuryGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#D4AF37" flood-opacity="0.35" />
+    </filter>
+    
+    <filter id="keyGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#D4AF37" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <g id="logo-wrapper">
+    <!-- ═══ 1. CROSSED GOLDEN KEYS EMBLEM ═══ -->
+    <g id="keys-emblem" transform="translate(65, 65) scale(0.65)" filter="url(#keyGlow)">
+      <!-- Background Ambient Aura -->
+      <circle cx="0" cy="0" r="68" fill="none" stroke="url(#goldTextGrad)" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.4" />
+      <circle cx="0" cy="0" r="62" fill="none" stroke="#D4AF37" stroke-width="0.75" opacity="0.6" />
+
+      <!-- KEY 1 (Rotated -45deg) -->
+      <g transform="rotate(-45)">
+        <!-- Bow / Head of Key -->
+        <circle cx="0" cy="-44" r="16" fill="none" stroke="url(#goldKeyGrad)" stroke-width="4.5" />
+        <circle cx="0" cy="-44" r="9" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2.5" />
+        <circle cx="-13" cy="-44" r="6" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2" />
+        <circle cx="13" cy="-44" r="6" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2" />
+        <circle cx="0" cy="-57" r="5" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2" />
+        <circle cx="0" cy="-31" r="5" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2" />
+        <circle cx="0" cy="-44" r="3" fill="url(#goldKeyGrad)" />
+
+        <!-- Collar / Ring -->
+        <rect x="-6" y="-27" width="12" height="4" rx="2" fill="url(#goldKeyGrad)" />
+        <rect x="-4.5" y="-22" width="9" height="3" rx="1.5" fill="url(#goldKeyGrad)" />
+
+        <!-- Shaft -->
+        <rect x="-3" y="-20" width="6" height="66" rx="2" fill="url(#goldKeyGrad)" />
+        <!-- Shaft Fluting Line -->
+        <line x1="0" y1="-18" x2="0" y2="44" stroke="#FFF7D6" stroke-width="1" opacity="0.7" />
+
+        <!-- Bit / Teeth of Key -->
+        <path d="M 3 24 L 18 24 L 18 30 L 11 30 L 11 35 L 17 35 L 17 41 L 11 41 L 11 46 L 19 46 L 19 52 L 3 52 Z" fill="url(#goldKeyGrad)" />
+        <path d="M 3 48 L -7 48 L -7 43 L 3 43 Z" fill="url(#goldKeyGrad)" />
+        <!-- Tip -->
+        <circle cx="0" cy="46" r="3.5" fill="url(#goldKeyGrad)" />
+      </g>
+
+      <!-- KEY 2 (Rotated 45deg) -->
+      <g transform="rotate(45)">
+        <!-- Bow / Head of Key -->
+        <circle cx="0" cy="-44" r="16" fill="none" stroke="url(#goldKeyGrad)" stroke-width="4.5" />
+        <circle cx="0" cy="-44" r="9" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2.5" />
+        <circle cx="-13" cy="-44" r="6" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2" />
+        <circle cx="13" cy="-44" r="6" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2" />
+        <circle cx="0" cy="-57" r="5" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2" />
+        <circle cx="0" cy="-31" r="5" fill="none" stroke="url(#goldKeyGrad)" stroke-width="2" />
+        <circle cx="0" cy="-44" r="3" fill="url(#goldKeyGrad)" />
+
+        <!-- Collar / Ring -->
+        <rect x="-6" y="-27" width="12" height="4" rx="2" fill="url(#goldKeyGrad)" />
+        <rect x="-4.5" y="-22" width="9" height="3" rx="1.5" fill="url(#goldKeyGrad)" />
+
+        <!-- Shaft -->
+        <rect x="-3" y="-20" width="6" height="66" rx="2" fill="url(#goldKeyGrad)" />
+        <!-- Shaft Fluting Line -->
+        <line x1="0" y1="-18" x2="0" y2="44" stroke="#FFF7D6" stroke-width="1" opacity="0.7" />
+
+        <!-- Bit / Teeth of Key -->
+        <path d="M -3 24 L -18 24 L -18 30 L -11 30 L -11 35 L -17 35 L -17 41 L -11 41 L -11 46 L -19 46 L -19 52 L -3 52 Z" fill="url(#goldKeyGrad)" />
+        <path d="M -3 48 L 7 48 L 7 43 L -3 43 Z" fill="url(#goldKeyGrad)" />
+        <!-- Tip -->
+        <circle cx="0" cy="46" r="3.5" fill="url(#goldKeyGrad)" />
+      </g>
+
+      <!-- Center Rosette Jewel -->
+      <circle cx="0" cy="0" r="6" fill="url(#goldKeyGrad)" stroke="#1A1202" stroke-width="1.5" />
+      <polygon points="0,-4 3,-1 4,3 0,5 -4,3 -3,-1" fill="#FFF7D6" />
+    </g>
+
+    <!-- ═══ 2. BRAND TYPOGRAPHY ═══ -->
+    <g id="brand-text" transform="translate(132, 0)" filter="url(#luxuryGlow)">
+      <!-- Main Brand Name: 24K REALTORS -->
+      <text
+        x="0"
+        y="66"
+        font-family="'Cinzel', 'Playfair Display', 'Times New Roman', serif"
+        font-size="44"
+        font-weight="800"
+        letter-spacing="0.14em"
+        fill="url(#goldTextGrad)"
+        stroke="#5A3E00"
+        stroke-width="0.8"
+      >
+        24K REALTORS
+      </text>
+
+      <!-- Decorative Divider Accent -->
+      <line x1="2" y1="84" x2="385" y2="84" stroke="url(#goldAccentGrad)" stroke-width="1.8" />
+      <polygon points="193,82 196,84 193,86 190,84" fill="#FFE57F" />
+
+      <!-- Subtitle: PUNE'S LUXURY REAL ESTATE -->
+      <text
+        x="2"
+        y="105"
+        font-family="'Montserrat', 'Inter', -apple-system, sans-serif"
+        font-size="13"
+        font-weight="600"
+        letter-spacing="0.48em"
+        fill="#E8CA72"
+        opacity="0.95"
+      >
+        PUNE’S LUXURY REAL ESTATE
+      </text>
+    </g>
+  </g>
+</svg>
