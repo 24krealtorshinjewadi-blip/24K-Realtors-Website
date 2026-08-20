@@ -371,6 +371,30 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     { label: 'Vastu & Architecture',   score: 93, color: '#F687B3' },
   ];
 
+  const AMENITIES = [
+    { title: 'Infinity Edge Pool',        Icon: Waves,       img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Grand Clubhouse',           Icon: Building2,   img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=75' },
+    { title: 'High-Tech Gymnasium',       Icon: Dumbbell,    img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Landscaped Zen Gardens',    Icon: TreePine,    img: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Sky Lounge & Deck',         Icon: Coffee,      img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Multi-Tier Security',       Icon: ShieldCheck, img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=75' },
+  ];
+
+  const LOCATIONS = [
+    { name: 'Hinjewadi IT Park Phase 1', time: '5 Mins',  pct: 90, Icon: Building2 },
+    { name: 'Wakad Metro Station',       time: '10 Mins', pct: 75, Icon: Train },
+    { name: 'Mumbai-Pune Expressway',    time: '12 Mins', pct: 70, Icon: Route },
+    { name: 'Phoenix Mall of Millennium',time: '15 Mins', pct: 60, Icon: Building2 },
+    { name: 'Aditya Birla Hospital',     time: '18 Mins', pct: 50, Icon: ShieldCheck },
+    { name: 'Pune International Airport',time: '45 Mins', pct: 30, Icon: Plane },
+  ];
+
+  const FLOOR_PLANS = [
+    { type: '2 BHK Luxury',  area: '761 sq.ft', price: '₹85 L - 95 L', pct: 78, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' },
+    { type: '2.5 BHK Royale',area: '858 sq.ft', price: '₹98 L - 1.08 Cr', pct: 88, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=75' },
+    { type: '3 BHK Grande',  area: '973 sq.ft', price: '₹1.18 Cr - 1.35 Cr', pct: 100, img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=75' },
+  ];
+
   const SIMILAR = [
     { title: 'Godrej Greenfront',         loc: 'Hinjewadi Phase 2', config: '2 & 3 BHK', price: '₹1.25 Cr*', tag: 'PREMIUM', match: 87, img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=75' },
     { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹1.10 Cr*', tag: 'LUXURY',  match: 82, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' },
