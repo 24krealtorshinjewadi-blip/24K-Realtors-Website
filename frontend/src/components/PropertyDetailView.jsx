@@ -203,7 +203,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [property?.id]);
-  const [aiRingAnimated, setAiRingAnimated] = useState(false);
+  const [ringAnimated, setRingAnimated]   = useState(false);
   const [formData, setFormData]           = useState({ name: '', phone: '', email: '' });
   const [formErrors, setFormErrors]       = useState({});
   const [formSubmitting, setFormSubmitting] = useState(false);
