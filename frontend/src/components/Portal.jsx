@@ -743,15 +743,26 @@ export default function Portal({ onViewChange }) {
 
   // ── SPA History & Hash Listener for Property Details (Browser Back ← / Forward →) ──
   useEffect(() => {
-    const handlePortalHashChange = () => {
+    const handlePortalHashChange = async () => {
       const hash = window.location.hash.replace('#', '');
       if (hash.startsWith('property/')) {
         const propId = hash.replace('property/', '');
-        if (allRawProperties && allRawProperties.length > 0) {
-          const found = allRawProperties.find(p => String(p.id) === String(propId));
-          if (found) {
-            setSelectedPropertyDetail(found);
-            window.scrollTo(0, 0);
+        const pool = (allRawProperties && allRawProperties.length > 0) ? allRawProperties : properties;
+        let found = pool.find(p => String(p.id) === String(propId));
+        if (found) {
+          setSelectedPropertyDetail(found);
+          setActiveSubView(null);
+          window.scrollTo(0, 0);
+        } else if (propId) {
+          try {
+            const fetched = await apiService.getPropertyById(propId);
+            if (fetched) {
+              setSelectedPropertyDetail(fetched);
+              setActiveSubView(null);
+              window.scrollTo(0, 0);
+            }
+          } catch (e) {
+            console.warn('[HashRouter] Property not found for ID:', propId);
           }
         }
       } else if (hash === 'portal' || hash === '' || hash === 'listings') {
@@ -762,15 +773,13 @@ export default function Portal({ onViewChange }) {
     window.addEventListener('hashchange', handlePortalHashChange);
     window.addEventListener('popstate', handlePortalHashChange);
 
-    if (allRawProperties && allRawProperties.length > 0) {
-      handlePortalHashChange();
-    }
+    handlePortalHashChange();
 
     return () => {
       window.removeEventListener('hashchange', handlePortalHashChange);
       window.removeEventListener('popstate', handlePortalHashChange);
     };
-  }, [allRawProperties]);
+  }, [allRawProperties, properties]);
 
   // Spotlight Keyboard Shortcut & Natural Query Parser
   useEffect(() => {
@@ -3428,12 +3437,12 @@ export default function Portal({ onViewChange }) {
         </div>
       ) : activeSubView ? renderSubView() : (
         <>
-          {/* ─── CINEMATIC HERO — 10-Image Dynamic Slideshow ─── */}
+          {/* ─── CINEMATIC HERO — 7 High-Res Slideshow from Drive ─── */}
           <section className="portal-hero" style={{
             position: 'relative',
-            minHeight: '100vh',
+            minHeight: isMobile ? '86vh' : '92vh',
             display: 'flex',
-            flexDirection: 'column',
+            alignItems: 'center',
             overflow: 'hidden',
             background: '#040814',
           }}>
@@ -3446,7 +3455,8 @@ export default function Portal({ onViewChange }) {
                   position: 'absolute', inset: 0,
                   backgroundImage: `url('${slide.img}')`,
                   backgroundSize: 'cover',
-                  backgroundPosition: 'center',
+                  backgroundPosition: isMobile ? 'center 30%' : 'center 35%',
+                  backgroundRepeat: 'no-repeat',
                   transition: 'opacity 0.9s ease-in-out',
                   opacity: i === heroSlide ? 1 : 0,
                   willChange: 'opacity',
@@ -3454,55 +3464,12 @@ export default function Portal({ onViewChange }) {
               />
             ))}
 
-            {/* Dark gradient overlay — left-heavy */}
+            {/* Soft luxury gradient overlay — keeps image vibrant & text crystal clear */}
             <div style={{
               position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-              background: 'linear-gradient(to right, rgba(4,8,20,0.92) 0%, rgba(4,8,20,0.60) 50%, rgba(4,8,20,0.35) 100%), linear-gradient(to bottom, rgba(4,8,20,0.10) 0%, rgba(4,8,20,0.80) 100%)',
+              background: 'linear-gradient(to right, rgba(4,8,20,0.72) 0%, rgba(4,8,20,0.40) 45%, rgba(4,8,20,0.12) 100%), linear-gradient(to bottom, rgba(4,8,20,0.05) 0%, rgba(4,8,20,0.65) 100%)',
               zIndex: 1
             }} />
-
-            {/* ── Slide Caption (bottom-left) ── */}
-            <div style={{
-              position: 'absolute', bottom: isMobile ? '90px' : '74px', left: 0, right: 0,
-              zIndex: 4, pointerEvents: 'none',
-              display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '6px'
-            }}>
-              <div style={{
-                background: 'rgba(4,8,20,0.6)', backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(212,175,55,0.2)', borderRadius: '50px',
-                padding: '5px 18px',
-                display: 'inline-flex', alignItems: 'center', gap: '10px',
-                transition: 'all 0.6s ease'
-              }}>
-                <span style={{ color: '#D4AF37', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif" }}>
-                  📍 {HERO_SLIDES[heroSlide].loc}
-                </span>
-                <span style={{ width: '1px', height: '10px', background: 'rgba(212,175,55,0.3)' }} />
-                <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.62rem', fontWeight: 600, fontFamily: "'Montserrat', sans-serif" }}>
-                  {HERO_SLIDES[heroSlide].caption}
-                </span>
-              </div>
-
-              {/* Dot navigation */}
-              <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginTop: '4px' }}>
-                {HERO_SLIDES.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => goToHeroSlide(i)}
-                    aria-label={`Slide ${i + 1}`}
-                    style={{
-                      width: i === heroSlide ? '22px' : '7px',
-                      height: '7px',
-                      borderRadius: '50px',
-                      background: i === heroSlide ? '#D4AF37' : 'rgba(255,255,255,0.3)',
-                      border: 'none', cursor: 'pointer', padding: 0,
-                      transition: 'all 0.35s ease',
-                      boxShadow: i === heroSlide ? '0 0 8px rgba(212,175,55,0.6)' : 'none',
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
 
             {/* ── Prev / Next Arrows (desktop only) ── */}
             {!isMobile && (
@@ -3511,27 +3478,27 @@ export default function Portal({ onViewChange }) {
                   onClick={() => goToHeroSlide((heroSlide - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
                   aria-label="Previous slide"
                   style={{
-                    position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)',
-                    zIndex: 5, background: 'rgba(4,8,20,0.55)', backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50%',
-                    width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)',
+                    zIndex: 5, background: 'rgba(4,8,20,0.6)', backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(212,175,55,0.35)', borderRadius: '50%',
+                    width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', color: '#D4AF37', fontSize: '1.2rem', transition: 'all 0.2s ease',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor = '#D4AF37'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(4,8,20,0.55)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.2)'; e.currentTarget.style.borderColor = '#D4AF37'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(4,8,20,0.6)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)'; }}
                 >‹</button>
                 <button
                   onClick={() => goToHeroSlide((heroSlide + 1) % HERO_SLIDES.length)}
                   aria-label="Next slide"
                   style={{
-                    position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)',
-                    zIndex: 5, background: 'rgba(4,8,20,0.55)', backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50%',
-                    width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)',
+                    zIndex: 5, background: 'rgba(4,8,20,0.6)', backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(212,175,55,0.35)', borderRadius: '50%',
+                    width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', color: '#D4AF37', fontSize: '1.2rem', transition: 'all 0.2s ease',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor = '#D4AF37'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(4,8,20,0.55)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.2)'; e.currentTarget.style.borderColor = '#D4AF37'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(4,8,20,0.6)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)'; }}
                 >›</button>
               </>
             )}
@@ -3539,24 +3506,20 @@ export default function Portal({ onViewChange }) {
             {/* Main hero content row */}
             <div style={{
               position: 'relative', zIndex: 2,
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
               width: '100%',
-              maxWidth: '94%',
+              maxWidth: '1380px',
               margin: '0 auto',
-              padding: isMobile ? '100px 0 30px 0' : '110px 0 40px 0',
-              gap: '40px',
+              padding: isMobile ? '100px 16px 40px' : '120px 32px 50px',
             }}>
 
               {/* ── LEFT: Text + CTAs + Trust Badges ── */}
-              <div style={{ flex: '1', maxWidth: isMobile ? '100%' : '760px' }}>
+              <div style={{ maxWidth: isMobile ? '100%' : '720px' }}>
 
                 {/* "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" pill */}
                 <div style={{
                   display: 'inline-flex', alignItems: 'center', gap: '8px',
-                  background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.25)',
-                  borderRadius: '50px', padding: '6px 16px', marginBottom: '22px'
+                  background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)',
+                  borderRadius: '50px', padding: '6px 16px', marginBottom: '20px'
                 }}>
                   <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                     ★ PUNE'S MOST TRUSTED PROPERTY CONSULTANTS
@@ -3566,7 +3529,7 @@ export default function Portal({ onViewChange }) {
                 {/* Main Headline */}
                 <h1 style={{
                   fontFamily: "'Cinzel', serif",
-                  fontSize: isMobile ? 'clamp(2.2rem, 7vw, 3.2rem)' : 'clamp(2.8rem, 4.5vw, 4.8rem)',
+                  fontSize: isMobile ? 'clamp(2.1rem, 6.5vw, 2.8rem)' : 'clamp(2.6rem, 4.2vw, 4.2rem)',
                   color: '#fff', lineHeight: 1.15,
                   margin: '0 0 18px 0', fontWeight: 700,
                   letterSpacing: '-0.01em',
@@ -3582,16 +3545,16 @@ export default function Portal({ onViewChange }) {
                 {/* Subtitle */}
                 <p style={{
                   fontFamily: "'Montserrat', sans-serif",
-                  fontSize: isMobile ? '0.92rem' : '1.02rem',
-                  color: 'rgba(255,255,255,0.82)',
-                  lineHeight: 1.65, marginBottom: '28px',
+                  fontSize: isMobile ? '0.9rem' : '1.0rem',
+                  color: 'rgba(255,255,255,0.85)',
+                  lineHeight: 1.6, marginBottom: '26px',
                   maxWidth: '560px'
                 }}>
                   3 &amp; 4 BHK Premium Homes in Hinjewadi Phase 1, 2, 3 &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
                 </p>
 
                 {/* CTAs */}
-                <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '28px' }}>
+                <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '26px' }}>
                   <button
                     onClick={() => {
                       const el = document.getElementById('listings-anchor');
@@ -3600,9 +3563,9 @@ export default function Portal({ onViewChange }) {
                     style={{
                       background: 'linear-gradient(135deg, #C59B27 0%, #E6C35C 50%, #B8860B 100%)',
                       border: 'none', color: '#040814',
-                      padding: '14px 28px', borderRadius: '30px',
+                      padding: '13px 26px', borderRadius: '30px',
                       fontWeight: 800, fontFamily: "'Montserrat', sans-serif",
-                      fontSize: '0.84rem', letterSpacing: '0.06em', cursor: 'pointer',
+                      fontSize: '0.82rem', letterSpacing: '0.06em', cursor: 'pointer',
                       boxShadow: '0 8px 24px rgba(230,195,92,0.35)',
                       transition: 'all 0.3s ease',
                       display: 'inline-flex', alignItems: 'center', gap: '8px'
@@ -3618,9 +3581,9 @@ export default function Portal({ onViewChange }) {
                     onClick={handleOpenInquiry}
                     style={{
                       background: 'rgba(7,15,30,0.6)', border: '1px solid rgba(230,195,92,0.4)',
-                      color: '#FFF4D0', padding: '14px 26px', borderRadius: '30px',
+                      color: '#FFF4D0', padding: '13px 24px', borderRadius: '30px',
                       fontWeight: 700, fontFamily: "'Montserrat', sans-serif",
-                      fontSize: '0.84rem', letterSpacing: '0.06em', cursor: 'pointer',
+                      fontSize: '0.82rem', letterSpacing: '0.06em', cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       display: 'inline-flex', alignItems: 'center', gap: '8px'
                     }}
@@ -3632,9 +3595,9 @@ export default function Portal({ onViewChange }) {
                   </button>
                 </div>
 
-                {/* ── TRUST BADGES ROW (Matching Image) ── */}
+                {/* ── TRUST BADGES ROW (Clean & Aligned) ── */}
                 <div style={{
-                  display: 'flex', gap: isMobile ? '10px' : '12px', flexWrap: 'wrap', alignItems: 'center',
+                  display: 'flex', gap: isMobile ? '8px' : '10px', flexWrap: 'wrap', alignItems: 'center',
                 }}>
                   {[
                     { icon: '✔️', title: 'Verified Properties', sub: 'RERA Approved' },
@@ -3644,18 +3607,18 @@ export default function Portal({ onViewChange }) {
                   ].map((badge, i) => (
                     <div key={i} style={{
                       display: 'flex', alignItems: 'center', gap: '8px',
-                      background: 'rgba(7,15,30,0.75)', border: '1px solid rgba(212,175,55,0.22)',
+                      background: 'rgba(7,15,30,0.8)', border: '1px solid rgba(212,175,55,0.25)',
                       borderRadius: '50px', padding: '6px 14px',
                     }}>
                       <div style={{
-                        width: '22px', height: '22px', borderRadius: '50%',
+                        width: '20px', height: '20px', borderRadius: '50%',
                         background: 'rgba(212,175,55,0.15)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '0.72rem', color: '#D4AF37'
+                        fontSize: '0.68rem', color: '#D4AF37'
                       }}>{badge.icon}</div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
                         <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#fff', fontFamily: "'Montserrat',sans-serif" }}>{badge.title}</span>
-                        <span style={{ fontSize: '0.54rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', fontFamily: "'Montserrat',sans-serif" }}>{badge.sub}</span>
+                        <span style={{ fontSize: '0.52rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', fontFamily: "'Montserrat',sans-serif" }}>{badge.sub}</span>
                       </div>
                     </div>
                   ))}
@@ -3663,47 +3626,28 @@ export default function Portal({ onViewChange }) {
               </div>
             </div>
 
-            {/* ── STATS BAR STRIP (Matching Image) ── */}
+            {/* Subtle Minimal Dots Slider */}
             <div style={{
-              position: 'relative', zIndex: 2,
-              width: '100%',
-              borderTop: '1px solid rgba(212,175,55,0.12)',
-              background: 'rgba(4,8,20,0.7)',
-              backdropFilter: 'blur(16px)',
+              position: 'absolute', bottom: '18px', right: isMobile ? 'auto' : '36px', left: isMobile ? '50%' : 'auto',
+              transform: isMobile ? 'translateX(-50%)' : 'none',
+              zIndex: 4, display: 'flex', gap: '6px', alignItems: 'center'
             }}>
-              <div style={{
-                maxWidth: '94%', margin: '0 auto',
-                display: 'grid',
-                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-                gap: isMobile ? '16px' : '24px',
-                padding: isMobile ? '20px 0' : '24px 0',
-              }}>
-                {[
-                  { icon: '👥', num: '15K+', label: 'Happy Families', sub: 'Trusted Us' },
-                  { icon: '🏢', num: '500+', label: 'Premium Properties', sub: 'Across Pune' },
-                  { icon: '🤝', num: '100%', label: 'RERA Approved', sub: 'Projects' },
-                  { icon: '⭐', num: '5 ★', label: 'Google Rating', sub: 'From 1000+ Clients' },
-                ].map((stat, i) => (
-                  <div key={i} style={{
-                    display: 'flex', alignItems: 'center', gap: '14px',
-                    justifyContent: isMobile ? 'flex-start' : 'center',
-                    borderRight: (!isMobile && i < 3) ? '1px solid rgba(212,175,55,0.12)' : 'none',
-                  }}>
-                    <div style={{
-                      width: '42px', height: '42px', borderRadius: '50%',
-                      background: 'rgba(212,175,55,0.08)',
-                      border: '1px solid rgba(212,175,55,0.25)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '1.2rem', flexShrink: 0
-                    }}>{stat.icon}</div>
-                    <div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel',serif", lineHeight: 1.1 }}>{stat.num}</div>
-                      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#fff', fontFamily: "'Montserrat',sans-serif", lineHeight: 1.2 }}>{stat.label}</div>
-                      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontFamily: "'Montserrat',sans-serif" }}>{stat.sub}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {HERO_SLIDES.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goToHeroSlide(i)}
+                  aria-label={`Slide ${i + 1}`}
+                  style={{
+                    width: i === heroSlide ? '20px' : '6px',
+                    height: '6px',
+                    borderRadius: '50px',
+                    background: i === heroSlide ? '#D4AF37' : 'rgba(255,255,255,0.3)',
+                    border: 'none', cursor: 'pointer', padding: 0,
+                    transition: 'all 0.35s ease',
+                    boxShadow: i === heroSlide ? '0 0 8px rgba(212,175,55,0.6)' : 'none',
+                  }}
+                />
+              ))}
             </div>
 
           </section>
