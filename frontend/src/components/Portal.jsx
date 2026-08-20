@@ -3561,58 +3561,56 @@ export default function Portal({ onViewChange }) {
               {/* ── LEFT: Text + CTAs + Trust Badges ── */}
               <div style={{ flex: '0 0 55%', maxWidth: isMobile ? '100%' : '55%' }}>
 
-                {/* "Since" badge with shield */}
+                {/* "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" pill */}
                 <div style={{
                   display: 'inline-flex', alignItems: 'center', gap: '8px',
                   background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.25)',
-                  borderRadius: '50px', padding: '5px 14px', marginBottom: '24px'
+                  borderRadius: '50px', padding: '6px 16px', marginBottom: '22px'
                 }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#C5A880', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                    PUNE'S MOST TRUSTED ADVISORY SINCE 2011
+                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                    ★ PUNE'S MOST TRUSTED PROPERTY CONSULTANTS
                   </span>
                 </div>
 
-                {/* H1 */}
+                {/* Main Headline */}
                 <h1 style={{
                   fontFamily: "'Cinzel', serif",
-                  fontSize: isMobile ? 'clamp(2.2rem, 7vw, 3.5rem)' : 'clamp(2.8rem, 4.5vw, 5rem)',
-                  color: '#fff', lineHeight: 1.1,
+                  fontSize: isMobile ? 'clamp(2.2rem, 7vw, 3.2rem)' : 'clamp(2.8rem, 4.5vw, 4.8rem)',
+                  color: '#fff', lineHeight: 1.15,
                   margin: '0 0 18px 0', fontWeight: 700,
                   letterSpacing: '-0.01em',
-                  textShadow: '0 4px 20px rgba(0,0,0,0.5)'
+                  textShadow: '0 4px 24px rgba(0,0,0,0.6)'
                 }}>
-                  Pune's Most Coveted<br />
+                  Your Dream<br />
                   <span style={{
                     background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 40%, #C5A880 100%)',
                     WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
-                  }}>Addresses,<br />Curated For You</span>
+                  }}>Homes Awaits<br />in Hinjewadi.</span>
                 </h1>
 
+                {/* Subtitle */}
                 <p style={{
                   fontFamily: "'Montserrat', sans-serif",
-                  fontSize: isMobile ? '0.92rem' : '1.05rem',
-                  color: 'rgba(255,255,255,0.80)',
-                  lineHeight: 1.65, marginBottom: '32px',
-                  maxWidth: '480px'
+                  fontSize: isMobile ? '0.92rem' : '1.02rem',
+                  color: 'rgba(255,255,255,0.82)',
+                  lineHeight: 1.65, marginBottom: '28px',
+                  maxWidth: '520px'
                 }}>
-                  Where legacy builders meet 100% MahaRERA verified 2, 3 & 4 BHK homes in Hinjewadi Phase 1–3, Wakad, Baner, Mahalunge Smart City & Kharadi.
+                  3 &amp; 4 BHK Premium Homes in Hinjewadi Phase 1, 2, 3 &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
                 </p>
 
                 {/* CTAs */}
-                <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '36px' }}>
+                <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '28px' }}>
                   <button
                     onClick={() => {
                       const el = document.getElementById('listings-anchor');
                       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
                     style={{
-                      background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                      background: 'linear-gradient(135deg, #C59B27 0%, #E6C35C 50%, #B8860B 100%)',
                       border: 'none', color: '#040814',
-                      padding: '14px 30px', borderRadius: '30px',
-                      fontWeight: 700, fontFamily: "'Montserrat', sans-serif",
+                      padding: '14px 28px', borderRadius: '30px',
+                      fontWeight: 800, fontFamily: "'Montserrat', sans-serif",
                       fontSize: '0.84rem', letterSpacing: '0.06em', cursor: 'pointer',
                       boxShadow: '0 8px 24px rgba(230,195,92,0.35)',
                       transition: 'all 0.3s ease',
@@ -3622,146 +3620,119 @@ export default function Portal({ onViewChange }) {
                     onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(230,195,92,0.35)'; }}
                   >
                     <span>EXPLORE PROJECTS</span>
-                    <ArrowRight size={14} />
+                    <ArrowRight size={15} />
                   </button>
 
                   <button
                     onClick={handleOpenInquiry}
                     style={{
-                      background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(230,195,92,0.35)',
-                      color: '#FFF4D0', padding: '14px 30px', borderRadius: '30px',
+                      background: 'rgba(7,15,30,0.6)', border: '1px solid rgba(230,195,92,0.4)',
+                      color: '#FFF4D0', padding: '14px 26px', borderRadius: '30px',
                       fontWeight: 700, fontFamily: "'Montserrat', sans-serif",
                       fontSize: '0.84rem', letterSpacing: '0.06em', cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       display: 'inline-flex', alignItems: 'center', gap: '8px'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(230,195,92,0.06)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(230,195,92,0.1)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(7,15,30,0.6)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                   >
                     <Phone size={14} style={{ color: '#E6C35C' }} />
-                    <span>TALK TO PUNE ADVISOR</span>
+                    <span>TALK TO OUR EXPERTS</span>
                   </button>
                 </div>
 
-                {/* ── TRUST BADGES ROW — 5 badges, mobile-first ── */}
+                {/* ── TRUST BADGES ROW (Matching Image) ── */}
                 <div style={{
-                  display: 'flex', gap: isMobile ? '14px' : '20px', flexWrap: 'wrap', alignItems: 'center',
-                  background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.12)',
-                  borderRadius: '14px', padding: isMobile ? '14px 16px' : '16px 24px',
+                  display: 'flex', gap: isMobile ? '10px' : '12px', flexWrap: 'wrap', alignItems: 'center',
                 }}>
                   {[
-                    { icon: '⭐', label: '15 YEARS', sub: 'EST. 2011' },
-                    { icon: '🛡️', label: 'MahaRERA', sub: 'A051262603190' },
-                    { icon: '💸', label: '0% BROKERAGE', sub: 'NEW BOOKINGS' },
-                    { icon: '🏦', label: 'SBI / HDFC LOANS', sub: 'FROM 8.35% p.a.' },
-                    { icon: '✔️', label: 'PMC / PMRDA', sub: 'TITLE VERIFIED' },
+                    { icon: '✔️', title: 'Verified Properties', sub: 'RERA Approved' },
+                    { icon: '👤', title: 'Expert Guidance', sub: 'End to End Support' },
+                    { icon: '⚙️', title: 'Best Price Guarantee', sub: 'No Hidden Charges' },
+                    { icon: '📍', title: 'Site Visits', sub: 'Hassle Free' },
                   ].map((badge, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '80px' }}>
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      background: 'rgba(7,15,30,0.75)', border: '1px solid rgba(212,175,55,0.22)',
+                      borderRadius: '50px', padding: '6px 14px',
+                    }}>
                       <div style={{
-                        width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0,
-                        border: i === 0 ? '1.5px solid rgba(212,175,55,0.6)' : '1px solid rgba(212,175,55,0.3)',
-                        background: i === 0 ? 'rgba(212,175,55,0.12)' : 'rgba(212,175,55,0.06)',
+                        width: '22px', height: '22px', borderRadius: '50%',
+                        background: 'rgba(212,175,55,0.15)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '1rem', boxShadow: i === 0 ? '0 0 12px rgba(212,175,55,0.2)' : 'none',
+                        fontSize: '0.72rem', color: '#D4AF37'
                       }}>{badge.icon}</div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
-                        <span style={{ fontSize: '0.6rem', fontWeight: 800, color: i === 0 ? '#D4AF37' : 'rgba(255,255,255,0.88)', letterSpacing: '0.07em', textAlign: 'left', fontFamily: "'Montserrat',sans-serif", lineHeight: 1.2 }}>{badge.label}</span>
-                        <span style={{ fontSize: '0.55rem', fontWeight: 600, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.04em', fontFamily: "'Montserrat',sans-serif" }}>{badge.sub}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                        <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#fff', fontFamily: "'Montserrat',sans-serif" }}>{badge.title}</span>
+                        <span style={{ fontSize: '0.54rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', fontFamily: "'Montserrat',sans-serif" }}>{badge.sub}</span>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* ── RIGHT: Glass AI Search Card ── */}
+              {/* ── RIGHT: FIND YOUR PERFECT PROPERTY Search Card (Matching Image) ── */}
               {!isMobile && (
                 <div style={{
                   flex: '0 0 44%', maxWidth: '470px',
-                  background: 'rgba(7,15,30,0.80)',
+                  background: 'rgba(7,15,30,0.85)',
                   backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)',
-                  border: '1px solid rgba(212,175,55,0.3)',
+                  border: '1px solid rgba(212,175,55,0.35)',
                   borderRadius: '18px',
-                  padding: '28px 26px',
+                  padding: '24px 22px',
                   boxShadow: '0 32px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08)',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                  <div style={{ marginBottom: '16px' }}>
                     <p style={{
-                      fontFamily: "'Cinzel',serif", fontSize: '0.9rem', fontWeight: 700,
+                      fontFamily: "'Cinzel',serif", fontSize: '0.88rem', fontWeight: 700,
                       color: '#D4AF37', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0
                     }}>FIND YOUR PERFECT PROPERTY</p>
-
-                    <button
-                      onClick={() => { setIsAiModalOpen(true); setAiStep(1); }}
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(230,195,92,0.2) 0%, rgba(212,175,55,0.08) 100%)',
-                        border: '1px solid rgba(230,195,92,0.4)',
-                        borderRadius: '50px', padding: '4px 10px',
-                        fontSize: '0.66rem', fontWeight: 800, color: '#FFF4D0',
-                        cursor: 'pointer', fontFamily: "'Montserrat',sans-serif",
-                        display: 'inline-flex', alignItems: 'center', gap: '4px'
-                      }}
-                      title="AI Location Intelligence Engine"
-                    >
-                      <Sparkles size={11} color="#E6C35C" />
-                      <span>AI Match</span>
-                    </button>
                   </div>
 
-                  {/* Location Select Dropdown */}
-                  <div style={{ marginBottom: '12px', position: 'relative' }}>
-                    <div style={{
-                      position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
-                      pointerEvents: 'none', zIndex: 1
-                    }}>
-                      <MapPin size={16} color="#D4AF37" />
-                    </div>
-                    <select
-                      value={searchLocation}
-                      onChange={(e) => setSearchLocation(e.target.value)}
-                      style={{
-                        width: '100%',
-                        background: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.12)',
-                        borderRadius: '10px',
-                        padding: '12px 14px 12px 40px',
-                        color: searchLocation ? '#FFF' : 'rgba(255,255,255,0.7)',
-                        fontSize: '0.85rem',
-                        fontFamily: "'Montserrat',sans-serif",
-                        cursor: 'pointer',
-                        outline: 'none',
-                        appearance: 'none',
-                        WebkitAppearance: 'none'
-                      }}
-                    >
-                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>All Locations (Hinjewadi, Wakad, Baner...)</option>
-                      <option value="HINJEWADI" style={{ background: '#070f1e', color: '#fff' }}>Hinjewadi Phase 1, 2 & 3</option>
-                      <option value="WAKAD" style={{ background: '#070f1e', color: '#fff' }}>Wakad & Datta Mandir Rd</option>
-                      <option value="BANER" style={{ background: '#070f1e', color: '#fff' }}>Baner & High Street</option>
-                      <option value="MAHALUNGE" style={{ background: '#070f1e', color: '#fff' }}>Mahalunge Smart City</option>
-                      <option value="TATHAWADE" style={{ background: '#070f1e', color: '#fff' }}>Tathawade</option>
-                      <option value="BALEWADI" style={{ background: '#070f1e', color: '#fff' }}>Balewadi Stadium Corridor</option>
-                    </select>
-                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                      <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
-                    </div>
+                  {/* Tabs: Buy | Rent | Commercial */}
+                  <div style={{
+                    display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+                    background: 'rgba(255,255,255,0.05)', borderRadius: '10px',
+                    padding: '4px', marginBottom: '14px', gap: '4px'
+                  }}>
+                    {[
+                      { id: 'BUY', label: 'Buy' },
+                      { id: 'RENT', label: 'Rent' },
+                      { id: 'COMMERCIAL', label: 'Commercial' },
+                    ].map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setHeroTab(tab.id)}
+                        style={{
+                          padding: '8px 0', border: 'none', borderRadius: '8px',
+                          fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                          fontFamily: "'Montserrat',sans-serif",
+                          transition: 'all 0.25s ease',
+                          background: heroTab === tab.id
+                            ? 'linear-gradient(135deg, #C59B27 0%, #A0741B 100%)'
+                            : 'transparent',
+                          color: heroTab === tab.id ? '#FFF' : 'rgba(255,255,255,0.7)',
+                          boxShadow: heroTab === tab.id ? '0 4px 12px rgba(0,0,0,0.3)' : 'none',
+                        }}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
                   </div>
 
-                  {/* Property Type Select Dropdown */}
-                  <div style={{ marginBottom: '12px', position: 'relative' }}>
-                    <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', zIndex: 1 }}>
-                      <Building size={16} color="#D4AF37" />
-                    </div>
+                  {/* Dropdown 1: Property Type */}
+                  <div style={{ marginBottom: '10px', position: 'relative' }}>
                     <select
                       value={searchPropType}
                       onChange={(e) => setSearchPropType(e.target.value)}
                       style={{
                         width: '100%',
-                        background: 'rgba(255,255,255,0.05)',
+                        background: 'rgba(255,255,255,0.04)',
                         border: '1px solid rgba(255,255,255,0.12)',
                         borderRadius: '10px',
-                        padding: '12px 14px 12px 40px',
+                        padding: '11px 36px 11px 14px',
                         color: searchPropType ? '#FFF' : 'rgba(255,255,255,0.7)',
-                        fontSize: '0.85rem',
+                        fontSize: '0.82rem',
                         fontFamily: "'Montserrat',sans-serif",
                         cursor: 'pointer',
                         outline: 'none',
@@ -3769,33 +3740,63 @@ export default function Portal({ onViewChange }) {
                         WebkitAppearance: 'none'
                       }}
                     >
-                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>All Property Types</option>
-                      <option value="RESIDENTIAL" style={{ background: '#070f1e', color: '#fff' }}>Luxury Apartments (2 & 3 BHK)</option>
-                      <option value="VILLA" style={{ background: '#070f1e', color: '#fff' }}>Gated Villas & Townhouses</option>
-                      <option value="COMMERCIAL" style={{ background: '#070f1e', color: '#fff' }}>Commercial Offices & Retail</option>
+                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>Select Property Type</option>
+                      <option value="RESIDENTIAL" style={{ background: '#070f1e', color: '#fff' }}>Apartments / Flats</option>
+                      <option value="VILLA" style={{ background: '#070f1e', color: '#fff' }}>Luxury Villas &amp; Townhouses</option>
                       <option value="PENTHOUSE" style={{ background: '#070f1e', color: '#fff' }}>Sky Penthouses</option>
+                      <option value="COMMERCIAL" style={{ background: '#070f1e', color: '#fff' }}>Commercial Offices &amp; Retail</option>
                     </select>
                     <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                      <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
+                      <ChevronDown size={14} color="rgba(255,255,255,0.45)" />
                     </div>
                   </div>
 
-                  {/* Budget Range Select Dropdown */}
-                  <div style={{ marginBottom: '20px', position: 'relative' }}>
-                    <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', zIndex: 1 }}>
-                      <Calculator size={16} color="#D4AF37" />
+                  {/* Dropdown 2: Locality */}
+                  <div style={{ marginBottom: '10px', position: 'relative' }}>
+                    <select
+                      value={searchLocation}
+                      onChange={(e) => setSearchLocation(e.target.value)}
+                      style={{
+                        width: '100%',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        borderRadius: '10px',
+                        padding: '11px 36px 11px 14px',
+                        color: searchLocation ? '#FFF' : 'rgba(255,255,255,0.7)',
+                        fontSize: '0.82rem',
+                        fontFamily: "'Montserrat',sans-serif",
+                        cursor: 'pointer',
+                        outline: 'none',
+                        appearance: 'none',
+                        WebkitAppearance: 'none'
+                      }}
+                    >
+                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>Select Locality (Hinjewadi, Wakad, Baner...)</option>
+                      <option value="HINJEWADI" style={{ background: '#070f1e', color: '#fff' }}>Hinjewadi Phase 1, 2 &amp; 3</option>
+                      <option value="MAHALUNGE" style={{ background: '#070f1e', color: '#fff' }}>Mahalunge Smart City</option>
+                      <option value="WAKAD" style={{ background: '#070f1e', color: '#fff' }}>Wakad</option>
+                      <option value="BANER" style={{ background: '#070f1e', color: '#fff' }}>Baner</option>
+                      <option value="BALEWADI" style={{ background: '#070f1e', color: '#fff' }}>Balewadi</option>
+                      <option value="TATHAWADE" style={{ background: '#070f1e', color: '#fff' }}>Tathawade</option>
+                    </select>
+                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                      <ChevronDown size={14} color="rgba(255,255,255,0.45)" />
                     </div>
+                  </div>
+
+                  {/* Dropdown 3: Budget Range */}
+                  <div style={{ marginBottom: '10px', position: 'relative' }}>
                     <select
                       value={searchBudget}
                       onChange={(e) => setSearchBudget(e.target.value)}
                       style={{
                         width: '100%',
-                        background: 'rgba(255,255,255,0.05)',
+                        background: 'rgba(255,255,255,0.04)',
                         border: '1px solid rgba(255,255,255,0.12)',
                         borderRadius: '10px',
-                        padding: '12px 14px 12px 40px',
+                        padding: '11px 36px 11px 14px',
                         color: searchBudget ? '#FFF' : 'rgba(255,255,255,0.7)',
-                        fontSize: '0.85rem',
+                        fontSize: '0.82rem',
                         fontFamily: "'Montserrat',sans-serif",
                         cursor: 'pointer',
                         outline: 'none',
@@ -3803,24 +3804,58 @@ export default function Portal({ onViewChange }) {
                         WebkitAppearance: 'none'
                       }}
                     >
-                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>All Budget Ranges</option>
+                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>Budget Range</option>
                       <option value="50L-80L" style={{ background: '#070f1e', color: '#fff' }}>₹50 Lacs – ₹80 Lacs</option>
                       <option value="80L-1.2CR" style={{ background: '#070f1e', color: '#fff' }}>₹80 Lacs – ₹1.2 Crores</option>
-                      <option value="1.2CR-2CR" style={{ background: '#070f1e', color: '#fff' }}>₹1.2 Crores – ₹2.0 Crores</option>
-                      <option value="2CR+" style={{ background: '#070f1e', color: '#fff' }}>₹2.0 Crores & Above (Ultra Luxury)</option>
+                      <option value="1.2CR-2.5CR" style={{ background: '#070f1e', color: '#fff' }}>₹1.2 Crores – ₹2.5 Crores</option>
+                      <option value="2.5CR+" style={{ background: '#070f1e', color: '#fff' }}>₹2.5 Crores &amp; Above</option>
                     </select>
                     <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                      <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
+                      <ChevronDown size={14} color="rgba(255,255,255,0.45)" />
                     </div>
                   </div>
 
-                  {/* Search Button */}
+                  {/* Dropdown 4: BHK Configuration */}
+                  <div style={{ marginBottom: '16px', position: 'relative' }}>
+                    <select
+                      value={searchBHK}
+                      onChange={(e) => setSearchBHK(e.target.value)}
+                      style={{
+                        width: '100%',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        borderRadius: '10px',
+                        padding: '11px 36px 11px 14px',
+                        color: searchBHK ? '#FFF' : 'rgba(255,255,255,0.7)',
+                        fontSize: '0.82rem',
+                        fontFamily: "'Montserrat',sans-serif",
+                        cursor: 'pointer',
+                        outline: 'none',
+                        appearance: 'none',
+                        WebkitAppearance: 'none'
+                      }}
+                    >
+                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>BHK Configuration</option>
+                      <option value="1" style={{ background: '#070f1e', color: '#fff' }}>1 BHK</option>
+                      <option value="2" style={{ background: '#070f1e', color: '#fff' }}>2 BHK</option>
+                      <option value="3" style={{ background: '#070f1e', color: '#fff' }}>3 BHK</option>
+                      <option value="4" style={{ background: '#070f1e', color: '#fff' }}>4 BHK</option>
+                      <option value="5" style={{ background: '#070f1e', color: '#fff' }}>5+ BHK / Penthouse</option>
+                    </select>
+                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                      <ChevronDown size={14} color="rgba(255,255,255,0.45)" />
+                    </div>
+                  </div>
+
+                  {/* Search CTA */}
                   <button
                     onClick={() => {
                       const filtersObj = {};
                       if (searchLocation) filtersObj.location = searchLocation;
                       if (searchPropType) filtersObj.propertyType = searchPropType;
                       if (searchBudget) filtersObj.budgetRange = searchBudget;
+                      if (searchBHK) filtersObj.bedrooms = searchBHK;
+                      if (heroTab) filtersObj.transactionType = heroTab;
                       handleApplyMegaFilter(filtersObj, 'listings');
                       setTimeout(() => {
                         const el = document.getElementById('listings-anchor');
@@ -3828,89 +3863,61 @@ export default function Portal({ onViewChange }) {
                       }, 100);
                     }}
                     style={{
-                      width: '100%', padding: '14px',
-                      background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)',
+                      width: '100%', padding: '13px',
+                      background: 'linear-gradient(135deg, #C59B27 0%, #D4AF37 50%, #AA7C1E 100%)',
                       border: 'none', borderRadius: '10px',
                       color: '#040814', fontWeight: 800,
                       fontFamily: "'Montserrat',sans-serif",
-                      fontSize: '0.88rem', letterSpacing: '0.08em',
-                      cursor: 'pointer', boxShadow: '0 6px 20px rgba(230,195,92,0.35)',
+                      fontSize: '0.84rem', letterSpacing: '0.08em',
+                      cursor: 'pointer', boxShadow: '0 6px 20px rgba(197,155,39,0.35)',
                       transition: 'all 0.3s ease',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(230,195,92,0.5)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(230,195,92,0.35)'; }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <Search size={15} />
                     SEARCH PROPERTIES
                   </button>
-
-                  {/* Popular Searches */}
-                  <div style={{ marginTop: '16px' }}>
-                    <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)', fontFamily: "'Montserrat',sans-serif", marginBottom: '8px' }}>Popular Searches:</p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                      {['Hinjewadi Phase 1 & 2', 'Wakad Datta Mandir', 'Mahalunge Smart City', 'Baner High Street'].map((tag, i) => (
-                        <button key={i}
-                          onClick={() => {
-                            const loc = tag.split(' ')[0].toUpperCase();
-                            setSearchLocation(loc);
-                            handleApplyMegaFilter({ location: loc }, 'listings');
-                            setTimeout(() => { document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
-                          }}
-                          style={{
-                            background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                            borderRadius: '50px', padding: '4px 10px',
-                            fontSize: '0.68rem', color: 'rgba(255,255,255,0.65)',
-                            cursor: 'pointer', fontFamily: "'Montserrat',sans-serif",
-                            transition: 'all 0.2s ease'
-                          }}
-                          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'; e.currentTarget.style.color = '#E6C35C'; }}
-                          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}
-                        >{tag}</button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
 
-            {/* ── STATS BAR — bottom of hero ── */}
+            {/* ── STATS BAR STRIP (Matching Image) ── */}
             <div style={{
               position: 'relative', zIndex: 2,
               width: '100%',
               borderTop: '1px solid rgba(212,175,55,0.12)',
-              background: 'rgba(4,8,20,0.65)',
+              background: 'rgba(4,8,20,0.7)',
               backdropFilter: 'blur(16px)',
             }}>
               <div style={{
                 maxWidth: '94%', margin: '0 auto',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-                flexWrap: 'wrap', gap: '0',
-                padding: isMobile ? '16px 0' : '18px 0',
+                display: 'grid',
+                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+                gap: isMobile ? '16px' : '24px',
+                padding: isMobile ? '20px 0' : '24px 0',
               }}>
                 {[
-                  { icon: '⭐', num: '15+', label: 'Years of Legacy', sub: 'Est. 2011' },
-                  { icon: '🏠', num: '800+', label: 'Active Listings', sub: 'MahaRERA Verified' },
-                  { icon: '👥', num: '150+', label: 'Families Served', sub: 'Across Pune West' },
-                  { icon: '🤝', num: '100%', label: 'Transparency', sub: 'No Hidden Deals' },
-                  { icon: '📋', num: 'RERA', label: 'Registered', sub: 'A051262603190' },
+                  { icon: '👥', num: '15K+', label: 'Happy Families', sub: 'Trusted Us' },
+                  { icon: '🏢', num: '500+', label: 'Premium Properties', sub: 'Across Pune' },
+                  { icon: '🤝', num: '100%', label: 'RERA Approved', sub: 'Projects' },
+                  { icon: '⭐', num: '5 ★', label: 'Google Rating', sub: 'From 1000+ Clients' },
                 ].map((stat, i) => (
                   <div key={i} style={{
-                    display: 'flex', alignItems: 'center', gap: '10px',
-                    padding: isMobile ? '8px 12px' : '10px 24px',
-                    borderRight: i < 4 ? '1px solid rgba(212,175,55,0.12)' : 'none',
+                    display: 'flex', alignItems: 'center', gap: '14px',
+                    justifyContent: isMobile ? 'flex-start' : 'center',
+                    borderRight: (!isMobile && i < 3) ? '1px solid rgba(212,175,55,0.12)' : 'none',
                   }}>
                     <div style={{
-                      width: '36px', height: '36px', borderRadius: '50%',
-                      border: '1px solid rgba(212,175,55,0.25)',
+                      width: '42px', height: '42px', borderRadius: '50%',
                       background: 'rgba(212,175,55,0.08)',
+                      border: '1px solid rgba(212,175,55,0.25)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '1rem', flexShrink: 0
+                      fontSize: '1.2rem', flexShrink: 0
                     }}>{stat.icon}</div>
                     <div>
-                      <div style={{ fontSize: isMobile ? '1.1rem' : '1.25rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel',serif", lineHeight: 1.1 }}>{stat.num}</div>
-                      <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'rgba(255,255,255,0.75)', fontFamily: "'Montserrat',sans-serif", lineHeight: 1.2 }}>{stat.label}</div>
-                      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.45)', fontFamily: "'Montserrat',sans-serif" }}>{stat.sub}</div>
+                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel',serif", lineHeight: 1.1 }}>{stat.num}</div>
+                      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#fff', fontFamily: "'Montserrat',sans-serif", lineHeight: 1.2 }}>{stat.label}</div>
+                      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontFamily: "'Montserrat',sans-serif" }}>{stat.sub}</div>
                     </div>
                   </div>
                 ))}
@@ -4295,189 +4302,7 @@ export default function Portal({ onViewChange }) {
         </section>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          ✦ HINJEWADI PHASE 1·2·3 & MAHALUNGE — COMPLETE SOCIETY DIRECTORY
-      ══════════════════════════════════════════════════════════════════════ */}
-      {!selectedPropertyDetail && !activeSubView && (() => {
-        const HINJEWADI_SOCIETIES = [
-          // ── PHASE 1 ──────────────────────────────────────────────
-          { phase: 'Phase 1', name: 'Life Republic', developer: 'Kolte-Patil Developers', config: '1/2/3/4 BHK', startPrice: '₹65L', pricePerSqft: '₹7,800', area: '400 Acres', possession: '2024–2026', investScore: 95, yield: '5.2%', apprec: '+14%', metro: '1.2 km', itParks: 'Hinjewadi Phase 1 IT Park (0.5 km)', vastuNote: 'North-East entrance towers available. Ask for A-wing NE facing 2BHK.', nriNote: 'NRI-friendly builder. Virtual tours & PoA execution support available.', badge: '🏆 Best Value', color: '#E6C35C' },
-          { phase: 'Phase 1', name: 'Blue Ridge Township', developer: 'Paranjape Schemes', config: '2/3 BHK', startPrice: '₹75L', pricePerSqft: '₹8,200', area: '138 Acres', possession: '2024–2025', investScore: 90, yield: '4.8%', apprec: '+12%', metro: '1.8 km', itParks: 'Embassy Techzone (0.8 km)', vastuNote: 'Square-plan residences available. River-facing units with East/North light.', nriNote: 'Paranjape has dedicated NRI helpdesk. FEMA-compliant documentation.', badge: '🌊 Riverfront', color: '#60A5FA' },
-          { phase: 'Phase 1', name: 'Joyville Sensorium', developer: 'Shapoorji Pallonji', config: '2/3 BHK', startPrice: '₹85L', pricePerSqft: '₹9,000', area: '25 Acres', possession: '2025–2026', investScore: 92, yield: '4.9%', apprec: '+13%', metro: '0.9 km', itParks: 'TCS/Infosys Hinjewadi (1 km)', vastuNote: 'East-facing residences available. Smart home layouts with Brahmasthan open center.', nriNote: 'Shapoorji trusted by 1000+ NRI families. Virtual site tour + NRI account support.', badge: '⚡ Smart Home', color: '#A78BFA' },
-          { phase: 'Phase 1', name: 'Godrej Woodsville', developer: 'Godrej Properties', config: '2/3 BHK', startPrice: '₹90L', pricePerSqft: '₹9,500', area: '50 Acres', possession: '2025', investScore: 93, yield: '5.0%', apprec: '+15%', metro: '1.1 km', itParks: 'Hinjewadi IT Park Phase 1 (0.3 km)', vastuNote: '80% green open spaces. North-light units available with cross-ventilation.', nriNote: 'Godrej brand trusted globally. Dedicated NRI investment desk in Dubai & Singapore.', badge: '🌿 Green Living', color: '#34D399' },
-          { phase: 'Phase 1', name: 'Lodha Panache', developer: 'Lodha Group', config: '3/4 BHK', startPrice: '₹1.2Cr', pricePerSqft: '₹11,500', area: '12 Acres', possession: '2025', investScore: 91, yield: '4.5%', apprec: '+16%', metro: '1.5 km', itParks: 'Embassy Techzone (0.6 km)', vastuNote: 'Premium corner units. 5-star lobby with East-facing master bedrooms.', nriNote: 'Lodha operates in UAE & UK markets. NRI registration with MahaRERA simplified.', badge: '👑 Ultra-Luxury', color: '#FB923C' },
-          { phase: 'Phase 1', name: 'VTP Bellissimo', developer: 'VTP Realty', config: '2/3 BHK', startPrice: '₹72L', pricePerSqft: '₹8,000', area: '18 Acres', possession: 'Ready', investScore: 89, yield: '5.5%', apprec: '+11%', metro: '1.3 km', itParks: 'Hinjewadi IT Park Phase 1 (0.2 km)', vastuNote: 'Ready possession. North-East facing units in B-wing immediately available.', nriNote: 'Ready to move. Immediate rental income for NRI investors. 5.5% avg yield.', badge: '✅ Ready Now', color: '#10B981' },
-          { phase: 'Phase 1', name: 'Park Titan', developer: 'Pride Purple Group', config: '2/3 BHK', startPrice: '₹68L', pricePerSqft: '₹7,600', area: '6 Acres', possession: '2025', investScore: 86, yield: '5.0%', apprec: '+12%', metro: '1.6 km', itParks: 'TCS Digital Hinjewadi (0.7 km)', vastuNote: '"Achiever\'s Park" concept. East-facing units with unobstructed sunrise views.', nriNote: 'Competitive pricing for NRI first-time buyers in Pune. Bank loan pre-approved.', badge: '🏅 Achiever\'s Park', color: '#F59E0B' },
-          { phase: 'Phase 1', name: 'Megapolis (Marvel)', developer: 'Marvel Realtors', config: '1/2/3 BHK', startPrice: '₹55L', pricePerSqft: '₹6,800', area: '150 Acres', possession: 'Various', investScore: 82, yield: '5.8%', apprec: '+10%', metro: '2 km', itParks: 'Hinjewadi IT Park (1 km)', vastuNote: '150-acre township with multiple vastu-compliant building orientations available.', nriNote: 'Highest rental yield in the corridor — 5.8%. Ideal for NRI rental income portfolio.', badge: '💰 Best Yield', color: '#38BDF8' },
-          // ── PHASE 2 ──────────────────────────────────────────────
-          { phase: 'Phase 2', name: 'Kohinoor Coral & Famville', developer: 'Kohinoor Group', config: '2/3 BHK', startPrice: '₹70L', pricePerSqft: '₹8,200', area: '22 Acres', possession: '2025', investScore: 88, yield: '5.0%', apprec: '+12%', metro: '0.8 km', itParks: 'Wipro/Cognizant Ph2 (0.5 km)', vastuNote: 'Twin 22-story towers. Request vastu study report from 24K Realtors before booking.', nriNote: 'SADA SUKHI: 5-year warranty programme. NRI-specific assistance from Kohinoor desk.', badge: '✦ Kohinoor Series', color: '#A78BFA' },
-          { phase: 'Phase 2', name: 'VJ Yashwin Hinjewadi', developer: 'Vilas Javdekar (VJ)', config: '2/3 BHK', startPrice: '₹75L', pricePerSqft: '₹8,500', area: '10 Acres', possession: '2024', investScore: 87, yield: '4.8%', apprec: '+13%', metro: '1.2 km', itParks: 'Syntel/Capgemini (0.6 km)', vastuNote: 'North/East-facing units available on upper floors with hilltop views.', nriNote: 'VJ is a Pune-rooted builder. Local documentation support for NRI buyers.', badge: '🌆 City View', color: '#EC4899' },
-          { phase: 'Phase 2', name: 'Shapoorji Celestial', developer: 'Shapoorji Pallonji', config: '2/3 BHK', startPrice: '₹88L', pricePerSqft: '₹9,200', area: '8 Acres', possession: '2025', investScore: 90, yield: '4.7%', apprec: '+12%', metro: '0.9 km', itParks: 'Hinjewadi IT Phase 2 (0.3 km)', vastuNote: 'Smart home technology. South-West master bedrooms per vastu for stability.', nriNote: 'Shapoorji NRI concierge desk. Dubai/USA office coordination for NRI closures.', badge: '🌙 Celestial Series', color: '#818CF8' },
-          { phase: 'Phase 2', name: 'Kasturi EON Homes', developer: 'Kasturi Builders', config: '3/4 BHK', startPrice: '₹1.1Cr', pricePerSqft: '₹11,000', area: '4 Acres', possession: '2024', investScore: 89, yield: '4.5%', apprec: '+14%', metro: '1.4 km', itParks: 'Tech Mahindra Phase 2 (0.8 km)', vastuNote: '4-acre central courtyard. Corner units with NE + SE exposure for kitchen & entrance.', nriNote: 'Ultra-luxury builder. Ideal for NRI lifestyle purchase with heritage Italian marble.', badge: '💎 Ultra-Luxury', color: '#F472B6' },
-          // ── PHASE 3 ──────────────────────────────────────────────
-          { phase: 'Phase 3', name: 'Pharande Puneville', developer: 'Pharande Spaces', config: '2/3 BHK', startPrice: '₹62L', pricePerSqft: '₹7,200', area: '28 Acres', possession: '2025', investScore: 85, yield: '5.3%', apprec: '+16%', metro: '2.5 km', itParks: 'Rajiv Gandhi Infotech Park (2 km)', vastuNote: 'Sky-bridge township. NE entrance tower available — high vastu compliance score.', nriNote: 'Best appreciation rate in Phase 3 corridor. Early-stage NRI investor advantage.', badge: '🚀 Max Appreciation', color: '#F43F5E' },
-          { phase: 'Phase 3', name: 'TCG Crown Greens', developer: 'TCG Real Estate', config: '2/3 BHK', startPrice: '₹60L', pricePerSqft: '₹7,000', area: '6 Acres', possession: '2025', investScore: 83, yield: '5.5%', apprec: '+15%', metro: '3 km', itParks: 'Hinjewadi IT Phase 3 (0.5 km)', vastuNote: 'Hill-facing towers. Ask for units with North-light exposure towards Sahyadri hills.', nriNote: 'Emerging corridor — early-bird NRI pricing. Best value for long-term investment.', badge: '🏔️ Hill Views', color: '#38BDF8' },
-          { phase: 'Phase 3', name: 'Gera Joy on Treetop', developer: 'Gera Developments', config: '2/3 BHK', startPrice: '₹70L', pricePerSqft: '₹8,000', area: '9 Acres', possession: '2025', investScore: 86, yield: '5.0%', apprec: '+13%', metro: '2.2 km', itParks: 'Rajiv Gandhi IT Park (1.5 km)', vastuNote: 'Elevated treetop design. Abundant natural light and cross-ventilation — vastu ideal.', nriNote: 'Gera\'s 5-year post-possession warranty. Child-centric community — ideal for NRI families.', badge: '🌳 Treetop Living', color: '#10B981' },
-          { phase: 'Phase 3', name: 'Ceratec Westwind', developer: 'Ceratec Group', config: '2/3 BHK', startPrice: '₹58L', pricePerSqft: '₹6,800', area: '5 Acres', possession: '2026', investScore: 81, yield: '5.2%', apprec: '+14%', metro: '2.8 km', itParks: 'Hinjewadi IT Phase 3 (1 km)', vastuNote: 'Westward units with pleasant evening sun. Request East-wing for morning vastu.', nriNote: 'Ceratec offers NRI-specific payment plans with extended milestones.', badge: '🌬️ New Launch', color: '#60A5FA' },
-          // ── MAHALUNGE ──────────────────────────────────────────────
-          { phase: 'Mahalunge', name: 'VTP Blue Waters', developer: 'VTP Realty', config: '1/2/3/4 BHK', startPrice: '₹60L', pricePerSqft: '₹6,900', area: '100 Acres', possession: '2025–2027', investScore: 92, yield: '5.5%', apprec: '+18%', metro: '1.5 km', itParks: 'Hinjewadi IT Phase 1 (3 km)', vastuNote: '100-acre riverfront smart city. Multiple tower orientations — NE units on river side are vastu prime.', nriNote: 'Best appreciation in Mahalunge corridor. NRI investor community within society. VTP NRI desk.', badge: '💧 Riverfront Smart City', color: '#06B6D4' },
-          { phase: 'Mahalunge', name: 'VTP Earth One', developer: 'VTP Realty (Luxe)', config: '3/4 BHK', startPrice: '₹1.1Cr', pricePerSqft: '₹10,500', area: '10 Acres', possession: '2025', investScore: 90, yield: '5.0%', apprec: '+17%', metro: '1.6 km', itParks: 'Hinjewadi IT Phase 1 (3.5 km)', vastuNote: 'Premium Mahalunge high-street tower. South-West master bedrooms for stability as per vastu.', nriNote: 'Luxury NRI grade property. High rental demand from senior IT executives.', badge: '🌍 Luxury High-Rise', color: '#E6C35C' },
-          { phase: 'Mahalunge', name: 'Godrej Hillside', developer: 'Godrej Properties', config: '2/3 BHK', startPrice: '₹80L', pricePerSqft: '₹8,800', area: '15 Acres', possession: '2025', investScore: 89, yield: '4.8%', apprec: '+15%', metro: '1.8 km', itParks: 'Hinjewadi Phase 1 (3 km)', vastuNote: 'Hill-facing Godrej project. North-East entrance lobby. 70% open green space — vastu positive.', nriNote: 'Godrej global NRI network. Ideal blend of hill views + IT proximity for NRI families.', badge: '🌿 Hill Retreat', color: '#34D399' },
-          { phase: 'Mahalunge', name: 'Shapoorji Joyville Vyomora', developer: 'Shapoorji Pallonji', config: '2/3/4 BHK', startPrice: '₹90L', pricePerSqft: '₹9,500', area: '20 Acres', possession: '2025–2026', investScore: 93, yield: '5.0%', apprec: '+16%', metro: '1.3 km', itParks: 'Hinjewadi IT Phase 1 (2.8 km)', vastuNote: 'Named after "Vyomora" (sky + goddess). Sky-deck and open Brahmasthan central design.', nriNote: 'MahaRERA flagship NRI project. 24K Realtors is authorized Channel Partner. 0% brokerage.', badge: '🌠 Premium Launch', color: '#A78BFA' },
-        ];
 
-        const phases = ['Phase 1', 'Phase 2', 'Phase 3', 'Mahalunge'];
-        const phaseColors = { 'Phase 1': '#E6C35C', 'Phase 2': '#60A5FA', 'Phase 3': '#34D399', 'Mahalunge': '#06B6D4' };
-
-        return (
-          <section style={{
-            background: 'linear-gradient(180deg, #040814 0%, #06101e 50%, #040814 100%)',
-            padding: isMobile ? '48px 0 60px' : '72px 0 90px',
-            position: 'relative', overflow: 'hidden',
-          }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
-
-            <div style={{ maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 32px' }}>
-              {/* Section Header */}
-              <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
-                  <span style={{ color: '#D4AF37', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase' }}>📍 COMPLETE SOCIETY DIRECTORY</span>
-                </div>
-                <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.4rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
-                  Hinjewadi <span style={{ color: '#D4AF37' }}>Phase 1, 2, 3</span> & Mahalunge
-                </h2>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '620px', margin: '0 auto', lineHeight: 1.6 }}>
-                  Every major society 24K Realtors works with — with Vastu guidance, NRI investment notes, pricing, and metro connectivity. 15 years of local expertise.
-                </p>
-              </div>
-
-              {/* Phase Tabs */}
-              {phases.map(phase => {
-                const phaseSocs = HINJEWADI_SOCIETIES.filter(s => s.phase === phase);
-                const pc = phaseColors[phase];
-                return (
-                  <div key={phase} style={{ marginBottom: '48px' }}>
-                    {/* Phase Header */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
-                      <div style={{ flex: 1, height: '1px', background: `linear-gradient(90deg, ${pc}44, transparent)` }} />
-                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: `${pc}18`, border: `1px solid ${pc}55`, borderRadius: '50px', padding: '6px 20px' }}>
-                        <span style={{ color: pc, fontSize: '0.78rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Cinzel', serif" }}>
-                          {phase === 'Mahalunge' ? '🌆' : '🏙️'} Hinjewadi {phase !== 'Mahalunge' ? phase : ''} {phase === 'Mahalunge' ? 'Mahalunge Smart City' : ''}
-                        </span>
-                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem' }}>{phaseSocs.length} Projects</span>
-                      </div>
-                      <div style={{ flex: 1, height: '1px', background: `linear-gradient(-90deg, ${pc}44, transparent)` }} />
-                    </div>
-
-                    {/* Society Cards Grid */}
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: isMobile ? '1fr' : isWideDesktop ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
-                      gap: '16px',
-                    }}>
-                      {phaseSocs.map((soc, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => {
-                            setFilters(prev => ({ ...prev, query: soc.name.split(' ')[0] }));
-                            setPage(0);
-                            setActiveSection('listings');
-                            setTimeout(() => document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
-                          }}
-                          style={{
-                            background: 'rgba(7,15,30,0.7)', backdropFilter: 'blur(12px)',
-                            border: `1px solid rgba(${soc.color === '#E6C35C' ? '212,175,55' : '255,255,255'},0.08)`,
-                            borderRadius: '16px', padding: '20px',
-                            cursor: 'pointer', transition: 'all 0.3s ease',
-                            display: 'flex', flexDirection: 'column', gap: '14px',
-                          }}
-                          onMouseEnter={e => { e.currentTarget.style.borderColor = `${soc.color}55`; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 16px 40px rgba(0,0,0,0.6), 0 0 20px ${soc.color}22`; }}
-                          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-                        >
-                          {/* Top: Name + Badge */}
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
-                            <div>
-                              <div style={{ fontFamily: "'Cinzel', serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', lineHeight: 1.2, marginBottom: '3px' }}>{soc.name}</div>
-                              <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontFamily: "'Montserrat', sans-serif" }}>{soc.developer}</div>
-                            </div>
-                            <div style={{ background: `${soc.color}20`, border: `1px solid ${soc.color}44`, borderRadius: '50px', padding: '3px 10px', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                              <span style={{ fontSize: '0.58rem', fontWeight: 800, color: soc.color, letterSpacing: '0.06em' }}>{soc.badge}</span>
-                            </div>
-                          </div>
-
-                          {/* Price + Config */}
-                          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                            <div>
-                              <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1px' }}>Starting At</div>
-                              <div style={{ fontSize: '1.0rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>{soc.startPrice}</div>
-                            </div>
-                            <div>
-                              <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1px' }}>₹/Sqft</div>
-                              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'rgba(255,255,255,0.75)' }}>{soc.pricePerSqft}</div>
-                            </div>
-                            <div>
-                              <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1px' }}>Config</div>
-                              <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>{soc.config}</div>
-                            </div>
-                          </div>
-
-                          {/* Stats row */}
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-                            {[
-                              { label: 'Invest Score', val: `${soc.investScore}/100`, color: '#2EC4B6' },
-                              { label: 'Rental Yield', val: soc.yield, color: '#E6C35C' },
-                              { label: 'Appreciation', val: soc.apprec, color: '#34D399' },
-                            ].map((stat, si) => (
-                              <div key={si} style={{ background: `${stat.color}0A`, border: `1px solid ${stat.color}20`, borderRadius: '8px', padding: '6px 8px', textAlign: 'center' }}>
-                                <div style={{ fontSize: '0.72rem', fontWeight: 800, color: stat.color }}>{stat.val}</div>
-                                <div style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{stat.label}</div>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Metro + IT Parks */}
-                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: '0.62rem', background: 'rgba(66,133,244,0.1)', border: '1px solid rgba(66,133,244,0.25)', color: '#93C5FD', borderRadius: '50px', padding: '3px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              🚇 Metro {soc.metro}
-                            </span>
-                            <span style={{ fontSize: '0.62rem', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: 'rgba(255,255,255,0.55)', borderRadius: '50px', padding: '3px 10px' }}>
-                              💻 {soc.itParks}
-                            </span>
-                          </div>
-
-                          {/* Vastu Note */}
-                          <div style={{ background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '8px', padding: '10px 12px' }}>
-                            <div style={{ fontSize: '0.58rem', color: '#D4AF37', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>🔱 Vastu Guidance</div>
-                            <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>{soc.vastuNote}</div>
-                          </div>
-
-                          {/* NRI Note */}
-                          <div style={{ background: 'rgba(37,211,102,0.04)', border: '1px solid rgba(37,211,102,0.15)', borderRadius: '8px', padding: '10px 12px' }}>
-                            <div style={{ fontSize: '0.58rem', color: '#25D366', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>🌍 NRI Investor Note</div>
-                            <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>{soc.nriNote}</div>
-                          </div>
-
-                          {/* CTA */}
-                          <div style={{ display: 'flex', gap: '8px', marginTop: '2px' }}>
-                            <button
-                              onClick={e => { e.stopPropagation(); setFilters(prev => ({ ...prev, query: soc.name.split(' ')[0] })); setPage(0); setActiveSection('listings'); setTimeout(() => document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth' }), 200); }}
-                              style={{ flex: 1, padding: '8px 0', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.3)', color: '#E6C35C', borderRadius: '8px', fontSize: '0.68rem', fontWeight: 700, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif", transition: 'all 0.2s ease' }}
-                            >View Listings</button>
-                            <button
-                              onClick={e => { e.stopPropagation(); handleOpenInquiry(); }}
-                              style={{ flex: 1, padding: '8px 0', background: 'linear-gradient(135deg, rgba(212,175,55,0.85), rgba(184,140,28,0.9))', border: 'none', color: '#040814', borderRadius: '8px', fontSize: '0.68rem', fontWeight: 800, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif", transition: 'all 0.2s ease' }}
-                            >Enquire Now</button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        );
-      })()}
 
       {/* ══════════════════════════════════════════════════════════════════════
           ✦ VASTU & NRI BUYER'S GUIDE — Premium Glassmorphic Section
@@ -5782,10 +5607,10 @@ export default function Portal({ onViewChange }) {
                 </div>
               )}
 
-              {/* AI Parser Active Recommendation Chip */}
+              {/* Parser Active Recommendation Chip */}
               {spotlightQuery.trim().length > 0 && (
                 <div style={{ marginBottom: "18px" }}>
-                  <span style={{ fontSize: "0.62rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: "rgba(197,168,128,0.6)", letterSpacing: "0.08em", display: "block", marginBottom: "8px", textTransform: "uppercase" }}>🤖 AI NATURAL LANGUAGE INTENT</span>
+                  <span style={{ fontSize: "0.62rem", fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: "rgba(197,168,128,0.6)", letterSpacing: "0.08em", display: "block", marginBottom: "8px", textTransform: "uppercase" }}>⚡ SMART PROPERTY SEARCH INTENT</span>
                   <button
                     onClick={() => {
                       const parsed = parseNaturalQuery(spotlightQuery);
@@ -5915,7 +5740,7 @@ export default function Portal({ onViewChange }) {
               <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(230,195,92,0.2) 0%, transparent 70%)', border: '1px solid rgba(230,195,92,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px auto' }}>
                 <Sparkles size={24} color="#E6C35C" />
               </div>
-              <h2 style={{ margin: '0 0 4px 0', fontFamily: "'Cinzel', serif", fontSize: '1.35rem', color: '#fff', fontWeight: 700 }}>24K AI Investment Advisor</h2>
+              <h2 style={{ margin: '0 0 4px 0', fontFamily: "'Cinzel', serif", fontSize: '1.35rem', color: '#fff', fontWeight: 700 }}>24K Investment Advisory Engine</h2>
               <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontFamily: "'Montserrat', sans-serif" }}>3 quick inputs · instant market intelligence recommendation</p>
             </div>
 
@@ -5969,10 +5794,10 @@ export default function Portal({ onViewChange }) {
             {/* Step 3 — Preferred Area Selection */}
             {aiStep === 3 && (
               <div>
-                <p style={{ textAlign: 'center', fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)', marginBottom: '16px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>3. Select preferred corridor or let AI pick:</p>
+                <p style={{ textAlign: 'center', fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)', marginBottom: '16px', fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>3. Select preferred corridor or best match:</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '22px', justifyContent: 'center' }}>
                   {[
-                    ['all', '✨ AI Best Match'],
+                    ['all', '✨ Specialist Best Match'],
                     ['HINJEWADI', '💻 Hinjewadi'],
                     ['WAKAD', '🛣️ Wakad'],
                     ['BANER', '🏙️ Baner'],
@@ -5988,13 +5813,13 @@ export default function Portal({ onViewChange }) {
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(197,168,128,0.45)'; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(197,168,128,0.3)'; }}
                 >
-                  ✦ Compute AI Match Recommendation
+                  ✦ Generate Investment Recommendation
                 </button>
                 <button onClick={() => setAiStep(2)} style={{ marginTop: '14px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '0.8rem', fontFamily: "'Montserrat', sans-serif", display: 'block', margin: '14px auto 0 auto' }}>← Back to Priority</button>
               </div>
             )}
 
-            {/* Step 4 — AI Analysis Result Report Screen */}
+            {/* Step 4 — Analysis Result Report Screen */}
             {aiStep === 4 && (
               <div>
                 {aiAnalyzing ? (
@@ -6006,7 +5831,7 @@ export default function Portal({ onViewChange }) {
                 ) : aiReport ? (
                   <div style={{ animation: 'fadeIn 0.35s ease' }}>
                     <div style={{ background: 'rgba(230,195,92,0.08)', border: '1px solid rgba(230,195,92,0.35)', borderRadius: '16px', padding: '18px 20px', textAlign: 'center', marginBottom: '20px' }}>
-                      <span style={{ fontSize: '0.64rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.12em', textTransform: 'uppercase' }}>🎯 OPTIMAL AI MATCH RECOMMENDATION</span>
+                      <span style={{ fontSize: '0.64rem', fontWeight: 800, color: '#E6C35C', letterSpacing: '0.12em', textTransform: 'uppercase' }}>🎯 OPTIMAL INVESTMENT RECOMMENDATION</span>
                       <h3 style={{ margin: '8px 0 4px 0', fontFamily: "'Cinzel', serif", fontSize: '1.7rem', color: '#fff', fontWeight: 800 }}>
                         {aiReport.area} <span style={{ color: '#E6C35C', fontSize: '1.15rem' }}>({aiReport.matchPercent} Match)</span>
                       </h3>
@@ -6025,7 +5850,7 @@ export default function Portal({ onViewChange }) {
                         <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>Rental Yield</div>
                       </div>
                       <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px 6px' }}>
-                        <div style={{ fontSize: '1rem', fontWeight: 800, color: '#F59E0B' }}>{aiReport.connectivityScore}</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 800, color: '#F59E0B' }}>{aiReport.transitScore}</div>
                         <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>Transit Score</div>
                       </div>
                     </div>

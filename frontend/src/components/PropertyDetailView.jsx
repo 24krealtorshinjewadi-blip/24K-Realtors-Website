@@ -227,18 +227,6 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   /* ── Property metadata ── */
   const title         = property.title        || 'Godrej Woodsville';
   const location      = property.location     || 'Hinjewadi Phase 1, Pune';
-  const address       = property.address      || `${title}, Hinjewadi Phase 1, Pune`;
-
-  // Smart price formatter: < 1 Cr → show in Lakhs
-  const formatPrice = (p) => {
-    if (!p) return '₹85 L – ₹1.15 Cr*';
-    if (p >= 10000000) return `₹${(p / 10000000).toFixed(2)} Cr*`;
-    return `₹${Math.round(p / 100000)} L*`;
-  };
-  const price         = formatPrice(property.price);
-  const reraNumber    = property.reraNumber   || 'P52100046770';
-  const possession    = property.possessionDate || property.possession || 'Nov 2028';
-  const projectArea   = property.projectArea  || '4.54 Acres';
   const developerName = property.builderName  || property.developer || property.developerName
     || (title.toLowerCase().includes('godrej') ? 'Godrej Properties'
       : title.toLowerCase().includes('shapoorji') ? 'Shapoorji Pallonji Real Estate'
@@ -246,10 +234,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       : title.toLowerCase().includes('vtp') ? 'VTP Realty'
       : title.toLowerCase().includes('vilas') || title.toLowerCase().includes('yashwin') ? 'Vilas Javdekar (VJ)'
       : '24K Realtors');
-  const aiScore       = property.aiScore      || 94;
+  const investmentScore = property.investmentScore || property.aiScore || 94;
 
-  /* ── AI Chat logic ── */
-  const AI_SUGGESTED_QUESTIONS = [
+  /* ── Chat Concierge logic ── */
+  const CONCIERGE_SUGGESTED_QUESTIONS = [
     `What makes ${title} a good investment?`,
     `What is the possession date and RERA status?`,
     `Which BHK is best value for money here?`,
@@ -258,18 +246,18 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   ];
 
   // Pre-built intelligent responses based on property context
-  const getAiResponse = (question) => {
+  const getConciergeResponse = (question) => {
     const q = question.toLowerCase();
     const t = title;
     const loc = location;
     if (q.includes('investment') || q.includes('good')) {
-      return `${t} is an excellent investment for multiple reasons:\n\n• **Location Alpha**: Hinjewadi IT corridor has seen 18% price appreciation YoY — one of Pune's fastest growing micro-markets.\n• **Builder Trust**: ${developerName} has a 100% on-time delivery track record in Pune.\n• **Rental Yield**: Expected 4.8% rental yield post-possession, above the city average of 3.2%.\n• **Infrastructure**: Upcoming Metro connectivity will further boost property values by 15–20%.\n\nAI Verdict: Strong Buy. 🟢`;
+      return `${t} is an excellent investment for multiple reasons:\n\n• **Location Alpha**: Hinjewadi IT corridor has seen 18% price appreciation YoY — one of Pune's fastest growing micro-markets.\n• **Builder Trust**: ${developerName} has a 100% on-time delivery track record in Pune.\n• **Rental Yield**: Expected 4.8% rental yield post-possession, above the city average of 3.2%.\n• **Infrastructure**: Upcoming Metro connectivity will further boost property values by 15–20%.\n\nAdvisory Verdict: Strong Buy. 🟢`;
     }
     if (q.includes('possession') || q.includes('rera') || q.includes('status')) {
-      return `${t} possession details:\n\n• **Possession Date**: ${possession}\n• **RERA Number**: ${reraNumber}\n• **Construction Status**: On track — structure complete, finishing underway.\n• **RERA Verified**: Yes, registered with MahaRERA.\n\nYou can verify on maharera.mahaonline.gov.in using the RERA number above.`;
+      return `${t} possession details:\n\n• **Possession Date**: ${property.possessionDate || 'Nov 2028'}\n• **RERA Number**: ${property.reraNumber || 'P52100046770'}\n• **Construction Status**: On track — structure complete, finishing underway.\n• **RERA Verified**: Yes, registered with MahaRERA.\n\nYou can verify on maharera.mahaonline.gov.in using the RERA number above.`;
     }
     if (q.includes('bhk') || q.includes('value') || q.includes('money')) {
-      return `For best value at ${t}:\n\n• **2 BHK (761–858 sq.ft)** — Best for young professionals and couples. Lower ticket price, higher rental demand.\n• **3 BHK (904–973 sq.ft)** — Best for families. Better resale value long-term.\n\n📊 AI Recommendation: If budget allows, the **3 BHK** offers better ROI by ~12% over a 5-year horizon due to family demand in Hinjewadi.`;
+      return `For best value at ${t}:\n\n• **2 BHK (761–858 sq.ft)** — Best for young professionals and couples. Lower ticket price, higher rental demand.\n• **3 BHK (904–973 sq.ft)** — Best for families. Better resale value long-term.\n\n📊 Specialist Recommendation: If budget allows, the **3 BHK** offers better ROI by ~12% over a 5-year horizon due to family demand in Hinjewadi.`;
     }
     if (q.includes('connect') || q.includes('it hub') || q.includes('office') || q.includes('commute')) {
       return `${t} connectivity at ${loc}:\n\n• 🏢 **Hinjewadi IT Park Phase 1, 2 & 3**: 5–10 min drive\n• 🚇 **Metro Station (Wakad)**: 10 min\n• 🛣️ **Pune-Mumbai Expressway**: 10 min\n• 🏬 **Phoenix Mall of Millennium**: 15 min\n• ✈️ **Pune Airport**: 45 min\n\nIdeal for IT employees at Infosys, TCS, Wipro, Cognizant campuses nearby.`;
@@ -278,39 +266,38 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       return `Nearby facilities at ${t}:\n\n🏫 **Schools**:\n• Indus International School (5 km)\n• VIBGYOR High School (4 km)\n• Ryan International (6 km)\n\n🏥 **Hospitals**:\n• Medipoint Hospital (4 km)\n• Sahyadri Specialty Hospital (8 km)\n• Lifepoint Multispeciality Hospital (6 km)\n\n🛒 **Shopping**:\n• D-Mart Hinjewadi (3 km)\n• Phoenix Mall (15 min)`;
     }
     // Generic fallback
-    return `Great question about ${t}! Here's what I know:\n\n${t} is a ${developerName} project in ${loc}, offering 2 & 3 BHK premium homes from ${price}. With an AI Match Score of ${aiScore}%, this project ranks highly on location, builder trust, and future potential.\n\nFor more specific details, our expert advisors can give you a personalized consultation. Shall I connect you? 📞`;
+    return `Great question about ${t}! Here's what I know:\n\n${t} is a ${developerName} project in ${loc}, offering 2 & 3 BHK premium homes from ${property.price ? `₹${Math.round(property.price / 100000)} L` : '₹85 L'}. With an Investment Rating of ${investmentScore}/100, this project ranks highly on location, builder trust, and future potential.\n\nFor more specific details, our expert advisors can give you a personalized consultation. Shall I connect you? 📞`;
   };
 
-  const handleAiSend = async (questionOverride) => {
-    const question = questionOverride || aiInput.trim();
+  const handleSend = async (questionOverride) => {
+    const question = questionOverride || input.trim();
     if (!question) return;
-    setAiInput('');
-    setAiMessages(prev => [...prev, { role: 'user', text: question }]);
-    setAiThinking(true);
-    // Simulate AI response with realistic delay
-    await new Promise(r => setTimeout(r, 900 + Math.random() * 600));
-    const response = getAiResponse(question);
-    setAiMessages(prev => [...prev, { role: 'ai', text: response }]);
-    setAiThinking(false);
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', text: question }]);
+    setThinking(true);
+    await new Promise(r => setTimeout(r, 800 + Math.random() * 400));
+    const response = getConciergeResponse(question);
+    setMessages(prev => [...prev, { role: 'ai', text: response }]);
+    setThinking(false);
   };
 
-  const openAiChat = () => {
-    if (aiMessages.length === 0) {
-      setAiMessages([{
+  const openChat = () => {
+    if (messages.length === 0) {
+      setMessages([{
         role: 'ai',
-        text: `Namaste! 👋 I'm your 24K AI Property Advisor.\n\nI have complete data about **${title}** — pricing, specs, location, investment potential, and more.\n\nAsk me anything, or pick a question below!`
+        text: `Namaste! 👋 Welcome to 24K Property Concierge.\n\nI have complete data about **${title}** — pricing, specs, location, investment potential, and more.\n\nHow may I assist you today?`
       }]);
     }
-    setAiChatOpen(true);
-    setTimeout(() => aiInputRef.current?.focus(), 300);
+    setChatOpen(true);
+    setTimeout(() => inputRef.current?.focus(), 300);
   };
 
   useEffect(() => {
-    aiChatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [aiMessages, aiThinking]);
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, thinking]);
 
-  /* ── Scroll-spy: IntersectionObserver keeps tab in sync ── */
-  const SECTION_IDS = ['overview', 'highlights', 'amenities', 'location', 'floorplans', 'calculator', 'ai-intel', 'similar'];
+  /* ── Scroll-spy ── */
+  const SECTION_IDS = ['overview', 'highlights', 'amenities', 'location', 'floorplans', 'calculator', 'society-profile', 'similar'];
   useEffect(() => {
     const observers = [];
     SECTION_IDS.forEach(id => {
@@ -325,43 +312,9 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     return () => observers.forEach(o => o.disconnect());
   }, []);
 
-  /* ── EMI Calculation Math ── */
-  const calculateEmi = () => {
-    const p = emiPrice * (1 - downPaymentPct / 100);
-    const r = interestRate / 12 / 100;
-    const n = tenureYears * 12;
-    if (r === 0) return Math.round(p / n);
-    const emi = Math.round((p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
-    const totalPayment = emi * n;
-    const totalInterest = totalPayment - p;
-    return { emi, loanAmount: p, totalInterest, totalPayment };
-  };
-  const { emi, loanAmount, totalInterest, totalPayment } = calculateEmi();
-
-  /* ── Brochure Modal submit ── */
-  const handleBrochureSubmit = async (e) => {
-    e.preventDefault();
-    if (!brochureForm.name || !brochureForm.phone) return;
-    setBrochureSubmitting(true);
-
-    // Save lead into Database with detailed tags
-    await apiService.submitLeadToDatabase({
-      name: brochureForm.name,
-      phone: brochureForm.phone,
-      email: brochureForm.email || '',
-      requirementType: 'BUY_RESIDENTIAL',
-      location: location,
-      notes: `Requested E-Brochure & Floor Plans for ${title}`,
-      source: 'E-Brochure Download Modal'
-    });
-
-    setBrochureSubmitting(false);
-    setBrochureSuccess(true);
-  };
-
-  /* ── AI ring animation trigger ── */
+  /* ── Ring animation trigger ── */
   useEffect(() => {
-    const t = setTimeout(() => setAiRingAnimated(true), 800);
+    const t = setTimeout(() => setRingAnimated(true), 800);
     return () => clearTimeout(t);
   }, []);
 
@@ -376,47 +329,16 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     else if (navigator?.clipboard) navigator.clipboard.writeText(window.location.href).catch(() => {});
   };
 
-  /* ── Form validation ── */
-  const validateForm = () => {
-    const errs = {};
-    if (!formData.name.trim()) errs.name = 'Name is required';
-    if (!/^\d{10}$/.test(formData.phone.replace(/\s/g, ''))) errs.phone = 'Enter valid 10-digit number';
-    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) errs.email = 'Enter valid email';
-    return errs;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const errs = validateForm();
-    if (Object.keys(errs).length) { setFormErrors(errs); return; }
-    setFormSubmitting(true);
-
-    // Save lead into Database with detailed tags
-    await apiService.submitLeadToDatabase({
-      name: formData.name,
-      phone: formData.phone,
-      email: formData.email || '',
-      requirementType: 'BUY_RESIDENTIAL',
-      location: location,
-      notes: `Inquiry for ${title}. Notes: ${formData.notes || 'Interested in site visit'}`,
-      source: 'Property Detail Page Form'
-    });
-
-    setFormSubmitting(false);
-    setFormSuccess(true);
-    setTimeout(() => onOpenInquiry && onOpenInquiry(), 800);
-  };
-
   /* ── Data ── */
   const TABS = [
-    { id: 'overview',   label: 'OVERVIEW' },
-    { id: 'highlights', label: 'HIGHLIGHTS' },
-    { id: 'amenities',  label: 'AMENITIES' },
-    { id: 'location',   label: 'LOCATION' },
-    { id: 'floorplans', label: 'FLOOR PLANS' },
-    { id: 'calculator', label: '🧮 EMI CALCULATOR' },
-    { id: 'ai-intel',   label: '✦ AI INTEL' },
-    { id: 'similar',    label: 'SIMILAR' },
+    { id: 'overview',        label: 'OVERVIEW' },
+    { id: 'highlights',      label: 'HIGHLIGHTS' },
+    { id: 'amenities',       label: 'AMENITIES' },
+    { id: 'location',        label: 'LOCATION' },
+    { id: 'floorplans',      label: 'FLOOR PLANS' },
+    { id: 'calculator',      label: '🧮 EMI CALCULATOR' },
+    { id: 'society-profile', label: '🏛️ SOCIETY & VASTU' },
+    { id: 'similar',         label: 'SIMILAR' },
   ];
 
   const METRICS = [
@@ -435,34 +357,11 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     { Icon: BadgeCheck,  text: '125+ years Godrej legacy' },
   ];
 
-  const AMENITIES = [
-    { title: 'Clubhouse',        Icon: Coffee,     img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Swimming Pool',    Icon: Waves,      img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Gymnasium',        Icon: Dumbbell,   img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=75' },
-    { title: "Kids Play Area",   Icon: Baby,       img: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Jogging Track',    Icon: Route,      img: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Multipurpose Hall',Icon: Users,      img: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=600&q=75' },
-  ];
-
-  const LOCATIONS = [
-    { name: 'Hinjewadi IT Park',          time: '5 mins',  pct: 95, Icon: Building2 },
-    { name: 'Wakad Metro Station',         time: '10 mins', pct: 80, Icon: Train },
-    { name: 'Pune–Mumbai Expressway',      time: '10 mins', pct: 80, Icon: Route },
-    { name: 'Phoenix Mall of Millennium',  time: '15 mins', pct: 68, Icon: Star },
-    { name: 'Pune Railway Station',        time: '25 mins', pct: 45, Icon: Train },
-    { name: 'Pune International Airport',  time: '45 mins', pct: 20, Icon: Plane },
-  ];
-
-  const FLOOR_PLANS = [
-    { type: '2 BHK', area: '761 – 858 sq.ft', price: '₹85 L – ₹98 L*', pct: 62 },
-    { type: '3 BHK', area: '904 – 973 sq.ft', price: '₹1.02 – ₹1.15 Cr*', pct: 80 },
-  ];
-
-  const AI_SCORES = [
-    { label: 'Location Score',    score: 92, color: '#D4AF37' },
-    { label: 'Price Fairness',    score: 88, color: '#68D391' },
-    { label: 'Builder Trust',     score: 97, color: '#63B3ED' },
-    { label: 'Future Potential',  score: 91, color: '#F687B3' },
+  const RATING_SCORES = [
+    { label: 'Location & Transit',     score: 95, color: '#D4AF37' },
+    { label: 'Price & Rental ROI',      score: 92, color: '#68D391' },
+    { label: 'Builder Track Record',   score: 98, color: '#63B3ED' },
+    { label: 'Vastu & Architecture',   score: 93, color: '#F687B3' },
   ];
 
   const SIMILAR = [
@@ -475,91 +374,70 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const TRUST = [
     { Icon: Lock,        text: 'Best Price Guaranteed' },
     { Icon: Users,       text: 'Personalized Assistance' },
-    { Icon: Brain,       text: 'AI-Powered Matching' },
-    { Icon: BadgeCheck,  text: 'Zero Hidden Charges' },
+    { Icon: BadgeCheck,  text: '100% MahaRERA Verified' },
+    { Icon: ShieldCheck, text: 'Zero Hidden Charges' },
   ];
 
   /* ── Shared styles ── */
   const G = {
     card:   { background: 'rgba(13,24,42,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '18px' },
     goldBorder: { border: '1px solid rgba(212,175,55,0.3)', borderRadius: '18px', background: 'rgba(13,24,42,0.9)' },
-    secLabel: { fontSize: '0.7rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.14em', textTransform: 'uppercase' },
   };
 
   const px = isMobile ? '16px' : '28px';
 
-  /* ═══════════════════════════════════════════════════════════════
-     RENDER
-  ═══════════════════════════════════════════════════════════════ */
   return (
     <div className="pdv-root" style={{ background: '#07101D', color: '#FFF', minHeight: '100vh' }}>
-
       {/* ── BREADCRUMB ── */}
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: `14px ${px} 6px`, fontSize: '0.76rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
-        <span style={{ cursor: 'pointer', transition: 'color 0.2s' }} onClick={onBack}
-          onMouseOver={e => e.target.style.color = '#D4AF37'} onMouseOut={e => e.target.style.color = '#718096'}>Home</span>
+        <span style={{ cursor: 'pointer' }} onClick={onBack}>Home</span>
         <ChevronRight size={11} />
         <span>Projects</span>
-        <ChevronRight size={11} />
-        <span>Hinjewadi</span>
         <ChevronRight size={11} />
         <span style={{ color: '#D4AF37', fontWeight: 700 }}>{title}</span>
       </div>
 
-      {/* ═══════════════════════════════════════
-          HERO: GALLERY + RIGHT PANEL
-      ═══════════════════════════════════════ */}
+      {/* ── HERO ── */}
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: isMobile ? '10px 16px 28px' : '12px 28px 36px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 0.9fr', gap: '24px', alignItems: 'start' }}>
-
-          {/* LEFT: Gallery */}
           <PropertyGallery property={property} onOpenInquiry={onOpenInquiry} />
 
-          {/* RIGHT: Insight Panel */}
           <div style={{ ...G.goldBorder, padding: '24px', display: 'flex', flexDirection: 'column', gap: '0' }}>
-
-            {/* Developer + AI Score ring */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <BadgeCheck size={14} color="#D4AF37" />
                 <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.07em', textTransform: 'uppercase' }}>{developerName}</span>
               </div>
-              {/* AI Score ring */}
+              {/* Rating Score ring */}
               <div style={{ position: 'relative', width: '54px', height: '54px', flexShrink: 0 }}>
                 <svg width="54" height="54" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
                   <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="8" />
                   <circle cx="50" cy="50" r="45" fill="none" stroke="#D4AF37" strokeWidth="8"
                     strokeDasharray="283" strokeLinecap="round"
-                    className={aiRingAnimated ? 'pdv-ring-animate' : ''}
-                    style={{ strokeDashoffset: aiRingAnimated ? `${283 - (283 * aiScore / 100)}` : 283, transition: 'stroke-dashoffset 1.5s ease' }} />
+                    className={ringAnimated ? 'pdv-ring-animate' : ''}
+                    style={{ strokeDashoffset: ringAnimated ? `${283 - (283 * investmentScore / 100)}` : 283, transition: 'stroke-dashoffset 1.5s ease' }} />
                 </svg>
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ fontSize: '0.76rem', fontWeight: 800, color: '#F3E5AB', lineHeight: 1 }}>{aiScore}%</div>
-                  <div style={{ fontSize: '0.45rem', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.05em' }}>AI SCORE</div>
+                  <div style={{ fontSize: '0.76rem', fontWeight: 800, color: '#F3E5AB', lineHeight: 1 }}>{investmentScore}%</div>
+                  <div style={{ fontSize: '0.45rem', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.05em' }}>RATING</div>
                 </div>
               </div>
             </div>
 
-            {/* Title + Location */}
-            <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '1.9rem', fontWeight: 700, color: '#FFF', margin: '0 0 6px', lineHeight: 1.15 }}>
-              {title}
-            </h1>
+            <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '1.9rem', fontWeight: 700, color: '#FFF', margin: '0 0 6px' }}>{title}</h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.83rem', color: '#718096', marginBottom: '14px' }}>
               <MapPin size={13} color="#D4AF37" />
               <span>{location}</span>
             </div>
 
-            {/* Price block */}
             <div style={{ padding: '14px 16px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', marginBottom: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.5rem', fontWeight: 700, color: '#F3E5AB' }}>{price}</div>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.5rem', fontWeight: 700, color: '#F3E5AB' }}>{property.price ? `₹${Math.round(property.price / 100000)} L*` : 'Contact for Price'}</div>
                 <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', textDecoration: 'underline' }}>Price Breakup →</button>
               </div>
-              {/* AI trend chip */}
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(105,200,140,0.12)', border: '1px solid rgba(105,200,140,0.3)', borderRadius: '100px', padding: '3px 10px' }}>
-                <div className="pdv-ai-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#68D391', flexShrink: 0 }} />
+                <div className="pdv-pulse-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#68D391' }} />
                 <TrendingUp size={10} color="#68D391" />
-                <span style={{ fontSize: '0.65rem', fontWeight: 700, color: '#68D391' }}>AI: Price up 12% YoY in this micro-market</span>
               </div>
             </div>
 
@@ -639,16 +517,16 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               <ExternalLink size={12} color="#68D391" />
             </a>
 
-            {/* AI Ask chip — now opens working AI chat modal */}
+            {/* Concierge Desk chip */}
             <button onClick={openAiChat}
-              style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '8px', padding: '11px 16px', borderRadius: '12px', background: 'rgba(99,179,237,0.08)', border: '1px solid rgba(99,179,237,0.35)', cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.2s' }}
-              onMouseOver={e => e.currentTarget.style.background = 'rgba(99,179,237,0.16)'}
-              onMouseOut={e => e.currentTarget.style.background = 'rgba(99,179,237,0.08)'}
+              style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '8px', padding: '11px 16px', borderRadius: '12px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.35)', cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.2s' }}
+              onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.16)'}
+              onMouseOut={e => e.currentTarget.style.background = 'rgba(212,175,55,0.08)'}
             >
-              <div className="pdv-ai-dot" style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#63B3ED', flexShrink: 0 }} />
-              <Sparkles size={14} color="#63B3ED" />
-              <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#BEE3F8', flex: 1 }}>Ask AI anything about this property →</span>
-              <MessageSquare size={13} color="#63B3ED" />
+              <div className="pdv-ai-dot" style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#D4AF37', flexShrink: 0 }} />
+              <Phone size={14} color="#D4AF37" />
+              <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#F3E5AB', flex: 1 }}>Ask Property Specialist about this property →</span>
+              <ChevronRight size={13} color="#D4AF37" />
             </button>
 
           </div>
@@ -891,13 +769,13 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 <Target size={22} color="#D4AF37" />
               </div>
               <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.05rem', fontWeight: 700, color: '#FFF', margin: 0 }}>Need Customization?</h3>
-              <p style={{ fontSize: '0.82rem', color: '#718096', margin: 0, lineHeight: 1.5 }}>Our AI advisor will match you with the perfect home configuration.</p>
+              <p style={{ fontSize: '0.82rem', color: '#718096', margin: 0, lineHeight: 1.5 }}>Our senior advisors will match you with the perfect home configuration.</p>
               <button onClick={onOpenInquiry} className="pdv-btn-gold"
                 style={{ padding: '11px 24px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer' }}>
                 TALK TO EXPERT
               </button>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.65rem', color: '#68D391' }}>
-                <Brain size={11} /> AI-powered matching enabled
+                <BadgeCheck size={12} /> Personalized 1-on-1 consultation
               </div>
             </div>
           </div>
@@ -993,57 +871,111 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
           </div>
         </AnimSection>
 
-        {/* ══ 6. AI PROPERTY INTELLIGENCE (NEW) ══ */}
-        <AnimSection id="sec-ai-intel">
-          <div style={{ padding: isMobile ? '24px 18px' : '36px 40px', borderRadius: '22px', background: 'linear-gradient(135deg, rgba(13,24,42,0.95) 0%, rgba(7,16,29,0.98) 100%)', border: '1px solid rgba(99,179,237,0.25)', position: 'relative', overflow: 'hidden' }}>
+
+
+        {/* ══ 6. TOWNSHIP & SOCIETY PROFILE ══ */}
+        <AnimSection id="sec-society-profile">
+          <div style={{ padding: isMobile ? '24px 18px' : '36px 40px', borderRadius: '22px', background: 'linear-gradient(135deg, rgba(13,24,42,0.95) 0%, rgba(7,16,29,0.98) 100%)', border: '1px solid rgba(212,175,55,0.3)', position: 'relative', overflow: 'hidden' }}>
             {/* BG glow */}
-            <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '220px', height: '220px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,179,237,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '240px', height: '240px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-              <div className="pdv-ai-dot" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#63B3ED' }} />
-              <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#63B3ED', letterSpacing: '0.12em', textTransform: 'uppercase' }}>AI Property Intelligence</span>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D4AF37' }} />
+              <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Township &amp; Society Profile</span>
             </div>
             <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: '0 0 6px', lineHeight: 1.2 }}>
-              What AI says about <span style={{ color: '#BEE3F8' }}>{title}</span>
+              Society &amp; Investment Intelligence: <span style={{ color: '#F3E5AB' }}>{title}</span>
             </h2>
             <p style={{ fontSize: '0.84rem', color: '#718096', margin: '0 0 28px', lineHeight: 1.6 }}>
-              Our AI engine has analyzed 50,000+ data points — pricing trends, infrastructure growth, rental yield, builder track record — to give you the most accurate property intelligence.
+              Comprehensive society dossier by 24K Realtors — Vastu compliance analysis, NRI investment insights, rental yield projections, and developer track record.
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: '24px' }}>
+            {/* 4 Feature Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: '16px', marginBottom: '24px' }}>
+              
+              {/* Card 1: Vastu Guidance */}
+              <div style={{ padding: '18px 20px', borderRadius: '14px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.18)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '1.1rem' }}>🔱</span>
+                  <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '0.88rem', fontWeight: 700, color: '#F3E5AB', margin: 0 }}>Vastu Shastra &amp; Layout Harmony</h4>
+                </div>
+                <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.76rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+                  <li><strong>Entrances:</strong> North &amp; East facing unit configurations available.</li>
+                  <li><strong>Master Bedroom:</strong> Positioned in South-West stability zone.</li>
+                  <li><strong>Kitchen:</strong> Aligned with Agni (South-East) direction for positive energy.</li>
+                  <li><strong>Brahmasthan:</strong> Open living-dining center with unobstructed natural light.</li>
+                </ul>
+              </div>
+
+              {/* Card 2: NRI Investor Guidance */}
+              <div style={{ padding: '18px 20px', borderRadius: '14px', background: 'rgba(37,211,102,0.04)', border: '1px solid rgba(37,211,102,0.18)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '1.1rem' }}>🌍</span>
+                  <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '0.88rem', fontWeight: 700, color: '#68D391', margin: 0 }}>NRI Investment &amp; Rental Portfolio</h4>
+                </div>
+                <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.76rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+                  <li><strong>Rental Yield:</strong> Projected 4.8% – 5.5% p.a. due to high IT professional density.</li>
+                  <li><strong>Capital Appreciation:</strong> +14% to +18% projected over 3-year horizon.</li>
+                  <li><strong>Dedicated NRI Desk:</strong> Power of Attorney (PoA) execution &amp; virtual 4K site tours.</li>
+                  <li><strong>FEMA Compliance:</strong> Smooth NRE / NRO banking documentation support.</li>
+                </ul>
+              </div>
+
+              {/* Card 3: Metro & Connectivity */}
+              <div style={{ padding: '18px 20px', borderRadius: '14px', background: 'rgba(99,179,237,0.04)', border: '1px solid rgba(99,179,237,0.18)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '1.1rem' }}>🚇</span>
+                  <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '0.88rem', fontWeight: 700, color: '#90CDF4', margin: 0 }}>Transit &amp; IT Hub Proximity</h4>
+                </div>
+                <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.76rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+                  <li><strong>IT Parks:</strong> Infosys, TCS, Wipro campuses within 5–10 mins drive.</li>
+                  <li><strong>Metro Connectivity:</strong> Pune Metro Line 3 station under 1.5 km.</li>
+                  <li><strong>Expressway:</strong> Mumbai-Pune Expressway exit reachable in 10 mins.</li>
+                  <li><strong>Social Hubs:</strong> Phoenix Mall of Millennium &amp; Baner High St nearby.</li>
+                </ul>
+              </div>
+
+              {/* Card 4: Township Infrastructure */}
+              <div style={{ padding: '18px 20px', borderRadius: '14px', background: 'rgba(167,139,250,0.04)', border: '1px solid rgba(167,139,250,0.18)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '1.1rem' }}>🏢</span>
+                  <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '0.88rem', fontWeight: 700, color: '#C4B5FD', margin: 0 }}>Township Ecosystem &amp; Green Spaces</h4>
+                </div>
+                <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.76rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+                  <li><strong>Open Greens:</strong> 75%–80% landscaped open spaces with jogging trails.</li>
+                  <li><strong>Club Amenities:</strong> Olympic-length pool, gymnasium, clubhouse, sports arena.</li>
+                  <li><strong>Security:</strong> 24/7 3-tier surveillance with RFID gated access.</li>
+                  <li><strong>Builder Legacy:</strong> {developerName} — 100% verified MahaRERA track record.</li>
+                </ul>
+              </div>
+
+            </div>
+
+            {/* Score bars & Consultant Action */}
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: '24px', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '20px' }}>
               {/* Score bars */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {AI_SCORES.map(({ label, score, color }, i) => (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {RATING_SCORES.map(({ label, score, color }, i) => (
                   <div key={i}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#CBD5E0' }}>{label}</span>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 800, color: color }}>{score}/100</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#CBD5E0' }}>{label}</span>
+                      <span style={{ fontSize: '0.78rem', fontWeight: 800, color: color }}>{score}/100</span>
                     </div>
                     <div style={{ height: '5px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${score}%`, background: `linear-gradient(90deg, ${color}88, ${color})`, borderRadius: '4px', transition: 'width 1.2s ease' }} />
+                      <div style={{ height: '100%', width: `${score}%`, background: `linear-gradient(90deg, ${color}88, ${color})`, borderRadius: '4px' }} />
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* AI insights list */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {[
-                  { Icon: TrendingUp,  color: '#68D391', text: 'Property prices in Hinjewadi IT corridor rose 18% in 2024 — among the fastest in Pune.' },
-                  { Icon: BarChart3,   color: '#F6AD55', text: 'Average rental yield: 4.2% per annum. This project is projected at 4.8% on completion.' },
-                  { Icon: Building2,   color: '#63B3ED', text: 'Godrej Properties has 100% on-time delivery record in Pune over the last 10 years.' },
-                  { Icon: Sparkles,    color: '#D4AF37', text: "AI Match Score 94% — this property is a strong fit for IT professionals and families." },
-                ].map(({ Icon: AiIcon, color, text }, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '10px', padding: '12px 14px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                    <div style={{ flexShrink: 0, width: '28px', height: '28px', borderRadius: '50%', background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <AiIcon size={14} color={color} />
-                    </div>
-                    <p style={{ margin: 0, fontSize: '0.78rem', color: '#A0AEC0', lineHeight: 1.55 }}>{text}</p>
-                  </div>
-                ))}
+              {/* Advisory CTA */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>
+                  Want detailed society floor plan analysis, available inventory, or specific Vastu unit recommendations?
+                </div>
                 <button onClick={onOpenInquiry} className="pdv-btn-gold"
-                  style={{ padding: '12px 20px', borderRadius: '50px', background: 'rgba(99,179,237,0.1)', border: '1px solid rgba(99,179,237,0.3)', color: '#BEE3F8', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-                  <Brain size={15} /> Ask AI a Custom Question →
+                  style={{ padding: '13px 20px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', border: 'none', color: '#09111F', fontSize: '0.82rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+                  <Phone size={15} /> Talk to Society Specialist →
                 </button>
               </div>
             </div>
@@ -1054,7 +986,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
         <AnimSection id="sec-similar">
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '22px', gap: '12px', flexWrap: 'wrap' }}>
             <div>
-              <SectionLabel>AI-Matched Alternatives</SectionLabel>
+              <SectionLabel>Curated Alternatives</SectionLabel>
               <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: 0, lineHeight: 1.2 }}>
                 Similar <span style={{ color: '#F3E5AB' }}>properties</span> near you
               </h2>
@@ -1074,10 +1006,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(7,16,29,0.6) 0%, transparent 50%)', pointerEvents: 'none' }} />
                   {/* Tag */}
                   <span style={{ position: 'absolute', top: '10px', left: '10px', background: tag === 'LUXURY' ? 'linear-gradient(135deg, #D4AF37, #9A7B1C)' : 'rgba(7,16,29,0.85)', color: tag === 'LUXURY' ? '#09111F' : '#F3E5AB', fontSize: '0.6rem', fontWeight: 800, padding: '3px 9px', borderRadius: '4px', textTransform: 'uppercase' }}>{tag}</span>
-                  {/* AI Match */}
-                  <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(7,16,29,0.85)', border: '1px solid rgba(99,179,237,0.4)', borderRadius: '100px', padding: '2px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Brain size={9} color="#63B3ED" />
-                    <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#BEE3F8' }}>{match}% Match</span>
+                  {/* Match */}
+                  <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(7,16,29,0.85)', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '100px', padding: '2px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <BadgeCheck size={9} color="#D4AF37" />
+                    <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#F3E5AB' }}>{match}% Match</span>
                   </div>
                 </div>
                 <div style={{ padding: '14px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -1117,10 +1049,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 Ready to find your<br /><span style={{ color: '#F3E5AB' }}>perfect home?</span>
               </h2>
               <p style={{ fontSize: '0.84rem', color: '#718096', margin: '0 0 16px', lineHeight: 1.6 }}>
-                Connect with our AI-powered real estate advisors and unlock the best offers, site visits, and home loan guidance.
+                Connect with our senior real estate advisors and unlock the best builder direct pricing, site visits, and home loan guidance.
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: '#68D391', fontWeight: 600 }}>
-                <Brain size={12} /> AI will match you with the best homes instantly
+                <BadgeCheck size={12} /> Our team will match you with the best homes instantly
               </div>
             </div>
 
@@ -1177,26 +1109,26 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       </div>
 
       {/* ═══════════════════════════════════════════════════════════
-          AI PROPERTY ADVISOR CHAT MODAL
+          24K PROPERTY CONCIERGE CHAT MODAL
       ═══════════════════════════════════════════════════════════ */}
       {aiChatOpen && (
         <div
           onClick={(e) => { if (e.target === e.currentTarget) setAiChatOpen(false); }}
           style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'flex-end', justifyContent: isMobile ? 'stretch' : 'flex-end', padding: isMobile ? 0 : '24px' }}
         >
-          <div style={{ width: isMobile ? '100%' : '420px', height: isMobile ? '88vh' : '600px', background: '#0A1220', border: '1px solid rgba(99,179,237,0.3)', borderRadius: isMobile ? '24px 24px 0 0' : '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 -20px 60px rgba(0,0,0,0.7)' }}>
+          <div style={{ width: isMobile ? '100%' : '420px', height: isMobile ? '88vh' : '600px', background: '#0A1220', border: '1px solid rgba(212,175,55,0.35)', borderRadius: isMobile ? '24px 24px 0 0' : '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 -20px 60px rgba(0,0,0,0.7)' }}>
 
             {/* Header */}
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(99,179,237,0.06)' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(212,175,55,0.06)' }}>
               <div style={{ position: 'relative', flexShrink: 0 }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'linear-gradient(135deg, #63B3ED, #3182CE)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Brain size={18} color="#FFF" />
+                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Phone size={18} color="#09111F" />
                 </div>
                 <div className="pdv-ai-dot" style={{ position: 'absolute', bottom: '1px', right: '1px', width: '9px', height: '9px', borderRadius: '50%', background: '#68D391', border: '2px solid #0A1220' }} />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#FFF' }}>24K AI Property Advisor</div>
-                <div style={{ fontSize: '0.68rem', color: '#68D391', fontWeight: 600 }}>● Online · Powered by Gemini</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#FFF' }}>24K Property Concierge Desk</div>
+                <div style={{ fontSize: '0.68rem', color: '#68D391', fontWeight: 600 }}>● Online · Dedicated Property Specialist</div>
               </div>
               <button onClick={() => setAiChatOpen(false)}
                 style={{ background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '50%', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#A0AEC0', transition: 'background 0.2s' }}
@@ -1218,8 +1150,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               {aiMessages.map((msg, i) => (
                 <div key={i} style={{ display: 'flex', gap: '8px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row', alignItems: 'flex-start' }}>
                   {msg.role === 'ai' && (
-                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg, #63B3ED, #3182CE)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
-                      <Brain size={13} color="#FFF" />
+                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+                      <BadgeCheck size={13} color="#09111F" />
                     </div>
                   )}
                   <div style={{
@@ -1244,12 +1176,12 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               {/* Typing indicator */}
               {aiThinking && (
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg, #63B3ED, #3182CE)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Brain size={13} color="#FFF" />
+                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <BadgeCheck size={13} color="#09111F" />
                   </div>
                   <div style={{ padding: '10px 14px', borderRadius: '14px 14px 14px 4px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)', display: 'flex', gap: '4px', alignItems: 'center' }}>
                     {[0,1,2].map(d => (
-                      <div key={d} style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#63B3ED', animation: `pdv-pulse 1.2s ${d * 0.2}s infinite` }} />
+                      <div key={d} style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#D4AF37', animation: `pdv-pulse 1.2s ${d * 0.2}s infinite` }} />
                     ))}
                   </div>
                 </div>
@@ -1260,11 +1192,11 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
             {/* Suggested questions (show only when no user messages yet) */}
             {aiMessages.filter(m => m.role === 'user').length === 0 && !aiThinking && (
               <div style={{ padding: '0 12px 10px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {AI_SUGGESTED_QUESTIONS.map((q, i) => (
+                {CONCIERGE_SUGGESTED_QUESTIONS.map((q, i) => (
                   <button key={i} onClick={() => handleAiSend(q)}
-                    style={{ padding: '6px 12px', borderRadius: '100px', background: 'rgba(99,179,237,0.08)', border: '1px solid rgba(99,179,237,0.3)', color: '#BEE3F8', fontSize: '0.72rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
-                    onMouseOver={e => e.currentTarget.style.background = 'rgba(99,179,237,0.18)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'rgba(99,179,237,0.08)'}
+                    style={{ padding: '6px 12px', borderRadius: '100px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.3)', color: '#F3E5AB', fontSize: '0.72rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
+                    onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.18)'}
+                    onMouseOut={e => e.currentTarget.style.background = 'rgba(212,175,55,0.08)'}
                   >
                     {q}
                   </button>
@@ -1279,29 +1211,30 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 value={aiInput}
                 onChange={e => setAiInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !aiThinking) { e.preventDefault(); handleAiSend(); } }}
-                placeholder="Ask about price, location, ROI..."
+                placeholder="Ask about pricing, Vastu, possession, ROI..."
                 disabled={aiThinking}
                 style={{ flex: 1, padding: '10px 14px', borderRadius: '10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.84rem', outline: 'none', transition: 'border-color 0.2s' }}
-                onFocus={e => e.target.style.borderColor = 'rgba(99,179,237,0.5)'}
+                onFocus={e => e.target.style.borderColor = 'rgba(212,175,55,0.5)'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
               />
               <button
                 onClick={() => handleAiSend()}
                 disabled={aiThinking || !aiInput.trim()}
-                style={{ width: '40px', height: '40px', borderRadius: '10px', background: aiInput.trim() && !aiThinking ? 'linear-gradient(135deg, #63B3ED, #3182CE)' : 'rgba(255,255,255,0.06)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: aiInput.trim() && !aiThinking ? 'pointer' : 'not-allowed', transition: 'all 0.2s', flexShrink: 0 }}
+                style={{ width: '40px', height: '40px', borderRadius: '10px', background: aiInput.trim() && !aiThinking ? 'linear-gradient(135deg, #D4AF37, #9A7B1C)' : 'rgba(255,255,255,0.06)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: aiInput.trim() && !aiThinking ? 'pointer' : 'not-allowed', transition: 'all 0.2s', flexShrink: 0 }}
               >
-                <Send size={16} color={aiInput.trim() && !aiThinking ? '#FFF' : '#4A5568'} />
+                <Send size={16} color={aiInput.trim() && !aiThinking ? '#09111F' : '#4A5568'} />
               </button>
             </div>
 
             {/* Footer note */}
-            <div style={{ padding: '6px 16px 10px', textAlign: 'center', fontSize: '0.6rem', color: '#4A5568' }}>
-              AI responses are informational. For decisions, consult our experts.
+            <div style={{ padding: '6px 16px 10px', textAlign: 'center', fontSize: '0.6rem', color: '#718096' }}>
+              Property insights are advisory. For site visits and bookings, consult our specialists.
             </div>
 
           </div>
         </div>
       )}
+
 
       {/* ═══════════════════════════════════════════════════════════
           E-BROCHURE DOWNLOAD LEAD CAPTURE MODAL
