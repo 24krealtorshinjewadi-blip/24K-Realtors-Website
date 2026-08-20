@@ -238,6 +238,9 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       : title.toLowerCase().includes('vtp') ? 'VTP Realty'
       : title.toLowerCase().includes('vilas') || title.toLowerCase().includes('yashwin') ? 'Vilas Javdekar (VJ)'
       : '24K Realtors');
+  const reraNumber    = property.reraNumber || 'P52100046770';
+  const possession    = property.possessionDate || property.possession || 'Dec 2027';
+  const projectArea   = property.projectArea || property.totalArea || (property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '4.5 Acres');
   const investmentScore = property.investmentScore || property.aiScore || 94;
 
   /* ── Chat Concierge logic ── */
