@@ -22,8 +22,8 @@ export default function CompanyLogo({
   const isFull = variant === 'full';
   const isCompact = variant === 'compact';
 
-  // Responsive display heights for crystal-crisp rendering
-  const imgHeight = height || (isFull ? 64 : isCompact ? 38 : 46);
+  // Responsive prominent display heights for crystal-crisp visibility
+  const imgHeight = height || (isFull ? 90 : isCompact ? 58 : 68);
 
   return (
     <div
@@ -46,9 +46,10 @@ export default function CompanyLogo({
         style={{
           height: `${imgHeight}px`,
           width: 'auto',
+          maxWidth: '100%',
           objectFit: 'contain',
           display: 'block',
-          filter: 'drop-shadow(0 2px 10px rgba(212, 175, 55, 0.45))',
+          filter: 'drop-shadow(0 2px 12px rgba(212, 175, 55, 0.5)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.7))',
           transition: 'transform 0.3s ease'
         }}
       />
