@@ -273,32 +273,32 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     return `Great question about ${t}! Here's what I know:\n\n${t} is a ${developerName} project in ${loc}, offering 2 & 3 BHK premium homes from ${property.price ? `₹${Math.round(property.price / 100000)} L` : '₹85 L'}. With an Investment Rating of ${investmentScore}/100, this project ranks highly on location, builder trust, and future potential.\n\nFor more specific details, our expert advisors can give you a personalized consultation. Shall I connect you? 📞`;
   };
 
-  const handleSend = async (questionOverride) => {
-    const question = questionOverride || input.trim();
+  const handleAiSend = async (questionOverride) => {
+    const question = questionOverride || aiInput.trim();
     if (!question) return;
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: question }]);
-    setThinking(true);
+    setAiInput('');
+    setAiMessages(prev => [...prev, { role: 'user', text: question }]);
+    setAiThinking(true);
     await new Promise(r => setTimeout(r, 800 + Math.random() * 400));
     const response = getConciergeResponse(question);
-    setMessages(prev => [...prev, { role: 'ai', text: response }]);
-    setThinking(false);
+    setAiMessages(prev => [...prev, { role: 'ai', text: response }]);
+    setAiThinking(false);
   };
 
-  const openChat = () => {
-    if (messages.length === 0) {
-      setMessages([{
+  const openAiChat = () => {
+    if (aiMessages.length === 0) {
+      setAiMessages([{
         role: 'ai',
         text: `Namaste! 👋 Welcome to 24K Property Concierge.\n\nI have complete data about **${title}** — pricing, specs, location, investment potential, and more.\n\nHow may I assist you today?`
       }]);
     }
-    setChatOpen(true);
-    setTimeout(() => inputRef.current?.focus(), 300);
+    setAiChatOpen(true);
+    setTimeout(() => aiInputRef.current?.focus(), 300);
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, thinking]);
+    aiChatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [aiMessages, aiThinking]);
 
   /* ── Scroll-spy ── */
   const SECTION_IDS = ['overview', 'highlights', 'amenities', 'location', 'floorplans', 'calculator', 'society-profile', 'similar'];

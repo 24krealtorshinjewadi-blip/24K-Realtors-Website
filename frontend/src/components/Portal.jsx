@@ -3412,28 +3412,16 @@ export default function Portal({ onViewChange }) {
 
       {selectedPropertyDetail ? (
         <div className="main-portal-listings-section" style={{ maxWidth: isMobile ? '100%' : '1410px', width: '100%', margin: '0 auto', padding: isMobile ? '0' : '0 20px', paddingTop: isMobile ? '0' : '20px', boxSizing: 'border-box' }}>
-          <Suspense fallback={
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-              <Loader className="animate-spin" size={36} color="var(--gold-primary)" />
-            </div>
-          }>
-            <PropertyDetailView 
-              property={selectedPropertyDetail} 
-              onBack={() => {
-                setSelectedPropertyDetail(null);
-                setTimeout(() => {
-                  const el = document.getElementById('listings-anchor');
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-              }}
-              onOpenInquiry={handleOpenInquiry}
-              onOpenChauffeur={handleOpenInquiry}
-              onOpenBrochure={(prop) => setSelectedBrochureProperty(prop || selectedPropertyDetail)}
-              formatPrice={formatPrice}
-              getEmbedVideoUrl={getEmbedVideoUrl}
-              allProperties={allRawProperties}
-            />
-          </Suspense>
+          <PropertyDetailView 
+            property={selectedPropertyDetail} 
+            onBack={handleClosePropertyDetail}
+            onOpenInquiry={handleOpenInquiry}
+            onOpenChauffeur={handleOpenInquiry}
+            onOpenBrochure={(prop) => setSelectedBrochureProperty(prop || selectedPropertyDetail)}
+            formatPrice={formatPrice}
+            getEmbedVideoUrl={getEmbedVideoUrl}
+            allProperties={allRawProperties}
+          />
         </div>
       ) : activeSubView ? renderSubView() : (
         <>
