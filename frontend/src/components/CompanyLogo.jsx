@@ -28,96 +28,39 @@ export default function CompanyLogo({
   const isFull = variant === 'full';
   const isCompact = variant === 'compact';
 
-  const effectiveLayout = layout || (isFull ? 'stacked' : isCompact ? 'stacked' : 'stacked');
+  // Responsive display heights for crystal-crisp rendering
+  const imgHeight = height || (isFull ? 64 : isCompact ? 38 : 46);
 
-  const emblemSize = isIcon
-    ? (width || height || 46)
-    : isFull
-    ? (width ? width * 0.42 : 78)
-    : (width ? width * 0.36 : 48);
-
-  // 1. ICON-ONLY VARIANT
-  if (isIcon) {
-    return (
-      <div
-        className={`company-logo-icon ${className}`}
-        onClick={onClick}
+  return (
+    <div
+      className={`company-logo-container ${className}`}
+      onClick={onClick}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: onClick ? 'pointer' : 'default',
+        userSelect: 'none',
+        textDecoration: 'none',
+        lineHeight: 1,
+        ...style
+      }}
+    >
+      <img
+        src="/24k_gold_brand_logo.png"
+        alt="24K Realtors — Find Yourself At Home"
         style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: onClick ? 'pointer' : 'default',
-          userSelect: 'none',
-          ...style
+          height: `${imgHeight}px`,
+          width: 'auto',
+          objectFit: 'contain',
+          display: 'block',
+          filter: 'drop-shadow(0 2px 10px rgba(212, 175, 55, 0.45))',
+          transition: 'transform 0.3s ease'
         }}
-      >
-        <KeysEmblemSVG size={emblemSize} />
-      </div>
-    );
-  }
-
-  // 2. STACKED LAYOUT (Exact match to original logo image)
-  if (effectiveLayout === 'stacked') {
-    return (
-      <div
-        className={`company-logo-container company-logo-stacked ${className}`}
-        onClick={onClick}
-        style={{
-          display: 'inline-flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: isFull ? '6px' : '2px',
-          lineHeight: 1,
-          cursor: onClick ? 'pointer' : 'default',
-          userSelect: 'none',
-          textDecoration: 'none',
-          padding: '2px 0',
-          ...style
-        }}
-      >
-        <KeysEmblemSVG size={emblemSize} />
-
-        <div
-          style={{
-            fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif",
-            fontWeight: 800,
-            fontSize: isFull ? '1.5rem' : isCompact ? '0.96rem' : '1.15rem',
-            letterSpacing: isFull ? '0.22em' : '0.16em',
-            lineHeight: 1.1,
-            background: 'linear-gradient(135deg, #FFF8D6 0%, #F5D77F 35%, #D4AF37 70%, #9E7820 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            whiteSpace: 'nowrap',
-            textAlign: 'center',
-            filter: 'drop-shadow(0 2px 8px rgba(212,175,55,0.3))'
-          }}
-        >
-          24K REALTORS
-        </div>
-
-        {showSubtitle && (
-          <div
-            style={{
-              fontFamily: "'Montserrat', 'Cinzel', sans-serif",
-              fontWeight: 700,
-              fontSize: isFull ? '0.62rem' : isCompact ? '0.41rem' : '0.48rem',
-              letterSpacing: isFull ? '0.34em' : '0.24em',
-              color: '#E8CA72',
-              opacity: 0.95,
-              textTransform: 'uppercase',
-              whiteSpace: 'nowrap',
-              textAlign: 'center',
-              marginTop: '1px'
-            }}
-          >
-            FIND YOUR SELF AT HOME
-          </div>
-        )}
-      </div>
-    );
-  }
+      />
+    </div>
+  );
+}
 
   // 3. HORIZONTAL LAYOUT
   return (

@@ -3452,10 +3452,10 @@ export default function Portal({ onViewChange }) {
               />
             ))}
 
-            {/* Soft luxury gradient overlay — keeps image vibrant & text crystal clear */}
+            {/* Ultra-subtle luxury ambient gradient — keeps photography 100% bright, vibrant & crystal clear */}
             <div style={{
               position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-              background: 'linear-gradient(to right, rgba(4,8,20,0.72) 0%, rgba(4,8,20,0.40) 45%, rgba(4,8,20,0.12) 100%), linear-gradient(to bottom, rgba(4,8,20,0.05) 0%, rgba(4,8,20,0.65) 100%)',
+              background: 'linear-gradient(180deg, rgba(4,8,20,0.25) 0%, rgba(4,8,20,0.05) 40%, rgba(4,8,20,0.5) 100%)',
               zIndex: 1
             }} />
 
@@ -3497,19 +3497,28 @@ export default function Portal({ onViewChange }) {
               width: '100%',
               maxWidth: '1380px',
               margin: '0 auto',
-              padding: isMobile ? '100px 16px 40px' : '120px 32px 50px',
+              padding: isMobile ? '80px 16px 36px' : '100px 32px 48px',
             }}>
 
-              {/* ── LEFT: Text + CTAs + Trust Badges ── */}
-              <div style={{ maxWidth: isMobile ? '100%' : '720px' }}>
+              {/* ── LEFT: Text + CTAs + Trust Badges in Glassmorphic Panel ── */}
+              <div style={{
+                maxWidth: isMobile ? '100%' : '660px',
+                background: 'rgba(4, 8, 20, 0.45)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(212, 175, 55, 0.25)',
+                borderRadius: '24px',
+                padding: isMobile ? '22px 18px' : '32px 34px',
+                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.55)',
+              }}>
 
                 {/* "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" pill */}
                 <div style={{
                   display: 'inline-flex', alignItems: 'center', gap: '8px',
-                  background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)',
-                  borderRadius: '50px', padding: '6px 16px', marginBottom: '20px'
+                  background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)',
+                  borderRadius: '50px', padding: '5px 14px', marginBottom: '16px'
                 }}>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#F5D77F', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                     ★ PUNE'S MOST TRUSTED PROPERTY CONSULTANTS
                   </span>
                 </div>
@@ -3517,11 +3526,11 @@ export default function Portal({ onViewChange }) {
                 {/* Main Headline */}
                 <h1 style={{
                   fontFamily: "'Cinzel', serif",
-                  fontSize: isMobile ? 'clamp(2.1rem, 6.5vw, 2.8rem)' : 'clamp(2.6rem, 4.2vw, 4.2rem)',
+                  fontSize: isMobile ? 'clamp(1.9rem, 6vw, 2.5rem)' : 'clamp(2.3rem, 3.6vw, 3.6rem)',
                   color: '#fff', lineHeight: 1.15,
-                  margin: '0 0 18px 0', fontWeight: 700,
+                  margin: '0 0 14px 0', fontWeight: 700,
                   letterSpacing: '-0.01em',
-                  textShadow: '0 4px 24px rgba(0,0,0,0.6)'
+                  textShadow: '0 4px 20px rgba(0,0,0,0.8)'
                 }}>
                   Your Dream<br />
                   <span style={{
@@ -3533,16 +3542,17 @@ export default function Portal({ onViewChange }) {
                 {/* Subtitle */}
                 <p style={{
                   fontFamily: "'Montserrat', sans-serif",
-                  fontSize: isMobile ? '0.9rem' : '1.0rem',
-                  color: 'rgba(255,255,255,0.85)',
-                  lineHeight: 1.6, marginBottom: '26px',
-                  maxWidth: '560px'
+                  fontSize: isMobile ? '0.86rem' : '0.95rem',
+                  color: 'rgba(255,255,255,0.92)',
+                  lineHeight: 1.55, marginBottom: '22px',
+                  maxWidth: '520px',
+                  textShadow: '0 2px 8px rgba(0,0,0,0.7)'
                 }}>
                   3 &amp; 4 BHK Premium Homes in Hinjewadi Phase 1, 2, 3 &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
                 </p>
 
                 {/* CTAs */}
-                <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '26px' }}>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '22px' }}>
                   <button
                     onClick={() => {
                       const el = document.getElementById('listings-anchor');
