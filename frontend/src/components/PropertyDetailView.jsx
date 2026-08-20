@@ -101,7 +101,15 @@ const PDV_CSS = `
 .pdv-fp-card:hover { border-color: rgba(212,175,55,0.4) !important; transform: translateY(-3px); }
 .pdv-fp-img { transition: transform 0.3s ease; }
 .pdv-fp-card:hover .pdv-fp-img { transform: scale(1.04); }
+
+/* Mobile Action Dock */
+@media (max-width: 768px) {
+  .pdv-dock-info { display: none !important; }
+  .pdv-mobile-action-dock { padding: 8px 10px !important; gap: 6px !important; }
+  .pdv-mobile-action-dock a, .pdv-mobile-action-dock button { padding: 10px 10px !important; flex: 1 1 auto; justify-content: center; font-size: 0.72rem !important; }
+}
 `;
+
 
 function injectStyles() {
   if (typeof document === 'undefined' || document.getElementById(STYLE_ID)) return;
@@ -1356,36 +1364,151 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       )}
 
       {/* ═══════════════════════════════════════════════════════════
-          STICKY FLOATING WHATSAPP VIP BUTTON (BOTTOM-LEFT)
+          STICKY LUXURY RESPONSIVE ACTION BAR (MOBILE + DESKTOP)
       ═══════════════════════════════════════════════════════════ */}
-      <a
-        href={`https://wa.me/919175050519?text=Hi%2024K%20Realtors%2C%20I%20am%20interested%20in%20${encodeURIComponent(title)}%20(${encodeURIComponent(location)})`}
-        target="_blank"
-        rel="noopener noreferrer"
+      <div
+        className="pdv-mobile-action-dock"
         style={{
           position: 'fixed',
-          bottom: '24px',
-          left: '24px',
+          bottom: 0,
+          left: 0,
+          right: 0,
           zIndex: 9999,
+          background: 'rgba(7, 15, 30, 0.95)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderTop: '1px solid rgba(212, 175, 55, 0.35)',
+          boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.65)',
+          padding: '10px 16px',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          padding: '12px 18px',
-          borderRadius: '50px',
-          background: 'linear-gradient(135deg, #25D366, #128C7E)',
-          color: '#FFF',
-          fontSize: '0.82rem',
-          fontWeight: 800,
-          textDecoration: 'none',
-          boxShadow: '0 8px 24px rgba(37,211,102,0.4)',
-          transition: 'transform 0.2s ease',
+          justifyContent: 'space-between',
+          gap: '10px'
         }}
-        onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
-        onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
       >
-        <span style={{ fontSize: '1rem' }}>💬</span>
-        <span>Instant Price on WhatsApp</span>
-      </a>
+        {/* Left: Quick Property Summary (Desktop/Tablet) */}
+        <div className="pdv-dock-info" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ lineHeight: 1.2 }}>
+            <div style={{ fontFamily: "'Cinzel', serif", color: '#D4AF37', fontWeight: 800, fontSize: '0.92rem' }}>
+              {title}
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.6)' }}>
+              {location} • <span style={{ color: '#FFF', fontWeight: 700 }}>{displayPrice}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: 1-Tap Action Buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'nowrap' }}>
+          {/* 1. WhatsApp Instant */}
+          <a
+            href={`https://wa.me/919673000053?text=Hi%2024K%20Realtors%2C%20I%20am%20interested%20in%20${encodeURIComponent(title)}%20(${encodeURIComponent(location)})`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Chat with Senior Real Estate Advisor on WhatsApp"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '10px 14px',
+              borderRadius: '50px',
+              background: 'linear-gradient(135deg, #25D366, #128C7E)',
+              color: '#FFF',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              textDecoration: 'none',
+              boxShadow: '0 4px 14px rgba(37,211,102,0.35)',
+              whiteSpace: 'nowrap',
+              transition: 'transform 0.2s ease'
+            }}
+          >
+            <MessageSquare size={14} />
+            <span className="pdv-btn-text">WhatsApp</span>
+          </a>
+
+          {/* 2. Direct Call Advisor */}
+          <a
+            href="tel:+919673000053"
+            title="Call 24K Luxury Advisor Hotline"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '10px 14px',
+              borderRadius: '50px',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              color: '#FFF',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+              transition: 'transform 0.2s ease'
+            }}
+          >
+            <Phone size={13} color="#D4AF37" />
+            <span className="pdv-btn-text">Call</span>
+          </a>
+
+          {/* 3. E-Brochure Download */}
+          <button
+            type="button"
+            onClick={() => setIsBrochureModalOpen(true)}
+            title="Download Verified E-Brochure & Floorplans"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '10px 14px',
+              borderRadius: '50px',
+              background: 'rgba(212,175,55,0.12)',
+              border: '1px solid rgba(212,175,55,0.4)',
+              color: '#D4AF37',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <Download size={13} />
+            <span className="pdv-btn-text">Brochure</span>
+          </button>
+
+          {/* 4. Book VIP Site Visit (Primary Gold Button) */}
+          <button
+            type="button"
+            onClick={() => {
+              if (onOpenInquiry) {
+                onOpenInquiry(property);
+              } else {
+                const leadSec = document.getElementById('pdv-lead-form');
+                if (leadSec) leadSec.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            title="Schedule Free AC Cab Site Visit"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '10px 18px',
+              borderRadius: '50px',
+              background: 'linear-gradient(135deg, #D4AF37, #C9A227)',
+              color: '#070D18',
+              fontSize: '0.80rem',
+              fontWeight: 900,
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 4px 16px rgba(212,175,55,0.4)',
+              whiteSpace: 'nowrap',
+              fontFamily: "'Montserrat', sans-serif"
+            }}
+          >
+            <Clock size={13} />
+            <span>Book VIP Visit</span>
+          </button>
+        </div>
+      </div>
+
 
     </div>
   );

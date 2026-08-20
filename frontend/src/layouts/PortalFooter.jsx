@@ -124,9 +124,6 @@ export default function PortalFooter({ onViewChange }) {
           <a href="tel:+919673000053" style={{ textDecoration: 'none' }}>
             <p style={{ margin: '0 0 2px 0', fontSize: '0.85rem', color: '#E6C35C', fontWeight: 700, cursor: 'pointer' }}>📞 +91 9673 000 053</p>
           </a>
-          <a href="tel:18004199099" style={{ textDecoration: 'none' }}>
-            <p style={{ margin: '0 0 4px 0', fontSize: '0.8rem', color: 'rgba(255,255,255,0.72)', fontWeight: 500, cursor: 'pointer' }}>Toll Free · 1800 41 99099</p>
-          </a>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>9:30 AM to 6:30 PM (Mon–Sun)</span>
           <a href="https://maps.app.goo.gl/3gZ7F6YMXe1Y5Pfp7" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <span style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.6)', display: 'block', marginBottom: '10px', lineHeight: 1.5, cursor: 'pointer' }}>📍 Office 19, Prem Mairah,<br/>Opp. VTP Bellissimo Maan Rd,<br/>Hinjewadi Phase 1, Pune 411057</span>

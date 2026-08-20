@@ -176,8 +176,8 @@ export default function CompanyDeskModal({ isOpen, onClose, initialTab = 'about'
                 <h3 style={{ fontSize: '0.96rem', color: GOLD, marginTop: '20px', marginBottom: '8px' }}>Corporate Headquarters:</h3>
                 <p style={{ margin: 0 }}>
                   📍 Office No. 19, Ground Floor, Prem Mairah, Hinjewadi Phase 1, Pune, Maharashtra – 411057<br/>
-                  📞 Phone: +91 96730 00053 | Toll Free: 1800 41 99099<br/>
-                  ✉️ Email: contact@24krealestate.com
+                  📞 Phone: +91 96730 00053<br/>
+                  ✉️ Email: 24krealtorspune@gmail.com
                 </p>
               </div>
             )}

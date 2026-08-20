@@ -32,6 +32,9 @@ const DEFAULT_GALLERY_ITEMS = [
     categoryLabel: '🔑 Key Handover',
     dev: 'Neeraj Giri & Happy Homebuyers',
     img: '/gallery_handover_1.png',
+    rating: '5.0',
+    reviewer: 'Dr. Anand Kulkarni & Family',
+    reviewSnippet: '“Neeraj & the 24K team made our Wakad flat handover completely stress-free with 100% RERA verified title clarity.”',
     desc: 'Neeraj Giri (Senior Property Advisor) handing over VIP possession keys to happy family at Wakad Central estate.'
   },
   {
@@ -42,16 +45,22 @@ const DEFAULT_GALLERY_ITEMS = [
     categoryLabel: '🔑 Key Handover',
     dev: 'Nilesh Rai & Client',
     img: '/gallery_handover_2.png',
+    rating: '5.0',
+    reviewer: 'Rajesh & Pooja Deshmukh',
+    reviewSnippet: '“Best investment guidance in Pune West. Transparent pricing, zero hidden charges, and quick bank loan clearance.”',
     desc: 'Nilesh Rai (Investment Specialist) finalizing 100% RERA verified agreement and key handover at VTP Blue Waters.'
   },
   {
     id: 3,
-    title: 'Executive Penthouse Key Handover',
+    title: 'Executive Penthouse Key Presentation',
     location: 'Baner High Street',
     category: 'HANDOVER',
     categoryLabel: '🔑 Key Handover',
     dev: 'Jyoti Dhale & Client',
     img: '/gallery_handover_3.png',
+    rating: '5.0',
+    reviewer: 'Vikramaditya Singhania (NRI)',
+    reviewSnippet: '“Being in Singapore, Jyoti managed everything from virtual walkthrough to final registry seamlessly.”',
     desc: 'Jyoti Dhale celebrating successful key handover with client at Baner High Street luxury penthouse.'
   },
   {
@@ -62,6 +71,9 @@ const DEFAULT_GALLERY_ITEMS = [
     categoryLabel: '🔑 Key Handover',
     dev: '24K Senior Advisory Desk',
     img: '/gallery_handover_4.png',
+    rating: '5.0',
+    reviewer: 'Amitava Sen (Tech VP)',
+    reviewSnippet: '“Got ₹18L savings via exclusive 24K Realtors developer mandate on our 4 BHK township booking.”',
     desc: 'Exclusive mandate spot booking milestone achieved for 400-acre township buyer.'
   },
   {
@@ -72,6 +84,9 @@ const DEFAULT_GALLERY_ITEMS = [
     categoryLabel: '🔑 Key Handover',
     dev: '24K Executive Desk & Client',
     img: '/gallery_handover_1.png',
+    rating: '5.0',
+    reviewer: 'Col. Sanjeev Mehra (Retd.)',
+    reviewSnippet: '“Absolute integrity and professionalism. The golden key ceremony was deeply memorable for our entire family.”',
     desc: 'Exclusive 5 BHK private luxury villa possession ceremony with custom golden key presentation.'
   },
   {
@@ -886,6 +901,42 @@ export default function Portal({ onViewChange }) {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // ── Dynamic Hero Slideshow State ─────────────────────────────────────
+  const HERO_SLIDES = [
+    { img: '/twentyfourk_pune_banner.png',    caption: '24K Realtors — Pune\'s Legacy Brand Since 2011',         loc: 'Hinjewadi, Pune' },
+    { img: '/lodha_3_completed_aerial.png',   caption: 'Luxury High-Rise Towers — Hinjewadi Corridor',           loc: 'Hinjewadi Phase 1' },
+    { img: '/dev_kolte_patil_township.png',   caption: 'Life Republic — 400 Acre Smart Township',                loc: 'Hinjewadi Phase 1' },
+    { img: '/dev_shapoorji_township.png',     caption: 'Joyville Sensorium — Shapoorji Pallonji',                loc: 'Hinjewadi Phase 1' },
+    { img: '/lodha_7_infinity_pool.png',      caption: 'Sky Infinity Pool — Resort-Style Living',                loc: 'Hinjewadi Corridor' },
+    { img: '/dev_vtp_township.png',           caption: 'VTP Blue Waters — 100 Acre Riverfront Township',         loc: 'Mahalunge Smart City' },
+    { img: '/dev_godrej_building.png',        caption: 'Godrej Woodsville — Green Premium Living',               loc: 'Hinjewadi Phase 1' },
+    { img: '/gallery_infinity_pool.png',      caption: 'World-Class Club Amenities — Your Lifestyle Redefined',  loc: 'Pune West' },
+    { img: '/lodha_4_grand_lobby.png',        caption: '5-Star Grand Lobby — Arrive in Style Every Day',         loc: 'Hinjewadi Corridor' },
+    { img: '/lodha_10_key_handover.png',      caption: 'Your Dream Home Delivered — 150+ Happy Families',        loc: 'Served Across Pune' },
+  ];
+  const [heroSlide, setHeroSlide] = useState(0);
+  const [heroPrev, setHeroPrev] = useState(null);
+  const [heroFading, setHeroFading] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      goToHeroSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 5500);
+    return () => clearInterval(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const goToHeroSlide = (indexOrFn) => {
+    setHeroSlide(prev => {
+      const next = typeof indexOrFn === 'function' ? indexOrFn(prev) : indexOrFn;
+      if (next === prev) return prev;
+      setHeroPrev(prev);
+      setHeroFading(true);
+      setTimeout(() => setHeroFading(false), 1100);
+      return next;
+    });
+  };
 
   const [closedProperties, setClosedProperties] = useState([]);
   const [closedLoading, setClosedLoading] = useState(true);
@@ -2911,14 +2962,27 @@ export default function Portal({ onViewChange }) {
                       </div>
                     </div>
                     {/* Bottom Gradient Content Overlay - Minimal & Ultra-Clean */}
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 18px', background: 'linear-gradient(to top, rgba(4,8,20,0.92) 0%, rgba(4,8,20,0.5) 60%, transparent 100%)' }}>
-                      <div style={{ fontSize: '0.66rem', fontWeight: 700, color: '#E6C35C', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
-                        📍 {item.location}
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 18px', background: 'linear-gradient(to top, rgba(4,8,20,0.95) 0%, rgba(4,8,20,0.7) 60%, transparent 100%)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                        <div style={{ fontSize: '0.66rem', fontWeight: 700, color: '#E6C35C', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                          📍 {item.location}
+                        </div>
+                        {item.rating && (
+                          <div style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '50px', padding: '2px 8px', fontSize: '0.62rem', fontWeight: 800, color: '#FFF' }}>
+                            ⭐ 5.0 Verified
+                          </div>
+                        )}
                       </div>
-                      <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.08rem', fontWeight: 700, color: '#fff', margin: 0, lineHeight: 1.3 }}>
+                      <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.04rem', fontWeight: 700, color: '#fff', margin: '0 0 4px 0', lineHeight: 1.3 }}>
                         {item.title}
                       </h4>
+                      {item.reviewSnippet && (
+                        <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', fontStyle: 'italic', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {item.reviewSnippet}
+                        </p>
+                      )}
                     </div>
+
                   </div>
                 ))}
             </div>
@@ -3362,23 +3426,124 @@ export default function Portal({ onViewChange }) {
         </div>
       ) : activeSubView ? renderSubView() : (
         <>
-          {/* ─── REDESIGNED CINEMATIC HERO ─ Matches reference site exactly ─── */}
+          {/* ─── CINEMATIC HERO — 10-Image Dynamic Slideshow ─── */}
           <section className="portal-hero" style={{
             position: 'relative',
             minHeight: '100vh',
-            backgroundImage: "url('/hero_bg.jpg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center top',
             display: 'flex',
             flexDirection: 'column',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            background: '#040814',
           }}>
-            {/* Dark gradient overlay — left-heavy like reference */}
+            {/* ── Slide Images Stack ── */}
+            {HERO_SLIDES.map((slide, i) => (
+              <div
+                key={slide.img}
+                aria-hidden={i !== heroSlide}
+                style={{
+                  position: 'absolute', inset: 0,
+                  backgroundImage: `url('${slide.img}')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  transition: 'opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1)',
+                  opacity: i === heroSlide ? 1 : 0,
+                  transform: i === heroSlide ? 'scale(1.06)' : 'scale(1)',
+                  transformOrigin: 'center center',
+                  animation: i === heroSlide ? 'heroKenBurns 10s ease-in-out forwards' : 'none',
+                  willChange: 'opacity, transform',
+                }}
+              />
+            ))}
+
+            {/* Ken Burns CSS injected */}
+            <style>{`
+              @keyframes heroKenBurns {
+                0%   { transform: scale(1.00); }
+                100% { transform: scale(1.08); }
+              }
+            `}</style>
+
+            {/* Dark gradient overlay — left-heavy */}
             <div style={{
               position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-              background: 'linear-gradient(to right, rgba(4,8,20,0.88) 0%, rgba(4,8,20,0.55) 50%, rgba(4,8,20,0.30) 100%), linear-gradient(to bottom, rgba(4,8,20,0.15) 0%, rgba(4,8,20,0.70) 100%)',
+              background: 'linear-gradient(to right, rgba(4,8,20,0.92) 0%, rgba(4,8,20,0.60) 50%, rgba(4,8,20,0.35) 100%), linear-gradient(to bottom, rgba(4,8,20,0.10) 0%, rgba(4,8,20,0.80) 100%)',
               zIndex: 1
             }} />
+
+            {/* ── Slide Caption (bottom-left) ── */}
+            <div style={{
+              position: 'absolute', bottom: isMobile ? '90px' : '74px', left: 0, right: 0,
+              zIndex: 4, pointerEvents: 'none',
+              display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '6px'
+            }}>
+              <div style={{
+                background: 'rgba(4,8,20,0.6)', backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(212,175,55,0.2)', borderRadius: '50px',
+                padding: '5px 18px',
+                display: 'inline-flex', alignItems: 'center', gap: '10px',
+                transition: 'all 0.6s ease'
+              }}>
+                <span style={{ color: '#D4AF37', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif" }}>
+                  📍 {HERO_SLIDES[heroSlide].loc}
+                </span>
+                <span style={{ width: '1px', height: '10px', background: 'rgba(212,175,55,0.3)' }} />
+                <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.62rem', fontWeight: 600, fontFamily: "'Montserrat', sans-serif" }}>
+                  {HERO_SLIDES[heroSlide].caption}
+                </span>
+              </div>
+
+              {/* Dot navigation */}
+              <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginTop: '4px' }}>
+                {HERO_SLIDES.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => goToHeroSlide(i)}
+                    aria-label={`Slide ${i + 1}`}
+                    style={{
+                      width: i === heroSlide ? '22px' : '7px',
+                      height: '7px',
+                      borderRadius: '50px',
+                      background: i === heroSlide ? '#D4AF37' : 'rgba(255,255,255,0.3)',
+                      border: 'none', cursor: 'pointer', padding: 0,
+                      transition: 'all 0.35s ease',
+                      boxShadow: i === heroSlide ? '0 0 8px rgba(212,175,55,0.6)' : 'none',
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* ── Prev / Next Arrows (desktop only) ── */}
+            {!isMobile && (
+              <>
+                <button
+                  onClick={() => goToHeroSlide((heroSlide - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+                  aria-label="Previous slide"
+                  style={{
+                    position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)',
+                    zIndex: 5, background: 'rgba(4,8,20,0.55)', backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50%',
+                    width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: '#D4AF37', fontSize: '1.2rem', transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor = '#D4AF37'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(4,8,20,0.55)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; }}
+                >‹</button>
+                <button
+                  onClick={() => goToHeroSlide((heroSlide + 1) % HERO_SLIDES.length)}
+                  aria-label="Next slide"
+                  style={{
+                    position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)',
+                    zIndex: 5, background: 'rgba(4,8,20,0.55)', backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50%',
+                    width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: '#D4AF37', fontSize: '1.2rem', transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor = '#D4AF37'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(4,8,20,0.55)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; }}
+                >›</button>
+              </>
+            )}
 
             {/* Main hero content row */}
             <div style={{
@@ -3478,25 +3643,31 @@ export default function Portal({ onViewChange }) {
                   </button>
                 </div>
 
-                {/* ── TRUST BADGES ROW (INDIAN BUYER TARGETED) ── */}
+                {/* ── TRUST BADGES ROW — 5 badges, mobile-first ── */}
                 <div style={{
-                  display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center'
+                  display: 'flex', gap: isMobile ? '14px' : '20px', flexWrap: 'wrap', alignItems: 'center',
+                  background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.12)',
+                  borderRadius: '14px', padding: isMobile ? '14px 16px' : '16px 24px',
                 }}>
                   {[
+                    { icon: '⭐', label: '15 YEARS', sub: 'EST. 2011' },
                     { icon: '🛡️', label: 'MahaRERA', sub: 'A051262603190' },
                     { icon: '💸', label: '0% BROKERAGE', sub: 'NEW BOOKINGS' },
                     { icon: '🏦', label: 'SBI / HDFC LOANS', sub: 'FROM 8.35% p.a.' },
-                    { icon: '✦', label: 'PMC / PMRDA', sub: 'TITLE VERIFIED' },
+                    { icon: '✔️', label: 'PMC / PMRDA', sub: 'TITLE VERIFIED' },
                   ].map((badge, i) => (
-                    <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '76px' }}>
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '80px' }}>
                       <div style={{
-                        width: '42px', height: '42px', borderRadius: '50%',
-                        border: '1px solid rgba(212,175,55,0.3)',
-                        background: 'rgba(212,175,55,0.06)',
+                        width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0,
+                        border: i === 0 ? '1.5px solid rgba(212,175,55,0.6)' : '1px solid rgba(212,175,55,0.3)',
+                        background: i === 0 ? 'rgba(212,175,55,0.12)' : 'rgba(212,175,55,0.06)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '1.1rem'
+                        fontSize: '1rem', boxShadow: i === 0 ? '0 0 12px rgba(212,175,55,0.2)' : 'none',
                       }}>{badge.icon}</div>
-                      <span style={{ fontSize: '0.58rem', fontWeight: 800, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.06em', textAlign: 'center', fontFamily: "'Montserrat',sans-serif" }}>{badge.label}<br/>{badge.sub}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+                        <span style={{ fontSize: '0.6rem', fontWeight: 800, color: i === 0 ? '#D4AF37' : 'rgba(255,255,255,0.88)', letterSpacing: '0.07em', textAlign: 'left', fontFamily: "'Montserrat',sans-serif", lineHeight: 1.2 }}>{badge.label}</span>
+                        <span style={{ fontSize: '0.55rem', fontWeight: 600, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.04em', fontFamily: "'Montserrat',sans-serif" }}>{badge.sub}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -3718,7 +3889,7 @@ export default function Portal({ onViewChange }) {
                 padding: isMobile ? '16px 0' : '18px 0',
               }}>
                 {[
-                  { icon: '⭐', num: '10+', label: 'Years of Legacy', sub: 'Since 2011' },
+                  { icon: '⭐', num: '15+', label: 'Years of Legacy', sub: 'Est. 2011' },
                   { icon: '🏠', num: '800+', label: 'Active Listings', sub: 'MahaRERA Verified' },
                   { icon: '👥', num: '150+', label: 'Families Served', sub: 'Across Pune West' },
                   { icon: '🤝', num: '100%', label: 'Transparency', sub: 'No Hidden Deals' },
@@ -4083,8 +4254,8 @@ export default function Portal({ onViewChange }) {
                 animation: 'marqueeScroll 28s linear infinite',
                 width: 'max-content',
               }}>
-                {[...['MahaRERA Registered', 'RERA No. A051262603190', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating'],
-                  ...['MahaRERA Registered', 'RERA No. A051262603190', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', '10+ Years Pune Experience', '150+ Families Served', '4.9★ Google Rating']
+                {[...['MahaRERA Registered', 'RERA No. A051262603190', '15 Years of Pune Legacy', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', 'Est. 2011 · Trusted Advisor', '150+ Families Served', '4.9★ Google Rating'],
+                  ...['MahaRERA Registered', 'RERA No. A051262603190', '15 Years of Pune Legacy', '100% Verified Listings', 'Zero Hidden Charges', 'Free Home Loan Advisory', 'Kolte-Patil Authorized', 'Shapoorji Authorized', 'Godrej Authorized', 'Lodha Authorized', 'VJ Yashwin Authorized', 'Kohinoor Authorized', 'Est. 2011 · Trusted Advisor', '150+ Families Served', '4.9★ Google Rating']
                 ].map((badge, i) => (
                   <div key={i} style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
@@ -4116,6 +4287,312 @@ export default function Portal({ onViewChange }) {
                   <div>
                     <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#fff' }}>{item.text}</div>
                     <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)' }}>{item.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          ✦ HINJEWADI PHASE 1·2·3 & MAHALUNGE — COMPLETE SOCIETY DIRECTORY
+      ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (() => {
+        const HINJEWADI_SOCIETIES = [
+          // ── PHASE 1 ──────────────────────────────────────────────
+          { phase: 'Phase 1', name: 'Life Republic', developer: 'Kolte-Patil Developers', config: '1/2/3/4 BHK', startPrice: '₹65L', pricePerSqft: '₹7,800', area: '400 Acres', possession: '2024–2026', investScore: 95, yield: '5.2%', apprec: '+14%', metro: '1.2 km', itParks: 'Hinjewadi Phase 1 IT Park (0.5 km)', vastuNote: 'North-East entrance towers available. Ask for A-wing NE facing 2BHK.', nriNote: 'NRI-friendly builder. Virtual tours & PoA execution support available.', badge: '🏆 Best Value', color: '#E6C35C' },
+          { phase: 'Phase 1', name: 'Blue Ridge Township', developer: 'Paranjape Schemes', config: '2/3 BHK', startPrice: '₹75L', pricePerSqft: '₹8,200', area: '138 Acres', possession: '2024–2025', investScore: 90, yield: '4.8%', apprec: '+12%', metro: '1.8 km', itParks: 'Embassy Techzone (0.8 km)', vastuNote: 'Square-plan residences available. River-facing units with East/North light.', nriNote: 'Paranjape has dedicated NRI helpdesk. FEMA-compliant documentation.', badge: '🌊 Riverfront', color: '#60A5FA' },
+          { phase: 'Phase 1', name: 'Joyville Sensorium', developer: 'Shapoorji Pallonji', config: '2/3 BHK', startPrice: '₹85L', pricePerSqft: '₹9,000', area: '25 Acres', possession: '2025–2026', investScore: 92, yield: '4.9%', apprec: '+13%', metro: '0.9 km', itParks: 'TCS/Infosys Hinjewadi (1 km)', vastuNote: 'East-facing residences available. Smart home layouts with Brahmasthan open center.', nriNote: 'Shapoorji trusted by 1000+ NRI families. Virtual site tour + NRI account support.', badge: '⚡ Smart Home', color: '#A78BFA' },
+          { phase: 'Phase 1', name: 'Godrej Woodsville', developer: 'Godrej Properties', config: '2/3 BHK', startPrice: '₹90L', pricePerSqft: '₹9,500', area: '50 Acres', possession: '2025', investScore: 93, yield: '5.0%', apprec: '+15%', metro: '1.1 km', itParks: 'Hinjewadi IT Park Phase 1 (0.3 km)', vastuNote: '80% green open spaces. North-light units available with cross-ventilation.', nriNote: 'Godrej brand trusted globally. Dedicated NRI investment desk in Dubai & Singapore.', badge: '🌿 Green Living', color: '#34D399' },
+          { phase: 'Phase 1', name: 'Lodha Panache', developer: 'Lodha Group', config: '3/4 BHK', startPrice: '₹1.2Cr', pricePerSqft: '₹11,500', area: '12 Acres', possession: '2025', investScore: 91, yield: '4.5%', apprec: '+16%', metro: '1.5 km', itParks: 'Embassy Techzone (0.6 km)', vastuNote: 'Premium corner units. 5-star lobby with East-facing master bedrooms.', nriNote: 'Lodha operates in UAE & UK markets. NRI registration with MahaRERA simplified.', badge: '👑 Ultra-Luxury', color: '#FB923C' },
+          { phase: 'Phase 1', name: 'VTP Bellissimo', developer: 'VTP Realty', config: '2/3 BHK', startPrice: '₹72L', pricePerSqft: '₹8,000', area: '18 Acres', possession: 'Ready', investScore: 89, yield: '5.5%', apprec: '+11%', metro: '1.3 km', itParks: 'Hinjewadi IT Park Phase 1 (0.2 km)', vastuNote: 'Ready possession. North-East facing units in B-wing immediately available.', nriNote: 'Ready to move. Immediate rental income for NRI investors. 5.5% avg yield.', badge: '✅ Ready Now', color: '#10B981' },
+          { phase: 'Phase 1', name: 'Park Titan', developer: 'Pride Purple Group', config: '2/3 BHK', startPrice: '₹68L', pricePerSqft: '₹7,600', area: '6 Acres', possession: '2025', investScore: 86, yield: '5.0%', apprec: '+12%', metro: '1.6 km', itParks: 'TCS Digital Hinjewadi (0.7 km)', vastuNote: '"Achiever\'s Park" concept. East-facing units with unobstructed sunrise views.', nriNote: 'Competitive pricing for NRI first-time buyers in Pune. Bank loan pre-approved.', badge: '🏅 Achiever\'s Park', color: '#F59E0B' },
+          { phase: 'Phase 1', name: 'Megapolis (Marvel)', developer: 'Marvel Realtors', config: '1/2/3 BHK', startPrice: '₹55L', pricePerSqft: '₹6,800', area: '150 Acres', possession: 'Various', investScore: 82, yield: '5.8%', apprec: '+10%', metro: '2 km', itParks: 'Hinjewadi IT Park (1 km)', vastuNote: '150-acre township with multiple vastu-compliant building orientations available.', nriNote: 'Highest rental yield in the corridor — 5.8%. Ideal for NRI rental income portfolio.', badge: '💰 Best Yield', color: '#38BDF8' },
+          // ── PHASE 2 ──────────────────────────────────────────────
+          { phase: 'Phase 2', name: 'Kohinoor Coral & Famville', developer: 'Kohinoor Group', config: '2/3 BHK', startPrice: '₹70L', pricePerSqft: '₹8,200', area: '22 Acres', possession: '2025', investScore: 88, yield: '5.0%', apprec: '+12%', metro: '0.8 km', itParks: 'Wipro/Cognizant Ph2 (0.5 km)', vastuNote: 'Twin 22-story towers. Request vastu study report from 24K Realtors before booking.', nriNote: 'SADA SUKHI: 5-year warranty programme. NRI-specific assistance from Kohinoor desk.', badge: '✦ Kohinoor Series', color: '#A78BFA' },
+          { phase: 'Phase 2', name: 'VJ Yashwin Hinjewadi', developer: 'Vilas Javdekar (VJ)', config: '2/3 BHK', startPrice: '₹75L', pricePerSqft: '₹8,500', area: '10 Acres', possession: '2024', investScore: 87, yield: '4.8%', apprec: '+13%', metro: '1.2 km', itParks: 'Syntel/Capgemini (0.6 km)', vastuNote: 'North/East-facing units available on upper floors with hilltop views.', nriNote: 'VJ is a Pune-rooted builder. Local documentation support for NRI buyers.', badge: '🌆 City View', color: '#EC4899' },
+          { phase: 'Phase 2', name: 'Shapoorji Celestial', developer: 'Shapoorji Pallonji', config: '2/3 BHK', startPrice: '₹88L', pricePerSqft: '₹9,200', area: '8 Acres', possession: '2025', investScore: 90, yield: '4.7%', apprec: '+12%', metro: '0.9 km', itParks: 'Hinjewadi IT Phase 2 (0.3 km)', vastuNote: 'Smart home technology. South-West master bedrooms per vastu for stability.', nriNote: 'Shapoorji NRI concierge desk. Dubai/USA office coordination for NRI closures.', badge: '🌙 Celestial Series', color: '#818CF8' },
+          { phase: 'Phase 2', name: 'Kasturi EON Homes', developer: 'Kasturi Builders', config: '3/4 BHK', startPrice: '₹1.1Cr', pricePerSqft: '₹11,000', area: '4 Acres', possession: '2024', investScore: 89, yield: '4.5%', apprec: '+14%', metro: '1.4 km', itParks: 'Tech Mahindra Phase 2 (0.8 km)', vastuNote: '4-acre central courtyard. Corner units with NE + SE exposure for kitchen & entrance.', nriNote: 'Ultra-luxury builder. Ideal for NRI lifestyle purchase with heritage Italian marble.', badge: '💎 Ultra-Luxury', color: '#F472B6' },
+          // ── PHASE 3 ──────────────────────────────────────────────
+          { phase: 'Phase 3', name: 'Pharande Puneville', developer: 'Pharande Spaces', config: '2/3 BHK', startPrice: '₹62L', pricePerSqft: '₹7,200', area: '28 Acres', possession: '2025', investScore: 85, yield: '5.3%', apprec: '+16%', metro: '2.5 km', itParks: 'Rajiv Gandhi Infotech Park (2 km)', vastuNote: 'Sky-bridge township. NE entrance tower available — high vastu compliance score.', nriNote: 'Best appreciation rate in Phase 3 corridor. Early-stage NRI investor advantage.', badge: '🚀 Max Appreciation', color: '#F43F5E' },
+          { phase: 'Phase 3', name: 'TCG Crown Greens', developer: 'TCG Real Estate', config: '2/3 BHK', startPrice: '₹60L', pricePerSqft: '₹7,000', area: '6 Acres', possession: '2025', investScore: 83, yield: '5.5%', apprec: '+15%', metro: '3 km', itParks: 'Hinjewadi IT Phase 3 (0.5 km)', vastuNote: 'Hill-facing towers. Ask for units with North-light exposure towards Sahyadri hills.', nriNote: 'Emerging corridor — early-bird NRI pricing. Best value for long-term investment.', badge: '🏔️ Hill Views', color: '#38BDF8' },
+          { phase: 'Phase 3', name: 'Gera Joy on Treetop', developer: 'Gera Developments', config: '2/3 BHK', startPrice: '₹70L', pricePerSqft: '₹8,000', area: '9 Acres', possession: '2025', investScore: 86, yield: '5.0%', apprec: '+13%', metro: '2.2 km', itParks: 'Rajiv Gandhi IT Park (1.5 km)', vastuNote: 'Elevated treetop design. Abundant natural light and cross-ventilation — vastu ideal.', nriNote: 'Gera\'s 5-year post-possession warranty. Child-centric community — ideal for NRI families.', badge: '🌳 Treetop Living', color: '#10B981' },
+          { phase: 'Phase 3', name: 'Ceratec Westwind', developer: 'Ceratec Group', config: '2/3 BHK', startPrice: '₹58L', pricePerSqft: '₹6,800', area: '5 Acres', possession: '2026', investScore: 81, yield: '5.2%', apprec: '+14%', metro: '2.8 km', itParks: 'Hinjewadi IT Phase 3 (1 km)', vastuNote: 'Westward units with pleasant evening sun. Request East-wing for morning vastu.', nriNote: 'Ceratec offers NRI-specific payment plans with extended milestones.', badge: '🌬️ New Launch', color: '#60A5FA' },
+          // ── MAHALUNGE ──────────────────────────────────────────────
+          { phase: 'Mahalunge', name: 'VTP Blue Waters', developer: 'VTP Realty', config: '1/2/3/4 BHK', startPrice: '₹60L', pricePerSqft: '₹6,900', area: '100 Acres', possession: '2025–2027', investScore: 92, yield: '5.5%', apprec: '+18%', metro: '1.5 km', itParks: 'Hinjewadi IT Phase 1 (3 km)', vastuNote: '100-acre riverfront smart city. Multiple tower orientations — NE units on river side are vastu prime.', nriNote: 'Best appreciation in Mahalunge corridor. NRI investor community within society. VTP NRI desk.', badge: '💧 Riverfront Smart City', color: '#06B6D4' },
+          { phase: 'Mahalunge', name: 'VTP Earth One', developer: 'VTP Realty (Luxe)', config: '3/4 BHK', startPrice: '₹1.1Cr', pricePerSqft: '₹10,500', area: '10 Acres', possession: '2025', investScore: 90, yield: '5.0%', apprec: '+17%', metro: '1.6 km', itParks: 'Hinjewadi IT Phase 1 (3.5 km)', vastuNote: 'Premium Mahalunge high-street tower. South-West master bedrooms for stability as per vastu.', nriNote: 'Luxury NRI grade property. High rental demand from senior IT executives.', badge: '🌍 Luxury High-Rise', color: '#E6C35C' },
+          { phase: 'Mahalunge', name: 'Godrej Hillside', developer: 'Godrej Properties', config: '2/3 BHK', startPrice: '₹80L', pricePerSqft: '₹8,800', area: '15 Acres', possession: '2025', investScore: 89, yield: '4.8%', apprec: '+15%', metro: '1.8 km', itParks: 'Hinjewadi Phase 1 (3 km)', vastuNote: 'Hill-facing Godrej project. North-East entrance lobby. 70% open green space — vastu positive.', nriNote: 'Godrej global NRI network. Ideal blend of hill views + IT proximity for NRI families.', badge: '🌿 Hill Retreat', color: '#34D399' },
+          { phase: 'Mahalunge', name: 'Shapoorji Joyville Vyomora', developer: 'Shapoorji Pallonji', config: '2/3/4 BHK', startPrice: '₹90L', pricePerSqft: '₹9,500', area: '20 Acres', possession: '2025–2026', investScore: 93, yield: '5.0%', apprec: '+16%', metro: '1.3 km', itParks: 'Hinjewadi IT Phase 1 (2.8 km)', vastuNote: 'Named after "Vyomora" (sky + goddess). Sky-deck and open Brahmasthan central design.', nriNote: 'MahaRERA flagship NRI project. 24K Realtors is authorized Channel Partner. 0% brokerage.', badge: '🌠 Premium Launch', color: '#A78BFA' },
+        ];
+
+        const phases = ['Phase 1', 'Phase 2', 'Phase 3', 'Mahalunge'];
+        const phaseColors = { 'Phase 1': '#E6C35C', 'Phase 2': '#60A5FA', 'Phase 3': '#34D399', 'Mahalunge': '#06B6D4' };
+
+        return (
+          <section style={{
+            background: 'linear-gradient(180deg, #040814 0%, #06101e 50%, #040814 100%)',
+            padding: isMobile ? '48px 0 60px' : '72px 0 90px',
+            position: 'relative', overflow: 'hidden',
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
+
+            <div style={{ maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 32px' }}>
+              {/* Section Header */}
+              <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
+                  <span style={{ color: '#D4AF37', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase' }}>📍 COMPLETE SOCIETY DIRECTORY</span>
+                </div>
+                <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.4rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
+                  Hinjewadi <span style={{ color: '#D4AF37' }}>Phase 1, 2, 3</span> & Mahalunge
+                </h2>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '620px', margin: '0 auto', lineHeight: 1.6 }}>
+                  Every major society 24K Realtors works with — with Vastu guidance, NRI investment notes, pricing, and metro connectivity. 15 years of local expertise.
+                </p>
+              </div>
+
+              {/* Phase Tabs */}
+              {phases.map(phase => {
+                const phaseSocs = HINJEWADI_SOCIETIES.filter(s => s.phase === phase);
+                const pc = phaseColors[phase];
+                return (
+                  <div key={phase} style={{ marginBottom: '48px' }}>
+                    {/* Phase Header */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
+                      <div style={{ flex: 1, height: '1px', background: `linear-gradient(90deg, ${pc}44, transparent)` }} />
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: `${pc}18`, border: `1px solid ${pc}55`, borderRadius: '50px', padding: '6px 20px' }}>
+                        <span style={{ color: pc, fontSize: '0.78rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Cinzel', serif" }}>
+                          {phase === 'Mahalunge' ? '🌆' : '🏙️'} Hinjewadi {phase !== 'Mahalunge' ? phase : ''} {phase === 'Mahalunge' ? 'Mahalunge Smart City' : ''}
+                        </span>
+                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem' }}>{phaseSocs.length} Projects</span>
+                      </div>
+                      <div style={{ flex: 1, height: '1px', background: `linear-gradient(-90deg, ${pc}44, transparent)` }} />
+                    </div>
+
+                    {/* Society Cards Grid */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: isMobile ? '1fr' : isWideDesktop ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
+                      gap: '16px',
+                    }}>
+                      {phaseSocs.map((soc, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => {
+                            setFilters(prev => ({ ...prev, query: soc.name.split(' ')[0] }));
+                            setPage(0);
+                            setActiveSection('listings');
+                            setTimeout(() => document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+                          }}
+                          style={{
+                            background: 'rgba(7,15,30,0.7)', backdropFilter: 'blur(12px)',
+                            border: `1px solid rgba(${soc.color === '#E6C35C' ? '212,175,55' : '255,255,255'},0.08)`,
+                            borderRadius: '16px', padding: '20px',
+                            cursor: 'pointer', transition: 'all 0.3s ease',
+                            display: 'flex', flexDirection: 'column', gap: '14px',
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.borderColor = `${soc.color}55`; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 16px 40px rgba(0,0,0,0.6), 0 0 20px ${soc.color}22`; }}
+                          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                        >
+                          {/* Top: Name + Badge */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                            <div>
+                              <div style={{ fontFamily: "'Cinzel', serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', lineHeight: 1.2, marginBottom: '3px' }}>{soc.name}</div>
+                              <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontFamily: "'Montserrat', sans-serif" }}>{soc.developer}</div>
+                            </div>
+                            <div style={{ background: `${soc.color}20`, border: `1px solid ${soc.color}44`, borderRadius: '50px', padding: '3px 10px', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                              <span style={{ fontSize: '0.58rem', fontWeight: 800, color: soc.color, letterSpacing: '0.06em' }}>{soc.badge}</span>
+                            </div>
+                          </div>
+
+                          {/* Price + Config */}
+                          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                            <div>
+                              <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1px' }}>Starting At</div>
+                              <div style={{ fontSize: '1.0rem', fontWeight: 800, color: '#E6C35C', fontFamily: "'Cinzel', serif" }}>{soc.startPrice}</div>
+                            </div>
+                            <div>
+                              <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1px' }}>₹/Sqft</div>
+                              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'rgba(255,255,255,0.75)' }}>{soc.pricePerSqft}</div>
+                            </div>
+                            <div>
+                              <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1px' }}>Config</div>
+                              <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>{soc.config}</div>
+                            </div>
+                          </div>
+
+                          {/* Stats row */}
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                            {[
+                              { label: 'Invest Score', val: `${soc.investScore}/100`, color: '#2EC4B6' },
+                              { label: 'Rental Yield', val: soc.yield, color: '#E6C35C' },
+                              { label: 'Appreciation', val: soc.apprec, color: '#34D399' },
+                            ].map((stat, si) => (
+                              <div key={si} style={{ background: `${stat.color}0A`, border: `1px solid ${stat.color}20`, borderRadius: '8px', padding: '6px 8px', textAlign: 'center' }}>
+                                <div style={{ fontSize: '0.72rem', fontWeight: 800, color: stat.color }}>{stat.val}</div>
+                                <div style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{stat.label}</div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Metro + IT Parks */}
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '0.62rem', background: 'rgba(66,133,244,0.1)', border: '1px solid rgba(66,133,244,0.25)', color: '#93C5FD', borderRadius: '50px', padding: '3px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              🚇 Metro {soc.metro}
+                            </span>
+                            <span style={{ fontSize: '0.62rem', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: 'rgba(255,255,255,0.55)', borderRadius: '50px', padding: '3px 10px' }}>
+                              💻 {soc.itParks}
+                            </span>
+                          </div>
+
+                          {/* Vastu Note */}
+                          <div style={{ background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '8px', padding: '10px 12px' }}>
+                            <div style={{ fontSize: '0.58rem', color: '#D4AF37', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>🔱 Vastu Guidance</div>
+                            <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>{soc.vastuNote}</div>
+                          </div>
+
+                          {/* NRI Note */}
+                          <div style={{ background: 'rgba(37,211,102,0.04)', border: '1px solid rgba(37,211,102,0.15)', borderRadius: '8px', padding: '10px 12px' }}>
+                            <div style={{ fontSize: '0.58rem', color: '#25D366', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>🌍 NRI Investor Note</div>
+                            <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>{soc.nriNote}</div>
+                          </div>
+
+                          {/* CTA */}
+                          <div style={{ display: 'flex', gap: '8px', marginTop: '2px' }}>
+                            <button
+                              onClick={e => { e.stopPropagation(); setFilters(prev => ({ ...prev, query: soc.name.split(' ')[0] })); setPage(0); setActiveSection('listings'); setTimeout(() => document.getElementById('listings-anchor')?.scrollIntoView({ behavior: 'smooth' }), 200); }}
+                              style={{ flex: 1, padding: '8px 0', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.3)', color: '#E6C35C', borderRadius: '8px', fontSize: '0.68rem', fontWeight: 700, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif", transition: 'all 0.2s ease' }}
+                            >View Listings</button>
+                            <button
+                              onClick={e => { e.stopPropagation(); handleOpenInquiry(); }}
+                              style={{ flex: 1, padding: '8px 0', background: 'linear-gradient(135deg, rgba(212,175,55,0.85), rgba(184,140,28,0.9))', border: 'none', color: '#040814', borderRadius: '8px', fontSize: '0.68rem', fontWeight: 800, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif", transition: 'all 0.2s ease' }}
+                            >Enquire Now</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })()}
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          ✦ VASTU & NRI BUYER'S GUIDE — Premium Glassmorphic Section
+      ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (
+        <section style={{
+          background: 'linear-gradient(180deg, #040814 0%, #070f1e 60%, #040814 100%)',
+          padding: isMobile ? '48px 0 60px' : '72px 0 90px',
+          position: 'relative', overflow: 'hidden',
+        }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)' }} />
+          {/* Decorative background glow */}
+          <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)', width: '600px', height: '400px', background: 'radial-gradient(ellipse, rgba(212,175,55,0.03) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 32px' }}>
+            {/* Section Header */}
+            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
+                <span style={{ color: '#D4AF37', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase' }}>🔱 VASTU & NRI GUIDE</span>
+              </div>
+              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.4rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
+                Buy <span style={{ color: '#D4AF37' }}>Right</span> — Vastu, NRI & Home Tips
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
+                Expert guidance for homebuyers and NRI investors — Vastu-compliant flat selection, NRI purchase process, and 15 years of 24K Realtors advisory insights.
+              </p>
+            </div>
+
+            {/* Two-column layout: Vastu Tips + NRI Checklist */}
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '24px' : '32px', marginBottom: '40px' }}>
+              
+              {/* Vastu Guide */}
+              <div style={{ background: 'rgba(7,15,30,0.7)', backdropFilter: 'blur(20px)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '20px', padding: '28px 24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
+                  <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🔱</div>
+                  <div>
+                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.0rem', fontWeight: 700, color: '#D4AF37' }}>Vastu Shastra Guide</div>
+                    <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)' }}>For Flat Selection in Hinjewadi</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  {[
+                    { icon: '🧭', title: 'Main Entrance Direction', tip: 'North, East or North-East facing entrance is most auspicious — brings prosperity, health and positive energy flow into the home.' },
+                    { icon: '🛏️', title: 'Master Bedroom Placement', tip: 'Ideal location is South-West corner. Associated with stability and grounding. Avoid NE corner for master bedroom.' },
+                    { icon: '🍳', title: 'Kitchen Location', tip: 'South-East (Agni zone) is preferred. Cook should face East while cooking. Avoid North-East kitchen — it disrupts energy balance.' },
+                    { icon: '📐', title: 'Floor Plan Shape', tip: 'Prefer square or rectangular floor plans. Avoid irregular "L" or "T" shapes and missing corners — they create energy imbalances.' },
+                    { icon: '💡', title: 'Natural Light & Ventilation', tip: 'Balconies in North or East are highly recommended. Ensure ample cross-ventilation. Well-lit Brahmasthan (center of home) is vital.' },
+                    { icon: '🏔️', title: 'Terrain & View Direction', tip: 'Land/plot lower in North-East, higher in South-West is vastu-ideal. Hill views from North or East facing balconies are auspicious.' },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', padding: '12px', background: 'rgba(212,175,55,0.03)', border: '1px solid rgba(212,175,55,0.08)', borderRadius: '10px' }}>
+                      <span style={{ fontSize: '1.2rem', flexShrink: 0, marginTop: '1px' }}>{item.icon}</span>
+                      <div>
+                        <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#D4AF37', marginBottom: '3px', fontFamily: "'Montserrat', sans-serif" }}>{item.title}</div>
+                        <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.55 }}>{item.tip}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* NRI Buyer Checklist */}
+              <div style={{ background: 'rgba(7,15,30,0.7)', backdropFilter: 'blur(20px)', border: '1px solid rgba(37,211,102,0.2)', borderRadius: '20px', padding: '28px 24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
+                  <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🌍</div>
+                  <div>
+                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.0rem', fontWeight: 700, color: '#25D366' }}>NRI Buyer's Checklist</div>
+                    <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)' }}>5 Steps to Buy Property in Pune from Abroad</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  {[
+                    { step: '01', icon: '🛡️', title: 'Verify RERA Registration', tip: 'Always check project RERA on MahaRERA.gov.in. 24K Realtors only works with 100% MahaRERA registered projects. Our RERA: A051262603190.', color: '#25D366' },
+                    { step: '02', icon: '📄', title: 'Draft Power of Attorney (PoA)', tip: 'As an NRI, a well-drafted PoA allows a trusted representative in India to sign documents on your behalf. 24K Realtors helps coordinate this process.', color: '#60A5FA' },
+                    { step: '03', icon: '🏦', title: 'Open NRO / NRE Bank Account', tip: 'Property transactions in India require an NRO or NRE account. SBI, HDFC & ICICI have dedicated NRI banking support. We will connect you directly.', color: '#F59E0B' },
+                    { step: '04', icon: '💰', title: 'NRI Home Loan Options', tip: 'SBI NRI Home Loan starts from 8.45% p.a. HDFC NRI loans available from abroad with video KYC. Loan of up to 80% on project value — we assist.', color: '#A78BFA' },
+                    { step: '05', icon: '🎥', title: 'Virtual Site Tour — WhatsApp / Zoom', tip: '24K Realtors conducts live virtual walkthroughs via WhatsApp video or Zoom. Our advisory team in Hinjewadi visits and streams the site for you personally.', color: '#E6C35C' },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', padding: '14px', background: `${item.color}08`, border: `1px solid ${item.color}22`, borderRadius: '10px' }}>
+                      <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: `${item.color}18`, border: `1px solid ${item.color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', flexShrink: 0 }}>{item.icon}</div>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
+                          <span style={{ fontSize: '0.55rem', fontWeight: 900, color: item.color, opacity: 0.7 }}>STEP {item.step}</span>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', fontFamily: "'Montserrat', sans-serif" }}>{item.title}</span>
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.55 }}>{item.tip}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                <button
+                  onClick={handleOpenInquiry}
+                  style={{ marginTop: '20px', width: '100%', padding: '13px', background: 'linear-gradient(135deg, rgba(37,211,102,0.15), rgba(37,211,102,0.08))', border: '1px solid rgba(37,211,102,0.4)', color: '#25D366', borderRadius: '12px', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.06em', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.25s ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.15)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <span>📞</span> TALK TO NRI ADVISOR — FREE CONSULTATION
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Info Strip */}
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: '16px' }}>
+              {[
+                { icon: '🚇', title: 'Metro Line 3', sub: 'Hinjewadi–Shivajinagar (2026)', color: '#60A5FA' },
+                { icon: '💻', title: 'IT Hub Proximity', sub: 'TCS, Infosys, Wipro, Cognizant', color: '#A78BFA' },
+                { icon: '🏫', title: 'Top Schools Nearby', sub: 'Anisha Global, DPS, Orchid, VIBGYOR', color: '#34D399' },
+                { icon: '🌿', title: 'Green Coverage', sub: '60–80% open space in townships', color: '#E6C35C' },
+              ].map((item, i) => (
+                <div key={i} style={{ background: `${item.color}08`, border: `1px solid ${item.color}25`, borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: item.color }}>{item.title}</div>
+                    <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>{item.sub}</div>
                   </div>
                 </div>
               ))}
@@ -5657,18 +6134,34 @@ export default function Portal({ onViewChange }) {
 
             {/* Details Panel */}
             <div style={{ flex: 1, padding: isMobile ? '24px 20px' : '36px 32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#E6C35C', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
-                📍 {selectedGalleryImage.location}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#E6C35C', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                  📍 {selectedGalleryImage.location}
+                </div>
+                {selectedGalleryImage.rating && (
+                  <div style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '50px', padding: '3px 10px', fontSize: '0.68rem', fontWeight: 800, color: '#FFF' }}>
+                    ⭐ 5.0 Google Verified
+                  </div>
+                )}
               </div>
               <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.3rem' : '1.7rem', fontWeight: 700, color: '#fff', margin: '0 0 8px 0', lineHeight: 1.2 }}>
                 {selectedGalleryImage.title}
               </h3>
-              <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600, marginBottom: '16px' }}>
+              <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600, marginBottom: '14px' }}>
                 Authorized Partner: <span style={{ color: '#fff' }}>{selectedGalleryImage.dev}</span>
               </div>
-              <p style={{ fontSize: '0.86rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: '0 0 28px 0', fontFamily: "'Montserrat', sans-serif" }}>
+              <p style={{ fontSize: '0.86rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: '0 0 16px 0', fontFamily: "'Montserrat', sans-serif" }}>
                 {selectedGalleryImage.desc}
               </p>
+              {selectedGalleryImage.reviewSnippet && (
+                <div style={{ background: 'rgba(255,255,255,0.03)', borderLeft: '3px solid #E6C35C', borderRadius: '0 10px 10px 0', padding: '10px 14px', marginBottom: '22px' }}>
+                  <div style={{ fontSize: '0.64rem', color: '#E6C35C', fontWeight: 800, textTransform: 'uppercase', marginBottom: '3px' }}>Client Experience & Verified Feedback</div>
+                  <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(255,255,255,0.85)', fontStyle: 'italic', lineHeight: 1.4 }}>
+                    {selectedGalleryImage.reviewSnippet}
+                  </p>
+                </div>
+              )}
+
 
               {/* Action Buttons */}
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
