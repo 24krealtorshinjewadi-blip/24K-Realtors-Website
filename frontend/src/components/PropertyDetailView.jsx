@@ -224,6 +224,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
   // E-Brochure Lead Capture Modal State
   const [brochureModalOpen, setBrochureModalOpen] = useState(false);
+  const setIsBrochureModalOpen = setBrochureModalOpen;
   const [brochureForm, setBrochureForm]   = useState({ name: '', phone: '', email: '' });
   const [brochureSubmitting, setBrochureSubmitting] = useState(false);
   const [brochureSuccess, setBrochureSuccess] = useState(false);
@@ -243,6 +244,37 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const projectArea   = property.projectArea || property.totalArea || (property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '4.5 Acres');
   const investmentScore = property.investmentScore || property.aiScore || 94;
   const address       = property.address || property.location || `${title}, ${location}`;
+  const displayPrice  = property.price 
+    ? (typeof formatPrice === 'function' ? formatPrice(property.price) : `₹${(property.price / 10000000).toFixed(2)} Cr`)
+    : (property.priceDisplay || '₹1.45 Cr*');
+
+  /* ── EMI Computations ── */
+  const loanAmount = Math.max(0, emiPrice * (1 - downPaymentPct / 100));
+  const monthlyRate = interestRate / 12 / 100;
+  const totalMonths = tenureYears * 12;
+  const emi = monthlyRate > 0 && totalMonths > 0
+    ? Math.round((loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1))
+    : 0;
+  const totalPayment = emi * totalMonths;
+  const totalInterest = Math.max(0, totalPayment - loanAmount);
+
+  const handleSubmit = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setFormSubmitting(true);
+    setTimeout(() => {
+      setFormSubmitting(false);
+      setFormSuccess(true);
+    }, 800);
+  };
+
+  const handleBrochureSubmit = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setBrochureSubmitting(true);
+    setTimeout(() => {
+      setBrochureSubmitting(false);
+      setBrochureSuccess(true);
+    }, 800);
+  };
 
   /* ── Chat Concierge logic ── */
   const CONCIERGE_SUGGESTED_QUESTIONS = [
