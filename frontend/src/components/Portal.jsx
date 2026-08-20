@@ -15,8 +15,8 @@ import './Portal.css';
 import PortalNavbar from '../layouts/PortalNavbar';
 import PortalFooter from '../layouts/PortalFooter';
 import PropertyCard from './PropertyCard';
+import PropertyDetailView from './PropertyDetailView';
 
-const PropertyDetailView = lazy(() => import('./PropertyDetailView'));
 const CompareOverlay = lazy(() => import('./CompareOverlay'));
 const ReraDrawer = lazy(() => import('./ReraDrawer'));
 const ChatWidget = lazy(() => import('./ChatWidget'));
@@ -610,6 +610,27 @@ export default function Portal({ onViewChange }) {
   const [selectedForCompare, setSelectedForCompare] = useState([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [selectedPropertyDetail, setSelectedPropertyDetail] = useState(null);
+
+  const handleOpenPropertyDetail = useCallback((prop) => {
+    if (!prop) return;
+    setSelectedPropertyDetail(prop);
+    setActiveSubView(null);
+    if (prop.id) {
+      window.location.hash = `property/${prop.id}`;
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  const handleClosePropertyDetail = useCallback(() => {
+    setSelectedPropertyDetail(null);
+    if (window.location.hash.startsWith('#property/')) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+    setTimeout(() => {
+      const el = document.getElementById('listings-anchor');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }, []);
 
   const [allRawProperties, setAllRawProperties] = useState([]);
   const [wishlistIds, setWishlistIds] = useState(() => {
@@ -1953,7 +1974,7 @@ export default function Portal({ onViewChange }) {
               <div id="editorial-carousel-track" style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '8px' }}>
                 {displayData.slice(0, 10).map(property => (
                   <div key={property.id} style={{ flexShrink: 0, width: 'clamp(270px, 75vw, 360px)' }}>
-                    <PropertyCard property={property} isHnwiMode={isHnwiMode} isCompared={selectedForCompare.some(p => p.id === property.id)} isWishlisted={wishlistIds.includes(property.id)} formatPrice={formatPrice} onToggleCompare={handleToggleCompare} onToggleWishlist={handleToggleWishlist} onOpenRera={handleOpenReraDrawer} onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)} onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 300, behavior: 'smooth' }); }} />
+                    <PropertyCard property={property} isHnwiMode={isHnwiMode} isCompared={selectedForCompare.some(p => p.id === property.id)} isWishlisted={wishlistIds.includes(property.id)} formatPrice={formatPrice} onToggleCompare={handleToggleCompare} onToggleWishlist={handleToggleWishlist} onOpenRera={handleOpenReraDrawer} onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)} onOpenDetail={handleOpenPropertyDetail} />
                   </div>
                 ))}
               </div>
@@ -2478,11 +2499,7 @@ export default function Portal({ onViewChange }) {
                   onToggleWishlist={handleToggleWishlist}
                   onOpenRera={handleOpenReraDrawer}
                   onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
-                  onOpenDetail={(prop) => { 
-                    setSelectedPropertyDetail(prop); 
-                    setActiveSection('listings'); 
-                    window.scrollTo({ top: 300, behavior: 'smooth' }); 
-                  }}
+                  onOpenDetail={handleOpenPropertyDetail}
                 />
               ))}
             </div>
@@ -2523,11 +2540,7 @@ export default function Portal({ onViewChange }) {
                   onToggleWishlist={handleToggleWishlist}
                   onOpenRera={handleOpenReraDrawer}
                   onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
-                  onOpenDetail={(prop) => { 
-                    setSelectedPropertyDetail(prop); 
-                    setActiveSection('listings'); 
-                    window.scrollTo({ top: 300, behavior: 'smooth' }); 
-                  }}
+                  onOpenDetail={handleOpenPropertyDetail}
                 />
               ))}
             </div>
@@ -2569,11 +2582,7 @@ export default function Portal({ onViewChange }) {
                     onToggleWishlist={handleToggleWishlist}
                     onOpenRera={handleOpenReraDrawer}
                     onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
-                    onOpenDetail={(prop) => { 
-                      setSelectedPropertyDetail(prop); 
-                      setActiveSection('listings'); 
-                      window.scrollTo({ top: 300, behavior: 'smooth' }); 
-                    }}
+                    onOpenDetail={handleOpenPropertyDetail}
                   />
                 ))}
               </div>
@@ -2687,11 +2696,7 @@ export default function Portal({ onViewChange }) {
                     onToggleWishlist={handleToggleWishlist}
                     onOpenRera={handleOpenReraDrawer}
                     onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
-                    onOpenDetail={(prop) => { 
-                      setSelectedPropertyDetail(prop); 
-                      setActiveSection('listings'); 
-                      window.scrollTo({ top: 300, behavior: 'smooth' }); 
-                    }}
+                    onOpenDetail={handleOpenPropertyDetail}
                   />
                 ))}
               </div>
@@ -3545,7 +3550,7 @@ export default function Portal({ onViewChange }) {
             }}>
 
               {/* ── LEFT: Text + CTAs + Trust Badges ── */}
-              <div style={{ flex: '0 0 55%', maxWidth: isMobile ? '100%' : '55%' }}>
+              <div style={{ flex: '1', maxWidth: isMobile ? '100%' : '760px' }}>
 
                 {/* "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" pill */}
                 <div style={{
@@ -3580,7 +3585,7 @@ export default function Portal({ onViewChange }) {
                   fontSize: isMobile ? '0.92rem' : '1.02rem',
                   color: 'rgba(255,255,255,0.82)',
                   lineHeight: 1.65, marginBottom: '28px',
-                  maxWidth: '520px'
+                  maxWidth: '560px'
                 }}>
                   3 &amp; 4 BHK Premium Homes in Hinjewadi Phase 1, 2, 3 &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
                 </p>
@@ -3656,215 +3661,6 @@ export default function Portal({ onViewChange }) {
                   ))}
                 </div>
               </div>
-
-              {/* ── RIGHT: FIND YOUR PERFECT PROPERTY Search Card (Matching Image) ── */}
-              {!isMobile && (
-                <div style={{
-                  flex: '0 0 44%', maxWidth: '470px',
-                  background: 'rgba(7,15,30,0.85)',
-                  backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)',
-                  border: '1px solid rgba(212,175,55,0.35)',
-                  borderRadius: '18px',
-                  padding: '24px 22px',
-                  boxShadow: '0 32px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08)',
-                }}>
-                  <div style={{ marginBottom: '16px' }}>
-                    <p style={{
-                      fontFamily: "'Cinzel',serif", fontSize: '0.88rem', fontWeight: 700,
-                      color: '#D4AF37', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0
-                    }}>FIND YOUR PERFECT PROPERTY</p>
-                  </div>
-
-                  {/* Tabs: Buy | Rent | Commercial */}
-                  <div style={{
-                    display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-                    background: 'rgba(255,255,255,0.05)', borderRadius: '10px',
-                    padding: '4px', marginBottom: '14px', gap: '4px'
-                  }}>
-                    {[
-                      { id: 'BUY', label: 'Buy' },
-                      { id: 'RENT', label: 'Rent' },
-                      { id: 'COMMERCIAL', label: 'Commercial' },
-                    ].map(tab => (
-                      <button
-                        key={tab.id}
-                        onClick={() => setHeroTab(tab.id)}
-                        style={{
-                          padding: '8px 0', border: 'none', borderRadius: '8px',
-                          fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
-                          fontFamily: "'Montserrat',sans-serif",
-                          transition: 'all 0.25s ease',
-                          background: heroTab === tab.id
-                            ? 'linear-gradient(135deg, #C59B27 0%, #A0741B 100%)'
-                            : 'transparent',
-                          color: heroTab === tab.id ? '#FFF' : 'rgba(255,255,255,0.7)',
-                          boxShadow: heroTab === tab.id ? '0 4px 12px rgba(0,0,0,0.3)' : 'none',
-                        }}
-                      >
-                        {tab.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Dropdown 1: Property Type */}
-                  <div style={{ marginBottom: '10px', position: 'relative' }}>
-                    <select
-                      value={searchPropType}
-                      onChange={(e) => setSearchPropType(e.target.value)}
-                      style={{
-                        width: '100%',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.12)',
-                        borderRadius: '10px',
-                        padding: '11px 36px 11px 14px',
-                        color: searchPropType ? '#FFF' : 'rgba(255,255,255,0.7)',
-                        fontSize: '0.82rem',
-                        fontFamily: "'Montserrat',sans-serif",
-                        cursor: 'pointer',
-                        outline: 'none',
-                        appearance: 'none',
-                        WebkitAppearance: 'none'
-                      }}
-                    >
-                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>Select Property Type</option>
-                      <option value="RESIDENTIAL" style={{ background: '#070f1e', color: '#fff' }}>Apartments / Flats</option>
-                      <option value="VILLA" style={{ background: '#070f1e', color: '#fff' }}>Luxury Villas &amp; Townhouses</option>
-                      <option value="PENTHOUSE" style={{ background: '#070f1e', color: '#fff' }}>Sky Penthouses</option>
-                      <option value="COMMERCIAL" style={{ background: '#070f1e', color: '#fff' }}>Commercial Offices &amp; Retail</option>
-                    </select>
-                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                      <ChevronDown size={14} color="rgba(255,255,255,0.45)" />
-                    </div>
-                  </div>
-
-                  {/* Dropdown 2: Locality */}
-                  <div style={{ marginBottom: '10px', position: 'relative' }}>
-                    <select
-                      value={searchLocation}
-                      onChange={(e) => setSearchLocation(e.target.value)}
-                      style={{
-                        width: '100%',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.12)',
-                        borderRadius: '10px',
-                        padding: '11px 36px 11px 14px',
-                        color: searchLocation ? '#FFF' : 'rgba(255,255,255,0.7)',
-                        fontSize: '0.82rem',
-                        fontFamily: "'Montserrat',sans-serif",
-                        cursor: 'pointer',
-                        outline: 'none',
-                        appearance: 'none',
-                        WebkitAppearance: 'none'
-                      }}
-                    >
-                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>Select Locality (Hinjewadi, Wakad, Baner...)</option>
-                      <option value="HINJEWADI" style={{ background: '#070f1e', color: '#fff' }}>Hinjewadi Phase 1, 2 &amp; 3</option>
-                      <option value="MAHALUNGE" style={{ background: '#070f1e', color: '#fff' }}>Mahalunge Smart City</option>
-                      <option value="WAKAD" style={{ background: '#070f1e', color: '#fff' }}>Wakad</option>
-                      <option value="BANER" style={{ background: '#070f1e', color: '#fff' }}>Baner</option>
-                      <option value="BALEWADI" style={{ background: '#070f1e', color: '#fff' }}>Balewadi</option>
-                      <option value="TATHAWADE" style={{ background: '#070f1e', color: '#fff' }}>Tathawade</option>
-                    </select>
-                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                      <ChevronDown size={14} color="rgba(255,255,255,0.45)" />
-                    </div>
-                  </div>
-
-                  {/* Dropdown 3: Budget Range */}
-                  <div style={{ marginBottom: '10px', position: 'relative' }}>
-                    <select
-                      value={searchBudget}
-                      onChange={(e) => setSearchBudget(e.target.value)}
-                      style={{
-                        width: '100%',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.12)',
-                        borderRadius: '10px',
-                        padding: '11px 36px 11px 14px',
-                        color: searchBudget ? '#FFF' : 'rgba(255,255,255,0.7)',
-                        fontSize: '0.82rem',
-                        fontFamily: "'Montserrat',sans-serif",
-                        cursor: 'pointer',
-                        outline: 'none',
-                        appearance: 'none',
-                        WebkitAppearance: 'none'
-                      }}
-                    >
-                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>Budget Range</option>
-                      <option value="50L-80L" style={{ background: '#070f1e', color: '#fff' }}>₹50 Lacs – ₹80 Lacs</option>
-                      <option value="80L-1.2CR" style={{ background: '#070f1e', color: '#fff' }}>₹80 Lacs – ₹1.2 Crores</option>
-                      <option value="1.2CR-2.5CR" style={{ background: '#070f1e', color: '#fff' }}>₹1.2 Crores – ₹2.5 Crores</option>
-                      <option value="2.5CR+" style={{ background: '#070f1e', color: '#fff' }}>₹2.5 Crores &amp; Above</option>
-                    </select>
-                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                      <ChevronDown size={14} color="rgba(255,255,255,0.45)" />
-                    </div>
-                  </div>
-
-                  {/* Dropdown 4: BHK Configuration */}
-                  <div style={{ marginBottom: '16px', position: 'relative' }}>
-                    <select
-                      value={searchBHK}
-                      onChange={(e) => setSearchBHK(e.target.value)}
-                      style={{
-                        width: '100%',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.12)',
-                        borderRadius: '10px',
-                        padding: '11px 36px 11px 14px',
-                        color: searchBHK ? '#FFF' : 'rgba(255,255,255,0.7)',
-                        fontSize: '0.82rem',
-                        fontFamily: "'Montserrat',sans-serif",
-                        cursor: 'pointer',
-                        outline: 'none',
-                        appearance: 'none',
-                        WebkitAppearance: 'none'
-                      }}
-                    >
-                      <option value="" style={{ background: '#070f1e', color: '#fff' }}>BHK Configuration</option>
-                      <option value="1" style={{ background: '#070f1e', color: '#fff' }}>1 BHK</option>
-                      <option value="2" style={{ background: '#070f1e', color: '#fff' }}>2 BHK</option>
-                      <option value="3" style={{ background: '#070f1e', color: '#fff' }}>3 BHK</option>
-                      <option value="4" style={{ background: '#070f1e', color: '#fff' }}>4 BHK</option>
-                      <option value="5" style={{ background: '#070f1e', color: '#fff' }}>5+ BHK / Penthouse</option>
-                    </select>
-                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                      <ChevronDown size={14} color="rgba(255,255,255,0.45)" />
-                    </div>
-                  </div>
-
-                  {/* Search CTA */}
-                  <button
-                    onClick={() => {
-                      const filtersObj = {};
-                      if (searchLocation) filtersObj.location = searchLocation;
-                      if (searchPropType) filtersObj.propertyType = searchPropType;
-                      if (searchBudget) filtersObj.budgetRange = searchBudget;
-                      if (searchBHK) filtersObj.bedrooms = searchBHK;
-                      if (heroTab) filtersObj.transactionType = heroTab;
-                      handleApplyMegaFilter(filtersObj, 'listings');
-                      setTimeout(() => {
-                        const el = document.getElementById('listings-anchor');
-                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }, 100);
-                    }}
-                    style={{
-                      width: '100%', padding: '13px',
-                      background: 'linear-gradient(135deg, #C59B27 0%, #D4AF37 50%, #AA7C1E 100%)',
-                      border: 'none', borderRadius: '10px',
-                      color: '#040814', fontWeight: 800,
-                      fontFamily: "'Montserrat',sans-serif",
-                      fontSize: '0.84rem', letterSpacing: '0.08em',
-                      cursor: 'pointer', boxShadow: '0 6px 20px rgba(197,155,39,0.35)',
-                      transition: 'all 0.3s ease',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-                    }}
-                  >
-                    <Search size={15} />
-                    SEARCH PROPERTIES
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* ── STATS BAR STRIP (Matching Image) ── */}
@@ -4290,127 +4086,7 @@ export default function Portal({ onViewChange }) {
 
 
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          ✦ VASTU & NRI BUYER'S GUIDE — Premium Glassmorphic Section
-      ══════════════════════════════════════════════════════════════════════ */}
-      {!selectedPropertyDetail && !activeSubView && (
-        <section style={{
-          background: 'linear-gradient(180deg, #040814 0%, #070f1e 60%, #040814 100%)',
-          padding: isMobile ? '48px 0 60px' : '72px 0 90px',
-          position: 'relative', overflow: 'hidden',
-        }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)' }} />
-          {/* Decorative background glow */}
-          <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)', width: '600px', height: '400px', background: 'radial-gradient(ellipse, rgba(212,175,55,0.03) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-          <div style={{ maxWidth: isWideDesktop ? '1680px' : '1380px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 32px' }}>
-            {/* Section Header */}
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '50px', padding: '6px 18px', marginBottom: '14px' }}>
-                <span style={{ color: '#D4AF37', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase' }}>🔱 VASTU & NRI GUIDE</span>
-              </div>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.4rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
-                Buy <span style={{ color: '#D4AF37' }}>Right</span> — Vastu, NRI & Home Tips
-              </h2>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
-                Expert guidance for homebuyers and NRI investors — Vastu-compliant flat selection, NRI purchase process, and 15 years of 24K Realtors advisory insights.
-              </p>
-            </div>
-
-            {/* Two-column layout: Vastu Tips + NRI Checklist */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '24px' : '32px', marginBottom: '40px' }}>
-              
-              {/* Vastu Guide */}
-              <div style={{ background: 'rgba(7,15,30,0.7)', backdropFilter: 'blur(20px)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '20px', padding: '28px 24px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-                  <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🔱</div>
-                  <div>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.0rem', fontWeight: 700, color: '#D4AF37' }}>Vastu Shastra Guide</div>
-                    <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)' }}>For Flat Selection in Hinjewadi</div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                  {[
-                    { icon: '🧭', title: 'Main Entrance Direction', tip: 'North, East or North-East facing entrance is most auspicious — brings prosperity, health and positive energy flow into the home.' },
-                    { icon: '🛏️', title: 'Master Bedroom Placement', tip: 'Ideal location is South-West corner. Associated with stability and grounding. Avoid NE corner for master bedroom.' },
-                    { icon: '🍳', title: 'Kitchen Location', tip: 'South-East (Agni zone) is preferred. Cook should face East while cooking. Avoid North-East kitchen — it disrupts energy balance.' },
-                    { icon: '📐', title: 'Floor Plan Shape', tip: 'Prefer square or rectangular floor plans. Avoid irregular "L" or "T" shapes and missing corners — they create energy imbalances.' },
-                    { icon: '💡', title: 'Natural Light & Ventilation', tip: 'Balconies in North or East are highly recommended. Ensure ample cross-ventilation. Well-lit Brahmasthan (center of home) is vital.' },
-                    { icon: '🏔️', title: 'Terrain & View Direction', tip: 'Land/plot lower in North-East, higher in South-West is vastu-ideal. Hill views from North or East facing balconies are auspicious.' },
-                  ].map((item, i) => (
-                    <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', padding: '12px', background: 'rgba(212,175,55,0.03)', border: '1px solid rgba(212,175,55,0.08)', borderRadius: '10px' }}>
-                      <span style={{ fontSize: '1.2rem', flexShrink: 0, marginTop: '1px' }}>{item.icon}</span>
-                      <div>
-                        <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#D4AF37', marginBottom: '3px', fontFamily: "'Montserrat', sans-serif" }}>{item.title}</div>
-                        <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.55 }}>{item.tip}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* NRI Buyer Checklist */}
-              <div style={{ background: 'rgba(7,15,30,0.7)', backdropFilter: 'blur(20px)', border: '1px solid rgba(37,211,102,0.2)', borderRadius: '20px', padding: '28px 24px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-                  <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🌍</div>
-                  <div>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.0rem', fontWeight: 700, color: '#25D366' }}>NRI Buyer's Checklist</div>
-                    <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)' }}>5 Steps to Buy Property in Pune from Abroad</div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                  {[
-                    { step: '01', icon: '🛡️', title: 'Verify RERA Registration', tip: 'Always check project RERA on MahaRERA.gov.in. 24K Realtors only works with 100% MahaRERA registered projects. Our RERA: A051262603190.', color: '#25D366' },
-                    { step: '02', icon: '📄', title: 'Draft Power of Attorney (PoA)', tip: 'As an NRI, a well-drafted PoA allows a trusted representative in India to sign documents on your behalf. 24K Realtors helps coordinate this process.', color: '#60A5FA' },
-                    { step: '03', icon: '🏦', title: 'Open NRO / NRE Bank Account', tip: 'Property transactions in India require an NRO or NRE account. SBI, HDFC & ICICI have dedicated NRI banking support. We will connect you directly.', color: '#F59E0B' },
-                    { step: '04', icon: '💰', title: 'NRI Home Loan Options', tip: 'SBI NRI Home Loan starts from 8.45% p.a. HDFC NRI loans available from abroad with video KYC. Loan of up to 80% on project value — we assist.', color: '#A78BFA' },
-                    { step: '05', icon: '🎥', title: 'Virtual Site Tour — WhatsApp / Zoom', tip: '24K Realtors conducts live virtual walkthroughs via WhatsApp video or Zoom. Our advisory team in Hinjewadi visits and streams the site for you personally.', color: '#E6C35C' },
-                  ].map((item, i) => (
-                    <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', padding: '14px', background: `${item.color}08`, border: `1px solid ${item.color}22`, borderRadius: '10px' }}>
-                      <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: `${item.color}18`, border: `1px solid ${item.color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', flexShrink: 0 }}>{item.icon}</div>
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
-                          <span style={{ fontSize: '0.55rem', fontWeight: 900, color: item.color, opacity: 0.7 }}>STEP {item.step}</span>
-                          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', fontFamily: "'Montserrat', sans-serif" }}>{item.title}</span>
-                        </div>
-                        <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.55 }}>{item.tip}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA */}
-                <button
-                  onClick={handleOpenInquiry}
-                  style={{ marginTop: '20px', width: '100%', padding: '13px', background: 'linear-gradient(135deg, rgba(37,211,102,0.15), rgba(37,211,102,0.08))', border: '1px solid rgba(37,211,102,0.4)', color: '#25D366', borderRadius: '12px', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.06em', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.25s ease' }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.15)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                >
-                  <span>📞</span> TALK TO NRI ADVISOR — FREE CONSULTATION
-                </button>
-              </div>
-            </div>
-
-            {/* Quick Info Strip */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: '16px' }}>
-              {[
-                { icon: '🚇', title: 'Metro Line 3', sub: 'Hinjewadi–Shivajinagar (2026)', color: '#60A5FA' },
-                { icon: '💻', title: 'IT Hub Proximity', sub: 'TCS, Infosys, Wipro, Cognizant', color: '#A78BFA' },
-                { icon: '🏫', title: 'Top Schools Nearby', sub: 'Anisha Global, DPS, Orchid, VIBGYOR', color: '#34D399' },
-                { icon: '🌿', title: 'Green Coverage', sub: '60–80% open space in townships', color: '#E6C35C' },
-              ].map((item, i) => (
-                <div key={i} style={{ background: `${item.color}08`, border: `1px solid ${item.color}25`, borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
-                  <div>
-                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: item.color }}>{item.title}</div>
-                    <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>{item.sub}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Main Listings and Directories Container with Luxury Ambient Background */}
       <div className="subpage-ambient-bg">
@@ -4536,7 +4212,7 @@ export default function Portal({ onViewChange }) {
                         onToggleWishlist={handleToggleWishlist}
                         onOpenRera={handleOpenReraDrawer}
                         onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
-                        onOpenDetail={(prop) => { setSelectedPropertyDetail(prop); window.scrollTo({ top: 300, behavior: 'smooth' }); }}
+                        onOpenDetail={handleOpenPropertyDetail}
                       />
                     ))}
                   </div>
@@ -4568,10 +4244,7 @@ export default function Portal({ onViewChange }) {
                               onToggleWishlist={handleToggleWishlist}
                               onOpenRera={handleOpenReraDrawer}
                               onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
-                              onOpenDetail={(prop) => {
-                                setSelectedPropertyDetail(prop);
-                                window.scrollTo({ top: 0, behavior: "smooth" });
-                              }}
+                              onOpenDetail={handleOpenPropertyDetail}
                             />
                           </div>
                         ))}
@@ -4595,10 +4268,7 @@ export default function Portal({ onViewChange }) {
                         onToggleWishlist={handleToggleWishlist}
                         onOpenRera={handleOpenReraDrawer}
                         onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
-                        onOpenDetail={(prop) => {
-                          setSelectedPropertyDetail(prop);
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                        }}
+                        onOpenDetail={handleOpenPropertyDetail}
                       />
                     ))}
                   </div>
@@ -5657,10 +5327,9 @@ export default function Portal({ onViewChange }) {
                             <div
                               key={p.id}
                               onClick={() => {
-                                setSelectedPropertyDetail(p);
+                                handleOpenPropertyDetail(p);
                                 setIsSpotlightOpen(false);
                                 setSpotlightQuery("");
-                                window.scrollTo({ top: 300, behavior: "smooth" });
                               }}
                               style={{
                                 display: "flex",
