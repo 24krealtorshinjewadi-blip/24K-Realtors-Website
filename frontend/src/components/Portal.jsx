@@ -3442,23 +3442,12 @@ export default function Portal({ onViewChange }) {
                   backgroundImage: `url('${slide.img}')`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  transition: 'opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1)',
+                  transition: 'opacity 0.9s ease-in-out',
                   opacity: i === heroSlide ? 1 : 0,
-                  transform: i === heroSlide ? 'scale(1.06)' : 'scale(1)',
-                  transformOrigin: 'center center',
-                  animation: i === heroSlide ? 'heroKenBurns 10s ease-in-out forwards' : 'none',
-                  willChange: 'opacity, transform',
+                  willChange: 'opacity',
                 }}
               />
             ))}
-
-            {/* Ken Burns CSS injected */}
-            <style>{`
-              @keyframes heroKenBurns {
-                0%   { transform: scale(1.00); }
-                100% { transform: scale(1.08); }
-              }
-            `}</style>
 
             {/* Dark gradient overlay — left-heavy */}
             <div style={{
