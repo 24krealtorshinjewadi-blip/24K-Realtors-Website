@@ -902,18 +902,15 @@ export default function Portal({ onViewChange }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ── Dynamic Hero Slideshow State ─────────────────────────────────────
+  // ── Dynamic Hero Slideshow State (7 High-Res Serial Images from Drive) ──
   const HERO_SLIDES = [
-    { img: '/twentyfourk_pune_banner.png',    caption: '24K Realtors — Pune\'s Legacy Brand Since 2011',         loc: 'Hinjewadi, Pune' },
-    { img: '/lodha_3_completed_aerial.png',   caption: 'Luxury High-Rise Towers — Hinjewadi Corridor',           loc: 'Hinjewadi Phase 1' },
-    { img: '/dev_kolte_patil_township.png',   caption: 'Life Republic — 400 Acre Smart Township',                loc: 'Hinjewadi Phase 1' },
-    { img: '/dev_shapoorji_township.png',     caption: 'Joyville Sensorium — Shapoorji Pallonji',                loc: 'Hinjewadi Phase 1' },
-    { img: '/lodha_7_infinity_pool.png',      caption: 'Sky Infinity Pool — Resort-Style Living',                loc: 'Hinjewadi Corridor' },
-    { img: '/dev_vtp_township.png',           caption: 'VTP Blue Waters — 100 Acre Riverfront Township',         loc: 'Mahalunge Smart City' },
-    { img: '/dev_godrej_building.png',        caption: 'Godrej Woodsville — Green Premium Living',               loc: 'Hinjewadi Phase 1' },
-    { img: '/gallery_infinity_pool.png',      caption: 'World-Class Club Amenities — Your Lifestyle Redefined',  loc: 'Pune West' },
-    { img: '/lodha_4_grand_lobby.png',        caption: '5-Star Grand Lobby — Arrive in Style Every Day',         loc: 'Hinjewadi Corridor' },
-    { img: '/lodha_10_key_handover.png',      caption: 'Your Dream Home Delivered — 150+ Happy Families',        loc: 'Served Across Pune' },
+    { img: '/hero-slider/hero_01.png', caption: '24K Realtors — Pune\'s Trusted Luxury Property Consultants', loc: 'Hinjewadi Phase 1, Pune' },
+    { img: '/hero-slider/hero_02.png', caption: 'Premium 3 & 4 BHK High-Rise Residences & Skyline Living', loc: 'Hinjewadi Phase 1 & 2' },
+    { img: '/hero-slider/hero_03.png', caption: 'Architectural Grandeur — Integrated Smart Townships', loc: 'Hinjewadi & Wakad Corridor' },
+    { img: '/hero-slider/hero_04.png', caption: 'Curated Luxury Penthouses & Riverside Promenades', loc: 'Baner & Balewadi High Street' },
+    { img: '/hero-slider/hero_05.png', caption: '400+ Acre Mega Townships with 80% Green Open Spaces', loc: 'Mahalunge Smart City' },
+    { img: '/hero-slider/hero_06.png', caption: 'World-Class Club Amenities & Resort-Style Living', loc: 'Hinjewadi Phase 3 & PCMC' },
+    { img: '/hero-slider/hero_07.png', caption: '15K+ Happy Families · 100% MahaRERA Verified Portfolio', loc: 'Served Across Pune' },
   ];
   const [heroSlide, setHeroSlide] = useState(0);
   const [heroPrev, setHeroPrev] = useState(null);
