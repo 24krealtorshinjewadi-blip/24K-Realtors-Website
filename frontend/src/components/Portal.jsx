@@ -3500,123 +3500,223 @@ export default function Portal({ onViewChange }) {
               padding: isMobile ? '80px 16px 36px' : '100px 32px 48px',
             }}>
 
-              {/* ── LEFT: Text + CTAs + Trust Badges in Glassmorphic Panel ── */}
+              {/* ── LEFT: Text + CTAs + Trust Badges — Ultra-Luxury Redesign ── */}
               <div style={{
-                maxWidth: isMobile ? '100%' : '660px',
-                background: 'rgba(4, 8, 20, 0.45)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                border: '1px solid rgba(212, 175, 55, 0.25)',
-                borderRadius: '24px',
-                padding: isMobile ? '22px 18px' : '32px 34px',
-                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.55)',
+                maxWidth: isMobile ? '100%' : '680px',
+                background: 'rgba(3, 6, 18, 0.62)',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
+                border: '1px solid rgba(212, 175, 55, 0.28)',
+                borderRadius: '28px',
+                padding: isMobile ? '24px 20px 20px' : '40px 42px 32px',
+                boxShadow: '0 32px 80px rgba(0,0,0,0.65), 0 0 0 1px rgba(212,175,55,0.06) inset',
+                position: 'relative',
+                overflow: 'hidden',
               }}>
 
-                {/* "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" pill */}
+                {/* Subtle inner ambient glow */}
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.6) 40%, rgba(230,195,92,0.8) 60%, transparent 100%)',
+                  borderRadius: '28px 28px 0 0',
+                }} />
+
+                {/* Trust Pill — "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" */}
                 <div style={{
                   display: 'inline-flex', alignItems: 'center', gap: '8px',
-                  background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)',
-                  borderRadius: '50px', padding: '5px 14px', marginBottom: '16px'
+                  background: 'linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(212,175,55,0.08) 100%)',
+                  border: '1px solid rgba(212,175,55,0.55)',
+                  borderRadius: '50px',
+                  padding: isMobile ? '6px 14px' : '7px 18px',
+                  marginBottom: isMobile ? '18px' : '22px',
+                  boxShadow: '0 0 20px rgba(212,175,55,0.12)',
                 }}>
-                  <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#F5D77F', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                    ★ PUNE'S MOST TRUSTED PROPERTY CONSULTANTS
+                  <span style={{ color: '#E6C35C', fontSize: '0.75rem' }}>★</span>
+                  <span style={{
+                    fontSize: isMobile ? '0.6rem' : '0.67rem',
+                    fontWeight: 800,
+                    color: '#F5D77F',
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}>
+                    PUNE'S MOST TRUSTED PROPERTY CONSULTANTS
                   </span>
                 </div>
 
                 {/* Main Headline */}
                 <h1 style={{
                   fontFamily: "'Cinzel', serif",
-                  fontSize: isMobile ? 'clamp(1.9rem, 6vw, 2.5rem)' : 'clamp(2.3rem, 3.6vw, 3.6rem)',
-                  color: '#fff', lineHeight: 1.15,
-                  margin: '0 0 14px 0', fontWeight: 700,
+                  fontSize: isMobile ? 'clamp(2rem, 7vw, 2.6rem)' : 'clamp(2.6rem, 4vw, 4rem)',
+                  color: '#fff',
+                  lineHeight: 1.12,
+                  margin: '0 0 6px 0',
+                  fontWeight: 800,
                   letterSpacing: '-0.01em',
-                  textShadow: '0 4px 20px rgba(0,0,0,0.8)'
+                  textShadow: '0 4px 28px rgba(0,0,0,0.9)',
                 }}>
-                  Your Dream<br />
-                  <span style={{
-                    background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 40%, #C5A880 100%)',
-                    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
-                  }}>Homes Awaits<br />in Hinjewadi.</span>
+                  Your Dream Homes
+                </h1>
+                <h1 style={{
+                  fontFamily: "'Cinzel', serif",
+                  fontSize: isMobile ? 'clamp(2rem, 7vw, 2.6rem)' : 'clamp(2.6rem, 4vw, 4rem)',
+                  margin: '0 0 18px 0',
+                  fontWeight: 800,
+                  lineHeight: 1.12,
+                  letterSpacing: '-0.01em',
+                  background: 'linear-gradient(135deg, #FFF8E0 0%, #F5D77F 35%, #E6C35C 60%, #C5A032 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  filter: 'drop-shadow(0 2px 12px rgba(212,175,55,0.35))',
+                }}>
+                  Awaits in Hinjewadi.
                 </h1>
 
                 {/* Subtitle */}
                 <p style={{
                   fontFamily: "'Montserrat', sans-serif",
-                  fontSize: isMobile ? '0.86rem' : '0.95rem',
-                  color: 'rgba(255,255,255,0.92)',
-                  lineHeight: 1.55, marginBottom: '22px',
+                  fontSize: isMobile ? '0.84rem' : '0.94rem',
+                  color: 'rgba(255,255,255,0.82)',
+                  lineHeight: 1.65,
+                  marginBottom: isMobile ? '22px' : '28px',
                   maxWidth: '520px',
-                  textShadow: '0 2px 8px rgba(0,0,0,0.7)'
+                  fontWeight: 400,
+                  letterSpacing: '0.01em',
                 }}>
-                  3 &amp; 4 BHK Premium Homes in Hinjewadi Phase 1, 2, 3 &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
+                  3 &amp; 4 BHK Premium Homes in <strong style={{ color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>Hinjewadi Phase 1, 2, 3</strong> &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
                 </p>
 
-                {/* CTAs */}
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '22px' }}>
+                {/* CTA Buttons */}
+                <div style={{ display: 'flex', gap: isMobile ? '10px' : '14px', flexWrap: 'wrap', marginBottom: isMobile ? '24px' : '30px' }}>
                   <button
+                    id="hero-explore-btn"
                     onClick={() => {
                       const el = document.getElementById('listings-anchor');
                       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
                     style={{
-                      background: 'linear-gradient(135deg, #C59B27 0%, #E6C35C 50%, #B8860B 100%)',
-                      border: 'none', color: '#040814',
-                      padding: '13px 26px', borderRadius: '30px',
-                      fontWeight: 800, fontFamily: "'Montserrat', sans-serif",
-                      fontSize: '0.82rem', letterSpacing: '0.06em', cursor: 'pointer',
-                      boxShadow: '0 8px 24px rgba(230,195,92,0.35)',
-                      transition: 'all 0.3s ease',
-                      display: 'inline-flex', alignItems: 'center', gap: '8px'
+                      background: 'linear-gradient(135deg, #C59B27 0%, #F0D060 45%, #B8860B 100%)',
+                      border: '1px solid rgba(255,220,80,0.4)',
+                      color: '#05091A',
+                      padding: isMobile ? '13px 22px' : '15px 30px',
+                      borderRadius: '50px',
+                      fontWeight: 900,
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: isMobile ? '0.8rem' : '0.85rem',
+                      letterSpacing: '0.08em',
+                      cursor: 'pointer',
+                      boxShadow: '0 6px 28px rgba(212,175,55,0.45), 0 2px 8px rgba(0,0,0,0.3)',
+                      transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+                      display: 'inline-flex', alignItems: 'center', gap: '10px',
+                      textTransform: 'uppercase',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 14px 32px rgba(230,195,92,0.5)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(230,195,92,0.35)'; }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
+                      e.currentTarget.style.boxShadow = '0 14px 40px rgba(212,175,55,0.6), 0 4px 12px rgba(0,0,0,0.3)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                      e.currentTarget.style.boxShadow = '0 6px 28px rgba(212,175,55,0.45), 0 2px 8px rgba(0,0,0,0.3)';
+                    }}
                   >
                     <span>EXPLORE PROJECTS</span>
-                    <ArrowRight size={15} />
+                    <ArrowRight size={16} strokeWidth={2.5} />
                   </button>
 
                   <button
+                    id="hero-experts-btn"
                     onClick={handleOpenInquiry}
                     style={{
-                      background: 'rgba(7,15,30,0.6)', border: '1px solid rgba(230,195,92,0.4)',
-                      color: '#FFF4D0', padding: '13px 24px', borderRadius: '30px',
-                      fontWeight: 700, fontFamily: "'Montserrat', sans-serif",
-                      fontSize: '0.82rem', letterSpacing: '0.06em', cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      display: 'inline-flex', alignItems: 'center', gap: '8px'
+                      background: 'rgba(255,255,255,0.06)',
+                      backdropFilter: 'blur(8px)',
+                      WebkitBackdropFilter: 'blur(8px)',
+                      border: '1.5px solid rgba(212,175,55,0.55)',
+                      color: '#FFF4D0',
+                      padding: isMobile ? '13px 22px' : '15px 28px',
+                      borderRadius: '50px',
+                      fontWeight: 700,
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: isMobile ? '0.8rem' : '0.85rem',
+                      letterSpacing: '0.06em',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+                      display: 'inline-flex', alignItems: 'center', gap: '10px',
+                      textTransform: 'uppercase',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(230,195,92,0.1)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(7,15,30,0.6)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'rgba(212,175,55,0.15)';
+                      e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
+                      e.currentTarget.style.borderColor = 'rgba(212,175,55,0.9)';
+                      e.currentTarget.style.boxShadow = '0 10px 30px rgba(212,175,55,0.2)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                      e.currentTarget.style.borderColor = 'rgba(212,175,55,0.55)';
+                      e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.25)';
+                    }}
                   >
-                    <Phone size={14} style={{ color: '#E6C35C' }} />
+                    <Phone size={15} style={{ color: '#E6C35C' }} />
                     <span>TALK TO OUR EXPERTS</span>
                   </button>
                 </div>
 
-                {/* ── TRUST BADGES ROW (Clean & Aligned) ── */}
+                {/* ── TRUST BADGES — Premium Glass Strip ── */}
                 <div style={{
-                  display: 'flex', gap: isMobile ? '8px' : '10px', flexWrap: 'wrap', alignItems: 'center',
+                  display: 'grid',
+                  gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+                  gap: isMobile ? '8px' : '0',
+                  background: isMobile ? 'transparent' : 'rgba(255,255,255,0.04)',
+                  border: isMobile ? 'none' : '1px solid rgba(212,175,55,0.2)',
+                  borderRadius: '14px',
+                  overflow: 'hidden',
                 }}>
                   {[
-                    { icon: '✔️', title: 'Verified Properties', sub: 'RERA Approved' },
-                    { icon: '👤', title: 'Expert Guidance', sub: 'End to End Support' },
-                    { icon: '⚙️', title: 'Best Price Guarantee', sub: 'No Hidden Charges' },
-                    { icon: '📍', title: 'Site Visits', sub: 'Hassle Free' },
+                    { icon: '✓', title: 'Verified Properties', sub: 'RERA Approved', iconBg: 'rgba(46,160,90,0.2)', iconColor: '#5DDB8A' },
+                    { icon: '◎', title: 'Expert Guidance', sub: 'End-to-End Support', iconBg: 'rgba(99,149,255,0.2)', iconColor: '#7BA7FF' },
+                    { icon: '◈', title: 'Best Price', sub: 'No Hidden Charges', iconBg: 'rgba(212,175,55,0.2)', iconColor: '#F5D77F' },
+                    { icon: '⊕', title: 'Site Visits', sub: 'Hassle Free', iconBg: 'rgba(255,120,80,0.2)', iconColor: '#FF8C6B' },
                   ].map((badge, i) => (
                     <div key={i} style={{
-                      display: 'flex', alignItems: 'center', gap: '8px',
-                      background: 'rgba(7,15,30,0.8)', border: '1px solid rgba(212,175,55,0.25)',
-                      borderRadius: '50px', padding: '6px 14px',
+                      display: 'flex',
+                      flexDirection: isMobile ? 'row' : 'column',
+                      alignItems: isMobile ? 'center' : 'flex-start',
+                      gap: isMobile ? '10px' : '6px',
+                      padding: isMobile ? '10px 12px' : '12px 14px',
+                      background: isMobile ? 'rgba(255,255,255,0.05)' : 'transparent',
+                      border: isMobile ? '1px solid rgba(212,175,55,0.18)' : 'none',
+                      borderRight: !isMobile && i < 3 ? '1px solid rgba(212,175,55,0.15)' : 'none',
+                      borderRadius: isMobile ? '12px' : '0',
                     }}>
                       <div style={{
-                        width: '20px', height: '20px', borderRadius: '50%',
-                        background: 'rgba(212,175,55,0.15)',
+                        width: isMobile ? '32px' : '28px',
+                        height: isMobile ? '32px' : '28px',
+                        borderRadius: '8px',
+                        background: badge.iconBg,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '0.68rem', color: '#D4AF37'
+                        fontSize: isMobile ? '1rem' : '0.9rem',
+                        color: badge.iconColor,
+                        fontWeight: 900,
+                        flexShrink: 0,
                       }}>{badge.icon}</div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-                        <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#fff', fontFamily: "'Montserrat',sans-serif" }}>{badge.title}</span>
-                        <span style={{ fontSize: '0.52rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', fontFamily: "'Montserrat',sans-serif" }}>{badge.sub}</span>
+                      <div>
+                        <div style={{
+                          fontSize: isMobile ? '0.72rem' : '0.68rem',
+                          fontWeight: 700,
+                          color: '#fff',
+                          fontFamily: "'Montserrat', sans-serif",
+                          letterSpacing: '0.01em',
+                          lineHeight: 1.2,
+                        }}>{badge.title}</div>
+                        <div style={{
+                          fontSize: '0.58rem',
+                          fontWeight: 500,
+                          color: 'rgba(255,255,255,0.45)',
+                          fontFamily: "'Montserrat', sans-serif",
+                          marginTop: '2px',
+                        }}>{badge.sub}</div>
                       </div>
                     </div>
                   ))}
