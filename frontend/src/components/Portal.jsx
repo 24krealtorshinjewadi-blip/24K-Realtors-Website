@@ -3452,10 +3452,10 @@ export default function Portal({ onViewChange }) {
               />
             ))}
 
-            {/* Ultra-subtle luxury ambient gradient — keeps photography 100% bright, vibrant & crystal clear */}
+            {/* Cinematic vignette — left dark gradient so text floats legibly on image without a card */}
             <div style={{
               position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-              background: 'linear-gradient(180deg, rgba(4,8,20,0.25) 0%, rgba(4,8,20,0.05) 40%, rgba(4,8,20,0.5) 100%)',
+              background: 'linear-gradient(105deg, rgba(4,8,20,0.88) 0%, rgba(4,8,20,0.72) 30%, rgba(4,8,20,0.35) 58%, rgba(4,8,20,0.0) 100%)',
               zIndex: 1
             }} />
 
@@ -3500,26 +3500,13 @@ export default function Portal({ onViewChange }) {
               padding: isMobile ? '80px 16px 36px' : '100px 32px 48px',
             }}>
 
-              {/* ── LEFT: Text + CTAs + Trust Badges — Ultra-Luxury Redesign ── */}
+              {/* ── LEFT: Text + CTAs + Trust Badges — Transparent Floating Style ── */}
               <div style={{
                 maxWidth: isMobile ? '100%' : '680px',
-                background: 'rgba(3, 6, 18, 0.62)',
-                backdropFilter: 'blur(18px)',
-                WebkitBackdropFilter: 'blur(18px)',
-                border: '1px solid rgba(212, 175, 55, 0.28)',
-                borderRadius: '28px',
-                padding: isMobile ? '24px 20px 20px' : '40px 42px 32px',
-                boxShadow: '0 32px 80px rgba(0,0,0,0.65), 0 0 0 1px rgba(212,175,55,0.06) inset',
+                background: 'transparent',
+                padding: isMobile ? '0 4px' : '0',
                 position: 'relative',
-                overflow: 'hidden',
               }}>
-
-                {/* Subtle inner ambient glow */}
-                <div style={{
-                  position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.6) 40%, rgba(230,195,92,0.8) 60%, transparent 100%)',
-                  borderRadius: '28px 28px 0 0',
-                }} />
 
                 {/* Trust Pill — "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" */}
                 <div style={{
@@ -3553,7 +3540,7 @@ export default function Portal({ onViewChange }) {
                   margin: '0 0 6px 0',
                   fontWeight: 800,
                   letterSpacing: '-0.01em',
-                  textShadow: '0 4px 28px rgba(0,0,0,0.9)',
+                  textShadow: '0 2px 8px rgba(0,0,0,1), 0 8px 40px rgba(0,0,0,0.95), 0 0 2px rgba(0,0,0,1)',
                 }}>
                   Your Dream Homes
                 </h1>
@@ -3568,7 +3555,7 @@ export default function Portal({ onViewChange }) {
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
-                  filter: 'drop-shadow(0 2px 12px rgba(212,175,55,0.35))',
+                  filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.9)) drop-shadow(0 6px 24px rgba(0,0,0,0.8))',
                 }}>
                   Awaits in Hinjewadi.
                 </h1>
@@ -3577,12 +3564,13 @@ export default function Portal({ onViewChange }) {
                 <p style={{
                   fontFamily: "'Montserrat', sans-serif",
                   fontSize: isMobile ? '0.84rem' : '0.94rem',
-                  color: 'rgba(255,255,255,0.82)',
+                  color: 'rgba(255,255,255,0.92)',
                   lineHeight: 1.65,
                   marginBottom: isMobile ? '22px' : '28px',
                   maxWidth: '520px',
                   fontWeight: 400,
                   letterSpacing: '0.01em',
+                  textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 4px 20px rgba(0,0,0,0.8)',
                 }}>
                   3 &amp; 4 BHK Premium Homes in <strong style={{ color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>Hinjewadi Phase 1, 2, 3</strong> &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
                 </p>
@@ -3663,59 +3651,57 @@ export default function Portal({ onViewChange }) {
                   </button>
                 </div>
 
-                {/* ── TRUST BADGES — Premium Glass Strip ── */}
+                {/* ── TRUST BADGES — Individual Glass Pills ── */}
                 <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-                  gap: isMobile ? '8px' : '0',
-                  background: isMobile ? 'transparent' : 'rgba(255,255,255,0.04)',
-                  border: isMobile ? 'none' : '1px solid rgba(212,175,55,0.2)',
-                  borderRadius: '14px',
-                  overflow: 'hidden',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '8px',
                 }}>
                   {[
-                    { icon: '✓', title: 'Verified Properties', sub: 'RERA Approved', iconBg: 'rgba(46,160,90,0.2)', iconColor: '#5DDB8A' },
-                    { icon: '◎', title: 'Expert Guidance', sub: 'End-to-End Support', iconBg: 'rgba(99,149,255,0.2)', iconColor: '#7BA7FF' },
-                    { icon: '◈', title: 'Best Price', sub: 'No Hidden Charges', iconBg: 'rgba(212,175,55,0.2)', iconColor: '#F5D77F' },
-                    { icon: '⊕', title: 'Site Visits', sub: 'Hassle Free', iconBg: 'rgba(255,120,80,0.2)', iconColor: '#FF8C6B' },
+                    { icon: '✓', title: 'Verified Properties', sub: 'RERA Approved', iconBg: 'rgba(46,160,90,0.25)', iconColor: '#5DDB8A' },
+                    { icon: '◎', title: 'Expert Guidance', sub: 'End-to-End Support', iconBg: 'rgba(99,149,255,0.25)', iconColor: '#7BA7FF' },
+                    { icon: '◈', title: 'Best Price', sub: 'No Hidden Charges', iconBg: 'rgba(212,175,55,0.25)', iconColor: '#F5D77F' },
+                    { icon: '⊕', title: 'Site Visits', sub: 'Hassle Free', iconBg: 'rgba(255,120,80,0.25)', iconColor: '#FF8C6B' },
                   ].map((badge, i) => (
                     <div key={i} style={{
                       display: 'flex',
-                      flexDirection: isMobile ? 'row' : 'column',
-                      alignItems: isMobile ? 'center' : 'flex-start',
-                      gap: isMobile ? '10px' : '6px',
-                      padding: isMobile ? '10px 12px' : '12px 14px',
-                      background: isMobile ? 'rgba(255,255,255,0.05)' : 'transparent',
-                      border: isMobile ? '1px solid rgba(212,175,55,0.18)' : 'none',
-                      borderRight: !isMobile && i < 3 ? '1px solid rgba(212,175,55,0.15)' : 'none',
-                      borderRadius: isMobile ? '12px' : '0',
+                      alignItems: 'center',
+                      gap: '9px',
+                      padding: '8px 14px 8px 10px',
+                      background: 'rgba(4,8,20,0.72)',
+                      backdropFilter: 'blur(12px)',
+                      WebkitBackdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(255,255,255,0.12)',
+                      borderRadius: '50px',
                     }}>
                       <div style={{
-                        width: isMobile ? '32px' : '28px',
-                        height: isMobile ? '32px' : '28px',
-                        borderRadius: '8px',
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
                         background: badge.iconBg,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: isMobile ? '1rem' : '0.9rem',
+                        fontSize: '0.85rem',
                         color: badge.iconColor,
                         fontWeight: 900,
                         flexShrink: 0,
                       }}>{badge.icon}</div>
                       <div>
                         <div style={{
-                          fontSize: isMobile ? '0.72rem' : '0.68rem',
+                          fontSize: isMobile ? '0.7rem' : '0.68rem',
                           fontWeight: 700,
                           color: '#fff',
                           fontFamily: "'Montserrat', sans-serif",
                           letterSpacing: '0.01em',
                           lineHeight: 1.2,
+                          whiteSpace: 'nowrap',
                         }}>{badge.title}</div>
                         <div style={{
-                          fontSize: '0.58rem',
+                          fontSize: '0.56rem',
                           fontWeight: 500,
-                          color: 'rgba(255,255,255,0.45)',
+                          color: 'rgba(255,255,255,0.5)',
                           fontFamily: "'Montserrat', sans-serif",
-                          marginTop: '2px',
+                          marginTop: '1px',
+                          whiteSpace: 'nowrap',
                         }}>{badge.sub}</div>
                       </div>
                     </div>

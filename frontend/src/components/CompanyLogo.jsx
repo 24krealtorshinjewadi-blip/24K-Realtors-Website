@@ -23,7 +23,7 @@ export default function CompanyLogo({
   const isCompact = variant === 'compact';
 
   // Responsive prominent display heights for crystal-crisp visibility
-  const imgHeight = height || (isFull ? 90 : isCompact ? 58 : 68);
+  const imgHeight = height || (isFull ? 110 : isCompact ? 78 : 88);
 
   return (
     <div
