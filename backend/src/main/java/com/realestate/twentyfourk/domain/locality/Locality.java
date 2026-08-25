@@ -1,5 +1,6 @@
 package com.realestate.twentyfourk.domain.locality;
 
+import com.realestate.twentyfourk.domain.property.HinjewadiPhase;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,6 +30,38 @@ public class Locality {
 
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
+
+    /**
+     * Hinjewadi phase classification — assigned only from verified official address.
+     * Do NOT assign phase from developer marketing claims.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "hinjewadi_phase", length = 30)
+    private HinjewadiPhase hinjewadiPhase;
+
+    /** India PIN code for this locality. */
+    @Column(name = "pincode", length = 10)
+    private String pincode;
+
+    /** Approximate center-point latitude for map display. */
+    @Column(name = "latitude")
+    private Double latitude;
+
+    /** Approximate center-point longitude for map display. */
+    @Column(name = "longitude")
+    private Double longitude;
+
+    /** SEO page title for /locations/[slug] page. */
+    @Column(name = "seo_title", length = 120)
+    private String seoTitle;
+
+    /** SEO meta description for /locations/[slug] page. Max 160 chars. */
+    @Column(name = "seo_description", length = 300)
+    private String seoDescription;
+
+    /** H1 heading for /locations/[slug] page. */
+    @Column(name = "seo_h1", length = 200)
+    private String seoH1;
 
     @Column(name = "overview", columnDefinition = "TEXT")
     private String overview;

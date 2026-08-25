@@ -36,6 +36,14 @@ public class Builder {
     @Column(name = "logo_url", length = 1024)
     private String logoUrl;
 
+    /** Parent company / holding group (e.g., "Godrej Properties Ltd" under "Godrej Group"). */
+    @Column(name = "parent_company", length = 255)
+    private String parentCompany;
+
+    /** Official developer website URL for source verification. */
+    @Column(name = "official_website", length = 1024)
+    private String officialWebsite;
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
