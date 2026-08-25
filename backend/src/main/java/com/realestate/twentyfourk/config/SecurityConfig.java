@@ -54,6 +54,13 @@ public class SecurityConfig {
                 
                 // Public Property search lookups
                 .requestMatchers(HttpMethod.GET, "/api/v1/properties/**").permitAll()
+
+                // ---------------------------------------------------------------
+                // PUBLIC INTELLIGENCE API — /api/public/**
+                // No authentication required. Serves the public-facing website.
+                // ---------------------------------------------------------------
+                .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
+
                 // Administrative Property updates require SUPER_ADMIN/ADMIN/SALES_MANAGER
                 .requestMatchers(HttpMethod.POST, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
