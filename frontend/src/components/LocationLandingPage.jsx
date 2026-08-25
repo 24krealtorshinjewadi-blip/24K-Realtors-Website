@@ -11,9 +11,17 @@ import CompanyLogo from './CompanyLogo';
 
 const formatInr = (val) => {
   if (!val) return '₹65 Lakhs';
-  if (typeof val === 'string' && (val.includes('₹') || val.includes('Cr') || val.includes('Lakh'))) return val;
-  const num = Number(val);
-  if (isNaN(num)) return val;
+  if (typeof val === 'string') {
+    const crMatch = val.match(/0\.(\d+)\s*Cr/i);
+    if (crMatch) {
+      const numCr = parseFloat(`0.${crMatch[1]}`);
+      const lakhs = Math.round(numCr * 100);
+      return val.replace(/0\.\d+\s*Cr/i, `${lakhs} Lakhs`);
+    }
+    if (val.includes('₹') || val.includes('Cr') || val.includes('Lakh')) return val;
+  }
+  const num = Number(String(val).replace(/[^0-9.]/g, ''));
+  if (isNaN(num) || num <= 0) return val;
   if (num >= 10000000) return `₹${(num / 10000000).toFixed(2)} Cr`;
   if (num >= 100000) return `₹${Math.round(num / 100000)} Lakhs`;
   return `₹${num.toLocaleString('en-IN')}`;

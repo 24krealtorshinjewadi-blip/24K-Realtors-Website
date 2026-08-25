@@ -3255,14 +3255,24 @@ export default function Portal({ onViewChange }) {
 
   const formatPrice = (price, transactionType = null) => {
     if (!price) return 'N/A';
-    const num = Number(price);
+    if (typeof price === 'string') {
+      const crMatch = price.match(/0\.(\d+)\s*Cr/i);
+      if (crMatch) {
+        const numCr = parseFloat(`0.${crMatch[1]}`);
+        const lakhs = Math.round(numCr * 100);
+        return price.replace(/0\.\d+\s*Cr/i, `${lakhs} Lakhs`);
+      }
+      if (price.includes('₹') || price.includes('Cr') || price.includes('Lakh')) return price;
+    }
+    const cleanNum = Number(String(price).replace(/[^0-9.]/g, ''));
+    if (isNaN(cleanNum) || cleanNum <= 0) return price;
     let formattedPrice = '';
-    if (num >= 10000000) {
-      formattedPrice = `₹${(num / 10000000).toFixed(2)} Cr`;
-    } else if (num >= 100000) {
-      formattedPrice = `₹${(num / 100000).toFixed(2)} L`;
+    if (cleanNum >= 10000000) {
+      formattedPrice = `₹${(cleanNum / 10000000).toFixed(2)} Cr`;
+    } else if (cleanNum >= 100000) {
+      formattedPrice = `₹${Math.round(cleanNum / 100000)} Lakhs`;
     } else {
-      formattedPrice = `₹${num.toLocaleString('en-IN')}`;
+      formattedPrice = `₹${cleanNum.toLocaleString('en-IN')}`;
     }
     
     if (transactionType === 'RENT') {
@@ -3557,7 +3567,7 @@ export default function Portal({ onViewChange }) {
                   backgroundClip: 'text',
                   filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.9)) drop-shadow(0 6px 24px rgba(0,0,0,0.8))',
                 }}>
-                  Awaits in Hinjewadi.
+                  Awaits in Pune.
                 </h1>
 
                 {/* Subtitle */}

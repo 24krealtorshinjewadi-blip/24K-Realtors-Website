@@ -243,9 +243,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const possession    = property.possessionDate || property.possession || 'Dec 2027';
   const projectArea   = property.projectArea || property.totalArea || (property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '4.5 Acres');
   const investmentScore = property.investmentScore || property.aiScore || 94;
-  const address       = property.address || property.location || `${title}, ${location}`;
   const displayPrice  = property.price 
-    ? (typeof formatPrice === 'function' ? formatPrice(property.price) : `₹${(property.price / 10000000).toFixed(2)} Cr`)
+    ? (typeof formatPrice === 'function' 
+        ? formatPrice(property.price) 
+        : (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} Lakhs`))
     : (property.priceDisplay || '₹1.45 Cr*');
 
   /* ── EMI Computations ── */
@@ -1039,7 +1040,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 </div>
                 <button onClick={onOpenInquiry} className="pdv-btn-gold"
                   style={{ padding: '13px 20px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', border: 'none', color: '#09111F', fontSize: '0.82rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-                  <Phone size={15} /> Talk to Society Specialist →
+                  <Phone size={15} /> Talk to Our Specialist →
                 </button>
               </div>
             </div>

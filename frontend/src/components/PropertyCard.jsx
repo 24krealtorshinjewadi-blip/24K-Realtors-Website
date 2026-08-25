@@ -68,14 +68,22 @@ const getBuilderName = (title = '', desc = '') => {
 
 const formatPriceFallback = (p, transactionType) => {
   if (!p) return 'Price on Request';
-  if (typeof p === 'string' && p.includes('₹')) return p;
-  const num = Number(p);
-  if (isNaN(num)) return p;
+  if (typeof p === 'string') {
+    const crMatch = p.match(/0\.(\d+)\s*Cr/i);
+    if (crMatch) {
+      const numCr = parseFloat(`0.${crMatch[1]}`);
+      const lakhs = Math.round(numCr * 100);
+      return p.replace(/0\.\d+\s*Cr/i, `${lakhs} Lakhs`);
+    }
+    if (p.includes('₹') || p.includes('Cr') || p.includes('Lakh')) return p;
+  }
+  const num = Number(String(p).replace(/[^0-9.]/g, ''));
+  if (isNaN(num) || num <= 0) return p;
   if (transactionType === 'RENT') {
     return num >= 100000 ? `₹${(num / 100000).toFixed(2)} L/mo` : `₹${num.toLocaleString('en-IN')}/mo`;
   }
   if (num >= 10000000) return `₹${(num / 10000000).toFixed(2)} Cr*`;
-  if (num >= 100000) return `₹${Math.round(num / 100000)} L*`;
+  if (num >= 100000) return `₹${Math.round(num / 100000)} Lakhs*`;
   return `₹${num.toLocaleString('en-IN')}`;
 };
 

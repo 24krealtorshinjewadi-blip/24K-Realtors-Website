@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
-  UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building,
-  Home, Search, Heart, ChevronDown, TrendingUp, Camera
+  UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building, Building2,
+  Home, Search, Heart, ChevronDown, TrendingUp, Camera, Sparkles
 } from 'lucide-react';
 
 import CompanyLogo from '../components/CompanyLogo';
@@ -199,6 +199,17 @@ export default function PortalNavbar({
               onClick={() => onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, null)}
             >
               PROJECTS
+            </button>
+            <button 
+              onClick={() => {
+                if (onViewChange) onViewChange('societies');
+                else window.location.hash = 'societies';
+              }}
+              style={{ color: '#F3E5AB', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '5px' }}
+            >
+              <Building2 size={13} style={{ color: '#D4AF37' }} />
+              <span>SOCIETIES</span>
+              <span style={{ fontSize: '9px', background: 'rgba(212,175,55,0.25)', border: '1px solid rgba(212,175,55,0.5)', color: '#D4AF37', padding: '1px 5px', borderRadius: '4px', textTransform: 'uppercase' }}>2026</span>
             </button>
             <button 
               className={activeSection === 'listings' && filters?.propertyType === 'COMMERCIAL' ? 'active' : ''} 
@@ -410,8 +421,25 @@ export default function PortalNavbar({
             <ArrowRight size={14} className="arrow-icon" />
           </button>
 
-          <div className="drawer-section-title">🏢 EXPLORE PROPERTIES</div>
+          <div className="drawer-section-title">🏢 EXPLORE PROPERTIES &amp; SOCIETIES</div>
           
+          <button 
+            onClick={() => { 
+              setIsDrawerOpen(false); 
+              if (onViewChange) onViewChange('societies');
+              else window.location.hash = 'societies';
+            }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'rgba(212, 175, 55, 0.12)', textAlign: 'left' }}
+          >
+            <Building2 size={18} color="#D4AF37" />
+            <div className="drawer-item-text">
+              <strong style={{ color: '#F3E5AB' }}>Societies Intelligence Database</strong>
+              <span>Verified Hinjewadi &amp; Mahalunge Master Projects</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" color="#D4AF37" />
+          </button>
+
           <button 
             onClick={() => { setIsDrawerOpen(false); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY' }, 'listings', null, 'properties-sale'); }} 
             className="drawer-item-link"
