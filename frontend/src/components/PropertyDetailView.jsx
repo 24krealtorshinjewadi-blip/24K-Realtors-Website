@@ -243,6 +243,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const possession    = property.possessionDate || property.possession || 'Dec 2027';
   const projectArea   = property.projectArea || property.totalArea || (property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '4.5 Acres');
   const investmentScore = property.investmentScore || property.aiScore || 94;
+  const address       = property.address || property.location || `${title}, ${location}`;
   const displayPrice  = property.price 
     ? (typeof formatPrice === 'function' 
         ? formatPrice(property.price) 

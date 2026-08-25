@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
 import SocietyCard from './SocietyCard';
 import CompanyLogo from './CompanyLogo';
+import './PropertyIntelligence.css';
 
 export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
   const [societies, setSocieties] = useState([]);
@@ -61,7 +62,6 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
       });
 
       const list = res.content || res || [];
-      // Client-side query filter if search text present
       const filtered = searchQuery.trim()
         ? list.filter(s => 
             (s.name && s.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -98,366 +98,338 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#070F1E] text-white font-sans selection:bg-[#D4AF37] selection:text-[#09111F]">
+    <div className="pi-page-wrapper">
       
       {/* ── Top Header Strip ───────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-[#070F1E]/95 backdrop-blur-xl border-b border-white/10 px-4 lg:px-8 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          
-          <div className="flex items-center gap-3 cursor-pointer" onClick={onBackHome}>
-            <CompanyLogo variant="symbol" width={36} height={36} />
-            <div>
-              <div className="text-sm font-serif font-bold text-[#F3E5AB] tracking-wide flex items-center gap-1.5">
-                <span>24K REALTORS</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 font-mono">
-                  INTELLIGENCE
-                </span>
-              </div>
-              <p className="text-[10px] text-gray-400">Hinjewadi & Mahalunge Property Database</p>
-            </div>
+      <header className="pi-topbar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={onBackHome}>
+          <CompanyLogo variant="compact" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '0.88rem', fontFamily: "'Cinzel', serif", fontWeight: 800, color: '#F3E5AB' }}>
+              INTELLIGENCE PORTAL
+            </span>
+            <span style={{ fontSize: '0.65rem', background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.4)', color: '#D4AF37', padding: '1px 5px', borderRadius: '4px' }}>
+              PUNE
+            </span>
           </div>
+        </div>
 
-          {/* Search bar inside header for tablet/desktop */}
-          <div className="hidden md:flex items-center flex-1 max-w-md mx-6 relative">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5" />
-            <input
-              type="text"
-              placeholder="Search society, builder, or project..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white/5 border border-white/15 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-[#D4AF37] transition-all"
-            />
-            {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="absolute right-3 text-gray-400 hover:text-white">
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowMobileFilters(true)}
-              className="lg:hidden px-3.5 py-2 rounded-xl bg-white/5 border border-white/15 text-xs font-semibold text-gray-200 flex items-center gap-2"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>Filters</span>
+        {/* Search Input on Desktop */}
+        <div style={{ flex: 1, maxWidth: '420px', margin: '0 20px', position: 'relative' }}>
+          <Search size={14} color="#A0AEC0" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+          <input
+            type="text"
+            placeholder="Search society, builder, or micro-location..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="pi-input"
+            style={{ paddingLeft: '34px', paddingRight: '34px', fontSize: '0.8rem', height: '38px' }}
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery('')} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#A0AEC0', cursor: 'pointer' }}>
+              ✕
             </button>
+          )}
+        </div>
 
-            <button
-              onClick={onBackHome}
-              className="hidden sm:inline-flex px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-gray-300 hover:text-white transition-all"
-            >
-              Back to Portal
-            </button>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button onClick={() => setShowMobileFilters(true)} className="pi-btn-outline" style={{ display: 'none', padding: '8px 12px' }}>
+            <SlidersHorizontal size={14} color="#D4AF37" />
+            <span>Filters</span>
+          </button>
 
+          <button onClick={onBackHome} className="pi-btn-outline" style={{ padding: '8px 16px', fontSize: '0.78rem' }}>
+            Back to Portal
+          </button>
         </div>
       </header>
 
       {/* ── Trust Banner Strip ─────────────────────────────────────────── */}
-      <section className="bg-gradient-to-r from-[#0C172B] via-[#101F38] to-[#0C172B] border-b border-white/10 py-3 px-4 text-center">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs font-medium text-gray-300">
-          <div className="flex items-center gap-1.5 text-emerald-400">
-            <ShieldCheck className="w-4 h-4" />
+      <section style={{ background: 'linear-gradient(90deg, #0C172B 0%, #101F38 50%, #0C172B 100%)', borderBottom: '1px solid var(--pi-border-light)', padding: '10px 16px', textAlign: 'center' }}>
+        <div className="pi-container" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '20px', fontSize: '0.78rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34D399' }}>
+            <ShieldCheck size={15} />
             <span>MahaRERA Fact-Checked</span>
           </div>
-          <div className="flex items-center gap-1.5 text-[#F3E5AB]">
-            <Sparkles className="w-4 h-4 text-[#D4AF37]" />
-            <span>Dynamic Pricing with Audit Dates</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#F3E5AB' }}>
+            <Sparkles size={15} color="#D4AF37" />
+            <span>Dynamic Pricing with Audit Timestamps</span>
           </div>
-          <div className="flex items-center gap-1.5 text-blue-400">
-            <Building2 className="w-4 h-4" />
-            <span>Direct Developer Advisory</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#60A5FA' }}>
+            <Building2 size={15} />
+            <span>Direct Developer Advisory Desk</span>
           </div>
         </div>
       </section>
 
       {/* ── Main Layout: Sidebar Filters + Grid ────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
-        
-        {/* ── Desktop Filters Sidebar ──────────────────────────────────── */}
-        <aside className="hidden lg:block space-y-6">
-          <div className="p-6 rounded-2xl bg-[#0D182A] border border-white/10 shadow-xl space-y-6">
-            
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-              <div className="flex items-center gap-2 text-sm font-bold text-white">
-                <SlidersHorizontal className="w-4 h-4 text-[#D4AF37]" />
-                <span>Refine Intelligence</span>
-              </div>
-              <button
-                onClick={handleResetFilters}
-                className="text-xs text-[#D4AF37] hover:underline font-medium"
-              >
-                Reset All
-              </button>
-            </div>
-
-            {/* 1. Hinjewadi Phase Filter */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Micro-Location / Phase</label>
-              <div className="grid grid-cols-1 gap-1.5">
-                {[
-                  { val: '', label: 'All Hinjewadi & Mahalunge' },
-                  { val: 'PHASE_1', label: 'Hinjewadi Phase 1' },
-                  { val: 'PHASE_2', label: 'Hinjewadi Phase 2' },
-                  { val: 'PHASE_3', label: 'Hinjewadi Phase 3' },
-                  { val: 'MAHALUNGE', label: 'Mahalunge IT Corridor' }
-                ].map(item => (
-                  <button
-                    key={item.val}
-                    onClick={() => setSelectedPhase(item.val)}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-between ${selectedPhase === item.val ? 'bg-[#D4AF37] text-[#09111F]' : 'text-gray-300 hover:bg-white/5'}`}
-                  >
-                    <span>{item.label}</span>
-                    {selectedPhase === item.val && <Check className="w-3.5 h-3.5" />}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 2. Project Status Filter */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Project Status</label>
-              <div className="grid grid-cols-2 gap-1.5">
-                {[
-                  { val: '', label: 'All Status' },
-                  { val: 'READY_TO_MOVE', label: 'Ready to Move' },
-                  { val: 'UNDER_CONSTRUCTION', label: 'Under Const.' },
-                  { val: 'NEW_LAUNCH', label: 'New Launch' }
-                ].map(item => (
-                  <button
-                    key={item.val}
-                    onClick={() => setSelectedStatus(item.val)}
-                    className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all text-center ${selectedStatus === item.val ? 'bg-[#D4AF37] text-[#09111F]' : 'text-gray-300 bg-white/[0.02] hover:bg-white/5 border border-white/5'}`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 3. BHK Configuration */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400">BHK Configuration</label>
-              <div className="grid grid-cols-4 gap-1.5">
-                {['', '1 BHK', '2 BHK', '3 BHK', '4 BHK'].map(bhk => (
-                  <button
-                    key={bhk}
-                    onClick={() => setSelectedBhk(bhk)}
-                    className={`px-2 py-1.5 rounded-lg text-xs font-semibold transition-all text-center ${selectedBhk === bhk ? 'bg-[#D4AF37] text-[#09111F]' : 'text-gray-300 bg-white/[0.02] hover:bg-white/5 border border-white/5'}`}
-                  >
-                    {bhk || 'All'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 4. Budget Range */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Budget Range</label>
-              <div className="grid grid-cols-1 gap-1.5">
-                {[
-                  { val: '', label: 'Any Budget' },
-                  { val: 'under_80l', label: 'Under ₹80 Lakhs' },
-                  { val: '80l_1.5cr', label: '₹80 Lakhs - ₹1.50 Cr' },
-                  { val: '1.5cr_2.5cr', label: '₹1.50 Cr - ₹2.50 Cr' },
-                  { val: 'above_2.5cr', label: 'Above ₹2.50 Cr (Ultra-Luxury)' }
-                ].map(tier => (
-                  <button
-                    key={tier.val}
-                    onClick={() => setBudgetTier(tier.val)}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-between ${budgetTier === tier.val ? 'bg-[#D4AF37] text-[#09111F]' : 'text-gray-300 hover:bg-white/5'}`}
-                  >
-                    <span>{tier.label}</span>
-                    {budgetTier === tier.val && <Check className="w-3.5 h-3.5" />}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 5. Checkboxes (RERA, Resale, Rental) */}
-            <div className="pt-4 border-t border-white/10 space-y-2.5">
-              <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={reraOnly}
-                  onChange={e => setReraOnly(e.target.checked)}
-                  className="rounded accent-[#D4AF37]"
-                />
-                <span>MahaRERA Registered Only</span>
-              </label>
-
-              <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={hasResale}
-                  onChange={e => setHasResale(e.target.checked)}
-                  className="rounded accent-[#D4AF37]"
-                />
-                <span>Verified Resale Available</span>
-              </label>
-
-              <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={hasRental}
-                  onChange={e => setHasRental(e.target.checked)}
-                  className="rounded accent-[#D4AF37]"
-                />
-                <span>High Rental Yield Units</span>
-              </label>
-            </div>
-
-          </div>
-        </aside>
-
-        {/* ── Right Content: Results Grid ──────────────────────────────── */}
-        <main className="lg:col-span-3 space-y-6">
+      <div className="pi-container" style={{ padding: '32px 24px' }}>
+        <div className="pi-grid-12">
           
-          {/* Controls Bar (Results Count + Sorting) */}
-          <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-[#0D182A] border border-white/10">
-            <div>
-              <span className="text-sm font-bold text-white">
-                {totalCount} Verified Projects Found
-              </span>
-              <p className="text-[11px] text-gray-400">
-                Sorted by {sortBy === 'verified_first' ? 'Trust & Verification Score' : sortBy}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 hidden sm:inline">Sort:</span>
-              <select
-                value={sortBy}
-                onChange={e => setSortBy(e.target.value)}
-                className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/15 text-xs text-white focus:outline-none focus:border-[#D4AF37]"
-              >
-                <option value="verified_first" className="bg-[#0D182A]">Verified First</option>
-                <option value="price_asc" className="bg-[#0D182A]">Price: Low to High</option>
-                <option value="price_desc" className="bg-[#0D182A]">Price: High to Low</option>
-                <option value="newest" className="bg-[#0D182A]">Recently Added</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Cards Grid */}
-          {loading ? (
-            <div className="py-24 text-center space-y-3">
-              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#D4AF37] mx-auto" />
-              <p className="text-xs text-gray-400">Querying Pune Property Intelligence Database...</p>
-            </div>
-          ) : societies.length === 0 ? (
-            <div className="p-12 text-center rounded-2xl bg-[#0D182A] border border-white/10 space-y-4">
-              <Building2 className="w-12 h-12 text-gray-500 mx-auto" />
-              <h3 className="text-lg font-serif font-bold text-white">No Matching Properties</h3>
-              <p className="text-xs text-gray-400 max-w-sm mx-auto">
-                No residential societies matched the selected filters. Try broadening your micro-location or budget filter.
-              </p>
-              <button
-                onClick={handleResetFilters}
-                className="px-5 py-2 rounded-xl bg-[#D4AF37] text-[#09111F] font-bold text-xs"
-              >
-                Clear All Filters
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {societies.map((society, idx) => (
-                <SocietyCard
-                  key={society.id || idx}
-                  society={society}
-                  onSelect={onSelectSociety}
-                />
-              ))}
-            </div>
-          )}
-
-        </main>
-
-      </div>
-
-      {/* ── Mobile Filters Drawer ──────────────────────────────────────── */}
-      <AnimatePresence>
-        {showMobileFilters && (
-          <div className="fixed inset-0 z-50 flex justify-end bg-black/80 backdrop-blur-sm lg:hidden">
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              className="w-full max-w-sm bg-[#0C182B] h-full overflow-y-auto p-6 space-y-6 border-l border-white/10"
-            >
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4 text-[#D4AF37]" />
-                  <span>Filters</span>
-                </h3>
-                <button onClick={() => setShowMobileFilters(false)} className="p-1 text-gray-400 hover:text-white">
-                  <X className="w-5 h-5" />
+          {/* ── Desktop Filters Sidebar (Col 3) ─────────────────────────── */}
+          <aside className="pi-col-3" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ background: '#0D182A', border: '1px solid var(--pi-border)', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '18px', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}>
+              
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid var(--pi-border-light)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', fontWeight: 800, color: '#FFF' }}>
+                  <SlidersHorizontal size={15} color="#D4AF37" />
+                  <span>Refine Database</span>
+                </div>
+                <button onClick={handleResetFilters} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}>
+                  Reset All
                 </button>
               </div>
 
-              {/* Mobile Phase Filter */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Micro-Location</label>
-                <div className="grid grid-cols-1 gap-1.5">
+              {/* 1. Hinjewadi Phase Filter */}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#A0AEC0', marginBottom: '8px' }}>
+                  Micro-Location / Phase
+                </label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   {[
                     { val: '', label: 'All Hinjewadi & Mahalunge' },
                     { val: 'PHASE_1', label: 'Hinjewadi Phase 1' },
                     { val: 'PHASE_2', label: 'Hinjewadi Phase 2' },
                     { val: 'PHASE_3', label: 'Hinjewadi Phase 3' },
-                    { val: 'MAHALUNGE', label: 'Mahalunge' }
+                    { val: 'MAHALUNGE', label: 'Mahalunge IT Corridor' }
                   ].map(item => (
                     <button
                       key={item.val}
-                      onClick={() => { setSelectedPhase(item.val); }}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold ${selectedPhase === item.val ? 'bg-[#D4AF37] text-[#09111F]' : 'text-gray-300 bg-white/5'}`}
+                      onClick={() => setSelectedPhase(item.val)}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '8px 12px',
+                        borderRadius: '10px',
+                        fontSize: '0.78rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: selectedPhase === item.val ? 'rgba(212,175,55,0.2)' : 'transparent',
+                        color: selectedPhase === item.val ? '#F3E5AB' : '#CBD5E1',
+                        transition: 'background 0.2s'
+                      }}
                     >
-                      {item.label}
+                      <span>{item.label}</span>
+                      {selectedPhase === item.val && <Check size={13} color="#D4AF37" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Mobile Status */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Status</label>
-                <div className="grid grid-cols-2 gap-1.5">
+              {/* 2. Project Status Filter */}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#A0AEC0', marginBottom: '8px' }}>
+                  Project Status
+                </label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   {[
-                    { val: '', label: 'All Status' },
+                    { val: '', label: 'All Project Stages' },
                     { val: 'READY_TO_MOVE', label: 'Ready to Move' },
-                    { val: 'UNDER_CONSTRUCTION', label: 'Under Const.' },
-                    { val: 'NEW_LAUNCH', label: 'New Launch' }
+                    { val: 'UNDER_CONSTRUCTION', label: 'Under Construction' },
+                    { val: 'NEW_LAUNCH', label: 'New Launch (2026)' }
                   ].map(item => (
                     <button
                       key={item.val}
                       onClick={() => setSelectedStatus(item.val)}
-                      className={`px-3 py-2 rounded-xl text-xs font-semibold ${selectedStatus === item.val ? 'bg-[#D4AF37] text-[#09111F]' : 'text-gray-300 bg-white/5'}`}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '8px 12px',
+                        borderRadius: '10px',
+                        fontSize: '0.78rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: selectedStatus === item.val ? 'rgba(212,175,55,0.2)' : 'transparent',
+                        color: selectedStatus === item.val ? '#F3E5AB' : '#CBD5E1',
+                        transition: 'background 0.2s'
+                      }}
                     >
-                      {item.label}
+                      <span>{item.label}</span>
+                      {selectedStatus === item.val && <Check size={13} color="#D4AF37" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex gap-3">
-                <button
-                  onClick={handleResetFilters}
-                  className="w-1/2 py-2.5 rounded-xl bg-white/10 text-white font-bold text-xs"
-                >
-                  Reset
-                </button>
-                <button
-                  onClick={() => setShowMobileFilters(false)}
-                  className="w-1/2 py-2.5 rounded-xl bg-[#D4AF37] text-[#09111F] font-bold text-xs"
-                >
-                  Apply Filters
-                </button>
+              {/* 3. BHK Configuration */}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#A0AEC0', marginBottom: '8px' }}>
+                  Bedrooms / BHK
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                  {['', '1 BHK', '2 BHK', '3 BHK', '4 BHK'].map(bhk => (
+                    <button
+                      key={bhk}
+                      onClick={() => setSelectedBhk(bhk)}
+                      style={{
+                        padding: '6px 8px',
+                        borderRadius: '8px',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        border: selectedBhk === bhk ? '1px solid #D4AF37' : '1px solid rgba(255,255,255,0.1)',
+                        background: selectedBhk === bhk ? '#D4AF37' : 'rgba(255,255,255,0.03)',
+                        color: selectedBhk === bhk ? '#070F1E' : '#CBD5E1'
+                      }}
+                    >
+                      {bhk || 'All BHK'}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+              {/* 4. Budget Range */}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#A0AEC0', marginBottom: '8px' }}>
+                  Budget Tier
+                </label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {[
+                    { val: '', label: 'Any Budget' },
+                    { val: 'under_80l', label: 'Under ₹80 Lakhs' },
+                    { val: '80l_1.5cr', label: '₹80 Lakhs - ₹1.5 Cr' },
+                    { val: '1.5cr_2.5cr', label: '₹1.5 Cr - ₹2.5 Cr' },
+                    { val: 'above_2.5cr', label: 'Above ₹2.5 Cr (Luxury)' }
+                  ].map(b => (
+                    <button
+                      key={b.val}
+                      onClick={() => setBudgetTier(b.val)}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '8px 12px',
+                        borderRadius: '10px',
+                        fontSize: '0.78rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: budgetTier === b.val ? 'rgba(212,175,55,0.2)' : 'transparent',
+                        color: budgetTier === b.val ? '#F3E5AB' : '#CBD5E1'
+                      }}
+                    >
+                      <span>{b.label}</span>
+                      {budgetTier === b.val && <Check size={13} color="#D4AF37" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 5. Checkboxes (MahaRERA only, Resale, Rental) */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', paddingTop: '10px', borderTop: '1px solid var(--pi-border-light)' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: '#CBD5E1', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={reraOnly}
+                    onChange={e => setReraOnly(e.target.checked)}
+                    style={{ accentColor: '#D4AF37' }}
+                  />
+                  <span>MahaRERA Registered Only</span>
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: '#CBD5E1', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={hasResale}
+                    onChange={e => setHasResale(e.target.checked)}
+                    style={{ accentColor: '#D4AF37' }}
+                  />
+                  <span>Resale Units Available</span>
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: '#CBD5E1', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={hasRental}
+                    onChange={e => setHasRental(e.target.checked)}
+                    style={{ accentColor: '#D4AF37' }}
+                  />
+                  <span>High Rental Yield Assets</span>
+                </label>
+              </div>
+
+            </div>
+          </aside>
+
+          {/* ── Grid Results (Col 9) ────────────────────────────────────── */}
+          <section className="pi-col-9" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            
+            {/* Results Header Strip */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px', background: '#0D182A', padding: '14px 20px', borderRadius: '12px', border: '1px solid var(--pi-border-light)' }}>
+              <div>
+                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#FFF' }}>
+                  {totalCount} Verified Societies
+                </span>
+                <span style={{ fontSize: '0.78rem', color: '#A0AEC0', marginLeft: '8px' }}>
+                  in Hinjewadi Ph 1, 2, 3 &amp; Mahalunge
+                </span>
+              </div>
+
+              {/* Sorting Select */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '0.75rem', color: '#A0AEC0' }}>Sort by:</span>
+                <select
+                  value={sortBy}
+                  onChange={e => setSortBy(e.target.value)}
+                  style={{
+                    background: '#091322',
+                    border: '1px solid var(--pi-border)',
+                    borderRadius: '8px',
+                    padding: '6px 12px',
+                    color: '#F3E5AB',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    outline: 'none'
+                  }}
+                >
+                  <option value="verified_first">Highest Trust / Verified First</option>
+                  <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                  <option value="newest">Newest Possession</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Grid of Society Cards */}
+            {loading ? (
+              <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid rgba(212,175,55,0.2)', borderTopColor: '#D4AF37', animation: 'spin 1s linear infinite', margin: '0 auto 12px auto' }} />
+                <p style={{ color: '#A0AEC0', fontSize: '0.85rem' }}>Querying property intelligence database...</p>
+                <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+              </div>
+            ) : societies.length > 0 ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+                {societies.map((society, i) => (
+                  <SocietyCard
+                    key={society.id || society.slug || i}
+                    society={society}
+                    onSelect={(slug) => onSelectSociety && onSelectSociety(slug)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div style={{ padding: '60px 20px', textAlign: 'center', background: '#0D182A', borderRadius: '16px', border: '1px solid var(--pi-border-light)' }}>
+                <Building2 size={40} color="#D4AF37" style={{ margin: '0 auto 12px auto' }} />
+                <h3 style={{ fontSize: '1.2rem', color: '#FFF', margin: '0 0 6px 0' }}>No societies match your criteria</h3>
+                <p style={{ fontSize: '0.82rem', color: '#A0AEC0', margin: '0 0 16px 0' }}>Try broadening your filter criteria or search query.</p>
+                <button onClick={handleResetFilters} className="pi-btn-gold">
+                  Reset All Filters
+                </button>
+              </div>
+            )}
+
+          </section>
+
+        </div>
+      </div>
 
     </div>
   );

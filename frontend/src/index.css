@@ -3,6 +3,7 @@
  * Single canonical import. All fonts, tokens, base styles, and utilities.
  * Never import fonts elsewhere (Portal.css, Dashboard.css must NOT re-import).
  */
+@import './components/PropertyIntelligence.css';
 
 /* ===== FONTS: Single Canonical Import ===== */
 /* Moved to index.html <link> for optimal performance. This import is a fallback only. */

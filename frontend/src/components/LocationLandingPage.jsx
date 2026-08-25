@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { apiService } from '../services/apiService';
 import SocietyCard from './SocietyCard';
 import CompanyLogo from './CompanyLogo';
+import './PropertyIntelligence.css';
 
 const formatInr = (val) => {
   if (!val) return '₹65 Lakhs';
@@ -55,214 +56,121 @@ export default function LocationLandingPage({ locationSlug = 'hinjewadi-phase-1'
 
   if (loading || !data) {
     return (
-      <div className="min-h-screen bg-[#070F1E] text-white flex flex-col items-center justify-center p-6">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#D4AF37] mb-3" />
-        <p className="text-xs text-gray-400">Loading Micro-Location Intelligence...</p>
+      <div style={{ minHeight: '100vh', background: '#070F1E', color: '#FFF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid rgba(212,175,55,0.2)', borderTopColor: '#D4AF37', animation: 'spin 1s linear infinite', marginBottom: '12px' }} />
+        <p style={{ color: '#A0AEC0', fontSize: '0.85rem' }}>Loading Micro-Location Intelligence...</p>
+        <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#070F1E] text-white font-sans selection:bg-[#D4AF37] selection:text-[#09111F]">
+    <div className="pi-page-wrapper">
       
       {/* ── Top Header ─────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-[#070F1E]/95 backdrop-blur-xl border-b border-white/10 px-4 lg:px-8 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={onBack}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white text-xs font-semibold transition-all"
-          >
-            <ArrowLeft className="w-4 h-4" />
+      <header className="pi-topbar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <button onClick={onBack} className="pi-btn-outline" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
+            <ArrowLeft size={14} />
             <span>All Locations</span>
           </button>
           <div>
-            <h1 className="text-sm font-serif font-bold text-[#F3E5AB]">
+            <h1 style={{ margin: 0, fontSize: '1rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#F3E5AB' }}>
               {data.name} Property Intelligence
             </h1>
-            <span className="text-[10px] text-gray-400">PIN: {data.pincode || '411057'} • Pune IT Corridor</span>
+            <span style={{ fontSize: '0.72rem', color: '#A0AEC0' }}>PIN: {data.pincode || '411057'} • Pune IT Corridor</span>
           </div>
         </div>
 
-        <button
-          onClick={onBack}
-          className="px-4 py-1.5 rounded-xl bg-[#D4AF37] text-[#09111F] font-bold text-xs shadow-md"
-        >
-          Explore All
+        <button onClick={onBack} className="pi-btn-gold" style={{ padding: '8px 16px', fontSize: '0.78rem' }}>
+          Explore All Societies
         </button>
       </header>
 
       {/* ── Section 1: Hero Banner & Market Aggregation ─────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#0B1527] to-[#070F1E] border-b border-white/10 py-12 px-4 lg:px-8">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <section className="pi-hero-section">
+        <div className="pi-container" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#F3E5AB]">
-              <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>Micro-Location Hub</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+            <span className="pi-badge pi-badge-gold">
+              <MapPin size={12} color="#D4AF37" />
+              <span>Micro-Market Intelligence</span>
             </span>
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 border border-emerald-500/40 text-emerald-300">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>MahaRERA Verified Region</span>
+            <span className="pi-badge pi-badge-green">
+              <ShieldCheck size={12} color="#10B981" />
+              <span>MahaRERA Monitored Zone</span>
             </span>
           </div>
 
           <div>
-            <h1 className="text-3xl sm:text-5xl font-serif font-extrabold text-white tracking-tight">
-              {data.name} Real Estate & Societies
+            <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, color: '#FFF', margin: '4px 0 8px 0', lineHeight: 1.2 }}>
+              {data.name} Real Estate &amp; Societies
             </h1>
-            <p className="text-sm text-gray-300 leading-relaxed max-w-3xl mt-3">
-              {data.overview || `${data.name} is one of Western Pune's primary high-growth residential hubs. Home to global IT giants, expanding metro infrastructure, and world-class educational institutions.`}
+            <p style={{ fontSize: '0.92rem', color: '#CBD5E1', maxWidth: '750px', lineHeight: 1.6, margin: 0 }}>
+              {data.description || `${data.name} represents the focal IT growth corridor of Pune West. Featuring premier residential townships, high rental yields, and upcoming Metro Line 3 connectivity.`}
             </p>
           </div>
 
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
-            
-            <div className="p-5 rounded-2xl bg-[#0D1A2D] border border-white/10">
-              <div className="text-xs text-gray-400 uppercase font-semibold">Total Verified Projects</div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1">{data.totalProjects || 48}</div>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#0D1A2D] border border-white/10">
-              <div className="text-xs text-emerald-400 uppercase font-semibold">Ready to Move</div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">{data.readyToMoveCount || 18}</div>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#0D1A2D] border border-white/10">
-              <div className="text-xs text-amber-400 uppercase font-semibold">Under Construction</div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1">{data.underConstructionCount || 22}</div>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#0D1A2D] border border-white/10">
-              <div className="text-xs text-blue-400 uppercase font-semibold">New Launches</div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-blue-400 mt-1">{data.newLaunchCount || 8}</div>
-            </div>
-
-          </div>
-
-          {/* Price Range Strip with MANDATORY Verification Date */}
-          <div className="p-5 rounded-2xl bg-gradient-to-r from-[#111D30] to-[#0C1522] border border-[rgba(212,175,55,0.3)] flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <div className="text-xs uppercase tracking-wider text-gray-400 font-semibold">
-                Verified Price Spectrum ({data.name})
-              </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-[#D4AF37] mt-0.5">
-                {formatInr(data.minPrice)} - {formatInr(data.maxPrice)}
+          {/* Quick Metrics Strip */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px', marginTop: '10px' }}>
+            <div className="pi-metric-card">
+              <div className="pi-metric-icon"><Building2 size={20} /></div>
+              <div>
+                <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Verified Societies</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#FFF' }}>{data.societiesCount || 14} Projects</div>
               </div>
             </div>
 
-            <div className="text-xs text-gray-400 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#D4AF37]" />
-              <span>Summary verified on: <strong className="text-white font-mono">{data.priceSummaryLastVerified || '25 Aug 2026'}</strong></span>
+            <div className="pi-metric-card">
+              <div className="pi-metric-icon"><TrendingUp size={20} /></div>
+              <div>
+                <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Price Spectrum</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#D4AF37' }}>{data.averagePriceRange || '₹68L - ₹1.85Cr'}</div>
+              </div>
+            </div>
+
+            <div className="pi-metric-card">
+              <div className="pi-metric-icon"><Award size={20} /></div>
+              <div>
+                <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Avg Rental Yield</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#34D399' }}>{data.averageRentalYield || '4.8% / year'}</div>
+              </div>
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* ── Main Content Grid ──────────────────────────────────────────── */}
-      <main className="max-w-7xl mx-auto px-4 lg:px-8 py-10 space-y-14">
-        
-        {/* ── Section 2: BHK Availability Matrix ────────────────────────── */}
-        <section className="space-y-4">
-          <div className="border-l-2 border-[#D4AF37] pl-4">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Unit Spectrum</h2>
-            <p className="text-xl font-serif font-bold text-white mt-0.5">BHK Availability in {data.name}</p>
+      {/* ── Section 2: Societies Grid in this Micro-Location ───────────── */}
+      <section className="pi-container" style={{ padding: '40px 24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <div>
+            <h2 style={{ fontSize: '1.4rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: 0 }}>
+              Verified Master Societies in {data.name}
+            </h2>
+            <p style={{ fontSize: '0.82rem', color: '#A0AEC0', margin: '4px 0 0 0' }}>
+              Fact-checked MahaRERA dossiers, verified pricing and available inventory
+            </p>
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            {[
-              { label: '1 BHK Compact', active: data.has1Bhk },
-              { label: '2 BHK Premium', active: data.has2Bhk },
-              { label: '3 BHK Luxury', active: data.has3Bhk },
-              { label: '4 BHK Ultra', active: data.has4Bhk },
-              { label: 'Township Villas', active: data.hasVilla }
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className={`p-3.5 rounded-xl border text-center ${item.active ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-300' : 'bg-white/[0.02] border-white/5 text-gray-500'}`}
-              >
-                <div className="text-xs font-bold">{item.label}</div>
-                <div className="text-[10px] mt-0.5">{item.active ? '✓ Available' : 'Limited'}</div>
-              </div>
+        {data.societies && data.societies.length > 0 ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+            {data.societies.map((society, i) => (
+              <SocietyCard
+                key={society.id || society.slug || i}
+                society={society}
+                onSelect={(slug) => onSelectSociety && onSelectSociety(slug)}
+              />
             ))}
           </div>
-        </section>
-
-        {/* ── Section 3: Connectivity & Infrastructure ──────────────────── */}
-        <section className="space-y-4">
-          <div className="border-l-2 border-[#D4AF37] pl-4">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Strategic Transit</h2>
-            <p className="text-xl font-serif font-bold text-white mt-0.5">Infrastructure & Connectivity</p>
+        ) : (
+          <div style={{ padding: '50px 20px', textAlign: 'center', background: '#0D182A', borderRadius: '16px', border: '1px solid var(--pi-border-light)' }}>
+            <Building2 size={36} color="#D4AF37" style={{ margin: '0 auto 10px auto' }} />
+            <p style={{ color: '#A0AEC0' }}>Contact our Hinjewadi Desk to discover upcoming off-market society launches.</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <div className="p-6 rounded-2xl bg-[#0D192B] border border-white/10 space-y-2">
-              <div className="flex items-center gap-2 text-purple-400">
-                <Train className="w-5 h-5" />
-                <h3 className="text-xs font-bold uppercase tracking-wider">Metro Corridor</h3>
-              </div>
-              <p className="text-xs text-gray-300 leading-relaxed">
-                {data.metroConnectivity || 'Upcoming Metro Line 3 connecting Hinjewadi directly with Shivajinagar & Civil Court junction.'}
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#0D192B] border border-white/10 space-y-2">
-              <div className="flex items-center gap-2 text-amber-400">
-                <School className="w-5 h-5" />
-                <h3 className="text-xs font-bold uppercase tracking-wider">Top Schools</h3>
-              </div>
-              <p className="text-xs text-gray-300 leading-relaxed">
-                {data.schools || 'Mercedes-Benz International School, Blue Ridge Public School, Vibgyor High.'}
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#0D192B] border border-white/10 space-y-2">
-              <div className="flex items-center gap-2 text-emerald-400">
-                <HeartPulse className="w-5 h-5" />
-                <h3 className="text-xs font-bold uppercase tracking-wider">Healthcare</h3>
-              </div>
-              <p className="text-xs text-gray-300 leading-relaxed">
-                {data.hospitals || 'Ruby Hall Clinic Hinjewadi, Lifepoint Multispeciality Hospital, Sanjeevani.'}
-              </p>
-            </div>
-
-          </div>
-        </section>
-
-        {/* ── Section 4: Featured Societies ─────────────────────────────── */}
-        <section className="space-y-6">
-          <div className="border-l-2 border-[#D4AF37] pl-4">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Top Rated</h2>
-            <p className="text-xl font-serif font-bold text-white mt-0.5">Popular Societies in {data.name}</p>
-          </div>
-
-          {data.featuredSocieties && data.featuredSocieties.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data.featuredSocieties.map((soc, i) => (
-                <SocietyCard
-                  key={soc.id || i}
-                  society={soc}
-                  onSelect={onSelectSociety}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="p-8 rounded-2xl bg-[#0D182A] border border-white/10 text-center space-y-3">
-              <Building2 className="w-10 h-10 text-[#D4AF37] mx-auto opacity-75" />
-              <p className="text-xs text-gray-300">Browse verified properties and residential townships across {data.name}.</p>
-              <button
-                onClick={onBack}
-                className="px-5 py-2 rounded-xl bg-[#D4AF37] text-[#09111F] font-bold text-xs"
-              >
-                Browse All Societies
-              </button>
-            </div>
-          )}
-        </section>
-
-      </main>
+        )}
+      </section>
 
     </div>
   );
