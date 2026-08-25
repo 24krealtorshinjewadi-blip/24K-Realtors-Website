@@ -15,6 +15,9 @@ const Dashboard = lazy(() => import('./components/Dashboard'));
 const LoginPage = lazy(() => import('./components/LoginPage'));   // new SaaS full-page login
 const ListPropertyPage = lazy(() => import('./components/ListPropertyPage'));
 const AiAssistantPanel = lazy(() => import('./components/AiAssistantPanel'));
+const PublicSocietiesPage = lazy(() => import('./components/PublicSocietiesPage'));
+const PublicSocietyDetailPage = lazy(() => import('./components/PublicSocietyDetailPage'));
+const LocationLandingPage = lazy(() => import('./components/LocationLandingPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -82,8 +85,10 @@ function AppLoadingScreen() {
 }
 
 export default function App() {
-  // views: 'portal' | 'dashboard' | 'login'
+  // views: 'portal' | 'dashboard' | 'login' | 'list-property' | 'societies' | 'society-detail' | 'location-landing'
   const [currentView, setCurrentView] = useState('portal');
+  const [activeSocietySlug, setActiveSocietySlug] = useState(null);
+  const [activeLocationSlug, setActiveLocationSlug] = useState('hinjewadi-phase-1');
   const [showLoginModal, setShowLoginModal] = useState(false); // legacy fallback
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
@@ -163,7 +168,17 @@ export default function App() {
         setCurrentView('portal');
         return;
       }
-      if (hash === 'list-property') {
+      if (hash === 'societies' || hash === 'properties') {
+        setCurrentView('societies');
+      } else if (hash.startsWith('society/')) {
+        const slug = hash.replace('society/', '');
+        setActiveSocietySlug(slug);
+        setCurrentView('society-detail');
+      } else if (hash.startsWith('locations/') || hash.startsWith('location/')) {
+        const loc = hash.replace('locations/', '').replace('location/', '');
+        setActiveLocationSlug(loc);
+        setCurrentView('location-landing');
+      } else if (hash === 'list-property') {
         setCurrentView('list-property');
       } else if (hash === 'login') {
         setCurrentView('login');
@@ -201,6 +216,25 @@ export default function App() {
         window.history.pushState('', document.title, window.location.pathname + window.location.search);
       }
       setCurrentView('portal');
+      return;
+    }
+    if (view === 'societies' || view === 'properties') {
+      window.location.hash = 'societies';
+      setCurrentView('societies');
+      return;
+    }
+    if (view.startsWith('society/')) {
+      const slug = view.replace('society/', '');
+      setActiveSocietySlug(slug);
+      window.location.hash = `society/${slug}`;
+      setCurrentView('society-detail');
+      return;
+    }
+    if (view.startsWith('location/') || view.startsWith('locations/')) {
+      const loc = view.replace('locations/', '').replace('location/', '');
+      setActiveLocationSlug(loc);
+      window.location.hash = `locations/${loc}`;
+      setCurrentView('location-landing');
       return;
     }
     if (view === 'dashboard') {
@@ -248,6 +282,36 @@ export default function App() {
               }} />
             ) : currentView === 'list-property' ? (
               <ListPropertyPage onBack={() => handleViewChange('portal')} />
+            ) : currentView === 'societies' ? (
+              <PublicSocietiesPage
+                onSelectSociety={(slug) => {
+                  setActiveSocietySlug(slug);
+                  window.location.hash = `society/${slug}`;
+                  setCurrentView('society-detail');
+                }}
+                onBackHome={() => handleViewChange('portal')}
+              />
+            ) : currentView === 'society-detail' ? (
+              <PublicSocietyDetailPage
+                slug={activeSocietySlug || 'kolte-patil-life-republic-hinjewadi'}
+                onBack={() => {
+                  window.location.hash = 'societies';
+                  setCurrentView('societies');
+                }}
+              />
+            ) : currentView === 'location-landing' ? (
+              <LocationLandingPage
+                locationSlug={activeLocationSlug || 'hinjewadi-phase-1'}
+                onBack={() => {
+                  window.location.hash = 'societies';
+                  setCurrentView('societies');
+                }}
+                onSelectSociety={(slug) => {
+                  setActiveSocietySlug(slug);
+                  window.location.hash = `society/${slug}`;
+                  setCurrentView('society-detail');
+                }}
+              />
             ) : currentView === 'portal' ? (
               <Portal onViewChange={handleViewChange} />
             ) : (
