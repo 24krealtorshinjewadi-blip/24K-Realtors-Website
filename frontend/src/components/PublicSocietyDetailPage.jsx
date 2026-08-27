@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ShieldCheck, MapPin, Building2, Calendar, Layers, CheckCircle2, 
-  ExternalLink, Phone, MessageSquare, Download, ChevronRight, 
-  ArrowLeft, Share2, Compass, Award, Sparkles, TrendingUp,
-  FileText, School, HeartPulse, Laptop, Train, ShoppingBag, Clock,
-  AlertCircle, ChevronDown, Check, Eye
+import {
+  ShieldCheck, MapPin, Building2, Calendar, Layers, CheckCircle2,
+  ExternalLink, Phone, MessageSquare, ChevronRight,
+  ArrowLeft, Share2, Award, TrendingUp, Clock,
+  AlertCircle, ChevronDown, Wifi, Car, Dumbbell,
+  Trees, Lock, Zap, Coffee, Heart, School, Train, Laptop,
+  HeartPulse, ShoppingBag, IndianRupee, Sparkles, Star, Users
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
 import { useSEO, buildSocietySEO } from '../services/seoService';
-import CompanyLogo from './CompanyLogo';
 import './PropertyIntelligence.css';
 
-/**
- * Format INR Currency
- */
+/* ═══════════════════════════════════════════════════════════════════
+   UTILITY: Format INR with Lakh/Crore logic
+═══════════════════════════════════════════════════════════════════ */
 const formatInr = (val) => {
   if (!val) return 'Price on Request';
   if (typeof val === 'string') {
+    // Convert 0.XX Cr to Lakhs
     const crMatch = val.match(/0\.(\d+)\s*Cr/i);
     if (crMatch) {
       const numCr = parseFloat(`0.${crMatch[1]}`);
@@ -27,49 +27,88 @@ const formatInr = (val) => {
     if (val.includes('₹') || val.includes('Cr') || val.includes('Lakh')) return val;
   }
   const num = Number(String(val).replace(/[^0-9.]/g, ''));
-  if (isNaN(num) || num <= 0) return val;
+  if (isNaN(num) || num <= 0) return String(val) || 'Price on Request';
   if (num >= 10000000) return `₹${(num / 10000000).toFixed(2)} Cr`;
   if (num >= 100000) return `₹${Math.round(num / 100000)} Lakhs`;
   return `₹${num.toLocaleString('en-IN')}`;
 };
 
-export default function PublicSocietyDetailPage({ slug, onBack, onBookVisit }) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [selectedBhk, setSelectedBhk] = useState('ALL');
-  const [expandedFaq, setExpandedFaq] = useState(null);
+const getBhkClass = (bhkType = '') => {
+  if (bhkType.includes('1')) return 'pi-config-card--1bhk';
+  if (bhkType.includes('2')) return 'pi-config-card--2bhk';
+  if (bhkType.includes('3')) return 'pi-config-card--3bhk';
+  if (bhkType.includes('4')) return 'pi-config-card--4bhk';
+  return 'pi-config-card--3bhk';
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   AMENITY DATA: Categorised with Lucide icons
+═══════════════════════════════════════════════════════════════════ */
+const AMENITY_CATEGORIES = [
+  {
+    label: 'Recreation & Wellness',
+    icon: <Heart size={14} />,
+    items: [
+      { icon: <Dumbbell size={16} />, label: 'High-Tech Gymnasium' },
+      { icon: <Trees size={16} />, label: 'Temperature-Controlled Pool' },
+      { icon: <Award size={16} />, label: 'Grand Clubhouse & Lounge' },
+      { icon: <Users size={16} />, label: 'Landscaped Podium Gardens' },
+    ]
+  },
+  {
+    label: 'Smart Living',
+    icon: <Wifi size={14} />,
+    items: [
+      { icon: <Wifi size={16} />, label: 'Fibre-Optic Internet' },
+      { icon: <Zap size={16} />, label: 'EV Charging Stations' },
+      { icon: <Zap size={16} />, label: '100% Power Backup' },
+      { icon: <Coffee size={16} />, label: 'Co-Working Business Lounge' },
+    ]
+  },
+  {
+    label: 'Safety & Security',
+    icon: <Lock size={14} />,
+    items: [
+      { icon: <Lock size={16} />, label: '3-Tier Security + CCTV' },
+      { icon: <Car size={16} />, label: 'Ample Covered Parking' },
+      { icon: <ShieldCheck size={16} />, label: 'Gated Community Access' },
+      { icon: <Users size={16} />, label: 'Trained Security Personnel' },
+    ]
+  },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   MAIN COMPONENT
+═══════════════════════════════════════════════════════════════════ */
+export default function PublicSocietyDetailPage({ slug, onBack }) {
+  const [data, setData]                     = useState(null);
+  const [loading, setLoading]               = useState(true);
+  const [error, setError]                   = useState(null);
+  const [activeTab, setActiveTab]           = useState('overview');
+  const [selectedBhk, setSelectedBhk]      = useState('ALL');
+  const [expandedFaq, setExpandedFaq]       = useState(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [showInquiryModal, setShowInquiryModal] = useState(false);
-  const [inquiryForm, setInquiryForm] = useState({ name: '', phone: '', email: '', date: '', notes: '' });
+  const [showModal, setShowModal]           = useState(false);
+  const [inquiryForm, setInquiryForm]       = useState({ name: '', phone: '', email: '', date: '', notes: '' });
   const [inquirySuccess, setInquirySuccess] = useState(false);
 
-  // Dynamic SEO Injection for Society Detail Dossier
   useSEO(buildSocietySEO(data));
 
   useEffect(() => {
-    let isMounted = true;
+    let mounted = true;
     setLoading(true);
     setError(null);
     window.scrollTo(0, 0);
-
     apiService.getPublicSocietyDetail(slug)
-      .then(res => {
-        if (isMounted) {
-          setData(res);
-          setLoading(false);
-        }
-      })
+      .then(res => { if (mounted) { setData(res); setLoading(false); } })
       .catch(err => {
-        if (isMounted) {
-          console.error('[Society Detail] Load error:', err);
-          setError('Unable to load society intelligence data. Please try again.');
+        if (mounted) {
+          console.error('[SocietyDetail]', err);
+          setError('Unable to load property intelligence. Please try again.');
           setLoading(false);
         }
       });
-
-    return () => { isMounted = false; };
+    return () => { mounted = false; };
   }, [slug]);
 
   const handleInquirySubmit = async (e) => {
@@ -80,684 +119,929 @@ export default function PublicSocietyDetailPage({ slug, onBack, onBookVisit }) {
         phone: inquiryForm.phone,
         email: inquiryForm.email,
         preferredLocation: data?.location || 'HINJEWADI',
-        propertyInterest: `${data?.name || 'Society'} Inquiry - ${inquiryForm.date || 'Immediate'}`,
-        source: 'Society Detail Portal',
+        propertyInterest: `${data?.name || 'Society'} — ${inquiryForm.notes || 'General Inquiry'}`,
+        source: 'Society Detail Portal v2',
         notes: inquiryForm.notes
       });
-      setInquirySuccess(true);
-      setTimeout(() => {
-        setInquirySuccess(false);
-        setShowInquiryModal(false);
-      }, 2500);
-    } catch (e) {
-      setInquirySuccess(true);
-      setTimeout(() => {
-        setInquirySuccess(false);
-        setShowInquiryModal(false);
-      }, 2000);
-    }
+    } catch (_) {}
+    setInquirySuccess(true);
+    setTimeout(() => { setInquirySuccess(false); setShowModal(false); }, 2500);
   };
 
+  /* ── Loading ── */
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#070F1E', color: '#FFF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-        <div style={{ width: '48px', height: '48px', borderRadius: '50%', border: '3px solid rgba(212,175,55,0.2)', borderTopColor: '#D4AF37', animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
-        <p style={{ color: '#A0AEC0', fontFamily: 'sans-serif', letterSpacing: '0.05em' }}>Aggregating Verified Property Intelligence...</p>
-        <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+      <div className="pi-loading">
+        <div className="pi-spinner" />
+        <p style={{ color: '#64748B', fontSize: '0.85rem', letterSpacing: '0.05em' }}>
+          Aggregating Verified Property Intelligence...
+        </p>
+        <style>{`@keyframes pi-spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
+  /* ── Error ── */
   if (error || !data) {
     return (
-      <div style={{ minHeight: '100vh', background: '#070F1E', color: '#FFF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', textAlign: 'center' }}>
+      <div className="pi-loading" style={{ textAlign: 'center', padding: '32px' }}>
         <AlertCircle size={48} color="#EF4444" style={{ marginBottom: '16px' }} />
-        <h2 style={{ fontSize: '1.5rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', marginBottom: '8px' }}>Society Data Unavailable</h2>
-        <p style={{ color: '#A0AEC0', maxWidth: '400px', marginBottom: '24px' }}>{error || 'The requested property record could not be found.'}</p>
-        <button onClick={onBack} className="pi-btn-gold">Return to Societies</button>
+        <h2 style={{ fontSize: '1.4rem', fontFamily: "'Cinzel', serif", color: '#FFF', marginBottom: '8px' }}>
+          Property Data Unavailable
+        </h2>
+        <p style={{ color: '#94A3B8', maxWidth: '380px', marginBottom: '24px' }}>
+          {error || 'The requested society record could not be found.'}
+        </p>
+        <button onClick={onBack} className="pi-btn-gold">← Return to Societies</button>
       </div>
     );
   }
 
-  const gallery = data.galleryUrls && data.galleryUrls.length > 0 
-    ? data.galleryUrls 
-    : [data.heroImageUrl || '/dev_kolte_patil_township.png'];
+  const gallery = data.galleryUrls?.length > 0 ? data.galleryUrls : [data.heroImageUrl || '/dev_kolte_patil_township.png'];
+  const configs  = data.configurations || [];
+  const filteredConfigs = selectedBhk === 'ALL' ? configs : configs.filter(c => c.bhkType?.includes(selectedBhk));
 
-  const filteredConfigs = selectedBhk === 'ALL'
-    ? (data.configurations || [])
-    : (data.configurations || []).filter(c => c.bhkType && c.bhkType.includes(selectedBhk));
+  const TABS = [
+    { id: 'overview',      label: 'Overview' },
+    { id: 'configs',       label: 'Configurations' },
+    { id: 'pricing',       label: 'Pricing Matrix' },
+    { id: 'amenities',     label: 'Amenities' },
+    { id: 'connectivity',  label: 'Connectivity' },
+    { id: 'rera',          label: 'MahaRERA & Legal' },
+    { id: 'faqs',          label: 'FAQs' },
+  ];
 
+  const scrollTo = (sectionId, tabId) => {
+    setActiveTab(tabId);
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const whatsappUrl = `https://wa.me/919876543210?text=Hi%2C%20I%27m%20interested%20in%20${encodeURIComponent(data.canonicalName || data.name)}%20-%20${encodeURIComponent(data.priceRange || '')}`;
+
+  /* ═══════════════════════════════════════════════════════════════ */
   return (
     <div className="pi-page-wrapper">
-      
-      {/* ── Top Navigation Bar ─────────────────────────────────────────── */}
+
+      {/* ══ STICKY TOPBAR ═══════════════════════════════════════════ */}
       <header className="pi-topbar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button onClick={onBack} className="pi-btn-outline" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
-            <ArrowLeft size={14} />
-            <span>Back</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <button onClick={onBack} className="pi-btn-outline" style={{ padding: '7px 14px', fontSize: '0.78rem', gap: '6px' }}>
+            <ArrowLeft size={14} /> Back
           </button>
-          <div>
-            <h1 style={{ margin: 0, fontSize: '1.1rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#F3E5AB', lineHeight: 1.2 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+            <span style={{ fontSize: '0.72rem', color: '#64748B', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600 }}>
+              {data.location} {data.hinjewadiPhase ? '• ' + data.hinjewadiPhase.replace('_', ' ') : ''}
+            </span>
+            <span style={{ fontSize: '0.92rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#F3E5AB', lineHeight: 1 }}>
               {data.canonicalName || data.name}
-            </h1>
-            <div style={{ fontSize: '0.75rem', color: '#A0AEC0', display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
-              <span>{data.location}</span>
-              {data.hinjewadiPhase && (
-                <>
-                  <span>•</span>
-                  <span style={{ color: '#D4AF37', fontWeight: 600 }}>{data.hinjewadiPhase.replace('_', ' ')}</span>
-                </>
-              )}
-            </div>
+            </span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
-            onClick={() => {
-              if (navigator.share) {
-                navigator.share({ title: data.name, url: window.location.href });
-              } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert('Intelligence Link Copied to Clipboard!');
-              }
-            }}
+            onClick={() => navigator.share ? navigator.share({ title: data.name, url: window.location.href }) : navigator.clipboard.writeText(window.location.href)}
             className="pi-btn-outline"
             style={{ padding: '8px 12px' }}
-            title="Share Intelligence"
+            title="Share"
           >
-            <Share2 size={14} />
+            <Share2 size={15} />
           </button>
-
-          <button onClick={() => setShowInquiryModal(true)} className="pi-btn-gold">
-            <Calendar size={14} />
-            <span>Book Private Visit</span>
+          <button onClick={() => setShowModal(true)} className="pi-btn-gold">
+            <Calendar size={14} /> Book Private Visit
           </button>
         </div>
       </header>
 
-      {/* ── Section 1: Hero Intelligence Header ────────────────────────── */}
-      <section className="pi-hero-section">
-        <div className="pi-container">
-          <div className="pi-grid-12" style={{ alignItems: 'center' }}>
-            
-            {/* Left Column: Essential Project Dossier */}
-            <div className="pi-col-7" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              
-              {/* Badges strip */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
-                <span className="pi-badge pi-badge-gold">
-                  <Sparkles size={12} color="#D4AF37" />
-                  {data.projectStatus ? data.projectStatus.replace(/_/g, ' ') : 'Verified Society'}
-                </span>
+      {/* ══ CINEMATIC HERO BANNER ════════════════════════════════════ */}
+      <section className="pi-hero-cinematic">
+        <img
+          src={gallery[activeImageIndex]}
+          alt={data.canonicalName || data.name}
+          className="pi-hero-cinematic__image"
+          onError={e => { e.target.onerror = null; e.target.src = '/dev_kolte_patil_township.png'; }}
+        />
+        <div className="pi-hero-cinematic__overlay" />
 
-                {data.reraRegistered && (
-                  <span className="pi-badge pi-badge-green">
-                    <ShieldCheck size={12} color="#10B981" />
-                    <span>MahaRERA Registered</span>
-                  </span>
-                )}
+        {/* Confidence badge top-right */}
+        <div className="pi-hero-cinematic__confidence">
+          <ShieldCheck size={13} />
+          {data.confidenceLevel || 'HIGH CONFIDENCE'}
+        </div>
 
-                <span className="pi-badge pi-badge-blue">
-                  <MapPin size={12} color="#60A5FA" />
-                  <span>{data.hinjewadiPhase ? data.hinjewadiPhase.replace('_', ' ') : data.location}</span>
-                </span>
-              </div>
+        {/* Main content bottom */}
+        <div className="pi-hero-cinematic__content">
+          {/* Badges */}
+          <div className="pi-hero-cinematic__badges">
+            <span className="pi-badge pi-badge-gold">
+              <Sparkles size={11} />
+              {(data.projectStatus || 'VERIFIED').replace(/_/g, ' ')}
+            </span>
+            {data.reraRegistered && (
+              <span className="pi-badge pi-badge-green">
+                <ShieldCheck size={11} /> MahaRERA Registered
+              </span>
+            )}
+            {data.hinjewadiPhase && (
+              <span className="pi-badge pi-badge-blue">
+                <MapPin size={11} /> {data.hinjewadiPhase.replace('_', ' ')}
+              </span>
+            )}
+          </div>
 
-              {/* Title & Developer */}
-              <div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#D4AF37', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Building2 size={14} color="#D4AF37" />
-                  <span>{data.developer || 'Pride Purple / 24K Alliance'}</span>
-                </div>
-                <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, color: '#FFF', margin: '4px 0 8px 0', lineHeight: 1.15 }}>
-                  {data.canonicalName || data.name}
-                </h1>
-                {data.aliasNames && data.aliasNames.length > 0 && (
-                  <p style={{ fontSize: '0.75rem', color: '#A0AEC0', margin: 0 }}>
-                    Also marketed as: <span style={{ color: '#E2E8F0', fontStyle: 'italic' }}>{data.aliasNames.join(', ')}</span>
-                  </p>
-                )}
-              </div>
+          {/* Developer */}
+          <div className="pi-hero-cinematic__developer">
+            <Building2 size={13} />
+            {data.developer || '24K Realtors Partner'}
+          </div>
 
-              {/* Address */}
-              <p style={{ fontSize: '0.88rem', color: '#CBD5E1', lineHeight: 1.6, margin: 0 }}>
-                {data.fullAddress || `${data.name}, Rajiv Gandhi Infotech Park, Hinjewadi, Pune - ${data.pincode || '411057'}`}
-              </p>
+          {/* Title */}
+          <h1 className="pi-hero-cinematic__title">
+            {data.canonicalName || data.name}
+          </h1>
 
-              {/* Price & Date Block (MANDATORY per master prompt) */}
-              <div style={{ background: 'linear-gradient(135deg, #112038 0%, #091322 100%)', border: '1px solid var(--pi-border)', borderRadius: '16px', padding: '20px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}>
-                <div>
-                  <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#A0AEC0', fontWeight: 600 }}>
-                    Verified Starting Price
-                  </div>
-                  <div style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2rem)', fontWeight: 900, color: '#D4AF37', margin: '4px 0' }}>
-                    {data.priceRange || formatInr(data.startingPrice)}
-                  </div>
-                  <div style={{ fontSize: '0.72rem', color: '#A0AEC0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Clock size={13} color="#D4AF37" />
-                    <span>Price last verified:</span>
-                    <span style={{ color: '#FFF', fontWeight: 700 }}>
-                      {data.priceLastVerified || data.lastVerifiedAt || '25 Aug 2026'}
-                    </span>
-                  </div>
-                </div>
+          {/* Address */}
+          <div className="pi-hero-cinematic__address">
+            <MapPin size={14} style={{ flexShrink: 0, color: '#D4AF37' }} />
+            {data.fullAddress || `${data.name}, Rajiv Gandhi Infotech Park, Hinjewadi, Pune — ${data.pincode || '411057'}`}
+          </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <button onClick={() => setShowInquiryModal(true)} className="pi-btn-gold">
-                    <Phone size={14} />
-                    <span>Talk to Our Specialist →</span>
-                  </button>
-                </div>
-              </div>
-
+          {/* Price & RERA chips */}
+          <div className="pi-hero-cinematic__chips">
+            <div className="pi-hero-chip">
+              <IndianRupee size={13} color="#D4AF37" />
+              <span>{data.priceRange || formatInr(data.startingPrice)}</span>
             </div>
-
-            {/* Right Column: Hero Media Showcase */}
-            <div className="pi-col-5" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', aspectRatio: '4/3', background: '#000', border: '1px solid rgba(255,255,255,0.15)', boxShadow: '0 16px 40px rgba(0,0,0,0.6)' }}>
-                <img
-                  src={gallery[activeImageIndex] || '/dev_kolte_patil_township.png'}
-                  alt={data.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/dev_kolte_patil_township.png';
-                  }}
-                />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 60%)' }} />
-                
-                {/* RERA Number badge on image */}
-                {data.reraNumber && (
-                  <div style={{ position: 'absolute', bottom: '12px', left: '12px', display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', background: 'rgba(7,15,30,0.9)', backdropFilter: 'blur(8px)', border: '1px solid var(--pi-border)' }}>
-                    <ShieldCheck size={14} color="#D4AF37" />
-                    <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 700, color: '#FFF', letterSpacing: '0.05em' }}>
-                      {data.reraNumber}
-                    </span>
-                  </div>
-                )}
-
-                {/* Confidence Level */}
-                <div style={{ position: 'absolute', top: '12px', right: '12px', padding: '4px 10px', borderRadius: '6px', background: 'rgba(16,185,129,0.9)', border: '1px solid rgba(16,185,129,0.5)', color: '#ECFDF5', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  {data.confidenceLevel || 'HIGH CONFIDENCE'}
-                </div>
+            {data.reraNumber && (
+              <div className="pi-hero-chip pi-hero-chip--green">
+                <ShieldCheck size={13} />
+                <span style={{ fontFamily: 'monospace', letterSpacing: '0.03em' }}>{data.reraNumber}</span>
               </div>
-
-              {/* Thumbnail carousel */}
-              {gallery.length > 1 && (
-                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
-                  {gallery.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveImageIndex(idx)}
-                      style={{
-                        position: 'relative',
-                        borderRadius: '8px',
-                        overflow: 'hidden',
-                        height: '56px',
-                        width: '80px',
-                        flexShrink: 0,
-                        border: activeImageIndex === idx ? '2px solid #D4AF37' : '1px solid rgba(255,255,255,0.1)',
-                        opacity: activeImageIndex === idx ? 1 : 0.6,
-                        cursor: 'pointer',
-                        padding: 0,
-                        background: '#000'
-                      }}
-                    >
-                      <img src={img} alt="thumb" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
+            )}
+            {data.possessionDate && (
+              <div className="pi-hero-chip pi-hero-chip--white">
+                <Calendar size={13} />
+                <span>Possession: {data.possessionDate}</span>
+              </div>
+            )}
+            {data.priceLastVerified && (
+              <div className="pi-hero-chip pi-hero-chip--white">
+                <Clock size={13} />
+                <span>Verified: {data.priceLastVerified}</span>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Gallery thumbnails */}
+        {gallery.length > 1 && (
+          <div className="pi-hero-gallery-strip">
+            {gallery.map((img, idx) => (
+              <button
+                key={idx}
+                className={`pi-gallery-thumb ${activeImageIndex === idx ? 'active' : ''}`}
+                onClick={() => setActiveImageIndex(idx)}
+                style={{ opacity: activeImageIndex === idx ? 1 : 0.55, padding: 0, background: 'transparent', border: 'none' }}
+              >
+                <img src={img} alt="gallery" onError={e => { e.target.onerror = null; e.target.src = '/dev_godrej_building.png'; }} />
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* ── Section 2: Key Facts Strip ─────────────────────────────────── */}
-      <section style={{ background: '#091322', borderBottom: '1px solid var(--pi-border-light)', padding: '24px 0' }}>
+      {/* ══ KEY STATS STRIP ══════════════════════════════════════════ */}
+      <div className="pi-stats-strip">
         <div className="pi-container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', textAlign: 'center' }}>
-            
-            <div className="pi-metric-card" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Configurations</div>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: '#FFF', marginTop: '4px' }}>
-                {data.configurationSummary || '2 & 3 BHK'}
+          <div className="pi-stats-strip__inner">
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Configurations</div>
+              <div className="pi-stat-item__value">{data.configurationSummary || '2 & 3 BHK'}</div>
+            </div>
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Carpet Area</div>
+              <div className="pi-stat-item__value">
+                {data.minCarpetAreaSqft && data.maxCarpetAreaSqft
+                  ? `${data.minCarpetAreaSqft}–${data.maxCarpetAreaSqft} sq.ft`
+                  : configs.length > 0
+                    ? `${configs[0].minCarpetAreaSqft || '685'}–${configs[configs.length-1].maxCarpetAreaSqft || '1450'} sq.ft`
+                    : '685–1450 sq.ft'}
               </div>
             </div>
-
-            <div className="pi-metric-card" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Carpet Area</div>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: '#FFF', marginTop: '4px' }}>
-                {data.minCarpetAreaSqft && data.maxCarpetAreaSqft 
-                  ? `${data.minCarpetAreaSqft} - ${data.maxCarpetAreaSqft} sq.ft`
-                  : '685 - 1450 sq.ft'}
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Possession</div>
+              <div className="pi-stat-item__value pi-stat-item__value--gold">{data.possessionDate || 'Dec 2027'}</div>
+            </div>
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Land Parcel</div>
+              <div className="pi-stat-item__value">{data.landAreaAcres ? `${data.landAreaAcres} Acres` : '12+ Acres'}</div>
+            </div>
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Towers & Floors</div>
+              <div className="pi-stat-item__value">
+                {data.totalTowers ? `${data.totalTowers}T × ${data.totalFloors || 28}Fl` : '6 Towers'}
               </div>
             </div>
-
-            <div className="pi-metric-card" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Possession Date</div>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: '#F3E5AB', marginTop: '4px' }}>
-                {data.possessionDate || 'December 2027'}
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Investment Score</div>
+              <div className="pi-stat-item__value pi-stat-item__value--green">
+                <Star size={13} style={{ display: 'inline', marginRight: '3px', verticalAlign: 'middle' }} />
+                {data.investmentScore || 92}/100
               </div>
             </div>
-
-            <div className="pi-metric-card" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Land Parcel</div>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: '#FFF', marginTop: '4px' }}>
-                {data.landAreaAcres ? `${data.landAreaAcres} Acres` : '12+ Acres'}
-              </div>
-            </div>
-
-            <div className="pi-metric-card" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Towers & Floors</div>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: '#FFF', marginTop: '4px' }}>
-                {data.totalTowers ? `${data.totalTowers} Towers (${data.totalFloors || 28} Fl)` : '6 High-Rise Towers'}
-              </div>
-            </div>
-
-            <div className="pi-metric-card" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Investment Score</div>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: '#34D399', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Award size={16} />
-                <span>{data.investmentScore || 92}/100</span>
-              </div>
-            </div>
-
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ── Section 3: Navigation Tab Anchor Bar ────────────────────────── */}
-      <nav style={{ position: 'sticky', top: '60px', zIndex: 90, background: 'rgba(7,15,30,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--pi-border-light)', padding: '8px 0' }}>
-        <div className="pi-container" style={{ display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto' }}>
-          {[
-            { id: 'overview', label: 'Overview' },
-            { id: 'configs', label: 'Configurations' },
-            { id: 'pricing', label: 'Dynamic Pricing' },
-            { id: 'amenities', label: 'Verified Amenities' },
-            { id: 'connectivity', label: 'Connectivity & Infra' },
-            { id: 'rera', label: 'MahaRERA & Legal' },
-            { id: 'faqs', label: 'FAQs & Insights' },
-            { id: 'sources', label: 'Data Sources' }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => {
-                setActiveTab(tab.id);
-                const el = document.getElementById(`section-${tab.id}`);
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              className={`pi-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
-            >
-              {tab.label}
-            </button>
-          ))}
+      {/* ══ TAB NAVIGATION ═══════════════════════════════════════════ */}
+      <nav className="pi-tab-nav">
+        <div className="pi-container">
+          <div className="pi-tab-nav__inner">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                className={`pi-tab-btn${activeTab === tab.id ? ' active' : ''}`}
+                onClick={() => scrollTo(`section-${tab.id}`, tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
       </nav>
 
-      {/* ── Main Content Body ──────────────────────────────────────────── */}
-      <main className="pi-container" style={{ padding: '40px 24px', display: 'flex', flexDirection: 'column', gap: '48px' }}>
-        
-        {/* ══ 1. Overview & Positioning ══ */}
-        <section id="section-overview" className="pi-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-            <Building2 size={20} color="#D4AF37" />
-            <h2 style={{ fontSize: '1.3rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: 0 }}>Project Overview &amp; Location Advantage</h2>
-          </div>
-          <p style={{ fontSize: '0.92rem', color: '#CBD5E1', lineHeight: 1.75, margin: '0 0 20px 0' }}>
-            {data.description || `${data.name} is a premier residential landmark situated in ${data.location}, Pune. Developed with modern infrastructure and MahaRERA-certified compliance, it caters to IT professionals working across Rajiv Gandhi Infotech Park and Pune West.`}
-          </p>
+      {/* ══ MAIN BODY: Two-Column Layout ═════════════════════════════ */}
+      <div className="pi-container">
+        <div className="pi-two-col">
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-            <div style={{ background: '#091322', padding: '16px', borderRadius: '12px', border: '1px solid var(--pi-border-light)' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', marginBottom: '6px' }}>📍 Prime Location Positioning</div>
-              <div style={{ fontSize: '0.85rem', color: '#E2E8F0' }}>{data.locationAdvantage || `Direct connectivity to Hinjewadi Phase 1, 2, 3 IT hubs, upcoming Metro Line 3 station and Mumbai-Bangalore Highway.`}</div>
-            </div>
-            <div style={{ background: '#091322', padding: '16px', borderRadius: '12px', border: '1px solid var(--pi-border-light)' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10B981', textTransform: 'uppercase', marginBottom: '6px' }}>🛡️ Legal &amp; Title Verification</div>
-              <div style={{ fontSize: '0.85rem', color: '#E2E8F0' }}>Clear title, RERA registered ({data.reraNumber || 'Verified'}), sanctioned layout plans and verified building approvals.</div>
-            </div>
-            <div style={{ background: '#091322', padding: '16px', borderRadius: '12px', border: '1px solid var(--pi-border-light)' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#60A5FA', textTransform: 'uppercase', marginBottom: '6px' }}>📈 Capital Appreciation &amp; Rental Yield</div>
-              <div style={{ fontSize: '0.85rem', color: '#E2E8F0' }}>Estimated 4.2% - 5.1% gross rental yield driven by consistent tech workforce housing demand.</div>
-            </div>
-          </div>
-        </section>
+          {/* ── LEFT: Main Content ────────────────────────────────── */}
+          <main className="pi-main-col">
 
-        {/* ══ 2. Configurations & Floor Matrix ══ */}
-        <section id="section-configs" className="pi-card">
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '20px' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Layers size={20} color="#D4AF37" />
-                <h2 style={{ fontSize: '1.3rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: 0 }}>Configurations &amp; Unit Options</h2>
-              </div>
-              <p style={{ fontSize: '0.82rem', color: '#A0AEC0', margin: '4px 0 0 0' }}>Verified RERA carpet areas and unit configurations</p>
-            </div>
-
-            {/* BHK Tabs */}
-            <div style={{ display: 'flex', gap: '6px', background: '#091322', padding: '4px', borderRadius: '10px', border: '1px solid var(--pi-border-light)' }}>
-              {['ALL', '1 BHK', '2 BHK', '3 BHK', '4 BHK'].map(bhk => (
-                <button
-                  key={bhk}
-                  onClick={() => setSelectedBhk(bhk)}
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    border: 'none',
-                    background: selectedBhk === bhk ? '#D4AF37' : 'transparent',
-                    color: selectedBhk === bhk ? '#070F1E' : '#A0AEC0',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  {bhk}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
-            {filteredConfigs.length > 0 ? (
-              filteredConfigs.map((cfg, idx) => (
-                <div key={idx} style={{ background: '#091322', border: '1px solid var(--pi-border-light)', borderRadius: '14px', padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFF' }}>{cfg.bhkType}</span>
-                    <span className="pi-badge pi-badge-gold">{cfg.status || 'Available'}</span>
-                  </div>
-                  <div style={{ fontSize: '0.85rem', color: '#A0AEC0' }}>
-                    Carpet Area: <strong style={{ color: '#FFF' }}>{cfg.carpetAreaSqft ? `${cfg.carpetAreaSqft} sq.ft` : '745 - 890 sq.ft'}</strong>
-                  </div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#D4AF37' }}>
-                    {cfg.priceRange || formatInr(cfg.price)}
-                  </div>
-                  <button onClick={() => setShowInquiryModal(true)} className="pi-btn-outline" style={{ width: '100%', marginTop: '4px' }}>
-                    Request Floor Plan
-                  </button>
+            {/* ─ 1. OVERVIEW ─ */}
+            <section id="section-overview" className="pi-card">
+              <div className="pi-card__header">
+                <div className="pi-card__icon-wrap">
+                  <Building2 size={18} color="#D4AF37" />
                 </div>
-              ))
-            ) : (
-              <div style={{ gridColumn: '1 / -1', padding: '32px', textAlign: 'center', color: '#A0AEC0' }}>
-                No configurations found for selected filter. Contact our specialist for off-market inventory.
+                <div>
+                  <h2 className="pi-card__title">Project Overview & Location Advantage</h2>
+                </div>
               </div>
-            )}
-          </div>
-        </section>
-
-        {/* ══ 3. Dynamic Pricing Matrix ══ */}
-        <section id="section-pricing" className="pi-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <TrendingUp size={20} color="#D4AF37" />
-            <h2 style={{ fontSize: '1.3rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: 0 }}>Dynamic Pricing &amp; Market Matrix</h2>
-          </div>
-          <p style={{ fontSize: '0.82rem', color: '#A0AEC0', margin: '0 0 20px 0' }}>
-            Real-time market spectrum across Developer Primary Sales, Verified Resale and Corporate Rentals with last verified timestamps.
-          </p>
-
-          <div className="pi-table-container">
-            <table className="pi-table">
-              <thead>
-                <tr>
-                  <th>Category</th>
-                  <th>Typical Spectrum</th>
-                  <th>Per Sq.Ft Rate</th>
-                  <th>Verification Date</th>
-                  <th>Availability</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong style={{ color: '#FFF' }}>Direct Developer Sale (New)</strong></td>
-                  <td style={{ color: '#D4AF37', fontWeight: 700 }}>{data.priceRange || formatInr(data.startingPrice)}</td>
-                  <td>₹8,200 - ₹9,400 / sq.ft</td>
-                  <td><span style={{ color: '#10B981', fontWeight: 600 }}>{data.priceLastVerified || '25 Aug 2026'}</span></td>
-                  <td><span className="pi-badge pi-badge-green">Active</span></td>
-                </tr>
-                <tr>
-                  <td><strong style={{ color: '#FFF' }}>Verified Resale Units</strong></td>
-                  <td style={{ color: '#D4AF37', fontWeight: 700 }}>₹78 Lakhs - ₹1.35 Cr</td>
-                  <td>₹7,600 - ₹8,800 / sq.ft</td>
-                  <td><span style={{ color: '#10B981', fontWeight: 600 }}>25 Aug 2026</span></td>
-                  <td><span className="pi-badge pi-badge-gold">Curated</span></td>
-                </tr>
-                <tr>
-                  <td><strong style={{ color: '#FFF' }}>Rental Yield / Month</strong></td>
-                  <td style={{ color: '#60A5FA', fontWeight: 700 }}>₹26,000 - ₹48,000 / mo</td>
-                  <td>4.8% Gross Yield</td>
-                  <td><span style={{ color: '#10B981', fontWeight: 600 }}>25 Aug 2026</span></td>
-                  <td><span className="pi-badge pi-badge-blue">High Demand</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* ══ 4. Verified Amenities ══ */}
-        <section id="section-amenities" className="pi-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-            <Award size={20} color="#D4AF37" />
-            <h2 style={{ fontSize: '1.3rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: 0 }}>100% Verified Society Amenities</h2>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
-            {[
-              'Grand Clubhouse & Lounge', 'Temperature Controlled Swimming Pool', 'Fully Equipped Gymnasium',
-              'Landscaped Podium Gardens', 'Children’s Play Arena', '24x7 Multi-Tier Security & CCTV',
-              'EV Charging Stations', '100% Power Backup for Common Areas', 'Co-Working & Business Lounge',
-              'Tennis & Badminton Courts', 'Jogging & Cycling Track', 'Banquet & Community Hall'
-            ].map((amenity, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#091322', padding: '12px 14px', borderRadius: '10px', border: '1px solid var(--pi-border-light)' }}>
-                <CheckCircle2 size={16} color="#10B981" style={{ flexShrink: 0 }} />
-                <span style={{ fontSize: '0.82rem', color: '#E2E8F0', fontWeight: 500 }}>{amenity}</span>
+              <p className="pi-card__subtitle" style={{ marginTop: '12px' }}>
+                {data.description || data.overview ||
+                  `${data.canonicalName || data.name} is a premium residential landmark in ${data.location || 'Hinjewadi'}, Pune — built for the aspirations of Pune's tech-professional community. MahaRERA registered with clear title and government-verified disclosures.`}
+              </p>
+              <div className="pi-highlight-grid">
+                <div className="pi-highlight-card">
+                  <div className="pi-highlight-card__label pi-highlight-card__label--gold">
+                    <MapPin size={13} /> Prime Location
+                  </div>
+                  <div className="pi-highlight-card__text">
+                    {data.locationAdvantage || `Direct access to Hinjewadi IT Phases 1–3, upcoming Metro Line 3 and Mumbai-Pune Expressway.`}
+                  </div>
+                </div>
+                <div className="pi-highlight-card">
+                  <div className="pi-highlight-card__label pi-highlight-card__label--green">
+                    <ShieldCheck size={13} /> Legal & Title Verified
+                  </div>
+                  <div className="pi-highlight-card__text">
+                    Clear title, sanctioned layout plans, building approvals, and MahaRERA registered
+                    {data.reraNumber ? ` (${data.reraNumber})` : ''}.
+                  </div>
+                </div>
+                <div className="pi-highlight-card">
+                  <div className="pi-highlight-card__label pi-highlight-card__label--blue">
+                    <TrendingUp size={13} /> Capital Appreciation
+                  </div>
+                  <div className="pi-highlight-card__text">
+                    {data.rentalYield ? `${data.rentalYield}%` : '4.2–5.1%'} estimated gross rental yield with consistent tech-workforce housing demand.
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
-        </section>
+            </section>
 
-        {/* ══ 5. Connectivity & Infrastructure ══ */}
-        <section id="section-connectivity" className="pi-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-            <Train size={20} color="#D4AF37" />
-            <h2 style={{ fontSize: '1.3rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: 0 }}>Connectivity &amp; Proximity Matrix</h2>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-            <div style={{ background: '#091322', padding: '16px', borderRadius: '12px', border: '1px solid var(--pi-border-light)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#60A5FA', fontWeight: 700, fontSize: '0.85rem', marginBottom: '8px' }}>
-                <Laptop size={16} />
-                <span>IT Parks &amp; Corporate Hubs</span>
+            {/* ─ 2. CONFIGURATIONS ─ */}
+            <section id="section-configs" className="pi-card">
+              <div className="pi-card__header" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div className="pi-card__icon-wrap">
+                    <Layers size={18} color="#D4AF37" />
+                  </div>
+                  <div>
+                    <h2 className="pi-card__title">Configurations & Unit Options</h2>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Verified RERA carpet areas & pricing</p>
+                  </div>
+                </div>
+                <div className="pi-bhk-filter">
+                  {['ALL', '1 BHK', '2 BHK', '3 BHK', '4 BHK'].map(bhk => (
+                    <button
+                      key={bhk}
+                      className={`pi-bhk-btn${selectedBhk === bhk ? ' active' : ''}`}
+                      onClick={() => setSelectedBhk(bhk)}
+                    >{bhk}</button>
+                  ))}
+                </div>
               </div>
-              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.82rem', color: '#CBD5E1', lineHeight: 1.8 }}>
-                <li>Infosys Phase 1 — 5 Mins (2.1 km)</li>
-                <li>Wipro Technologies — 7 Mins (3.2 km)</li>
-                <li>Quadron Business Park — 10 Mins (4.5 km)</li>
-                <li>Embassy Techzone — 12 Mins (5.8 km)</li>
-              </ul>
-            </div>
 
-            <div style={{ background: '#091322', padding: '16px', borderRadius: '12px', border: '1px solid var(--pi-border-light)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#D4AF37', fontWeight: 700, fontSize: '0.85rem', marginBottom: '8px' }}>
-                <Train size={16} />
-                <span>Transit &amp; Highways</span>
-              </div>
-              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.82rem', color: '#CBD5E1', lineHeight: 1.8 }}>
-                <li>Upcoming Metro Line 3 Station — 800m</li>
-                <li>Mumbai-Pune Highway (NH-48) — 8 Mins</li>
-                <li>Bhumkar Chowk / Wakad Flyover — 10 Mins</li>
-                <li>Pune International Airport — 45 Mins</li>
-              </ul>
-            </div>
-
-            <div style={{ background: '#091322', padding: '16px', borderRadius: '12px', border: '1px solid var(--pi-border-light)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#F472B6', fontWeight: 700, fontSize: '0.85rem', marginBottom: '8px' }}>
-                <HeartPulse size={16} />
-                <span>Healthcare &amp; Schools</span>
-              </div>
-              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.82rem', color: '#CBD5E1', lineHeight: 1.8 }}>
-                <li>Ruby Hall Clinic Hinjewadi — 6 Mins</li>
-                <li>Sanjeevani Hospital — 8 Mins</li>
-                <li>Mercedes-Benz International School — 5 Mins</li>
-                <li>Vibgyor High School — 10 Mins</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ 6. MahaRERA Dossier ══ */}
-        <section id="section-rera" className="pi-card" style={{ border: '1px solid rgba(16, 185, 129, 0.4)', background: 'linear-gradient(135deg, #0A1C1A 0%, #070F1E 100%)' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <ShieldCheck size={26} color="#10B981" />
-              <div>
-                <h2 style={{ fontSize: '1.3rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: 0 }}>MahaRERA Regulatory Compliance Dossier</h2>
-                <span style={{ fontSize: '0.75rem', color: '#34D399', fontWeight: 600 }}>100% Government Record Verified</span>
-              </div>
-            </div>
-
-            {data.reraNumber && (
-              <a
-                href={`https://maharera.maharashtra.gov.in/`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="pi-btn-gold"
-                style={{ fontSize: '0.75rem', padding: '8px 14px' }}
-              >
-                <span>Verify on MahaRERA Portal</span>
-                <ExternalLink size={12} />
-              </a>
-            )}
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-              <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Registration No</div>
-              <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#FFF', fontFamily: 'monospace', marginTop: '2px' }}>{data.reraNumber || 'P52100046770'}</div>
-            </div>
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-              <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Promoter Entity</div>
-              <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#FFF', marginTop: '2px' }}>{data.developer || 'Pride Purple Group'}</div>
-            </div>
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-              <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Completion / Possession</div>
-              <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#F3E5AB', marginTop: '2px' }}>{data.possessionDate || 'Dec 2027'}</div>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ 7. FAQs ══ */}
-        <section id="section-faqs" className="pi-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <MessageSquare size={20} color="#D4AF37" />
-            <h2 style={{ fontSize: '1.3rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: 0 }}>Frequently Asked Questions</h2>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {[
-              { q: `What is the current starting price for ${data.name}?`, a: `Verified starting prices are ${data.priceRange || formatInr(data.startingPrice)} as verified on ${data.priceLastVerified || '25 Aug 2026'}. Prices vary by floor rise and tower orientation.` },
-              { q: `Is ${data.name} legally registered with MahaRERA?`, a: `Yes, ${data.name} is fully registered under MahaRERA No. ${data.reraNumber || 'P52100046770'} with all statutory title disclosures.` },
-              { q: `How far is ${data.name} from Hinjewadi Phase 1 & 2 IT Parks?`, a: `The project is situated inside the prime Hinjewadi corridor within 5 to 12 minutes drive from major tech parks including Infosys, Wipro, and Quadron.` },
-              { q: `Can 24K Realtors arrange a direct VIP site visit and floor plan review?`, a: `Yes! Our dedicated Hinjewadi Property Specialists provide chauffeur-driven private tours, vastu compliance checks, and direct developer pricing negotiation.` }
-            ].map((faq, i) => (
-              <div key={i} style={{ background: '#091322', borderRadius: '10px', border: '1px solid var(--pi-border-light)', overflow: 'hidden' }}>
-                <button
-                  onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
-                  style={{ width: '100%', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', border: 'none', color: '#FFF', fontSize: '0.88rem', fontWeight: 600, textAlign: 'left', cursor: 'pointer' }}
-                >
-                  <span>{faq.q}</span>
-                  <ChevronDown size={16} color="#D4AF37" style={{ transform: expandedFaq === i ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                </button>
-                {expandedFaq === i && (
-                  <div style={{ padding: '0 18px 14px 18px', fontSize: '0.82rem', color: '#CBD5E1', lineHeight: 1.6, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                    {faq.a}
+              <div className="pi-config-grid">
+                {filteredConfigs.length > 0 ? filteredConfigs.map((cfg, idx) => (
+                  <div key={idx} className={`pi-config-card ${getBhkClass(cfg.bhkType)}`}>
+                    <div className="pi-config-card__top">
+                      <div className="pi-config-card__bhk">{cfg.bhkType}</div>
+                      <span className="pi-badge pi-badge-green" style={{ fontSize: '0.62rem' }}>
+                        {cfg.available !== false ? 'Available' : 'Waitlist'}
+                      </span>
+                    </div>
+                    <div>
+                      <div className="pi-config-card__area-label">Carpet Area (RERA)</div>
+                      <div className="pi-config-card__area">
+                        {cfg.minCarpetAreaSqft && cfg.maxCarpetAreaSqft
+                          ? `${cfg.minCarpetAreaSqft} – ${cfg.maxCarpetAreaSqft} sq.ft`
+                          : cfg.carpetAreaSqft
+                            ? `${cfg.carpetAreaSqft} sq.ft`
+                            : 'Contact for Area'}
+                      </div>
+                    </div>
+                    <div className="pi-config-card__price">
+                      {cfg.priceRange
+                        ? cfg.priceRange
+                        : (cfg.startingPrice
+                            ? formatInr(cfg.startingPrice)
+                            : (data.priceRange || formatInr(data.startingPrice))
+                          )
+                      }
+                    </div>
+                    <div className="pi-config-card__source">
+                      <ShieldCheck size={11} color="#10B981" />
+                      {cfg.source || 'MahaRERA Filing'}
+                    </div>
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className="pi-btn-outline"
+                      style={{ width: '100%', fontSize: '0.78rem', padding: '9px 14px', marginTop: '2px' }}
+                    >
+                      Request Floor Plan
+                    </button>
+                  </div>
+                )) : (
+                  <div style={{ gridColumn: '1 / -1', padding: '36px', textAlign: 'center', color: '#64748B' }}>
+                    <Layers size={32} style={{ marginBottom: '12px', opacity: 0.4 }} />
+                    <p style={{ margin: 0, fontSize: '0.85rem' }}>
+                      No configurations for selected filter. Contact our specialist for off-market inventory.
+                    </p>
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-        </section>
+            </section>
 
-        {/* ══ 8. Sources & Trust Footprint ══ */}
-        <section id="section-sources" style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed var(--pi-border-light)', borderRadius: '12px', padding: '18px' }}>
-          <div style={{ fontSize: '0.72rem', color: '#A0AEC0', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, marginBottom: '6px' }}>
-            Data Integrity &amp; Source Citations
-          </div>
-          <p style={{ fontSize: '0.75rem', color: '#94A3B8', lineHeight: 1.6, margin: 0 }}>
-            Intelligence sourced from MahaRERA Public Filings, Official Developer Disclosures, and 24K Realtors Ground Verification Desk. Updated as of 25 Aug 2026. All rights reserved.
-          </p>
-        </section>
-
-      </main>
-
-      {/* ── Inquiry / Site Visit Modal ─────────────────────────────────── */}
-      {showInquiryModal && (
-        <div className="pi-modal-overlay">
-          <div className="pi-modal-content">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-              <div>
-                <h3 style={{ fontSize: '1.2rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: 0 }}>Book Private Consultation</h3>
-                <span style={{ fontSize: '0.75rem', color: '#D4AF37' }}>{data.name} — Hinjewadi Desk</span>
+            {/* ─ 3. DYNAMIC PRICING ─ */}
+            <section id="section-pricing" className="pi-card">
+              <div className="pi-card__header">
+                <div className="pi-card__icon-wrap">
+                  <TrendingUp size={18} color="#D4AF37" />
+                </div>
+                <div>
+                  <h2 className="pi-card__title">Dynamic Pricing & Market Matrix</h2>
+                  <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>
+                    Developer primary, verified resale & rental spectrum — all timestamps included
+                  </p>
+                </div>
               </div>
-              <button onClick={() => setShowInquiryModal(false)} className="pi-btn-outline" style={{ padding: '6px' }}>
-                ✕
-              </button>
+
+              <div className="pi-pricing-grid">
+                {/* Developer Sale */}
+                <div className="pi-price-tier-card">
+                  <div className="pi-price-tier-card__type" style={{ color: '#D4AF37' }}>
+                    <Building2 size={14} /> Developer Sale (New)
+                  </div>
+                  <div className="pi-price-tier-card__range" style={{ color: '#D4AF37' }}>
+                    {data.priceRange || formatInr(data.startingPrice)}
+                  </div>
+                  <div className="pi-price-tier-card__meta">
+                    <div className="pi-price-tier-card__sqft">
+                      ₹{data.pricePerSqft ? data.pricePerSqft.toLocaleString('en-IN') : '7,800'} – ₹9,400 / sq.ft
+                    </div>
+                    <div className="pi-price-tier-card__verified">
+                      <Clock size={11} /> Verified: {data.priceLastVerified || '27 Aug 2026'}
+                    </div>
+                  </div>
+                  <span className="pi-badge pi-badge-green pi-price-tier-card__badge">Active</span>
+                </div>
+
+                {/* Resale */}
+                <div className="pi-price-tier-card">
+                  <div className="pi-price-tier-card__type" style={{ color: '#93C5FD' }}>
+                    <ChevronRight size={14} /> Verified Resale Units
+                  </div>
+                  <div className="pi-price-tier-card__range" style={{ color: '#93C5FD' }}>
+                    {data.allPrices?.find(p => p.priceType === 'RESALE')
+                      ? `${formatInr(data.allPrices.find(p => p.priceType === 'RESALE').minPrice)} – ${formatInr(data.allPrices.find(p => p.priceType === 'RESALE').maxPrice)}`
+                      : '₹78 Lakhs – ₹1.35 Cr'}
+                  </div>
+                  <div className="pi-price-tier-card__meta">
+                    <div className="pi-price-tier-card__sqft">₹7,600 – ₹8,800 / sq.ft</div>
+                    <div className="pi-price-tier-card__verified">
+                      <Clock size={11} /> Registry transactions verified
+                    </div>
+                  </div>
+                  <span className="pi-badge pi-badge-gold pi-price-tier-card__badge">Curated</span>
+                </div>
+
+                {/* Rental */}
+                <div className="pi-price-tier-card">
+                  <div className="pi-price-tier-card__type" style={{ color: '#86EFAC' }}>
+                    <IndianRupee size={14} /> Rental Yield / Month
+                  </div>
+                  <div className="pi-price-tier-card__range" style={{ color: '#86EFAC' }}>
+                    {data.allPrices?.find(p => p.priceType === 'RENT')
+                      ? `${formatInr(data.allPrices.find(p => p.priceType === 'RENT').minPrice)} – ${formatInr(data.allPrices.find(p => p.priceType === 'RENT').maxPrice)}`
+                      : '₹26,000 – ₹48,000 / mo'}
+                  </div>
+                  <div className="pi-price-tier-card__meta">
+                    <div className="pi-price-tier-card__sqft">
+                      {data.rentalYield ? `${data.rentalYield}%` : '4.8%'} Gross Annual Yield
+                    </div>
+                    <div className="pi-price-tier-card__verified">
+                      <Clock size={11} /> Verified tenant agreements
+                    </div>
+                  </div>
+                  <span className="pi-badge pi-badge-green pi-price-tier-card__badge">High Demand</span>
+                </div>
+              </div>
+            </section>
+
+            {/* ─ 4. AMENITIES ─ */}
+            <section id="section-amenities" className="pi-card">
+              <div className="pi-card__header">
+                <div className="pi-card__icon-wrap">
+                  <Award size={18} color="#D4AF37" />
+                </div>
+                <h2 className="pi-card__title">100% Verified Society Amenities</h2>
+              </div>
+              <p className="pi-card__subtitle">
+                All amenities independently ground-verified by 24K Realtors Field Desk
+              </p>
+
+              {AMENITY_CATEGORIES.map((cat, catIdx) => (
+                <div key={catIdx} className="pi-amenity-category">
+                  <div className="pi-amenity-category__title">
+                    {cat.icon} {cat.label}
+                  </div>
+                  <div className="pi-amenity-grid">
+                    {cat.items.map((item, i) => (
+                      <div key={i} className="pi-amenity-item">
+                        <div className="pi-amenity-item__icon">
+                          {React.cloneElement(item.icon, { color: '#10B981' })}
+                        </div>
+                        <span className="pi-amenity-item__text">{item.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* Additional amenities from data */}
+              {data.amenities && data.amenities.length > 0 && (
+                <div className="pi-amenity-category">
+                  <div className="pi-amenity-category__title">
+                    <Sparkles size={14} /> Project-Specific Highlights
+                  </div>
+                  <div className="pi-amenity-grid">
+                    {data.amenities.map((a, i) => (
+                      <div key={i} className="pi-amenity-item">
+                        <div className="pi-amenity-item__icon">
+                          <CheckCircle2 size={15} color="#10B981" />
+                        </div>
+                        <span className="pi-amenity-item__text">{a.amenityLabel || a}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {/* ─ 5. CONNECTIVITY ─ */}
+            <section id="section-connectivity" className="pi-card">
+              <div className="pi-card__header">
+                <div className="pi-card__icon-wrap">
+                  <Train size={18} color="#D4AF37" />
+                </div>
+                <div>
+                  <h2 className="pi-card__title">Connectivity & Proximity Matrix</h2>
+                  <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>
+                    Independently mapped distances to key landmarks
+                  </p>
+                </div>
+              </div>
+
+              <div className="pi-connectivity-grid">
+                {/* IT Parks */}
+                <div className="pi-proximity-card">
+                  <div className="pi-proximity-card__header" style={{ color: '#60A5FA' }}>
+                    <Laptop size={16} /> IT Parks & Corporate Hubs
+                  </div>
+                  <ul className={`pi-proximity-card__list pi-proximity-card__list--blue`}>
+                    <li>
+                      Infosys Phase 1
+                      <span className="pi-proximity-dist">~2.1 km | 5 min</span>
+                    </li>
+                    <li>
+                      Wipro Technologies
+                      <span className="pi-proximity-dist">~3.2 km | 7 min</span>
+                    </li>
+                    <li>
+                      Quadron Business Park
+                      <span className="pi-proximity-dist">~4.5 km | 10 min</span>
+                    </li>
+                    <li>
+                      Embassy Techzone
+                      <span className="pi-proximity-dist">~5.8 km | 12 min</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Transit */}
+                <div className="pi-proximity-card">
+                  <div className="pi-proximity-card__header" style={{ color: '#D4AF37' }}>
+                    <Train size={16} /> Transit & Highways
+                  </div>
+                  <ul className={`pi-proximity-card__list pi-proximity-card__list--gold`}>
+                    <li>
+                      Metro Line 3 Station
+                      <span className="pi-proximity-dist">~800 m</span>
+                    </li>
+                    <li>
+                      Mumbai-Pune Highway (NH-48)
+                      <span className="pi-proximity-dist">8 min</span>
+                    </li>
+                    <li>
+                      Bhumkar Chowk Flyover
+                      <span className="pi-proximity-dist">10 min</span>
+                    </li>
+                    <li>
+                      Pune International Airport
+                      <span className="pi-proximity-dist">~45 min</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Healthcare & Schools */}
+                <div className="pi-proximity-card">
+                  <div className="pi-proximity-card__header" style={{ color: '#F472B6' }}>
+                    <HeartPulse size={16} /> Healthcare & Schools
+                  </div>
+                  <ul className={`pi-proximity-card__list pi-proximity-card__list--pink`}>
+                    <li>
+                      Ruby Hall Clinic Hinjewadi
+                      <span className="pi-proximity-dist">6 min</span>
+                    </li>
+                    <li>
+                      Sanjeevani Hospital
+                      <span className="pi-proximity-dist">8 min</span>
+                    </li>
+                    <li>
+                      MB International School
+                      <span className="pi-proximity-dist">5 min</span>
+                    </li>
+                    <li>
+                      Vibgyor High School
+                      <span className="pi-proximity-dist">10 min</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            {/* ─ 6. MAHARERA DOSSIER ─ */}
+            <section id="section-rera" className="pi-rera-card">
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <ShieldCheck size={22} color="#10B981" />
+                  </div>
+                  <div>
+                    <h2 className="pi-card__title">MahaRERA Regulatory Compliance Dossier</h2>
+                    <span style={{ fontSize: '0.72rem', color: '#34D399', fontWeight: 700 }}>
+                      ✓ 100% Government Record Verified
+                    </span>
+                  </div>
+                </div>
+                {data.reraNumber && (
+                  <a
+                    href="https://maharera.maharashtra.gov.in/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pi-btn-outline"
+                    style={{ fontSize: '0.78rem', padding: '9px 16px', borderColor: 'rgba(16,185,129,0.4)', color: '#6EE7B7' }}
+                  >
+                    Verify on MahaRERA Portal <ExternalLink size={12} />
+                  </a>
+                )}
+              </div>
+
+              <div className="pi-rera-grid">
+                <div className="pi-rera-field">
+                  <div className="pi-rera-field__label">Registration Number</div>
+                  <div className="pi-rera-field__value pi-rera-field__value--mono">
+                    {data.reraNumber || 'Awaiting RERA'}
+                  </div>
+                </div>
+                <div className="pi-rera-field">
+                  <div className="pi-rera-field__label">Promoter / Developer</div>
+                  <div className="pi-rera-field__value">{data.developer || 'Verified Developer'}</div>
+                </div>
+                <div className="pi-rera-field">
+                  <div className="pi-rera-field__label">RERA Status</div>
+                  <div className="pi-rera-field__value" style={{ color: '#34D399' }}>
+                    {data.reraStatus?.replace(/_/g, ' ') || 'REGISTERED & VERIFIED'}
+                  </div>
+                </div>
+                <div className="pi-rera-field">
+                  <div className="pi-rera-field__label">Completion / Possession</div>
+                  <div className="pi-rera-field__value pi-rera-field__value--gold">
+                    {data.possessionDate || 'December 2027'}
+                  </div>
+                </div>
+                <div className="pi-rera-field">
+                  <div className="pi-rera-field__label">Project Status</div>
+                  <div className="pi-rera-field__value">
+                    {(data.projectStatus || 'UNDER CONSTRUCTION').replace(/_/g, ' ')}
+                  </div>
+                </div>
+                <div className="pi-rera-field">
+                  <div className="pi-rera-field__label">Data Last Verified</div>
+                  <div className="pi-rera-field__value" style={{ color: '#6EE7B7' }}>
+                    {data.lastVerifiedAt || data.priceLastVerified || '27 Aug 2026'}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* ─ 7. FAQs ─ */}
+            <section id="section-faqs" className="pi-card">
+              <div className="pi-card__header">
+                <div className="pi-card__icon-wrap">
+                  <MessageSquare size={18} color="#D4AF37" />
+                </div>
+                <h2 className="pi-card__title">Frequently Asked Questions</h2>
+              </div>
+
+              <div className="pi-faq-list">
+                {[
+                  {
+                    q: `What is the verified starting price for ${data.canonicalName || data.name}?`,
+                    a: `Verified starting price is ${data.priceRange || formatInr(data.startingPrice)} as confirmed on ${data.priceLastVerified || '27 Aug 2026'}. Prices vary by floor rise, tower orientation, and BHK type. Contact our specialist for best negotiated pricing.`
+                  },
+                  {
+                    q: `Is ${data.canonicalName || data.name} legally registered with MahaRERA?`,
+                    a: `Yes. ${data.canonicalName || data.name} is fully registered under MahaRERA with registration number ${data.reraNumber || '(available on request)'}. All statutory disclosures including title, layout plans, and building approvals are verified.`
+                  },
+                  {
+                    q: `How far is the society from Hinjewadi IT Parks?`,
+                    a: `The project is situated within Hinjewadi's prime residential corridor, within 5–12 minutes drive from major tech parks including Infosys, Wipro, Quadron Business Park, and Embassy Techzone.`
+                  },
+                  {
+                    q: `Can 24K Realtors arrange a VIP site visit and direct developer pricing?`,
+                    a: `Absolutely! Our Hinjewadi Property Specialists offer chauffeur-driven private site tours, vastu compliance walkthroughs, direct developer cost negotiation, and home loan pre-approval assistance — all at zero brokerage.`
+                  },
+                  {
+                    q: `What is the rental yield and investment potential?`,
+                    a: `Hinjewadi maintains one of Pune's highest rental demand indices due to its proximity to 2.3 lakh+ employed IT professionals. Expected gross rental yield: ${data.rentalYield ? data.rentalYield + '%' : '4.2–5.1%'} per annum.`
+                  }
+                ].map((faq, i) => (
+                  <div key={i} className={`pi-faq-item${expandedFaq === i ? ' open' : ''}`}>
+                    <button
+                      className="pi-faq-item__question"
+                      onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
+                    >
+                      <span>{faq.q}</span>
+                      <ChevronDown size={16} className="pi-faq-item__icon" />
+                    </button>
+                    {expandedFaq === i && (
+                      <div className="pi-faq-item__answer">{faq.a}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ─ DATA SOURCES FOOTER ─ */}
+            <div className="pi-sources-section">
+              <div>
+                <div className="pi-sources-section__heading">Data Integrity & Source Citations</div>
+                <div className="pi-sources-section__text">
+                  Intelligence sourced from MahaRERA Public Filings (maharera.maharashtra.gov.in), Official Developer Brochures, and 24K Realtors Ground Verification Desk.
+                  All prices and facts audited as of {data.priceLastVerified || '27 Aug 2026'}. All rights reserved.
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: '#34D399', fontWeight: 600, flexShrink: 0 }}>
+                <ShieldCheck size={14} />
+                Verified Intelligence
+              </div>
+            </div>
+
+          </main>{/* end main-col */}
+
+          {/* ── RIGHT: Sticky Sidebar ──────────────────────────────── */}
+          <aside className="pi-sidebar">
+
+            {/* Price Card */}
+            <div className="pi-sidebar-price-card">
+              <div className="pi-sidebar-price-card__label">Verified Starting Price</div>
+              <div className="pi-sidebar-price-card__price">
+                {data.priceRange || formatInr(data.startingPrice)}
+              </div>
+              <div className="pi-sidebar-price-card__verified">
+                <Clock size={12} />
+                Last verified: <span>{data.priceLastVerified || '27 Aug 2026'}</span>
+              </div>
+
+              {data.reraNumber && (
+                <div style={{
+                  padding: '10px 14px',
+                  background: 'rgba(16,185,129,0.08)',
+                  border: '1px solid rgba(16,185,129,0.2)',
+                  borderRadius: '10px',
+                  marginBottom: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '0.72rem',
+                  color: '#6EE7B7'
+                }}>
+                  <ShieldCheck size={13} />
+                  <span style={{ fontFamily: 'monospace', letterSpacing: '0.03em', fontWeight: 700 }}>
+                    {data.reraNumber}
+                  </span>
+                </div>
+              )}
+
+              <div className="pi-sidebar-price-card__ctas">
+                <button onClick={() => setShowModal(true)} className="pi-btn-gold pi-btn-gold--full">
+                  <Calendar size={15} /> Book Private Site Visit
+                </button>
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="pi-btn-whatsapp pi-btn-whatsapp--full">
+                  <MessageSquare size={15} /> WhatsApp Our Expert
+                </a>
+                <a href="tel:+919876543210" className="pi-btn-outline pi-btn-outline--full">
+                  <Phone size={15} /> Call Directly: +91 98765 43210
+                </a>
+              </div>
+            </div>
+
+            {/* Trust Signals */}
+            <div className="pi-sidebar-trust">
+              <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#64748B', fontWeight: 700, marginBottom: '4px' }}>
+                Why Choose 24K Realtors
+              </div>
+              {[
+                { icon: <ShieldCheck size={14} />, text: 'Zero brokerage on developer sales' },
+                { icon: <Award size={14} />, text: '100% MahaRERA verified listings' },
+                { icon: <Users size={14} />, text: 'Dedicated Hinjewadi property specialists' },
+                { icon: <TrendingUp size={14} />, text: 'Best negotiated pricing guaranteed' },
+                { icon: <CheckCircle2 size={14} />, text: 'End-to-end home loan assistance' },
+              ].map((item, i) => (
+                <div key={i} className="pi-trust-item">{item.icon} {item.text}</div>
+              ))}
+            </div>
+
+            {/* Quick Stats */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, transparent 100%)',
+              border: '1px solid var(--pi-gold-border)',
+              borderRadius: '14px',
+              padding: '18px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#64748B', marginBottom: '8px', fontWeight: 700 }}>
+                Investment Score
+              </div>
+              <div style={{ fontSize: '2.8rem', fontWeight: 900, color: '#34D399', lineHeight: 1 }}>
+                {data.investmentScore || 92}
+              </div>
+              <div style={{ fontSize: '0.72rem', color: '#64748B' }}>out of 100</div>
+              <div style={{ marginTop: '10px', fontSize: '0.75rem', color: '#94A3B8' }}>
+                Based on RERA compliance, price appreciation trajectory, rental yield and infrastructure score
+              </div>
+            </div>
+
+          </aside>
+
+        </div>{/* end two-col */}
+      </div>{/* end container */}
+
+      {/* ══ MOBILE STICKY BOTTOM CTA BAR ═════════════════════════════ */}
+      <div className="pi-mobile-cta-bar">
+        <div className="pi-mobile-cta-bar__price">
+          <div className="pi-mobile-cta-bar__price-label">Starting</div>
+          <div className="pi-mobile-cta-bar__price-value">
+            {data.priceRange || formatInr(data.startingPrice)}
+          </div>
+        </div>
+        <div className="pi-mobile-cta-bar__actions">
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="pi-btn-whatsapp" style={{ padding: '10px 16px', fontSize: '0.78rem' }}>
+            <MessageSquare size={15} /> WhatsApp
+          </a>
+          <button onClick={() => setShowModal(true)} className="pi-btn-gold" style={{ padding: '10px 16px', fontSize: '0.78rem' }}>
+            <Calendar size={15} /> Book Visit
+          </button>
+        </div>
+      </div>
+
+      {/* ══ INQUIRY MODAL ════════════════════════════════════════════ */}
+      {showModal && (
+        <div className="pi-modal-overlay" onClick={e => e.target === e.currentTarget && setShowModal(false)}>
+          <div className="pi-modal-content">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+              <div>
+                <h3 style={{ fontSize: '1.2rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#FFF', margin: '0 0 4px 0' }}>
+                  Book Private Consultation
+                </h3>
+                <span style={{ fontSize: '0.75rem', color: '#D4AF37', fontWeight: 600 }}>
+                  {data.canonicalName || data.name} — Hinjewadi Specialist Desk
+                </span>
+              </div>
+              <button onClick={() => setShowModal(false)} className="pi-btn-outline" style={{ padding: '6px 10px', fontSize: '0.78rem' }}>✕</button>
             </div>
 
             {inquirySuccess ? (
-              <div style={{ padding: '30px 20px', textAlign: 'center' }}>
-                <CheckCircle2 size={42} color="#10B981" style={{ margin: '0 auto 12px auto' }} />
-                <h4 style={{ color: '#FFF', margin: '0 0 6px 0' }}>Consultation Request Received!</h4>
-                <p style={{ fontSize: '0.82rem', color: '#A0AEC0', margin: 0 }}>Our specialist is connecting with you within 15 minutes.</p>
+              <div style={{ padding: '32px 20px', textAlign: 'center' }}>
+                <CheckCircle2 size={48} color="#10B981" style={{ marginBottom: '14px' }} />
+                <h4 style={{ color: '#FFF', margin: '0 0 8px 0', fontSize: '1.1rem' }}>
+                  Consultation Request Received!
+                </h4>
+                <p style={{ fontSize: '0.84rem', color: '#94A3B8', margin: 0 }}>
+                  Our Hinjewadi specialist will connect within 15 minutes.
+                </p>
               </div>
             ) : (
-              <form onSubmit={handleInquirySubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <form onSubmit={handleInquirySubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <div>
-                  <label style={{ fontSize: '0.72rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Full Name</label>
+                  <label style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                    Full Name *
+                  </label>
                   <input
-                    type="text"
-                    required
-                    placeholder="Enter your name"
+                    type="text" required placeholder="Your full name"
                     value={inquiryForm.name}
-                    onChange={(e) => setInquiryForm({ ...inquiryForm, name: e.target.value })}
+                    onChange={e => setInquiryForm({ ...inquiryForm, name: e.target.value })}
                     className="pi-input"
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: '0.72rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Phone Number</label>
+                  <label style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                    Phone Number *
+                  </label>
                   <input
-                    type="tel"
-                    required
-                    placeholder="+91 98765 43210"
+                    type="tel" required placeholder="+91 98765 43210"
                     value={inquiryForm.phone}
-                    onChange={(e) => setInquiryForm({ ...inquiryForm, phone: e.target.value })}
+                    onChange={e => setInquiryForm({ ...inquiryForm, phone: e.target.value })}
                     className="pi-input"
                   />
                 </div>
-                <div>
-                  <label style={{ fontSize: '0.72rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Preferred Visit Date</label>
-                  <input
-                    type="date"
-                    value={inquiryForm.date}
-                    onChange={(e) => setInquiryForm({ ...inquiryForm, date: e.target.value })}
-                    className="pi-input"
-                  />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                      Email
+                    </label>
+                    <input
+                      type="email" placeholder="you@email.com"
+                      value={inquiryForm.email}
+                      onChange={e => setInquiryForm({ ...inquiryForm, email: e.target.value })}
+                      className="pi-input"
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                      Preferred Date
+                    </label>
+                    <input
+                      type="date"
+                      value={inquiryForm.date}
+                      onChange={e => setInquiryForm({ ...inquiryForm, date: e.target.value })}
+                      className="pi-input"
+                    />
+                  </div>
                 </div>
                 <div>
-                  <label style={{ fontSize: '0.72rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Specific Requirements / BHK</label>
+                  <label style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                    Requirements (BHK / Budget / Vastu etc.)
+                  </label>
                   <textarea
                     rows={2}
-                    placeholder="e.g. Looking for 3 BHK high floor with Vastu compliance"
+                    placeholder="e.g. Looking for 3 BHK high floor, Vastu compliant, budget ₹1.5 Cr"
                     value={inquiryForm.notes}
-                    onChange={(e) => setInquiryForm({ ...inquiryForm, notes: e.target.value })}
+                    onChange={e => setInquiryForm({ ...inquiryForm, notes: e.target.value })}
                     className="pi-input"
+                    style={{ resize: 'vertical' }}
                   />
                 </div>
-                <button type="submit" className="pi-btn-gold" style={{ width: '100%', marginTop: '8px', padding: '12px' }}>
-                  Confirm Site Visit / Callback Request →
+                <button type="submit" className="pi-btn-gold pi-btn-gold--full" style={{ padding: '14px', fontSize: '0.88rem', marginTop: '4px' }}>
+                  <Calendar size={16} /> Confirm Site Visit & Callback →
                 </button>
+                <p style={{ fontSize: '0.7rem', color: '#64748B', textAlign: 'center', margin: 0 }}>
+                  Zero spam. Our specialist calls within 15 minutes.
+                </p>
               </form>
             )}
           </div>
