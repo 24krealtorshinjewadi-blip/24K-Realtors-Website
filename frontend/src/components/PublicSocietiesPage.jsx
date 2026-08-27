@@ -5,11 +5,15 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
+import { useSEO, SEO_CONFIGS } from '../services/seoService';
 import SocietyCard from './SocietyCard';
 import CompanyLogo from './CompanyLogo';
 import './PropertyIntelligence.css';
 
 export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
+  // Inject SEO for Societies Directory
+  useSEO(SEO_CONFIGS.societies);
+
   const [societies, setSocieties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);

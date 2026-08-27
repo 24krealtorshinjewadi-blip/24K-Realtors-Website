@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 
 /**
- * useSEO — Dynamic meta tag manager for 24K Realtors SPA
- * Updates document.title, meta description, OG tags, and Twitter cards
- * without react-helmet dependency.
+ * useSEO — Dynamic meta tag & structured data (JSON-LD) manager for 24K Realtors
+ * Updates document.title, meta description, OG tags, Twitter cards, and JSON-LD schema.
  *
  * @param {Object} options
  * @param {string} options.title         - Page title
@@ -16,13 +15,13 @@ import { useEffect } from 'react';
 export function useSEO({ title, description, image, url, type = 'website', schema }) {
   useEffect(() => {
     const BASE_URL  = 'https://real-estate-digital-marketing.vercel.app';
-    const DEF_IMG   = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
+    const DEF_IMG   = 'https://real-estate-digital-marketing.vercel.app/twentyfourk_pune_banner.png';
     const SUFFIX    = '| 24K Realtors Pune';
 
     const fullTitle = title ? `${title} ${SUFFIX}` : `24K Realtors Pune | Premium Location-Centric Real Estate Advisory`;
-    const metaDesc  = description || '24K Realtors — Pune West\'s leading real estate advisory. 100% MahaRERA verified flats in Hinjewadi, Wakad & Baner.';
+    const metaDesc  = description || '24K Realtors — Pune West\'s leading real estate advisory. 100% MahaRERA verified flats & societies in Hinjewadi, Wakad, Baner & Mahalunge.';
     const metaImg   = image  || DEF_IMG;
-    const canonical = url    ? `${BASE_URL}${url}` : BASE_URL;
+    const canonical = url    ? `${BASE_URL}${url.startsWith('/') ? url : `/${url}`}` : BASE_URL;
 
     // ── document title ───────────────────────────────────────────────────────
     document.title = fullTitle;
@@ -84,7 +83,7 @@ export function useSEO({ title, description, image, url, type = 'website', schem
 export const SEO_CONFIGS = {
   portal: {
     title: 'Luxury Properties in Hinjewadi, Wakad & Baner',
-    description: '24K Realtors — Pune West\'s leading real estate advisory. Discover 100% MahaRERA verified flats, villas & plots in Hinjewadi, Wakad, Baner & Kharadi. RERA: A051262603190.',
+    description: '24K Realtors — Pune West\'s leading real estate advisory. Discover 100% MahaRERA verified flats, villas & plots in Hinjewadi, Wakad, Baner & Mahalunge. RERA: A051262603190.',
     url: '/',
     schema: {
       '@context': 'https://schema.org',
@@ -104,9 +103,12 @@ export const SEO_CONFIGS = {
       },
       areaServed: [
         { '@type': 'City', name: 'Hinjewadi', addressCountry: 'IN' },
+        { '@type': 'City', name: 'Hinjewadi Phase 1', addressCountry: 'IN' },
+        { '@type': 'City', name: 'Hinjewadi Phase 2', addressCountry: 'IN' },
+        { '@type': 'City', name: 'Hinjewadi Phase 3', addressCountry: 'IN' },
+        { '@type': 'City', name: 'Mahalunge', addressCountry: 'IN' },
         { '@type': 'City', name: 'Wakad', addressCountry: 'IN' },
-        { '@type': 'City', name: 'Baner', addressCountry: 'IN' },
-        { '@type': 'City', name: 'Kharadi', addressCountry: 'IN' },
+        { '@type': 'City', name: 'Baner', addressCountry: 'IN' }
       ],
       priceRange: '₹65L – ₹3.8Cr',
       openingHours: 'Mo-Sa 09:00-19:00',
@@ -114,6 +116,24 @@ export const SEO_CONFIGS = {
         'https://www.instagram.com/24krealtorspune',
         'https://www.facebook.com/24krealtorspune'
       ]
+    }
+  },
+
+  societies: {
+    title: 'Verified Master Societies in Hinjewadi & Mahalunge | 2026 Directory',
+    description: 'Explore 100% verified master residential societies in Hinjewadi Phase 1, Phase 2, Phase 3 & Mahalunge IT Corridor. Live pricing with audit dates, RERA dossiers, and floor plans.',
+    url: '/#societies',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Verified Residential Societies in Hinjewadi & Mahalunge Pune',
+      description: 'Directory of MahaRERA verified residential townships and gated communities in Pune West.',
+      url: 'https://real-estate-digital-marketing.vercel.app/#societies',
+      publisher: {
+        '@type': 'RealEstateAgent',
+        name: '24K Realtors Pune',
+        url: 'https://real-estate-digital-marketing.vercel.app/'
+      }
     }
   },
 
@@ -145,9 +165,7 @@ export function buildPropertySEO(property) {
   if (!property) return SEO_CONFIGS.portal;
 
   const price = property.price
-    ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })
-        .format(property.price)
-        .replace('₹', '₹')
+    ? (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} Lakhs`)
     : '';
 
   const desc = [
@@ -156,14 +174,14 @@ export function buildPropertySEO(property) {
       : `${property.bedrooms || ''} BHK ${property.propertyType?.toLowerCase() || 'property'} in ${property.location}.`,
     price && `Priced at ${price}.`,
     property.reraNumber && `RERA: ${property.reraNumber}.`,
-    'Contact 24K Realtors for site visit.'
+    'Contact 24K Realtors for verified site visit.'
   ].filter(Boolean).join(' ');
 
   return {
     title: `${property.title} — ${property.location} ${property.bedrooms ? property.bedrooms + ' BHK' : ''}`,
     description: desc.substring(0, 160),
     image: property.imageUrl || undefined,
-    url: `/properties/${property.id}`,
+    url: `/#property/${property.id}`,
     type: 'product',
     schema: {
       '@context': 'https://schema.org',
@@ -191,6 +209,139 @@ export function buildPropertySEO(property) {
         { '@type': 'PropertyValue', name: 'RERA Number',  value: property.reraNumber },
         { '@type': 'PropertyValue', name: 'Location',     value: property.location },
       ].filter(p => p.value)
+    }
+  };
+}
+
+/**
+ * buildSocietySEO — Generate dynamic SEO metadata and JSON-LD schema for a Society Dossier
+ * @param {Object} society - Society intelligence object
+ * @returns {Object} - SEO configuration object
+ */
+export function buildSocietySEO(society) {
+  if (!society) return SEO_CONFIGS.societies;
+
+  const loc = society.hinjewadiPhase ? society.hinjewadiPhase.replace('_', ' ') : (society.location || 'Hinjewadi Pune');
+  const price = society.priceRange || (society.startingPrice ? (society.startingPrice >= 10000000 ? `₹${(society.startingPrice / 10000000).toFixed(2)} Cr` : `₹${Math.round(society.startingPrice / 100000)} Lakhs`) : '');
+  const rera = society.reraNumber ? `MahaRERA: ${society.reraNumber}` : 'MahaRERA Verified';
+
+  const desc = `${society.canonicalName || society.name} in ${loc}. Verified Starting Price: ${price || 'on request'}. ${rera}. ${society.configurationSummary || '2 & 3 BHK'}. Verified infrastructure dossier & expert advisory by 24K Realtors.`;
+
+  return {
+    title: `${society.canonicalName || society.name} ${loc} | Price, Floor Plans, RERA & Intelligence`,
+    description: desc.substring(0, 160),
+    image: society.heroImageUrl || undefined,
+    url: `/#society/${society.slug || society.id}`,
+    type: 'article',
+    schema: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'ApartmentComplex',
+          '@id': `https://real-estate-digital-marketing.vercel.app/#society/${society.slug}`,
+          name: society.canonicalName || society.name,
+          description: society.description || desc,
+          image: society.heroImageUrl,
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: society.fullAddress || `${society.name}, Rajiv Gandhi Infotech Park`,
+            addressLocality: society.location || 'Hinjewadi',
+            addressRegion: 'Maharashtra',
+            postalCode: society.pincode || '411057',
+            addressCountry: 'IN'
+          },
+          geo: society.latitude && society.longitude ? {
+            '@type': 'GeoCoordinates',
+            latitude: society.latitude,
+            longitude: society.longitude
+          } : undefined,
+          amenityFeature: (society.amenities || []).map(a => ({
+            '@type': 'LocationFeatureSpecification',
+            name: a.amenityLabel || a.amenityKey,
+            value: true
+          }))
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'Home',
+              item: 'https://real-estate-digital-marketing.vercel.app/'
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: 'Societies Directory',
+              item: 'https://real-estate-digital-marketing.vercel.app/#societies'
+            },
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name: society.canonicalName || society.name,
+              item: `https://real-estate-digital-marketing.vercel.app/#society/${society.slug}`
+            }
+          ]
+        }
+      ]
+    }
+  };
+}
+
+/**
+ * buildLocationSEO — Generate dynamic SEO for Location Landing Pages
+ * @param {Object} locationData - Location data object
+ * @returns {Object} - SEO configuration object
+ */
+export function buildLocationSEO(locationData) {
+  if (!locationData) return SEO_CONFIGS.portal;
+
+  const desc = `Explore verified master residential societies in ${locationData.name}, Pune West. Live inventory, price trends, transit infra, MahaRERA dossiers and advisory.`;
+
+  return {
+    title: `${locationData.name} Real Estate & Master Societies Directory 2026`,
+    description: desc.substring(0, 160),
+    url: `/#locations/${locationData.slug}`,
+    schema: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Place',
+          name: locationData.name,
+          description: desc,
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: locationData.name,
+            addressRegion: 'Maharashtra',
+            postalCode: locationData.pincode || '411057',
+            addressCountry: 'IN'
+          }
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'Home',
+              item: 'https://real-estate-digital-marketing.vercel.app/'
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: 'Locations',
+              item: 'https://real-estate-digital-marketing.vercel.app/#societies'
+            },
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name: locationData.name,
+              item: `https://real-estate-digital-marketing.vercel.app/#locations/${locationData.slug}`
+            }
+          ]
+        }
+      ]
     }
   };
 }

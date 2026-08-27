@@ -1,7 +1,8 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
-import { Plus, Building, Landmark, Loader, RefreshCw, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Building, Landmark, Loader, RefreshCw, Edit2, Trash2, ShieldCheck, Sparkles } from 'lucide-react';
 import ImageUploader from './ImageUploader';
+import DataQualityReport from './DataQualityReport';
 
 export default function SocietiesTab() {
   const [societies, setSocieties] = useState([]);
@@ -29,7 +30,10 @@ export default function SocietiesTab() {
     masterPlanUrl: '',
     floorPlanUrls: '',
     seoTitle: '',
-    seoDescription: ''
+    seoDescription: '',
+    hinjewadiPhase: 'PHASE_1',
+    priceLastVerified: '27 Aug 2026',
+    confidenceLevel: 'HIGH'
   });
 
   const [faqsList, setFaqsList] = useState([{ question: '', answer: '' }]);
@@ -149,7 +153,10 @@ export default function SocietiesTab() {
       masterPlanUrl: soc.masterPlanUrl || '',
       floorPlanUrls: soc.floorPlanUrls || '',
       seoTitle: soc.seoTitle || '',
-      seoDescription: soc.seoDescription || ''
+      seoDescription: soc.seoDescription || '',
+      hinjewadiPhase: soc.hinjewadiPhase || 'PHASE_1',
+      priceLastVerified: soc.priceLastVerified || soc.lastVerifiedAt || '27 Aug 2026',
+      confidenceLevel: soc.confidenceLevel || 'HIGH'
     });
     setFaqsList(parsedFaqs);
     setShowAddSocForm(true);
@@ -260,6 +267,28 @@ export default function SocietiesTab() {
           <Landmark size={16} />
           Developers Directory
         </button>
+        <button 
+          onClick={() => { setActiveSubTab('audit'); setShowAddSocForm(false); setEditingSocId(null); setShowAddBuilderForm(false); }}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: activeSubTab === 'audit' ? 'var(--gold-primary)' : 'var(--text-muted)',
+            fontSize: '1rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            paddingBottom: '8px',
+            borderBottom: activeSubTab === 'audit' ? '2px solid var(--gold-primary)' : 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <ShieldCheck size={16} color="#10B981" />
+          <span>Data Quality &amp; RERA Audit</span>
+          <span style={{ fontSize: '0.68rem', background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.4)', color: '#34D399', padding: '1px 6px', borderRadius: '50px' }}>
+            {societies.filter(s => !s.reraNumber || !s.priceLastVerified).length} Actionable
+          </span>
+        </button>
       </div>
 
       {activeSubTab === 'societies' ? (
@@ -347,6 +376,30 @@ export default function SocietiesTab() {
                   <div className="form-group">
                     <label className="form-label">Possession Date</label>
                     <input type="text" placeholder="e.g. December 2025" value={socForm.possessionDate} onChange={e => setSocForm({ ...socForm, possessionDate: e.target.value })} className="form-input" />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Micro-Location / Hinjewadi Phase</label>
+                    <select value={socForm.hinjewadiPhase} onChange={e => setSocForm({ ...socForm, hinjewadiPhase: e.target.value })} className="form-input" style={{ width: '100%' }}>
+                      <option value="PHASE_1">Hinjewadi Phase 1</option>
+                      <option value="PHASE_2">Hinjewadi Phase 2</option>
+                      <option value="PHASE_3">Hinjewadi Phase 3</option>
+                      <option value="MAHALUNGE">Mahalunge Corridor</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Price Last Verified Date (Mandatory)</label>
+                    <input type="text" placeholder="e.g. 27 Aug 2026" value={socForm.priceLastVerified} onChange={e => setSocForm({ ...socForm, priceLastVerified: e.target.value })} className="form-input" />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Verification Confidence Level</label>
+                    <select value={socForm.confidenceLevel} onChange={e => setSocForm({ ...socForm, confidenceLevel: e.target.value })} className="form-input" style={{ width: '100%' }}>
+                      <option value="HIGH">HIGH (RERA + Developer Filing)</option>
+                      <option value="MEDIUM">MEDIUM (Portal Aggregator Verified)</option>
+                      <option value="LOW">LOW (Unverified / Estimation)</option>
+                    </select>
                   </div>
 
                   <div className="form-group">
@@ -530,7 +583,7 @@ export default function SocietiesTab() {
             </div>
           )}
         </div>
-      ) : (
+      ) : activeSubTab === 'builders' ? (
         <div>
           {/* Builders tab Action Row */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
@@ -633,6 +686,15 @@ export default function SocietiesTab() {
             </div>
           )}
         </div>
+      ) : (
+        <DataQualityReport 
+          societies={societies} 
+          onEditSociety={(soc) => {
+            setActiveSubTab('societies');
+            handleEditClick(soc);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }} 
+        />
       )}
     </div>
   );

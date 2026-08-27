@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { apiService } from '../services/apiService';
+import { useSEO, buildLocationSEO } from '../services/seoService';
 import SocietyCard from './SocietyCard';
 import CompanyLogo from './CompanyLogo';
 import './PropertyIntelligence.css';
@@ -31,6 +32,9 @@ const formatInr = (val) => {
 export default function LocationLandingPage({ locationSlug = 'hinjewadi-phase-1', onBack, onSelectSociety }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Dynamic SEO Injection for Location Page
+  useSEO(buildLocationSEO(data));
 
   useEffect(() => {
     let isMounted = true;

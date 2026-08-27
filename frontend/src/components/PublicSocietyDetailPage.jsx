@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '../services/apiService';
+import { useSEO, buildSocietySEO } from '../services/seoService';
 import CompanyLogo from './CompanyLogo';
 import './PropertyIntelligence.css';
 
@@ -43,6 +44,9 @@ export default function PublicSocietyDetailPage({ slug, onBack, onBookVisit }) {
   const [showInquiryModal, setShowInquiryModal] = useState(false);
   const [inquiryForm, setInquiryForm] = useState({ name: '', phone: '', email: '', date: '', notes: '' });
   const [inquirySuccess, setInquirySuccess] = useState(false);
+
+  // Dynamic SEO Injection for Society Detail Dossier
+  useSEO(buildSocietySEO(data));
 
   useEffect(() => {
     let isMounted = true;
