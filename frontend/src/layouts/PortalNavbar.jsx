@@ -205,11 +205,23 @@ export default function PortalNavbar({
                 if (onViewChange) onViewChange('societies');
                 else window.location.hash = 'societies';
               }}
-              style={{ color: '#F3E5AB', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '5px' }}
+              className={activeSection === 'societies' ? 'active' : ''}
+              style={{ 
+                color: '#F3E5AB', 
+                fontWeight: 700, 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '6px',
+                background: 'rgba(212,175,55,0.12)',
+                border: '1px solid rgba(212,175,55,0.35)',
+                padding: '6px 14px',
+                borderRadius: '50px',
+                letterSpacing: '0.04em',
+                transition: 'all 0.25s ease'
+              }}
             >
-              <Building2 size={13} style={{ color: '#D4AF37' }} />
-              <span>SOCIETIES</span>
-              <span style={{ fontSize: '9px', background: 'rgba(212,175,55,0.25)', border: '1px solid rgba(212,175,55,0.5)', color: '#D4AF37', padding: '1px 5px', borderRadius: '4px', textTransform: 'uppercase' }}>2026</span>
+              <Sparkles size={13} style={{ color: '#D4AF37' }} />
+              <span>⚜️ SIGNATURE COLLECTION</span>
             </button>
             <button 
               className={activeSection === 'listings' && filters?.propertyType === 'COMMERCIAL' ? 'active' : ''} 
@@ -421,7 +433,7 @@ export default function PortalNavbar({
             <ArrowRight size={14} className="arrow-icon" />
           </button>
 
-          <div className="drawer-section-title">🏢 EXPLORE PROPERTIES &amp; SOCIETIES</div>
+          <div className="drawer-section-title">⚜️ SIGNATURE PORTFOLIO</div>
           
           <button 
             onClick={() => { 
@@ -430,12 +442,12 @@ export default function PortalNavbar({
               else window.location.hash = 'societies';
             }} 
             className="drawer-item-link"
-            style={{ width: '100%', border: 'none', background: 'rgba(212, 175, 55, 0.12)', textAlign: 'left' }}
+            style={{ width: '100%', border: 'none', background: 'rgba(212, 175, 55, 0.14)', textAlign: 'left' }}
           >
-            <Building2 size={18} color="#D4AF37" />
+            <Sparkles size={18} color="#D4AF37" />
             <div className="drawer-item-text">
-              <strong style={{ color: '#F3E5AB' }}>Societies Intelligence Database</strong>
-              <span>Verified Hinjewadi &amp; Mahalunge Master Projects</span>
+              <strong style={{ color: '#F3E5AB' }}>⚜️ Signature Collection</strong>
+              <span>Curated Master Gated Communities &amp; Luxury Residences</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" color="#D4AF37" />
           </button>

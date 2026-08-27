@@ -168,7 +168,7 @@ export default function App() {
         setCurrentView('portal');
         return;
       }
-      if (hash === 'societies' || hash === 'properties') {
+      if (hash === 'societies' || hash === 'properties' || hash === 'signature-collection' || hash === 'signature') {
         setCurrentView('societies');
       } else if (hash.startsWith('society/')) {
         const slug = hash.replace('society/', '');
