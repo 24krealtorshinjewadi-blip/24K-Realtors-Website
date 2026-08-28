@@ -8,15 +8,20 @@ spring:
     exclude: org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
 
 # ─── Resend.com Email Delivery ───────────────────────────────────────────────
-# Set RESEND_API_KEY in Railway env vars. Get free key from https://resend.com
+# REQUIRED: Set RESEND_API_KEY in Railway environment variables.
+# Get your free API key from https://resend.com
+# ⚠️  NO DEFAULT — app will fail to start if this env var is missing.
 resend:
-  api-key: ${RESEND_API_KEY:re_i5gvY6vM_HP3ityQM5oCDbYgn7d6BMW5g}
-  from: ${RESEND_FROM:24K Realtors <onboarding@resend.dev>}
+  api-key: ${RESEND_API_KEY}
+  from: ${RESEND_FROM:24K Realtors <noreply@24krealtors.com>}
 
 whatsapp:
   api:
-    url: ${WHATSAPP_API_URL:https://graph.facebook.com/v20.0/103984029348928/messages}
-    token: ${WHATSAPP_API_TOKEN:EAAXX_PLACEHOLDER_MOCK_TOKEN}
+    # REQUIRED: Set WHATSAPP_API_URL with your actual WhatsApp Business Account phone number ID
+    url: ${WHATSAPP_API_URL:https://graph.facebook.com/v20.0/YOUR_PHONE_NUMBER_ID/messages}
+    # REQUIRED: Set WHATSAPP_API_TOKEN in Railway env vars — never hardcode access tokens
+    # ⚠️  Obtain from Meta Business Manager → WhatsApp → API Access
+    token: ${WHATSAPP_API_TOKEN}
     template: ${WHATSAPP_API_TEMPLATE:welcome_lead_intro}
 
 twilio:
@@ -31,12 +36,17 @@ fast2sms:
   api-key: ${FAST2SMS_API_KEY:}
 
 jwt:
-  secret: ${JWT_SECRET:YTI5M2Y0YjVkNmQ4Zjg5YTA5YjQzOWM1YTMzYjM1YzZmNzI4ZjkzYWUzYzYyN2M4ODliMWMzNmRmOTBhN2M4ZQ==}
+  # REQUIRED: Generate a strong secret: `openssl rand -base64 64`
+  # Set JWT_SECRET in Railway environment variables — NEVER use a default in production.
+  # ⚠️  NO DEFAULT — app will fail to start if this env var is missing.
+  secret: ${JWT_SECRET}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
 admin:
+  # REQUIRED: Set ADMIN_USERNAME and ADMIN_PASSWORD in Railway env vars.
+  # Use a strong password — min 16 chars, mix of letters/numbers/symbols.
   username: ${ADMIN_USERNAME:admin}
-  password: ${ADMIN_PASSWORD:adminpassword}
+  password: ${ADMIN_PASSWORD}
 
 # Spring Boot Actuator — expose health endpoint for container orchestration (shares main port)
 management:

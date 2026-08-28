@@ -108,6 +108,25 @@ const PDV_CSS = `
   .pdv-mobile-action-dock { padding: 8px 10px !important; gap: 6px !important; }
   .pdv-mobile-action-dock a, .pdv-mobile-action-dock button { padding: 10px 10px !important; flex: 1 1 auto; justify-content: center; font-size: 0.72rem !important; }
 }
+
+/* ── EMI Calculator Enhancements ── */
+@keyframes pdv-donut-fill { from { stroke-dashoffset: 440; } to { stroke-dashoffset: var(--donut-offset); } }
+.pdv-donut-ring { animation: pdv-donut-fill 1.2s 0.3s cubic-bezier(0.4,0,0.2,1) forwards; }
+
+/* Slider track styling */
+.pdv-emi-slider { -webkit-appearance: none; appearance: none; height: 5px; border-radius: 4px; outline: none; cursor: pointer; }
+.pdv-emi-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #D4AF37, #C9A227); border: 2px solid #fff; box-shadow: 0 2px 8px rgba(212,175,55,0.5); cursor: pointer; transition: transform 0.15s ease; }
+.pdv-emi-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.pdv-emi-slider::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #D4AF37, #C9A227); border: 2px solid #fff; cursor: pointer; }
+
+/* Copy toast */
+@keyframes pdv-toast-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes pdv-toast-out { from { opacity:1; } to { opacity:0; } }
+.pdv-copy-toast { animation: pdv-toast-in 0.25s ease, pdv-toast-out 0.4s 1.6s ease forwards; }
+
+/* Amortization table */
+.pdv-amort-row:nth-child(even) { background: rgba(255,255,255,0.025); }
+.pdv-amort-row:hover { background: rgba(212,175,55,0.06) !important; }
 `;
 
 
@@ -221,6 +240,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const [downPaymentPct, setDownPaymentPct] = useState(20);
   const [interestRate, setInterestRate]   = useState(8.35);
   const [tenureYears, setTenureYears]     = useState(20);
+
+  // EMI Calculator UI State
+  const [showAmortization, setShowAmortization] = useState(false);
+  const [emiCopied, setEmiCopied]             = useState(false);
 
   // E-Brochure Lead Capture Modal State
   const [brochureModalOpen, setBrochureModalOpen] = useState(false);
@@ -854,86 +877,269 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
             Interactive <span style={{ color: '#F3E5AB' }}>EMI & Home Loan Calculator</span>
           </h2>
           <p style={{ fontSize: '0.84rem', color: '#718096', margin: '0 0 24px', maxWidth: '640px', lineHeight: 1.6 }}>
-            Calculate your estimated monthly installment with preferred home loan interest rates (SBI, HDFC, ICICI 8.35% p.a.).
+            Adjust sliders to calculate your estimated monthly EMI. Pre-approved rates from SBI, HDFC, ICICI at 8.35% p.a.
           </p>
 
-          <div style={{ padding: isMobile ? '20px' : '32px', borderRadius: '22px', background: 'rgba(13,24,42,0.95)', border: '1px solid rgba(212,175,55,0.25)', marginBottom: '40px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 0.8fr', gap: '32px', alignItems: 'center' }}>
+          {/* ── Custom Property Price Input ── */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0', whiteSpace: 'nowrap' }}>Property Price:</span>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <span style={{ position: 'absolute', left: '14px', fontSize: '1rem', fontWeight: 700, color: '#D4AF37', pointerEvents: 'none' }}>₹</span>
+              <input
+                type="number"
+                min="500000"
+                max="100000000"
+                step="100000"
+                value={emiPrice}
+                onChange={e => setEmiPrice(Math.max(500000, Number(e.target.value)))}
+                className="pdv-input"
+                style={{ paddingLeft: '28px', paddingRight: '14px', paddingTop: '10px', paddingBottom: '10px', width: '180px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.3)', color: '#FFF', fontSize: '0.92rem', fontWeight: 700 }}
+              />
+            </div>
+            <span style={{ fontSize: '0.8rem', color: '#D4AF37', fontWeight: 700 }}>
+              = ₹{emiPrice >= 10000000 ? `${(emiPrice / 10000000).toFixed(2)} Cr` : `${(emiPrice / 100000).toFixed(1)} L`}
+            </span>
+            {/* Quick preset buttons */}
+            {[8500000, 12000000, 15000000, 20000000].map(p => (
+              <button key={p} onClick={() => setEmiPrice(p)}
+                style={{ padding: '6px 14px', borderRadius: '100px', background: emiPrice === p ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.04)', border: `1px solid ${emiPrice === p ? 'rgba(212,175,55,0.6)' : 'rgba(255,255,255,0.1)'}`, color: emiPrice === p ? '#F3E5AB' : '#718096', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}>
+                ₹{p >= 10000000 ? `${(p / 10000000).toFixed(1)}Cr` : `${(p / 100000)}L`}
+              </button>
+            ))}
+          </div>
 
-              {/* Controls / Sliders */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ padding: isMobile ? '20px' : '32px', borderRadius: '22px', background: 'rgba(13,24,42,0.95)', border: '1px solid rgba(212,175,55,0.25)', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 0.8fr', gap: '32px', alignItems: 'start' }}>
+
+              {/* ── Left: Controls / Sliders ── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
                 {/* Slider 1: Down Payment */}
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                     <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0' }}>Down Payment</span>
-                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>{downPaymentPct}% (₹{(emiPrice * downPaymentPct / 100 / 100000).toFixed(2)} Lakhs)</span>
+                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>
+                      {downPaymentPct}% &nbsp;·&nbsp; ₹{(emiPrice * downPaymentPct / 100 / 100000).toFixed(2)}L
+                    </span>
                   </div>
-                  <input type="range" min="10" max="50" step="5" value={downPaymentPct} onChange={e => setDownPaymentPct(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: '#D4AF37', cursor: 'pointer' }} />
+                  <input type="range" min="10" max="50" step="5" value={downPaymentPct}
+                    onChange={e => setDownPaymentPct(Number(e.target.value))}
+                    className="pdv-emi-slider"
+                    style={{ width: '100%', background: `linear-gradient(to right, #D4AF37 ${(downPaymentPct - 10) / 40 * 100}%, rgba(255,255,255,0.1) ${(downPaymentPct - 10) / 40 * 100}%)` }}
+                  />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: '#4A5568', marginTop: '4px' }}>
+                    <span>10%</span><span>50%</span>
+                  </div>
                 </div>
 
                 {/* Slider 2: Interest Rate */}
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                     <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0' }}>Interest Rate (p.a.)</span>
-                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>{interestRate}%</span>
+                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>{interestRate.toFixed(2)}%</span>
                   </div>
-                  <input type="range" min="7.5" max="11.5" step="0.15" value={interestRate} onChange={e => setInterestRate(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: '#D4AF37', cursor: 'pointer' }} />
-                  <div style={{ fontSize: '0.66rem', color: '#718096', marginTop: '4px' }}>*SBI & HDFC Special Rate: 8.35% for 24K Buyers</div>
+                  <input type="range" min="7.5" max="11.5" step="0.15" value={interestRate}
+                    onChange={e => setInterestRate(Number(e.target.value))}
+                    className="pdv-emi-slider"
+                    style={{ width: '100%', background: `linear-gradient(to right, #D4AF37 ${(interestRate - 7.5) / 4 * 100}%, rgba(255,255,255,0.1) ${(interestRate - 7.5) / 4 * 100}%)` }}
+                  />
+                  <div style={{ fontSize: '0.66rem', color: '#68D391', marginTop: '5px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <BadgeCheck size={11} /> SBI & HDFC Special Rate: 8.35% for 24K Buyers
+                  </div>
                 </div>
 
                 {/* Slider 3: Loan Tenure */}
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                     <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0' }}>Loan Tenure</span>
                     <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>{tenureYears} Years</span>
                   </div>
-                  <input type="range" min="5" max="30" step="5" value={tenureYears} onChange={e => setTenureYears(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: '#D4AF37', cursor: 'pointer' }} />
+                  <input type="range" min="5" max="30" step="5" value={tenureYears}
+                    onChange={e => setTenureYears(Number(e.target.value))}
+                    className="pdv-emi-slider"
+                    style={{ width: '100%', background: `linear-gradient(to right, #D4AF37 ${(tenureYears - 5) / 25 * 100}%, rgba(255,255,255,0.1) ${(tenureYears - 5) / 25 * 100}%)` }}
+                  />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: '#4A5568', marginTop: '4px' }}>
+                    <span>5 yrs</span><span>30 yrs</span>
+                  </div>
                 </div>
 
-                {/* Bank Partner Badges */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                  <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>PRE-APPROVED BANK PARTNERS:</span>
-                  {['SBI Home Loans', 'HDFC Bank', 'ICICI Bank', 'Axis Bank'].map((b, i) => (
-                    <span key={i} style={{ fontSize: '0.68rem', fontWeight: 700, color: '#F3E5AB', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '3px 9px' }}>{b}</span>
+                {/* Bank partner badges */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                  <span style={{ fontSize: '0.67rem', color: 'rgba(255,255,255,0.45)', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Pre-Approved Partners:</span>
+                  {['SBI', 'HDFC', 'ICICI', 'Axis'].map((b, i) => (
+                    <span key={i} style={{ fontSize: '0.68rem', fontWeight: 700, color: '#F3E5AB', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '3px 10px' }}>{b}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Right: Result Box + Animated Donut Chart ── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+                {/* Animated SVG Donut Chart */}
+                <div style={{ display: 'flex', justifyContent: 'center', position: 'relative', marginBottom: '4px' }}>
+                  {(() => {
+                    const circumference = 2 * Math.PI * 70; // r=70
+                    const principalRatio = totalPayment > 0 ? loanAmount / totalPayment : 0.5;
+                    const principalDash = principalRatio * circumference;
+                    const interestDash = circumference - principalDash;
+                    return (
+                      <svg width="200" height="200" viewBox="0 0 200 200">
+                        {/* Background circle */}
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="22" />
+                        {/* Interest arc (full, behind) */}
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(248,177,51,0.35)" strokeWidth="22"
+                          strokeDasharray={circumference} strokeLinecap="butt"
+                          style={{ transform: 'rotate(-90deg)', transformOrigin: '100px 100px' }} />
+                        {/* Principal arc */}
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="#D4AF37" strokeWidth="22"
+                          strokeDasharray={`${principalDash} ${interestDash}`} strokeLinecap="butt"
+                          className="pdv-donut-ring"
+                          style={{ transform: 'rotate(-90deg)', transformOrigin: '100px 100px', '--donut-offset': `${circumference - principalDash}` }} />
+                        {/* Center label */}
+                        <text x="100" y="93" textAnchor="middle" fill="#FFF" fontSize="22" fontWeight="800" fontFamily="Montserrat, sans-serif">
+                          ₹{emi > 0 ? `${Math.round(emi / 1000)}K` : '0'}
+                        </text>
+                        <text x="100" y="112" textAnchor="middle" fill="#D4AF37" fontSize="10" fontWeight="700" fontFamily="Montserrat, sans-serif">PER MONTH</text>
+                      </svg>
+                    );
+                  })()}
+                </div>
+
+                {/* Legend */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#D4AF37', flexShrink: 0 }} />
+                    <span style={{ fontSize: '0.72rem', color: '#CBD5E0' }}>Principal</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'rgba(248,177,51,0.35)', border: '1px solid rgba(248,177,51,0.6)', flexShrink: 0 }} />
+                    <span style={{ fontSize: '0.72rem', color: '#CBD5E0' }}>Interest</span>
+                  </div>
+                </div>
+
+                {/* Breakdown */}
+                <div style={{ padding: '16px', borderRadius: '14px', background: 'rgba(7,16,29,0.8)', border: '1px solid rgba(212,175,55,0.2)', display: 'flex', flexDirection: 'column', gap: '9px' }}>
+                  {[
+                    { label: 'Loan Amount', val: `₹${(loanAmount / 100000).toFixed(2)}L`, color: '#D4AF37' },
+                    { label: 'Down Payment', val: `₹${(emiPrice * downPaymentPct / 100 / 100000).toFixed(2)}L`, color: '#63B3ED' },
+                    { label: 'Total Interest', val: `₹${(totalInterest / 100000).toFixed(2)}L`, color: '#F3E5AB' },
+                    { label: 'Total Payable', val: `₹${(totalPayment / 100000).toFixed(2)}L`, color: '#68D391' },
+                  ].map(({ label, val, color }, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', borderTop: i > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none', paddingTop: i > 0 ? '9px' : 0 }}>
+                      <span style={{ color: '#A0AEC0' }}>{label}</span>
+                      <strong style={{ color }}>{val}</strong>
+                    </div>
                   ))}
                 </div>
 
-              </div>
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <button onClick={onOpenInquiry} className="pdv-btn-gold"
+                    style={{ width: '100%', padding: '13px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                    <TrendingUp size={15} /> GET PRE-APPROVED →
+                  </button>
 
-              {/* Result Summary Box */}
-              <div style={{ padding: '24px', borderRadius: '18px', background: 'linear-gradient(135deg, rgba(212,175,55,0.12), rgba(7,16,29,0.9))', border: '1px solid rgba(212,175,55,0.3)', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '8px' }}>ESTIMATED MONTHLY EMI</div>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '2.2rem', fontWeight: 700, color: '#FFF', marginBottom: '14px', lineHeight: 1 }}>
-                  ₹{emi.toLocaleString('en-IN')}<span style={{ fontSize: '0.85rem', color: '#718096', fontWeight: 500 }}>/month</span>
+                  {/* WhatsApp Share */}
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent(`🏠 *${title}* — EMI Calculation\n\n📍 ${location}\n💰 Property Price: ₹${(emiPrice / 100000).toFixed(1)}L\n🏦 Loan Amount: ₹${(loanAmount / 100000).toFixed(2)}L\n📅 Tenure: ${tenureYears} Years @ ${interestRate}%\n📊 Monthly EMI: ₹${emi.toLocaleString('en-IN')}\n💸 Total Payable: ₹${(totalPayment / 100000).toFixed(2)}L\n\nFor site visit: https://real-estate-digital-marketing.vercel.app`)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    style={{ width: '100%', padding: '11px', borderRadius: '50px', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.35)', color: '#25D366', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px', textDecoration: 'none', textTransform: 'uppercase', transition: 'all 0.2s' }}
+                    onMouseOver={e => e.currentTarget.style.background = 'rgba(37,211,102,0.18)'}
+                    onMouseOut={e => e.currentTarget.style.background = 'rgba(37,211,102,0.1)'}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    </svg>
+                    Share on WhatsApp
+                  </a>
+
+                  {/* Copy EMI Summary */}
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      onClick={() => {
+                        const text = `${title} EMI Summary\nPrice: ₹${(emiPrice/100000).toFixed(1)}L | Loan: ₹${(loanAmount/100000).toFixed(2)}L | Rate: ${interestRate}% | ${tenureYears}yrs\nMonthly EMI: ₹${emi.toLocaleString('en-IN')} | Total: ₹${(totalPayment/100000).toFixed(2)}L`;
+                        navigator.clipboard.writeText(text).then(() => {
+                          setEmiCopied(true);
+                          setTimeout(() => setEmiCopied(false), 2000);
+                        });
+                      }}
+                      style={{ width: '100%', padding: '9px', borderRadius: '50px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#718096', fontSize: '0.73rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s', textTransform: 'uppercase' }}
+                      onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'}
+                      onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    >
+                      <FileText size={13} /> Copy EMI Summary
+                    </button>
+                    {emiCopied && (
+                      <div className="pdv-copy-toast" style={{ position: 'absolute', bottom: '110%', left: '50%', transform: 'translateX(-50%)', background: '#1A2F4A', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '8px', padding: '6px 14px', fontSize: '0.72rem', color: '#F3E5AB', fontWeight: 700, whiteSpace: 'nowrap', zIndex: 10 }}>
+                        ✓ Copied to clipboard!
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Breakdown list */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '18px', textAlign: 'left', fontSize: '0.78rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#CBD5E0' }}>
-                    <span>Principal Loan Amount:</span>
-                    <strong style={{ color: '#FFF' }}>₹{(loanAmount / 100000).toFixed(2)} Lakhs</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#CBD5E0' }}>
-                    <span>Total Interest Payable:</span>
-                    <strong style={{ color: '#F3E5AB' }}>₹{(totalInterest / 100000).toFixed(2)} Lakhs</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#CBD5E0', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '8px' }}>
-                    <span>Total Amount Payable:</span>
-                    <strong style={{ color: '#68D391' }}>₹{(totalPayment / 100000).toFixed(2)} Lakhs</strong>
-                  </div>
-                </div>
-
-                <button onClick={onOpenInquiry} className="pdv-btn-gold"
-                  style={{ width: '100%', padding: '13px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontSize: '0.84rem', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.35)' }}>
-                  GET PRE-APPROVED LOAN →
-                </button>
               </div>
-
             </div>
+          </div>
+
+          {/* ── Amortization Table Toggle ── */}
+          <div style={{ marginBottom: '40px' }}>
+            <button
+              onClick={() => setShowAmortization(v => !v)}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '10px', padding: '10px 20px', color: '#D4AF37', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', marginBottom: showAmortization ? '16px' : 0 }}
+              onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.08)'}
+              onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+            >
+              <BarChart3 size={15} />
+              {showAmortization ? 'Hide' : 'Show'} Year-wise Amortization Schedule
+              <ChevronRight size={14} style={{ transform: showAmortization ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.25s' }} />
+            </button>
+
+            {showAmortization && (() => {
+              // Generate year-wise amortization data
+              const rows = [];
+              let balance = loanAmount;
+              for (let y = 1; y <= Math.min(tenureYears, 15); y++) {
+                let yearPrincipal = 0, yearInterest = 0;
+                for (let m = 0; m < 12; m++) {
+                  if (balance <= 0) break;
+                  const intPart = balance * monthlyRate;
+                  const prinPart = Math.min(emi - intPart, balance);
+                  yearInterest += intPart;
+                  yearPrincipal += prinPart;
+                  balance -= prinPart;
+                }
+                rows.push({ year: y, principal: yearPrincipal, interest: yearInterest, balance: Math.max(0, balance) });
+              }
+              return (
+                <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+                    <thead>
+                      <tr style={{ background: 'rgba(212,175,55,0.08)', borderBottom: '1px solid rgba(212,175,55,0.2)' }}>
+                        {['Year', 'Principal (₹)', 'Interest (₹)', 'Balance (₹)'].map(h => (
+                          <th key={h} style={{ padding: '12px 16px', textAlign: h === 'Year' ? 'center' : 'right', color: '#D4AF37', fontWeight: 800, letterSpacing: '0.04em', fontSize: '0.7rem', textTransform: 'uppercase' }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map(({ year, principal, interest, balance: bal }) => (
+                        <tr key={year} className="pdv-amort-row" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                          <td style={{ padding: '10px 16px', textAlign: 'center', color: '#D4AF37', fontWeight: 800 }}>{year}</td>
+                          <td style={{ padding: '10px 16px', textAlign: 'right', color: '#FFF', fontWeight: 600 }}>₹{Math.round(principal).toLocaleString('en-IN')}</td>
+                          <td style={{ padding: '10px 16px', textAlign: 'right', color: '#F3E5AB' }}>₹{Math.round(interest).toLocaleString('en-IN')}</td>
+                          <td style={{ padding: '10px 16px', textAlign: 'right', color: '#68D391', fontWeight: 600 }}>₹{Math.round(bal).toLocaleString('en-IN')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {tenureYears > 15 && (
+                    <div style={{ padding: '10px 16px', textAlign: 'center', fontSize: '0.7rem', color: '#718096', background: 'rgba(0,0,0,0.2)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                      Showing first 15 of {tenureYears} years
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </AnimSection>
 
