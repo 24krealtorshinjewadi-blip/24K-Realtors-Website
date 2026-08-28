@@ -4388,6 +4388,92 @@ export const apiService = {
       metroConnectivity: 'Pune Metro Line 3 (Hinjewadi to Shivajinagar) with multiple operational stations',
       featuredSocieties: []
     };
+  },
+
+  // ─── BLOG API METHODS ───────────────────────────────────────────────────────
+  
+  // Public: Get published blogs (paginated)
+  async getBlogs(page = 0, size = 10) {
+    try {
+      const res = await fetch(`${BASE_URL}/blogs?page=${page}&size=${size}`);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn('[API] getBlogs failed, returning empty structure:', err.message);
+    }
+    return { content: [], totalPages: 0, totalElements: 0, number: page };
+  },
+
+  // Public: Get published blog by slug
+  async getBlogBySlug(slug) {
+    const res = await fetch(`${BASE_URL}/blogs/slug/${slug}`);
+    if (!res.ok) {
+      throw new Error(`Blog with slug "${slug}" not found (HTTP ${res.status})`);
+    }
+    return await res.json();
+  },
+
+  // Admin: Get all blogs including drafts (requires auth token)
+  async getBlogsAdmin(page = 0, size = 10) {
+    const res = await fetch(`${BASE_URL}/blogs/admin?page=${page}&size=${size}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      }
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to fetch admin blogs (HTTP ${res.status})`);
+    }
+    return await res.json();
+  },
+
+  // Admin: Create new blog
+  async createBlog(blogPayload) {
+    const res = await fetch(`${BASE_URL}/blogs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(blogPayload)
+    });
+    if (!res.ok) {
+      const errBody = await res.text();
+      throw new Error(`Failed to create blog: ${errBody || res.statusText}`);
+    }
+    return await res.json();
+  },
+
+  // Admin: Update blog by ID
+  async updateBlog(id, blogPayload) {
+    const res = await fetch(`${BASE_URL}/blogs/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(blogPayload)
+    });
+    if (!res.ok) {
+      const errBody = await res.text();
+      throw new Error(`Failed to update blog: ${errBody || res.statusText}`);
+    }
+    return await res.json();
+  },
+
+  // Admin: Delete blog by ID (soft delete via backend)
+  async deleteBlog(id) {
+    const res = await fetch(`${BASE_URL}/blogs/${id}`, {
+      method: 'DELETE',
+      headers: {
+        ...getAuthHeaders()
+      }
+    });
+    if (!res.ok && res.status !== 204) {
+      throw new Error(`Failed to delete blog (HTTP ${res.status})`);
+    }
+    return true;
   }
 };
 
