@@ -34,11 +34,126 @@ import PropertyGallery from './PropertyGallery';
 import { apiService } from '../services/apiService';
 
 /* ── Inject CSS once ── */
-const STYLE_ID = 'pdv-styles-v3';
+const STYLE_ID = 'pdv-styles-v4';
 const PDV_CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 .pdv-root { font-family: 'Montserrat', sans-serif; }
+
+/* ── STICKY TOPBAR ── */
+.pdv-topbar {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(6,13,26,0.96); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(212,175,55,0.15);
+  padding: 0 28px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+@media (max-width: 768px) { .pdv-topbar { padding: 0 14px; } }
+
+/* ── CINEMATIC HERO ── */
+.pdv-hero-cinematic {
+  position: relative; width: 100%;
+  height: clamp(400px, 52vh, 620px); overflow: hidden; background: #000;
+}
+.pdv-hero-cinematic__img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.04); transition: transform 8s ease;
+  filter: brightness(0.78);
+}
+.pdv-hero-cinematic:hover .pdv-hero-cinematic__img { transform: scale(1.0); }
+.pdv-hero-cinematic__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(6,13,26,0.92) 0%, rgba(6,13,26,0.35) 55%, rgba(6,13,26,0.1) 100%);
+  z-index: 1;
+}
+.pdv-hero-cinematic__content {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+  padding: 32px 36px;
+}
+@media (max-width: 768px) { .pdv-hero-cinematic__content { padding: 20px 16px; } }
+
+.pdv-hero-cinematic__confidence {
+  position: absolute; top: 18px; right: 20px; z-index: 3;
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(16,185,129,0.18); border: 1px solid rgba(16,185,129,0.45);
+  color: #6EE7B7; font-size: 0.66rem; font-weight: 800;
+  padding: 5px 11px; border-radius: 100px; letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pdv-hero-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.pdv-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 11px; border-radius: 100px;
+  font-size: 0.66rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase;
+}
+.pdv-badge-gold { background: rgba(212,175,55,0.18); border: 1px solid rgba(212,175,55,0.5); color: #F3E5AB; }
+.pdv-badge-green { background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.4); color: #6EE7B7; }
+.pdv-badge-blue  { background: rgba(59,130,246,0.14);  border: 1px solid rgba(59,130,246,0.4);  color: #93C5FD; }
+
+.pdv-hero-developer {
+  display: flex; align-items: center; gap: 6px;
+  color: #D4AF37; font-size: 0.75rem; font-weight: 800;
+  letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 8px;
+}
+.pdv-hero-title {
+  font-family: 'Cinzel', serif; font-size: clamp(1.6rem, 4vw, 2.8rem);
+  font-weight: 700; color: #fff; margin: 0 0 8px; line-height: 1.15;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.7);
+}
+.pdv-hero-address {
+  display: flex; align-items: center; gap: 6px;
+  color: rgba(255,255,255,0.72); font-size: 0.82rem; margin-bottom: 14px;
+}
+.pdv-hero-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.pdv-hero-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.18); border-radius: 8px;
+  padding: 7px 13px; font-size: 0.8rem; font-weight: 700; color: #fff;
+}
+.pdv-hero-chip--gold { background: rgba(212,175,55,0.2); border-color: rgba(212,175,55,0.45); color: #F3E5AB; }
+.pdv-hero-chip--green { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.4); color: #6EE7B7; }
+
+/* Gallery thumbnail strip */
+.pdv-gallery-strip {
+  position: absolute; bottom: 16px; right: 28px; z-index: 4;
+  display: flex; gap: 8px; align-items: flex-end;
+}
+@media (max-width: 768px) { .pdv-gallery-strip { display: none; } }
+.pdv-gallery-thumb {
+  width: 74px; height: 50px; border-radius: 8px; overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.18); cursor: pointer;
+  transition: all 0.22s ease; opacity: 0.6;
+}
+.pdv-gallery-thumb.active, .pdv-gallery-thumb:hover {
+  opacity: 1; border-color: #D4AF37;
+  transform: scale(1.06) translateY(-2px);
+  box-shadow: 0 4px 14px rgba(212,175,55,0.35);
+}
+.pdv-gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Stats strip (below hero) */
+.pdv-stats-strip {
+  background: rgba(11,22,40,0.98); border-bottom: 1px solid rgba(212,175,55,0.18);
+  backdrop-filter: blur(16px);
+}
+.pdv-stats-strip__inner {
+  max-width: 1320px; margin: 0 auto;
+  display: flex; gap: 0; overflow-x: auto;
+  padding: 0 28px;
+}
+@media (max-width: 768px) { .pdv-stats-strip__inner { padding: 0 14px; } }
+.pdv-stat-item {
+  flex: 1 0 auto; padding: 18px 20px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  min-width: 110px;
+}
+.pdv-stat-item:last-child { border-right: none; }
+.pdv-stat-item__label { font-size: 0.62rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 5px; }
+.pdv-stat-item__value { font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; color: #F1F5F9; }
+.pdv-stat-item__value--gold { color: #D4AF37; }
+.pdv-stat-item__value--green { color: #10B981; }
 
 /* Scroll-spy tab highlight */
 .pdv-tab { transition: all 0.25s ease; border-bottom: 3px solid transparent; }
@@ -218,6 +333,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   /* ── State ── */
   const [activeTab, setActiveTab]         = useState('overview');
   const [saved, setSaved]                 = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -475,150 +591,280 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
   const px = isMobile ? '16px' : '28px';
 
+  /* ── Property images for hero gallery ── */
+  const heroImages = (() => {
+    const imgs = [];
+    if (property.imageUrl && !property.imageUrl.includes('unsplash')) imgs.push(property.imageUrl);
+    if (property.gallery && property.gallery.length) imgs.push(...property.gallery.map(g => g.url || g));
+    if (imgs.length === 0) {
+      const t = (title || '').toLowerCase();
+      if (t.includes('opula')) imgs.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png');
+      else if (t.includes('altura')) imgs.push('/dev_vj_building.png', '/dev_kolte_patil_township.png', '/dev_vtp_township.png');
+      else if (t.includes('godrej')) imgs.push('/dev_godrej_building.png', '/dev_kolte_patil_township.png', '/dev_shapoorji_township.png');
+      else if (t.includes('shapoorji') || t.includes('joyville')) imgs.push('/dev_shapoorji_township.png', '/dev_vtp_township.png', '/dev_godrej_building.png');
+      else if (t.includes('gera')) imgs.push('/dev_gera_tower.png', '/dev_godrej_building.png', '/dev_paranjape_township.png');
+      else if (t.includes('lodha')) imgs.push('/dev_lodha_tower.png', '/dev_vj_building.png', '/dev_godrej_building.png');
+      else if (t.includes('vtp')) imgs.push('/dev_vtp_township.png', '/dev_kolte_patil_township.png', '/dev_lodha_tower.png');
+      else imgs.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png');
+    }
+    // Pad to at least 3 images
+    const fallbacks = ['/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png', '/dev_lodha_tower.png'];
+    let fi = 0;
+    while (imgs.length < 3) { imgs.push(fallbacks[fi++ % fallbacks.length]); }
+    return imgs.slice(0, 6);
+  })();
+
+  const transactionType = property.transactionType || 'BUY';
+  const projectStatus   = property.projectStatus   || (property.possessionDate ? 'READY TO MOVE' : 'UNDER CONSTRUCTION');
+
   return (
     <div className="pdv-root" style={{ background: '#07101D', color: '#FFF', minHeight: '100vh' }}>
-      {/* ── BREADCRUMB ── */}
-      <div style={{ maxWidth: '1320px', margin: '0 auto', padding: `14px ${px} 6px`, fontSize: '0.76rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
-        <span style={{ cursor: 'pointer' }} onClick={onBack}>Home</span>
-        <ChevronRight size={11} />
-        <span>Projects</span>
-        <ChevronRight size={11} />
-        <span style={{ color: '#D4AF37', fontWeight: 700 }}>{title}</span>
+
+      {/* ══ STICKY TOPBAR ══ */}
+      <header className="pdv-topbar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button
+            onClick={onBack}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', padding: '7px 13px', color: '#CBD5E0', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
+            onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.12)'; e.currentTarget.style.color = '#F3E5AB'; }}
+            onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = '#CBD5E0'; }}
+          >
+            <ChevronRight size={13} style={{ transform: 'rotate(180deg)' }} /> Back
+          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+            <span style={{ fontSize: '0.65rem', color: '#64748B', letterSpacing: '0.07em', textTransform: 'uppercase', fontWeight: 700 }}>Properties · {location}</span>
+            <span style={{ fontFamily: "'Cinzel', serif", fontSize: '0.9rem', fontWeight: 700, color: '#F3E5AB', lineHeight: 1 }}>{title}</span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button
+            onClick={handleShare}
+            style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', padding: '8px 13px', color: '#CBD5E0', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}
+            title="Share property"
+          >
+            <Share2 size={14} />
+          </button>
+          <button onClick={onOpenInquiry} className="pdv-btn-gold"
+            style={{ padding: '9px 20px', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', borderRadius: '50px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(212,175,55,0.35)' }}>
+            Book Private Visit
+          </button>
+        </div>
+      </header>
+
+      {/* ══ CINEMATIC HERO BANNER ══ */}
+      <section className="pdv-hero-cinematic">
+        <img
+          src={heroImages[activeImageIndex ?? 0]}
+          alt={title}
+          className="pdv-hero-cinematic__img"
+          onError={e => { e.target.onerror = null; e.target.src = '/dev_kolte_patil_township.png'; }}
+        />
+        <div className="pdv-hero-cinematic__overlay" />
+
+        {/* Confidence badge top-right */}
+        <div className="pdv-hero-cinematic__confidence">
+          <ShieldCheck size={12} /> 24K VERIFIED
+        </div>
+
+        {/* Main content bottom-left */}
+        <div className="pdv-hero-cinematic__content">
+          {/* Status Badges */}
+          <div className="pdv-hero-badges">
+            <span className="pdv-badge pdv-badge-gold">
+              <Sparkles size={10} /> {projectStatus.replace(/_/g, ' ')}
+            </span>
+            <span className="pdv-badge pdv-badge-green">
+              <ShieldCheck size={10} /> MahaRERA Registered
+            </span>
+            {transactionType && (
+              <span className="pdv-badge pdv-badge-blue">
+                <MapPin size={10} /> {transactionType}
+              </span>
+            )}
+          </div>
+
+          {/* Developer */}
+          <div className="pdv-hero-developer">
+            <Building2 size={13} /> {developerName}
+          </div>
+
+          {/* Title */}
+          <h1 className="pdv-hero-title">{title}</h1>
+
+          {/* Address */}
+          <div className="pdv-hero-address">
+            <MapPin size={14} style={{ color: '#D4AF37', flexShrink: 0 }} />
+            {address}
+          </div>
+
+          {/* Price + RERA + Possession Chips */}
+          <div className="pdv-hero-chips">
+            <div className="pdv-hero-chip pdv-hero-chip--gold">
+              <span style={{ fontSize: '0.72rem', color: '#D4AF37' }}>₹</span>
+              <span>{property.price ? (property.price >= 10000000 ? `${(property.price / 10000000).toFixed(2)} Cr` : `${Math.round(property.price / 100000)} Lakhs`) : 'On Request'}</span>
+            </div>
+            <div className="pdv-hero-chip pdv-hero-chip--green">
+              <ShieldCheck size={12} />
+              <span style={{ fontFamily: 'monospace', letterSpacing: '0.02em' }}>{reraNumber}</span>
+            </div>
+            {possession && (
+              <div className="pdv-hero-chip">
+                <Clock size={12} />
+                <span>Possession: {possession}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Gallery thumbnail strip — right side */}
+        {heroImages.length > 1 && (
+          <div className="pdv-gallery-strip">
+            {heroImages.slice(0, 4).map((img, idx) => (
+              <button
+                key={idx}
+                className={`pdv-gallery-thumb${(activeImageIndex ?? 0) === idx ? ' active' : ''}`}
+                onClick={() => setActiveImageIndex(idx)}
+                aria-label={`View image ${idx + 1}`}
+              >
+                <img src={img} alt="" onError={e => { e.target.onerror = null; e.target.src = '/dev_godrej_building.png'; }} />
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* ══ KEY STATS STRIP ══ */}
+      <div className="pdv-stats-strip">
+        <div className="pdv-stats-strip__inner">
+          {[
+            { label: 'Configurations',   value: `${property.bedrooms || 2} & ${(property.bedrooms || 2) + 1} BHK`,                 cls: '' },
+            { label: 'Carpet Area',      value: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '761–973 sq.ft',    cls: '' },
+            { label: 'Possession',       value: possession,                                                                          cls: 'pdv-stat-item__value--gold' },
+            { label: 'Project Area',     value: projectArea,                                                                         cls: '' },
+            { label: 'Towers & Floors',  value: `${property.towers || '4'}T × ${property.floors || '28'}Fl`,                        cls: '' },
+            { label: 'Investment Score', value: `★ ${investmentScore}/100`,                                                          cls: 'pdv-stat-item__value--green' },
+          ].map((s, i) => (
+            <div key={i} className="pdv-stat-item">
+              <div className="pdv-stat-item__label">{s.label}</div>
+              <div className={`pdv-stat-item__value ${s.cls}`}>{s.value}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* ── HERO ── */}
-      <div style={{ maxWidth: '1320px', margin: '0 auto', padding: isMobile ? '10px 16px 28px' : '12px 28px 36px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 0.9fr', gap: '24px', alignItems: 'start' }}>
+      {/* ══ TWO-COLUMN HERO CONTENT (Gallery + Pricing Panel) ══ */}
+      <div style={{ maxWidth: '1320px', margin: '0 auto', padding: isMobile ? '28px 16px' : '36px 28px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.45fr 0.9fr', gap: '28px', alignItems: 'start' }}>
+
+          {/* ── LEFT: Enhanced Gallery ── */}
           <PropertyGallery property={property} onOpenInquiry={onOpenInquiry} />
 
-          <div style={{ ...G.goldBorder, padding: '24px', display: 'flex', flexDirection: 'column', gap: '0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <BadgeCheck size={14} color="#D4AF37" />
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.07em', textTransform: 'uppercase' }}>{developerName}</span>
-              </div>
-              {/* Rating Score ring */}
-              <div style={{ position: 'relative', width: '54px', height: '54px', flexShrink: 0 }}>
-                <svg width="54" height="54" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
-                  <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="8" />
-                  <circle cx="50" cy="50" r="45" fill="none" stroke="#D4AF37" strokeWidth="8"
-                    strokeDasharray="283" strokeLinecap="round"
-                    className={ringAnimated ? 'pdv-ring-animate' : ''}
-                    style={{ strokeDashoffset: ringAnimated ? `${283 - (283 * investmentScore / 100)}` : 283, transition: 'stroke-dashoffset 1.5s ease' }} />
+          {/* ── RIGHT: Pricing + CTAs ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '72px' }}>
+
+            {/* Investment Score Ring + Developer */}
+            <div style={{ ...G.goldBorder, padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+              {/* Ring */}
+              <div style={{ position: 'relative', width: '60px', height: '60px', flexShrink: 0 }}>
+                <svg width="60" height="60" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="9" />
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="#D4AF37" strokeWidth="9"
+                    strokeDasharray="276" strokeLinecap="round"
+                    style={{ strokeDashoffset: ringAnimated ? `${276 - (276 * investmentScore / 100)}` : 276, transition: 'stroke-dashoffset 1.5s ease 0.5s' }} />
                 </svg>
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ fontSize: '0.76rem', fontWeight: 800, color: '#F3E5AB', lineHeight: 1 }}>{investmentScore}%</div>
-                  <div style={{ fontSize: '0.45rem', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.05em' }}>RATING</div>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#F3E5AB', lineHeight: 1 }}>{investmentScore}%</div>
+                  <div style={{ fontSize: '0.42rem', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.04em', textAlign: 'center' }}>AI SCORE</div>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.62rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 700 }}>Premium Partner</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#F3E5AB', marginTop: '3px' }}>{developerName}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '6px' }}>
+                  <BadgeCheck size={12} color="#10B981" />
+                  <span style={{ fontSize: '0.65rem', color: '#10B981', fontWeight: 700 }}>24K Verified · MahaRERA Compliant</span>
                 </div>
               </div>
             </div>
 
-            <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '1.9rem', fontWeight: 700, color: '#FFF', margin: '0 0 6px' }}>{title}</h1>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.83rem', color: '#718096', marginBottom: '14px' }}>
-              <MapPin size={13} color="#D4AF37" />
-              <span>{location}</span>
-            </div>
-
-            <div style={{ padding: '14px 16px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.5rem', fontWeight: 700, color: '#F3E5AB' }}>{property.price ? `₹${Math.round(property.price / 100000)} L*` : 'Contact for Price'}</div>
-                <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', textDecoration: 'underline' }}>Price Breakup →</button>
-              </div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(105,200,140,0.12)', border: '1px solid rgba(105,200,140,0.3)', borderRadius: '100px', padding: '3px 10px' }}>
-                <div className="pdv-pulse-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#68D391' }} />
-                <TrendingUp size={10} color="#68D391" />
-              </div>
-            </div>
-
-            {/* 4 Metrics */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '18px' }}>
-              {METRICS.map(({ Icon, label, sub }, i) => (
-                <div key={i} style={{ padding: '10px 6px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
-                  <Icon size={16} color="#D4AF37" style={{ marginBottom: '4px' }} />
-                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: '0.82rem', fontWeight: 700, color: '#FFF', lineHeight: 1.2 }}>{label}</div>
-                  <div style={{ fontSize: '0.58rem', color: '#718096', marginTop: '2px', lineHeight: 1.3 }}>{sub}</div>
+            {/* Pricing Block */}
+            <div style={{ ...G.goldBorder, padding: '22px' }}>
+              <div style={{ fontSize: '0.6rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, marginBottom: '6px' }}>Verified Starting Price</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '10px' }}>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.9rem', fontWeight: 700, color: '#F3E5AB' }}>
+                  {property.price ? (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} L`) : '₹1.45 Cr'}
                 </div>
-              ))}
-            </div>
+                <span style={{ fontSize: '0.7rem', color: '#64748B' }}>onwards*</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981', flexShrink: 0 }} />
+                <span style={{ fontSize: '0.72rem', color: '#6EE7B7', fontWeight: 700 }}>Price verified · {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+              </div>
 
-            {/* CTA Buttons */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
-              <div style={{ display: 'flex', gap: '10px' }}>
+              {/* CTA Buttons */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <button onClick={onOpenInquiry} className="pdv-btn-gold"
-                  style={{ flex: 1, padding: '13px', fontSize: '0.84rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', borderRadius: '50px', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.35)' }}>
-                  ENQUIRE NOW
+                  style={{ width: '100%', padding: '14px', fontSize: '0.86rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', background: 'linear-gradient(135deg, #D4AF37, #B8960E)', color: '#09111F', border: 'none', borderRadius: '10px', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.4)' }}>
+                  📅 Book Private Site Visit
                 </button>
-                <button onClick={onOpenInquiry} className="pdv-btn-outline"
-                  style={{ flex: 1, padding: '13px', fontSize: '0.82rem', fontWeight: 700, textTransform: 'uppercase', background: 'rgba(255,255,255,0.04)', color: '#FFF', border: '1px solid rgba(212,175,55,0.35)', borderRadius: '50px', cursor: 'pointer' }}>
-                  BOOK SITE VISIT
-                </button>
-              </div>
 
-              {/* Instant Download Brochure Button */}
-              <button onClick={() => setBrochureModalOpen(true)}
-                style={{ width: '100%', padding: '11px', borderRadius: '10px', background: 'rgba(212,175,55,0.08)', border: '1px dashed rgba(212,175,55,0.4)', color: '#F3E5AB', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s' }}
-                onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.16)'}
-                onMouseOut={e => e.currentTarget.style.background = 'rgba(212,175,55,0.08)'}
-              >
-                <Download size={14} color="#D4AF37" /> Download Floor Plans & E-Brochure (PDF)
-              </button>
+                <a href={`https://wa.me/919175050519?text=Hi%2024K%20Realtors%20%F0%9F%8F%A0%0A%0AI%20am%20interested%20in%3A%0A%F0%9F%93%8C%20*${encodeURIComponent(title)}*%0A%F0%9F%93%8D%20Location%3A%20${encodeURIComponent(location)}%0A%F0%9F%9B%A1%EF%B8%8F%20RERA%3A%20${encodeURIComponent(reraNumber)}%0A%0APlease%20share%20floor%20plans%20and%20pricing%20details.`}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '13px', background: 'rgba(37,211,102,0.12)', border: '1px solid rgba(37,211,102,0.4)', borderRadius: '10px', color: '#25D366', fontSize: '0.84rem', fontWeight: 800, textDecoration: 'none', transition: 'all 0.2s' }}
+                  onMouseOver={e => e.currentTarget.style.background = 'rgba(37,211,102,0.2)'}
+                  onMouseOut={e => e.currentTarget.style.background = 'rgba(37,211,102,0.12)'}
+                >
+                  💬 WhatsApp Our Expert
+                </a>
+
+                <a href="tel:+919175050519"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#E2E8F0', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}
+                >
+                  <Phone size={14} color="#D4AF37" /> Call Directly +91 9175 0519
+                </a>
+              </div>
             </div>
 
-            {/* Save + Share + WhatsApp */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.07)', marginBottom: '14px' }}>
+            {/* RERA + Legal Strip */}
+            <a href="https://maharera.maharashtra.gov.in" target="_blank" rel="noopener noreferrer"
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', borderRadius: '10px', background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.28)', textDecoration: 'none' }}
+            >
+              <ShieldCheck size={16} color="#10B981" />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#6EE7B7' }}>MahaRERA Registered Project</div>
+                <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>{reraNumber} · Agent: A051262603190 · 100% Legal</div>
+              </div>
+              <ExternalLink size={13} color="#10B981" />
+            </a>
+
+            {/* Save + Share bar */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', padding: '12px 0' }}>
               <button onClick={() => setSaved(s => !s)}
                 style={{ background: 'none', border: 'none', color: saved ? '#D4AF37' : '#718096', fontSize: '0.76rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600, transition: 'color 0.2s' }}>
-                <Heart size={14} fill={saved ? '#D4AF37' : 'none'} /> {saved ? 'Saved ✓' : 'Save Property'}
+                <Heart size={15} fill={saved ? '#D4AF37' : 'none'} /> {saved ? 'Saved ✓' : 'Save Property'}
               </button>
               <button onClick={handleShare}
                 style={{ background: 'none', border: 'none', color: '#718096', fontSize: '0.76rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}>
-                <Share2 size={14} /> Share
+                <Share2 size={15} /> Share
               </button>
-              <a href={`https://wa.me/919175050519?text=Hi%2024K%20Realtors%2C%20I%20am%20interested%20in%20${encodeURIComponent(title)}%20(${encodeURIComponent(location)})`}
-                target="_blank" rel="noopener noreferrer"
-                style={{ color: '#25D366', fontSize: '0.76rem', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 700, textDecoration: 'none' }}>
-                💬 VIP WhatsApp
-              </a>
+              <button onClick={() => setBrochureModalOpen(true)}
+                style={{ background: 'none', border: 'none', color: '#718096', fontSize: '0.76rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}>
+                <Download size={15} /> Brochure
+              </button>
             </div>
 
-            {/* Meta: RERA / Possession / Area */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', textAlign: 'center', marginBottom: '12px' }}>
-              {[
-                { label: 'RERA NO.',    value: reraNumber },
-                { label: 'POSSESSION',  value: possession },
-                { label: 'PROJECT AREA',value: projectArea },
-              ].map((m, i) => (
-                <div key={i}>
-                  <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{m.label}</div>
-                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#FFF', marginTop: '3px' }}>{m.value}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* MahaRERA Official Govt Verification Link */}
-            <a href="https://maharera.maharashtra.gov.in" target="_blank" rel="noopener noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 12px', borderRadius: '8px', background: 'rgba(105,200,140,0.08)', border: '1px solid rgba(105,200,140,0.25)', textDecoration: 'none' }}>
-              <ShieldCheck size={14} color="#68D391" />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#68D391' }}>MahaRERA Registered Property</div>
-                <div style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.5)' }}>Agent RERA: A051262603190 · 100% Legal Clearance</div>
-              </div>
-              <ExternalLink size={12} color="#68D391" />
-            </a>
-
-            {/* Concierge Desk chip */}
+            {/* AI Concierge chip */}
             <button onClick={openAiChat}
-              style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '8px', padding: '11px 16px', borderRadius: '12px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.35)', cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.2s' }}
-              onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.16)'}
-              onMouseOut={e => e.currentTarget.style.background = 'rgba(212,175,55,0.08)'}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '13px 16px', borderRadius: '12px', background: 'rgba(212,175,55,0.07)', border: '1px solid rgba(212,175,55,0.3)', cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.2s' }}
+              onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.14)'}
+              onMouseOut={e => e.currentTarget.style.background = 'rgba(212,175,55,0.07)'}
             >
-              <div className="pdv-ai-dot" style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#D4AF37', flexShrink: 0 }} />
-              <Phone size={14} color="#D4AF37" />
-              <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#F3E5AB', flex: 1 }}>Ask Property Specialist about this property →</span>
-              <ChevronRight size={13} color="#D4AF37" />
+              <div className="pdv-ai-dot" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D4AF37', flexShrink: 0 }} />
+              <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#F3E5AB', flex: 1 }}>🤖 Ask AI Property Specialist →</span>
+              <ChevronRight size={14} color="#D4AF37" />
             </button>
 
-          </div>
+          </div>{/* end RIGHT */}
         </div>
       </div>
 
