@@ -372,15 +372,19 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const title         = property.title        || 'Godrej Woodsville';
   const location      = property.location     || 'Hinjewadi Phase 1, Pune';
   const developerName = property.builderName  || property.developer || property.developerName
-    || (title.toLowerCase().includes('godrej') ? 'Godrej Properties'
-      : title.toLowerCase().includes('shapoorji') ? 'Shapoorji Pallonji Real Estate'
-      : title.toLowerCase().includes('kolte') ? 'Kolte-Patil Developers'
+    || (title.toLowerCase().includes('opula') ? 'Pride Purple Group'
+      : title.toLowerCase().includes('altura') ? 'Kolte-Patil Developers'
+      : title.toLowerCase().includes('godrej') ? 'Godrej Properties'
+      : title.toLowerCase().includes('shapoorji') || title.toLowerCase().includes('joyville') ? 'Shapoorji Pallonji Real Estate'
+      : title.toLowerCase().includes('kolte') || title.toLowerCase().includes('republic') ? 'Kolte-Patil Developers'
       : title.toLowerCase().includes('vtp') ? 'VTP Realty'
+      : title.toLowerCase().includes('gera') ? 'Gera Developments'
+      : title.toLowerCase().includes('lodha') || title.toLowerCase().includes('belmondo') ? 'Lodha Group'
       : title.toLowerCase().includes('vilas') || title.toLowerCase().includes('yashwin') ? 'Vilas Javdekar (VJ)'
-      : '24K Realtors');
+      : '24K Realtors Partner');
   const reraNumber    = property.reraNumber || 'P52100046770';
   const possession    = property.possessionDate || property.possession || 'Dec 2027';
-  const projectArea   = property.projectArea || property.totalArea || (property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '4.5 Acres');
+  const projectArea   = property.projectArea || property.landParcel || (property.totalLandAcres ? `${property.totalLandAcres} Acres` : '8.5 Acres');
   const investmentScore = property.investmentScore || property.aiScore || 94;
   const address       = property.address || property.location || `${title}, ${location}`;
   const displayPrice  = property.price 
@@ -530,12 +534,12 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   ];
 
   const HIGHLIGHTS = [
-    { Icon: MapPin,      text: 'Prime Hinjewadi Phase 1 location' },
+    { Icon: MapPin,      text: `Prime ${location} corridor` },
     { Icon: Train,       text: 'Metro & IT Park within 10 mins' },
-    { Icon: TreePine,    text: '80%+ Open Green Spaces' },
-    { Icon: Star,        text: 'Vaastu-compliant homes' },
+    { Icon: TreePine,    text: '80%+ Open Green Spaces & Views' },
+    { Icon: Star,        text: 'Vaastu-compliant premium layouts' },
     { Icon: Building2,   text: 'Grand Clubhouse & 40+ amenities' },
-    { Icon: BadgeCheck,  text: '125+ years Godrej legacy' },
+    { Icon: BadgeCheck,  text: `${developerName} certified delivery` },
   ];
 
   const RATING_SCORES = [
@@ -904,15 +908,15 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 <span style={{ color: '#F3E5AB' }}>luxury & connectivity.</span>
               </h2>
               <p style={{ fontSize: '0.9rem', color: '#A0AEC0', lineHeight: 1.9, margin: '0 0 24px' }}>
-                {title} is a thoughtfully planned residential development by {developerName} in Hinjewadi Phase 1. Spread across <strong style={{ color: '#FFF' }}>{projectArea}</strong>, it offers 2 & 3 BHK premium homes with world-class amenities, lush green spaces, and seamless connectivity to Pune's top IT hubs, schools, hospitals and entertainment zones.
+                {title} is a thoughtfully planned residential development by {developerName} in {location}. Spread across <strong style={{ color: '#FFF' }}>{projectArea}</strong>, it offers premium residences with world-class amenities, lush green spaces, and seamless connectivity to Pune's top IT hubs, schools, hospitals and entertainment zones.
               </p>
               {/* Animated stats */}
               <div style={{ display: 'flex', gap: '28px', flexWrap: 'wrap' }}>
                 {[
-                  { num: 4.54, suffix: ' Ac', label: 'Project Area' },
-                  { num: 882,  suffix: '+',   label: 'Premium Homes' },
+                  { num: parseFloat(projectArea) || 8.5, suffix: ' Ac', label: 'Project Area' },
+                  { num: property.totalUnits || 480,  suffix: '+',   label: 'Premium Homes' },
                   { num: 40,   suffix: '+',   label: 'Amenities' },
-                  { num: 125,  suffix: '+',   label: 'Years Legacy' },
+                  { num: 25,   suffix: '+',   label: 'Years Builder Trust' },
                 ].map((s, i) => (
                   <div key={i}>
                     <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.6rem', fontWeight: 700, color: '#F3E5AB' }}>
@@ -929,10 +933,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
                 {[
                   { Icon: Building2,   label: 'DEVELOPER',    value: developerName },
-                  { Icon: BedDouble,   label: 'CONFIG',       value: '2 & 3 BHK' },
-                  { Icon: Maximize2,   label: 'CARPET AREA',  value: '761 – 973 sq.ft' },
-                  { Icon: Home,        label: 'TOTAL UNITS',  value: '~882 Homes' },
-                  { Icon: Building2,   label: 'TOWERS',       value: '4' },
+                  { Icon: BedDouble,   label: 'CONFIG',       value: property.bedrooms ? `${property.bedrooms} BHK` : '2 & 3 BHK' },
+                  { Icon: Maximize2,   label: 'CARPET AREA',  value: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '761 – 973 sq.ft' },
+                  { Icon: Home,        label: 'TOTAL UNITS',  value: property.totalUnits ? `~${property.totalUnits} Homes` : '400+ Units' },
+                  { Icon: Building2,   label: 'TOWERS',       value: property.towers || '4 Towers' },
                   { Icon: TreePine,    label: 'PROJECT AREA', value: projectArea },
                   { Icon: Clock,       label: 'POSSESSION',   value: possession },
                   { Icon: ShieldCheck, label: 'RERA NO.',     value: reraNumber },
