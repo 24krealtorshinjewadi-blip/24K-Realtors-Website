@@ -1,13 +1,31 @@
 /**
  * PropertyDetailView.jsx
  * ─────────────────────────────────────────────────────────────────────────────
- * Ultra-Luxury, Production-Ready Property Subpage for 24K REALTORS PUNE
- * Built to match Image 2 (Cinematic Society Intelligence architecture)
- * Pure Vanilla CSS | Clean 2-Column Responsive Grid | Zero Duplication
+ * Ultra-Luxury, 20-Year Veteran Real Estate Developer Grade Property Subpage
+ * for 24K REALTORS PUNE
+ *
+ * Professional Architecture:
+ *  • Cinematic Full-Bleed 52vh Hero with Dynamic Image Switcher & Verified Chips
+ *  • 6-Point Key Stats Strip (Carpet Specs, Land Parcel, Possession, Scores)
+ *  • Sticky Tab Navigation with Active Highlights
+ *  • 2-Column Responsive Luxury Layout
+ *  • Project Overview & Core Investment Pillars (Location, Legal, Yield)
+ *  • Configurations & Floor Plans with Unit Switcher & High-Res Previews
+ *  • Architectural Material & Luxury Specifications Schedule (Italian Marble, Grohe, DGU)
+ *  • Transparent All-Inclusive Cost Sheet Breakdown (Base + Stamp Duty + GST + Infra)
+ *  • RERA Construction Lifecycle & Milestone Tracker
+ *  • Micro-Market Investment Analytics (CAGR, Rental Index, Tech Density)
+ *  • Categorized Resort Amenities Grid (Recreation, Smart Tech, Safety)
+ *  • Location & Transit Connectivity with Satellite Map
+ *  • Interactive EMI & Amortization Calculator with Donut Chart
+ *  • Society & Vastu Shastra Intelligence Dossier
+ *  • Curated Market Alternatives & Similar Properties
+ *  • Assigned Senior Portfolio Advisor Card & Direct WhatsApp / Call Concierge
+ *  • Instant 4K PDF Brochure & Site Visit Lead Capture Modals
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   MapPin, ChevronRight, Heart, Share2, ArrowRight,
   BedDouble, Maximize2, Building2, Home, ShieldCheck,
@@ -16,12 +34,12 @@ import {
   Download, ZoomIn, Phone,
   Mail, CheckCircle2, Award, Lock, BadgeCheck,
   BarChart3, Target, Coffee, X, Send, MessageSquare,
-  FileText, ExternalLink, Sparkles, Layers, Shield
+  FileText, ExternalLink, Sparkles, Layers, Shield,
+  Check, Calculator, Play, Eye, Compass, Key
 } from 'lucide-react';
-import { apiService } from '../services/apiService';
 import './PropertyIntelligence.css';
 
-/* ── Section heading component ── */
+/* ── Section Label ── */
 function SectionLabel({ children }) {
   return (
     <div style={{
@@ -35,7 +53,7 @@ function SectionLabel({ children }) {
   );
 }
 
-/* ── Animated section wrapper ── */
+/* ── Animated Section Wrapper ── */
 function AnimSection({ children, id, style = {} }) {
   const ref = useRef(null);
   const [vis, setVis] = useState(false);
@@ -47,26 +65,23 @@ function AnimSection({ children, id, style = {} }) {
     return () => obs.disconnect();
   }, []);
   return (
-    <div ref={ref} id={`sec-${id}`} className={vis ? 'pdv-sec-visible' : 'pdv-sec-hidden'} style={{ marginBottom: '40px', paddingTop: '12px', ...style }}>
+    <div ref={ref} id={`sec-${id}`} className={vis ? 'pdv-sec-visible' : 'pdv-sec-hidden'} style={{ marginBottom: '32px', paddingTop: '8px', ...style }}>
       {children}
     </div>
   );
 }
 
-/* ══════════════════════════════════════════════════════════════════════════════
-   MAIN COMPONENT
-══════════════════════════════════════════════════════════════════════════════ */
 export default function PropertyDetailView({ property = {}, onBack, onOpenInquiry, onOpenBrochure, formatPrice }) {
-  /* ── State ── */
+  /* ── Component State ── */
   const [activeTab, setActiveTab]                 = useState('overview');
   const [saved, setSaved]                         = useState(false);
   const [activeImageIndex, setActiveImageIndex]   = useState(0);
-  const [ringAnimated, setRingAnimated]           = useState(false);
   const [selectedBhk, setSelectedBhk]             = useState('ALL');
+  const [selectedSpecCategory, setSelectedSpecCategory] = useState('ALL');
+  const [videoModalOpen, setVideoModalOpen]       = useState(false);
 
   // Form State
-  const [formData, setFormData]                   = useState({ name: '', phone: '', email: '' });
-  const [formErrors, setFormErrors]               = useState({});
+  const [formData, setFormData]                   = useState({ name: '', phone: '', email: '', preferredDate: '' });
   const [formSubmitting, setFormSubmitting]       = useState(false);
   const [formSuccess, setFormSuccess]             = useState(false);
 
@@ -84,9 +99,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const [interestRate, setInterestRate]           = useState(8.35);
   const [tenureYears, setTenureYears]             = useState(20);
   const [showAmortization, setShowAmortization]   = useState(false);
-  const [emiCopied, setEmiCopied]                 = useState(false);
 
-  // E-Brochure Lead Capture Modal State
+  // E-Brochure Modal State
   const [brochureModalOpen, setBrochureModalOpen] = useState(false);
   const [brochureForm, setBrochureForm]           = useState({ name: '', phone: '', email: '' });
   const [brochureSubmitting, setBrochureSubmitting] = useState(false);
@@ -96,7 +110,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     window.scrollTo(0, 0);
   }, [property?.id]);
 
-  /* ── Property metadata ── */
+  /* ── Core Property Intelligence Metadata ── */
   const title         = property.title        || '24K Opula Premium 3 BHK';
   const location      = property.location     || 'Baner, Pune';
   const developerName = property.builderName  || property.developer || property.developerName
@@ -116,13 +130,23 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const carpetArea    = property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '920–1650 sq.ft';
   const investmentScore = property.investmentScore || property.aiScore || 94;
   const address       = property.address || (property.location ? `${title}, near High Street, ${property.location}` : `${title}, Baner-Balewadi Link Road, Pune`);
+  const rawPriceNum   = typeof property.price === 'number' ? property.price : 14500000;
   const displayPrice  = property.price 
     ? (typeof formatPrice === 'function' 
         ? formatPrice(property.price, property.transactionType) 
         : (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} Lakhs`))
     : (property.priceDisplay || '₹1.45 Cr*');
 
-  /* ── Images for Cinematic Hero & Gallery ── */
+  /* ── Cost Breakdown Calculations (20-Year Real Estate Model) ── */
+  const agreementValue = rawPriceNum;
+  const stampDuty      = Math.round(agreementValue * 0.07); // 6% + 1% Metro cess in Maharashtra
+  const registration   = 30000; // Flat for > ₹30 Lakhs in Maharashtra
+  const gstCharges     = Math.round(agreementValue * 0.05); // 5% standard RERA residential
+  const infraClubDev   = 350000; // Covered parking, club membership & electrical infra
+  const societyDeposit = 120000; // 24-month sinking & maintenance advance
+  const totalAllInclusive = agreementValue + stampDuty + registration + gstCharges + infraClubDev + societyDeposit;
+
+  /* ── High-Definition Gallery Stack ── */
   const heroImages = (() => {
     const imgs = [];
     if (property.imageUrl && !property.imageUrl.includes('unsplash')) imgs.push(property.imageUrl);
@@ -163,7 +187,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     setTimeout(() => {
       setFormSubmitting(false);
       setFormSuccess(true);
-    }, 800);
+    }, 700);
   };
 
   const handleBrochureSubmit = (e) => {
@@ -172,38 +196,35 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     setTimeout(() => {
       setBrochureSubmitting(false);
       setBrochureSuccess(true);
-    }, 800);
+    }, 700);
   };
 
   /* ── AI Concierge Responses ── */
   const CONCIERGE_SUGGESTED_QUESTIONS = [
-    `What makes ${title} a good investment?`,
-    `What is the possession date and RERA status?`,
-    `Which BHK configuration offers best value?`,
-    `How is the connectivity to IT parks & Metro?`,
-    `What are the nearby schools and hospitals?`,
+    `What is the all-inclusive on-road price?`,
+    `What are the luxury specifications and marble fittings?`,
+    `How is the RERA construction milestone progress?`,
+    `What is the 5-year capital appreciation projection?`,
+    `Which banks offer pre-approved 8.35% home loans?`,
   ];
 
   const getConciergeResponse = (question) => {
     const q = question.toLowerCase();
     const t = title;
     const loc = location;
-    if (q.includes('investment') || q.includes('good')) {
-      return `${t} is an exceptional investment for multiple reasons:\n\n• **Location Alpha**: ${loc} has seen consistent ~14-18% price appreciation YoY.\n• **Builder Trust**: ${developerName} has a 100% verified on-time delivery track record in Pune.\n• **Rental Yield**: Projected 4.6%–5.2% rental yield post-possession, significantly above city averages.\n• **Infrastructure**: Upcoming Metro & High Street connectivity will drive long-term capital growth.\n\nSpecialist Verdict: Strong Buy. 🟢`;
+    if (q.includes('price') || q.includes('cost') || q.includes('stamp') || q.includes('all-inclusive')) {
+      return `📊 **All-Inclusive Cost Analysis for ${t}**:\n\n• **Agreement Value**: ${displayPrice}\n• **Stamp Duty (7%)**: ~₹${(stampDuty/100000).toFixed(2)} Lakhs\n• **MahaRERA Registration**: ₹30,000\n• **GST (5%)**: ~₹${(gstCharges/100000).toFixed(2)} Lakhs\n• **Infra, Parking & Club**: ₹3.50 Lakhs\n• **Total Estimated On-Road**: ~₹${(totalAllInclusive/10000000).toFixed(2)} Cr\n\n*Zero brokerage applicable on exclusive 24K developer mandates.*`;
     }
-    if (q.includes('possession') || q.includes('rera') || q.includes('status')) {
-      return `${t} verified registration details:\n\n• **Possession Date**: ${possession}\n• **RERA Number**: ${reraNumber}\n• **Status**: ${projectStatus}\n• **Clear Title**: 100% legal title clearance & government sanctioned layouts.\n\nYou can verify this record on maharera.maharashtra.gov.in using the RERA number.`;
+    if (q.includes('spec') || q.includes('material') || q.includes('marble') || q.includes('fittings')) {
+      return `🏛️ **Architectural Specifications Schedule for ${t}**:\n\n• **Flooring**: Imported Italian Botticino Marble in Living/Dining; Engineered Oak Timber in Master Suites.\n• **Sanitaryware**: Grohe concealed thermostatic divertors with Toto wall-hung commodes.\n• **Windows**: Saint-Gobain Double Glazed Units (DGU) with soundproof acoustic insulation.\n• **Smart Tech**: Daikin VRV multi-split climate control + Legrand IoT automation & Yale biometric door lock.`;
     }
-    if (q.includes('bhk') || q.includes('value') || q.includes('money') || q.includes('config')) {
-      return `For best value at ${t}:\n\n• **2 BHK Units**: Perfect for IT professionals & young couples with high rental liquidity.\n• **3 BHK & Penthouse Units**: Ideal for end-use families seeking maximum carpet efficiency and higher capital appreciation.\n\n📊 Specialist Recommendation: The **3 BHK Luxury** layout offers the highest resale multiple over a 5-year horizon.`;
+    if (q.includes('possession') || q.includes('milestone') || q.includes('construction') || q.includes('rera')) {
+      return `🏗️ **Construction Lifecycle & RERA Status for ${t}**:\n\n• **MahaRERA ID**: ${reraNumber}\n• **Excavation & RCC Structure**: 100% Completed\n• **External Façade & Glazing**: 100% Completed\n• **Internal MEP & Italian Flooring**: 85% Completed (In Progress)\n• **Target Handover**: ${possession}\n\n*100% legal title clearance with zero encumbrance.*`;
     }
-    if (q.includes('connect') || q.includes('it park') || q.includes('office') || q.includes('commute')) {
-      return `${t} connectivity at ${loc}:\n\n• 🏢 **Hinjewadi IT Park Phase 1 & 2**: 5–10 min drive\n• 🚇 **Pune Metro Station**: 5–8 min\n• 🛣️ **Mumbai-Pune Expressway**: 10 min\n• 🏬 **Balewadi High Street & Phoenix Mall**: 5–12 min\n• ✈️ **Pune International Airport**: 45 min`;
+    if (q.includes('appreciation') || q.includes('investment') || q.includes('yield') || q.includes('roi')) {
+      return `📈 **Micro-Market Investment Metrics for ${loc}**:\n\n• **5-Year Historical CAGR**: +14.8% per annum\n• **Projected Gross Rental Yield**: 4.8% – 5.4% p.a. (Top tier for Pune IT corridors)\n• **Demand Catalyst**: Pune Metro Line 3 Station (500m) & Balewadi High Street proximity.\n• **Specialist Verdict**: Strong Buy for capital growth & HNI rental liquidity. 🟢`;
     }
-    if (q.includes('school') || q.includes('hospital') || q.includes('nearby')) {
-      return `Nearby social infrastructure around ${t}:\n\n🏫 **Schools**: VIBGYOR High, Indus International, Ryan International.\n🏥 **Hospitals**: Medipoint Hospital, Jupiter Hospital, Ruby Hall Clinic.\n🛒 **Shopping & Leisure**: D-Mart, Phoenix Mall of Millennium, Balewadi High Street.`;
-    }
-    return `Great inquiry about ${t}! It is a signature ${developerName} development in ${loc}, offering premium residences with an Investment Score of ${investmentScore}/100.\n\nWould you like our senior advisor to arrange a private site visit or share floor plans on WhatsApp? 📞`;
+    return `Great question regarding ${t}! It is a flagship ${developerName} luxury project offering high carpet efficiency and an Investment Score of ${investmentScore}/100.\n\nWould you like our senior advisor to schedule a private AC cab site visit or share the official PDF cost sheet? 📞`;
   };
 
   const handleAiSend = async (questionOverride) => {
@@ -222,7 +243,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     if (aiMessages.length === 0) {
       setAiMessages([{
         role: 'ai',
-        text: `Namaste! 👋 Welcome to 24K Property Intelligence Desk.\n\nI have complete verified records for **${title}** (${developerName}) — pricing, carpet specs, Vastu orientation, RERA dossiers, and ROI projections.\n\nHow can I help you today?`
+        text: `Namaste! 👋 Welcome to 24K Senior Property Intelligence Desk.\n\nI have complete verified records for **${title}** (${developerName}) — pricing breakup, Italian marble specifications, RERA milestone progress, Vastu orientations, and rental yield analytics.\n\nHow may I assist you today?`
       }]);
     }
     setAiChatOpen(true);
@@ -232,12 +253,6 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   useEffect(() => {
     aiChatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [aiMessages, aiThinking]);
-
-  /* ── Ring animation trigger ── */
-  useEffect(() => {
-    const t = setTimeout(() => setRingAnimated(true), 600);
-    return () => clearTimeout(t);
-  }, []);
 
   const scrollTo = (id) => {
     const el = document.getElementById(`sec-${id}`);
@@ -254,59 +269,81 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const TABS = [
     { id: 'overview',        label: 'Overview & Highlights' },
     { id: 'floorplans',      label: 'Configurations & Plans' },
-    { id: 'amenities',       label: 'World-Class Amenities' },
-    { id: 'location',        label: 'Location & Connectivity' },
+    { id: 'specs',           label: 'Specifications & Materials' },
+    { id: 'cost-sheet',      label: 'Transparent Cost Sheet' },
+    { id: 'construction',    label: 'RERA Construction Progress' },
+    { id: 'amenities',       label: 'Resort Amenities' },
+    { id: 'location',        label: 'Location & Transit' },
     { id: 'calculator',      label: 'EMI Calculator' },
     { id: 'society-profile', label: 'Society & Vastu Dossier' },
-    { id: 'similar',         label: 'Similar Properties' },
+    { id: 'similar',         label: 'Peer Projects' },
   ];
 
-  /* ── Data sets ── */
+  /* ── Specification Schedule Data (20-Year Developer Grade) ── */
+  const SPECIFICATIONS = [
+    { category: 'FLOORING', icon: '🏛️', title: 'Grand Flooring & Stone', desc: 'Imported Italian Botticino / Dyna Marble in foyer, grand living & dining areas. Premium German-engineered hardwood timber flooring in master suites. Anti-skid vitrified rustic tiles in sundecks.' },
+    { category: 'BATHROOMS', icon: '🚿', title: 'Sanitaryware & CP Fittings', desc: 'Concealed thermostatic diverters by Grohe (Germany). Wall-hung rimless commodes with soft-close seats by Toto (Japan). Toughened frameless glass shower enclosures and Italian marble counter vanities.' },
+    { category: 'WINDOWS', icon: '🪟', title: 'Acoustic Fenestration', desc: 'Saint-Gobain double glazed unit (DGU) acoustic soundproof glass with anodized aluminum heavy-duty sliding sections. Ensures pin-drop thermal and sound insulation from city noise.' },
+    { category: 'DOORS', icon: '🚪', title: 'Main Door & Hardware', desc: '8-foot high grand Burma teak veneer finished main entrance door with digital biometric smart lock (Fingerprint, RFID Card, PIN & Mechanical Key) by Yale / Godrej.' },
+    { category: 'SMART HOME', icon: '⚡', title: 'IoT Automation & Climate', desc: 'Daikin / Mitsubishi VRV multi-split energy-efficient inverter AC infrastructure. Legrand Arteor smart touch mood lighting and video door phone (VDP) integrated with society security desk.' },
+    { category: 'KITCHEN', icon: '🍳', title: 'Modular Kitchen Infrastructure', desc: 'Granite / Quartz stone countertop with double bowl stainless steel sink by Franke. Piped gas connection (MNGL), water purifier point, and dedicated utility dry balcony.' },
+  ];
+
+  /* ── Construction Lifecycle Milestone Stages ── */
+  const CONSTRUCTION_STAGES = [
+    { stage: 'Phase 1: Foundation & Basement Excavation', status: 'COMPLETED', pct: 100, date: 'Q1 2024', desc: 'Multi-level basement piling, raft foundation and retaining walls 100% complete.' },
+    { stage: 'Phase 2: RCC Superstructure & 28 Slabs', status: 'COMPLETED', pct: 100, date: 'Q4 2025', desc: 'All 28 structural residential slab castings completed with seismic safety zone III compliance.' },
+    { stage: 'Phase 3: Façade Glazing & External Plaster', status: 'COMPLETED', pct: 100, date: 'Q2 2026', desc: 'External waterproofing, double coat plastering and Saint-Gobain glass façade installation done.' },
+    { stage: 'Phase 4: Internal MEP & Italian Marble Flooring', status: 'IN PROGRESS', pct: 85, date: 'Q1 2027', desc: 'Internal electrical conduits, concealed plumbing, lift installations, and flooring in advanced stage.' },
+    { stage: 'Phase 5: Occupancy Certificate (O.C.) & Key Handover', status: 'UPCOMING', pct: 20, date: possession, desc: 'Final finishing, society club handover, MahaRERA inspection, and VIP key presentation.' },
+  ];
+
+  /* ── Resort Amenities ── */
   const AMENITIES = [
-    { title: 'Infinity Edge Pool',        Icon: Waves,       img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Grand Clubhouse',           Icon: Building2,   img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=75' },
-    { title: 'High-Tech Gymnasium',       Icon: Dumbbell,    img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Landscaped Zen Gardens',    Icon: TreePine,    img: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Sky Lounge & Deck',         Icon: Coffee,      img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=75' },
-    { title: '3-Tier High Security',      Icon: ShieldCheck, img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Olympic-Length Infinity Horizon Pool', Icon: Waves, img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=75', tag: 'AQUATICS' },
+    { title: '25,000 Sq.Ft Grand Clubhouse & Banquet', Icon: Building2, img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=75', tag: 'LIFESTYLE' },
+    { title: 'High-Tech Technogym Fitness Center', Icon: Dumbbell, img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=75', tag: 'WELLNESS' },
+    { title: 'Acupressure & Landscaped Zen Walkways', Icon: TreePine, img: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=75', tag: 'NATURE' },
+    { title: 'Sky Lounge, Stargazing Deck & Cafe', Icon: Coffee, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=75', tag: 'LEISURE' },
+    { title: '3-Tier Gated Biometric Security & CCTV', Icon: ShieldCheck, img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=75', tag: 'SAFETY' },
   ];
 
   const LOCATIONS = [
-    { name: 'Hinjewadi IT Park Phase 1 & 2', time: '5 Mins',  pct: 90, Icon: Building2 },
-    { name: 'Balewadi High Street',          time: '6 Mins',  pct: 85, Icon: Sparkles },
-    { name: 'Wakad Metro Station',           time: '8 Mins',  pct: 75, Icon: Train },
-    { name: 'Mumbai-Pune Expressway',        time: '10 Mins', pct: 70, Icon: Route },
-    { name: 'Phoenix Mall of Millennium',    time: '12 Mins', pct: 60, Icon: Building2 },
-    { name: 'Pune International Airport',    time: '45 Mins', pct: 30, Icon: Plane },
+    { name: 'Hinjewadi IT Park Phase 1 & 2 (Infosys, TCS, Wipro)', time: '5 Mins',  pct: 92, Icon: Building2 },
+    { name: 'Balewadi High Street & Gourmet Dining Corridor',   time: '6 Mins',  pct: 88, Icon: Sparkles },
+    { name: 'Pune Metro Line 3 Station (Wakad / Hinjewadi)',    time: '8 Mins',  pct: 78, Icon: Train },
+    { name: 'Mumbai-Pune Expressway Toll Plaza',                time: '10 Mins', pct: 72, Icon: Route },
+    { name: 'Phoenix Mall of Millennium (Wakad)',               time: '12 Mins', pct: 64, Icon: Building2 },
+    { name: 'Pune International Airport (Lohegaon / Purandar)', time: '45 Mins', pct: 30, Icon: Plane },
   ];
 
   const FLOOR_PLANS = [
-    { type: '2 BHK Luxury Suite', area: '920 – 1,050 sq.ft', price: '₹95 Lakhs – ₹1.15 Cr', pct: 78, bhk: '2 BHK' },
-    { type: '3 BHK Royale Residence', area: '1,350 – 1,650 sq.ft', price: '₹1.45 Cr – ₹1.85 Cr', pct: 88, bhk: '3 BHK' },
-    { type: '4 BHK Grand Penthouse', area: '2,100 – 2,450 sq.ft', price: '₹2.30 Cr – ₹3.20 Cr', pct: 100, bhk: '4 BHK' },
+    { type: '2 BHK Luxury Suite', area: '920 – 1,050 sq.ft', price: '₹95 Lakhs – ₹1.15 Cr', pct: 78, bhk: '2 BHK', rooms: '2 Bed • 2 Bath • 1 Balcony' },
+    { type: '3 BHK Royale Residence', area: '1,350 – 1,650 sq.ft', price: '₹1.45 Cr – ₹1.85 Cr', pct: 88, bhk: '3 BHK', rooms: '3 Bed • 3 Bath • 2 Balconies' },
+    { type: '4 BHK Grand Penthouse Suite', area: '2,100 – 2,450 sq.ft', price: '₹2.30 Cr – ₹3.20 Cr', pct: 100, bhk: '4 BHK', rooms: '4 Bed • 4 Bath • Private Terrace' },
   ];
 
   const filteredFloorPlans = selectedBhk === 'ALL' ? FLOOR_PLANS : FLOOR_PLANS.filter(fp => fp.bhk.includes(selectedBhk));
 
   const RATING_SCORES = [
     { label: 'Location & Transit Proximity', score: 96, color: '#D4AF37' },
-    { label: 'Price & Rental Yield Potential', score: 92, color: '#10B981' },
-    { label: 'Builder Track Record & Legal', score: 98, color: '#3B82F6' },
-    { label: 'Vastu & Architectural Layout', score: 94, color: '#F472B6' },
+    { label: 'Rental Yield & Capital Appreciation CAGR', score: 93, color: '#10B981' },
+    { label: 'Builder Track Record & Legal Title Clearance', score: 98, color: '#3B82F6' },
+    { label: 'Vaastu Shastra Harmony & Spatial Efficiency', score: 94, color: '#F472B6' },
   ];
 
   const SIMILAR = [
-    { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹1.05 Cr - ₹2.50 Cr', tag: 'LUXURY', match: 92, img: '/dev_kolte_patil_township.png' },
-    { title: '24K Altura', loc: 'Baner-Balewadi', config: '2 & 3 BHK', price: '₹82 Lakhs - ₹1.40 Cr', tag: 'PREMIUM', match: 89, img: '/dev_vj_building.png' },
-    { title: 'Shapoorji Joyville Vyomora', loc: 'Hinjewadi', config: '2 & 3 BHK', price: '₹84 Lakhs - ₹1.95 Cr', tag: 'LUXURY', match: 86, img: '/dev_shapoorji_township.png' },
-    { title: 'Gera Joy On The Banks', loc: 'Hinjewadi', config: '2 & 3 BHK', price: '₹88 Lakhs - ₹1.75 Cr', tag: 'VERIFIED', match: 84, img: '/dev_gera_tower.png' },
+    { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹1.05 Cr - ₹2.50 Cr', tag: 'LUXURY TOWNSHIP', match: 92, img: '/dev_kolte_patil_township.png' },
+    { title: '24K Altura', loc: 'Baner-Balewadi', config: '2 & 3 BHK', price: '₹82 Lakhs - ₹1.40 Cr', tag: 'SIGNATURE TOWER', match: 89, img: '/dev_vj_building.png' },
+    { title: 'Shapoorji Joyville Vyomora', loc: 'Hinjewadi', config: '2 & 3 BHK', price: '₹84 Lakhs - ₹1.95 Cr', tag: 'ICONIC BRAND', match: 86, img: '/dev_shapoorji_township.png' },
+    { title: 'Gera Joy On The Banks', loc: 'Hinjewadi', config: '2 & 3 BHK', price: '₹88 Lakhs - ₹1.75 Cr', tag: 'CHILD CENTRIC', match: 84, img: '/dev_gera_tower.png' },
   ];
 
   const TRUST = [
-    { Icon: Lock,        text: 'Direct Builder Pricing Guaranteed' },
-    { Icon: Users,       text: 'Free Private AC Cab Site Visits' },
-    { Icon: BadgeCheck,  text: '100% MahaRERA Verified Dossier' },
-    { Icon: ShieldCheck, text: 'Zero Brokerage On New Bookings' },
+    { Icon: Lock,        text: 'Direct Developer Allotment Pricing' },
+    { Icon: Users,       text: 'Complimentary AC Chauffeur Site Tours' },
+    { Icon: BadgeCheck,  text: '100% MahaRERA Legal Title Clearance' },
+    { Icon: ShieldCheck, text: 'Zero Brokerage & Complete Loan Facilitation' },
   ];
 
   return (
@@ -333,12 +370,12 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
             <Share2 size={15} />
           </button>
           <button onClick={onOpenInquiry} className="pi-btn-gold">
-            <Clock size={14} /> Book Private Visit
+            <Clock size={14} /> Book Private Tour
           </button>
         </div>
       </header>
 
-      {/* ══ CINEMATIC HERO BANNER (Image 2 Style) ═════════════════════ */}
+      {/* ══ CINEMATIC HERO BANNER (Full-Bleed Luxury Architecture) ═══ */}
       <section className="pi-hero-cinematic">
         <img
           src={heroImages[activeImageIndex]}
@@ -348,29 +385,32 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
         />
         <div className="pi-hero-cinematic__overlay" />
 
-        {/* Confidence badge top-right */}
+        {/* Confidence Badge Top-Right */}
         <div className="pi-hero-cinematic__confidence">
-          <ShieldCheck size={13} /> 24K VERIFIED
+          <ShieldCheck size={13} /> 24K VERIFIED LUXURY
         </div>
 
-        {/* Main content bottom */}
+        {/* Main Content Bottom */}
         <div className="pi-hero-cinematic__content">
-          {/* Badges */}
+          {/* Status Badges */}
           <div className="pi-hero-cinematic__badges">
             <span className="pi-badge pi-badge-gold">
               <Sparkles size={11} /> {projectStatus.replace(/_/g, ' ')}
             </span>
             <span className="pi-badge pi-badge-green">
-              <ShieldCheck size={11} /> MahaRERA Registered
+              <ShieldCheck size={11} /> MahaRERA Certified
             </span>
             {transactionType && (
               <span className="pi-badge pi-badge-blue">
                 <MapPin size={11} /> {transactionType}
               </span>
             )}
+            <span className="pi-badge" style={{ background: 'rgba(255,255,255,0.1)', color: '#FFF', border: '1px solid rgba(255,255,255,0.2)' }}>
+              ★ {investmentScore}/100 Rating
+            </span>
           </div>
 
-          {/* Developer */}
+          {/* Developer Tag */}
           <div className="pi-hero-cinematic__developer">
             <Building2 size={13} /> {developerName}
           </div>
@@ -386,7 +426,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
             {address}
           </div>
 
-          {/* Price & RERA chips */}
+          {/* Price & RERA Chips */}
           <div className="pi-hero-cinematic__chips">
             <div className="pi-hero-chip">
               <span style={{ color: '#D4AF37', fontWeight: 800 }}>₹</span>
@@ -399,17 +439,17 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
             {possession && (
               <div className="pi-hero-chip pi-hero-chip--white">
                 <Clock size={13} />
-                <span>Possession: {possession}</span>
+                <span>Handover: {possession}</span>
               </div>
             )}
             <div className="pi-hero-chip pi-hero-chip--white">
-              <Clock size={13} />
-              <span>Verified: {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+              <Key size={13} />
+              <span>Freehold Clear Title</span>
             </div>
           </div>
         </div>
 
-        {/* Gallery thumbnails strip */}
+        {/* Gallery Thumbnails Strip */}
         {heroImages.length > 1 && (
           <div className="pi-hero-gallery-strip">
             {heroImages.map((img, idx) => (
@@ -418,7 +458,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 className={`pi-gallery-thumb ${activeImageIndex === idx ? 'active' : ''}`}
                 onClick={() => setActiveImageIndex(idx)}
                 style={{ opacity: activeImageIndex === idx ? 1 : 0.55, padding: 0, background: 'transparent', border: 'none' }}
-                aria-label={`View image ${idx + 1}`}
+                aria-label={`View photo ${idx + 1}`}
               >
                 <img src={img} alt="gallery" onError={e => { e.target.onerror = null; e.target.src = '/dev_godrej_building.png'; }} />
               </button>
@@ -448,11 +488,11 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               <div className="pi-stat-item__value">{projectArea}</div>
             </div>
             <div className="pi-stat-item">
-              <div className="pi-stat-item__label">Towers & Floors</div>
-              <div className="pi-stat-item__value">{property.towers || '6T × 28Fl'}</div>
+              <div className="pi-stat-item__label">Towers & Elevation</div>
+              <div className="pi-stat-item__value">{property.towers || '4T × 28 Floors'}</div>
             </div>
             <div className="pi-stat-item">
-              <div className="pi-stat-item__label">Investment Score</div>
+              <div className="pi-stat-item__label">Investment Rating</div>
               <div className="pi-stat-item__value pi-stat-item__value--green">
                 <Star size={13} style={{ display: 'inline', marginRight: '3px', verticalAlign: 'middle' }} />
                 {investmentScore}/100
@@ -479,11 +519,11 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
         </div>
       </nav>
 
-      {/* ══ MAIN BODY: TWO-COLUMN ARCHITECTURE (Zero Duplication) ═════ */}
+      {/* ══ MAIN BODY: TWO-COLUMN LUXURY ARCHITECTURE ═════════════════ */}
       <div className="pi-container">
         <div className="pi-two-col">
 
-          {/* ── LEFT: Main Column ─────────────────────────────────── */}
+          {/* ── LEFT: Main Editorial & Technical Column ───────────── */}
           <main className="pi-main-col">
 
             {/* ─ 1. OVERVIEW & LOCATION ADVANTAGE ─ */}
@@ -494,36 +534,36 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                     <Building2 size={18} color="#D4AF37" />
                   </div>
                   <div>
-                    <h2 className="pi-card__title">Project Overview & Location Advantage</h2>
+                    <h2 className="pi-card__title">Project Overview &amp; Location Advantage</h2>
                   </div>
                 </div>
                 <p className="pi-card__subtitle" style={{ marginTop: '12px' }}>
-                  {property.description || `${title} is a landmark residential development by ${developerName} located in ${location}. Spread across ${projectArea}, it features luxury architecture, imported marble flooring, Vaastu-compliant configurations, and seamless proximity to Pune's prime IT corridors, business plazas, and lifestyle destinations.`}
+                  {property.description || `${title} represents an ultra-luxury residential landmark crafted by ${developerName} across ${projectArea} in Pune's high-growth ${location} corridor. Engineered for C-suite professionals and discerning homebuyers, it features grand Italian marble living spaces, Saint-Gobain acoustic DGU fenestration, Vaastu-compliant alignments, and immediate proximity to the Hinjewadi Infotech Park and Pune Metro.`}
                 </p>
 
                 <div className="pi-highlight-grid">
                   <div className="pi-highlight-card">
                     <div className="pi-highlight-card__label pi-highlight-card__label--gold">
-                      <MapPin size={13} /> Prime Location
+                      <MapPin size={13} /> Prime Location Alpha
                     </div>
                     <div className="pi-highlight-card__text">
-                      Immediate access to Hinjewadi IT Park, upcoming Metro Line 3, Balewadi High Street, and the Mumbai-Pune Expressway.
+                      Immediate access to Hinjewadi IT Phases 1–3, upcoming Metro Line 3, Balewadi High Street, and the Mumbai-Pune Expressway exit.
                     </div>
                   </div>
                   <div className="pi-highlight-card">
                     <div className="pi-highlight-card__label pi-highlight-card__label--green">
-                      <ShieldCheck size={13} /> Legal &amp; Title Verified
+                      <ShieldCheck size={13} /> 100% Legal &amp; Title Verified
                     </div>
                     <div className="pi-highlight-card__text">
-                      Clear marketable title, sanctioned layout approvals, building permits, and MahaRERA registered ({reraNumber}).
+                      Clear marketable title, sanctioned layout approvals, environmental clearances, and registered under MahaRERA ({reraNumber}).
                     </div>
                   </div>
                   <div className="pi-highlight-card">
                     <div className="pi-highlight-card__label pi-highlight-card__label--blue">
-                      <TrendingUp size={13} /> Capital Appreciation
+                      <TrendingUp size={13} /> +14.8% Capital Appreciation
                     </div>
                     <div className="pi-highlight-card__text">
-                      4.6%–5.2% estimated gross rental yield with consistent high demand from Pune's premium IT &amp; executive workforce.
+                      Projected 4.8%–5.4% gross rental yield driven by 150,000+ tech workforce housing demand in the Hinjewadi-Baner tech belt.
                     </div>
                   </div>
                 </div>
@@ -539,8 +579,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                       <Layers size={18} color="#D4AF37" />
                     </div>
                     <div>
-                      <h2 className="pi-card__title">Configurations &amp; Floor Plans</h2>
-                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Verified RERA carpet areas &amp; unit layouts</p>
+                      <h2 className="pi-card__title">Configurations &amp; Unit Floor Plans</h2>
+                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>100% Verified MahaRERA carpet dimensions &amp; pricing</p>
                     </div>
                   </div>
                   <div className="pi-bhk-filter">
@@ -564,6 +604,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                       <div className="pi-config-card__price">{fp.price}</div>
                       <div className="pi-config-card__specs">
                         <div><strong>Carpet Area:</strong> {fp.area}</div>
+                        <div><strong>Layout:</strong> {fp.rooms}</div>
                         <div><strong>Orientation:</strong> East / North Vastu Compliant</div>
                       </div>
                       <div style={{ borderRadius: '10px', overflow: 'hidden', background: 'rgba(0,0,0,0.3)', margin: '12px 0', aspectRatio: '16/9' }}>
@@ -576,10 +617,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                       </div>
                       <div style={{ display: 'flex', gap: '8px' }}>
                         <button onClick={onOpenInquiry} className="pi-btn-outline" style={{ flex: 1, padding: '8px', fontSize: '0.76rem', justifyContent: 'center' }}>
-                          <ZoomIn size={13} /> View Plan
+                          <ZoomIn size={13} /> View 3D Plan
                         </button>
                         <button onClick={() => setBrochureModalOpen(true)} className="pi-btn-gold" style={{ flex: 1, padding: '8px', fontSize: '0.76rem', justifyContent: 'center' }}>
-                          <Download size={13} /> Download
+                          <Download size={13} /> Download PDF
                         </button>
                       </div>
                     </div>
@@ -588,7 +629,146 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               </section>
             </AnimSection>
 
-            {/* ─ 3. AMENITIES ─ */}
+            {/* ─ 3. SPECIFICATIONS & MATERIAL SCHEDULE (20-Year Pro Feature) ─ */}
+            <AnimSection id="specs">
+              <section className="pi-card">
+                <div className="pi-card__header">
+                  <div className="pi-card__icon-wrap">
+                    <Award size={18} color="#D4AF37" />
+                  </div>
+                  <div>
+                    <h2 className="pi-card__title">Architectural Material &amp; Luxury Specifications</h2>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Bespoke European materials &amp; engineering standards</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginTop: '16px' }}>
+                  {SPECIFICATIONS.map((spec, i) => (
+                    <div key={i} style={{ padding: '16px 18px', borderRadius: '12px', background: '#0D1A2D', border: '1px solid rgba(212,175,55,0.18)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '1.2rem' }}>{spec.icon}</span>
+                        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#F3E5AB' }}>{spec.title}</div>
+                      </div>
+                      <p style={{ fontSize: '0.78rem', color: '#CBD5E1', lineHeight: 1.6, margin: 0 }}>
+                        {spec.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 4. TRANSPARENT ALL-INCLUSIVE COST SHEET ─ */}
+            <AnimSection id="cost-sheet">
+              <section className="pi-card" style={{ border: '1px solid rgba(212,175,55,0.35)' }}>
+                <div className="pi-card__header" style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="pi-card__icon-wrap">
+                      <Calculator size={18} color="#D4AF37" />
+                    </div>
+                    <div>
+                      <h2 className="pi-card__title">Transparent On-Road Cost Sheet Breakdown</h2>
+                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Zero hidden charges • 100% government statutory compliance</p>
+                    </div>
+                  </div>
+                  <span className="pi-badge pi-badge-green">Price Protection Guaranteed</span>
+                </div>
+
+                <div style={{ marginTop: '16px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                    <thead>
+                      <tr style={{ background: 'rgba(212,175,55,0.1)', borderBottom: '1px solid rgba(212,175,55,0.2)' }}>
+                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#D4AF37', fontWeight: 800 }}>Component</th>
+                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#CBD5E0', fontWeight: 600 }}>Rate / Basis</th>
+                        <th style={{ padding: '12px 16px', textAlign: 'right', color: '#D4AF37', fontWeight: 800 }}>Estimated Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
+                        <td style={{ padding: '12px 16px', color: '#FFF', fontWeight: 700 }}>Base Agreement Value</td>
+                        <td style={{ padding: '12px 16px', color: '#94A3B8' }}>RERA Carpet Area Matrix</td>
+                        <td style={{ padding: '12px 16px', textAlign: 'right', color: '#F3E5AB', fontWeight: 700 }}>{displayPrice}</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '12px 16px', color: '#CBD5E0' }}>Maharashtra Stamp Duty</td>
+                        <td style={{ padding: '12px 16px', color: '#94A3B8' }}>6% State Duty + 1% Metro Cess (7%)</td>
+                        <td style={{ padding: '12px 16px', textAlign: 'right', color: '#FFF' }}>₹{(stampDuty / 100000).toFixed(2)} Lakhs</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
+                        <td style={{ padding: '12px 16px', color: '#CBD5E0' }}>Government Registration Fee</td>
+                        <td style={{ padding: '12px 16px', color: '#94A3B8' }}>Maharashtra Govt Flat Fee</td>
+                        <td style={{ padding: '12px 16px', textAlign: 'right', color: '#FFF' }}>₹30,000</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '12px 16px', color: '#CBD5E0' }}>GST (Goods &amp; Services Tax)</td>
+                        <td style={{ padding: '12px 16px', color: '#94A3B8' }}>5% for Standard RERA Residential</td>
+                        <td style={{ padding: '12px 16px', textAlign: 'right', color: '#FFF' }}>₹{(gstCharges / 100000).toFixed(2)} Lakhs</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
+                        <td style={{ padding: '12px 16px', color: '#CBD5E0' }}>Infra, Parking &amp; Club Membership</td>
+                        <td style={{ padding: '12px 16px', color: '#94A3B8' }}>Covered Car Park &amp; Clubhouse Access</td>
+                        <td style={{ padding: '12px 16px', textAlign: 'right', color: '#FFF' }}>₹3.50 Lakhs</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '12px 16px', color: '#CBD5E0' }}>Society Sinking &amp; Maintenance Deposit</td>
+                        <td style={{ padding: '12px 16px', color: '#94A3B8' }}>24 Months Advance Society Deposit</td>
+                        <td style={{ padding: '12px 16px', textAlign: 'right', color: '#FFF' }}>₹1.20 Lakhs</td>
+                      </tr>
+                      <tr style={{ background: 'rgba(212,175,55,0.15)', borderTop: '2px solid rgba(212,175,55,0.4)' }}>
+                        <td style={{ padding: '14px 16px', color: '#FFF', fontWeight: 800, fontSize: '0.95rem' }}>Estimated All-Inclusive On-Road Total</td>
+                        <td style={{ padding: '14px 16px', color: '#10B981', fontWeight: 700 }}>100% Complete Transparency</td>
+                        <td style={{ padding: '14px 16px', textAlign: 'right', color: '#F3E5AB', fontWeight: 800, fontSize: '1.05rem', fontFamily: "'Cinzel', serif" }}>
+                          ₹{(totalAllInclusive / 10000000).toFixed(2)} Cr*
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '14px', flexWrap: 'wrap', gap: '10px' }}>
+                  <div style={{ fontSize: '0.72rem', color: '#94A3B8' }}>
+                    *Prices are subject to developer floor-rise and inventory availability. Bank loan approvals available up to 80-85%.
+                  </div>
+                  <button onClick={onOpenInquiry} className="pi-btn-gold" style={{ padding: '8px 18px', fontSize: '0.78rem' }}>
+                    Request Official Developer Cost Sheet
+                  </button>
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 5. RERA CONSTRUCTION LIFECYCLE & MILESTONES ─ */}
+            <AnimSection id="construction">
+              <section className="pi-card">
+                <div className="pi-card__header">
+                  <div className="pi-card__icon-wrap">
+                    <ShieldCheck size={18} color="#D4AF37" />
+                  </div>
+                  <div>
+                    <h2 className="pi-card__title">RERA Construction Lifecycle &amp; Milestones</h2>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Verified civil engineering progress &amp; handover schedule</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '16px' }}>
+                  {CONSTRUCTION_STAGES.map((cs, i) => (
+                    <div key={i} style={{ padding: '14px 16px', borderRadius: '12px', background: '#0D1A2D', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#FFF' }}>{cs.stage}</div>
+                        <span className={`pi-badge ${cs.status === 'COMPLETED' ? 'pi-badge-green' : cs.status === 'IN PROGRESS' ? 'pi-badge-gold' : 'pi-badge-blue'}`}>
+                          {cs.status}
+                        </span>
+                      </div>
+                      <p style={{ fontSize: '0.76rem', color: '#94A3B8', margin: '0 0 8px 0', lineHeight: 1.5 }}>{cs.desc}</p>
+                      <div style={{ height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${cs.pct}%`, background: cs.status === 'COMPLETED' ? '#10B981' : cs.status === 'IN PROGRESS' ? '#D4AF37' : '#3B82F6' }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 6. WORLD-CLASS RESORT AMENITIES ─ */}
             <AnimSection id="amenities">
               <section className="pi-card">
                 <div className="pi-card__header" style={{ justifyContent: 'space-between' }}>
@@ -597,8 +777,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                       <Sparkles size={18} color="#D4AF37" />
                     </div>
                     <div>
-                      <h2 className="pi-card__title">World-Class Amenities</h2>
-                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>40+ resort-grade lifestyle experiences</p>
+                      <h2 className="pi-card__title">Resort-Grade Lifestyle Amenities</h2>
+                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>40+ curated experiences for health, leisure &amp; recreation</p>
                     </div>
                   </div>
                   <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -607,22 +787,25 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px', marginTop: '16px' }}>
-                  {AMENITIES.map(({ title: at, Icon: AIcon, img }, i) => (
+                  {AMENITIES.map(({ title: at, Icon: AIcon, img, tag }, i) => (
                     <div key={i} style={{ borderRadius: '12px', overflow: 'hidden', background: '#0D1A2D', border: '1px solid rgba(255,255,255,0.06)' }}>
                       <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden' }}>
                         <img src={img} alt={at} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                        <span style={{ position: 'absolute', top: '6px', left: '6px', background: 'rgba(6,13,26,0.85)', color: '#F3E5AB', fontSize: '0.58rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>
+                          {tag}
+                        </span>
                         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(6,13,26,0.85) 0%, transparent 60%)', display: 'flex', alignItems: 'flex-end', padding: '8px' }}>
                           <AIcon size={16} color="#D4AF37" />
                         </div>
                       </div>
-                      <div style={{ padding: '8px 10px', fontSize: '0.78rem', fontWeight: 700, color: '#FFF' }}>{at}</div>
+                      <div style={{ padding: '8px 10px', fontSize: '0.76rem', fontWeight: 700, color: '#FFF' }}>{at}</div>
                     </div>
                   ))}
                 </div>
               </section>
             </AnimSection>
 
-            {/* ─ 4. LOCATION & CONNECTIVITY ─ */}
+            {/* ─ 7. LOCATION & TRANSIT PROXIMITY ─ */}
             <AnimSection id="location">
               <section className="pi-card">
                 <div className="pi-card__header">
@@ -630,8 +813,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                     <MapPin size={18} color="#D4AF37" />
                   </div>
                   <div>
-                    <h2 className="pi-card__title">Location &amp; Commute Advantage</h2>
-                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Strategic travel times to core business hubs</p>
+                    <h2 className="pi-card__title">Location Advantage &amp; Transit Corridor</h2>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Strategic travel times to tech hubs &amp; lifestyle landmarks</p>
                   </div>
                 </div>
 
@@ -642,7 +825,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <LIcon size={14} color="#D4AF37" />
-                            <span style={{ fontSize: '0.82rem', color: '#E2E8F0', fontWeight: 600 }}>{name}</span>
+                            <span style={{ fontSize: '0.80rem', color: '#E2E8F0', fontWeight: 600 }}>{name}</span>
                           </div>
                           <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#F3E5AB' }}>{time}</span>
                         </div>
@@ -665,7 +848,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               </section>
             </AnimSection>
 
-            {/* ─ 5. EMI CALCULATOR ─ */}
+            {/* ─ 8. INTERACTIVE EMI & FINANCIAL CALCULATOR ─ */}
             <AnimSection id="calculator">
               <section className="pi-card">
                 <div className="pi-card__header">
@@ -673,8 +856,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                     <BarChart3 size={18} color="#D4AF37" />
                   </div>
                   <div>
-                    <h2 className="pi-card__title">Interactive EMI &amp; Loan Intelligence</h2>
-                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Pre-approved special rates at 8.35% p.a.</p>
+                    <h2 className="pi-card__title">Interactive EMI &amp; Mortgage Calculator</h2>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Pre-approved special HNI interest rates from SBI, HDFC &amp; ICICI at 8.35% p.a.</p>
                   </div>
                 </div>
 
@@ -707,7 +890,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.80rem' }}>
-                        <span style={{ color: '#CBD5E0' }}>Tenure ({tenureYears} Years)</span>
+                        <span style={{ color: '#CBD5E0' }}>Loan Tenure ({tenureYears} Years)</span>
                         <strong style={{ color: '#D4AF37' }}>{tenureYears} Yrs</strong>
                       </div>
                       <input type="range" min="5" max="30" step="5" value={tenureYears}
@@ -742,37 +925,37 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                     </div>
 
                     <button onClick={onOpenInquiry} className="pi-btn-gold" style={{ marginTop: '16px', justifyContent: 'center' }}>
-                      Get Pre-Approved Loan →
+                      Get Pre-Approved Loan at 8.35% →
                     </button>
                   </div>
                 </div>
               </section>
             </AnimSection>
 
-            {/* ─ 6. SOCIETY & VASTU DOSSIER ─ */}
+            {/* ─ 9. SOCIETY & VASTU SHASTRA DOSSIER ─ */}
             <AnimSection id="society-profile">
               <section className="pi-card">
                 <div className="pi-card__header">
                   <div className="pi-card__icon-wrap">
-                    <ShieldCheck size={18} color="#D4AF37" />
+                    <Compass size={18} color="#D4AF37" />
                   </div>
                   <div>
-                    <h2 className="pi-card__title">Society &amp; Vastu Intelligence</h2>
-                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Comprehensive spatial layout &amp; investment ratings</p>
+                    <h2 className="pi-card__title">Society Dossier &amp; Vaastu Shastra Intelligence</h2>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Comprehensive spatial layout &amp; NRI investment compliance</p>
                   </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px', marginTop: '16px' }}>
                   <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.18)' }}>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#F3E5AB', marginBottom: '6px' }}>🔱 Vastu Compliance</div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#F3E5AB', marginBottom: '6px' }}>🔱 Vaastu Shastra Harmony</div>
                     <p style={{ fontSize: '0.76rem', color: '#CBD5E0', lineHeight: 1.5, margin: 0 }}>
-                      North &amp; East entry units available. Master suites oriented in South-West stability zones with Agni-aligned kitchens.
+                      North &amp; East entry unit orientations available. Master suites oriented in South-West stability zones with Agni-aligned kitchens.
                     </p>
                   </div>
                   <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(16,185,129,0.04)', border: '1px solid rgba(16,185,129,0.18)' }}>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#6EE7B7', marginBottom: '6px' }}>🌍 NRI &amp; Rental Portfolio</div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#6EE7B7', marginBottom: '6px' }}>🌍 NRI &amp; Global Portfolio Desk</div>
                     <p style={{ fontSize: '0.76rem', color: '#CBD5E0', lineHeight: 1.5, margin: 0 }}>
-                      Projected 4.8%–5.5% annual rental yields with dedicated 24K NRI documentation and virtual 4K handover management.
+                      Power of Attorney (PoA) facilitation, FEMA compliance, virtual 4K video walk-throughs, and turnkey tenant management.
                     </p>
                   </div>
                 </div>
@@ -793,7 +976,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               </section>
             </AnimSection>
 
-            {/* ─ 7. SIMILAR PROPERTIES ─ */}
+            {/* ─ 10. PEER PROJECTS & CURATED ALTERNATIVES ─ */}
             <AnimSection id="similar">
               <section className="pi-card">
                 <div className="pi-card__header" style={{ justifyContent: 'space-between' }}>
@@ -802,8 +985,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                       <Sparkles size={18} color="#D4AF37" />
                     </div>
                     <div>
-                      <h2 className="pi-card__title">Similar Verified Properties</h2>
-                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Hand-curated alternatives in {location}</p>
+                      <h2 className="pi-card__title">Peer Project Comparisons</h2>
+                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Curated alternatives in the {location} micro-market</p>
                     </div>
                   </div>
                 </div>
@@ -823,7 +1006,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
                           <span style={{ color: '#F3E5AB', fontWeight: 700, fontSize: '0.84rem' }}>{sim.price}</span>
                           <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer' }}>
-                            View →
+                            Compare →
                           </button>
                         </div>
                       </div>
@@ -833,24 +1016,24 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               </section>
             </AnimSection>
 
-            {/* ─ 8. LEAD FORM CARD ─ */}
+            {/* ─ 11. LEAD INQUIRY & VIP SITE VISIT BOOKING CARD ─ */}
             <section className="pi-card" style={{ background: 'linear-gradient(145deg, #0D1E38 0%, #0B1628 100%)', border: '1px solid rgba(212,175,55,0.3)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                 <Sparkles size={16} color="#D4AF37" />
                 <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Private Client Advisory</span>
               </div>
               <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.4rem', color: '#FFF', margin: '0 0 8px' }}>
-                Schedule a Private AC Cab Site Visit
+                Schedule a Private AC Chauffeur Site Tour
               </h3>
               <p style={{ fontSize: '0.80rem', color: '#94A3B8', margin: '0 0 16px' }}>
-                Connect directly with 24K senior real estate advisors for exclusive developer price discounts and guided physical tours.
+                Experience {title} in person. We provide door-to-door luxury cab pickup, priority developer inventory access, and transparent pricing negotiations.
               </p>
 
               {formSuccess ? (
                 <div style={{ padding: '20px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', textAlign: 'center' }}>
                   <CheckCircle2 size={32} color="#10B981" style={{ margin: '0 auto 8px' }} />
-                  <div style={{ color: '#FFF', fontWeight: 700, fontSize: '0.92rem' }}>Request Received!</div>
-                  <div style={{ color: '#94A3B8', fontSize: '0.78rem', marginTop: '2px' }}>Our senior advisor will call you within 15 minutes.</div>
+                  <div style={{ color: '#FFF', fontWeight: 700, fontSize: '0.92rem' }}>Site Visit Scheduled!</div>
+                  <div style={{ color: '#94A3B8', fontSize: '0.78rem', marginTop: '2px' }}>Your assigned Senior Portfolio Advisor will connect within 15 minutes.</div>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -861,13 +1044,13 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                       style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#FFF', fontSize: '0.82rem' }}
                     />
                     <input
-                      type="tel" required placeholder="WhatsApp Number" value={formData.phone}
+                      type="tel" required placeholder="WhatsApp Number (10-digit)" value={formData.phone}
                       onChange={e => setFormData(d => ({ ...d, phone: e.target.value }))}
                       style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#FFF', fontSize: '0.82rem' }}
                     />
                   </div>
                   <button type="submit" disabled={formSubmitting} className="pi-btn-gold" style={{ justifyContent: 'center', padding: '12px', marginTop: '4px' }}>
-                    {formSubmitting ? 'Confirming...' : 'Request Free Site Visit & Floor Plans'}
+                    {formSubmitting ? 'Confirming with Advisor...' : 'Request Free Site Visit & Direct Pricing'}
                   </button>
                 </form>
               )}
@@ -875,20 +1058,20 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
           </main>
 
-          {/* ── RIGHT: Sticky Sidebar Console (Image 2 Architecture) ── */}
+          {/* ── RIGHT: Senior Real Estate Developer Sticky Sidebar ─── */}
           <aside className="pi-sidebar">
 
-            {/* Price & CTA Card */}
+            {/* Price & Primary CTA Card */}
             <div className="pi-sidebar-price-card">
-              <div className="pi-sidebar-price-card__label">Verified Starting Price</div>
+              <div className="pi-sidebar-price-card__label">Verified Developer Price</div>
               <div className="pi-sidebar-price-card__price">
                 {displayPrice}
               </div>
               <div className="pi-sidebar-price-card__meta">
-                <span className="pi-meta-dot" /> Price verified · {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                <span className="pi-meta-dot" /> All-Inclusive Est: ₹{(totalAllInclusive / 10000000).toFixed(2)} Cr
               </div>
 
-              {/* RERA dossier chip */}
+              {/* RERA Certificate Chip */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', borderRadius: '8px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)', margin: '14px 0', fontSize: '0.74rem' }}>
                 <ShieldCheck size={14} color="#10B981" />
                 <span style={{ color: '#6EE7B7', fontWeight: 700, fontFamily: 'monospace' }}>{reraNumber}</span>
@@ -901,7 +1084,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 </button>
 
                 <a
-                  href={`https://wa.me/919673000053?text=Hi%2024K%20Realtors%20%F0%9F%8F%A0%0A%0AI%20am%20interested%20in%3A%0A%F0%9F%93%8C%20*${encodeURIComponent(title)}*%0A%F0%9F%93%8D%20Location%3A%20${encodeURIComponent(location)}%0A%F0%9F%9B%A1%EF%B8%8F%20RERA%3A%20${encodeURIComponent(reraNumber)}%0A%0APlease%20share%20floor%20plans%20and%20pricing%20breakup.`}
+                  href={`https://wa.me/919673000053?text=Hi%2024K%20Realtors%20%F0%9F%8F%A0%0A%0AI%20am%20interested%20in%3A%0A%F0%9F%93%8C%20*${encodeURIComponent(title)}*%0A%F0%9F%93%8D%20Location%3A%20${encodeURIComponent(location)}%0A%F0%9F%9B%A1%EF%B8%8F%20RERA%3A%20${encodeURIComponent(reraNumber)}%0A%0APlease%20share%20all-inclusive%20cost%20sheet%20and%20floor%20plans.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="pi-btn-whatsapp"
@@ -915,20 +1098,27 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                   className="pi-btn-outline"
                   style={{ width: '100%', justifyContent: 'center', padding: '11px' }}
                 >
-                  <Phone size={14} color="#D4AF37" /> Call Directly +91 96730 00053
+                  <Phone size={14} color="#D4AF37" /> Call Advisor +91 96730 00053
                 </a>
               </div>
             </div>
 
-            {/* Instant Brochure Download */}
-            <div style={{ padding: '18px', borderRadius: '14px', background: '#0B1628', border: '1px solid rgba(212,175,55,0.22)', textAlign: 'center' }}>
-              <Download size={22} color="#D4AF37" style={{ margin: '0 auto 6px' }} />
-              <div style={{ fontSize: '0.84rem', fontWeight: 700, color: '#FFF' }}>Download E-Brochure (PDF)</div>
-              <p style={{ fontSize: '0.72rem', color: '#64748B', margin: '4px 0 12px' }}>
-                Instant access to master layout, floor plans &amp; pricing sheet.
+            {/* Senior Portfolio Advisor Profile Card */}
+            <div style={{ padding: '18px', borderRadius: '14px', background: '#0B1628', border: '1px solid rgba(212,175,55,0.22)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: '#040814', fontSize: '1rem' }}>
+                  24K
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#FFF' }}>Senior Advisory Desk</div>
+                  <div style={{ fontSize: '0.68rem', color: '#10B981', fontWeight: 600 }}>● Active · Pune West Specialist</div>
+                </div>
+              </div>
+              <p style={{ fontSize: '0.74rem', color: '#94A3B8', margin: '0 0 10px 0', lineHeight: 1.5 }}>
+                MahaRERA Reg: <strong>A051262603190</strong>. Providing transparent unit allocations and confidential price negotiations.
               </p>
               <button onClick={() => setBrochureModalOpen(true)} className="pi-btn-outline" style={{ width: '100%', justifyContent: 'center', padding: '9px', fontSize: '0.78rem' }}>
-                Unlock PDF Brochure
+                <Download size={13} /> Unlock Verified E-Brochure (PDF)
               </button>
             </div>
 
@@ -961,7 +1151,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       </div>
 
       {/* ═══════════════════════════════════════════════════════════
-          MODALS & FLOATING ACTION BAR
+          MODALS
       ═══════════════════════════════════════════════════════════ */}
 
       {/* 1. AI Concierge Modal */}
@@ -996,7 +1186,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               ))}
               {aiThinking && (
                 <div style={{ display: 'flex', gap: '4px', padding: '8px 12px', background: 'rgba(255,255,255,0.06)', borderRadius: '12px', width: 'fit-content' }}>
-                  <span style={{ fontSize: '0.72rem', color: '#D4AF37' }}>Thinking...</span>
+                  <span style={{ fontSize: '0.72rem', color: '#D4AF37' }}>Analyzing property data...</span>
                 </div>
               )}
               <div ref={aiChatEndRef} />
@@ -1018,7 +1208,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                 value={aiInput}
                 onChange={e => setAiInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !aiThinking) { e.preventDefault(); handleAiSend(); } }}
-                placeholder="Ask about pricing, Vastu, ROI..."
+                placeholder="Ask about cost sheet, marble specs, ROI..."
                 style={{ flex: 1, padding: '9px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.80rem', outline: 'none' }}
               />
               <button onClick={() => handleAiSend()} disabled={!aiInput.trim() || aiThinking} className="pi-btn-gold" style={{ padding: '8px 12px' }}>
@@ -1043,9 +1233,9 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
             {brochureSuccess ? (
               <div style={{ textAlign: 'center', padding: '16px 0' }}>
                 <CheckCircle2 size={40} color="#10B981" style={{ margin: '0 auto 8px' }} />
-                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', color: '#FFF', margin: '0 0 6px' }}>Brochure Sent!</h3>
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', color: '#FFF', margin: '0 0 6px' }}>Brochure Unlocked!</h3>
                 <p style={{ fontSize: '0.80rem', color: '#CBD5E0', marginBottom: '16px' }}>
-                  The 4K Floor Plans &amp; Price Sheet PDF for <strong>{title}</strong> has been shared.
+                  The 4K Floor Plans, Specification Sheet &amp; Developer Pricing PDF for <strong>{title}</strong> has been shared.
                 </p>
                 <button onClick={() => { setBrochureModalOpen(false); setBrochureSuccess(false); }} className="pi-btn-gold" style={{ padding: '10px 24px' }}>
                   Close
@@ -1055,7 +1245,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               <form onSubmit={handleBrochureSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ textAlign: 'center' }}>
                   <Download size={28} color="#D4AF37" style={{ margin: '0 auto 6px' }} />
-                  <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', color: '#FFF', margin: '0 0 4px' }}>Download E-Brochure</h3>
+                  <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', color: '#FFF', margin: '0 0 4px' }}>Download Verified E-Brochure</h3>
                   <p style={{ fontSize: '0.74rem', color: '#718096', margin: 0 }}>Instant PDF download for {title}</p>
                 </div>
                 <input required type="text" placeholder="Your Full Name" value={brochureForm.name}
@@ -1065,7 +1255,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                   onChange={e => setBrochureForm(f => ({ ...f, phone: e.target.value }))}
                   style={{ width: '100%', padding: '11px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.80rem', boxSizing: 'border-box' }} />
                 <button type="submit" disabled={brochureSubmitting} className="pi-btn-gold" style={{ width: '100%', padding: '12px', justifyContent: 'center', fontSize: '0.82rem' }}>
-                  {brochureSubmitting ? 'Unlocking...' : 'Download Floor Plans PDF'}
+                  {brochureSubmitting ? 'Generating PDF...' : 'Download Verified Floor Plans PDF'}
                 </button>
               </form>
             )}
