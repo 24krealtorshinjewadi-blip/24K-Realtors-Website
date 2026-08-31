@@ -1,21 +1,9 @@
 /**
  * PropertyDetailView.jsx
  * ─────────────────────────────────────────────────────────────────────────────
- * Premium AI-Ready Property Subpage for 24K REALTORS PUNE
- *
- * Features:
- *  • IntersectionObserver scroll-spy → sticky tab auto-highlights
- *  • AI Match Score badge, Price Trend insight chip
- *  • Animated stat counters on scroll-in
- *  • Lucide SVG icons throughout (no emojis)
- *  • Stagger entrance animations on highlights cards
- *  • Amenities editorial grid with image hover zoom + overlay
- *  • Location: progress-bar style travel-time cards
- *  • Floor Plans: zoom, download, carpet area bars
- *  • AI Property Intelligence section (NEW)
- *  • Smart lead capture form with validation UI
- *  • Reactive useWindowWidth — no stale mobile detection
- *  • Clean architecture — dead state removed
+ * Ultra-Luxury, Production-Ready Property Subpage for 24K REALTORS PUNE
+ * Built to match Image 2 (Cinematic Society Intelligence architecture)
+ * Pure Vanilla CSS | Clean 2-Column Responsive Grid | Zero Duplication
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -24,244 +12,14 @@ import {
   MapPin, ChevronRight, Heart, Share2, ArrowRight,
   BedDouble, Maximize2, Building2, Home, ShieldCheck,
   Zap, TreePine, Train, Plane, Clock, Dumbbell,
-  Waves, Users, Baby, Route, Star, TrendingUp,
-  Brain, Sparkles, Download, ZoomIn, Phone,
+  Waves, Users, Route, Star, TrendingUp,
+  Download, ZoomIn, Phone,
   Mail, CheckCircle2, Award, Lock, BadgeCheck,
-  BarChart3, Target, Coffee, X, Send, Bot, MessageSquare,
-  Calculator, FileText, ExternalLink, Shield, QrCode
+  BarChart3, Target, Coffee, X, Send, MessageSquare,
+  FileText, ExternalLink, Sparkles, Layers, Shield
 } from 'lucide-react';
-import PropertyGallery from './PropertyGallery';
 import { apiService } from '../services/apiService';
-
-/* ── Inject CSS once ── */
-const STYLE_ID = 'pdv-styles-v4';
-const PDV_CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
-
-.pdv-root { font-family: 'Montserrat', sans-serif; }
-
-/* ── STICKY TOPBAR ── */
-.pdv-topbar {
-  position: sticky; top: 0; z-index: 200;
-  background: rgba(6,13,26,0.96); backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(212,175,55,0.15);
-  padding: 0 28px; height: 60px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-}
-@media (max-width: 768px) { .pdv-topbar { padding: 0 14px; } }
-
-/* ── CINEMATIC HERO ── */
-.pdv-hero-cinematic {
-  position: relative; width: 100%;
-  height: clamp(400px, 52vh, 620px); overflow: hidden; background: #000;
-}
-.pdv-hero-cinematic__img {
-  width: 100%; height: 100%; object-fit: cover;
-  transform: scale(1.04); transition: transform 8s ease;
-  filter: brightness(0.78);
-}
-.pdv-hero-cinematic:hover .pdv-hero-cinematic__img { transform: scale(1.0); }
-.pdv-hero-cinematic__overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(6,13,26,0.92) 0%, rgba(6,13,26,0.35) 55%, rgba(6,13,26,0.1) 100%);
-  z-index: 1;
-}
-.pdv-hero-cinematic__content {
-  position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
-  padding: 32px 36px;
-}
-@media (max-width: 768px) { .pdv-hero-cinematic__content { padding: 20px 16px; } }
-
-.pdv-hero-cinematic__confidence {
-  position: absolute; top: 18px; right: 20px; z-index: 3;
-  display: flex; align-items: center; gap: 5px;
-  background: rgba(16,185,129,0.18); border: 1px solid rgba(16,185,129,0.45);
-  color: #6EE7B7; font-size: 0.66rem; font-weight: 800;
-  padding: 5px 11px; border-radius: 100px; letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.pdv-hero-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-.pdv-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 11px; border-radius: 100px;
-  font-size: 0.66rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase;
-}
-.pdv-badge-gold { background: rgba(212,175,55,0.18); border: 1px solid rgba(212,175,55,0.5); color: #F3E5AB; }
-.pdv-badge-green { background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.4); color: #6EE7B7; }
-.pdv-badge-blue  { background: rgba(59,130,246,0.14);  border: 1px solid rgba(59,130,246,0.4);  color: #93C5FD; }
-
-.pdv-hero-developer {
-  display: flex; align-items: center; gap: 6px;
-  color: #D4AF37; font-size: 0.75rem; font-weight: 800;
-  letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 8px;
-}
-.pdv-hero-title {
-  font-family: 'Cinzel', serif; font-size: clamp(1.6rem, 4vw, 2.8rem);
-  font-weight: 700; color: #fff; margin: 0 0 8px; line-height: 1.15;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.7);
-}
-.pdv-hero-address {
-  display: flex; align-items: center; gap: 6px;
-  color: rgba(255,255,255,0.72); font-size: 0.82rem; margin-bottom: 14px;
-}
-.pdv-hero-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-.pdv-hero-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.18); border-radius: 8px;
-  padding: 7px 13px; font-size: 0.8rem; font-weight: 700; color: #fff;
-}
-.pdv-hero-chip--gold { background: rgba(212,175,55,0.2); border-color: rgba(212,175,55,0.45); color: #F3E5AB; }
-.pdv-hero-chip--green { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.4); color: #6EE7B7; }
-
-/* Gallery thumbnail strip */
-.pdv-gallery-strip {
-  position: absolute; bottom: 16px; right: 28px; z-index: 4;
-  display: flex; gap: 8px; align-items: flex-end;
-}
-@media (max-width: 768px) { .pdv-gallery-strip { display: none; } }
-.pdv-gallery-thumb {
-  width: 74px; height: 50px; border-radius: 8px; overflow: hidden;
-  border: 2px solid rgba(255,255,255,0.18); cursor: pointer;
-  transition: all 0.22s ease; opacity: 0.6;
-}
-.pdv-gallery-thumb.active, .pdv-gallery-thumb:hover {
-  opacity: 1; border-color: #D4AF37;
-  transform: scale(1.06) translateY(-2px);
-  box-shadow: 0 4px 14px rgba(212,175,55,0.35);
-}
-.pdv-gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
-
-/* Stats strip (below hero) */
-.pdv-stats-strip {
-  background: rgba(11,22,40,0.98); border-bottom: 1px solid rgba(212,175,55,0.18);
-  backdrop-filter: blur(16px);
-}
-.pdv-stats-strip__inner {
-  max-width: 1320px; margin: 0 auto;
-  display: flex; gap: 0; overflow-x: auto;
-  padding: 0 28px;
-}
-@media (max-width: 768px) { .pdv-stats-strip__inner { padding: 0 14px; } }
-.pdv-stat-item {
-  flex: 1 0 auto; padding: 18px 20px; text-align: center;
-  border-right: 1px solid rgba(255,255,255,0.06);
-  min-width: 110px;
-}
-.pdv-stat-item:last-child { border-right: none; }
-.pdv-stat-item__label { font-size: 0.62rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 5px; }
-.pdv-stat-item__value { font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; color: #F1F5F9; }
-.pdv-stat-item__value--gold { color: #D4AF37; }
-.pdv-stat-item__value--green { color: #10B981; }
-
-/* Scroll-spy tab highlight */
-.pdv-tab { transition: all 0.25s ease; border-bottom: 3px solid transparent; }
-.pdv-tab:hover { color: #E2C87A !important; }
-.pdv-tab.active { color: #F3E5AB !important; border-bottom-color: #D4AF37 !important; }
-
-/* Card hover lifts */
-.pdv-card-lift { transition: transform 0.25s ease, box-shadow 0.25s ease !important; }
-.pdv-card-lift:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.5) !important; }
-
-/* Highlight icon cards */
-.pdv-hl-card { transition: all 0.25s ease !important; }
-.pdv-hl-card:hover { border-color: rgba(212,175,55,0.5) !important; transform: translateY(-3px); box-shadow: 0 12px 32px rgba(212,175,55,0.12) !important; }
-
-/* Amenity image zoom */
-.pdv-amenity-img { transition: transform 0.45s ease; }
-.pdv-amenity-card:hover .pdv-amenity-img { transform: scale(1.08); }
-.pdv-amenity-overlay { opacity: 0; transition: opacity 0.3s ease; }
-.pdv-amenity-card:hover .pdv-amenity-overlay { opacity: 1; }
-
-/* Similar property cards */
-.pdv-sim-card { transition: all 0.25s ease !important; }
-.pdv-sim-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important; border-color: rgba(212,175,55,0.3) !important; }
-.pdv-sim-card:hover .pdv-sim-img { transform: scale(1.06); }
-.pdv-sim-img { transition: transform 0.4s ease; }
-
-/* CTA buttons */
-.pdv-btn-gold { transition: all 0.22s ease !important; }
-.pdv-btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(212,175,55,0.45) !important; }
-.pdv-btn-outline { transition: all 0.22s ease !important; }
-.pdv-btn-outline:hover { background: rgba(212,175,55,0.12) !important; border-color: #D4AF37 !important; transform: translateY(-2px); }
-
-/* AI chip pulse */
-@keyframes pdv-pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
-.pdv-ai-dot { animation: pdv-pulse 2s infinite; }
-
-/* Section fade-in on scroll */
-@keyframes pdv-slide-up { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
-.pdv-sec-visible { animation: pdv-slide-up 0.55s ease forwards; }
-.pdv-sec-hidden { opacity:0; transform:translateY(28px); }
-
-/* AI score ring */
-@keyframes pdv-ring-draw { from { stroke-dashoffset: 283; } to { stroke-dashoffset: 17; } }
-.pdv-ring-animate { animation: pdv-ring-draw 1.5s 0.5s ease forwards; }
-
-/* Progress bar */
-@keyframes pdv-bar { from { width:0; } to { width: var(--target-w); } }
-.pdv-bar-animate { animation: pdv-bar 1.2s 0.3s ease forwards; }
-
-/* Form input focus */
-.pdv-input { transition: border-color 0.2s ease, box-shadow 0.2s ease !important; }
-.pdv-input:focus { border-color: rgba(212,175,55,0.7) !important; box-shadow: 0 0 0 3px rgba(212,175,55,0.12) !important; outline: none !important; }
-
-/* Location travel card */
-.pdv-loc-card { transition: all 0.2s ease !important; }
-.pdv-loc-card:hover { border-color: rgba(212,175,55,0.35) !important; background: rgba(20,38,62,0.9) !important; }
-
-/* Floor plan card */
-.pdv-fp-card { transition: all 0.25s ease !important; }
-.pdv-fp-card:hover { border-color: rgba(212,175,55,0.4) !important; transform: translateY(-3px); }
-.pdv-fp-img { transition: transform 0.3s ease; }
-.pdv-fp-card:hover .pdv-fp-img { transform: scale(1.04); }
-
-/* Mobile Action Dock */
-@media (max-width: 768px) {
-  .pdv-dock-info { display: none !important; }
-  .pdv-mobile-action-dock { padding: 8px 10px !important; gap: 6px !important; }
-  .pdv-mobile-action-dock a, .pdv-mobile-action-dock button { padding: 10px 10px !important; flex: 1 1 auto; justify-content: center; font-size: 0.72rem !important; }
-}
-
-/* ── EMI Calculator Enhancements ── */
-@keyframes pdv-donut-fill { from { stroke-dashoffset: 440; } to { stroke-dashoffset: var(--donut-offset); } }
-.pdv-donut-ring { animation: pdv-donut-fill 1.2s 0.3s cubic-bezier(0.4,0,0.2,1) forwards; }
-
-/* Slider track styling */
-.pdv-emi-slider { -webkit-appearance: none; appearance: none; height: 5px; border-radius: 4px; outline: none; cursor: pointer; }
-.pdv-emi-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #D4AF37, #C9A227); border: 2px solid #fff; box-shadow: 0 2px 8px rgba(212,175,55,0.5); cursor: pointer; transition: transform 0.15s ease; }
-.pdv-emi-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
-.pdv-emi-slider::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #D4AF37, #C9A227); border: 2px solid #fff; cursor: pointer; }
-
-/* Copy toast */
-@keyframes pdv-toast-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-@keyframes pdv-toast-out { from { opacity:1; } to { opacity:0; } }
-.pdv-copy-toast { animation: pdv-toast-in 0.25s ease, pdv-toast-out 0.4s 1.6s ease forwards; }
-
-/* Amortization table */
-.pdv-amort-row:nth-child(even) { background: rgba(255,255,255,0.025); }
-.pdv-amort-row:hover { background: rgba(212,175,55,0.06) !important; }
-`;
-
-
-function injectStyles() {
-  if (typeof document === 'undefined' || document.getElementById(STYLE_ID)) return;
-  const tag = document.createElement('style');
-  tag.id = STYLE_ID;
-  tag.textContent = PDV_CSS;
-  document.head.appendChild(tag);
-}
-
-function useWindowWidth() {
-  const [w, setW] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
-  useEffect(() => {
-    const h = () => setW(window.innerWidth);
-    window.addEventListener('resize', h);
-    return () => window.removeEventListener('resize', h);
-  }, []);
-  return w;
-}
+import './PropertyIntelligence.css';
 
 /* ── Section heading component ── */
 function SectionLabel({ children }) {
@@ -289,88 +47,58 @@ function AnimSection({ children, id, style = {} }) {
     return () => obs.disconnect();
   }, []);
   return (
-    <div ref={ref} id={id} className={vis ? 'pdv-sec-visible' : 'pdv-sec-hidden'} style={{ marginBottom: '72px', paddingTop: '12px', ...style }}>
+    <div ref={ref} id={`sec-${id}`} className={vis ? 'pdv-sec-visible' : 'pdv-sec-hidden'} style={{ marginBottom: '40px', paddingTop: '12px', ...style }}>
       {children}
     </div>
   );
 }
 
-/* ── Stat counter ── */
-function StatCounter({ target, suffix = '', prefix = '' }) {
-  const [val, setVal] = useState(0);
-  const ref = useRef(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-      obs.disconnect();
-      let start = 0;
-      const duration = 1200;
-      const step = (timestamp) => {
-        if (!start) start = timestamp;
-        const progress = Math.min((timestamp - start) / duration, 1);
-        setVal(Math.floor(progress * target));
-        if (progress < 1) requestAnimationFrame(step);
-        else setVal(target);
-      };
-      requestAnimationFrame(step);
-    }, { threshold: 0.5 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [target]);
-  return <span ref={ref}>{prefix}{val.toLocaleString()}{suffix}</span>;
-}
-
 /* ══════════════════════════════════════════════════════════════════════════════
    MAIN COMPONENT
 ══════════════════════════════════════════════════════════════════════════════ */
-export default function PropertyDetailView({ property = {}, onBack, onOpenInquiry, onOpenBrochure }) {
-  injectStyles();
-  const windowWidth = useWindowWidth();
-  const isMobile = windowWidth <= 768;
-
+export default function PropertyDetailView({ property = {}, onBack, onOpenInquiry, onOpenBrochure, formatPrice }) {
   /* ── State ── */
-  const [activeTab, setActiveTab]         = useState('overview');
-  const [saved, setSaved]                 = useState(false);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [activeTab, setActiveTab]                 = useState('overview');
+  const [saved, setSaved]                         = useState(false);
+  const [activeImageIndex, setActiveImageIndex]   = useState(0);
+  const [ringAnimated, setRingAnimated]           = useState(false);
+  const [selectedBhk, setSelectedBhk]             = useState('ALL');
+
+  // Form State
+  const [formData, setFormData]                   = useState({ name: '', phone: '', email: '' });
+  const [formErrors, setFormErrors]               = useState({});
+  const [formSubmitting, setFormSubmitting]       = useState(false);
+  const [formSuccess, setFormSuccess]             = useState(false);
+
+  // AI Chat modal state
+  const [aiChatOpen, setAiChatOpen]               = useState(false);
+  const [aiMessages, setAiMessages]               = useState([]);
+  const [aiInput, setAiInput]                     = useState('');
+  const [aiThinking, setAiThinking]               = useState(false);
+  const aiChatEndRef                              = useRef(null);
+  const aiInputRef                                = useRef(null);
+
+  // EMI Calculator State
+  const [emiPrice, setEmiPrice]                   = useState(property.price || 14500000);
+  const [downPaymentPct, setDownPaymentPct]       = useState(20);
+  const [interestRate, setInterestRate]           = useState(8.35);
+  const [tenureYears, setTenureYears]             = useState(20);
+  const [showAmortization, setShowAmortization]   = useState(false);
+  const [emiCopied, setEmiCopied]                 = useState(false);
+
+  // E-Brochure Lead Capture Modal State
+  const [brochureModalOpen, setBrochureModalOpen] = useState(false);
+  const [brochureForm, setBrochureForm]           = useState({ name: '', phone: '', email: '' });
+  const [brochureSubmitting, setBrochureSubmitting] = useState(false);
+  const [brochureSuccess, setBrochureSuccess]     = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [property?.id]);
-  const [ringAnimated, setRingAnimated]   = useState(false);
-  const [formData, setFormData]           = useState({ name: '', phone: '', email: '' });
-  const [formErrors, setFormErrors]       = useState({});
-  const [formSubmitting, setFormSubmitting] = useState(false);
-  const [formSuccess, setFormSuccess]     = useState(false);
-  // AI Chat modal state
-  const [aiChatOpen, setAiChatOpen]       = useState(false);
-  const [aiMessages, setAiMessages]       = useState([]);
-  const [aiInput, setAiInput]             = useState('');
-  const [aiThinking, setAiThinking]       = useState(false);
-  const aiChatEndRef                      = useRef(null);
-  const aiInputRef                        = useRef(null);
-
-  // EMI Calculator State
-  const [emiPrice, setEmiPrice]           = useState(property.price || 8500000);
-  const [downPaymentPct, setDownPaymentPct] = useState(20);
-  const [interestRate, setInterestRate]   = useState(8.35);
-  const [tenureYears, setTenureYears]     = useState(20);
-
-  // EMI Calculator UI State
-  const [showAmortization, setShowAmortization] = useState(false);
-  const [emiCopied, setEmiCopied]             = useState(false);
-
-  // E-Brochure Lead Capture Modal State
-  const [brochureModalOpen, setBrochureModalOpen] = useState(false);
-  const setIsBrochureModalOpen = setBrochureModalOpen;
-  const [brochureForm, setBrochureForm]   = useState({ name: '', phone: '', email: '' });
-  const [brochureSubmitting, setBrochureSubmitting] = useState(false);
-  const [brochureSuccess, setBrochureSuccess] = useState(false);
 
   /* ── Property metadata ── */
-  const title         = property.title        || 'Godrej Woodsville';
-  const location      = property.location     || 'Hinjewadi Phase 1, Pune';
+  const title         = property.title        || '24K Opula Premium 3 BHK';
+  const location      = property.location     || 'Baner, Pune';
   const developerName = property.builderName  || property.developer || property.developerName
     || (title.toLowerCase().includes('opula') ? 'Pride Purple Group'
       : title.toLowerCase().includes('altura') ? 'Kolte-Patil Developers'
@@ -382,16 +110,42 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       : title.toLowerCase().includes('lodha') || title.toLowerCase().includes('belmondo') ? 'Lodha Group'
       : title.toLowerCase().includes('vilas') || title.toLowerCase().includes('yashwin') ? 'Vilas Javdekar (VJ)'
       : '24K Realtors Partner');
-  const reraNumber    = property.reraNumber || 'P52100046770';
-  const possession    = property.possessionDate || property.possession || 'Dec 2027';
+  const reraNumber    = property.reraNumber || 'RERA-PUN-PRM-24K091';
+  const possession    = property.possessionDate || property.possession || 'December 2027';
   const projectArea   = property.projectArea || property.landParcel || (property.totalLandAcres ? `${property.totalLandAcres} Acres` : '8.5 Acres');
+  const carpetArea    = property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '920–1650 sq.ft';
   const investmentScore = property.investmentScore || property.aiScore || 94;
-  const address       = property.address || property.location || `${title}, ${location}`;
+  const address       = property.address || (property.location ? `${title}, near High Street, ${property.location}` : `${title}, Baner-Balewadi Link Road, Pune`);
   const displayPrice  = property.price 
     ? (typeof formatPrice === 'function' 
-        ? formatPrice(property.price) 
+        ? formatPrice(property.price, property.transactionType) 
         : (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} Lakhs`))
     : (property.priceDisplay || '₹1.45 Cr*');
+
+  /* ── Images for Cinematic Hero & Gallery ── */
+  const heroImages = (() => {
+    const imgs = [];
+    if (property.imageUrl && !property.imageUrl.includes('unsplash')) imgs.push(property.imageUrl);
+    if (property.gallery && property.gallery.length) imgs.push(...property.gallery.map(g => g.url || g));
+    if (imgs.length === 0) {
+      const t = (title || '').toLowerCase();
+      if (t.includes('opula')) imgs.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png');
+      else if (t.includes('altura')) imgs.push('/dev_vj_building.png', '/dev_kolte_patil_township.png', '/dev_vtp_township.png');
+      else if (t.includes('godrej')) imgs.push('/dev_godrej_building.png', '/dev_kolte_patil_township.png', '/dev_shapoorji_township.png');
+      else if (t.includes('shapoorji') || t.includes('joyville')) imgs.push('/dev_shapoorji_township.png', '/dev_vtp_township.png', '/dev_godrej_building.png');
+      else if (t.includes('gera')) imgs.push('/dev_gera_tower.png', '/dev_godrej_building.png', '/dev_paranjape_township.png');
+      else if (t.includes('lodha')) imgs.push('/dev_lodha_tower.png', '/dev_vj_building.png', '/dev_godrej_building.png');
+      else if (t.includes('vtp')) imgs.push('/dev_vtp_township.png', '/dev_kolte_patil_township.png', '/dev_lodha_tower.png');
+      else imgs.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png');
+    }
+    const fallbacks = ['/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png', '/dev_lodha_tower.png'];
+    let fi = 0;
+    while (imgs.length < 4) { imgs.push(fallbacks[fi++ % fallbacks.length]); }
+    return imgs.slice(0, 6);
+  })();
+
+  const transactionType = property.transactionType || 'BUY';
+  const projectStatus   = property.projectStatus   || (property.possessionDate ? 'READY TO MOVE' : 'UNDER CONSTRUCTION');
 
   /* ── EMI Computations ── */
   const loanAmount = Math.max(0, emiPrice * (1 - downPaymentPct / 100));
@@ -421,37 +175,35 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     }, 800);
   };
 
-  /* ── Chat Concierge logic ── */
+  /* ── AI Concierge Responses ── */
   const CONCIERGE_SUGGESTED_QUESTIONS = [
     `What makes ${title} a good investment?`,
     `What is the possession date and RERA status?`,
-    `Which BHK is best value for money here?`,
-    `How is the connectivity to IT hubs?`,
+    `Which BHK configuration offers best value?`,
+    `How is the connectivity to IT parks & Metro?`,
     `What are the nearby schools and hospitals?`,
   ];
 
-  // Pre-built intelligent responses based on property context
   const getConciergeResponse = (question) => {
     const q = question.toLowerCase();
     const t = title;
     const loc = location;
     if (q.includes('investment') || q.includes('good')) {
-      return `${t} is an excellent investment for multiple reasons:\n\n• **Location Alpha**: Hinjewadi IT corridor has seen 18% price appreciation YoY — one of Pune's fastest growing micro-markets.\n• **Builder Trust**: ${developerName} has a 100% on-time delivery track record in Pune.\n• **Rental Yield**: Expected 4.8% rental yield post-possession, above the city average of 3.2%.\n• **Infrastructure**: Upcoming Metro connectivity will further boost property values by 15–20%.\n\nAdvisory Verdict: Strong Buy. 🟢`;
+      return `${t} is an exceptional investment for multiple reasons:\n\n• **Location Alpha**: ${loc} has seen consistent ~14-18% price appreciation YoY.\n• **Builder Trust**: ${developerName} has a 100% verified on-time delivery track record in Pune.\n• **Rental Yield**: Projected 4.6%–5.2% rental yield post-possession, significantly above city averages.\n• **Infrastructure**: Upcoming Metro & High Street connectivity will drive long-term capital growth.\n\nSpecialist Verdict: Strong Buy. 🟢`;
     }
     if (q.includes('possession') || q.includes('rera') || q.includes('status')) {
-      return `${t} possession details:\n\n• **Possession Date**: ${property.possessionDate || 'Nov 2028'}\n• **RERA Number**: ${property.reraNumber || 'P52100046770'}\n• **Construction Status**: On track — structure complete, finishing underway.\n• **RERA Verified**: Yes, registered with MahaRERA.\n\nYou can verify on maharera.mahaonline.gov.in using the RERA number above.`;
+      return `${t} verified registration details:\n\n• **Possession Date**: ${possession}\n• **RERA Number**: ${reraNumber}\n• **Status**: ${projectStatus}\n• **Clear Title**: 100% legal title clearance & government sanctioned layouts.\n\nYou can verify this record on maharera.maharashtra.gov.in using the RERA number.`;
     }
-    if (q.includes('bhk') || q.includes('value') || q.includes('money')) {
-      return `For best value at ${t}:\n\n• **2 BHK (761–858 sq.ft)** — Best for young professionals and couples. Lower ticket price, higher rental demand.\n• **3 BHK (904–973 sq.ft)** — Best for families. Better resale value long-term.\n\n📊 Specialist Recommendation: If budget allows, the **3 BHK** offers better ROI by ~12% over a 5-year horizon due to family demand in Hinjewadi.`;
+    if (q.includes('bhk') || q.includes('value') || q.includes('money') || q.includes('config')) {
+      return `For best value at ${t}:\n\n• **2 BHK Units**: Perfect for IT professionals & young couples with high rental liquidity.\n• **3 BHK & Penthouse Units**: Ideal for end-use families seeking maximum carpet efficiency and higher capital appreciation.\n\n📊 Specialist Recommendation: The **3 BHK Luxury** layout offers the highest resale multiple over a 5-year horizon.`;
     }
-    if (q.includes('connect') || q.includes('it hub') || q.includes('office') || q.includes('commute')) {
-      return `${t} connectivity at ${loc}:\n\n• 🏢 **Hinjewadi IT Park Phase 1, 2 & 3**: 5–10 min drive\n• 🚇 **Metro Station (Wakad)**: 10 min\n• 🛣️ **Pune-Mumbai Expressway**: 10 min\n• 🏬 **Phoenix Mall of Millennium**: 15 min\n• ✈️ **Pune Airport**: 45 min\n\nIdeal for IT employees at Infosys, TCS, Wipro, Cognizant campuses nearby.`;
+    if (q.includes('connect') || q.includes('it park') || q.includes('office') || q.includes('commute')) {
+      return `${t} connectivity at ${loc}:\n\n• 🏢 **Hinjewadi IT Park Phase 1 & 2**: 5–10 min drive\n• 🚇 **Pune Metro Station**: 5–8 min\n• 🛣️ **Mumbai-Pune Expressway**: 10 min\n• 🏬 **Balewadi High Street & Phoenix Mall**: 5–12 min\n• ✈️ **Pune International Airport**: 45 min`;
     }
     if (q.includes('school') || q.includes('hospital') || q.includes('nearby')) {
-      return `Nearby facilities at ${t}:\n\n🏫 **Schools**:\n• Indus International School (5 km)\n• VIBGYOR High School (4 km)\n• Ryan International (6 km)\n\n🏥 **Hospitals**:\n• Medipoint Hospital (4 km)\n• Sahyadri Specialty Hospital (8 km)\n• Lifepoint Multispeciality Hospital (6 km)\n\n🛒 **Shopping**:\n• D-Mart Hinjewadi (3 km)\n• Phoenix Mall (15 min)`;
+      return `Nearby social infrastructure around ${t}:\n\n🏫 **Schools**: VIBGYOR High, Indus International, Ryan International.\n🏥 **Hospitals**: Medipoint Hospital, Jupiter Hospital, Ruby Hall Clinic.\n🛒 **Shopping & Leisure**: D-Mart, Phoenix Mall of Millennium, Balewadi High Street.`;
     }
-    // Generic fallback
-    return `Great question about ${t}! Here's what I know:\n\n${t} is a ${developerName} project in ${loc}, offering 2 & 3 BHK premium homes from ${property.price ? `₹${Math.round(property.price / 100000)} L` : '₹85 L'}. With an Investment Rating of ${investmentScore}/100, this project ranks highly on location, builder trust, and future potential.\n\nFor more specific details, our expert advisors can give you a personalized consultation. Shall I connect you? 📞`;
+    return `Great inquiry about ${t}! It is a signature ${developerName} development in ${loc}, offering premium residences with an Investment Score of ${investmentScore}/100.\n\nWould you like our senior advisor to arrange a private site visit or share floor plans on WhatsApp? 📞`;
   };
 
   const handleAiSend = async (questionOverride) => {
@@ -460,7 +212,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     setAiInput('');
     setAiMessages(prev => [...prev, { role: 'user', text: question }]);
     setAiThinking(true);
-    await new Promise(r => setTimeout(r, 800 + Math.random() * 400));
+    await new Promise(r => setTimeout(r, 600 + Math.random() * 300));
     const response = getConciergeResponse(question);
     setAiMessages(prev => [...prev, { role: 'ai', text: response }]);
     setAiThinking(false);
@@ -470,7 +222,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     if (aiMessages.length === 0) {
       setAiMessages([{
         role: 'ai',
-        text: `Namaste! 👋 Welcome to 24K Property Concierge.\n\nI have complete data about **${title}** — pricing, specs, location, investment potential, and more.\n\nHow may I assist you today?`
+        text: `Namaste! 👋 Welcome to 24K Property Intelligence Desk.\n\nI have complete verified records for **${title}** (${developerName}) — pricing, carpet specs, Vastu orientation, RERA dossiers, and ROI projections.\n\nHow can I help you today?`
       }]);
     }
     setAiChatOpen(true);
@@ -481,25 +233,9 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     aiChatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [aiMessages, aiThinking]);
 
-  /* ── Scroll-spy ── */
-  const SECTION_IDS = ['overview', 'highlights', 'amenities', 'location', 'floorplans', 'calculator', 'society-profile', 'similar'];
-  useEffect(() => {
-    const observers = [];
-    SECTION_IDS.forEach(id => {
-      const el = document.getElementById(`sec-${id}`);
-      if (!el) return;
-      const obs = new IntersectionObserver(([e]) => {
-        if (e.isIntersecting) setActiveTab(id);
-      }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
-      obs.observe(el);
-      observers.push(obs);
-    });
-    return () => observers.forEach(o => o.disconnect());
-  }, []);
-
   /* ── Ring animation trigger ── */
   useEffect(() => {
-    const t = setTimeout(() => setRingAnimated(true), 800);
+    const t = setTimeout(() => setRingAnimated(true), 600);
     return () => clearTimeout(t);
   }, []);
 
@@ -514,1456 +250,828 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     else if (navigator?.clipboard) navigator.clipboard.writeText(window.location.href).catch(() => {});
   };
 
-  /* ── Data ── */
+  /* ── Section Tabs ── */
   const TABS = [
-    { id: 'overview',        label: 'OVERVIEW' },
-    { id: 'highlights',      label: 'HIGHLIGHTS' },
-    { id: 'amenities',       label: 'AMENITIES' },
-    { id: 'location',        label: 'LOCATION' },
-    { id: 'floorplans',      label: 'FLOOR PLANS' },
-    { id: 'calculator',      label: '🧮 EMI CALCULATOR' },
-    { id: 'society-profile', label: '🏛️ SOCIETY & VASTU' },
-    { id: 'similar',         label: 'SIMILAR' },
+    { id: 'overview',        label: 'Overview & Highlights' },
+    { id: 'floorplans',      label: 'Configurations & Plans' },
+    { id: 'amenities',       label: 'World-Class Amenities' },
+    { id: 'location',        label: 'Location & Connectivity' },
+    { id: 'calculator',      label: 'EMI Calculator' },
+    { id: 'society-profile', label: 'Society & Vastu Dossier' },
+    { id: 'similar',         label: 'Similar Properties' },
   ];
 
-  const METRICS = [
-    { Icon: BedDouble,  label: '2 & 3',      sub: 'BHK Homes' },
-    { Icon: Maximize2,  label: '761–973',     sub: 'Sq.ft Carpet' },
-    { Icon: Building2,  label: '4',           sub: 'Towers' },
-    { Icon: Home,       label: '882',         sub: 'Total Units' },
-  ];
-
-  const HIGHLIGHTS = [
-    { Icon: MapPin,      text: `Prime ${location} corridor` },
-    { Icon: Train,       text: 'Metro & IT Park within 10 mins' },
-    { Icon: TreePine,    text: '80%+ Open Green Spaces & Views' },
-    { Icon: Star,        text: 'Vaastu-compliant premium layouts' },
-    { Icon: Building2,   text: 'Grand Clubhouse & 40+ amenities' },
-    { Icon: BadgeCheck,  text: `${developerName} certified delivery` },
-  ];
-
-  const RATING_SCORES = [
-    { label: 'Location & Transit',     score: 95, color: '#D4AF37' },
-    { label: 'Price & Rental ROI',      score: 92, color: '#68D391' },
-    { label: 'Builder Track Record',   score: 98, color: '#63B3ED' },
-    { label: 'Vastu & Architecture',   score: 93, color: '#F687B3' },
-  ];
-
+  /* ── Data sets ── */
   const AMENITIES = [
     { title: 'Infinity Edge Pool',        Icon: Waves,       img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=75' },
     { title: 'Grand Clubhouse',           Icon: Building2,   img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=75' },
     { title: 'High-Tech Gymnasium',       Icon: Dumbbell,    img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=75' },
     { title: 'Landscaped Zen Gardens',    Icon: TreePine,    img: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=75' },
     { title: 'Sky Lounge & Deck',         Icon: Coffee,      img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Multi-Tier Security',       Icon: ShieldCheck, img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=75' },
+    { title: '3-Tier High Security',      Icon: ShieldCheck, img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=75' },
   ];
 
   const LOCATIONS = [
-    { name: 'Hinjewadi IT Park Phase 1', time: '5 Mins',  pct: 90, Icon: Building2 },
-    { name: 'Wakad Metro Station',       time: '10 Mins', pct: 75, Icon: Train },
-    { name: 'Mumbai-Pune Expressway',    time: '12 Mins', pct: 70, Icon: Route },
-    { name: 'Phoenix Mall of Millennium',time: '15 Mins', pct: 60, Icon: Building2 },
-    { name: 'Aditya Birla Hospital',     time: '18 Mins', pct: 50, Icon: ShieldCheck },
-    { name: 'Pune International Airport',time: '45 Mins', pct: 30, Icon: Plane },
+    { name: 'Hinjewadi IT Park Phase 1 & 2', time: '5 Mins',  pct: 90, Icon: Building2 },
+    { name: 'Balewadi High Street',          time: '6 Mins',  pct: 85, Icon: Sparkles },
+    { name: 'Wakad Metro Station',           time: '8 Mins',  pct: 75, Icon: Train },
+    { name: 'Mumbai-Pune Expressway',        time: '10 Mins', pct: 70, Icon: Route },
+    { name: 'Phoenix Mall of Millennium',    time: '12 Mins', pct: 60, Icon: Building2 },
+    { name: 'Pune International Airport',    time: '45 Mins', pct: 30, Icon: Plane },
   ];
 
   const FLOOR_PLANS = [
-    { type: '2 BHK Luxury',  area: '761 sq.ft', price: '₹85 L - 95 L', pct: 78, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' },
-    { type: '2.5 BHK Royale',area: '858 sq.ft', price: '₹98 L - 1.08 Cr', pct: 88, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=75' },
-    { type: '3 BHK Grande',  area: '973 sq.ft', price: '₹1.18 Cr - 1.35 Cr', pct: 100, img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=75' },
+    { type: '2 BHK Luxury Suite', area: '920 – 1,050 sq.ft', price: '₹95 Lakhs – ₹1.15 Cr', pct: 78, bhk: '2 BHK' },
+    { type: '3 BHK Royale Residence', area: '1,350 – 1,650 sq.ft', price: '₹1.45 Cr – ₹1.85 Cr', pct: 88, bhk: '3 BHK' },
+    { type: '4 BHK Grand Penthouse', area: '2,100 – 2,450 sq.ft', price: '₹2.30 Cr – ₹3.20 Cr', pct: 100, bhk: '4 BHK' },
+  ];
+
+  const filteredFloorPlans = selectedBhk === 'ALL' ? FLOOR_PLANS : FLOOR_PLANS.filter(fp => fp.bhk.includes(selectedBhk));
+
+  const RATING_SCORES = [
+    { label: 'Location & Transit Proximity', score: 96, color: '#D4AF37' },
+    { label: 'Price & Rental Yield Potential', score: 92, color: '#10B981' },
+    { label: 'Builder Track Record & Legal', score: 98, color: '#3B82F6' },
+    { label: 'Vastu & Architectural Layout', score: 94, color: '#F472B6' },
   ];
 
   const SIMILAR = [
-    { title: 'Godrej Greenfront',         loc: 'Hinjewadi Phase 2', config: '2 & 3 BHK', price: '₹1.25 Cr*', tag: 'PREMIUM', match: 87, img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹1.10 Cr*', tag: 'LUXURY',  match: 82, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75' },
-    { title: 'Lodha Panache',             loc: 'Hinjewadi Phase 1', config: '2, 3 & 5 BHK', price: '₹1.32 Cr*', tag: 'PREMIUM', match: 79, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=75' },
-    { title: 'VTP Monarque',              loc: 'Hinjewadi Phase 3', config: '2 & 3 BHK', price: '₹1.28 Cr*', tag: 'LUXURY',  match: 76, img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=75' },
+    { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹1.05 Cr - ₹2.50 Cr', tag: 'LUXURY', match: 92, img: '/dev_kolte_patil_township.png' },
+    { title: '24K Altura', loc: 'Baner-Balewadi', config: '2 & 3 BHK', price: '₹82 Lakhs - ₹1.40 Cr', tag: 'PREMIUM', match: 89, img: '/dev_vj_building.png' },
+    { title: 'Shapoorji Joyville Vyomora', loc: 'Hinjewadi', config: '2 & 3 BHK', price: '₹84 Lakhs - ₹1.95 Cr', tag: 'LUXURY', match: 86, img: '/dev_shapoorji_township.png' },
+    { title: 'Gera Joy On The Banks', loc: 'Hinjewadi', config: '2 & 3 BHK', price: '₹88 Lakhs - ₹1.75 Cr', tag: 'VERIFIED', match: 84, img: '/dev_gera_tower.png' },
   ];
 
   const TRUST = [
-    { Icon: Lock,        text: 'Best Price Guaranteed' },
-    { Icon: Users,       text: 'Personalized Assistance' },
-    { Icon: BadgeCheck,  text: '100% MahaRERA Verified' },
-    { Icon: ShieldCheck, text: 'Zero Hidden Charges' },
+    { Icon: Lock,        text: 'Direct Builder Pricing Guaranteed' },
+    { Icon: Users,       text: 'Free Private AC Cab Site Visits' },
+    { Icon: BadgeCheck,  text: '100% MahaRERA Verified Dossier' },
+    { Icon: ShieldCheck, text: 'Zero Brokerage On New Bookings' },
   ];
 
-  /* ── Shared styles ── */
-  const G = {
-    card:   { background: 'rgba(13,24,42,0.9)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '18px' },
-    goldBorder: { border: '1px solid rgba(212,175,55,0.3)', borderRadius: '18px', background: 'rgba(13,24,42,0.9)' },
-  };
-
-  const px = isMobile ? '16px' : '28px';
-
-  /* ── Property images for hero gallery ── */
-  const heroImages = (() => {
-    const imgs = [];
-    if (property.imageUrl && !property.imageUrl.includes('unsplash')) imgs.push(property.imageUrl);
-    if (property.gallery && property.gallery.length) imgs.push(...property.gallery.map(g => g.url || g));
-    if (imgs.length === 0) {
-      const t = (title || '').toLowerCase();
-      if (t.includes('opula')) imgs.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png');
-      else if (t.includes('altura')) imgs.push('/dev_vj_building.png', '/dev_kolte_patil_township.png', '/dev_vtp_township.png');
-      else if (t.includes('godrej')) imgs.push('/dev_godrej_building.png', '/dev_kolte_patil_township.png', '/dev_shapoorji_township.png');
-      else if (t.includes('shapoorji') || t.includes('joyville')) imgs.push('/dev_shapoorji_township.png', '/dev_vtp_township.png', '/dev_godrej_building.png');
-      else if (t.includes('gera')) imgs.push('/dev_gera_tower.png', '/dev_godrej_building.png', '/dev_paranjape_township.png');
-      else if (t.includes('lodha')) imgs.push('/dev_lodha_tower.png', '/dev_vj_building.png', '/dev_godrej_building.png');
-      else if (t.includes('vtp')) imgs.push('/dev_vtp_township.png', '/dev_kolte_patil_township.png', '/dev_lodha_tower.png');
-      else imgs.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png');
-    }
-    // Pad to at least 3 images
-    const fallbacks = ['/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png', '/dev_lodha_tower.png'];
-    let fi = 0;
-    while (imgs.length < 3) { imgs.push(fallbacks[fi++ % fallbacks.length]); }
-    return imgs.slice(0, 6);
-  })();
-
-  const transactionType = property.transactionType || 'BUY';
-  const projectStatus   = property.projectStatus   || (property.possessionDate ? 'READY TO MOVE' : 'UNDER CONSTRUCTION');
-
   return (
-    <div className="pdv-root" style={{ background: '#07101D', color: '#FFF', minHeight: '100vh' }}>
+    <div className="pi-page-wrapper">
 
-      {/* ══ STICKY TOPBAR ══ */}
-      <header className="pdv-topbar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={onBack}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', padding: '7px 13px', color: '#CBD5E0', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
-            onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.12)'; e.currentTarget.style.color = '#F3E5AB'; }}
-            onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = '#CBD5E0'; }}
-          >
-            <ChevronRight size={13} style={{ transform: 'rotate(180deg)' }} /> Back
+      {/* ══ STICKY TOPBAR ═══════════════════════════════════════════ */}
+      <header className="pi-topbar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <button onClick={onBack} className="pi-btn-outline" style={{ padding: '7px 14px', fontSize: '0.78rem', gap: '6px' }}>
+            <ChevronRight size={14} style={{ transform: 'rotate(180deg)' }} /> Back
           </button>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
-            <span style={{ fontSize: '0.65rem', color: '#64748B', letterSpacing: '0.07em', textTransform: 'uppercase', fontWeight: 700 }}>Properties · {location}</span>
-            <span style={{ fontFamily: "'Cinzel', serif", fontSize: '0.9rem', fontWeight: 700, color: '#F3E5AB', lineHeight: 1 }}>{title}</span>
+            <span style={{ fontSize: '0.70rem', color: '#64748B', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 700 }}>
+              {location} • {developerName}
+            </span>
+            <span style={{ fontSize: '0.92rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#F3E5AB', lineHeight: 1 }}>
+              {title}
+            </span>
           </div>
         </div>
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <button
-            onClick={handleShare}
-            style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', padding: '8px 13px', color: '#CBD5E0', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}
-            title="Share property"
-          >
-            <Share2 size={14} />
+          <button onClick={handleShare} className="pi-btn-outline" style={{ padding: '8px 12px' }} title="Share Property">
+            <Share2 size={15} />
           </button>
-          <button onClick={onOpenInquiry} className="pdv-btn-gold"
-            style={{ padding: '9px 20px', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', borderRadius: '50px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(212,175,55,0.35)' }}>
-            Book Private Visit
+          <button onClick={onOpenInquiry} className="pi-btn-gold">
+            <Clock size={14} /> Book Private Visit
           </button>
         </div>
       </header>
 
-      {/* ══ CINEMATIC HERO BANNER ══ */}
-      <section className="pdv-hero-cinematic">
+      {/* ══ CINEMATIC HERO BANNER (Image 2 Style) ═════════════════════ */}
+      <section className="pi-hero-cinematic">
         <img
-          src={heroImages[activeImageIndex ?? 0]}
+          src={heroImages[activeImageIndex]}
           alt={title}
-          className="pdv-hero-cinematic__img"
+          className="pi-hero-cinematic__image"
           onError={e => { e.target.onerror = null; e.target.src = '/dev_kolte_patil_township.png'; }}
         />
-        <div className="pdv-hero-cinematic__overlay" />
+        <div className="pi-hero-cinematic__overlay" />
 
         {/* Confidence badge top-right */}
-        <div className="pdv-hero-cinematic__confidence">
-          <ShieldCheck size={12} /> 24K VERIFIED
+        <div className="pi-hero-cinematic__confidence">
+          <ShieldCheck size={13} /> 24K VERIFIED
         </div>
 
-        {/* Main content bottom-left */}
-        <div className="pdv-hero-cinematic__content">
-          {/* Status Badges */}
-          <div className="pdv-hero-badges">
-            <span className="pdv-badge pdv-badge-gold">
-              <Sparkles size={10} /> {projectStatus.replace(/_/g, ' ')}
+        {/* Main content bottom */}
+        <div className="pi-hero-cinematic__content">
+          {/* Badges */}
+          <div className="pi-hero-cinematic__badges">
+            <span className="pi-badge pi-badge-gold">
+              <Sparkles size={11} /> {projectStatus.replace(/_/g, ' ')}
             </span>
-            <span className="pdv-badge pdv-badge-green">
-              <ShieldCheck size={10} /> MahaRERA Registered
+            <span className="pi-badge pi-badge-green">
+              <ShieldCheck size={11} /> MahaRERA Registered
             </span>
             {transactionType && (
-              <span className="pdv-badge pdv-badge-blue">
-                <MapPin size={10} /> {transactionType}
+              <span className="pi-badge pi-badge-blue">
+                <MapPin size={11} /> {transactionType}
               </span>
             )}
           </div>
 
           {/* Developer */}
-          <div className="pdv-hero-developer">
+          <div className="pi-hero-cinematic__developer">
             <Building2 size={13} /> {developerName}
           </div>
 
           {/* Title */}
-          <h1 className="pdv-hero-title">{title}</h1>
+          <h1 className="pi-hero-cinematic__title">
+            {title}
+          </h1>
 
           {/* Address */}
-          <div className="pdv-hero-address">
-            <MapPin size={14} style={{ color: '#D4AF37', flexShrink: 0 }} />
+          <div className="pi-hero-cinematic__address">
+            <MapPin size={14} style={{ flexShrink: 0, color: '#D4AF37' }} />
             {address}
           </div>
 
-          {/* Price + RERA + Possession Chips */}
-          <div className="pdv-hero-chips">
-            <div className="pdv-hero-chip pdv-hero-chip--gold">
-              <span style={{ fontSize: '0.72rem', color: '#D4AF37' }}>₹</span>
-              <span>{property.price ? (property.price >= 10000000 ? `${(property.price / 10000000).toFixed(2)} Cr` : `${Math.round(property.price / 100000)} Lakhs`) : 'On Request'}</span>
+          {/* Price & RERA chips */}
+          <div className="pi-hero-cinematic__chips">
+            <div className="pi-hero-chip">
+              <span style={{ color: '#D4AF37', fontWeight: 800 }}>₹</span>
+              <span>{displayPrice}</span>
             </div>
-            <div className="pdv-hero-chip pdv-hero-chip--green">
-              <ShieldCheck size={12} />
-              <span style={{ fontFamily: 'monospace', letterSpacing: '0.02em' }}>{reraNumber}</span>
+            <div className="pi-hero-chip pi-hero-chip--green">
+              <ShieldCheck size={13} />
+              <span style={{ fontFamily: 'monospace', letterSpacing: '0.03em' }}>{reraNumber}</span>
             </div>
             {possession && (
-              <div className="pdv-hero-chip">
-                <Clock size={12} />
+              <div className="pi-hero-chip pi-hero-chip--white">
+                <Clock size={13} />
                 <span>Possession: {possession}</span>
               </div>
             )}
+            <div className="pi-hero-chip pi-hero-chip--white">
+              <Clock size={13} />
+              <span>Verified: {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+            </div>
           </div>
         </div>
 
-        {/* Gallery thumbnail strip — right side */}
+        {/* Gallery thumbnails strip */}
         {heroImages.length > 1 && (
-          <div className="pdv-gallery-strip">
-            {heroImages.slice(0, 4).map((img, idx) => (
+          <div className="pi-hero-gallery-strip">
+            {heroImages.map((img, idx) => (
               <button
                 key={idx}
-                className={`pdv-gallery-thumb${(activeImageIndex ?? 0) === idx ? ' active' : ''}`}
+                className={`pi-gallery-thumb ${activeImageIndex === idx ? 'active' : ''}`}
                 onClick={() => setActiveImageIndex(idx)}
+                style={{ opacity: activeImageIndex === idx ? 1 : 0.55, padding: 0, background: 'transparent', border: 'none' }}
                 aria-label={`View image ${idx + 1}`}
               >
-                <img src={img} alt="" onError={e => { e.target.onerror = null; e.target.src = '/dev_godrej_building.png'; }} />
+                <img src={img} alt="gallery" onError={e => { e.target.onerror = null; e.target.src = '/dev_godrej_building.png'; }} />
               </button>
             ))}
           </div>
         )}
       </section>
 
-      {/* ══ KEY STATS STRIP ══ */}
-      <div className="pdv-stats-strip">
-        <div className="pdv-stats-strip__inner">
-          {[
-            { label: 'Configurations',   value: `${property.bedrooms || 2} & ${(property.bedrooms || 2) + 1} BHK`,                 cls: '' },
-            { label: 'Carpet Area',      value: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '761–973 sq.ft',    cls: '' },
-            { label: 'Possession',       value: possession,                                                                          cls: 'pdv-stat-item__value--gold' },
-            { label: 'Project Area',     value: projectArea,                                                                         cls: '' },
-            { label: 'Towers & Floors',  value: `${property.towers || '4'}T × ${property.floors || '28'}Fl`,                        cls: '' },
-            { label: 'Investment Score', value: `★ ${investmentScore}/100`,                                                          cls: 'pdv-stat-item__value--green' },
-          ].map((s, i) => (
-            <div key={i} className="pdv-stat-item">
-              <div className="pdv-stat-item__label">{s.label}</div>
-              <div className={`pdv-stat-item__value ${s.cls}`}>{s.value}</div>
+      {/* ══ KEY STATS STRIP ══════════════════════════════════════════ */}
+      <div className="pi-stats-strip">
+        <div className="pi-container">
+          <div className="pi-stats-strip__inner">
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Configurations</div>
+              <div className="pi-stat-item__value">{property.bedrooms ? `${property.bedrooms} & ${property.bedrooms + 1} BHK` : '2, 3 & 4 BHK'}</div>
             </div>
-          ))}
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Carpet Area</div>
+              <div className="pi-stat-item__value">{carpetArea}</div>
+            </div>
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Possession</div>
+              <div className="pi-stat-item__value pi-stat-item__value--gold">{possession}</div>
+            </div>
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Land Parcel</div>
+              <div className="pi-stat-item__value">{projectArea}</div>
+            </div>
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Towers & Floors</div>
+              <div className="pi-stat-item__value">{property.towers || '6T × 28Fl'}</div>
+            </div>
+            <div className="pi-stat-item">
+              <div className="pi-stat-item__label">Investment Score</div>
+              <div className="pi-stat-item__value pi-stat-item__value--green">
+                <Star size={13} style={{ display: 'inline', marginRight: '3px', verticalAlign: 'middle' }} />
+                {investmentScore}/100
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ══ TWO-COLUMN HERO CONTENT (Gallery + Pricing Panel) ══ */}
-      <div style={{ maxWidth: '1320px', margin: '0 auto', padding: isMobile ? '28px 16px' : '36px 28px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.45fr 0.9fr', gap: '28px', alignItems: 'start' }}>
-
-          {/* ── LEFT: Enhanced Gallery ── */}
-          <PropertyGallery property={property} onOpenInquiry={onOpenInquiry} />
-
-          {/* ── RIGHT: Pricing + CTAs ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '72px' }}>
-
-            {/* Investment Score Ring + Developer */}
-            <div style={{ ...G.goldBorder, padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-              {/* Ring */}
-              <div style={{ position: 'relative', width: '60px', height: '60px', flexShrink: 0 }}>
-                <svg width="60" height="60" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="9" />
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="#D4AF37" strokeWidth="9"
-                    strokeDasharray="276" strokeLinecap="round"
-                    style={{ strokeDashoffset: ringAnimated ? `${276 - (276 * investmentScore / 100)}` : 276, transition: 'stroke-dashoffset 1.5s ease 0.5s' }} />
-                </svg>
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#F3E5AB', lineHeight: 1 }}>{investmentScore}%</div>
-                  <div style={{ fontSize: '0.42rem', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.04em', textAlign: 'center' }}>AI SCORE</div>
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: '0.62rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 700 }}>Premium Partner</div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#F3E5AB', marginTop: '3px' }}>{developerName}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '6px' }}>
-                  <BadgeCheck size={12} color="#10B981" />
-                  <span style={{ fontSize: '0.65rem', color: '#10B981', fontWeight: 700 }}>24K Verified · MahaRERA Compliant</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Pricing Block */}
-            <div style={{ ...G.goldBorder, padding: '22px' }}>
-              <div style={{ fontSize: '0.6rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, marginBottom: '6px' }}>Verified Starting Price</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '10px' }}>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.9rem', fontWeight: 700, color: '#F3E5AB' }}>
-                  {property.price ? (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} L`) : '₹1.45 Cr'}
-                </div>
-                <span style={{ fontSize: '0.7rem', color: '#64748B' }}>onwards*</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}>
-                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981', flexShrink: 0 }} />
-                <span style={{ fontSize: '0.72rem', color: '#6EE7B7', fontWeight: 700 }}>Price verified · {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-              </div>
-
-              {/* CTA Buttons */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <button onClick={onOpenInquiry} className="pdv-btn-gold"
-                  style={{ width: '100%', padding: '14px', fontSize: '0.86rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', background: 'linear-gradient(135deg, #D4AF37, #B8960E)', color: '#09111F', border: 'none', borderRadius: '10px', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.4)' }}>
-                  📅 Book Private Site Visit
-                </button>
-
-                <a href={`https://wa.me/919175050519?text=Hi%2024K%20Realtors%20%F0%9F%8F%A0%0A%0AI%20am%20interested%20in%3A%0A%F0%9F%93%8C%20*${encodeURIComponent(title)}*%0A%F0%9F%93%8D%20Location%3A%20${encodeURIComponent(location)}%0A%F0%9F%9B%A1%EF%B8%8F%20RERA%3A%20${encodeURIComponent(reraNumber)}%0A%0APlease%20share%20floor%20plans%20and%20pricing%20details.`}
-                  target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '13px', background: 'rgba(37,211,102,0.12)', border: '1px solid rgba(37,211,102,0.4)', borderRadius: '10px', color: '#25D366', fontSize: '0.84rem', fontWeight: 800, textDecoration: 'none', transition: 'all 0.2s' }}
-                  onMouseOver={e => e.currentTarget.style.background = 'rgba(37,211,102,0.2)'}
-                  onMouseOut={e => e.currentTarget.style.background = 'rgba(37,211,102,0.12)'}
-                >
-                  💬 WhatsApp Our Expert
-                </a>
-
-                <a href="tel:+919175050519"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#E2E8F0', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}
-                >
-                  <Phone size={14} color="#D4AF37" /> Call Directly +91 9175 0519
-                </a>
-              </div>
-            </div>
-
-            {/* RERA + Legal Strip */}
-            <a href="https://maharera.maharashtra.gov.in" target="_blank" rel="noopener noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', borderRadius: '10px', background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.28)', textDecoration: 'none' }}
-            >
-              <ShieldCheck size={16} color="#10B981" />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#6EE7B7' }}>MahaRERA Registered Project</div>
-                <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>{reraNumber} · Agent: A051262603190 · 100% Legal</div>
-              </div>
-              <ExternalLink size={13} color="#10B981" />
-            </a>
-
-            {/* Save + Share bar */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', padding: '12px 0' }}>
-              <button onClick={() => setSaved(s => !s)}
-                style={{ background: 'none', border: 'none', color: saved ? '#D4AF37' : '#718096', fontSize: '0.76rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600, transition: 'color 0.2s' }}>
-                <Heart size={15} fill={saved ? '#D4AF37' : 'none'} /> {saved ? 'Saved ✓' : 'Save Property'}
-              </button>
-              <button onClick={handleShare}
-                style={{ background: 'none', border: 'none', color: '#718096', fontSize: '0.76rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}>
-                <Share2 size={15} /> Share
-              </button>
-              <button onClick={() => setBrochureModalOpen(true)}
-                style={{ background: 'none', border: 'none', color: '#718096', fontSize: '0.76rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}>
-                <Download size={15} /> Brochure
-              </button>
-            </div>
-
-            {/* AI Concierge chip */}
-            <button onClick={openAiChat}
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '13px 16px', borderRadius: '12px', background: 'rgba(212,175,55,0.07)', border: '1px solid rgba(212,175,55,0.3)', cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.2s' }}
-              onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.14)'}
-              onMouseOut={e => e.currentTarget.style.background = 'rgba(212,175,55,0.07)'}
-            >
-              <div className="pdv-ai-dot" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D4AF37', flexShrink: 0 }} />
-              <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#F3E5AB', flex: 1 }}>🤖 Ask AI Property Specialist →</span>
-              <ChevronRight size={14} color="#D4AF37" />
-            </button>
-
-          </div>{/* end RIGHT */}
-        </div>
-      </div>
-
-      {/* ═══════════════════════════════════════
-          STICKY TABS BAR
-      ═══════════════════════════════════════ */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 90, background: 'rgba(7,16,29,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(212,175,55,0.18)', borderBottom: '1px solid rgba(212,175,55,0.18)' }}>
-        <div style={{ maxWidth: '1320px', margin: '0 auto', padding: `0 ${px}`, overflowX: 'auto' }}>
-          <div style={{ display: 'flex', gap: '0', whiteSpace: 'nowrap' }}>
+      {/* ══ TAB NAVIGATION ═══════════════════════════════════════════ */}
+      <nav className="pi-tab-nav">
+        <div className="pi-container">
+          <div className="pi-tab-nav__inner">
             {TABS.map(tab => (
               <button
                 key={tab.id}
+                className={`pi-tab-btn${activeTab === tab.id ? ' active' : ''}`}
                 onClick={() => scrollTo(tab.id)}
-                className={`pdv-tab${activeTab === tab.id ? ' active' : ''}`}
-                style={{ padding: '15px 18px', background: 'none', border: 'none', color: activeTab === tab.id ? '#F3E5AB' : '#718096', fontFamily: "'Montserrat', sans-serif", fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', letterSpacing: '0.05em', borderBottom: `3px solid ${activeTab === tab.id ? '#D4AF37' : 'transparent'}` }}
               >
                 {tab.label}
               </button>
             ))}
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* ═══════════════════════════════════════
-          MAIN CONTENT SECTIONS
-      ═══════════════════════════════════════ */}
-      <div style={{ maxWidth: '1320px', margin: '0 auto', padding: isMobile ? '44px 16px' : '60px 28px' }}>
+      {/* ══ MAIN BODY: TWO-COLUMN ARCHITECTURE (Zero Duplication) ═════ */}
+      <div className="pi-container">
+        <div className="pi-two-col">
 
-        {/* ══ 1. OVERVIEW ══ */}
-        <AnimSection id="sec-overview">
-          <SectionLabel>Overview</SectionLabel>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.15fr 0.85fr', gap: '40px', alignItems: 'start' }}>
-            {/* Left: Editorial text */}
-            <div>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.75rem' : '2.4rem', fontWeight: 700, color: '#FFF', margin: '0 0 16px', lineHeight: 1.2 }}>
-                Where nature meets<br />
-                <span style={{ color: '#F3E5AB' }}>luxury & connectivity.</span>
-              </h2>
-              <p style={{ fontSize: '0.9rem', color: '#A0AEC0', lineHeight: 1.9, margin: '0 0 24px' }}>
-                {title} is a thoughtfully planned residential development by {developerName} in {location}. Spread across <strong style={{ color: '#FFF' }}>{projectArea}</strong>, it offers premium residences with world-class amenities, lush green spaces, and seamless connectivity to Pune's top IT hubs, schools, hospitals and entertainment zones.
-              </p>
-              {/* Animated stats */}
-              <div style={{ display: 'flex', gap: '28px', flexWrap: 'wrap' }}>
-                {[
-                  { num: parseFloat(projectArea) || 8.5, suffix: ' Ac', label: 'Project Area' },
-                  { num: property.totalUnits || 480,  suffix: '+',   label: 'Premium Homes' },
-                  { num: 40,   suffix: '+',   label: 'Amenities' },
-                  { num: 25,   suffix: '+',   label: 'Years Builder Trust' },
-                ].map((s, i) => (
-                  <div key={i}>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.6rem', fontWeight: 700, color: '#F3E5AB' }}>
-                      <StatCounter target={Math.round(s.num)} suffix={s.suffix} />
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: '2px' }}>{s.label}</div>
+          {/* ── LEFT: Main Column ─────────────────────────────────── */}
+          <main className="pi-main-col">
+
+            {/* ─ 1. OVERVIEW & LOCATION ADVANTAGE ─ */}
+            <AnimSection id="overview">
+              <section className="pi-card">
+                <div className="pi-card__header">
+                  <div className="pi-card__icon-wrap">
+                    <Building2 size={18} color="#D4AF37" />
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: Key facts grid */}
-            <div style={{ ...G.card, padding: '22px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                {[
-                  { Icon: Building2,   label: 'DEVELOPER',    value: developerName },
-                  { Icon: BedDouble,   label: 'CONFIG',       value: property.bedrooms ? `${property.bedrooms} BHK` : '2 & 3 BHK' },
-                  { Icon: Maximize2,   label: 'CARPET AREA',  value: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '761 – 973 sq.ft' },
-                  { Icon: Home,        label: 'TOTAL UNITS',  value: property.totalUnits ? `~${property.totalUnits} Homes` : '400+ Units' },
-                  { Icon: Building2,   label: 'TOWERS',       value: property.towers || '4 Towers' },
-                  { Icon: TreePine,    label: 'PROJECT AREA', value: projectArea },
-                  { Icon: Clock,       label: 'POSSESSION',   value: possession },
-                  { Icon: ShieldCheck, label: 'RERA NO.',     value: reraNumber },
-                ].map(({ Icon, label, value }, i) => (
-                  <div key={i} style={{ padding: '11px 13px', borderRadius: '11px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '5px' }}>
-                      <Icon size={12} color="#D4AF37" />
-                      <span style={{ fontSize: '0.6rem', color: '#718096', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</span>
-                    </div>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: '0.84rem', fontWeight: 700, color: '#FFF', lineHeight: 1.3 }}>{value}</div>
-                  </div>
-                ))}
-              </div>
-              {/* 24K Verified strip */}
-              <div style={{ marginTop: '14px', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', borderRadius: '10px', background: 'rgba(212,175,55,0.07)', border: '1px solid rgba(212,175,55,0.2)' }}>
-                <Award size={14} color="#D4AF37" />
-                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#F3E5AB' }}>24K Realtors Verified Property</span>
-                <CheckCircle2 size={13} color="#68D391" style={{ marginLeft: 'auto' }} />
-              </div>
-            </div>
-          </div>
-        </AnimSection>
-
-        {/* ══ 2. HIGHLIGHTS ══ */}
-        <AnimSection id="sec-highlights">
-          <SectionLabel>Key Highlights</SectionLabel>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: '0 0 24px', lineHeight: 1.2 }}>
-            Why choose <span style={{ color: '#F3E5AB' }}>{title}?</span>
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(6,1fr)', gap: '14px' }}>
-            {HIGHLIGHTS.map(({ Icon, text }, i) => (
-              <div key={i} className="pdv-hl-card"
-                style={{ padding: '22px 14px', borderRadius: '16px', background: 'rgba(13,24,42,0.9)', border: '1px solid rgba(255,255,255,0.07)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', cursor: 'default' }}>
-                <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon size={20} color="#D4AF37" />
-                </div>
-                <div style={{ fontSize: '0.78rem', color: '#CBD5E0', fontWeight: 600, lineHeight: 1.45 }}>{text}</div>
-              </div>
-            ))}
-          </div>
-        </AnimSection>
-
-        {/* ══ 3. AMENITIES ══ */}
-        <AnimSection id="sec-amenities">
-          <SectionLabel>World-Class Amenities</SectionLabel>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '22px', gap: '12px', flexWrap: 'wrap' }}>
-            <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: 0, lineHeight: 1.2 }}>
-              40+ amenities for your <span style={{ color: '#F3E5AB' }}>lifestyle</span>
-            </h2>
-            <button onClick={onOpenInquiry}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              View All <ArrowRight size={14} />
-            </button>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(6,1fr)', gap: '14px' }}>
-            {AMENITIES.map(({ title: t, Icon, img }, i) => (
-              <div key={i} className="pdv-amenity-card"
-                style={{ borderRadius: '14px', overflow: 'hidden', background: '#0F1C2E', border: '1px solid rgba(255,255,255,0.07)', cursor: 'default' }}>
-                <div style={{ position: 'relative', width: '100%', aspectRatio: '4/3', overflow: 'hidden' }}>
-                  <img src={img} alt={t} className="pdv-amenity-img"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} loading="lazy" />
-                  <div className="pdv-amenity-overlay"
-                    style={{ position: 'absolute', inset: 0, background: 'rgba(5,10,18,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon size={28} color="#D4AF37" />
-                  </div>
-                </div>
-                <div style={{ padding: '9px 8px', textAlign: 'center', fontSize: '0.76rem', fontWeight: 700, color: '#FFF' }}>{t}</div>
-              </div>
-            ))}
-            {/* View all card */}
-            <div onClick={onOpenInquiry}
-              style={{ borderRadius: '14px', background: 'rgba(13,24,42,0.9)', border: '1px solid rgba(212,175,55,0.3)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '18px', cursor: 'pointer', minHeight: '120px', gap: '8px' }}>
-              <Zap size={22} color="#D4AF37" />
-              <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#F3E5AB', textAlign: 'center' }}>View All 40+ Amenities</div>
-              <ArrowRight size={14} color="#D4AF37" />
-            </div>
-          </div>
-        </AnimSection>
-
-        {/* ══ 4. LOCATION ══ */}
-        <AnimSection id="sec-location">
-          <SectionLabel>Location Advantage</SectionLabel>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: '0 0 22px', lineHeight: 1.2 }}>
-            Everything within <span style={{ color: '#F3E5AB' }}>easy reach</span>
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.3fr', gap: '24px', alignItems: 'start' }}>
-            {/* Travel time cards */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {LOCATIONS.map(({ name, time, pct, Icon: LocIcon }, i) => (
-                <div key={i} className="pdv-loc-card"
-                  style={{ padding: '13px 16px', borderRadius: '13px', background: 'rgba(13,24,42,0.9)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-                      <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <LocIcon size={14} color="#D4AF37" />
-                      </div>
-                      <span style={{ fontSize: '0.84rem', color: '#E2E8F0', fontWeight: 600 }}>{name}</span>
-                    </div>
-                    <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#F3E5AB', flexShrink: 0 }}>{time}</span>
-                  </div>
-                  {/* Progress bar */}
-                  <div style={{ height: '3px', background: 'rgba(255,255,255,0.07)', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div className="pdv-bar-animate"
-                      style={{ height: '100%', background: 'linear-gradient(90deg, #D4AF37, #F3E5AB)', borderRadius: '4px', '--target-w': `${pct}%`, width: `${pct}%` }} />
-                  </div>
-                </div>
-              ))}
-              <button onClick={onOpenInquiry} className="pdv-btn-outline"
-                style={{ padding: '12px', borderRadius: '50px', background: 'rgba(255,255,255,0.04)', color: '#FFF', border: '1px solid rgba(212,175,55,0.35)', fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.04em' }}>
-                VIEW ON GOOGLE MAPS
-              </button>
-            </div>
-            {/* Map iframe */}
-            <div style={{ position: 'relative', borderRadius: '18px', overflow: 'hidden', border: '1px solid rgba(212,175,55,0.25)', aspectRatio: '4/3', background: '#0F1C2E' }}>
-              <iframe
-                src={`https://maps.google.com/maps?t=m&z=14&ie=UTF8&iwloc=&output=embed&q=${encodeURIComponent(address)}&zoom=14`}
-                style={{ width: '100%', height: '100%', border: 'none', filter: 'invert(1) hue-rotate(180deg) saturate(0.75)' }}
-                loading="lazy"
-                title={`${title} Location Map`}
-              />
-            </div>
-          </div>
-        </AnimSection>
-
-        {/* ══ 5. FLOOR PLANS ══ */}
-        <AnimSection id="sec-floorplans">
-          <SectionLabel>Floor Plans</SectionLabel>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: '0 0 22px', lineHeight: 1.2 }}>
-            Thoughtfully designed <span style={{ color: '#F3E5AB' }}>spaces</span>
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap: '20px' }}>
-            {FLOOR_PLANS.map(({ type, area, price: fp_price, pct }, i) => (
-              <div key={i} className="pdv-fp-card"
-                style={{ padding: '20px', borderRadius: '18px', ...G.card }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', fontWeight: 700, color: '#FFF' }}>{type}</div>
-                  <span style={{ fontSize: '0.62rem', fontWeight: 800, color: '#D4AF37', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '100px', padding: '2px 10px' }}>AVAILABLE</span>
-                </div>
-                <div style={{ fontSize: '0.76rem', color: '#718096', marginBottom: '4px' }}>{area}</div>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.1rem', fontWeight: 700, color: '#F3E5AB', marginBottom: '10px' }}>{fp_price}</div>
-                {/* Area bar */}
-                <div style={{ marginBottom: '14px' }}>
-                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.07)', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #D4AF37, #F3E5AB)', borderRadius: '4px' }} />
-                  </div>
-                  <div style={{ fontSize: '0.62rem', color: '#718096', marginTop: '4px' }}>Carpet area utilization</div>
-                </div>
-                {/* Floor plan image */}
-                <div style={{ borderRadius: '12px', overflow: 'hidden', background: 'rgba(0,0,0,0.4)', marginBottom: '14px', aspectRatio: '4/3' }}>
-                  <img src="/floorplan_2bhk.png" alt={`${type} Floor Plan`} className="pdv-fp-img"
-                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '10px', display: 'block' }}
-                    onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75'; }} />
-                </div>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button onClick={onOpenInquiry}
-                    style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', background: 'none', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '8px', color: '#D4AF37', fontSize: '0.74rem', fontWeight: 700, padding: '8px', cursor: 'pointer' }}>
-                    <ZoomIn size={13} /> View Plan
-                  </button>
-                  <button onClick={onOpenInquiry}
-                    style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '8px', color: '#F3E5AB', fontSize: '0.74rem', fontWeight: 700, padding: '8px', cursor: 'pointer' }}>
-                    <Download size={13} /> Download
-                  </button>
-                </div>
-              </div>
-            ))}
-            {/* Customization card */}
-            <div style={{ padding: '28px 22px', borderRadius: '18px', ...G.goldBorder, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: '12px' }}>
-              <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Target size={22} color="#D4AF37" />
-              </div>
-              <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.05rem', fontWeight: 700, color: '#FFF', margin: 0 }}>Need Customization?</h3>
-              <p style={{ fontSize: '0.82rem', color: '#718096', margin: 0, lineHeight: 1.5 }}>Our senior advisors will match you with the perfect home configuration.</p>
-              <button onClick={onOpenInquiry} className="pdv-btn-gold"
-                style={{ padding: '11px 24px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer' }}>
-                TALK TO EXPERT
-              </button>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.65rem', color: '#68D391' }}>
-                <BadgeCheck size={12} /> Personalized 1-on-1 consultation
-              </div>
-            </div>
-          </div>
-        </AnimSection>
-
-        {/* ══ 5.5. EMI CALCULATOR & FINANCIAL INTELLIGENCE ══ */}
-        <AnimSection id="sec-calculator">
-          <SectionLabel>Mortgage & Affordability</SectionLabel>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: '0 0 8px', lineHeight: 1.2 }}>
-            Interactive <span style={{ color: '#F3E5AB' }}>EMI & Home Loan Calculator</span>
-          </h2>
-          <p style={{ fontSize: '0.84rem', color: '#718096', margin: '0 0 24px', maxWidth: '640px', lineHeight: 1.6 }}>
-            Adjust sliders to calculate your estimated monthly EMI. Pre-approved rates from SBI, HDFC, ICICI at 8.35% p.a.
-          </p>
-
-          {/* ── Custom Property Price Input ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0', whiteSpace: 'nowrap' }}>Property Price:</span>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <span style={{ position: 'absolute', left: '14px', fontSize: '1rem', fontWeight: 700, color: '#D4AF37', pointerEvents: 'none' }}>₹</span>
-              <input
-                type="number"
-                min="500000"
-                max="100000000"
-                step="100000"
-                value={emiPrice}
-                onChange={e => setEmiPrice(Math.max(500000, Number(e.target.value)))}
-                className="pdv-input"
-                style={{ paddingLeft: '28px', paddingRight: '14px', paddingTop: '10px', paddingBottom: '10px', width: '180px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.3)', color: '#FFF', fontSize: '0.92rem', fontWeight: 700 }}
-              />
-            </div>
-            <span style={{ fontSize: '0.8rem', color: '#D4AF37', fontWeight: 700 }}>
-              = ₹{emiPrice >= 10000000 ? `${(emiPrice / 10000000).toFixed(2)} Cr` : `${(emiPrice / 100000).toFixed(1)} L`}
-            </span>
-            {/* Quick preset buttons */}
-            {[8500000, 12000000, 15000000, 20000000].map(p => (
-              <button key={p} onClick={() => setEmiPrice(p)}
-                style={{ padding: '6px 14px', borderRadius: '100px', background: emiPrice === p ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.04)', border: `1px solid ${emiPrice === p ? 'rgba(212,175,55,0.6)' : 'rgba(255,255,255,0.1)'}`, color: emiPrice === p ? '#F3E5AB' : '#718096', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}>
-                ₹{p >= 10000000 ? `${(p / 10000000).toFixed(1)}Cr` : `${(p / 100000)}L`}
-              </button>
-            ))}
-          </div>
-
-          <div style={{ padding: isMobile ? '20px' : '32px', borderRadius: '22px', background: 'rgba(13,24,42,0.95)', border: '1px solid rgba(212,175,55,0.25)', marginBottom: '24px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 0.8fr', gap: '32px', alignItems: 'start' }}>
-
-              {/* ── Left: Controls / Sliders ── */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-
-                {/* Slider 1: Down Payment */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                    <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0' }}>Down Payment</span>
-                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>
-                      {downPaymentPct}% &nbsp;·&nbsp; ₹{(emiPrice * downPaymentPct / 100 / 100000).toFixed(2)}L
-                    </span>
-                  </div>
-                  <input type="range" min="10" max="50" step="5" value={downPaymentPct}
-                    onChange={e => setDownPaymentPct(Number(e.target.value))}
-                    className="pdv-emi-slider"
-                    style={{ width: '100%', background: `linear-gradient(to right, #D4AF37 ${(downPaymentPct - 10) / 40 * 100}%, rgba(255,255,255,0.1) ${(downPaymentPct - 10) / 40 * 100}%)` }}
-                  />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: '#4A5568', marginTop: '4px' }}>
-                    <span>10%</span><span>50%</span>
-                  </div>
-                </div>
-
-                {/* Slider 2: Interest Rate */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                    <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0' }}>Interest Rate (p.a.)</span>
-                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>{interestRate.toFixed(2)}%</span>
-                  </div>
-                  <input type="range" min="7.5" max="11.5" step="0.15" value={interestRate}
-                    onChange={e => setInterestRate(Number(e.target.value))}
-                    className="pdv-emi-slider"
-                    style={{ width: '100%', background: `linear-gradient(to right, #D4AF37 ${(interestRate - 7.5) / 4 * 100}%, rgba(255,255,255,0.1) ${(interestRate - 7.5) / 4 * 100}%)` }}
-                  />
-                  <div style={{ fontSize: '0.66rem', color: '#68D391', marginTop: '5px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <BadgeCheck size={11} /> SBI & HDFC Special Rate: 8.35% for 24K Buyers
-                  </div>
-                </div>
-
-                {/* Slider 3: Loan Tenure */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                    <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E0' }}>Loan Tenure</span>
-                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#D4AF37' }}>{tenureYears} Years</span>
-                  </div>
-                  <input type="range" min="5" max="30" step="5" value={tenureYears}
-                    onChange={e => setTenureYears(Number(e.target.value))}
-                    className="pdv-emi-slider"
-                    style={{ width: '100%', background: `linear-gradient(to right, #D4AF37 ${(tenureYears - 5) / 25 * 100}%, rgba(255,255,255,0.1) ${(tenureYears - 5) / 25 * 100}%)` }}
-                  />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: '#4A5568', marginTop: '4px' }}>
-                    <span>5 yrs</span><span>30 yrs</span>
-                  </div>
-                </div>
-
-                {/* Bank partner badges */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                  <span style={{ fontSize: '0.67rem', color: 'rgba(255,255,255,0.45)', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Pre-Approved Partners:</span>
-                  {['SBI', 'HDFC', 'ICICI', 'Axis'].map((b, i) => (
-                    <span key={i} style={{ fontSize: '0.68rem', fontWeight: 700, color: '#F3E5AB', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '3px 10px' }}>{b}</span>
-                  ))}
-                </div>
-              </div>
-
-              {/* ── Right: Result Box + Animated Donut Chart ── */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-
-                {/* Animated SVG Donut Chart */}
-                <div style={{ display: 'flex', justifyContent: 'center', position: 'relative', marginBottom: '4px' }}>
-                  {(() => {
-                    const circumference = 2 * Math.PI * 70; // r=70
-                    const principalRatio = totalPayment > 0 ? loanAmount / totalPayment : 0.5;
-                    const principalDash = principalRatio * circumference;
-                    const interestDash = circumference - principalDash;
-                    return (
-                      <svg width="200" height="200" viewBox="0 0 200 200">
-                        {/* Background circle */}
-                        <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="22" />
-                        {/* Interest arc (full, behind) */}
-                        <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(248,177,51,0.35)" strokeWidth="22"
-                          strokeDasharray={circumference} strokeLinecap="butt"
-                          style={{ transform: 'rotate(-90deg)', transformOrigin: '100px 100px' }} />
-                        {/* Principal arc */}
-                        <circle cx="100" cy="100" r="70" fill="none" stroke="#D4AF37" strokeWidth="22"
-                          strokeDasharray={`${principalDash} ${interestDash}`} strokeLinecap="butt"
-                          className="pdv-donut-ring"
-                          style={{ transform: 'rotate(-90deg)', transformOrigin: '100px 100px', '--donut-offset': `${circumference - principalDash}` }} />
-                        {/* Center label */}
-                        <text x="100" y="93" textAnchor="middle" fill="#FFF" fontSize="22" fontWeight="800" fontFamily="Montserrat, sans-serif">
-                          ₹{emi > 0 ? `${Math.round(emi / 1000)}K` : '0'}
-                        </text>
-                        <text x="100" y="112" textAnchor="middle" fill="#D4AF37" fontSize="10" fontWeight="700" fontFamily="Montserrat, sans-serif">PER MONTH</text>
-                      </svg>
-                    );
-                  })()}
-                </div>
-
-                {/* Legend */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '4px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#D4AF37', flexShrink: 0 }} />
-                    <span style={{ fontSize: '0.72rem', color: '#CBD5E0' }}>Principal</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'rgba(248,177,51,0.35)', border: '1px solid rgba(248,177,51,0.6)', flexShrink: 0 }} />
-                    <span style={{ fontSize: '0.72rem', color: '#CBD5E0' }}>Interest</span>
-                  </div>
-                </div>
-
-                {/* Breakdown */}
-                <div style={{ padding: '16px', borderRadius: '14px', background: 'rgba(7,16,29,0.8)', border: '1px solid rgba(212,175,55,0.2)', display: 'flex', flexDirection: 'column', gap: '9px' }}>
-                  {[
-                    { label: 'Loan Amount', val: `₹${(loanAmount / 100000).toFixed(2)}L`, color: '#D4AF37' },
-                    { label: 'Down Payment', val: `₹${(emiPrice * downPaymentPct / 100 / 100000).toFixed(2)}L`, color: '#63B3ED' },
-                    { label: 'Total Interest', val: `₹${(totalInterest / 100000).toFixed(2)}L`, color: '#F3E5AB' },
-                    { label: 'Total Payable', val: `₹${(totalPayment / 100000).toFixed(2)}L`, color: '#68D391' },
-                  ].map(({ label, val, color }, i) => (
-                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', borderTop: i > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none', paddingTop: i > 0 ? '9px' : 0 }}>
-                      <span style={{ color: '#A0AEC0' }}>{label}</span>
-                      <strong style={{ color }}>{val}</strong>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Action Buttons */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <button onClick={onOpenInquiry} className="pdv-btn-gold"
-                    style={{ width: '100%', padding: '13px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', cursor: 'pointer', boxShadow: '0 6px 20px rgba(212,175,55,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                    <TrendingUp size={15} /> GET PRE-APPROVED →
-                  </button>
-
-                  {/* WhatsApp Share */}
-                  <a
-                    href={`https://wa.me/?text=${encodeURIComponent(`🏠 *${title}* — EMI Calculation\n\n📍 ${location}\n💰 Property Price: ₹${(emiPrice / 100000).toFixed(1)}L\n🏦 Loan Amount: ₹${(loanAmount / 100000).toFixed(2)}L\n📅 Tenure: ${tenureYears} Years @ ${interestRate}%\n📊 Monthly EMI: ₹${emi.toLocaleString('en-IN')}\n💸 Total Payable: ₹${(totalPayment / 100000).toFixed(2)}L\n\nFor site visit: https://real-estate-digital-marketing.vercel.app`)}`}
-                    target="_blank" rel="noopener noreferrer"
-                    style={{ width: '100%', padding: '11px', borderRadius: '50px', background: 'rgba(37,211,102,0.1)', border: '1px solid rgba(37,211,102,0.35)', color: '#25D366', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px', textDecoration: 'none', textTransform: 'uppercase', transition: 'all 0.2s' }}
-                    onMouseOver={e => e.currentTarget.style.background = 'rgba(37,211,102,0.18)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'rgba(37,211,102,0.1)'}
-                  >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                    </svg>
-                    Share on WhatsApp
-                  </a>
-
-                  {/* Copy EMI Summary */}
-                  <div style={{ position: 'relative' }}>
-                    <button
-                      onClick={() => {
-                        const text = `${title} EMI Summary\nPrice: ₹${(emiPrice/100000).toFixed(1)}L | Loan: ₹${(loanAmount/100000).toFixed(2)}L | Rate: ${interestRate}% | ${tenureYears}yrs\nMonthly EMI: ₹${emi.toLocaleString('en-IN')} | Total: ₹${(totalPayment/100000).toFixed(2)}L`;
-                        navigator.clipboard.writeText(text).then(() => {
-                          setEmiCopied(true);
-                          setTimeout(() => setEmiCopied(false), 2000);
-                        });
-                      }}
-                      style={{ width: '100%', padding: '9px', borderRadius: '50px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#718096', fontSize: '0.73rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s', textTransform: 'uppercase' }}
-                      onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'}
-                      onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
-                    >
-                      <FileText size={13} /> Copy EMI Summary
-                    </button>
-                    {emiCopied && (
-                      <div className="pdv-copy-toast" style={{ position: 'absolute', bottom: '110%', left: '50%', transform: 'translateX(-50%)', background: '#1A2F4A', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '8px', padding: '6px 14px', fontSize: '0.72rem', color: '#F3E5AB', fontWeight: 700, whiteSpace: 'nowrap', zIndex: 10 }}>
-                        ✓ Copied to clipboard!
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          {/* ── Amortization Table Toggle ── */}
-          <div style={{ marginBottom: '40px' }}>
-            <button
-              onClick={() => setShowAmortization(v => !v)}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.25)', borderRadius: '10px', padding: '10px 20px', color: '#D4AF37', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', marginBottom: showAmortization ? '16px' : 0 }}
-              onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.08)'}
-              onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
-            >
-              <BarChart3 size={15} />
-              {showAmortization ? 'Hide' : 'Show'} Year-wise Amortization Schedule
-              <ChevronRight size={14} style={{ transform: showAmortization ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.25s' }} />
-            </button>
-
-            {showAmortization && (() => {
-              // Generate year-wise amortization data
-              const rows = [];
-              let balance = loanAmount;
-              for (let y = 1; y <= Math.min(tenureYears, 15); y++) {
-                let yearPrincipal = 0, yearInterest = 0;
-                for (let m = 0; m < 12; m++) {
-                  if (balance <= 0) break;
-                  const intPart = balance * monthlyRate;
-                  const prinPart = Math.min(emi - intPart, balance);
-                  yearInterest += intPart;
-                  yearPrincipal += prinPart;
-                  balance -= prinPart;
-                }
-                rows.push({ year: y, principal: yearPrincipal, interest: yearInterest, balance: Math.max(0, balance) });
-              }
-              return (
-                <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
-                    <thead>
-                      <tr style={{ background: 'rgba(212,175,55,0.08)', borderBottom: '1px solid rgba(212,175,55,0.2)' }}>
-                        {['Year', 'Principal (₹)', 'Interest (₹)', 'Balance (₹)'].map(h => (
-                          <th key={h} style={{ padding: '12px 16px', textAlign: h === 'Year' ? 'center' : 'right', color: '#D4AF37', fontWeight: 800, letterSpacing: '0.04em', fontSize: '0.7rem', textTransform: 'uppercase' }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map(({ year, principal, interest, balance: bal }) => (
-                        <tr key={year} className="pdv-amort-row" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                          <td style={{ padding: '10px 16px', textAlign: 'center', color: '#D4AF37', fontWeight: 800 }}>{year}</td>
-                          <td style={{ padding: '10px 16px', textAlign: 'right', color: '#FFF', fontWeight: 600 }}>₹{Math.round(principal).toLocaleString('en-IN')}</td>
-                          <td style={{ padding: '10px 16px', textAlign: 'right', color: '#F3E5AB' }}>₹{Math.round(interest).toLocaleString('en-IN')}</td>
-                          <td style={{ padding: '10px 16px', textAlign: 'right', color: '#68D391', fontWeight: 600 }}>₹{Math.round(bal).toLocaleString('en-IN')}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  {tenureYears > 15 && (
-                    <div style={{ padding: '10px 16px', textAlign: 'center', fontSize: '0.7rem', color: '#718096', background: 'rgba(0,0,0,0.2)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                      Showing first 15 of {tenureYears} years
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
-          </div>
-        </AnimSection>
-
-
-
-        {/* ══ 6. TOWNSHIP & SOCIETY PROFILE ══ */}
-        <AnimSection id="sec-society-profile">
-          <div style={{ padding: isMobile ? '24px 18px' : '36px 40px', borderRadius: '22px', background: 'linear-gradient(135deg, rgba(13,24,42,0.95) 0%, rgba(7,16,29,0.98) 100%)', border: '1px solid rgba(212,175,55,0.3)', position: 'relative', overflow: 'hidden' }}>
-            {/* BG glow */}
-            <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '240px', height: '240px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D4AF37' }} />
-              <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Township &amp; Society Profile</span>
-            </div>
-            <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: '0 0 6px', lineHeight: 1.2 }}>
-              Society &amp; Investment Intelligence: <span style={{ color: '#F3E5AB' }}>{title}</span>
-            </h2>
-            <p style={{ fontSize: '0.84rem', color: '#718096', margin: '0 0 28px', lineHeight: 1.6 }}>
-              Comprehensive society dossier by 24K Realtors — Vastu compliance analysis, NRI investment insights, rental yield projections, and developer track record.
-            </p>
-
-            {/* 4 Feature Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: '16px', marginBottom: '24px' }}>
-              
-              {/* Card 1: Vastu Guidance */}
-              <div style={{ padding: '18px 20px', borderRadius: '14px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.18)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '1.1rem' }}>🔱</span>
-                  <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '0.88rem', fontWeight: 700, color: '#F3E5AB', margin: 0 }}>Vastu Shastra &amp; Layout Harmony</h4>
-                </div>
-                <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.76rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
-                  <li><strong>Entrances:</strong> North &amp; East facing unit configurations available.</li>
-                  <li><strong>Master Bedroom:</strong> Positioned in South-West stability zone.</li>
-                  <li><strong>Kitchen:</strong> Aligned with Agni (South-East) direction for positive energy.</li>
-                  <li><strong>Brahmasthan:</strong> Open living-dining center with unobstructed natural light.</li>
-                </ul>
-              </div>
-
-              {/* Card 2: NRI Investor Guidance */}
-              <div style={{ padding: '18px 20px', borderRadius: '14px', background: 'rgba(37,211,102,0.04)', border: '1px solid rgba(37,211,102,0.18)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '1.1rem' }}>🌍</span>
-                  <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '0.88rem', fontWeight: 700, color: '#68D391', margin: 0 }}>NRI Investment &amp; Rental Portfolio</h4>
-                </div>
-                <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.76rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
-                  <li><strong>Rental Yield:</strong> Projected 4.8% – 5.5% p.a. due to high IT professional density.</li>
-                  <li><strong>Capital Appreciation:</strong> +14% to +18% projected over 3-year horizon.</li>
-                  <li><strong>Dedicated NRI Desk:</strong> Power of Attorney (PoA) execution &amp; virtual 4K site tours.</li>
-                  <li><strong>FEMA Compliance:</strong> Smooth NRE / NRO banking documentation support.</li>
-                </ul>
-              </div>
-
-              {/* Card 3: Metro & Connectivity */}
-              <div style={{ padding: '18px 20px', borderRadius: '14px', background: 'rgba(99,179,237,0.04)', border: '1px solid rgba(99,179,237,0.18)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '1.1rem' }}>🚇</span>
-                  <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '0.88rem', fontWeight: 700, color: '#90CDF4', margin: 0 }}>Transit &amp; IT Hub Proximity</h4>
-                </div>
-                <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.76rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
-                  <li><strong>IT Parks:</strong> Infosys, TCS, Wipro campuses within 5–10 mins drive.</li>
-                  <li><strong>Metro Connectivity:</strong> Pune Metro Line 3 station under 1.5 km.</li>
-                  <li><strong>Expressway:</strong> Mumbai-Pune Expressway exit reachable in 10 mins.</li>
-                  <li><strong>Social Hubs:</strong> Phoenix Mall of Millennium &amp; Baner High St nearby.</li>
-                </ul>
-              </div>
-
-              {/* Card 4: Township Infrastructure */}
-              <div style={{ padding: '18px 20px', borderRadius: '14px', background: 'rgba(167,139,250,0.04)', border: '1px solid rgba(167,139,250,0.18)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '1.1rem' }}>🏢</span>
-                  <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '0.88rem', fontWeight: 700, color: '#C4B5FD', margin: 0 }}>Township Ecosystem &amp; Green Spaces</h4>
-                </div>
-                <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.76rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
-                  <li><strong>Open Greens:</strong> 75%–80% landscaped open spaces with jogging trails.</li>
-                  <li><strong>Club Amenities:</strong> Olympic-length pool, gymnasium, clubhouse, sports arena.</li>
-                  <li><strong>Security:</strong> 24/7 3-tier surveillance with RFID gated access.</li>
-                  <li><strong>Builder Legacy:</strong> {developerName} — 100% verified MahaRERA track record.</li>
-                </ul>
-              </div>
-
-            </div>
-
-            {/* Score bars & Consultant Action */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: '24px', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '20px' }}>
-              {/* Score bars */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {RATING_SCORES.map(({ label, score, color }, i) => (
-                  <div key={i}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#CBD5E0' }}>{label}</span>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 800, color: color }}>{score}/100</span>
-                    </div>
-                    <div style={{ height: '5px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${score}%`, background: `linear-gradient(90deg, ${color}88, ${color})`, borderRadius: '4px' }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Advisory CTA */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>
-                  Want detailed society floor plan analysis, available inventory, or specific Vastu unit recommendations?
-                </div>
-                <button onClick={onOpenInquiry} className="pdv-btn-gold"
-                  style={{ padding: '13px 20px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', border: 'none', color: '#09111F', fontSize: '0.82rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-                  <Phone size={15} /> Talk to Our Specialist →
-                </button>
-              </div>
-            </div>
-          </div>
-        </AnimSection>
-
-        {/* ══ 7. SIMILAR PROPERTIES ══ */}
-        <AnimSection id="sec-similar">
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '22px', gap: '12px', flexWrap: 'wrap' }}>
-            <div>
-              <SectionLabel>Curated Alternatives</SectionLabel>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 700, color: '#FFF', margin: 0, lineHeight: 1.2 }}>
-                Similar <span style={{ color: '#F3E5AB' }}>properties</span> near you
-              </h2>
-            </div>
-            <button onClick={onOpenInquiry} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              View All <ArrowRight size={14} />
-            </button>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4,1fr)', gap: '18px' }}>
-            {SIMILAR.map(({ title: st, loc, config, price: sp, tag, match, img }, i) => (
-              <div key={i} className="pdv-sim-card"
-                style={{ borderRadius: '16px', overflow: 'hidden', background: '#0D1829', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden' }}>
-                  <img src={img} alt={st} className="pdv-sim-img"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} loading="lazy" />
-                  {/* Gradient overlay */}
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(7,16,29,0.6) 0%, transparent 50%)', pointerEvents: 'none' }} />
-                  {/* Tag */}
-                  <span style={{ position: 'absolute', top: '10px', left: '10px', background: tag === 'LUXURY' ? 'linear-gradient(135deg, #D4AF37, #9A7B1C)' : 'rgba(7,16,29,0.85)', color: tag === 'LUXURY' ? '#09111F' : '#F3E5AB', fontSize: '0.6rem', fontWeight: 800, padding: '3px 9px', borderRadius: '4px', textTransform: 'uppercase' }}>{tag}</span>
-                  {/* Match */}
-                  <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(7,16,29,0.85)', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '100px', padding: '2px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <BadgeCheck size={9} color="#D4AF37" />
-                    <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#F3E5AB' }}>{match}% Match</span>
-                  </div>
-                </div>
-                <div style={{ padding: '14px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <div>
-                    <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '0.94rem', fontWeight: 700, color: '#FFF', margin: '0 0 3px' }}>{st}</h4>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.73rem', color: '#718096', marginBottom: '6px' }}>
-                      <MapPin size={11} color="#D4AF37" /> {loc}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)' }}>{config}</div>
+                    <h2 className="pi-card__title">Project Overview & Location Advantage</h2>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '10px', marginTop: '10px' }}>
-                    <span style={{ fontFamily: "'Cinzel', serif", fontSize: '1rem', fontWeight: 700, color: '#F3E5AB' }}>{sp}</span>
-                    <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.73rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                      Details <ChevronRight size={13} />
+                </div>
+                <p className="pi-card__subtitle" style={{ marginTop: '12px' }}>
+                  {property.description || `${title} is a landmark residential development by ${developerName} located in ${location}. Spread across ${projectArea}, it features luxury architecture, imported marble flooring, Vaastu-compliant configurations, and seamless proximity to Pune's prime IT corridors, business plazas, and lifestyle destinations.`}
+                </p>
+
+                <div className="pi-highlight-grid">
+                  <div className="pi-highlight-card">
+                    <div className="pi-highlight-card__label pi-highlight-card__label--gold">
+                      <MapPin size={13} /> Prime Location
+                    </div>
+                    <div className="pi-highlight-card__text">
+                      Immediate access to Hinjewadi IT Park, upcoming Metro Line 3, Balewadi High Street, and the Mumbai-Pune Expressway.
+                    </div>
+                  </div>
+                  <div className="pi-highlight-card">
+                    <div className="pi-highlight-card__label pi-highlight-card__label--green">
+                      <ShieldCheck size={13} /> Legal &amp; Title Verified
+                    </div>
+                    <div className="pi-highlight-card__text">
+                      Clear marketable title, sanctioned layout approvals, building permits, and MahaRERA registered ({reraNumber}).
+                    </div>
+                  </div>
+                  <div className="pi-highlight-card">
+                    <div className="pi-highlight-card__label pi-highlight-card__label--blue">
+                      <TrendingUp size={13} /> Capital Appreciation
+                    </div>
+                    <div className="pi-highlight-card__text">
+                      4.6%–5.2% estimated gross rental yield with consistent high demand from Pune's premium IT &amp; executive workforce.
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 2. CONFIGURATIONS & FLOOR PLANS ─ */}
+            <AnimSection id="floorplans">
+              <section className="pi-card">
+                <div className="pi-card__header" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="pi-card__icon-wrap">
+                      <Layers size={18} color="#D4AF37" />
+                    </div>
+                    <div>
+                      <h2 className="pi-card__title">Configurations &amp; Floor Plans</h2>
+                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Verified RERA carpet areas &amp; unit layouts</p>
+                    </div>
+                  </div>
+                  <div className="pi-bhk-filter">
+                    {['ALL', '2 BHK', '3 BHK', '4 BHK'].map(bhk => (
+                      <button
+                        key={bhk}
+                        className={`pi-bhk-btn${selectedBhk === bhk ? ' active' : ''}`}
+                        onClick={() => setSelectedBhk(bhk)}
+                      >{bhk}</button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pi-config-grid">
+                  {filteredFloorPlans.map((fp, idx) => (
+                    <div key={idx} className="pi-config-card pi-config-card--3bhk">
+                      <div className="pi-config-card__top">
+                        <span className="pi-config-card__bhk">{fp.type}</span>
+                        <span className="pi-badge pi-badge-gold">Available</span>
+                      </div>
+                      <div className="pi-config-card__price">{fp.price}</div>
+                      <div className="pi-config-card__specs">
+                        <div><strong>Carpet Area:</strong> {fp.area}</div>
+                        <div><strong>Orientation:</strong> East / North Vastu Compliant</div>
+                      </div>
+                      <div style={{ borderRadius: '10px', overflow: 'hidden', background: 'rgba(0,0,0,0.3)', margin: '12px 0', aspectRatio: '16/9' }}>
+                        <img
+                          src="/floorplan_2bhk.png"
+                          alt={`${fp.type} Plan`}
+                          style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }}
+                          onError={e => { e.currentTarget.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75'; }}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button onClick={onOpenInquiry} className="pi-btn-outline" style={{ flex: 1, padding: '8px', fontSize: '0.76rem', justifyContent: 'center' }}>
+                          <ZoomIn size={13} /> View Plan
+                        </button>
+                        <button onClick={() => setBrochureModalOpen(true)} className="pi-btn-gold" style={{ flex: 1, padding: '8px', fontSize: '0.76rem', justifyContent: 'center' }}>
+                          <Download size={13} /> Download
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 3. AMENITIES ─ */}
+            <AnimSection id="amenities">
+              <section className="pi-card">
+                <div className="pi-card__header" style={{ justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="pi-card__icon-wrap">
+                      <Sparkles size={18} color="#D4AF37" />
+                    </div>
+                    <div>
+                      <h2 className="pi-card__title">World-Class Amenities</h2>
+                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>40+ resort-grade lifestyle experiences</p>
+                    </div>
+                  </div>
+                  <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    View All <ArrowRight size={14} />
+                  </button>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px', marginTop: '16px' }}>
+                  {AMENITIES.map(({ title: at, Icon: AIcon, img }, i) => (
+                    <div key={i} style={{ borderRadius: '12px', overflow: 'hidden', background: '#0D1A2D', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden' }}>
+                        <img src={img} alt={at} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(6,13,26,0.85) 0%, transparent 60%)', display: 'flex', alignItems: 'flex-end', padding: '8px' }}>
+                          <AIcon size={16} color="#D4AF37" />
+                        </div>
+                      </div>
+                      <div style={{ padding: '8px 10px', fontSize: '0.78rem', fontWeight: 700, color: '#FFF' }}>{at}</div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 4. LOCATION & CONNECTIVITY ─ */}
+            <AnimSection id="location">
+              <section className="pi-card">
+                <div className="pi-card__header">
+                  <div className="pi-card__icon-wrap">
+                    <MapPin size={18} color="#D4AF37" />
+                  </div>
+                  <div>
+                    <h2 className="pi-card__title">Location &amp; Commute Advantage</h2>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Strategic travel times to core business hubs</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginTop: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {LOCATIONS.map(({ name, time, pct, Icon: LIcon }, i) => (
+                      <div key={i} style={{ padding: '12px 14px', borderRadius: '10px', background: '#0D1A2D', border: '1px solid rgba(255,255,255,0.06)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <LIcon size={14} color="#D4AF37" />
+                            <span style={{ fontSize: '0.82rem', color: '#E2E8F0', fontWeight: 600 }}>{name}</span>
+                          </div>
+                          <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#F3E5AB' }}>{time}</span>
+                        </div>
+                        <div style={{ height: '3px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #D4AF37, #F3E5AB)' }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ position: 'relative', borderRadius: '14px', overflow: 'hidden', border: '1px solid rgba(212,175,55,0.25)', minHeight: '260px', background: '#0B1628' }}>
+                    <iframe
+                      src={`https://maps.google.com/maps?t=m&z=14&ie=UTF8&iwloc=&output=embed&q=${encodeURIComponent(address)}&zoom=14`}
+                      style={{ width: '100%', height: '100%', border: 'none', filter: 'invert(1) hue-rotate(180deg) saturate(0.75)' }}
+                      loading="lazy"
+                      title={`${title} Map`}
+                    />
+                  </div>
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 5. EMI CALCULATOR ─ */}
+            <AnimSection id="calculator">
+              <section className="pi-card">
+                <div className="pi-card__header">
+                  <div className="pi-card__icon-wrap">
+                    <BarChart3 size={18} color="#D4AF37" />
+                  </div>
+                  <div>
+                    <h2 className="pi-card__title">Interactive EMI &amp; Loan Intelligence</h2>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Pre-approved special rates at 8.35% p.a.</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginTop: '16px' }}>
+                  {/* Sliders */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.80rem' }}>
+                        <span style={{ color: '#CBD5E0' }}>Property Price</span>
+                        <strong style={{ color: '#D4AF37' }}>₹{(emiPrice / 100000).toFixed(1)} Lakhs</strong>
+                      </div>
+                      <input type="range" min="6000000" max="40000000" step="500000" value={emiPrice}
+                        onChange={e => setEmiPrice(Number(e.target.value))}
+                        className="pdv-emi-slider"
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.80rem' }}>
+                        <span style={{ color: '#CBD5E0' }}>Down Payment ({downPaymentPct}%)</span>
+                        <strong style={{ color: '#D4AF37' }}>₹{(emiPrice * downPaymentPct / 100 / 100000).toFixed(2)} Lakhs</strong>
+                      </div>
+                      <input type="range" min="10" max="50" step="5" value={downPaymentPct}
+                        onChange={e => setDownPaymentPct(Number(e.target.value))}
+                        className="pdv-emi-slider"
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.80rem' }}>
+                        <span style={{ color: '#CBD5E0' }}>Tenure ({tenureYears} Years)</span>
+                        <strong style={{ color: '#D4AF37' }}>{tenureYears} Yrs</strong>
+                      </div>
+                      <input type="range" min="5" max="30" step="5" value={tenureYears}
+                        onChange={e => setTenureYears(Number(e.target.value))}
+                        className="pdv-emi-slider"
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Monthly EMI Result Box */}
+                  <div style={{ padding: '20px', borderRadius: '14px', background: '#091322', border: '1px solid rgba(212,175,55,0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <div style={{ fontSize: '0.68rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 800 }}>Estimated Monthly EMI</div>
+                      <div style={{ fontFamily: "'Cinzel', serif", fontSize: '2rem', fontWeight: 800, color: '#F3E5AB', margin: '6px 0 12px' }}>
+                        ₹{emi.toLocaleString('en-IN')}<span style={{ fontSize: '0.8rem', color: '#64748B' }}>/mo</span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.76rem', color: '#A0AEC0' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span>Loan Amount:</span>
+                          <strong style={{ color: '#FFF' }}>₹{(loanAmount / 100000).toFixed(2)} L</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span>Total Interest:</span>
+                          <strong style={{ color: '#F3E5AB' }}>₹{(totalInterest / 100000).toFixed(2)} L</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span>Total Payable:</span>
+                          <strong style={{ color: '#10B981' }}>₹{(totalPayment / 100000).toFixed(2)} L</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button onClick={onOpenInquiry} className="pi-btn-gold" style={{ marginTop: '16px', justifyContent: 'center' }}>
+                      Get Pre-Approved Loan →
                     </button>
                   </div>
                 </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 6. SOCIETY & VASTU DOSSIER ─ */}
+            <AnimSection id="society-profile">
+              <section className="pi-card">
+                <div className="pi-card__header">
+                  <div className="pi-card__icon-wrap">
+                    <ShieldCheck size={18} color="#D4AF37" />
+                  </div>
+                  <div>
+                    <h2 className="pi-card__title">Society &amp; Vastu Intelligence</h2>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Comprehensive spatial layout &amp; investment ratings</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px', marginTop: '16px' }}>
+                  <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.18)' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#F3E5AB', marginBottom: '6px' }}>🔱 Vastu Compliance</div>
+                    <p style={{ fontSize: '0.76rem', color: '#CBD5E0', lineHeight: 1.5, margin: 0 }}>
+                      North &amp; East entry units available. Master suites oriented in South-West stability zones with Agni-aligned kitchens.
+                    </p>
+                  </div>
+                  <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(16,185,129,0.04)', border: '1px solid rgba(16,185,129,0.18)' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#6EE7B7', marginBottom: '6px' }}>🌍 NRI &amp; Rental Portfolio</div>
+                    <p style={{ fontSize: '0.76rem', color: '#CBD5E0', lineHeight: 1.5, margin: 0 }}>
+                      Projected 4.8%–5.5% annual rental yields with dedicated 24K NRI documentation and virtual 4K handover management.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
+                  {RATING_SCORES.map(({ label, score, color }, i) => (
+                    <div key={i}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', marginBottom: '3px' }}>
+                        <span style={{ color: '#CBD5E0' }}>{label}</span>
+                        <strong style={{ color }}>{score}/100</strong>
+                      </div>
+                      <div style={{ height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${score}%`, background: color }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 7. SIMILAR PROPERTIES ─ */}
+            <AnimSection id="similar">
+              <section className="pi-card">
+                <div className="pi-card__header" style={{ justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="pi-card__icon-wrap">
+                      <Sparkles size={18} color="#D4AF37" />
+                    </div>
+                    <div>
+                      <h2 className="pi-card__title">Similar Verified Properties</h2>
+                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Hand-curated alternatives in {location}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginTop: '16px' }}>
+                  {SIMILAR.map((sim, i) => (
+                    <div key={i} style={{ borderRadius: '12px', overflow: 'hidden', background: '#0D1A2D', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden' }}>
+                        <img src={sim.img} alt={sim.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <span style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(6,13,26,0.85)', color: '#F3E5AB', fontSize: '0.62rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
+                          {sim.tag}
+                        </span>
+                      </div>
+                      <div style={{ padding: '12px' }}>
+                        <div style={{ fontSize: '0.86rem', fontWeight: 700, color: '#FFF', marginBottom: '2px' }}>{sim.title}</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748B', marginBottom: '8px' }}>{sim.loc} • {sim.config}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
+                          <span style={{ color: '#F3E5AB', fontWeight: 700, fontSize: '0.84rem' }}>{sim.price}</span>
+                          <button onClick={onOpenInquiry} style={{ background: 'none', border: 'none', color: '#D4AF37', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer' }}>
+                            View →
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 8. LEAD FORM CARD ─ */}
+            <section className="pi-card" style={{ background: 'linear-gradient(145deg, #0D1E38 0%, #0B1628 100%)', border: '1px solid rgba(212,175,55,0.3)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <Sparkles size={16} color="#D4AF37" />
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Private Client Advisory</span>
               </div>
-            ))}
-          </div>
-        </AnimSection>
-
-        {/* ══ 8. LEAD CAPTURE BANNER ══ */}
-        <div style={{ padding: isMobile ? '28px 20px' : '44px 52px', borderRadius: '24px', background: 'linear-gradient(135deg, rgba(13,24,42,0.97) 0%, rgba(7,16,29,0.99) 100%)', border: '1px solid rgba(212,175,55,0.28)', marginBottom: '40px', position: 'relative', overflow: 'hidden' }}>
-          {/* Glow */}
-          <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '280px', height: '280px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.15fr 0.85fr', gap: '32px', alignItems: 'center' }}>
-
-            {/* Left: CTA text */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
-                <Sparkles size={14} color="#D4AF37" />
-                <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#D4AF37', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Get Expert Consultation</span>
-              </div>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 700, color: '#FFF', margin: '0 0 10px', lineHeight: 1.2 }}>
-                Ready to find your<br /><span style={{ color: '#F3E5AB' }}>perfect home?</span>
-              </h2>
-              <p style={{ fontSize: '0.84rem', color: '#718096', margin: '0 0 16px', lineHeight: 1.6 }}>
-                Connect with our senior real estate advisors and unlock the best builder direct pricing, site visits, and home loan guidance.
+              <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.4rem', color: '#FFF', margin: '0 0 8px' }}>
+                Schedule a Private AC Cab Site Visit
+              </h3>
+              <p style={{ fontSize: '0.80rem', color: '#94A3B8', margin: '0 0 16px' }}>
+                Connect directly with 24K senior real estate advisors for exclusive developer price discounts and guided physical tours.
               </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: '#68D391', fontWeight: 600 }}>
-                <BadgeCheck size={12} /> Our team will match you with the best homes instantly
+
+              {formSuccess ? (
+                <div style={{ padding: '20px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', textAlign: 'center' }}>
+                  <CheckCircle2 size={32} color="#10B981" style={{ margin: '0 auto 8px' }} />
+                  <div style={{ color: '#FFF', fontWeight: 700, fontSize: '0.92rem' }}>Request Received!</div>
+                  <div style={{ color: '#94A3B8', fontSize: '0.78rem', marginTop: '2px' }}>Our senior advisor will call you within 15 minutes.</div>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                    <input
+                      type="text" required placeholder="Your Full Name" value={formData.name}
+                      onChange={e => setFormData(d => ({ ...d, name: e.target.value }))}
+                      style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#FFF', fontSize: '0.82rem' }}
+                    />
+                    <input
+                      type="tel" required placeholder="WhatsApp Number" value={formData.phone}
+                      onChange={e => setFormData(d => ({ ...d, phone: e.target.value }))}
+                      style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#FFF', fontSize: '0.82rem' }}
+                    />
+                  </div>
+                  <button type="submit" disabled={formSubmitting} className="pi-btn-gold" style={{ justifyContent: 'center', padding: '12px', marginTop: '4px' }}>
+                    {formSubmitting ? 'Confirming...' : 'Request Free Site Visit & Floor Plans'}
+                  </button>
+                </form>
+              )}
+            </section>
+
+          </main>
+
+          {/* ── RIGHT: Sticky Sidebar Console (Image 2 Architecture) ── */}
+          <aside className="pi-sidebar">
+
+            {/* Price & CTA Card */}
+            <div className="pi-sidebar-price-card">
+              <div className="pi-sidebar-price-card__label">Verified Starting Price</div>
+              <div className="pi-sidebar-price-card__price">
+                {displayPrice}
+              </div>
+              <div className="pi-sidebar-price-card__meta">
+                <span className="pi-meta-dot" /> Price verified · {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+              </div>
+
+              {/* RERA dossier chip */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', borderRadius: '8px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)', margin: '14px 0', fontSize: '0.74rem' }}>
+                <ShieldCheck size={14} color="#10B981" />
+                <span style={{ color: '#6EE7B7', fontWeight: 700, fontFamily: 'monospace' }}>{reraNumber}</span>
+              </div>
+
+              {/* 3 CTAs */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <button onClick={onOpenInquiry} className="pi-btn-gold" style={{ width: '100%', justifyContent: 'center', padding: '13px' }}>
+                  <Clock size={15} /> Book Private Site Visit
+                </button>
+
+                <a
+                  href={`https://wa.me/919673000053?text=Hi%2024K%20Realtors%20%F0%9F%8F%A0%0A%0AI%20am%20interested%20in%3A%0A%F0%9F%93%8C%20*${encodeURIComponent(title)}*%0A%F0%9F%93%8D%20Location%3A%20${encodeURIComponent(location)}%0A%F0%9F%9B%A1%EF%B8%8F%20RERA%3A%20${encodeURIComponent(reraNumber)}%0A%0APlease%20share%20floor%20plans%20and%20pricing%20breakup.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pi-btn-whatsapp"
+                  style={{ width: '100%', justifyContent: 'center', padding: '12px' }}
+                >
+                  <MessageSquare size={15} /> WhatsApp Our Expert
+                </a>
+
+                <a
+                  href="tel:+919673000053"
+                  className="pi-btn-outline"
+                  style={{ width: '100%', justifyContent: 'center', padding: '11px' }}
+                >
+                  <Phone size={14} color="#D4AF37" /> Call Directly +91 96730 00053
+                </a>
               </div>
             </div>
 
-            {/* Center: Smart form */}
-            {formSuccess ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '32px', borderRadius: '16px', background: 'rgba(105,200,140,0.08)', border: '1px solid rgba(105,200,140,0.25)' }}>
-                <CheckCircle2 size={40} color="#68D391" />
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.1rem', fontWeight: 700, color: '#FFF', textAlign: 'center' }}>Thank You!</div>
-                <div style={{ fontSize: '0.82rem', color: '#A0AEC0', textAlign: 'center' }}>Our advisor will call you within 30 minutes.</div>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {[
-                  { key: 'name',  type: 'text',  placeholder: 'Your Full Name',    Icon: Users },
-                  { key: 'phone', type: 'tel',   placeholder: 'Mobile Number',     Icon: Phone },
-                  { key: 'email', type: 'email', placeholder: 'Email (Optional)',  Icon: Mail  },
-                ].map(({ key, type, placeholder, Icon: FieldIcon }) => (
-                  <div key={key} style={{ position: 'relative' }}>
-                    <FieldIcon size={14} color={formErrors[key] ? '#FC8181' : '#718096'}
-                      style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-                    <input
-                      type={type}
-                      placeholder={placeholder}
-                      value={formData[key]}
-                      onChange={e => { setFormData(d => ({ ...d, [key]: e.target.value })); setFormErrors(er => ({ ...er, [key]: '' })); }}
-                      className="pdv-input"
-                      style={{ width: '100%', padding: '12px 14px 12px 38px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${formErrors[key] ? 'rgba(252,129,129,0.6)' : 'rgba(255,255,255,0.1)'}`, color: '#FFF', fontSize: '0.84rem', boxSizing: 'border-box' }}
-                    />
-                    {formErrors[key] && <div style={{ fontSize: '0.65rem', color: '#FC8181', marginTop: '3px', paddingLeft: '4px' }}>{formErrors[key]}</div>}
-                  </div>
-                ))}
-                <button type="submit" disabled={formSubmitting} className="pdv-btn-gold"
-                  style={{ padding: '14px', borderRadius: '50px', background: formSubmitting ? 'rgba(212,175,55,0.5)' : 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontSize: '0.88rem', fontWeight: 800, textTransform: 'uppercase', cursor: formSubmitting ? 'wait' : 'pointer', letterSpacing: '0.04em' }}>
-                  {formSubmitting ? 'Connecting you...' : 'ENQUIRE NOW — FREE'}
-                </button>
-              </form>
-            )}
+            {/* Instant Brochure Download */}
+            <div style={{ padding: '18px', borderRadius: '14px', background: '#0B1628', border: '1px solid rgba(212,175,55,0.22)', textAlign: 'center' }}>
+              <Download size={22} color="#D4AF37" style={{ margin: '0 auto 6px' }} />
+              <div style={{ fontSize: '0.84rem', fontWeight: 700, color: '#FFF' }}>Download E-Brochure (PDF)</div>
+              <p style={{ fontSize: '0.72rem', color: '#64748B', margin: '4px 0 12px' }}>
+                Instant access to master layout, floor plans &amp; pricing sheet.
+              </p>
+              <button onClick={() => setBrochureModalOpen(true)} className="pi-btn-outline" style={{ width: '100%', justifyContent: 'center', padding: '9px', fontSize: '0.78rem' }}>
+                Unlock PDF Brochure
+              </button>
+            </div>
 
-            {/* Right: Trust badges */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', borderLeft: isMobile ? 'none' : '1px solid rgba(255,255,255,0.07)', paddingLeft: isMobile ? 0 : '24px' }}>
-              {TRUST.map(({ Icon: TIcon, text }, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <TIcon size={15} color="#D4AF37" />
-                  </div>
-                  <span style={{ fontSize: '0.8rem', color: '#CBD5E0', fontWeight: 600 }}>{text}</span>
+            {/* AI Concierge Trigger */}
+            <button
+              onClick={openAiChat}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 16px', borderRadius: '14px', background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(11,22,40,0.9) 100%)', border: '1px solid rgba(212,175,55,0.4)', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
+            >
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D4AF37', flexShrink: 0 }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#F3E5AB' }}>🤖 Ask AI Property Specialist</div>
+                <div style={{ fontSize: '0.64rem', color: '#94A3B8', marginTop: '1px' }}>Instant pricing, Vastu &amp; ROI analysis</div>
+              </div>
+              <ChevronRight size={14} color="#D4AF37" />
+            </button>
+
+            {/* Trust Badges */}
+            <div style={{ padding: '16px', borderRadius: '14px', background: 'rgba(6,13,26,0.5)', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {TRUST.map(({ Icon: TrIcon, text }, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <TrIcon size={14} color="#D4AF37" />
+                  <span style={{ fontSize: '0.72rem', color: '#CBD5E0' }}>{text}</span>
                 </div>
               ))}
             </div>
 
-          </div>
-        </div>
+          </aside>
 
+        </div>
       </div>
 
       {/* ═══════════════════════════════════════════════════════════
-          24K PROPERTY CONCIERGE CHAT MODAL
+          MODALS & FLOATING ACTION BAR
       ═══════════════════════════════════════════════════════════ */}
+
+      {/* 1. AI Concierge Modal */}
       {aiChatOpen && (
         <div
           onClick={(e) => { if (e.target === e.currentTarget) setAiChatOpen(false); }}
-          style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'flex-end', justifyContent: isMobile ? 'stretch' : 'flex-end', padding: isMobile ? 0 : '24px' }}
+          style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end', padding: '20px' }}
         >
-          <div style={{ width: isMobile ? '100%' : '420px', height: isMobile ? '88vh' : '600px', background: '#0A1220', border: '1px solid rgba(212,175,55,0.35)', borderRadius: isMobile ? '24px 24px 0 0' : '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 -20px 60px rgba(0,0,0,0.7)' }}>
-
-            {/* Header */}
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(212,175,55,0.06)' }}>
-              <div style={{ position: 'relative', flexShrink: 0 }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Phone size={18} color="#09111F" />
+          <div style={{ width: '100%', maxWidth: '420px', height: '560px', background: '#0A1220', border: '1px solid rgba(212,175,55,0.35)', borderRadius: '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 -20px 60px rgba(0,0,0,0.7)' }}>
+            <div style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(212,175,55,0.06)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Phone size={15} color="#09111F" />
                 </div>
-                <div className="pdv-ai-dot" style={{ position: 'absolute', bottom: '1px', right: '1px', width: '9px', height: '9px', borderRadius: '50%', background: '#68D391', border: '2px solid #0A1220' }} />
+                <div>
+                  <div style={{ fontSize: '0.84rem', fontWeight: 800, color: '#FFF' }}>24K Property Intelligence</div>
+                  <div style={{ fontSize: '0.64rem', color: '#6EE7B7' }}>● Online · Context: {title}</div>
+                </div>
               </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#FFF' }}>24K Property Concierge Desk</div>
-                <div style={{ fontSize: '0.68rem', color: '#68D391', fontWeight: 600 }}>● Online · Dedicated Property Specialist</div>
-              </div>
-              <button onClick={() => setAiChatOpen(false)}
-                style={{ background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '50%', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#A0AEC0', transition: 'background 0.2s' }}
-                onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.14)'}
-                onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.07)'}
-              >
-                <X size={15} />
+              <button onClick={() => setAiChatOpen(false)} style={{ background: 'none', border: 'none', color: '#A0AEC0', cursor: 'pointer' }}>
+                <X size={16} />
               </button>
             </div>
 
-            {/* Context chip */}
-            <div style={{ padding: '10px 16px', background: 'rgba(212,175,55,0.06)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <BadgeCheck size={12} color="#D4AF37" />
-              <span style={{ fontSize: '0.68rem', color: '#D4AF37', fontWeight: 700 }}>Context loaded: {title} · {location}</span>
-            </div>
-
-            {/* Messages */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {aiMessages.map((msg, i) => (
-                <div key={i} style={{ display: 'flex', gap: '8px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row', alignItems: 'flex-start' }}>
-                  {msg.role === 'ai' && (
-                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
-                      <BadgeCheck size={13} color="#09111F" />
-                    </div>
-                  )}
-                  <div style={{
-                    maxWidth: '82%',
-                    padding: '10px 13px',
-                    borderRadius: msg.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
-                    background: msg.role === 'user'
-                      ? 'linear-gradient(135deg, #D4AF37, #C9A227)'
-                      : 'rgba(255,255,255,0.06)',
-                    border: msg.role === 'user' ? 'none' : '1px solid rgba(255,255,255,0.09)',
-                    color: msg.role === 'user' ? '#09111F' : '#E2E8F0',
-                    fontSize: '0.8rem',
-                    lineHeight: 1.6,
-                    fontWeight: msg.role === 'user' ? 700 : 400,
-                    whiteSpace: 'pre-wrap',
-                    wordBreak: 'break-word',
-                  }}>
+                <div key={i} style={{ display: 'flex', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row', gap: '6px' }}>
+                  <div style={{ maxWidth: '82%', padding: '9px 12px', borderRadius: '12px', background: msg.role === 'user' ? 'linear-gradient(135deg, #D4AF37, #C9A227)' : 'rgba(255,255,255,0.06)', color: msg.role === 'user' ? '#09111F' : '#E2E8F0', fontSize: '0.78rem', lineHeight: 1.5, fontWeight: msg.role === 'user' ? 700 : 400, whiteSpace: 'pre-wrap' }}>
                     {msg.text}
                   </div>
                 </div>
               ))}
-              {/* Typing indicator */}
               {aiThinking && (
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg, #D4AF37, #9A7B1C)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <BadgeCheck size={13} color="#09111F" />
-                  </div>
-                  <div style={{ padding: '10px 14px', borderRadius: '14px 14px 14px 4px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)', display: 'flex', gap: '4px', alignItems: 'center' }}>
-                    {[0,1,2].map(d => (
-                      <div key={d} style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#D4AF37', animation: `pdv-pulse 1.2s ${d * 0.2}s infinite` }} />
-                    ))}
-                  </div>
+                <div style={{ display: 'flex', gap: '4px', padding: '8px 12px', background: 'rgba(255,255,255,0.06)', borderRadius: '12px', width: 'fit-content' }}>
+                  <span style={{ fontSize: '0.72rem', color: '#D4AF37' }}>Thinking...</span>
                 </div>
               )}
               <div ref={aiChatEndRef} />
             </div>
 
-            {/* Suggested questions (show only when no user messages yet) */}
-            {aiMessages.filter(m => m.role === 'user').length === 0 && !aiThinking && (
+            {aiMessages.filter(m => m.role === 'user').length === 0 && (
               <div style={{ padding: '0 12px 10px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {CONCIERGE_SUGGESTED_QUESTIONS.map((q, i) => (
-                  <button key={i} onClick={() => handleAiSend(q)}
-                    style={{ padding: '6px 12px', borderRadius: '100px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.3)', color: '#F3E5AB', fontSize: '0.72rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
-                    onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.18)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'rgba(212,175,55,0.08)'}
-                  >
+                {CONCIERGE_SUGGESTED_QUESTIONS.slice(0, 3).map((q, i) => (
+                  <button key={i} onClick={() => handleAiSend(q)} style={{ padding: '5px 10px', borderRadius: '100px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.3)', color: '#F3E5AB', fontSize: '0.68rem', fontWeight: 600, cursor: 'pointer' }}>
                     {q}
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Input bar */}
-            <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', gap: '10px', alignItems: 'center', background: 'rgba(0,0,0,0.2)' }}>
+            <div style={{ padding: '10px 14px', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', gap: '8px', background: 'rgba(0,0,0,0.2)' }}>
               <input
                 ref={aiInputRef}
                 value={aiInput}
                 onChange={e => setAiInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !aiThinking) { e.preventDefault(); handleAiSend(); } }}
-                placeholder="Ask about pricing, Vastu, possession, ROI..."
-                disabled={aiThinking}
-                style={{ flex: 1, padding: '10px 14px', borderRadius: '10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.84rem', outline: 'none', transition: 'border-color 0.2s' }}
-                onFocus={e => e.target.style.borderColor = 'rgba(212,175,55,0.5)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+                placeholder="Ask about pricing, Vastu, ROI..."
+                style={{ flex: 1, padding: '9px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.80rem', outline: 'none' }}
               />
-              <button
-                onClick={() => handleAiSend()}
-                disabled={aiThinking || !aiInput.trim()}
-                style={{ width: '40px', height: '40px', borderRadius: '10px', background: aiInput.trim() && !aiThinking ? 'linear-gradient(135deg, #D4AF37, #9A7B1C)' : 'rgba(255,255,255,0.06)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: aiInput.trim() && !aiThinking ? 'pointer' : 'not-allowed', transition: 'all 0.2s', flexShrink: 0 }}
-              >
-                <Send size={16} color={aiInput.trim() && !aiThinking ? '#09111F' : '#4A5568'} />
+              <button onClick={() => handleAiSend()} disabled={!aiInput.trim() || aiThinking} className="pi-btn-gold" style={{ padding: '8px 12px' }}>
+                <Send size={14} />
               </button>
             </div>
-
-            {/* Footer note */}
-            <div style={{ padding: '6px 16px 10px', textAlign: 'center', fontSize: '0.6rem', color: '#718096' }}>
-              Property insights are advisory. For site visits and bookings, consult our specialists.
-            </div>
-
           </div>
         </div>
       )}
 
-
-      {/* ═══════════════════════════════════════════════════════════
-          E-BROCHURE DOWNLOAD LEAD CAPTURE MODAL
-      ═══════════════════════════════════════════════════════════ */}
+      {/* 2. E-Brochure Modal */}
       {brochureModalOpen && (
         <div
           onClick={(e) => { if (e.target === e.currentTarget) setBrochureModalOpen(false); }}
           style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
         >
-          <div style={{ width: '100%', maxWidth: '440px', background: '#0D1829', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '24px', padding: '28px', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.8)' }}>
-            <button onClick={() => setBrochureModalOpen(false)}
-              style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.06)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#A0AEC0' }}>
+          <div style={{ width: '100%', maxWidth: '420px', background: '#0D1829', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '20px', padding: '24px', position: 'relative' }}>
+            <button onClick={() => setBrochureModalOpen(false)} style={{ position: 'absolute', top: '14px', right: '14px', background: 'none', border: 'none', color: '#A0AEC0', cursor: 'pointer' }}>
               <X size={16} />
             </button>
 
             {brochureSuccess ? (
-              <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                <CheckCircle2 size={48} color="#68D391" style={{ marginBottom: '12px' }} />
-                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.3rem', color: '#FFF', margin: '0 0 8px' }}>Brochure Unlocked!</h3>
-                <p style={{ fontSize: '0.84rem', color: '#CBD5E0', marginBottom: '20px', lineHeight: 1.5 }}>
-                  The official floor plans & price sheet PDF for <strong>{title}</strong> has been sent to your WhatsApp.
+              <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                <CheckCircle2 size={40} color="#10B981" style={{ margin: '0 auto 8px' }} />
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', color: '#FFF', margin: '0 0 6px' }}>Brochure Sent!</h3>
+                <p style={{ fontSize: '0.80rem', color: '#CBD5E0', marginBottom: '16px' }}>
+                  The 4K Floor Plans &amp; Price Sheet PDF for <strong>{title}</strong> has been shared.
                 </p>
-                <button onClick={() => { setBrochureModalOpen(false); setBrochureSuccess(false); }} className="pdv-btn-gold"
-                  style={{ padding: '12px 28px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontWeight: 800, cursor: 'pointer' }}>
-                  Close Preview
+                <button onClick={() => { setBrochureModalOpen(false); setBrochureSuccess(false); }} className="pi-btn-gold" style={{ padding: '10px 24px' }}>
+                  Close
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleBrochureSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <form onSubmit={handleBrochureSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ textAlign: 'center' }}>
-                  <Download size={32} color="#D4AF37" style={{ marginBottom: '8px' }} />
-                  <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.3rem', color: '#FFF', margin: '0 0 6px' }}>Download E-Brochure</h3>
-                  <p style={{ fontSize: '0.78rem', color: '#718096', margin: 0 }}>
-                    Enter details to instantly unlock 4K Floor Plans & Price Sheet for {title}.
-                  </p>
+                  <Download size={28} color="#D4AF37" style={{ margin: '0 auto 6px' }} />
+                  <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', color: '#FFF', margin: '0 0 4px' }}>Download E-Brochure</h3>
+                  <p style={{ fontSize: '0.74rem', color: '#718096', margin: 0 }}>Instant PDF download for {title}</p>
                 </div>
-
-                <div>
-                  <label style={{ fontSize: '0.7rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase' }}>Full Name *</label>
-                  <input required type="text" placeholder="e.g. Rahul Sharma" value={brochureForm.name}
-                    onChange={e => setBrochureForm(f => ({ ...f, name: e.target.value }))}
-                    style={{ width: '100%', padding: '12px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.84rem', marginTop: '4px', boxSizing: 'border-box' }} />
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '0.7rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase' }}>WhatsApp Number *</label>
-                  <input required type="tel" placeholder="10-digit mobile number" value={brochureForm.phone}
-                    onChange={e => setBrochureForm(f => ({ ...f, phone: e.target.value }))}
-                    style={{ width: '100%', padding: '12px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.84rem', marginTop: '4px', boxSizing: 'border-box' }} />
-                </div>
-
-                <button type="submit" disabled={brochureSubmitting} className="pdv-btn-gold"
-                  style={{ width: '100%', padding: '14px', borderRadius: '50px', background: 'linear-gradient(135deg, #D4AF37, #C9A227)', color: '#09111F', border: 'none', fontWeight: 800, fontSize: '0.86rem', textTransform: 'uppercase', cursor: 'pointer', marginTop: '6px' }}>
-                  {brochureSubmitting ? 'Unlocking PDF...' : 'DOWNLOAD BROCHURE NOW (PDF)'}
+                <input required type="text" placeholder="Your Full Name" value={brochureForm.name}
+                  onChange={e => setBrochureForm(f => ({ ...f, name: e.target.value }))}
+                  style={{ width: '100%', padding: '11px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.80rem', boxSizing: 'border-box' }} />
+                <input required type="tel" placeholder="WhatsApp Number (10-digit)" value={brochureForm.phone}
+                  onChange={e => setBrochureForm(f => ({ ...f, phone: e.target.value }))}
+                  style={{ width: '100%', padding: '11px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontSize: '0.80rem', boxSizing: 'border-box' }} />
+                <button type="submit" disabled={brochureSubmitting} className="pi-btn-gold" style={{ width: '100%', padding: '12px', justifyContent: 'center', fontSize: '0.82rem' }}>
+                  {brochureSubmitting ? 'Unlocking...' : 'Download Floor Plans PDF'}
                 </button>
               </form>
             )}
           </div>
         </div>
       )}
-
-      {/* ═══════════════════════════════════════════════════════════
-          STICKY LUXURY RESPONSIVE ACTION BAR (MOBILE + DESKTOP)
-      ═══════════════════════════════════════════════════════════ */}
-      <div
-        className="pdv-mobile-action-dock"
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 9999,
-          background: 'rgba(7, 15, 30, 0.95)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderTop: '1px solid rgba(212, 175, 55, 0.35)',
-          boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.65)',
-          padding: '10px 16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '10px'
-        }}
-      >
-        {/* Left: Quick Property Summary (Desktop/Tablet) */}
-        <div className="pdv-dock-info" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ lineHeight: 1.2 }}>
-            <div style={{ fontFamily: "'Cinzel', serif", color: '#D4AF37', fontWeight: 800, fontSize: '0.92rem' }}>
-              {title}
-            </div>
-            <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.6)' }}>
-              {location} • <span style={{ color: '#FFF', fontWeight: 700 }}>{displayPrice}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: 1-Tap Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'nowrap' }}>
-          {/* 1. WhatsApp Instant */}
-          <a
-            href={`https://wa.me/919673000053?text=Hi%2024K%20Realtors%2C%20I%20am%20interested%20in%20${encodeURIComponent(title)}%20(${encodeURIComponent(location)})`}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Chat with Senior Real Estate Advisor on WhatsApp"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '10px 14px',
-              borderRadius: '50px',
-              background: 'linear-gradient(135deg, #25D366, #128C7E)',
-              color: '#FFF',
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              textDecoration: 'none',
-              boxShadow: '0 4px 14px rgba(37,211,102,0.35)',
-              whiteSpace: 'nowrap',
-              transition: 'transform 0.2s ease'
-            }}
-          >
-            <MessageSquare size={14} />
-            <span className="pdv-btn-text">WhatsApp</span>
-          </a>
-
-          {/* 2. Direct Call Advisor */}
-          <a
-            href="tel:+919673000053"
-            title="Call 24K Luxury Advisor Hotline"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '10px 14px',
-              borderRadius: '50px',
-              background: 'rgba(255,255,255,0.08)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: '#FFF',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              textDecoration: 'none',
-              whiteSpace: 'nowrap',
-              transition: 'transform 0.2s ease'
-            }}
-          >
-            <Phone size={13} color="#D4AF37" />
-            <span className="pdv-btn-text">Call</span>
-          </a>
-
-          {/* 3. E-Brochure Download */}
-          <button
-            type="button"
-            onClick={() => setIsBrochureModalOpen(true)}
-            title="Download Verified E-Brochure & Floorplans"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '10px 14px',
-              borderRadius: '50px',
-              background: 'rgba(212,175,55,0.12)',
-              border: '1px solid rgba(212,175,55,0.4)',
-              color: '#D4AF37',
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap'
-            }}
-          >
-            <Download size={13} />
-            <span className="pdv-btn-text">Brochure</span>
-          </button>
-
-          {/* 4. Book VIP Site Visit (Primary Gold Button) */}
-          <button
-            type="button"
-            onClick={() => {
-              if (onOpenInquiry) {
-                onOpenInquiry(property);
-              } else {
-                const leadSec = document.getElementById('pdv-lead-form');
-                if (leadSec) leadSec.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-            title="Schedule Free AC Cab Site Visit"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '10px 18px',
-              borderRadius: '50px',
-              background: 'linear-gradient(135deg, #D4AF37, #C9A227)',
-              color: '#070D18',
-              fontSize: '0.80rem',
-              fontWeight: 900,
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(212,175,55,0.4)',
-              whiteSpace: 'nowrap',
-              fontFamily: "'Montserrat', sans-serif"
-            }}
-          >
-            <Clock size={13} />
-            <span>Book VIP Visit</span>
-          </button>
-        </div>
-      </div>
-
 
     </div>
   );
