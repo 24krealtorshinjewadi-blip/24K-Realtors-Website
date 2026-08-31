@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
   UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building, Building2,
-  Home, Search, Heart, ChevronDown, TrendingUp, Camera, Sparkles
+  Home, Search, Heart, ChevronDown, TrendingUp, Camera, Sparkles, BookOpen
 } from 'lucide-react';
 
 import CompanyLogo from '../components/CompanyLogo';
@@ -253,6 +253,16 @@ export default function PortalNavbar({
               style={{ color: '#E6C35C', fontWeight: 'bold' }}
             >
               ⚜️ SELL/RENT
+            </button>
+            <button 
+              onClick={() => {
+                if (onViewChange) onViewChange('blog');
+                else window.location.hash = 'blog';
+              }}
+              style={{ color: '#F3E5AB', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+            >
+              <BookOpen size={13} style={{ color: '#D4AF37' }} />
+              <span>BLOG</span>
             </button>
             <button 
               onClick={() => {
@@ -517,6 +527,23 @@ export default function PortalNavbar({
               <span>List directly on our premium owner desk</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
+          </button>
+
+          <button 
+            onClick={() => { 
+              setIsDrawerOpen(false); 
+              if (onViewChange) onViewChange('blog');
+              else window.location.hash = 'blog';
+            }} 
+            className="drawer-item-link"
+            style={{ width: '100%', border: 'none', background: 'rgba(212, 175, 55, 0.08)', textAlign: 'left', cursor: 'pointer' }}
+          >
+            <BookOpen size={18} color="#D4AF37" />
+            <div className="drawer-item-text">
+              <strong style={{ color: '#F3E5AB' }}>Real Estate Insights Blog</strong>
+              <span>Guides, RERA checklists, EMI &amp; market trends</span>
+            </div>
+            <ArrowRight size={14} className="arrow-icon" color="#D4AF37" />
           </button>
 
           <a href="#rera-compliance" onClick={() => setIsDrawerOpen(false)} className="drawer-item-link">

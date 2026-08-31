@@ -18,6 +18,8 @@ const AiAssistantPanel = lazy(() => import('./components/AiAssistantPanel'));
 const PublicSocietiesPage = lazy(() => import('./components/PublicSocietiesPage'));
 const PublicSocietyDetailPage = lazy(() => import('./components/PublicSocietyDetailPage'));
 const LocationLandingPage = lazy(() => import('./components/LocationLandingPage'));
+const BlogListPage   = lazy(() => import('./components/BlogListPage'));
+const BlogDetailPage = lazy(() => import('./components/BlogDetailPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -85,11 +87,13 @@ function AppLoadingScreen() {
 }
 
 export default function App() {
-  // views: 'portal' | 'dashboard' | 'login' | 'list-property' | 'societies' | 'society-detail' | 'location-landing'
+  // views: 'portal' | 'dashboard' | 'login' | 'list-property' | 'societies' | 'society-detail' | 'location-landing' | 'blog' | 'blog-detail'
   const [currentView, setCurrentView] = useState('portal');
   const [activeSocietySlug, setActiveSocietySlug] = useState(null);
   const [activeLocationSlug, setActiveLocationSlug] = useState('hinjewadi-phase-1');
-  const [showLoginModal, setShowLoginModal] = useState(false); // legacy fallback
+  const [activeBlog, setActiveBlog]       = useState(null);   // full blog object
+  const [activeBlogSlug, setActiveBlogSlug] = useState(null); // slug for URL-direct loads
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
 
@@ -98,6 +102,7 @@ export default function App() {
                   : currentView === 'dashboard'     ? SEO_CONFIGS.dashboard
                   : currentView === 'login'         ? SEO_CONFIGS.login
                   : currentView === 'list-property' ? SEO_CONFIGS.listProperty
+                  : currentView === 'blog'          ? SEO_CONFIGS.blog
                   : SEO_CONFIGS.portal;
   useSEO(seoConfig);
 
@@ -184,6 +189,14 @@ export default function App() {
         setCurrentView('login');
       } else if (hash === 'dashboard') {
         setCurrentView('dashboard');
+      } else if (hash === 'blog') {
+        setActiveBlog(null);
+        setCurrentView('blog');
+      } else if (hash.startsWith('blog/')) {
+        const slug = hash.replace('blog/', '');
+        setActiveBlog(null);
+        setActiveBlogSlug(slug);
+        setCurrentView('blog-detail');
       } else {
         setCurrentView('portal');
       }
@@ -235,6 +248,20 @@ export default function App() {
       setActiveLocationSlug(loc);
       window.location.hash = `locations/${loc}`;
       setCurrentView('location-landing');
+      return;
+    }
+    if (view === 'blog') {
+      setActiveBlog(null);
+      window.location.hash = 'blog';
+      setCurrentView('blog');
+      return;
+    }
+    if (view.startsWith('blog/')) {
+      const slug = view.replace('blog/', '');
+      setActiveBlog(null);
+      setActiveBlogSlug(slug);
+      window.location.hash = `blog/${slug}`;
+      setCurrentView('blog-detail');
       return;
     }
     if (view === 'dashboard') {
@@ -311,6 +338,27 @@ export default function App() {
                   window.location.hash = `society/${slug}`;
                   setCurrentView('society-detail');
                 }}
+              />
+            ) : currentView === 'blog' ? (
+              <BlogListPage
+                onBack={() => handleViewChange('portal')}
+                onSelectBlog={(blog) => {
+                  setActiveBlog(blog);
+                  setActiveBlogSlug(blog.slug);
+                  window.location.hash = `blog/${blog.slug}`;
+                  setCurrentView('blog-detail');
+                }}
+              />
+            ) : currentView === 'blog-detail' ? (
+              <BlogDetailPage
+                blog={activeBlog}
+                slug={activeBlogSlug}
+                onBack={() => {
+                  setActiveBlog(null);
+                  window.location.hash = 'blog';
+                  setCurrentView('blog');
+                }}
+                onBrowse={() => handleViewChange('portal')}
               />
             ) : currentView === 'portal' ? (
               <Portal onViewChange={handleViewChange} />

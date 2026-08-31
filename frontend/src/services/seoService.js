@@ -154,7 +154,58 @@ export const SEO_CONFIGS = {
     description: 'List your property with 24K Realtors Pune. MahaRERA compliant listing, professional photography, and dedicated advisory support. Free valuation.',
     url: '/list-property',
   },
+
+  blog: {
+    title: 'Real Estate Blog — Expert Guides, Market Insights & Investment Tips',
+    description: '24K Realtors expert blog: MahaRERA guides, Hinjewadi investment analysis, home loan comparisons, NRI guides, and Pune real estate market trends. Updated 2026.',
+    url: '/#blog',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'Blog',
+      name: '24K Realtors — Real Estate Insights Blog',
+      description: 'Expert real estate guides, market analysis, RERA verification help, and investment tips for Hinjewadi, Wakad, and Pune West.',
+      url: 'https://real-estate-digital-marketing.vercel.app/#blog',
+      publisher: {
+        '@type': 'RealEstateAgent',
+        name: '24K Realtors Pune',
+        url: 'https://real-estate-digital-marketing.vercel.app/'
+      }
+    }
+  }
 };
+
+/**
+ * buildBlogSEO — Generate dynamic SEO metadata and Article schema for a Blog Post
+ * @param {Object} blog - Blog post object
+ * @returns {Object} - SEO configuration object
+ */
+export function buildBlogSEO(blog) {
+  if (!blog) return SEO_CONFIGS.blog;
+
+  return {
+    title: `${blog.seoTitle || blog.title} | 24K Realtors Blog`,
+    description: (blog.seoDescription || blog.title).substring(0, 160),
+    image: blog.coverImageUrl || undefined,
+    url: `/#blog/${blog.slug}`,
+    type: 'article',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: blog.title,
+      description: blog.seoDescription || blog.title,
+      image: blog.coverImageUrl,
+      author: { '@type': 'Person', name: blog.author || '24K Realtors' },
+      publisher: {
+        '@type': 'Organization',
+        name: '24K Realtors Pune',
+        logo: { '@type': 'ImageObject', url: 'https://real-estate-digital-marketing.vercel.app/favicon.svg' }
+      },
+      datePublished: blog.createdDate,
+      dateModified: blog.updatedDate || blog.createdDate,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `https://real-estate-digital-marketing.vercel.app/#blog/${blog.slug}` }
+    }
+  };
+}
 
 /**
  * buildPropertySEO — Generate dynamic SEO config for a specific property
