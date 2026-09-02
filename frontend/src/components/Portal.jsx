@@ -3604,56 +3604,7 @@ export default function Portal({ onViewChange }) {
                 position: 'relative',
               }}>
 
-                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: isMobile ? '16px' : '20px' }}>
-                  {/* 🚇 Metro Transit Connectivity Pill (Hindi / Marathi Localization) */}
-                  <div style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '8px',
-                    background: 'linear-gradient(135deg, rgba(212,175,55,0.22) 0%, rgba(15,23,42,0.85) 100%)',
-                    border: '1.5px solid rgba(212,175,55,0.65)',
-                    borderRadius: '50px',
-                    padding: isMobile ? '6px 14px' : '7px 18px',
-                    boxShadow: '0 0 24px rgba(212,175,55,0.22)',
-                    backdropFilter: 'blur(8px)',
-                  }}>
-                    <span style={{ fontSize: '1rem' }}>🚇</span>
-                    <span style={{
-                      fontSize: isMobile ? '0.72rem' : '0.82rem',
-                      fontWeight: 800,
-                      color: '#FFF0B3',
-                      letterSpacing: '0.03em',
-                      fontFamily: "'Montserrat', sans-serif",
-                    }}>
-                      पुणे मेट्रो Line 3 · <span style={{ color: '#F5D77F' }}>हिंजवडी</span> (Hinjewadi) Direct Connectivity
-                    </span>
-                    <span style={{
-                      background: '#22c55e', color: '#040814',
-                      fontSize: '0.6rem', fontWeight: 800,
-                      padding: '2px 8px', borderRadius: '20px', textTransform: 'uppercase'
-                    }}>Transit Live</span>
-                  </div>
 
-                  {/* Trust Pill — "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" */}
-                  <div style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '8px',
-                    background: 'linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(212,175,55,0.08) 100%)',
-                    border: '1px solid rgba(212,175,55,0.55)',
-                    borderRadius: '50px',
-                    padding: isMobile ? '6px 14px' : '7px 18px',
-                    boxShadow: '0 0 20px rgba(212,175,55,0.12)',
-                  }}>
-                    <span style={{ color: '#E6C35C', fontSize: '0.75rem' }}>★</span>
-                    <span style={{
-                      fontSize: isMobile ? '0.6rem' : '0.67rem',
-                      fontWeight: 800,
-                      color: '#F5D77F',
-                      letterSpacing: '0.14em',
-                      textTransform: 'uppercase',
-                      fontFamily: "'Montserrat', sans-serif",
-                    }}>
-                      PUNE'S MOST TRUSTED PROPERTY CONSULTANTS
-                    </span>
-                  </div>
-                </div>
 
                 {/* Main Headline */}
                 <h1 style={{
@@ -3729,10 +3680,10 @@ export default function Portal({ onViewChange }) {
                     {/* Property Type Tabs */}
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                       {[
-                        { id: 'BUY', label: 'Buy (खरेदी)' },
-                        { id: 'RENT', label: 'Rent (भाडे)' },
-                        { id: 'COMMERCIAL', label: 'Commercial (व्यावसायिक)' },
-                        { id: 'TOWNSHIPS', label: 'Townships (टाउनशिप)' }
+                        { id: 'BUY', label: 'Buy' },
+                        { id: 'RENT', label: 'Rent' },
+                        { id: 'COMMERCIAL', label: 'Commercial' },
+                        { id: 'TOWNSHIPS', label: 'Townships' }
                       ].map(tab => (
                         <button
                           key={tab.id}
