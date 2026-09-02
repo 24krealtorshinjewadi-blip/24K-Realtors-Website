@@ -66,6 +66,24 @@ public class LeadController {
         return ResponseEntity.ok(leads);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<LeadResponse> updateLead(
+            @PathVariable UUID id,
+            @Valid @RequestBody LeadRequest request
+    ) {
+        LeadResponse updated = leadService.updateLead(id, request);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<LeadResponse> patchLead(
+            @PathVariable UUID id,
+            @Valid @RequestBody LeadRequest request
+    ) {
+        LeadResponse updated = leadService.updateLead(id, request);
+        return ResponseEntity.ok(updated);
+    }
+
     @PatchMapping("/{id}/status")
     public ResponseEntity<LeadResponse> updateLeadStatus(
             @PathVariable UUID id,

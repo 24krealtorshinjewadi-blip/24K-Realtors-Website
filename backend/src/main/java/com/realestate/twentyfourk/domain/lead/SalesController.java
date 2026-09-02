@@ -32,13 +32,24 @@ public class SalesController {
         private String activityType; // CALL, EMAIL, MEETING, NOTE
         private String subject;
         private String details;
+
+        // Fallback for frontend callers sending 'type' instead of 'activityType'
+        public void setType(String type) {
+            if (this.activityType == null || this.activityType.isBlank()) {
+                this.activityType = type;
+            }
+        }
     }
 
     @PostMapping("/leads/{id}/timeline")
     public ResponseEntity<LeadActivity> logActivity(
             @PathVariable UUID id,
             @RequestBody ActivityLogRequest request) {
-        LeadActivity activity = salesService.logLeadActivity(id, request.getActivityType(), request.getSubject(), request.getDetails());
+        String type = (request.getActivityType() != null && !request.getActivityType().isBlank())
+                ? request.getActivityType() : "NOTE";
+        String subject = (request.getSubject() != null && !request.getSubject().isBlank())
+                ? request.getSubject() : "Lead Note";
+        LeadActivity activity = salesService.logLeadActivity(id, type, subject, request.getDetails());
         salesService.calculateAndUpdateLeadScore(id);
         return ResponseEntity.ok(activity);
     }

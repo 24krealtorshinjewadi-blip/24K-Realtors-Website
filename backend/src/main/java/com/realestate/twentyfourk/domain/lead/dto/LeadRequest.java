@@ -15,14 +15,11 @@ public record LeadRequest(
         String name,
 
         @NotBlank(message = "Phone number is required")
-        @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Invalid phone number format (use E.164, e.g. +919876543210)")
+        @Pattern(regexp = "^[+]?[0-9\\s\\-()]{7,20}$", message = "Invalid phone number format")
         String phone,
 
-        @NotBlank(message = "Email is required")
-        @Email(message = "Invalid email address format")
         String email,
 
-        @NotNull(message = "Requirement type is required")
         LeadRequirementType requirementType,
 
         BigDecimal budgetMin,

@@ -15,6 +15,7 @@ public interface LeadService {
     // Privacy: returns only leads assigned to a specific agent (for RM role)
     Page<LeadResponse> getMyLeads(String agentEmail, LeadStatus status, Pageable pageable);
     LeadResponse updateLeadStatus(UUID id, LeadStatus status);
+    LeadResponse updateLead(UUID id, LeadRequest request);
     LeadResponse assignAgent(UUID id, UUID agentId);
     void deleteLead(UUID id);
 }

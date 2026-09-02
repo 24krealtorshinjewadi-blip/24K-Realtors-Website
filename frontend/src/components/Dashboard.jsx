@@ -35,6 +35,7 @@ import InventoryTab from './InventoryTab';
 import EmployeeDashboard from './EmployeeDashboard';
 import MyLeadsTab from './MyLeadsTab';
 import DamTab from './DamTab';
+import { toast } from './Toast';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
 const normalizeLead = (lead) => {
@@ -442,18 +443,20 @@ export default function Dashboard({ onViewChange }) {
     e.preventDefault();
     setActionLoading(true);
     try {
-      if (editLeadForm.status) {
-        await apiService.updateLeadStatus(editLeadForm.id, editLeadForm.status);
-      }
-      setLeads(prev => prev.map(l => l.id === editLeadForm.id ? normalizeLead({ ...l, ...editLeadForm }) : l));
-      setSelectedLeadDetail(prev => normalizeLead({ ...prev, ...editLeadForm }));
+      const updated = await apiService.updateLead(editLeadForm.id, editLeadForm);
+      const normalized = normalizeLead(updated || { ...selectedLeadDetail, ...editLeadForm });
+      setLeads(prev => prev.map(l => l.id === editLeadForm.id ? normalized : l));
+      setSelectedLeadDetail(normalized);
       setIsEditLeadModalOpen(false);
-      alert('Lead details updated & synchronized with backend!');
+      toast.success('Lead details saved and synced with database!');
+      fetchDashboardStats();
     } catch (err) {
       console.warn('API Edit Lead fallback:', err);
-      setLeads(prev => prev.map(l => l.id === editLeadForm.id ? normalizeLead({ ...l, ...editLeadForm }) : l));
-      setSelectedLeadDetail(prev => normalizeLead({ ...prev, ...editLeadForm }));
+      const fallbackLead = normalizeLead({ ...selectedLeadDetail, ...editLeadForm });
+      setLeads(prev => prev.map(l => l.id === editLeadForm.id ? fallbackLead : l));
+      setSelectedLeadDetail(fallbackLead);
       setIsEditLeadModalOpen(false);
+      toast.warning('Lead updated in local cache');
     } finally {
       setActionLoading(false);
     }
@@ -538,7 +541,8 @@ export default function Dashboard({ onViewChange }) {
         preferredLocation: 'BANER',
         notes: 'Inquired about 24K Realtors luxury properties'
       });
-      alert('Lead created successfully and synchronized with database!');
+      toast.success('Lead created and synchronized with database!');
+      fetchDashboardStats();
     } catch (err) {
       console.warn('API Lead Creation fallback:', err);
       const localNewLead = normalizeLead({
@@ -558,6 +562,7 @@ export default function Dashboard({ onViewChange }) {
       setLeads(prev => [localNewLead, ...prev]);
       setSelectedLeadDetail(localNewLead);
       setIsAddLeadModalOpen(false);
+      toast.warning('Lead created in local cache');
     } finally {
       setActionLoading(false);
     }
@@ -570,8 +575,11 @@ export default function Dashboard({ onViewChange }) {
       if (selectedLeadDetail && selectedLeadDetail.id === leadId) {
         setSelectedLeadDetail(prev => ({ ...prev, status: newStatus }));
       }
+      toast.info(`Lead status updated to ${newStatus}`);
+      fetchDashboardStats();
     } catch (e) {
       setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
+      toast.warning(`Status updated locally to ${newStatus}`);
     }
   };
 

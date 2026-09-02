@@ -3,6 +3,7 @@ import { apiService } from '../services/apiService';
 import { 
   X, Sparkles, IndianRupee, Loader
 } from 'lucide-react';
+import { toast } from './Toast';
 
 export default function LeadDetailsEx({ lead, onClose, agents, properties: initialProperties, fetchLeads, fetchStats }) {
   const [activeSubTab, setActiveSubTab] = useState('timeline'); // timeline | sitevisits | bookings
@@ -73,12 +74,17 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
   const handleLogActivity = async (e) => {
     e.preventDefault();
     try {
-      await apiService.logLeadActivity(lead.id, activityForm);
+      await apiService.logLeadActivity(lead.id, {
+        activityType: activityForm.type,
+        subject: activityForm.subject,
+        details: activityForm.details
+      });
       setActivityForm({ type: 'NOTE', subject: '', details: '' });
       fetchTimeline();
       fetchLeads && fetchLeads(); // update dashboard score
+      toast.success('Activity logged to lead timeline!');
     } catch (err) {
-      alert(`Failed to log activity: ${err.message}`);
+      toast.error(`Failed to log activity: ${err.message}`);
     }
   };
 
@@ -86,9 +92,9 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
   const handleScheduleVisit = async (e) => {
     e.preventDefault();
     try {
-      const agent = agents.find(a => a.phone === lead.assignedAgentPhone) || agents[0];
+      const agent = agents?.find(a => a.phone === lead.assignedAgentPhone) || agents?.[0];
       if (!agent) {
-        alert("Please assign a relationship manager to this lead first.");
+        toast.warning("Please assign a relationship manager to this lead first.");
         return;
       }
       await apiService.scheduleSiteVisit({
@@ -102,8 +108,9 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
       fetchVisitsAndBookings();
       fetchTimeline();
       fetchLeads && fetchLeads();
+      toast.success('Site tour scheduled successfully!');
     } catch (err) {
-      alert(`Failed to schedule visit: ${err.message}`);
+      toast.error(`Failed to schedule visit: ${err.message}`);
     }
   };
 
@@ -113,8 +120,9 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
       await apiService.recordVisitCheckIn(visitId, 18.5590, 73.7868);
       fetchVisitsAndBookings();
       fetchTimeline();
+      toast.success('Site visit checked in!');
     } catch (err) {
-      alert(`Check-in failed: ${err.message}`);
+      toast.error(`Check-in failed: ${err.message}`);
     }
   };
 
@@ -127,8 +135,9 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
       fetchVisitsAndBookings();
       fetchTimeline();
       fetchLeads && fetchLeads();
+      toast.success('Site visit marked completed!');
     } catch (err) {
-      alert(`Failed to complete site visit: ${err.message}`);
+      toast.error(`Failed to complete site visit: ${err.message}`);
     }
   };
 
@@ -136,9 +145,9 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
   const handleCreateBooking = async (e) => {
     e.preventDefault();
     try {
-      const agent = agents.find(a => a.phone === lead.assignedAgentPhone) || agents[0];
+      const agent = agents?.find(a => a.phone === lead.assignedAgentPhone) || agents?.[0];
       if (!agent) {
-        alert("Please assign a relationship manager to this lead first.");
+        toast.warning("Please assign a relationship manager to this lead first.");
         return;
       }
       await apiService.createBooking({
@@ -154,8 +163,9 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
       fetchTimeline();
       fetchStats && fetchStats();
       fetchLeads && fetchLeads();
+      toast.success('Booking recorded successfully!');
     } catch (err) {
-      alert(`Failed to create booking: ${err.message}`);
+      toast.error(`Failed to create booking: ${err.message}`);
     }
   };
 
@@ -166,8 +176,9 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
       fetchVisitsAndBookings();
       fetchTimeline();
       fetchStats && fetchStats();
+      toast.success('Booking confirmed & agreement generated!');
     } catch (err) {
-      alert(`Failed to confirm booking: ${err.message}`);
+      toast.error(`Failed to confirm booking: ${err.message}`);
     }
   };
 
@@ -329,15 +340,34 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
               <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', padding: '15px 0' }}>No timeline events recorded.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '250px', overflowY: 'auto', paddingRight: '5px' }}>
-                {timeline.map((item, idx) => (
-                  <div key={idx} style={{ background: 'rgba(255,255,255,0.01)', borderLeft: '3px solid var(--gold-primary)', padding: '12px', borderRadius: '4px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                      <span style={{ fontWeight: 'bold', color: 'var(--gold-primary)' }}>{item.activityType}</span>
-                      <span>{new Date(item.timestamp).toLocaleString()}</span>
+                {timeline.map((item, idx) => {
+                  const typeColors = {
+                    SYSTEM: { border: '#3B82F6', text: '#60A5FA' },
+                    STATUS_CHANGE: { border: '#10B981', text: '#34D399' },
+                    ASSIGNMENT: { border: '#8B5CF6', text: '#A78BFA' },
+                    NOTE: { border: '#D4AF37', text: '#D4AF37' },
+                    CALL: { border: '#F59E0B', text: '#FBBF24' },
+                    MEETING: { border: '#EC4899', text: '#F472B6' }
+                  };
+                  const colorConfig = typeColors[item.activityType] || { border: '#D4AF37', text: '#D4AF37' };
+                  const dateStr = item.createdDate || item.timestamp;
+                  return (
+                    <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', borderLeft: `3px solid ${colorConfig.border}`, padding: '12px 14px', borderRadius: '6px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>
+                        <span style={{ fontWeight: 'bold', color: colorConfig.text, fontSize: '0.7rem', padding: '1px 6px', background: `${colorConfig.border}15`, borderRadius: '4px' }}>
+                          {item.activityType}
+                        </span>
+                        <span>{dateStr ? new Date(dateStr).toLocaleString('en-IN') : 'Recent'}</span>
+                      </div>
+                      <div style={{ fontSize: '0.82rem', color: '#FFF', fontWeight: 600 }}>{item.subject}</div>
+                      {item.details && (
+                        <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.6)', marginTop: '4px', lineHeight: 1.4 }}>
+                          {item.details}
+                        </div>
+                      )}
                     </div>
-                    <div style={{ fontSize: '0.82rem', color: 'var(--text-light)' }}>{item.subject}</div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

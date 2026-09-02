@@ -29,6 +29,7 @@ public class LeadServiceImpl implements LeadService {
     private final LeadRoutingService leadRoutingService;
     private final AuditLogService auditLogService;
     private final AgentRepository agentRepository;
+    private final LeadActivityRepository activityRepository;
     private final com.realestate.twentyfourk.domain.property.PropertyRepository propertyRepository;
 
     @Override
@@ -57,6 +58,17 @@ public class LeadServiceImpl implements LeadService {
                 null,
                 getLeadSummary(savedLead)
         );
+
+        // Auto timeline activity
+        LeadActivity initialActivity = LeadActivity.builder()
+                .lead(savedLead)
+                .activityType("SYSTEM")
+                .subject("Lead Created")
+                .details(String.format("New lead registered for %s with hotness score %d.",
+                        savedLead.getPreferredLocation() != null ? savedLead.getPreferredLocation().name() : "Pune West",
+                        savedLead.getLeadScore()))
+                .build();
+        activityRepository.save(initialActivity);
 
         // Publish LeadCreatedEvent for async WhatsApp Webhook triggering
         eventPublisher.publishEvent(new LeadCreatedEvent(savedLead));
@@ -98,8 +110,75 @@ public class LeadServiceImpl implements LeadService {
                 .orElseThrow(() -> new ResourceNotFoundException("Lead not found with ID: " + id));
         
         String oldSummary = getLeadSummary(lead);
+        LeadStatus oldStatus = lead.getStatus();
 
         lead.setStatus(status);
+        lead.setLeadScore(calculateLeadScore(lead));
+        Lead updatedLead = leadRepository.save(lead);
+
+        // Audit Log
+        auditLogService.logAction(
+                "UPDATE_STATUS",
+                "Lead",
+                updatedLead.getId(),
+                oldSummary,
+                getLeadSummary(updatedLead)
+        );
+
+        // Auto timeline activity
+        LeadActivity statusActivity = LeadActivity.builder()
+                .lead(updatedLead)
+                .activityType("STATUS_CHANGE")
+                .subject("Status Changed to " + status)
+                .details(String.format("Status transitioned from %s to %s. Hotness score updated to %d.",
+                        oldStatus, status, updatedLead.getLeadScore()))
+                .build();
+        activityRepository.save(statusActivity);
+
+        return mapToResponse(updatedLead);
+    }
+
+    @Override
+    @Transactional
+    public LeadResponse updateLead(UUID id, LeadRequest request) {
+        Lead lead = leadRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lead not found with ID: " + id));
+
+        String oldSummary = getLeadSummary(lead);
+
+        if (request.name() != null && !request.name().isBlank()) {
+            lead.setName(request.name().trim());
+        }
+        if (request.phone() != null && !request.phone().isBlank()) {
+            lead.setPhone(request.phone().trim());
+        }
+        if (request.email() != null && !request.email().isBlank()) {
+            lead.setEmail(request.email().trim());
+        }
+        if (request.requirementType() != null) {
+            lead.setRequirementType(request.requirementType());
+        }
+        if (request.budgetMin() != null) {
+            lead.setBudgetMin(request.budgetMin());
+        }
+        if (request.budgetMax() != null) {
+            lead.setBudgetMax(request.budgetMax());
+        }
+        if (request.preferredLocation() != null) {
+            lead.setPreferredLocation(request.preferredLocation());
+        }
+        if (request.status() != null) {
+            lead.setStatus(request.status());
+        }
+        if (request.notes() != null) {
+            lead.setNotes(request.notes());
+        }
+        if (request.propertyId() != null) {
+            com.realestate.twentyfourk.domain.property.Property property =
+                    propertyRepository.findById(request.propertyId()).orElse(null);
+            lead.setProperty(property);
+        }
+
         lead.setLeadScore(calculateLeadScore(lead));
         Lead updatedLead = leadRepository.save(lead);
 
@@ -111,6 +190,16 @@ public class LeadServiceImpl implements LeadService {
                 oldSummary,
                 getLeadSummary(updatedLead)
         );
+
+        // Auto timeline activity
+        LeadActivity activity = LeadActivity.builder()
+                .lead(updatedLead)
+                .activityType("NOTE")
+                .subject("Lead Details Updated")
+                .details(String.format("Lead profile updated. Status: %s, Score: %d.",
+                        updatedLead.getStatus(), updatedLead.getLeadScore()))
+                .build();
+        activityRepository.save(activity);
 
         return mapToResponse(updatedLead);
     }
@@ -191,11 +280,20 @@ public class LeadServiceImpl implements LeadService {
         if (request.propertyId() != null) {
             property = propertyRepository.findById(request.propertyId()).orElse(null);
         }
+
+        String phone = request.phone() != null ? request.phone().trim() : "";
+        String cleanDigits = phone.replaceAll("\\D", "");
+        String email = request.email();
+        if (email == null || email.isBlank()) {
+            email = (cleanDigits.isEmpty() ? "visitor" : cleanDigits) + "@24krealtors.com";
+        }
+        LeadRequirementType reqType = request.requirementType() != null ? request.requirementType() : LeadRequirementType.BUY;
+
         return Lead.builder()
                 .name(request.name())
-                .phone(request.phone())
-                .email(request.email())
-                .requirementType(request.requirementType())
+                .phone(phone)
+                .email(email)
+                .requirementType(reqType)
                 .budgetMin(request.budgetMin())
                 .budgetMax(request.budgetMax())
                 .preferredLocation(request.preferredLocation())
@@ -224,6 +322,15 @@ public class LeadServiceImpl implements LeadService {
                 oldAgentName,
                 agent.getName()
         );
+
+        // Auto timeline activity
+        LeadActivity assignActivity = LeadActivity.builder()
+                .lead(savedLead)
+                .activityType("ASSIGNMENT")
+                .subject("Assigned to " + agent.getName())
+                .details(String.format("Lead reassigned from %s to %s.", oldAgentName, agent.getName()))
+                .build();
+        activityRepository.save(assignActivity);
 
         return mapToResponse(savedLead);
     }

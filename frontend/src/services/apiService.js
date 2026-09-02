@@ -2919,11 +2919,20 @@ export const apiService = {
   },
 
   async logLeadActivity(leadId, data) {
+    const payload = {
+      activityType: data.activityType || data.type || 'NOTE',
+      subject: data.subject || 'Lead Note',
+      details: data.details || ''
+    };
     const res = await fetch(`${BASE_URL}/leads/${leadId}/timeline`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to log activity');
+    }
     return res.json();
   },
 
@@ -3778,6 +3787,45 @@ export const apiService = {
       body: JSON.stringify(leadData)
     });
     if (!response.ok) throw new Error('Failed to create lead');
+    return response.json();
+  },
+
+  async updateLead(id, leadData) {
+    const cleanPhone = (leadData.phone || '').replace(/\D/g, '');
+    const formattedPhone = cleanPhone.length === 10
+      ? `+91${cleanPhone}`
+      : (leadData.phone && leadData.phone.startsWith('+') ? leadData.phone : `+91${cleanPhone}`);
+
+    let locationEnum = 'HINJEWADI';
+    const loc = (leadData.location || leadData.preferredLocation || '').toUpperCase();
+    if (loc.includes('WAKAD')) locationEnum = 'WAKAD';
+    else if (loc.includes('BANER')) locationEnum = 'BANER';
+    else if (loc.includes('KHARADI')) locationEnum = 'KHARADI';
+    else if (loc.includes('BALEWADI')) locationEnum = 'BALEWADI';
+    else if (loc.includes('TATHAWADE')) locationEnum = 'TATHAWADE';
+
+    const payload = {
+      name: leadData.name,
+      phone: formattedPhone,
+      email: (leadData.email && leadData.email.includes('@')) ? leadData.email : `${cleanPhone || 'visitor'}@24krealtors.com`,
+      requirementType: leadData.requirementType || 'BUY',
+      budgetMin: leadData.budgetMin ? Number(leadData.budgetMin) : 5000000,
+      budgetMax: leadData.budgetMax ? Number(leadData.budgetMax) : 15000000,
+      preferredLocation: locationEnum,
+      status: leadData.status || 'NEW',
+      notes: leadData.notes || '',
+      propertyId: leadData.propertyId || null
+    };
+
+    const response = await fetch(`${BASE_URL}/leads/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to update lead');
+    }
     return response.json();
   },
 
