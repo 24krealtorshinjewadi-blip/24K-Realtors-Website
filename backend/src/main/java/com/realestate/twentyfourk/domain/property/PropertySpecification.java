@@ -23,7 +23,16 @@ public class PropertySpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             if (location != null) {
-                predicates.add(cb.equal(root.get("location"), location));
+                if (location == PrimeCorridor.HINJEWADI) {
+                    predicates.add(root.get("location").in(
+                        PrimeCorridor.HINJEWADI,
+                        PrimeCorridor.HINJEWADI_PHASE_1,
+                        PrimeCorridor.HINJEWADI_PHASE_2,
+                        PrimeCorridor.HINJEWADI_PHASE_3
+                    ));
+                } else {
+                    predicates.add(cb.equal(root.get("location"), location));
+                }
             }
             if (minPrice != null) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("price"), minPrice));

@@ -19,14 +19,29 @@ export default function ReraDrawer({ isOpen, property, onClose }) {
           </div>
           <div className="dossier-stat">
             <span>Project Title Clear Status</span>
-            <strong className="status-badge">100% Verified Clean Title</strong>
+            <strong className="status-badge" style={{ color: '#22c55e' }}>100% Verified Clean Title</strong>
           </div>
-          <div className="dossier-stat">
-            <span>Compliance Audit Stamp</span>
-            <strong>Approved by 24K Legal Desk</strong>
-          </div>
-          <div className="dossier-paragraph">
-            <p>This project has undergone extensive litigation due-diligence by 24K Realtors legal desk. Title clearances, non-agricultural (NA) land certificates, and local municipal corporation (PMRDA/PMC) building approvals are verified.</p>
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <a 
+              href="https://maharera.maharashtra.gov.in" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 100%)',
+                color: '#040814',
+                padding: '10px 20px',
+                borderRadius: '50px',
+                fontWeight: 800,
+                fontSize: '0.82rem',
+                textDecoration: 'none',
+                boxShadow: '0 4px 15px rgba(212,175,55,0.3)'
+              }}
+            >
+              Verify MahaRERA Registration ↗
+            </a>
           </div>
         </div>
       </div>

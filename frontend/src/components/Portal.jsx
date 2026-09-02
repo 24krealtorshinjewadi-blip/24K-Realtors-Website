@@ -603,7 +603,9 @@ export default function Portal({ onViewChange }) {
     bedrooms: '',
     furnishingStatus: '',
     status: 'AVAILABLE',
-    query: ''
+    query: '',
+    builder: '',
+    reraOnly: false
   });
 
   const [activeCollection, setActiveCollection] = useState('ALL');
@@ -716,6 +718,9 @@ export default function Portal({ onViewChange }) {
   const [searchPropType, setSearchPropType] = useState('');
   const [searchBudget, setSearchBudget] = useState('');
   const [searchBHK, setSearchBHK] = useState('');
+  const [searchBuilder, setSearchBuilder] = useState('');
+  const [searchReraOnly, setSearchReraOnly] = useState(false);
+  const [isAiSearchActive, setIsAiSearchActive] = useState(false);
   const [recentSearches, setRecentSearches] = useState(() => {
     try { return JSON.parse(localStorage.getItem('recent_searches') || '[]'); } catch { return []; }
   });
@@ -2139,7 +2144,7 @@ export default function Portal({ onViewChange }) {
   // ── Smart NLP query parser ─────────────────────────────────────────────────
   const parseSmartQuery = (text) => {
     const t = text.toLowerCase();
-    const parsed = { bedrooms: '', location: '', maxPrice: '', query: text };
+    const parsed = { bedrooms: '', location: '', maxPrice: '', query: text, builder: '', reraOnly: false };
     const chips = [];
 
     // BHK detection
@@ -2160,12 +2165,58 @@ export default function Portal({ onViewChange }) {
       chips.push({ label: `₹ < ${lakhMatch[1]} L`, key: 'maxPrice' });
     }
 
-    // Location detection
-    const locations = ['hinjewadi', 'wakad', 'baner', 'balewadi', 'mahalunge', 'punawale', 'kharadi', 'viman nagar', 'aundh', 'pashan', 'sus road', 'tathawade'];
-    for (const loc of locations) {
-      if (t.includes(loc)) {
-        parsed.location = loc.toUpperCase().replace(/\s+/g, '_');
-        chips.push({ label: `📍 ${loc.split(' ').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')}`, key: 'location' });
+    // Micro-market & Hinjewadi Phase detection
+    if (t.includes('phase 1') || t.includes('phase-1') || t.includes('ph 1')) {
+      parsed.location = 'HINJEWADI_PHASE_1';
+      chips.push({ label: '📍 Hinjewadi Phase 1', key: 'location' });
+    } else if (t.includes('phase 2') || t.includes('phase-2') || t.includes('ph 2')) {
+      parsed.location = 'HINJEWADI_PHASE_2';
+      chips.push({ label: '📍 Hinjewadi Phase 2', key: 'location' });
+    } else if (t.includes('phase 3') || t.includes('phase-3') || t.includes('ph 3') || t.includes('megapolis')) {
+      parsed.location = 'HINJEWADI_PHASE_3';
+      chips.push({ label: '📍 Hinjewadi Phase 3 (Megapolis)', key: 'location' });
+    } else {
+      const locations = ['hinjewadi', 'wakad', 'baner', 'balewadi', 'mahalunge', 'punawale', 'kharadi', 'tathawade'];
+      for (const loc of locations) {
+        if (t.includes(loc)) {
+          parsed.location = loc.toUpperCase().replace(/\s+/g, '_');
+          chips.push({ label: `📍 ${loc.split(' ').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')}`, key: 'location' });
+          break;
+        }
+      }
+    }
+
+    // RERA Approved filter detection
+    if (t.includes('rera') || t.includes('verified') || t.includes('approved')) {
+      parsed.reraOnly = true;
+      chips.push({ label: '🛡️ MahaRERA Approved', key: 'reraOnly' });
+    }
+
+    // Metro transit detection
+    if (t.includes('metro') || t.includes('transit')) {
+      chips.push({ label: '🚇 Near Metro Line 3', key: 'metro' });
+    }
+
+    // Builder detection
+    const devList = [
+      { key: 'lodha', name: 'Lodha' },
+      { key: 'godrej', name: 'Godrej' },
+      { key: 'vtp', name: 'VTP' },
+      { key: 'joyville', name: 'Joyville' },
+      { key: 'shapoorji', name: 'Shapoorji' },
+      { key: 'kohinoor', name: 'Kohinoor' },
+      { key: 'purple', name: 'Pride Purple' },
+      { key: 'paranjape', name: 'Paranjape' },
+      { key: 'kolte', name: 'Kolte Patil' },
+      { key: 'gera', name: 'Gera' },
+      { key: 'kasturi', name: 'Kasturi' },
+      { key: 'mahindra', name: 'Mahindra' },
+      { key: 'raheja', name: 'K. Raheja' }
+    ];
+    for (const d of devList) {
+      if (t.includes(d.key)) {
+        parsed.builder = d.name;
+        chips.push({ label: `🏢 ${d.name}`, key: 'builder' });
         break;
       }
     }
@@ -2180,12 +2231,16 @@ export default function Portal({ onViewChange }) {
 
     // Location matches
     const locMap = {
-      hinjewadi: { label: '📍 Properties in Hinjewadi IT Hub', filters: { location: 'HINJEWADI' } },
-      wakad: { label: '📍 Properties in Wakad Junction', filters: { location: 'WAKAD' } },
-      baner: { label: '📍 Properties in Baner', filters: { location: 'BANER' } },
-      balewadi: { label: '📍 Properties in Balewadi High Street', filters: { location: 'BALEWADI' } },
-      tathawade: { label: '📍 Properties in Tathawade', filters: { location: 'TATHAWADE' } },
-      mahalunge: { label: '📍 Properties in Mahalunge Smart City', filters: { location: 'MAHALUNGE' } }
+      'hinjewadi phase 1': { label: '📍 Hinjewadi Phase 1 IT Park', filters: { location: 'HINJEWADI_PHASE_1' } },
+      'hinjewadi phase 2': { label: '📍 Hinjewadi Phase 2 Quadron', filters: { location: 'HINJEWADI_PHASE_2' } },
+      'hinjewadi phase 3': { label: '📍 Hinjewadi Phase 3 (Megapolis)', filters: { location: 'HINJEWADI_PHASE_3' } },
+      'megapolis': { label: '🏔️ Megapolis Township Phase 3', filters: { location: 'HINJEWADI_PHASE_3' } },
+      'hinjewadi': { label: '📍 Hinjewadi (All Phases 1, 2, 3)', filters: { location: 'HINJEWADI' } },
+      'wakad': { label: '📍 Wakad Junction & Phoenix Mall', filters: { location: 'WAKAD' } },
+      'baner': { label: '📍 Baner High Street Corridor', filters: { location: 'BANER' } },
+      'balewadi': { label: '📍 Balewadi Stadium & High Street', filters: { location: 'BALEWADI' } },
+      'tathawade': { label: '📍 Tathawade Expressway Link', filters: { location: 'TATHAWADE' } },
+      'mahalunge': { label: '📍 Mahalunge Smart City (Godrej/VTP)', filters: { location: 'MAHALUNGE' } }
     };
     for (const [k, v] of Object.entries(locMap)) {
       if (k.startsWith(t) || t.includes(k)) {
@@ -2207,10 +2262,17 @@ export default function Portal({ onViewChange }) {
 
     // Developer matches
     const devMap = {
-      '24k': { label: '🏢 Kolte-Patil 24K Luxury Brand', filters: { query: '24K' } },
-      'godrej': { label: '🏢 Godrej Premium Properties', filters: { query: 'Godrej' } },
-      'kasturi': { label: '🏢 Kasturi Signature Projects', filters: { query: 'Kasturi' } },
-      'lodha': { label: '🏢 Lodha World-Class Towers', filters: { query: 'Lodha' } }
+      'lodha': { label: '🏢 Lodha World-Class Towers', filters: { builder: 'Lodha' } },
+      'godrej': { label: '🏢 Godrej Premium Properties', filters: { builder: 'Godrej' } },
+      'vtp': { label: '🏢 VTP Realty High-Rise Townships', filters: { builder: 'VTP' } },
+      'joyville': { label: '🏢 Shapoorji Pallonji Joyville', filters: { builder: 'Joyville' } },
+      'kohinoor': { label: '🏢 Kohinoor Group Sada Sukhi', filters: { builder: 'Kohinoor' } },
+      'paranjape': { label: '🏢 Paranjape Blue Ridge & Schemes', filters: { builder: 'Paranjape' } },
+      'kolte': { label: '🏢 Kolte-Patil Life Republic & 24K', filters: { builder: 'Kolte' } },
+      'gera': { label: '🏢 Gera Child-Centric Developments', filters: { builder: 'Gera' } },
+      'kasturi': { label: '🏢 Kasturi Signature Residences', filters: { builder: 'Kasturi' } },
+      'mahindra': { label: '🏢 Mahindra Lifespaces Green Homes', filters: { builder: 'Mahindra' } },
+      'raheja': { label: '🏢 K. Raheja Corp Luxury Landmarks', filters: { builder: 'Raheja' } }
     };
     for (const [k, v] of Object.entries(devMap)) {
       if (k.startsWith(t) || t.includes(k)) {
@@ -2235,12 +2297,14 @@ export default function Portal({ onViewChange }) {
       const isCommercial = heroTab === 'COMMERCIAL';
       return {
         ...prev,
-        transactionType: isCommercial ? '' : heroTab,
+        transactionType: isCommercial ? '' : (heroTab === 'TOWNSHIPS' ? 'BUY' : heroTab),
         query: '',
         location: '',
         bedrooms: '',
         maxPrice: '',
-        propertyType: isCommercial ? 'COMMERCIAL' : '',
+        builder: '',
+        reraOnly: false,
+        propertyType: isCommercial ? 'COMMERCIAL' : (heroTab === 'TOWNSHIPS' ? 'TOWNSHIP' : ''),
         ...suggestion.filters
       };
     });
@@ -2251,7 +2315,7 @@ export default function Portal({ onViewChange }) {
     setActiveSection('listings');
     
     // Save to recent searches
-    const cleanLabel = suggestion.label.replace(/^[📍🛏🏢💼]\s*/, '');
+    const cleanLabel = suggestion.label.replace(/^[📍🛏🏢💼🏔️]\s*/, '');
     setRecentSearches(prev => {
       const updated = [cleanLabel, ...prev.filter(s => s !== cleanLabel)].slice(0, 5);
       localStorage.setItem('recent_searches', JSON.stringify(updated));
@@ -2279,17 +2343,20 @@ export default function Portal({ onViewChange }) {
     setSelectedPropertyDetail(null);
     setFilters(prev => {
       const isCommercial = heroTab === 'COMMERCIAL';
+      const isTownships = heroTab === 'TOWNSHIPS';
       return {
         ...prev,
-        transactionType: isCommercial ? 'BUY' : heroTab,
+        transactionType: isCommercial ? 'BUY' : (isTownships ? 'BUY' : heroTab),
         location: searchLocation,
-        propertyType: isCommercial ? 'COMMERCIAL' : searchPropType,
+        propertyType: isCommercial ? 'COMMERCIAL' : (isTownships ? 'TOWNSHIP' : searchPropType),
         bedrooms: searchBHK,
         maxPrice: searchBudget,
+        builder: searchBuilder,
+        reraOnly: searchReraOnly,
         query: ''
       };
     });
-    setExclusiveTab(heroTab === 'COMMERCIAL' ? 'BUY' : heroTab);
+    setExclusiveTab(heroTab === 'COMMERCIAL' ? 'BUY' : (heroTab === 'TOWNSHIPS' ? 'BUY' : heroTab));
     setActiveSection('listings');
     setPage(0);
     setTimeout(() => {
@@ -2307,19 +2374,22 @@ export default function Portal({ onViewChange }) {
     const suggestions = getSearchSuggestions(queryText);
     const matchedSuggestion = suggestions.find(s => 
       s.label.toLowerCase().includes(queryText.toLowerCase()) || 
-      queryText.toLowerCase().includes(s.label.toLowerCase().replace(/^[📍🛏🏢💼]\s*/, ''))
+      queryText.toLowerCase().includes(s.label.toLowerCase().replace(/^[📍🛏🏢💼🏔️]\s*/, ''))
     );
 
     setFilters(prev => {
       const isCommercial = heroTab === 'COMMERCIAL';
+      const isTownships = heroTab === 'TOWNSHIPS';
       const baseFilters = {
         ...prev,
-        transactionType: isCommercial ? '' : heroTab,
+        transactionType: isCommercial ? '' : (isTownships ? 'BUY' : heroTab),
         query: '',
         location: '',
         bedrooms: '',
         maxPrice: '',
-        propertyType: isCommercial ? 'COMMERCIAL' : ''
+        builder: '',
+        reraOnly: false,
+        propertyType: isCommercial ? 'COMMERCIAL' : (isTownships ? 'TOWNSHIP' : '')
       };
 
       if (matchedSuggestion) {
@@ -2335,6 +2405,8 @@ export default function Portal({ onViewChange }) {
           ...(parsed.bedrooms && { bedrooms: parsed.bedrooms }),
           ...(parsed.maxPrice && { maxPrice: String(parsed.maxPrice) }),
           ...(parsed.location && { location: parsed.location }),
+          ...(parsed.builder && { builder: parsed.builder }),
+          ...(parsed.reraOnly && { reraOnly: true })
         };
       }
     });
@@ -2648,17 +2720,17 @@ export default function Portal({ onViewChange }) {
               </button>
             </div>
 
-            <div style={{ background: 'radial-gradient(ellipse at top left, rgba(22, 36, 56, 0.9) 0%, rgba(9, 17, 31, 0.98) 100%)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '20px', padding: '30px', marginBottom: '32px', boxShadow: '0 16px 40px rgba(0,0,0,0.6)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>⚖️</div>
+            <div style={{ background: 'radial-gradient(ellipse at top left, rgba(22, 36, 56, 0.9) 0%, rgba(9, 17, 31, 0.98) 100%)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '16px', padding: '16px 24px', marginBottom: '28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>🛡️</div>
                 <div>
-                  <h4 style={{ fontFamily: "'Cinzel', serif", color: '#D4AF37', margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Authorized Broker License: A051262603190</h4>
-                  <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.5)' }}>Government of Maharashtra Real Estate Regulatory Authority</div>
+                  <h4 style={{ fontFamily: "'Montserrat', sans-serif", color: '#D4AF37', margin: 0, fontSize: '1.05rem', fontWeight: 800 }}>MahaRERA Registered Portfolio</h4>
+                  <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)' }}>RERA Number: <strong style={{ color: '#F5D77F' }}>A051262603190</strong></div>
                 </div>
               </div>
-              <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: 0 }}>
-                In compliance with Section 9 of the Real Estate (Regulation and Development) Act, 2016, all portfolios offered by 24K Realtors are registered under authorized MahaRERA directories. Buyers can cross-verify registrations via the official Maharashtra government portal.
-              </p>
+              <a href="https://maharera.maharashtra.gov.in" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(212,175,55,0.12)', border: '1px solid #D4AF37', color: '#F5D77F', padding: '7px 16px', borderRadius: '50px', fontSize: '0.78rem', fontWeight: 700, textDecoration: 'none' }}>
+                Verify on MahaRERA Portal ↗
+              </a>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
@@ -3512,33 +3584,61 @@ export default function Portal({ onViewChange }) {
 
               {/* ── LEFT: Text + CTAs + Trust Badges — Transparent Floating Style ── */}
               <div style={{
-                maxWidth: isMobile ? '100%' : '680px',
+                maxWidth: isMobile ? '100%' : '1120px',
                 background: 'transparent',
                 padding: isMobile ? '0 4px' : '0',
                 position: 'relative',
               }}>
 
-                {/* Trust Pill — "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" */}
-                <div style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '8px',
-                  background: 'linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(212,175,55,0.08) 100%)',
-                  border: '1px solid rgba(212,175,55,0.55)',
-                  borderRadius: '50px',
-                  padding: isMobile ? '6px 14px' : '7px 18px',
-                  marginBottom: isMobile ? '18px' : '22px',
-                  boxShadow: '0 0 20px rgba(212,175,55,0.12)',
-                }}>
-                  <span style={{ color: '#E6C35C', fontSize: '0.75rem' }}>★</span>
-                  <span style={{
-                    fontSize: isMobile ? '0.6rem' : '0.67rem',
-                    fontWeight: 800,
-                    color: '#F5D77F',
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    fontFamily: "'Montserrat', sans-serif",
+                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: isMobile ? '16px' : '20px' }}>
+                  {/* 🚇 Metro Transit Connectivity Pill (Hindi / Marathi Localization) */}
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '8px',
+                    background: 'linear-gradient(135deg, rgba(212,175,55,0.22) 0%, rgba(15,23,42,0.85) 100%)',
+                    border: '1.5px solid rgba(212,175,55,0.65)',
+                    borderRadius: '50px',
+                    padding: isMobile ? '6px 14px' : '7px 18px',
+                    boxShadow: '0 0 24px rgba(212,175,55,0.22)',
+                    backdropFilter: 'blur(8px)',
                   }}>
-                    PUNE'S MOST TRUSTED PROPERTY CONSULTANTS
-                  </span>
+                    <span style={{ fontSize: '1rem' }}>🚇</span>
+                    <span style={{
+                      fontSize: isMobile ? '0.72rem' : '0.82rem',
+                      fontWeight: 800,
+                      color: '#FFF0B3',
+                      letterSpacing: '0.03em',
+                      fontFamily: "'Montserrat', sans-serif",
+                    }}>
+                      पुणे मेट्रो Line 3 · <span style={{ color: '#F5D77F' }}>हिंजवडी</span> (Hinjewadi) Direct Connectivity
+                    </span>
+                    <span style={{
+                      background: '#22c55e', color: '#040814',
+                      fontSize: '0.6rem', fontWeight: 800,
+                      padding: '2px 8px', borderRadius: '20px', textTransform: 'uppercase'
+                    }}>Transit Live</span>
+                  </div>
+
+                  {/* Trust Pill — "PUNE'S MOST TRUSTED PROPERTY CONSULTANTS" */}
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '8px',
+                    background: 'linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(212,175,55,0.08) 100%)',
+                    border: '1px solid rgba(212,175,55,0.55)',
+                    borderRadius: '50px',
+                    padding: isMobile ? '6px 14px' : '7px 18px',
+                    boxShadow: '0 0 20px rgba(212,175,55,0.12)',
+                  }}>
+                    <span style={{ color: '#E6C35C', fontSize: '0.75rem' }}>★</span>
+                    <span style={{
+                      fontSize: isMobile ? '0.6rem' : '0.67rem',
+                      fontWeight: 800,
+                      color: '#F5D77F',
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      fontFamily: "'Montserrat', sans-serif",
+                    }}>
+                      PUNE'S MOST TRUSTED PROPERTY CONSULTANTS
+                    </span>
+                  </div>
                 </div>
 
                 {/* Main Headline */}
@@ -3576,8 +3676,8 @@ export default function Portal({ onViewChange }) {
                   fontSize: isMobile ? '0.84rem' : '0.94rem',
                   color: 'rgba(255,255,255,0.92)',
                   lineHeight: 1.65,
-                  marginBottom: isMobile ? '22px' : '28px',
-                  maxWidth: '520px',
+                  marginBottom: isMobile ? '18px' : '22px',
+                  maxWidth: '680px',
                   fontWeight: 400,
                   letterSpacing: '0.01em',
                   textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 4px 20px rgba(0,0,0,0.8)',
@@ -3585,8 +3685,360 @@ export default function Portal({ onViewChange }) {
                   3 &amp; 4 BHK Premium Homes in <strong style={{ color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>Hinjewadi Phase 1, 2, 3</strong> &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
                 </p>
 
+                {/* ══════════════════════════════════════════════════════════════════
+                    ✦ NAUKRI & 99ACRES STYLE HERO SEARCH DOCK WITH AI INTEGRATION
+                   ══════════════════════════════════════════════════════════════════ */}
+                <div style={{
+                  marginBottom: isMobile ? '20px' : '28px',
+                  background: 'rgba(7, 15, 30, 0.90)',
+                  border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                  borderRadius: '20px',
+                  padding: isMobile ? '16px' : '20px 24px',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.7), 0 0 30px rgba(212,175,55,0.18)',
+                  maxWidth: '1080px',
+                  position: 'relative',
+                  zIndex: 10
+                }}>
+                  {/* Row 1: Mode Tabs + AI Search Toggle */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '12px',
+                    marginBottom: '16px',
+                    borderBottom: '1px solid rgba(255,255,255,0.08)',
+                    paddingBottom: '12px'
+                  }}>
+                    {/* Property Type Tabs */}
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      {[
+                        { id: 'BUY', label: 'Buy (खरेदी)' },
+                        { id: 'RENT', label: 'Rent (भाडे)' },
+                        { id: 'COMMERCIAL', label: 'Commercial (व्यावसायिक)' },
+                        { id: 'TOWNSHIPS', label: 'Townships (टाउनशिप)' }
+                      ].map(tab => (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          onClick={() => setHeroTab(tab.id)}
+                          style={{
+                            background: heroTab === tab.id ? 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 100%)' : 'rgba(255,255,255,0.05)',
+                            border: heroTab === tab.id ? 'none' : '1px solid rgba(255,255,255,0.12)',
+                            color: heroTab === tab.id ? '#040814' : '#E2E8F0',
+                            fontWeight: heroTab === tab.id ? 800 : 600,
+                            fontSize: isMobile ? '0.74rem' : '0.82rem',
+                            padding: '7px 16px',
+                            borderRadius: '50px',
+                            cursor: 'pointer',
+                            transition: 'all 0.25s ease'
+                          }}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Dual Mode Switch: AI Natural Search Toggle */}
+                    <button
+                      type="button"
+                      onClick={() => setIsAiSearchActive(!isAiSearchActive)}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: isAiSearchActive ? 'linear-gradient(135deg, #9333ea 0%, #d946ef 100%)' : 'rgba(147, 51, 234, 0.15)',
+                        border: '1px solid #d946ef',
+                        color: '#fff',
+                        fontSize: isMobile ? '0.72rem' : '0.78rem',
+                        fontWeight: 700,
+                        padding: '6px 14px',
+                        borderRadius: '50px',
+                        cursor: 'pointer',
+                        boxShadow: isAiSearchActive ? '0 0 15px rgba(217, 70, 239, 0.5)' : 'none',
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
+                      <Sparkles size={14} />
+                      <span>{isAiSearchActive ? 'Switch to Standard Filters' : '✨ AI Natural Search'}</span>
+                    </button>
+                  </div>
+
+                  {/* Row 2: Standard Filter Controls vs AI Prompt Input */}
+                  {!isAiSearchActive ? (
+                    <form onSubmit={handleLuxurySearch}>
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(170px, 1fr)) 160px',
+                        gap: '12px',
+                        alignItems: 'center'
+                      }}>
+                        {/* 1. Location / Phase Dropdown */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            Location / Phase
+                          </label>
+                          <select
+                            value={searchLocation}
+                            onChange={e => setSearchLocation(e.target.value)}
+                            style={{
+                              background: 'rgba(15, 23, 42, 0.95)',
+                              border: '1px solid rgba(212, 175, 55, 0.35)',
+                              color: '#fff',
+                              padding: '10px 12px',
+                              borderRadius: '10px',
+                              fontSize: '0.82rem',
+                              outline: 'none',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value="">All Pune West</option>
+                            <option value="HINJEWADI_PHASE_1">📍 Hinjewadi Phase 1</option>
+                            <option value="HINJEWADI_PHASE_2">📍 Hinjewadi Phase 2</option>
+                            <option value="HINJEWADI_PHASE_3">📍 Hinjewadi Phase 3 (Megapolis)</option>
+                            <option value="MAHALUNGE">📍 Mahalunge Smart City</option>
+                            <option value="WAKAD">📍 Wakad (Phoenix Mall)</option>
+                            <option value="BANER">📍 Baner</option>
+                            <option value="BALEWADI">📍 Balewadi High Street</option>
+                            <option value="TATHAWADE">📍 Tathawade</option>
+                          </select>
+                        </div>
+
+                        {/* 2. BHK Dropdown */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            Bedrooms (BHK)
+                          </label>
+                          <select
+                            value={searchBHK}
+                            onChange={e => setSearchBHK(e.target.value)}
+                            style={{
+                              background: 'rgba(15, 23, 42, 0.95)',
+                              border: '1px solid rgba(212, 175, 55, 0.35)',
+                              color: '#fff',
+                              padding: '10px 12px',
+                              borderRadius: '10px',
+                              fontSize: '0.82rem',
+                              outline: 'none',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value="">Any BHK</option>
+                            <option value="1">1 BHK</option>
+                            <option value="2">2 BHK</option>
+                            <option value="3">3 BHK</option>
+                            <option value="4">4+ BHK</option>
+                          </select>
+                        </div>
+
+                        {/* 3. Budget Dropdown */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            Max Budget
+                          </label>
+                          <select
+                            value={searchBudget}
+                            onChange={e => setSearchBudget(e.target.value)}
+                            style={{
+                              background: 'rgba(15, 23, 42, 0.95)',
+                              border: '1px solid rgba(212, 175, 55, 0.35)',
+                              color: '#fff',
+                              padding: '10px 12px',
+                              borderRadius: '10px',
+                              fontSize: '0.82rem',
+                              outline: 'none',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value="">Any Budget</option>
+                            <option value="5000000">Under ₹50 Lakhs</option>
+                            <option value="10000000">Under ₹1.0 Crore</option>
+                            <option value="15000000">Under ₹1.5 Crore</option>
+                            <option value="25000000">Under ₹2.5 Crore</option>
+                            <option value="50000000">Under ₹5.0 Crore</option>
+                          </select>
+                        </div>
+
+                        {/* 4. Top Developers Dropdown */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            Top Developer
+                          </label>
+                          <select
+                            value={searchBuilder}
+                            onChange={e => setSearchBuilder(e.target.value)}
+                            style={{
+                              background: 'rgba(15, 23, 42, 0.95)',
+                              border: '1px solid rgba(212, 175, 55, 0.35)',
+                              color: '#fff',
+                              padding: '10px 12px',
+                              borderRadius: '10px',
+                              fontSize: '0.82rem',
+                              outline: 'none',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value="">All Top Developers</option>
+                            <option value="Lodha">Lodha Group</option>
+                            <option value="Godrej">Godrej Properties</option>
+                            <option value="VTP">VTP Realty</option>
+                            <option value="Joyville">Joyville (Shapoorji)</option>
+                            <option value="Kohinoor">Kohinoor Group</option>
+                            <option value="Pride Purple">Pride Purple Group</option>
+                            <option value="Paranjape">Paranjape Schemes</option>
+                            <option value="Kolte">Kolte Patil Developers</option>
+                            <option value="Gera">Gera Developments</option>
+                            <option value="Kasturi">Kasturi Housing</option>
+                            <option value="Mahindra">Mahindra Lifespaces</option>
+                            <option value="Raheja">K. Raheja Corp</option>
+                          </select>
+                        </div>
+
+                        {/* 5. Submit Button */}
+                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                          <button
+                            type="submit"
+                            style={{
+                              background: 'linear-gradient(135deg, #C59B27 0%, #F0D060 45%, #B8860B 100%)',
+                              border: 'none',
+                              color: '#040814',
+                              fontWeight: 800,
+                              fontFamily: "'Montserrat', sans-serif",
+                              fontSize: '0.85rem',
+                              padding: '11px 18px',
+                              borderRadius: '10px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '8px',
+                              boxShadow: '0 4px 20px rgba(212,175,55,0.4)',
+                              transition: 'all 0.25s ease'
+                            }}
+                          >
+                            <Search size={16} strokeWidth={2.5} />
+                            <span>SEARCH</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* MahaRERA Checkbox + Fast Links */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', flexWrap: 'wrap', gap: '10px' }}>
+                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '0.78rem', color: '#FFF' }}>
+                          <input
+                            type="checkbox"
+                            checked={searchReraOnly}
+                            onChange={e => setSearchReraOnly(e.target.checked)}
+                            style={{ accentColor: '#D4AF37', cursor: 'pointer' }}
+                          />
+                          <span style={{ color: '#F5D77F', fontWeight: 700 }}>🛡️ MahaRERA Approved Properties Only</span>
+                        </label>
+                      </div>
+                    </form>
+                  ) : (
+                    /* AI Natural Language Search Mode */
+                    <div>
+                      <form
+                        onSubmit={e => {
+                          e.preventDefault();
+                          handleHeroSearch(e);
+                        }}
+                        style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}
+                      >
+                        <div style={{ flex: 1, minWidth: '260px', position: 'relative' }}>
+                          <input
+                            type="text"
+                            value={heroSearchText}
+                            onChange={e => handleSmartInputChange(e.target.value)}
+                            placeholder="Type naturally e.g. '3 BHK in Hinjewadi Phase 1 under 1.2 Cr near Metro'..."
+                            style={{
+                              width: '100%',
+                              background: 'rgba(15, 23, 42, 0.95)',
+                              border: '1.5px solid #d946ef',
+                              color: '#fff',
+                              padding: '12px 16px',
+                              borderRadius: '12px',
+                              fontSize: '0.88rem',
+                              outline: 'none',
+                              boxShadow: '0 0 15px rgba(217, 70, 239, 0.2)'
+                            }}
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          style={{
+                            background: 'linear-gradient(135deg, #9333ea 0%, #d946ef 100%)',
+                            border: 'none',
+                            color: '#fff',
+                            fontWeight: 800,
+                            fontSize: '0.85rem',
+                            padding: '12px 24px',
+                            borderRadius: '12px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            boxShadow: '0 4px 20px rgba(217, 70, 239, 0.4)'
+                          }}
+                        >
+                          <Sparkles size={16} />
+                          <span>AI SEARCH</span>
+                        </button>
+                      </form>
+                    </div>
+                  )}
+
+                  {/* Row 3: 99acres-Style Instant Filter Chips */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    flexWrap: 'wrap',
+                    marginTop: '14px',
+                    paddingTop: '10px',
+                    borderTop: '1px solid rgba(255,255,255,0.06)'
+                  }}>
+                    <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, textTransform: 'uppercase' }}>
+                      POPULAR:
+                    </span>
+                    {[
+                      { label: '🛡️ MahaRERA Approved', onClick: () => { setSearchReraOnly(true); handleHeroSearch(null, 'RERA Approved'); } },
+                      { label: '🏢 Hinjewadi Phase 1', onClick: () => { setSearchLocation('HINJEWADI_PHASE_1'); handleHeroSearch(null, 'Hinjewadi Phase 1'); } },
+                      { label: '🌿 Hinjewadi Phase 2', onClick: () => { setSearchLocation('HINJEWADI_PHASE_2'); handleHeroSearch(null, 'Hinjewadi Phase 2'); } },
+                      { label: '🏔️ Megapolis Phase 3', onClick: () => { setSearchLocation('HINJEWADI_PHASE_3'); handleHeroSearch(null, 'Megapolis Phase 3'); } },
+                      { label: '🌊 Mahalunge Smart City', onClick: () => { setSearchLocation('MAHALUNGE'); handleHeroSearch(null, 'Mahalunge'); } },
+                      { label: '🛍️ Wakad Junction', onClick: () => { setSearchLocation('WAKAD'); handleHeroSearch(null, 'Wakad'); } },
+                      { label: '💎 3 BHK Under 1.5 Cr', onClick: () => { setSearchBHK('3'); setSearchBudget('15000000'); handleHeroSearch(null, '3 BHK under 1.5 Cr'); } },
+                      { label: '🚇 Near Metro Line 3', onClick: () => { handleHeroSearch(null, 'Near Metro Line 3'); } }
+                    ].map((chip, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={chip.onClick}
+                        style={{
+                          background: 'rgba(255,255,255,0.06)',
+                          border: '1px solid rgba(212,175,55,0.3)',
+                          color: '#E2E8F0',
+                          fontSize: '0.72rem',
+                          fontWeight: 600,
+                          padding: '4px 10px',
+                          borderRadius: '20px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.2)'; e.currentTarget.style.borderColor = '#D4AF37'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; }}
+                      >
+                        {chip.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* CTA Buttons */}
-                <div style={{ display: 'flex', gap: isMobile ? '10px' : '14px', flexWrap: 'wrap', marginBottom: isMobile ? '24px' : '30px' }}>
+                <div style={{ display: 'flex', gap: isMobile ? '10px' : '14px', flexWrap: 'wrap', marginBottom: isMobile ? '20px' : '26px' }}>
                   <button
                     id="hero-explore-btn"
                     onClick={() => {
@@ -3597,11 +4049,11 @@ export default function Portal({ onViewChange }) {
                       background: 'linear-gradient(135deg, #C59B27 0%, #F0D060 45%, #B8860B 100%)',
                       border: '1px solid rgba(255,220,80,0.4)',
                       color: '#05091A',
-                      padding: isMobile ? '13px 22px' : '15px 30px',
+                      padding: isMobile ? '11px 20px' : '13px 26px',
                       borderRadius: '50px',
                       fontWeight: 900,
                       fontFamily: "'Montserrat', sans-serif",
-                      fontSize: isMobile ? '0.8rem' : '0.85rem',
+                      fontSize: isMobile ? '0.78rem' : '0.82rem',
                       letterSpacing: '0.08em',
                       cursor: 'pointer',
                       boxShadow: '0 6px 28px rgba(212,175,55,0.45), 0 2px 8px rgba(0,0,0,0.3)',
@@ -3631,11 +4083,11 @@ export default function Portal({ onViewChange }) {
                       WebkitBackdropFilter: 'blur(8px)',
                       border: '1.5px solid rgba(212,175,55,0.55)',
                       color: '#FFF4D0',
-                      padding: isMobile ? '13px 22px' : '15px 28px',
+                      padding: isMobile ? '11px 20px' : '13px 24px',
                       borderRadius: '50px',
                       fontWeight: 700,
                       fontFamily: "'Montserrat', sans-serif",
-                      fontSize: isMobile ? '0.8rem' : '0.85rem',
+                      fontSize: isMobile ? '0.78rem' : '0.82rem',
                       letterSpacing: '0.06em',
                       cursor: 'pointer',
                       transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
@@ -3972,18 +4424,46 @@ export default function Portal({ onViewChange }) {
                   matchBadge: 'LEGACY HUB'
                 },
                 {
-                  id: 'pharande',
-                  name: 'Pharande Spaces',
-                  brand: 'Mega Gated Estates',
-                  tag: '✦ TATHAWADE & WAKAD',
-                  color: '#F43F5E',
-                  corridors: ['TATHAWADE', 'WAKAD'],
-                  corridorLabels: ['📍 Tathawade', '📍 Wakad Link'],
-                  established: 'Est. 1990',
+                  id: 'pride-purple',
+                  name: 'Pride Purple Group',
+                  brand: 'Park District',
+                  tag: '✦ LUXURY ICONS',
+                  color: '#C084FC',
+                  corridors: ['HINJEWADI', 'WAKAD'],
+                  corridorLabels: ['📍 Hinjewadi Ph 1', '📍 Wakad'],
+                  established: 'Est. 2004',
+                  projectsCount: '5 Projects',
+                  desc: 'Park Connect & Park Astra Hinjewadi, Park Titanium & Park Landmark Wakad luxury communities.',
+                  img: '/gallery_tower_3.png',
+                  matchBadge: 'PRIME LUXURY'
+                },
+                {
+                  id: 'mahindra',
+                  name: 'Mahindra Lifespaces',
+                  brand: 'Green Living',
+                  tag: '✦ SUSTAINABLE PIONEER',
+                  color: '#22C55E',
+                  corridors: ['HINJEWADI', 'TATHAWADE'],
+                  corridorLabels: ['📍 Hinjewadi Phase 1', '📍 Tathawade'],
+                  established: 'Est. 1994',
                   projectsCount: '4 Projects',
-                  desc: 'Puneville 28-Acre sky-bridge township in Tathawade next to Mumbai-Pune Expressway.',
-                  img: '/dev_pharande_building.png',
-                  matchBadge: 'HIGH ROI'
+                  desc: 'Mahindra Happinest & Nestcraft green certified homes near Hinjewadi IT Park.',
+                  img: '/dev_rohan_forbes.png',
+                  matchBadge: 'NET ZERO GREEN'
+                },
+                {
+                  id: 'raheja',
+                  name: 'K. Raheja Corp',
+                  brand: 'Mindspace & Viva',
+                  tag: '✦ CORPORATE & LUXURY ICON',
+                  color: '#38BDF8',
+                  corridors: ['HINJEWADI', 'BANER'],
+                  corridorLabels: ['📍 Hinjewadi IT Park', '📍 Baner'],
+                  established: 'Est. 1956',
+                  projectsCount: '6 Projects',
+                  desc: 'Mindspace Hinjewadi IT Park campus, Viva Grandeur luxury high-rises.',
+                  img: '/dev_vj_building.png',
+                  matchBadge: 'GRADE-A ASSETS'
                 }
               ].filter(dev => activeBrandFilter === 'ALL' || dev.corridors.includes(activeBrandFilter)).map((dev, i) => (
                 <div key={i}

@@ -116,7 +116,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const location      = property.location     || 'Baner, Pune';
   const developerName = property.builderName  || property.developer || property.developerName
     || (title.toLowerCase().includes('opula') ? 'Pride Purple Group'
-      : title.toLowerCase().includes('altura') ? 'Kolte-Patil Developers'
+      : title.toLowerCase().includes('blue ridge') || title.toLowerCase().includes('paranjape') ? 'Paranjape Schemes'
       : title.toLowerCase().includes('godrej') ? 'Godrej Properties'
       : title.toLowerCase().includes('shapoorji') || title.toLowerCase().includes('joyville') ? 'Shapoorji Pallonji Real Estate'
       : title.toLowerCase().includes('kolte') || title.toLowerCase().includes('republic') ? 'Kolte-Patil Developers'
@@ -125,7 +125,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       : title.toLowerCase().includes('lodha') || title.toLowerCase().includes('belmondo') ? 'Lodha Group'
       : title.toLowerCase().includes('vilas') || title.toLowerCase().includes('yashwin') ? 'Vilas Javdekar (VJ)'
       : '24K Realtors Partner');
-  const reraNumber    = property.reraNumber || 'RERA-PUN-PRM-24K091';
+  const reraNumber    = property.reraNumber || 'P52100000058';
   const possession    = property.possessionDate || property.possession || 'December 2027';
   const projectArea   = property.projectArea || property.landParcel || (property.totalLandAcres ? `${property.totalLandAcres} Acres` : '8.5 Acres');
   const carpetArea    = property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '920–1650 sq.ft';
@@ -155,7 +155,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     if (imgs.length === 0) {
       const t = (title || '').toLowerCase();
       if (t.includes('opula')) imgs.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png');
-      else if (t.includes('altura')) imgs.push('/dev_vj_building.png', '/dev_kolte_patil_township.png', '/dev_vtp_township.png');
+      else if (t.includes('blue ridge') || t.includes('paranjape')) imgs.push('/dev_paranjape_township.png', '/dev_kolte_patil_township.png', '/dev_vtp_township.png');
       else if (t.includes('godrej')) imgs.push('/dev_godrej_building.png', '/dev_kolte_patil_township.png', '/dev_shapoorji_township.png');
       else if (t.includes('shapoorji') || t.includes('joyville')) imgs.push('/dev_shapoorji_township.png', '/dev_vtp_township.png', '/dev_godrej_building.png');
       else if (t.includes('gera')) imgs.push('/dev_gera_tower.png', '/dev_godrej_building.png', '/dev_paranjape_township.png');
@@ -379,8 +379,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
   const SIMILAR = [
     { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹1.05 Cr - ₹2.50 Cr', tag: 'LUXURY TOWNSHIP', match: 92, img: '/dev_kolte_patil_township.png' },
-    { title: '24K Altura', loc: 'Baner-Balewadi', config: '2 & 3 BHK', price: '₹82 Lakhs - ₹1.40 Cr', tag: 'SIGNATURE TOWER', match: 89, img: '/dev_vj_building.png' },
-    { title: 'Shapoorji Joyville Vyomora', loc: 'Hinjewadi', config: '2 & 3 BHK', price: '₹84 Lakhs - ₹1.95 Cr', tag: 'ICONIC BRAND', match: 86, img: '/dev_shapoorji_township.png' },
+    { title: 'Paranjape Blue Ridge', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹78 Lakhs - ₹1.85 Cr', tag: '138-ACRE TOWNSHIP', match: 91, img: '/dev_paranjape_township.png' },
+    { title: 'Shapoorji Joyville Vyomora', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹84 Lakhs - ₹1.95 Cr', tag: 'ICONIC BRAND', match: 86, img: '/dev_shapoorji_township.png' },
     { title: 'Gera Joy On The Banks', loc: 'Hinjewadi', config: '2 & 3 BHK', price: '₹88 Lakhs - ₹1.75 Cr', tag: 'CHILD CENTRIC', match: 84, img: '/dev_gera_tower.png' },
   ];
 

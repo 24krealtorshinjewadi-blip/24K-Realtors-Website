@@ -10,24 +10,23 @@ const getForbesTeslaPropertyImage = (property) => {
   const desc = (property.description || '').toLowerCase();
 
   if (title.includes('opula')) return '/dev_kolte_patil_township.png';
-  if (title.includes('altura')) return '/dev_vj_building.png';
-  if (title.includes('office') || title.includes('plaza') || title.includes('commercial')) return '/dev_godrej_building.png';
-  if (title.includes('balewadi') || title.includes('retail')) return '/dev_paranjape_township.png';
-  if (title.includes('glitterati') || title.includes('penthouse')) return '/dev_lodha_tower.png';
-  if (title.includes('mahalunge') || title.includes('oasis')) return '/dev_vtp_township.png';
-  if (title.includes('studio') || title.includes('corporate')) return '/dev_kasturi_forbes.png';
-  if (title.includes('megapolis')) return 'https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/megapolis-sunway/01_aerial_hero.png';
-  if (title.includes('elements') || title.includes('godrej')) return '/dev_godrej_building.png';
-  if (title.includes('crown') || title.includes('tcg')) return '/dev_shapoorji_township.png';
-  if (title.includes('kasturi') || title.includes('apostle') || title.includes('villa')) return '/dev_kasturi_forbes.png';
-  if (title.includes('republic') || title.includes('life')) return '/dev_kolte_patil_township.png';
+  if (title.includes('office') || title.includes('plaza') || title.includes('commercial')) return '/lodha_4_grand_lobby.png';
+  if (title.includes('balewadi') || title.includes('retail')) return '/gallery_vj_supernova_tower.png';
+  if (title.includes('glitterati') || title.includes('penthouse')) return '/lodha_7_infinity_pool.png';
+  if (title.includes('mahalunge') || title.includes('oasis')) return '/gallery_tower_3.png';
+  if (title.includes('studio') || title.includes('corporate')) return '/dev_vj_building.png';
+  if (title.includes('megapolis')) return '/properties/megapolis-sunway/01_aerial_hero.png';
+  if (title.includes('elements') || title.includes('godrej elements')) return '/dev_godrej_building.png';
+  if (title.includes('crown') || title.includes('tcg')) return '/gallery_tower_2.png';
+  if (title.includes('kasturi') || title.includes('apostle')) return '/dev_kasturi_forbes.png';
+  if (title.includes('republic') || title.includes('life republic')) return '/dev_kolte_patil_township.png';
   if (title.includes('gera') || title.includes('joy')) return '/dev_gera_tower.png';
-  if (title.includes('pride') || title.includes('landmark')) return '/dev_kohinoor_tower.png';
-  if (title.includes('sportsville') || title.includes('kohinoor')) return '/dev_kohinoor_tower.png';
+  if (title.includes('pride') || title.includes('landmark')) return '/gallery_tower_3.png';
+  if (title.includes('sportsville')) return '/dev_kohinoor_tower.png';
   if (title.includes('blue waters') || title.includes('vtp')) return '/dev_vtp_township.png';
-  if (title.includes('vyomora') || title.includes('shapoorji') || title.includes('joyville')) return '/dev_shapoorji_township.png';
+  if (title.includes('vyomora') || title.includes('joyville')) return '/dev_shapoorji_township.png';
   if (title.includes('yashwin') || title.includes('vj')) return '/dev_vj_building.png';
-  if (title.includes('belmondo') || title.includes('lodha')) return '/dev_lodha_tower.png';
+  if (title.includes('belmondo') || title.includes('lodha')) return '/lodha_3_completed_aerial.png';
   if (title.includes('rohan')) return '/dev_rohan_forbes.png';
   if (title.includes('pharande') || title.includes('puneville')) return '/dev_pharande_building.png';
 
@@ -64,6 +63,23 @@ const getBuilderName = (title = '', desc = '') => {
   if (t.includes('pharande')) return 'PHARANDE SPACES';
   if (t.includes('rohan')) return 'ROHAN BUILDERS';
   return 'PREMIUM ALLIANCE';
+};
+
+const formatCorridorLabel = (loc) => {
+  if (!loc) return 'Pune West';
+  const mapping = {
+    'HINJEWADI_PHASE_1': 'Hinjewadi Phase 1',
+    'HINJEWADI_PHASE_2': 'Hinjewadi Phase 2',
+    'HINJEWADI_PHASE_3': 'Hinjewadi Phase 3 (Megapolis)',
+    'HINJEWADI': 'Hinjewadi IT Hub',
+    'MAHALUNGE': 'Mahalunge Smart City',
+    'WAKAD': 'Wakad',
+    'BANER': 'Baner',
+    'BALEWADI': 'Balewadi',
+    'TATHAWADE': 'Tathawade',
+    'KHARADI': 'Kharadi'
+  };
+  return mapping[loc] || loc.replace(/_/g, ' ');
 };
 
 const formatPriceFallback = (p, transactionType) => {
@@ -285,6 +301,32 @@ export default function PropertyCard({
             ? `Yield: ${property?.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType)}` 
             : (formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType))}
         </span>
+
+        {/* Aerial / Drone Concept Badge */}
+        <span 
+          style={{
+            position: 'absolute',
+            bottom: '12px',
+            right: '12px',
+            background: 'rgba(4, 8, 20, 0.82)',
+            border: '1px solid rgba(212, 175, 55, 0.45)',
+            color: '#F5D77F',
+            fontSize: '0.62rem',
+            fontWeight: 800,
+            padding: '3px 8px',
+            borderRadius: '50px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            zIndex: 2,
+            backdropFilter: 'blur(6px)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.5)'
+          }}
+          title="Real aerial/drone shot available"
+        >
+          <span>🚁</span>
+          <span>Aerial View</span>
+        </span>
       </div>
 
       {/* 2. Text Info Panel */}
@@ -340,7 +382,7 @@ export default function PropertyCard({
             }}
           >
             <MapPin size={12} color="#E6C35C" />
-            {property?.location}
+            {formatCorridorLabel(property?.location)}
           </span>
           
           {/* MahaRERA Code */}
