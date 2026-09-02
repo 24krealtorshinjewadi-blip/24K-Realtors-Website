@@ -16,7 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/attendance")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class AttendanceController {
 
     private final AttendanceService attendanceService;

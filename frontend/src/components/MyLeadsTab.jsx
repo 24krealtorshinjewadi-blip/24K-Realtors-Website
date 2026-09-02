@@ -14,7 +14,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Users, UserCheck, MessageSquare, Calendar, Award, Plus, Upload, Filter,
   RotateCcw, Search, Phone, Edit2, MoreVertical, ChevronLeft, ChevronRight,
-  TrendingUp, Download, Eye, Sparkles, RefreshCw
+  TrendingUp, Download, Eye, Sparkles, RefreshCw, Settings
 } from 'lucide-react';
 import { apiService } from '../services/apiService';
 
@@ -32,6 +32,8 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [propertyFilter, setPropertyFilter] = useState('ALL');
   const [budgetFilter, setBudgetFilter] = useState('ALL');
+  const [liveLeads, setLiveLeads] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isWebhookModalOpen, setIsWebhookModalOpen] = useState(false);
   const [webhookUrlInput, setWebhookUrlInput] = useState(localStorage.getItem('google_sheet_webhook_url') || '');
@@ -185,9 +187,10 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
   const fetchLiveLeads = async () => {
     setLoading(true);
     try {
-      const data = await apiService.getLeads();
-      if (Array.isArray(data) && data.length > 0) {
-        const formatted = data.map((item, idx) => {
+      const data = await apiService.getLeads({ page: 0, size: 50 });
+      const items = Array.isArray(data) ? data : (data?.content || []);
+      if (items.length > 0) {
+        const formatted = items.map((item, idx) => {
           const initials = (item.name || 'Lead')
             .split(' ')
             .map(n => n[0])
@@ -238,11 +241,16 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
         });
         setLiveLeads(formatted);
       } else {
-        setLiveLeads(initialSeedLeads);
+        setLiveLeads([]);
       }
     } catch (e) {
-      console.warn('[CRM] Lead fetch error, using initial leads:', e);
-      setLiveLeads(initialSeedLeads);
+      console.warn('[CRM] Lead fetch error, checking local cache:', e);
+      const local = JSON.parse(localStorage.getItem('mock_leads') || '[]');
+      if (local.length > 0) {
+        setLiveLeads(local);
+      } else {
+        setLiveLeads([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -252,7 +260,7 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
     fetchLiveLeads();
   }, []);
 
-  const leadsData = liveLeads.length > 0 ? liveLeads : initialSeedLeads;
+  const leadsData = liveLeads;
 
   const filteredLeads = leadsData.filter(item => {
     if (search && !item.name.toLowerCase().includes(search.toLowerCase()) && !item.phone.includes(search) && !item.email.toLowerCase().includes(search.toLowerCase())) return false;
@@ -335,12 +343,12 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
       {/* ── 6 KPI SPARKLINE CARDS ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '12px' }}>
         {[
-          { label: 'Total Leads', val: '128', change: '↑ 18% vs last month', color: GOLD, icon: Users },
-          { label: 'New Leads', val: '32', change: '↑ 14% vs last month', color: '#3B82F6', icon: UserCheck },
-          { label: 'Contacted', val: '48', change: '↑ 12% vs last month', color: '#14B8A6', icon: Phone },
-          { label: 'Qualified', val: '28', change: '↑ 8% vs last month', color: '#10B981', icon: Award },
-          { label: 'Site Visit', val: '14', change: '↑ 5% vs last month', color: '#8B5CF6', icon: Calendar },
-          { label: 'Converted', val: '6', change: '↑ 20% vs last month', color: GOLD, icon: Award },
+          { label: 'Total Leads', val: String(liveLeads.length), change: 'Live Pipeline', color: GOLD, icon: Users },
+          { label: 'New Leads', val: String(liveLeads.filter(l => l.status === 'New' || l.status === 'NEW').length), change: 'Uncontacted', color: '#3B82F6', icon: UserCheck },
+          { label: 'Contacted', val: String(liveLeads.filter(l => l.status === 'Contacted' || l.status === 'CONTACTED').length), change: 'In Discussion', color: '#14B8A6', icon: Phone },
+          { label: 'Qualified', val: String(liveLeads.filter(l => l.status === 'Qualified' || l.status === 'QUALIFIED').length), change: 'Verified Leads', color: '#10B981', icon: Award },
+          { label: 'Site Visit', val: String(liveLeads.filter(l => l.status === 'Site Visit' || l.status === 'SITE_VISIT').length), change: 'Scheduled', color: '#8B5CF6', icon: Calendar },
+          { label: 'Converted', val: String(liveLeads.filter(l => l.status === 'Won' || l.status === 'WON' || l.status === 'Converted' || l.status === 'CONVERTED').length), change: 'Closed Deals', color: GOLD, icon: Award },
         ].map((kpi, i) => {
           const IconC = kpi.icon;
           return (
@@ -460,87 +468,108 @@ export default function MyLeadsTab({ onOpenAddLead, onSelectLead }) {
               </tr>
             </thead>
             <tbody>
-              {filteredLeads.map((lead) => (
-                <tr key={lead.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                  
-                  {/* Lead Details */}
-                  <td style={{ padding: '14px 10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div style={{ width: 34, height: 34, borderRadius: '50%', background: lead.avatarBg, color: '#FFF', fontWeight: 900, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        {lead.initials}
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 800, color: '#FFF', cursor: 'pointer' }} onClick={() => onSelectLead?.(lead)}>{lead.name}</div>
-                        <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>{lead.sub}</div>
-                      </div>
-                    </div>
+              {loading ? (
+                <tr>
+                  <td colSpan="9" style={{ textAlign: 'center', padding: '48px 20px', color: 'rgba(255,255,255,0.6)' }}>
+                    <RefreshCw size={22} className="animate-spin" color={GOLD} style={{ margin: '0 auto 10px auto', display: 'block' }} />
+                    <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#FFF' }}>Syncing leads with database…</div>
                   </td>
-
-                  {/* Contact Info */}
-                  <td style={{ padding: '14px 10px' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#FFF', fontWeight: 700 }}>📞 {lead.phone}</div>
-                    <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>✉️ {lead.email}</div>
-                  </td>
-
-                  {/* Source */}
-                  <td style={{ padding: '14px 10px' }}>
-                    <span style={{ fontSize: '0.66rem', fontWeight: 800, padding: '3px 9px', borderRadius: '6px', background: `${lead.sourceColor}20`, border: `1px solid ${lead.sourceColor}40`, color: lead.sourceColor }}>
-                      {lead.source}
-                    </span>
-                  </td>
-
-                  {/* Property Interest */}
-                  <td style={{ padding: '14px 10px' }}>
-                    <div style={{ fontSize: '0.76rem', fontWeight: 700, color: '#FFF' }}>{lead.propertyInterest}</div>
-                    <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.4)' }}>{lead.location}</div>
-                  </td>
-
-                  {/* Budget */}
-                  <td style={{ padding: '14px 10px', fontSize: '0.8rem', fontWeight: 800, color: GOLD }}>
-                    {lead.budget}
-                  </td>
-
-                  {/* Status */}
-                  <td style={{ padding: '14px 10px' }}>
-                    <span style={{ fontSize: '0.66rem', fontWeight: 800, padding: '3px 10px', borderRadius: '12px', background: lead.statusBg, color: lead.statusColor, border: `1px solid ${lead.statusColor}40`, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                      <span style={{ width: 5, height: 5, borderRadius: '50%', background: lead.statusColor }} />
-                      {lead.status}
-                    </span>
-                  </td>
-
-                  {/* Assigned On */}
-                  <td style={{ padding: '14px 10px', fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)' }}>
-                    {lead.assignedOn}
-                  </td>
-
-                  {/* Last Activity */}
-                  <td style={{ padding: '14px 10px', fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)' }}>
-                    {lead.lastActivity}
-                  </td>
-
-                  {/* Actions */}
-                  <td style={{ padding: '14px 10px', textAlign: 'right' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
-                      <a href={`tel:${lead.phone}`} style={{ width: 28, height: 28, borderRadius: '6px', background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', color: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Phone size={13} />
-                      </a>
-                      <button style={{ width: 28, height: 28, borderRadius: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Edit2 size={13} />
-                      </button>
-                      <button style={{ width: 28, height: 28, borderRadius: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <MoreVertical size={13} />
-                      </button>
+                </tr>
+              ) : filteredLeads.length === 0 ? (
+                <tr>
+                  <td colSpan="9" style={{ textAlign: 'center', padding: '52px 20px', color: 'rgba(255,255,255,0.45)' }}>
+                    <Users size={36} color="rgba(212, 175, 55, 0.4)" style={{ margin: '0 auto 12px auto', display: 'block' }} />
+                    <div style={{ fontSize: '0.92rem', color: '#FFF', fontWeight: 700 }}>No Leads Found</div>
+                    <div style={{ fontSize: '0.76rem', marginTop: '4px', color: 'rgba(255,255,255,0.5)' }}>
+                      {search || sourceFilter !== 'ALL' || statusFilter !== 'ALL'
+                        ? 'No leads match your current search/filter criteria. Click "Reset" to clear.'
+                        : 'No leads in the pipeline yet. Click "+ Add Lead" to record an inquiry.'}
                     </div>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredLeads.map((lead) => (
+                  <tr key={lead.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    
+                    {/* Lead Details */}
+                    <td style={{ padding: '14px 10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ width: 34, height: 34, borderRadius: '50%', background: lead.avatarBg, color: '#FFF', fontWeight: 900, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          {lead.initials}
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: 800, color: '#FFF', cursor: 'pointer' }} onClick={() => onSelectLead?.(lead)}>{lead.name}</div>
+                          <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>{lead.sub}</div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Contact Info */}
+                    <td style={{ padding: '14px 10px' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#FFF', fontWeight: 700 }}>📞 {lead.phone}</div>
+                      <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>✉️ {lead.email}</div>
+                    </td>
+
+                    {/* Source */}
+                    <td style={{ padding: '14px 10px' }}>
+                      <span style={{ fontSize: '0.66rem', fontWeight: 800, padding: '3px 9px', borderRadius: '6px', background: `${lead.sourceColor}20`, border: `1px solid ${lead.sourceColor}40`, color: lead.sourceColor }}>
+                        {lead.source}
+                      </span>
+                    </td>
+
+                    {/* Property Interest */}
+                    <td style={{ padding: '14px 10px' }}>
+                      <div style={{ fontSize: '0.76rem', fontWeight: 700, color: '#FFF' }}>{lead.propertyInterest}</div>
+                      <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.4)' }}>{lead.location}</div>
+                    </td>
+
+                    {/* Budget */}
+                    <td style={{ padding: '14px 10px', fontSize: '0.8rem', fontWeight: 800, color: GOLD }}>
+                      {lead.budget}
+                    </td>
+
+                    {/* Status */}
+                    <td style={{ padding: '14px 10px' }}>
+                      <span style={{ fontSize: '0.66rem', fontWeight: 800, padding: '3px 10px', borderRadius: '12px', background: lead.statusBg, color: lead.statusColor, border: `1px solid ${lead.statusColor}40`, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ width: 5, height: 5, borderRadius: '50%', background: lead.statusColor }} />
+                        {lead.status}
+                      </span>
+                    </td>
+
+                    {/* Assigned On */}
+                    <td style={{ padding: '14px 10px', fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)' }}>
+                      {lead.assignedOn}
+                    </td>
+
+                    {/* Last Activity */}
+                    <td style={{ padding: '14px 10px', fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)' }}>
+                      {lead.lastActivity}
+                    </td>
+
+                    {/* Actions */}
+                    <td style={{ padding: '14px 10px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                        <a href={`tel:${lead.phone}`} style={{ width: 28, height: 28, borderRadius: '6px', background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', color: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Phone size={13} />
+                        </a>
+                        <button style={{ width: 28, height: 28, borderRadius: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Edit2 size={13} />
+                        </button>
+                        <button style={{ width: 28, height: 28, borderRadius: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <MoreVertical size={13} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
         {/* Pagination Footer */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: '0.74rem', color: 'rgba(255,255,255,0.5)', flexWrap: 'wrap', gap: '10px' }}>
-          <div>Showing 1 to 7 of 128 leads</div>
+          <div>Showing {filteredLeads.length} of {liveLeads.length} leads</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <div>
               Rows per page: <select style={{ background: '#070F1E', color: '#FFF', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 6px' }}><option>10</option><option>25</option></select>

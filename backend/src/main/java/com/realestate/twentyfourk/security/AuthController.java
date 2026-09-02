@@ -25,7 +25,7 @@ import com.realestate.twentyfourk.domain.lead.service.WhatsAppService;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);

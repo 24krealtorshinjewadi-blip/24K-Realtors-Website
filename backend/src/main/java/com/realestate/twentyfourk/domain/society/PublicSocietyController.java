@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/public/societies")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 @Slf4j
 public class PublicSocietyController {
 

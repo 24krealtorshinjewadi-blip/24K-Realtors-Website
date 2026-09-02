@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/employees")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class EmployeeController {
 
     private final UserRepository userRepository;

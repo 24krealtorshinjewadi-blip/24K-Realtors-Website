@@ -24,7 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/media")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class MediaUploadController {
 
     private final MediaUploadService mediaUploadService;

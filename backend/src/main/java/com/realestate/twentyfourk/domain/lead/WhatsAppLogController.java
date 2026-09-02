@@ -9,7 +9,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/whatsapp")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class WhatsAppLogController {
 
     private final WhatsAppLogRepository whatsAppLogRepository;

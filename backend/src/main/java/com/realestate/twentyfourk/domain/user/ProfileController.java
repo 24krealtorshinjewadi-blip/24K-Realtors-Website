@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/profile")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class ProfileController {
 
     private final UserRepository userRepository;

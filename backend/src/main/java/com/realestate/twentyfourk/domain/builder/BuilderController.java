@@ -11,7 +11,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/builders")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class BuilderController {
 
     private final BuilderService builderService;

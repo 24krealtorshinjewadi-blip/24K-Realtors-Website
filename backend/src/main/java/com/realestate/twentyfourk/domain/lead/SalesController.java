@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'CRM_ADMIN', 'SALES_MANAGER', 'RELATIONSHIP_MANAGER', 'TELECALLER', 'ACCOUNTS')")
 public class SalesController {
 
     private final SalesService salesService;
@@ -53,7 +53,7 @@ public class SalesController {
     }
 
     @PostMapping("/site-visits")
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'SALES_MANAGER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'CRM_ADMIN', 'SALES_MANAGER', 'RELATIONSHIP_MANAGER')")
     public ResponseEntity<SiteVisit> scheduleVisit(@RequestBody ScheduleVisitRequest request) {
         SiteVisit visit = salesService.scheduleSiteVisit(request.getLeadId(), request.getPropertyId(), request.getAssignedUserId(), request.getVisitTime());
         return ResponseEntity.ok(visit);
@@ -108,6 +108,7 @@ public class SalesController {
     }
 
     @PostMapping("/bookings")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'CRM_ADMIN', 'SALES_MANAGER', 'RELATIONSHIP_MANAGER')")
     public ResponseEntity<Booking> createBooking(@RequestBody CreateBookingRequest request) {
         Booking booking = salesService.createBooking(
                 request.getLeadId(),

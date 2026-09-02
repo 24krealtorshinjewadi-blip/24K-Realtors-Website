@@ -365,6 +365,8 @@ export default function Dashboard({ onViewChange }) {
 
   const [leads, setLeads] = useState(initialNormalizedLeads);
   const [leadsLoading, setLeadsLoading] = useState(false);
+  const [dashboardStats, setDashboardStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [agents, setAgents] = useState([]);
   const [properties, setProperties] = useState([]);
@@ -460,24 +462,48 @@ export default function Dashboard({ onViewChange }) {
   useEffect(() => {
     if (isLoggedIn) {
       fetchLeads();
+      fetchDashboardStats();
     }
   }, [isLoggedIn]);
+
+  const fetchDashboardStats = async () => {
+    setStatsLoading(true);
+    try {
+      const stats = await apiService.getStats();
+      if (stats) {
+        setDashboardStats(stats);
+      }
+    } catch (e) {
+      console.warn('[Dashboard] Stats fetch fallback:', e);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
 
   const fetchLeads = async () => {
     setLeadsLoading(true);
     try {
-      const res = await apiService.getLeads({ page: 0, size: 20 });
-      if (res && res.content && res.content.length > 0) {
-        const normalized = res.content.map(normalizeLead);
+      const res = await apiService.getLeads({ page: 0, size: 50 });
+      const items = Array.isArray(res) ? res : (res && res.content ? res.content : []);
+      if (items.length > 0) {
+        const normalized = items.map(normalizeLead);
         setLeads(normalized);
         setSelectedLeadDetail(normalized[0]);
       } else {
-        setLeads(initialNormalizedLeads);
-        setSelectedLeadDetail(initialNormalizedLeads[0]);
+        setLeads([]);
+        setSelectedLeadDetail(null);
       }
     } catch (e) {
-      setLeads(initialNormalizedLeads);
-      setSelectedLeadDetail(initialNormalizedLeads[0]);
+      console.warn('[CRM] Lead fetch error, trying local cache:', e);
+      const local = JSON.parse(localStorage.getItem('mock_leads') || '[]');
+      if (local.length > 0) {
+        const normalized = local.map(normalizeLead);
+        setLeads(normalized);
+        setSelectedLeadDetail(normalized[0]);
+      } else {
+        setLeads([]);
+        setSelectedLeadDetail(null);
+      }
     } finally {
       setLeadsLoading(false);
     }
@@ -862,12 +888,52 @@ export default function Dashboard({ onViewChange }) {
               {/* 6 TOP KPI METRICS CARDS WITH SPARKLINES */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '16px' }}>
                 {[
-                  { label: 'TOTAL LEADS', val: '128', change: '↑ 18.6% vs last month', icon: Users, color: '#F59E0B' },
-                  { label: 'NEW LEADS', val: '24', change: '↑ 12.4% vs last month', icon: UserCheck, color: '#F59E0B' },
-                  { label: 'ACTIVE CONVERSATIONS', val: '42', change: '↑ 8.2% vs last month', icon: MessageSquare, color: '#3B82F6' },
-                  { label: 'SITE VISITS', val: '18', change: '↑ 24.1% vs last month', icon: Calendar, color: '#F59E0B' },
-                  { label: 'DEALS CLOSED', val: '7', change: '↑ 16.7% vs last month', icon: CheckCircle2, color: '#10B981' },
-                  { label: 'REVENUE PIPELINE', val: '₹8.4 Cr', change: '↑ 21.3% vs last month', icon: DollarSign, color: '#F59E0B' },
+                  {
+                    label: 'TOTAL LEADS',
+                    val: dashboardStats ? String(dashboardStats.totalLeads ?? 0) : String(leads.length),
+                    change: 'Live Database Sync',
+                    icon: Users,
+                    color: '#F59E0B'
+                  },
+                  {
+                    label: 'NEW LEADS',
+                    val: dashboardStats ? String(dashboardStats.newLeads ?? 0) : String(leads.filter(l => l.status === 'NEW' || l.status === 'New').length),
+                    change: 'Active Pipeline',
+                    icon: UserCheck,
+                    color: '#F59E0B'
+                  },
+                  {
+                    label: 'CONTACTED / ACTIVE',
+                    val: dashboardStats ? String(dashboardStats.contactedLeads ?? 0) : String(leads.filter(l => l.status === 'CONTACTED' || l.status === 'IN_PROGRESS').length),
+                    change: 'In Discussion',
+                    icon: MessageSquare,
+                    color: '#3B82F6'
+                  },
+                  {
+                    label: 'SITE VISITS',
+                    val: dashboardStats ? String(dashboardStats.totalSiteVisits ?? 0) : '0',
+                    change: `${dashboardStats?.completedSiteVisits ?? 0} Completed`,
+                    icon: Calendar,
+                    color: '#F59E0B'
+                  },
+                  {
+                    label: 'DEALS CLOSED',
+                    val: dashboardStats ? String(dashboardStats.totalBookings ?? dashboardStats.wonLeads ?? 0) : String(leads.filter(l => l.status === 'WON').length),
+                    change: `${dashboardStats?.conversionRate ?? 0}% Win Rate`,
+                    icon: CheckCircle2,
+                    color: '#10B981'
+                  },
+                  {
+                    label: 'REVENUE PIPELINE',
+                    val: dashboardStats?.totalRevenue
+                      ? (dashboardStats.totalRevenue >= 10000000
+                          ? `₹${(dashboardStats.totalRevenue / 10000000).toFixed(2)} Cr`
+                          : `₹${(dashboardStats.totalRevenue / 100000).toFixed(1)} L`)
+                      : '₹0',
+                    change: 'Confirmed Bookings',
+                    icon: DollarSign,
+                    color: '#F59E0B'
+                  },
                 ].map((card, i) => {
                   const IconC = card.icon;
                   return (
@@ -910,7 +976,9 @@ export default function Dashboard({ onViewChange }) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
                       <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFF', margin: 0 }}>Lead Management</h3>
-                      <span style={{ fontSize: '0.76rem', color: 'var(--gold-primary)', fontWeight: 600 }}>128 Active Leads</span>
+                      <span style={{ fontSize: '0.76rem', color: 'var(--gold-primary)', fontWeight: 600 }}>
+                        {dashboardStats ? dashboardStats.totalLeads : leads.length} Active Leads
+                      </span>
                     </div>
 
                     <div style={{ display: 'flex', gap: '8px' }}>

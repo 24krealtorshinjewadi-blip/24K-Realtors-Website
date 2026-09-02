@@ -20,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/leads")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class LeadController {
 
     private final LeadService leadService;

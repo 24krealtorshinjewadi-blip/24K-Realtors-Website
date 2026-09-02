@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/crm/analytics")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'CRM_ADMIN', 'SALES_MANAGER', 'ACCOUNTS')")
 public class CRMAnalyticsController {
 
@@ -32,17 +32,15 @@ public class CRMAnalyticsController {
 
     @GetMapping("/summary")
     public ResponseEntity<Map<String, Object>> getSummaryStats() {
-        long totalLeads = leadRepository.count();
-        long totalBookings = bookingRepository.count();
+        long totalLeads      = leadRepository.count();
+        long totalBookings   = bookingRepository.count();
         long totalSiteVisits = siteVisitRepository.count();
 
-        BigDecimal totalSalesVolume = bookingRepository.findAll().stream()
-                .map(Booking::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal totalCommissions = bookingRepository.findAll().stream()
-                .map(Booking::getCommissionEarned)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        // Use aggregate @Query — no full-table scan
+        BigDecimal totalSalesVolume = bookingRepository.sumTotalPrice();
+        BigDecimal totalCommissions = bookingRepository.sumCommissionEarned();
+        if (totalSalesVolume == null) totalSalesVolume = BigDecimal.ZERO;
+        if (totalCommissions == null) totalCommissions = BigDecimal.ZERO;
 
         Map<String, Object> summary = new HashMap<>();
         summary.put("totalLeads", totalLeads);
@@ -89,20 +87,19 @@ public class CRMAnalyticsController {
 
     @GetMapping("/site-visit-stats")
     public ResponseEntity<Map<String, Long>> getSiteVisitStats() {
-        List<SiteVisit> visits = siteVisitRepository.findAll();
-
-        long total = visits.size();
-        long scheduled = visits.stream().filter(v -> "SCHEDULED".equalsIgnoreCase(v.getStatus())).count();
-        long completed = visits.stream().filter(v -> "COMPLETED".equalsIgnoreCase(v.getStatus())).count();
-        long cancelled = visits.stream().filter(v -> "CANCELLED".equalsIgnoreCase(v.getStatus())).count();
-        long checkedIn = visits.stream().filter(v -> v.getCheckedInTime() != null).count();
+        // Aggregate queries — no full-table scan
+        long total     = siteVisitRepository.count();
+        long scheduled = siteVisitRepository.countByStatus("SCHEDULED");
+        long completed = siteVisitRepository.countByStatus("COMPLETED");
+        long cancelled = siteVisitRepository.countByStatus("CANCELLED");
+        long noShow    = siteVisitRepository.countByStatus("NO_SHOW");
 
         Map<String, Long> stats = new LinkedHashMap<>();
         stats.put("total", total);
         stats.put("scheduled", scheduled);
         stats.put("completed", completed);
         stats.put("cancelled", cancelled);
-        stats.put("checkedIn", checkedIn);
+        stats.put("noShow", noShow);
 
         return ResponseEntity.ok(stats);
     }

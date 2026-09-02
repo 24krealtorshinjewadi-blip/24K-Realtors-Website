@@ -31,7 +31,7 @@ public class SecurityConfig {
     private final RateLimitingFilter rateLimitingFilter;
     private final AuthenticationProvider authenticationProvider;
 
-    @Value("${cors.allowed-origins:http://localhost:5173,https://real-estate-digital-marketing.vercel.app,https://real-estate-digital-marketing-git-*.vercel.app}")
+    @Value("${cors.allowed-origins:http://localhost:5173,http://localhost:5174,http://localhost:3000,http://127.0.0.1:*,http://192.168.*:*,https://real-estate-digital-marketing.vercel.app,https://real-estate-digital-marketing-*.vercel.app}")
     private List<String> allowedOrigins;
 
     @Bean
@@ -61,17 +61,17 @@ public class SecurityConfig {
                 // ---------------------------------------------------------------
                 .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
 
-                // Administrative Property updates require SUPER_ADMIN/ADMIN/SALES_MANAGER
-                .requestMatchers(HttpMethod.POST, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
-                .requestMatchers(HttpMethod.PUT, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+                // Administrative Property updates require SUPER_ADMIN/ADMIN/CRM_ADMIN/SALES_MANAGER
+                .requestMatchers(HttpMethod.POST, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/properties/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER")
 
                 // Public Blogs access
                 .requestMatchers(HttpMethod.GET, "/api/v1/blogs/**").permitAll()
                 // Administrative Blogs access
-                .requestMatchers(HttpMethod.POST, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/blogs/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN")
 
                 // Public Societies, Builders, and Localities search lookups
                 .requestMatchers(HttpMethod.GET, "/api/v1/societies/**").permitAll()
@@ -79,26 +79,26 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/localities/**").permitAll()
 
                 // Administrative access to Societies, Builders, and Localities
-                .requestMatchers(HttpMethod.POST, "/api/v1/societies/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
-                .requestMatchers(HttpMethod.PUT, "/api/v1/societies/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/societies/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/api/v1/builders/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/api/v1/localities/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/societies/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/societies/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/societies/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/builders/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/localities/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER")
 
                 // Media Upload & Download access
                 .requestMatchers(HttpMethod.GET, "/api/v1/media/files/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/media/upload").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/media/upload").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER")
 
                 // Public Customer lead capture hook
                 .requestMatchers(HttpMethod.POST, "/api/v1/leads").permitAll()
                 // Administrative Leads access requires sales roles
-                .requestMatchers("/api/v1/leads/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "SALES_MANAGER", "RELATIONSHIP_MANAGER", "TELECALLER")
+                .requestMatchers("/api/v1/leads/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN", "SALES_MANAGER", "RELATIONSHIP_MANAGER", "TELECALLER")
 
                 // Agents management requires admin-level access
-                .requestMatchers("/api/v1/agents/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers("/api/v1/agents/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN")
 
                 // Audit logs lookup requires admin-level access
-                .requestMatchers("/api/v1/audit-logs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .requestMatchers("/api/v1/audit-logs/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "CRM_ADMIN")
 
                 // User management (role changes, user list) — SUPER_ADMIN only
                 .requestMatchers("/api/v1/users/**").hasRole("SUPER_ADMIN")

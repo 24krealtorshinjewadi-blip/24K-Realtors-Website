@@ -17,7 +17,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/properties")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Permissive CORS for Phase 1 local development
+ // Permissive CORS for Phase 1 local development
 public class PropertyController {
 
     private final PropertyService propertyService;

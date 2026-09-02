@@ -13,7 +13,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/wishlist")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class WishlistController {
 
     private final WishlistService wishlistService;

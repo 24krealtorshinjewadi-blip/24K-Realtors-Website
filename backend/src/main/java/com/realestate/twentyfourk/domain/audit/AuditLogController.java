@@ -10,7 +10,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/audit-logs")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class AuditLogController {
 
     private final AuditLogRepository auditLogRepository;

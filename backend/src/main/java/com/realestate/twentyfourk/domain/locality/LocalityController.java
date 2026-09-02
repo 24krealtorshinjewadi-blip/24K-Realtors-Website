@@ -11,7 +11,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/localities")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class LocalityController {
 
     private final LocalityService localityService;

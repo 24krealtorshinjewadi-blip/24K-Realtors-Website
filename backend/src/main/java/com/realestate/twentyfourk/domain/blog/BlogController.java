@@ -14,7 +14,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/blogs")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class BlogController {
 
     private final BlogService blogService;

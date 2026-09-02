@@ -15,7 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/payroll")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class PayrollController {
 
     private final PayrollService payrollService;

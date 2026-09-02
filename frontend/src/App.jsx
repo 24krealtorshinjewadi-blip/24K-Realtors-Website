@@ -1,18 +1,27 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  useParams,
+  Navigate
+} from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoginModal from './components/LoginModal'; // legacy modal — kept for backward compat
 import CompanyLogo from './components/CompanyLogo';
-import { auth, subscribeToNotifications, onForegroundMessage } from './services/firebaseConfig';
+import { auth, onForegroundMessage } from './services/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Lenis from 'lenis';
 import { useSEO, SEO_CONFIGS } from './services/seoService';
+import ToastContainer from './components/Toast';
 import './App.css';
-
 
 // Lazy load heavy components — reduces initial bundle
 const Portal = lazy(() => import('./components/Portal'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
-const LoginPage = lazy(() => import('./components/LoginPage'));   // new SaaS full-page login
+const LoginPage = lazy(() => import('./components/LoginPage'));
 const ListPropertyPage = lazy(() => import('./components/ListPropertyPage'));
 const AiAssistantPanel = lazy(() => import('./components/AiAssistantPanel'));
 const PublicSocietiesPage = lazy(() => import('./components/PublicSocietiesPage'));
@@ -86,26 +95,117 @@ function AppLoadingScreen() {
   );
 }
 
-export default function App() {
-  // views: 'portal' | 'dashboard' | 'login' | 'list-property' | 'societies' | 'society-detail' | 'location-landing' | 'blog' | 'blog-detail'
-  const [currentView, setCurrentView] = useState('portal');
-  const [activeSocietySlug, setActiveSocietySlug] = useState(null);
-  const [activeLocationSlug, setActiveLocationSlug] = useState('hinjewadi-phase-1');
-  const [activeBlog, setActiveBlog]       = useState(null);   // full blog object
-  const [activeBlogSlug, setActiveBlogSlug] = useState(null); // slug for URL-direct loads
+// ── Protected Route for CRM Dashboard ───────────────────────────────────────
+function ProtectedDashboardRoute({ onViewChange }) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  return <Dashboard onViewChange={onViewChange} />;
+}
+
+// ── Route Wrappers for Dynamic Slug Pages ───────────────────────────────────
+function SocietyDetailRouteWrapper({ onBack }) {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  return (
+    <PublicSocietyDetailPage
+      slug={slug || 'kolte-patil-life-republic-hinjewadi'}
+      onBack={() => navigate('/societies')}
+    />
+  );
+}
+
+function LocationLandingRouteWrapper() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  return (
+    <LocationLandingPage
+      locationSlug={slug || 'hinjewadi-phase-1'}
+      onBack={() => navigate('/societies')}
+      onSelectSociety={(socSlug) => navigate(`/society/${socSlug}`)}
+    />
+  );
+}
+
+function BlogDetailRouteWrapper() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const blog = location.state?.blog || null;
+  return (
+    <BlogDetailPage
+      blog={blog}
+      slug={slug}
+      onBack={() => navigate('/blog')}
+      onBrowse={() => navigate('/')}
+    />
+  );
+}
+
+// ── Legacy Hash Handler: Converts #routes to real browser URLs ───────────────
+function LegacyHashRedirectHandler() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.replace('#', '').trim();
+      if (!hash) return;
+
+      if (hash.startsWith('property/')) {
+        // Portal handles property modal via hash
+        return;
+      }
+
+      if (hash === 'societies' || hash === 'properties' || hash === 'signature-collection' || hash === 'signature') {
+        navigate('/societies', { replace: true });
+      } else if (hash.startsWith('society/')) {
+        const slug = hash.replace('society/', '');
+        navigate(`/society/${slug}`, { replace: true });
+      } else if (hash.startsWith('locations/') || hash.startsWith('location/')) {
+        const loc = hash.replace('locations/', '').replace('location/', '');
+        navigate(`/locations/${loc}`, { replace: true });
+      } else if (hash === 'list-property') {
+        navigate('/list-property', { replace: true });
+      } else if (hash === 'login') {
+        navigate('/login', { replace: true });
+      } else if (hash === 'dashboard') {
+        navigate('/dashboard', { replace: true });
+      } else if (hash === 'blog') {
+        navigate('/blog', { replace: true });
+      } else if (hash.startsWith('blog/')) {
+        const slug = hash.replace('blog/', '');
+        navigate(`/blog/${slug}`, { replace: true });
+      }
+    };
+
+    if (window.location.hash) {
+      handleHash();
+    }
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, [navigate]);
+
+  return null;
+}
+
+// ── Main App Content with Router Hooks ──────────────────────────────────────
+function AppContent() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
 
-  // ── Dynamic SEO per view ─────────────────────────────────────────────────
-  const seoConfig = currentView === 'portal'        ? SEO_CONFIGS.portal
-                  : currentView === 'dashboard'     ? SEO_CONFIGS.dashboard
-                  : currentView === 'login'         ? SEO_CONFIGS.login
-                  : currentView === 'list-property' ? SEO_CONFIGS.listProperty
-                  : currentView === 'blog'          ? SEO_CONFIGS.blog
+  // ── Dynamic SEO per route ────────────────────────────────────────────────
+  const pathname = location.pathname;
+  const seoConfig = pathname === '/'                ? SEO_CONFIGS.portal
+                  : pathname === '/dashboard'       ? SEO_CONFIGS.dashboard
+                  : pathname === '/login'           ? SEO_CONFIGS.login
+                  : pathname === '/list-property'   ? SEO_CONFIGS.listProperty
+                  : pathname.startsWith('/blog')    ? SEO_CONFIGS.blog
                   : SEO_CONFIGS.portal;
   useSEO(seoConfig);
-
 
   // Firebase Auth State Listener
   useEffect(() => {
@@ -128,6 +228,7 @@ export default function App() {
     return () => { if (unsubFCM) unsubFCM(); };
   }, []);
 
+  // Lenis Smooth Scroll
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
@@ -164,113 +265,52 @@ export default function App() {
     };
   }, []);
 
-  // ── Browser Back (←) and Forward (→) History & Hash Routing ────────────────
-  useEffect(() => {
-    const handleHashOrPopState = () => {
-      const hash = window.location.hash.replace('#', '');
-      if (hash.startsWith('property/')) {
-        // Keep portal view active when opening property detail subpage
-        setCurrentView('portal');
-        return;
-      }
-      if (hash === 'societies' || hash === 'properties' || hash === 'signature-collection' || hash === 'signature') {
-        setCurrentView('societies');
-      } else if (hash.startsWith('society/')) {
-        const slug = hash.replace('society/', '');
-        setActiveSocietySlug(slug);
-        setCurrentView('society-detail');
-      } else if (hash.startsWith('locations/') || hash.startsWith('location/')) {
-        const loc = hash.replace('locations/', '').replace('location/', '');
-        setActiveLocationSlug(loc);
-        setCurrentView('location-landing');
-      } else if (hash === 'list-property') {
-        setCurrentView('list-property');
-      } else if (hash === 'login') {
-        setCurrentView('login');
-      } else if (hash === 'dashboard') {
-        setCurrentView('dashboard');
-      } else if (hash === 'blog') {
-        setActiveBlog(null);
-        setCurrentView('blog');
-      } else if (hash.startsWith('blog/')) {
-        const slug = hash.replace('blog/', '');
-        setActiveBlog(null);
-        setActiveBlogSlug(slug);
-        setCurrentView('blog-detail');
-      } else {
-        setCurrentView('portal');
-      }
-      window.scrollTo(0, 0);
-    };
-
-    window.addEventListener('popstate', handleHashOrPopState);
-    window.addEventListener('hashchange', handleHashOrPopState);
-
-    // Initial check on load
-    if (window.location.hash) {
-      handleHashOrPopState();
-    }
-
-    return () => {
-      window.removeEventListener('popstate', handleHashOrPopState);
-      window.removeEventListener('hashchange', handleHashOrPopState);
-    };
-  }, []);
-
-  // ── Scroll to top whenever view changes ─────────────────────────────────
+  // Scroll to top whenever pathname changes
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [currentView]);
+  }, [location.pathname]);
 
+  // Backward-compatible navigation handler for components passing onViewChange
   const handleViewChange = useCallback((view) => {
     window.scrollTo(0, 0);
-    if (view === 'portal') {
-      if (window.location.hash && window.location.hash !== '#portal') {
-        window.history.pushState('', document.title, window.location.pathname + window.location.search);
-      }
-      setCurrentView('portal');
+    if (!view || view === 'portal') {
+      navigate('/');
       return;
     }
     if (view === 'societies' || view === 'properties') {
-      window.location.hash = 'societies';
-      setCurrentView('societies');
+      navigate('/societies');
       return;
     }
     if (view.startsWith('society/')) {
       const slug = view.replace('society/', '');
-      setActiveSocietySlug(slug);
-      window.location.hash = `society/${slug}`;
-      setCurrentView('society-detail');
+      navigate(`/society/${slug}`);
       return;
     }
     if (view.startsWith('location/') || view.startsWith('locations/')) {
       const loc = view.replace('locations/', '').replace('location/', '');
-      setActiveLocationSlug(loc);
-      window.location.hash = `locations/${loc}`;
-      setCurrentView('location-landing');
+      navigate(`/locations/${loc}`);
       return;
     }
     if (view === 'blog') {
-      setActiveBlog(null);
-      window.location.hash = 'blog';
-      setCurrentView('blog');
+      navigate('/blog');
       return;
     }
     if (view.startsWith('blog/')) {
       const slug = view.replace('blog/', '');
-      setActiveBlog(null);
-      setActiveBlogSlug(slug);
-      window.location.hash = `blog/${slug}`;
-      setCurrentView('blog-detail');
+      navigate(`/blog/${slug}`);
       return;
     }
     if (view === 'dashboard') {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        window.location.hash = 'login';
-        setCurrentView('login');
-        return;
-      }
+      navigate('/dashboard');
+      return;
+    }
+    if (view === 'login') {
+      navigate('/login');
+      return;
+    }
+    if (view === 'list-property') {
+      navigate('/list-property');
+      return;
     }
     if (view === 'logout') {
       localStorage.removeItem('token');
@@ -278,21 +318,15 @@ export default function App() {
       localStorage.removeItem('userRole');
       localStorage.removeItem('userFullName');
       localStorage.removeItem('username');
-      window.history.pushState('', document.title, window.location.pathname + window.location.search);
-      setCurrentView('portal');
+      navigate('/');
       return;
     }
-    window.location.hash = view;
-    setCurrentView(view);
-  }, []);
-
-  const handleLoginSuccess = useCallback(() => {
-    setShowLoginModal(false);
-    setCurrentView('dashboard');
-  }, []);
+    navigate(`/${view}`);
+  }, [navigate]);
 
   return (
     <ErrorBoundary>
+      <LegacyHashRedirectHandler />
       <div className="app-wrapper">
         <main
           id="main-content"
@@ -302,69 +336,62 @@ export default function App() {
           tabIndex={-1}
         >
           <Suspense fallback={<AppLoadingScreen />}>
-            {currentView === 'login' ? (
-              // ✨ New SaaS full-page login
-              <LoginPage onSuccess={(data) => {
-                setCurrentView('dashboard');
-              }} />
-            ) : currentView === 'list-property' ? (
-              <ListPropertyPage onBack={() => handleViewChange('portal')} />
-            ) : currentView === 'societies' ? (
-              <PublicSocietiesPage
-                onSelectSociety={(slug) => {
-                  setActiveSocietySlug(slug);
-                  window.location.hash = `society/${slug}`;
-                  setCurrentView('society-detail');
-                }}
-                onBackHome={() => handleViewChange('portal')}
+            <Routes>
+              {/* Home / Public Portal */}
+              <Route path="/" element={<Portal onViewChange={handleViewChange} />} />
+
+              {/* Login Page */}
+              <Route
+                path="/login"
+                element={<LoginPage onSuccess={() => navigate('/dashboard')} />}
               />
-            ) : currentView === 'society-detail' ? (
-              <PublicSocietyDetailPage
-                slug={activeSocietySlug || 'kolte-patil-life-republic-hinjewadi'}
-                onBack={() => {
-                  window.location.hash = 'societies';
-                  setCurrentView('societies');
-                }}
+
+              {/* CRM Dashboard (Protected) */}
+              <Route
+                path="/dashboard"
+                element={<ProtectedDashboardRoute onViewChange={handleViewChange} />}
               />
-            ) : currentView === 'location-landing' ? (
-              <LocationLandingPage
-                locationSlug={activeLocationSlug || 'hinjewadi-phase-1'}
-                onBack={() => {
-                  window.location.hash = 'societies';
-                  setCurrentView('societies');
-                }}
-                onSelectSociety={(slug) => {
-                  setActiveSocietySlug(slug);
-                  window.location.hash = `society/${slug}`;
-                  setCurrentView('society-detail');
-                }}
+
+              {/* Public Societies */}
+              <Route
+                path="/societies"
+                element={
+                  <PublicSocietiesPage
+                    onSelectSociety={(slug) => navigate(`/society/${slug}`)}
+                    onBackHome={() => navigate('/')}
+                  />
+                }
               />
-            ) : currentView === 'blog' ? (
-              <BlogListPage
-                onBack={() => handleViewChange('portal')}
-                onSelectBlog={(blog) => {
-                  setActiveBlog(blog);
-                  setActiveBlogSlug(blog.slug);
-                  window.location.hash = `blog/${blog.slug}`;
-                  setCurrentView('blog-detail');
-                }}
+              <Route path="/properties" element={<Navigate to="/societies" replace />} />
+
+              {/* Society Detail */}
+              <Route path="/society/:slug" element={<SocietyDetailRouteWrapper />} />
+
+              {/* Location Landing */}
+              <Route path="/locations/:slug" element={<LocationLandingRouteWrapper />} />
+              <Route path="/location/:slug" element={<LocationLandingRouteWrapper />} />
+
+              {/* List Property */}
+              <Route
+                path="/list-property"
+                element={<ListPropertyPage onBack={() => navigate('/')} />}
               />
-            ) : currentView === 'blog-detail' ? (
-              <BlogDetailPage
-                blog={activeBlog}
-                slug={activeBlogSlug}
-                onBack={() => {
-                  setActiveBlog(null);
-                  window.location.hash = 'blog';
-                  setCurrentView('blog');
-                }}
-                onBrowse={() => handleViewChange('portal')}
+
+              {/* Blog Pages */}
+              <Route
+                path="/blog"
+                element={
+                  <BlogListPage
+                    onBack={() => navigate('/')}
+                    onSelectBlog={(blog) => navigate(`/blog/${blog.slug}`, { state: { blog } })}
+                  />
+                }
               />
-            ) : currentView === 'portal' ? (
-              <Portal onViewChange={handleViewChange} />
-            ) : (
-              <Dashboard onViewChange={handleViewChange} />
-            )}
+              <Route path="/blog/:slug" element={<BlogDetailRouteWrapper />} />
+
+              {/* Catch-all */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
           </Suspense>
         </main>
 
@@ -374,18 +401,30 @@ export default function App() {
             onClose={() => setShowLoginModal(false)}
             onSuccess={() => {
               setShowLoginModal(false);
-              setCurrentView('dashboard');
+              navigate('/dashboard');
             }}
           />
         )}
 
-        {/* 🤖 AI CRM Co-pilot — available on Dashboard */}
-        {currentView === 'dashboard' && (
+        {/* AI CRM Co-pilot — available on Dashboard */}
+        {pathname === '/dashboard' && (
           <AiAssistantPanel
             onCommand={(cmd) => console.log('[Voice Command]', cmd)}
           />
         )}
+
+        {/* Global Toast Notification Container */}
+        <ToastContainer />
       </div>
     </ErrorBoundary>
   );
 }
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+

@@ -17,7 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/dam/assets")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class DamAssetController {
 
     private final DamAssetService damAssetService;

@@ -9,7 +9,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/agents")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class AgentController {
 
     private final AgentRepository agentRepository;

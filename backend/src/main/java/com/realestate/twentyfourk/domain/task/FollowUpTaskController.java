@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", maxAge = 3600)
+
 public class FollowUpTaskController {
 
     private final FollowUpTaskService taskService;

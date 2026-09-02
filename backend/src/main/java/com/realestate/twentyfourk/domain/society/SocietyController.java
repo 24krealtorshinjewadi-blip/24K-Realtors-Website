@@ -13,7 +13,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/societies")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class SocietyController {
 
     private final SocietyService societyService;
