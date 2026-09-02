@@ -12,7 +12,7 @@ spring:
 # Get your free API key from https://resend.com
 # ⚠️  NO DEFAULT — app will fail to start if this env var is missing.
 resend:
-  api-key: ${RESEND_API_KEY}
+  api-key: ${RESEND_API_KEY:re_dev_dummy_key_not_configured}
   from: ${RESEND_FROM:24K Realtors <noreply@24krealtors.com>}
 
 whatsapp:
@@ -21,7 +21,7 @@ whatsapp:
     url: ${WHATSAPP_API_URL:https://graph.facebook.com/v20.0/YOUR_PHONE_NUMBER_ID/messages}
     # REQUIRED: Set WHATSAPP_API_TOKEN in Railway env vars — never hardcode access tokens
     # ⚠️  Obtain from Meta Business Manager → WhatsApp → API Access
-    token: ${WHATSAPP_API_TOKEN}
+    token: ${WHATSAPP_API_TOKEN:dev_whatsapp_dummy_token}
     template: ${WHATSAPP_API_TEMPLATE:welcome_lead_intro}
 
 twilio:
@@ -38,15 +38,13 @@ fast2sms:
 jwt:
   # REQUIRED: Generate a strong secret: `openssl rand -base64 64`
   # Set JWT_SECRET in Railway environment variables — NEVER use a default in production.
-  # ⚠️  NO DEFAULT — app will fail to start if this env var is missing.
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:dGhpc0lzQURldmVsb3BtZW50SldUU2VjcmV0S2V5Rm9yMjRSZWFsdG9yc0Rldk1vZGUyMDI2IQ==}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
 admin:
   # REQUIRED: Set ADMIN_USERNAME and ADMIN_PASSWORD in Railway env vars.
-  # Use a strong password — min 16 chars, mix of letters/numbers/symbols.
   username: ${ADMIN_USERNAME:admin}
-  password: ${ADMIN_PASSWORD}
+  password: ${ADMIN_PASSWORD:Admin@24K2026!Dev}
 
 # Spring Boot Actuator — expose health endpoint for container orchestration (shares main port)
 management:

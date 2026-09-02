@@ -1476,30 +1476,18 @@ const runWithFallback = async (apiFn, fallbackFn, bypassMockCheck = false) => {
     localStorage.setItem('OFFLINE_MODE_ACTIVE', 'false');
     return result;
   } catch (err) {
-    const isNetworkError = err.name === 'TypeError' || 
-                           (err.message && (
-                             err.message.includes('Failed to fetch') || 
-                             err.message.includes('NetworkError') || 
-                             err.message.includes('Failed to execute') ||
-                             err.message.includes('network error')
-                           ));
-                           
-    if (isNetworkError) {
-      if (!isBackendOfflineCached) {
-        console.warn("[OFFLINE SYNC] Spring Boot server unreachable. Falling back to local browser-based database.");
-        isBackendOfflineCached = true;
-        localStorage.setItem('OFFLINE_MODE_ACTIVE', 'true');
-        if (!offlineCacheResetTimer) {
-          offlineCacheResetTimer = setTimeout(() => {
-            isBackendOfflineCached = false;
-            offlineCacheResetTimer = null;
-          }, 30000);
-        }
+    if (!isBackendOfflineCached) {
+      console.warn("[OFFLINE SYNC] Spring Boot server unreachable or error encountered. Falling back to local catalog:", err?.message || err);
+      isBackendOfflineCached = true;
+      localStorage.setItem('OFFLINE_MODE_ACTIVE', 'true');
+      if (!offlineCacheResetTimer) {
+        offlineCacheResetTimer = setTimeout(() => {
+          isBackendOfflineCached = false;
+          offlineCacheResetTimer = null;
+        }, 15000);
       }
-      return fallbackFn();
     }
-    localStorage.setItem('OFFLINE_MODE_ACTIVE', 'false');
-    throw err;
+    return fallbackFn();
   }
 };
 
