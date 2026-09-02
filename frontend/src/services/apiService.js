@@ -189,6 +189,7 @@ const initialProperties = [
     bedrooms: 0,
     bathrooms: 2,
     status: "AVAILABLE",
+    verifiedListing: true,
     noBrokerage: true,
     reraNumber: "RERA-PUN-PRM-24K085",
     imageUrl: "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/gallery/lodha_6_italian_kitchen.png",
@@ -240,6 +241,7 @@ const initialProperties = [
     bedrooms: 0,
     bathrooms: 1,
     status: "AVAILABLE",
+    verifiedListing: true,
     noBrokerage: true,
     reraNumber: "RERA-PUN-PRM-24K199",
     imageUrl: "https://twentyfourk-realestate-media.s3.ap-south-1.amazonaws.com/properties/shapoorji-joyville-vyomora/vyomora_6_grand_lobby.png",
@@ -3900,7 +3902,7 @@ export const apiService = {
 
     // 2. Also save to mock_leads in localStorage for instant CRM view sync
     try {
-      const existingLeads = JSON.parse(localStorage.getItem('mock_leads') || '[]');
+      const existingLeads = LocalMockDb.getLeads() || [];
       const newMockLead = {
         id: `LD-${Date.now().toString().slice(-6)}`,
         name: payload.name,
@@ -3910,14 +3912,16 @@ export const apiService = {
         budgetMin: payload.budgetMin,
         budgetMax: payload.budgetMax,
         location: payload.preferredLocation,
+        preferredLocation: payload.preferredLocation,
         status: 'NEW',
         notes: payload.notes,
         score: 75,
+        leadScore: 75,
         createdDate: new Date().toISOString(),
         source: leadData.source || '24K Web Portal'
       };
       existingLeads.unshift(newMockLead);
-      localStorage.setItem('mock_leads', JSON.stringify(existingLeads.slice(0, 100)));
+      LocalMockDb.saveLeads(existingLeads.slice(0, 150));
     } catch (err) {
       console.warn('[Lead Storage] LocalStorage sync skipped:', err);
     }
