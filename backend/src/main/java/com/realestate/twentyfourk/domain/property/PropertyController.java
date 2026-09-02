@@ -23,9 +23,15 @@ public class PropertyController {
     private final PropertyService propertyService;
 
     @PostMapping
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'CRM_ADMIN', 'SALES_MANAGER')")
     public ResponseEntity<PropertyResponse> createProperty(@Valid @RequestBody PropertyRequest request) {
         PropertyResponse created = propertyService.createProperty(request);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<com.realestate.twentyfourk.domain.property.dto.PropertyStatsResponse> getPropertyStats() {
+        return ResponseEntity.ok(propertyService.getPropertyStats());
     }
 
     @GetMapping("/{id}")
@@ -61,12 +67,27 @@ public class PropertyController {
     }
 
     @PutMapping("/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'CRM_ADMIN', 'SALES_MANAGER')")
     public ResponseEntity<PropertyResponse> updateProperty(
             @PathVariable UUID id,
             @Valid @RequestBody PropertyRequest request
     ) {
         PropertyResponse updated = propertyService.updateProperty(id, request);
         return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{id}/status")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'CRM_ADMIN', 'SALES_MANAGER', 'RELATIONSHIP_MANAGER')")
+    public ResponseEntity<PropertyResponse> updatePropertyStatus(
+            @PathVariable UUID id,
+            @RequestBody java.util.Map<String, String> body
+    ) {
+        String statusStr = body.get("status");
+        if (statusStr == null || statusStr.isBlank()) {
+            throw new IllegalArgumentException("Status is required");
+        }
+        PropertyStatus status = PropertyStatus.valueOf(statusStr.toUpperCase());
+        return ResponseEntity.ok(propertyService.updatePropertyStatus(id, status));
     }
 
     @GetMapping("/search/radius")

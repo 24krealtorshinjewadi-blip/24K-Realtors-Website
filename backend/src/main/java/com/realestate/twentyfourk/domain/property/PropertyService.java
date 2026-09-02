@@ -2,6 +2,7 @@ package com.realestate.twentyfourk.domain.property;
 
 import com.realestate.twentyfourk.domain.property.dto.PropertyRequest;
 import com.realestate.twentyfourk.domain.property.dto.PropertyResponse;
+import com.realestate.twentyfourk.domain.property.dto.PropertyStatsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,6 +25,8 @@ public interface PropertyService {
             Pageable pageable
     );
     PropertyResponse updateProperty(UUID id, PropertyRequest request);
+    PropertyResponse updatePropertyStatus(UUID id, PropertyStatus status);
+    PropertyStatsResponse getPropertyStats();
     void deleteProperty(UUID id);
     Page<PropertyResponse> getPropertiesWithinRadius(Double lat, Double lon, Double radius, Pageable pageable);
 }

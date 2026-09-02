@@ -141,7 +141,7 @@ public class Property {
     @Column(name = "updated_by")
     private UUID updatedBy;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "society_id")
     private com.realestate.twentyfourk.domain.society.Society society;
 }

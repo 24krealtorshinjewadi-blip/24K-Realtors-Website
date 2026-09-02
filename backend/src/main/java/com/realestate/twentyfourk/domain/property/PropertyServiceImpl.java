@@ -2,6 +2,7 @@ package com.realestate.twentyfourk.domain.property;
 
 import com.realestate.twentyfourk.domain.property.dto.PropertyRequest;
 import com.realestate.twentyfourk.domain.property.dto.PropertyResponse;
+import com.realestate.twentyfourk.domain.property.dto.PropertyStatsResponse;
 import com.realestate.twentyfourk.domain.property.event.PropertyCreatedEvent;
 import com.realestate.twentyfourk.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.realestate.twentyfourk.domain.audit.AuditLogService;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -128,6 +133,52 @@ public class PropertyServiceImpl implements PropertyService {
     public Page<PropertyResponse> getPropertiesWithinRadius(Double lat, Double lon, Double radius, Pageable pageable) {
         Page<Property> propertiesPage = propertyRepository.findPropertiesWithinRadius(lat, lon, radius, pageable);
         return propertiesPage.map(this::mapToResponse);
+    }
+
+    @Override
+    @Transactional
+    public PropertyResponse updatePropertyStatus(UUID id, PropertyStatus status) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found with ID: " + id));
+        String oldSummary = getPropertySummary(property);
+        property.setStatus(status);
+        Property updated = propertyRepository.save(property);
+        auditLogService.logAction("STATUS_CHANGE", "Property", id, oldSummary, getPropertySummary(updated));
+        return mapToResponse(updated);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PropertyStatsResponse getPropertyStats() {
+        List<Property> allProps = propertyRepository.findAll();
+        long total = allProps.size();
+        long avail = allProps.stream().filter(p -> p.getStatus() == PropertyStatus.AVAILABLE).count();
+        long onHold = allProps.stream().filter(p -> p.getStatus() == PropertyStatus.HOLD).count();
+        long booked = allProps.stream().filter(p -> p.getStatus() == PropertyStatus.BOOKED).count();
+        long sold = allProps.stream().filter(p -> p.getStatus() == PropertyStatus.SOLD).count();
+
+        BigDecimal totalVal = allProps.stream()
+                .map(Property::getPrice)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal availVal = allProps.stream()
+                .filter(p -> p.getStatus() == PropertyStatus.AVAILABLE)
+                .map(Property::getPrice)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Map<String, Long> byCorridor = allProps.stream()
+                .filter(p -> p.getLocation() != null)
+                .collect(Collectors.groupingBy(p -> p.getLocation().name(), Collectors.counting()));
+
+        Map<String, Long> byType = allProps.stream()
+                .filter(p -> p.getPropertyType() != null)
+                .collect(Collectors.groupingBy(p -> p.getPropertyType().name(), Collectors.counting()));
+
+        return new PropertyStatsResponse(
+                total, avail, onHold, booked, sold, totalVal, availVal, byCorridor, byType
+        );
     }
 
     // Helper mapping methods

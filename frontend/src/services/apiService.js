@@ -4617,6 +4617,189 @@ export const apiService = {
       throw new Error(`Failed to delete blog (HTTP ${res.status})`);
     }
     return true;
+  },
+
+  // ─── PROPERTIES & INVENTORY APIS (PHASE 4) ──────────────────────────────────
+  async getProperties(params = {}) {
+    const q = new URLSearchParams();
+    if (params.location) q.append('location', params.location);
+    if (params.minPrice) q.append('minPrice', params.minPrice);
+    if (params.maxPrice) q.append('maxPrice', params.maxPrice);
+    if (params.propertyType) q.append('propertyType', params.propertyType);
+    if (params.transactionType) q.append('transactionType', params.transactionType);
+    if (params.bedrooms) q.append('bedrooms', params.bedrooms);
+    if (params.status) q.append('status', params.status);
+    if (params.query) q.append('query', params.query);
+    if (params.page !== undefined) q.append('page', params.page);
+    if (params.size !== undefined) q.append('size', params.size);
+    if (params.sortBy) q.append('sortBy', params.sortBy);
+    if (params.direction) q.append('direction', params.direction);
+
+    const response = await fetch(`${BASE_URL}/properties?${q.toString()}`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch properties');
+    return response.json();
+  },
+
+  async getPropertyById(id) {
+    const response = await fetch(`${BASE_URL}/properties/${id}`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch property details');
+    return response.json();
+  },
+
+  async createProperty(propertyData) {
+    const response = await fetch(`${BASE_URL}/properties`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(propertyData)
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to create property');
+    }
+    return response.json();
+  },
+
+  async updateProperty(id, propertyData) {
+    const response = await fetch(`${BASE_URL}/properties/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(propertyData)
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to update property');
+    }
+    return response.json();
+  },
+
+  async updatePropertyStatus(id, status) {
+    const response = await fetch(`${BASE_URL}/properties/${id}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify({ status })
+    });
+    if (!response.ok) throw new Error('Failed to update property status');
+    return response.json();
+  },
+
+  async deleteProperty(id) {
+    const response = await fetch(`${BASE_URL}/properties/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok && response.status !== 204) throw new Error('Failed to delete property');
+    return true;
+  },
+
+  async getPropertyStats() {
+    const response = await fetch(`${BASE_URL}/properties/stats`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch property stats');
+    return response.json();
+  },
+
+  // Inventory Units APIs
+  async getInventoryUnits(params = {}) {
+    const q = new URLSearchParams();
+    if (params.societyId) q.append('societyId', params.societyId);
+    if (params.tower) q.append('tower', params.tower);
+    if (params.bhkType) q.append('bhkType', params.bhkType);
+    if (params.status) q.append('status', params.status);
+    if (params.minPrice) q.append('minPrice', params.minPrice);
+    if (params.maxPrice) q.append('maxPrice', params.maxPrice);
+    if (params.query) q.append('query', params.query);
+    if (params.page !== undefined) q.append('page', params.page);
+    if (params.size !== undefined) q.append('size', params.size);
+
+    const response = await fetch(`${BASE_URL}/inventory/units?${q.toString()}`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch inventory units');
+    return response.json();
+  },
+
+  async getInventoryStats() {
+    const response = await fetch(`${BASE_URL}/inventory/stats`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch inventory stats');
+    return response.json();
+  },
+
+  async getInventoryProjects() {
+    const response = await fetch(`${BASE_URL}/inventory/projects`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch inventory project summaries');
+    return response.json();
+  },
+
+  async createInventoryUnit(unitData) {
+    const response = await fetch(`${BASE_URL}/inventory/units`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(unitData)
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to create inventory unit');
+    }
+    return response.json();
+  },
+
+  async updateInventoryUnit(id, unitData) {
+    const response = await fetch(`${BASE_URL}/inventory/units/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(unitData)
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to update inventory unit');
+    }
+    return response.json();
+  },
+
+  async updateInventoryUnitStatus(id, status) {
+    const response = await fetch(`${BASE_URL}/inventory/units/${id}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify({ status })
+    });
+    if (!response.ok) throw new Error('Failed to update inventory unit status');
+    return response.json();
+  },
+
+  async deleteInventoryUnit(id) {
+    const response = await fetch(`${BASE_URL}/inventory/units/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok && response.status !== 204) throw new Error('Failed to delete unit');
+    return true;
   }
 };
 
