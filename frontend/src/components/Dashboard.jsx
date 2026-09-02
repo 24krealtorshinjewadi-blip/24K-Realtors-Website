@@ -35,6 +35,7 @@ import InventoryTab from './InventoryTab';
 import EmployeeDashboard from './EmployeeDashboard';
 import MyLeadsTab from './MyLeadsTab';
 import DamTab from './DamTab';
+import CustomersTab from './CustomersTab';
 import { toast } from './Toast';
 
 // ─── Lead Normalizer Function ────────────────────────────────────────────────
@@ -674,6 +675,7 @@ export default function Dashboard({ onViewChange }) {
               employee_dashboard: 'My Workspace Dashboard',
               dashboard: 'Executive Dashboard',
               leads: 'Lead Management',
+              customers: 'Client 360° & Investor Portfolios',
               properties: 'Properties & Inventory',
               site_visits: 'Site Visits',
               follow_ups: 'Follow-ups',
@@ -694,6 +696,7 @@ export default function Dashboard({ onViewChange }) {
               employee_dashboard: 'Personalized Sales RM Dashboard & Quick Actions',
               dashboard: 'Live Executive Metrics & KPIs',
               leads: 'Manage, Track & Convert Your Leads Efficiently',
+              customers: 'High-Net-Worth Individuals, NRI Portfolios & KYC Ledger',
               properties: 'All Active Projects & Inventory',
               site_visits: 'Scheduled Visits & VIP Chauffeur Tours',
               follow_ups: 'Due Reminders & Callback Tracker',
@@ -800,6 +803,7 @@ export default function Dashboard({ onViewChange }) {
           {(isAgentMode ? [
             { id: 'employee_dashboard', label: 'My Dashboard', icon: LayoutGrid },
             { id: 'leads', label: 'My Leads', icon: Users },
+            { id: 'customers', label: 'My Clients (360°)', icon: ShieldCheck },
             { id: 'follow_ups', label: 'Follow-ups', icon: Clock },
             { id: 'site_visits', label: 'Site Visits', icon: Calendar },
             { id: 'properties', label: 'Properties', icon: Home },
@@ -816,6 +820,7 @@ export default function Dashboard({ onViewChange }) {
             { id: 'ai_copilot', label: '24K AI Co-pilot', icon: Sparkles, isAi: true },
             { id: 'dashboard', label: 'Executive Dashboard', icon: BarChart3 },
             { id: 'leads', label: 'Lead Management', icon: Users },
+            { id: 'customers', label: 'Clients & Portfolios', icon: ShieldCheck },
             { id: 'properties', label: 'Properties', icon: Home },
             { id: 'site_visits', label: 'Site Visits', icon: Calendar },
             { id: 'follow_ups', label: 'Follow-ups', icon: Clock },
@@ -1769,6 +1774,11 @@ export default function Dashboard({ onViewChange }) {
               onOpenAddLead={() => setIsAddLeadModalOpen(true)} 
               onSelectLead={(lead) => setSelectedLead(lead)} 
             />
+          )}
+
+          {/* TAB: CUSTOMER 360 & PORTFOLIOS (PHASE 3) */}
+          {activeTab === 'customers' && (
+            <CustomersTab agents={agents} />
           )}
 
           {activeTab === 'attendance' && <AttendanceTab />}

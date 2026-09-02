@@ -45,6 +45,10 @@ public class Booking {
     @JoinColumn(name = "assigned_user_id")
     private User assignedUser;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private com.realestate.twentyfourk.domain.customer.Customer customer;
+
     @Column(name = "booking_amount", nullable = false, precision = 15, scale = 2)
     @Builder.Default
     private BigDecimal bookingAmount = BigDecimal.ZERO;

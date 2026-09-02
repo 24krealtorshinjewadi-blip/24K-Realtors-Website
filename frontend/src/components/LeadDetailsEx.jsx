@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/apiService';
 import { 
-  X, Sparkles, IndianRupee, Loader
+  X, Sparkles, IndianRupee, Loader, ShieldCheck
 } from 'lucide-react';
 import { toast } from './Toast';
 
 export default function LeadDetailsEx({ lead, onClose, agents, properties: initialProperties, fetchLeads, fetchStats }) {
   const [activeSubTab, setActiveSubTab] = useState('timeline'); // timeline | sitevisits | bookings
+  const [convertingCustomer, setConvertingCustomer] = useState(false);
   const [properties, setProperties] = useState(initialProperties || []);
   
   // Timeline activities
@@ -182,6 +183,22 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
     }
   };
 
+  // Convert Lead to Customer 360
+  const handleConvertToCustomer = async () => {
+    try {
+      setConvertingCustomer(true);
+      const customer = await apiService.convertLeadToCustomer(lead.id);
+      toast.success(`Converted to Customer 360! Client: ${customer.name}`);
+      fetchLeads && fetchLeads();
+      fetchStats && fetchStats();
+      fetchTimeline();
+    } catch (err) {
+      toast.error(`Failed to convert to customer: ${err.message}`);
+    } finally {
+      setConvertingCustomer(false);
+    }
+  };
+
   const formatPrice = (val) => {
     if (!val) return '₹0.00';
     return new Intl.NumberFormat('en-IN', {
@@ -215,6 +232,29 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-muted)', paddingBottom: '15px', margin: 0 }}>
           Lead ID: {lead.id} | Phone: {lead.phone} | Email: {lead.email}
         </p>
+
+        {/* Customer 360 Conversion Prompt */}
+        <div style={{ marginTop: '16px', background: 'linear-gradient(90deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.02) 100%)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '8px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+          <div>
+            <div style={{ fontWeight: 700, color: '#D4AF37', fontSize: '0.84rem' }}>
+              👑 Customer 360° Dossier & Investor Portfolio
+            </div>
+            <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>
+              {lead.status === 'CONVERTED' ? '✓ Client profile registered in Customer 360 database.' : 'Convert this prospective buyer into an official client profile with KYC & asset ledger.'}
+            </div>
+          </div>
+          {lead.status !== 'CONVERTED' && (
+            <button
+              onClick={handleConvertToCustomer}
+              disabled={convertingCustomer}
+              className="btn-gold"
+              style={{ padding: '7px 14px', fontSize: '0.76rem', borderRadius: '6px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              {convertingCustomer ? <Loader size={12} className="animate-spin" /> : <ShieldCheck size={14} />}
+              Convert to Customer 360°
+            </button>
+          )}
+        </div>
 
         {/* AI Lead Score Banner */}
         <div style={{ marginTop: '20px', background: 'rgba(212,175,55,0.03)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '8px', padding: '16px' }}>

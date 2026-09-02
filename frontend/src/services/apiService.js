@@ -3838,6 +3838,97 @@ export const apiService = {
     return response.json();
   },
 
+  // ==========================================
+  // CUSTOMER 360 & INVESTOR PORTFOLIO (PHASE 3)
+  // ==========================================
+
+  async getCustomers({ page = 0, size = 20, search = '', type = '', kycStatus = '' } = {}) {
+    const params = new URLSearchParams();
+    params.append('page', page);
+    params.append('size', size);
+    if (search) params.append('search', search);
+    if (type) params.append('type', type);
+    if (kycStatus) params.append('kycStatus', kycStatus);
+
+    const response = await fetch(`${BASE_URL}/customers?${params.toString()}`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch customers');
+    return response.json();
+  },
+
+  async getCustomerById(id) {
+    const response = await fetch(`${BASE_URL}/customers/${id}`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch customer profile');
+    return response.json();
+  },
+
+  async createCustomer(data) {
+    const response = await fetch(`${BASE_URL}/customers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to create customer');
+    }
+    return response.json();
+  },
+
+  async updateCustomer(id, data) {
+    const response = await fetch(`${BASE_URL}/customers/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to update customer');
+    }
+    return response.json();
+  },
+
+  async updateCustomerKyc(id, status) {
+    const response = await fetch(`${BASE_URL}/customers/${id}/kyc?status=${status}`, {
+      method: 'PATCH',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to update KYC status');
+    return response.json();
+  },
+
+  async convertLeadToCustomer(leadId) {
+    const response = await fetch(`${BASE_URL}/customers/convert-lead/${leadId}`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to convert lead to customer');
+    }
+    return response.json();
+  },
+
+  async getCustomerStats() {
+    const response = await fetch(`${BASE_URL}/customers/stats`, {
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to fetch customer stats');
+    return response.json();
+  },
+
+  async deleteCustomer(id) {
+    const response = await fetch(`${BASE_URL}/customers/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!response.ok) throw new Error('Failed to delete customer');
+    return true;
+  },
+
   async assignLeadAgent(id, agentId) {
     const response = await fetch(`${BASE_URL}/leads/${id}/assign/${agentId}`, {
       method: 'PATCH',
