@@ -455,7 +455,8 @@ export default function DeveloperLogoMarquee({ onSelectDeveloper, isMobile = fal
                 flexShrink: 0,
                 transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                 boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05)',
-                position: 'relative'
+                position: 'relative',
+                overflow: 'hidden'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = 'rgba(212, 175, 55, 0.07)';
@@ -470,7 +471,25 @@ export default function DeveloperLogoMarquee({ onSelectDeveloper, isMobile = fal
                 e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255, 255, 255, 0.05)';
               }}
             >
-              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {/* ── Watermark Background Logo ── */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                paddingRight: '6px',
+                pointerEvents: 'none',
+                opacity: 0.07,
+                filter: 'grayscale(1) brightness(10)',
+                transform: 'scale(1.6)',
+                transformOrigin: 'center right',
+                overflow: 'hidden'
+              }}>
+                {dev.logo}
+              </div>
+              {/* ── Main Logo (foreground) ── */}
+              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
                 {dev.logo}
               </div>
             </div>
