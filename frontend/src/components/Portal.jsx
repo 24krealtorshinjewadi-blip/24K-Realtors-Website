@@ -4217,7 +4217,7 @@ export default function Portal({ onViewChange }) {
                 {/* Row 1: Count + View Toggle */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
                   <span className="total-found-badge" style={{ margin: 0, fontSize: 'clamp(0.72rem, 2.5vw, 0.8rem)' }}>
-                    🏢 {totalElements} listings · {filters.location || 'Pune West'}
+                    🏢 {totalElements > 0 ? totalElements : properties.length} listings · {filters.location || 'Pune West'}
                   </span>
                   <div style={{ display: 'flex', background: 'rgba(7,15,30,0.6)', border: '1px solid rgba(197,168,128,0.15)', borderRadius: '50px', padding: '3px', gap: '2px' }}>
                     <button
@@ -5979,11 +5979,12 @@ export default function Portal({ onViewChange }) {
             </div>
 
             {/* Experts Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? '16px' : '28px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: isMobile ? '16px' : '28px' }}>
               {[
-                { name: 'Neeraj Giri', role: 'Senior Property Advisor', area: 'Hinjewadi · Wakad · Baner', phone: '9673000053', initials: 'NG', badge: 'Senior Advisor', deals: '500+', rating: '4.9/5' },
-                { name: 'Nilesh Omprakash Rai', role: 'Investment & Deal Specialist', area: 'Baner · Balewadi · Kharadi', phone: '9359595851', initials: 'NR', badge: 'Deal Expert', deals: '350+', rating: '4.8/5' },
-                { name: 'Jyoti Dhale', role: 'Site Visit & Client Relations', area: 'All Corridors · Pan Pune West', phone: '9356559727', initials: 'JD', badge: 'Client Champion', deals: '420+', rating: '5.0/5' },
+                { name: 'Neeraj Giri', role: 'Founder & Owner', area: 'Hinjewadi · Wakad · Baner', phone: '9673000053', initials: 'NG', deals: '500+', rating: '4.9/5' },
+                { name: 'Nilesh Omprakash Rai', role: 'Team Lead', area: 'Baner · Balewadi · Kharadi', phone: '9359595851', initials: 'NR', deals: '350+', rating: '4.8/5' },
+                { name: 'Jyoti Dhale', role: 'Sales Expert', area: 'All Corridors · Pan Pune West', phone: '9356559727', initials: 'JD', deals: '420+', rating: '5.0/5' },
+                { name: 'Urvashi', role: 'Sales Expert', area: 'Hinjewadi · Wakad · Baner', phone: '6353745408', initials: 'UV', deals: '100+', rating: '4.9/5' },
               ].map((expert, i) => (
                 <div key={i} style={{
                   background: 'rgba(255,255,255,0.03)',
@@ -5994,7 +5995,6 @@ export default function Portal({ onViewChange }) {
                   transition: 'all 0.3s ease',
                   position: 'relative'
                 }}>
-                  <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '6px', padding: '4px 8px', fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700 }}>{expert.badge}</div>
                   <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)', border: '2px solid rgba(212,175,55,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: '#D4AF37', fontWeight: 700, margin: '0 auto 20px' }}>
                     {expert.initials}
                   </div>
