@@ -4718,6 +4718,53 @@ export const apiService = {
     return response.json();
   },
 
+  // Public Verified Inventory Discovery (Source of Truth: Strictly Available + Published)
+  async getPublicInventory(params = {}) {
+    const q = new URLSearchParams();
+    if (params.societySlug) q.append('societySlug', params.societySlug);
+    if (params.location) q.append('location', params.location);
+    if (params.hinjewadiPhase) q.append('hinjewadiPhase', params.hinjewadiPhase);
+    if (params.bhkType) q.append('bhkType', params.bhkType);
+    if (params.minPrice) q.append('minPrice', params.minPrice);
+    if (params.maxPrice) q.append('maxPrice', params.maxPrice);
+    if (params.builder) q.append('builder', params.builder);
+    if (params.query) q.append('query', params.query);
+    if (params.page !== undefined) q.append('page', params.page);
+    if (params.size !== undefined) q.append('size', params.size);
+    if (params.sortBy) q.append('sortBy', params.sortBy);
+    if (params.direction) q.append('direction', params.direction);
+
+    const publicUrl = BASE_URL.replace('/v1', '/public');
+    const response = await fetch(`${publicUrl}/inventory?${q.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch public verified inventory');
+    return response.json();
+  },
+
+  async getPublicInventoryById(id) {
+    const publicUrl = BASE_URL.replace('/v1', '/public');
+    const response = await fetch(`${publicUrl}/inventory/${id}`);
+    if (!response.ok) throw new Error(`Failed to fetch unit ${id}`);
+    return response.json();
+  },
+
+  async getProjectInventory(societySlug) {
+    const publicUrl = BASE_URL.replace('/v1', '/public');
+    const response = await fetch(`${publicUrl}/inventory/project/${societySlug}`);
+    if (!response.ok) throw new Error(`Failed to fetch inventory for project ${societySlug}`);
+    return response.json();
+  },
+
+  async getLocationHierarchy() {
+    return runWithFallback(
+      async () => {
+        const response = await fetch(`${BASE_URL}/localities/hierarchy`);
+        if (!response.ok) throw new Error('Failed to fetch location hierarchy');
+        return response.json();
+      },
+      () => []
+    );
+  },
+
   // Inventory Units APIs
   async getInventoryUnits(params = {}) {
     const q = new URLSearchParams();

@@ -125,18 +125,22 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       : title.toLowerCase().includes('lodha') || title.toLowerCase().includes('belmondo') ? 'Lodha Group'
       : title.toLowerCase().includes('vilas') || title.toLowerCase().includes('yashwin') ? 'Vilas Javdekar (VJ)'
       : '24K Realtors Partner');
-  const reraNumber    = property.reraNumber || 'P52100000058';
-  const possession    = property.possessionDate || property.possession || 'December 2027';
-  const projectArea   = property.projectArea || property.landParcel || (property.totalLandAcres ? `${property.totalLandAcres} Acres` : '8.5 Acres');
-  const carpetArea    = property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '920–1650 sq.ft';
-  const investmentScore = property.investmentScore || property.aiScore || 94;
-  const address       = property.address || (property.location ? `${title}, near High Street, ${property.location}` : `${title}, Baner-Balewadi Link Road, Pune`);
-  const rawPriceNum   = typeof property.price === 'number' ? property.price : 14500000;
-  const displayPrice  = property.price 
+  const reraNumber    = property.reraNumber && property.reraNumber !== 'RERA-PUN-PRM-PENDING' 
+    ? property.reraNumber 
+    : (property.reraRegistered ? 'Registration Under Review' : 'PENDING_VERIFICATION');
+  const possession    = property.possessionDate || property.possession || 'Possession details on request';
+  const projectArea   = property.projectArea || property.landParcel || (property.totalLandAcres ? `${property.totalLandAcres} Acres` : 'Master Plan on Request');
+  const carpetArea    = property.areaSquareFeet 
+    ? `${property.areaSquareFeet} sq.ft` 
+    : (property.minCarpetSqft && property.maxCarpetSqft ? `${property.minCarpetSqft}–${property.maxCarpetSqft} sq.ft` : 'Carpet area on request');
+  const investmentScore = property.investmentScore || property.aiScore || 92;
+  const address       = property.address || (property.location ? `${title}, ${property.location}, Pune` : `${title}, Pune`);
+  const rawPriceNum   = typeof property.price === 'number' && property.price > 0 ? property.price : null;
+  const displayPrice  = rawPriceNum 
     ? (typeof formatPrice === 'function' 
-        ? formatPrice(property.price, property.transactionType) 
-        : (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} Lakhs`))
-    : (property.priceDisplay || '₹1.45 Cr*');
+        ? formatPrice(rawPriceNum, property.transactionType) 
+        : (rawPriceNum >= 10000000 ? `₹${(rawPriceNum / 10000000).toFixed(2)} Cr` : `₹${Math.round(rawPriceNum / 100000)} Lakhs`))
+    : (property.priceDisplay || 'Price on Request');
 
   /* ── Cost Breakdown Calculations (20-Year Real Estate Model) ── */
   const agreementValue = rawPriceNum;
@@ -387,7 +391,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const TRUST = [
     { Icon: Lock,        text: 'Direct Developer Allotment Pricing' },
     { Icon: Users,       text: 'Complimentary AC Chauffeur Site Tours' },
-    { Icon: BadgeCheck,  text: '100% MahaRERA Legal Title Clearance' },
+    { Icon: BadgeCheck,  text: '🛡️ MahaRERA Registration Verified' },
     { Icon: ShieldCheck, text: 'Zero Brokerage & Complete Loan Facilitation' },
   ];
 
@@ -597,10 +601,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                   </div>
                   <div className="pi-highlight-card">
                     <div className="pi-highlight-card__label pi-highlight-card__label--green">
-                      <ShieldCheck size={13} /> 100% Legal &amp; Title Verified
+                      <ShieldCheck size={13} /> 🛡️ MahaRERA Registration Verified
                     </div>
                     <div className="pi-highlight-card__text">
-                      Clear marketable title, sanctioned layout approvals, environmental clearances, and registered under MahaRERA ({reraNumber}).
+                      Sanctioned layout approvals, environmental clearances, and registered under MahaRERA ({reraNumber}).
                     </div>
                   </div>
                   <div className="pi-highlight-card">

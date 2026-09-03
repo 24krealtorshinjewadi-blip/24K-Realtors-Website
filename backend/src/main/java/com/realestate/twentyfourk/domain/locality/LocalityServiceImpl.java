@@ -1,11 +1,14 @@
 package com.realestate.twentyfourk.domain.locality;
 
+import com.realestate.twentyfourk.domain.locality.dto.LocalityHierarchyDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +28,7 @@ public class LocalityServiceImpl implements LocalityService {
     @Override
     @Transactional(readOnly = true)
     public List<Locality> getAllLocalities() {
-        return localityRepository.findAll();
+        return localityRepository.findByActiveTrueAndDeletedFlagFalse();
     }
 
     @Override
@@ -40,5 +43,33 @@ public class LocalityServiceImpl implements LocalityService {
     public Locality getLocalityById(UUID id) {
         return localityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Locality not found with ID: " + id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LocalityHierarchyDTO> getHierarchy() {
+        List<Locality> rootLocalities = localityRepository.findByParentLocalityIsNullAndActiveTrueAndDeletedFlagFalse();
+        return rootLocalities.stream()
+                .map(this::buildHierarchyNode)
+                .collect(Collectors.toList());
+    }
+
+    private LocalityHierarchyDTO buildHierarchyNode(Locality locality) {
+        LocalityHierarchyDTO dto = LocalityHierarchyDTO.builder()
+                .id(locality.getId())
+                .name(locality.getName())
+                .slug(locality.getSlug())
+                .localityType(locality.getLocalityType())
+                .hinjewadiPhase(locality.getHinjewadiPhase() != null ? locality.getHinjewadiPhase().name() : null)
+                .latitude(locality.getLatitude())
+                .longitude(locality.getLongitude())
+                .children(new ArrayList<>())
+                .build();
+
+        List<Locality> children = localityRepository.findByParentLocalityIdAndActiveTrueAndDeletedFlagFalse(locality.getId());
+        if (children != null && !children.isEmpty()) {
+            dto.setChildren(children.stream().map(this::buildHierarchyNode).collect(Collectors.toList()));
+        }
+        return dto;
     }
 }

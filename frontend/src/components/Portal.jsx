@@ -3650,6 +3650,32 @@ export default function Portal({ onViewChange }) {
                   3 &amp; 4 BHK Premium Homes in <strong style={{ color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>Hinjewadi Phase 1, 2, 3</strong> &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
                 </p>
 
+                {/* ── Pune Metro Line 3 & Local Identity Transit Strip (Section 21) ── */}
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '8px 14px',
+                  background: 'rgba(4, 8, 20, 0.78)',
+                  border: '1px solid rgba(212, 175, 55, 0.40)',
+                  borderRadius: '50px',
+                  padding: isMobile ? '6px 14px' : '8px 20px',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  marginBottom: isMobile ? '16px' : '22px',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.6), 0 0 15px rgba(212,175,55,0.12)',
+                  fontSize: isMobile ? '0.72rem' : '0.80rem',
+                }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#F5D77F', fontWeight: 800, letterSpacing: '0.02em' }}>
+                    <span style={{ fontSize: '0.95rem' }}>🚇</span>
+                    पुणे मेट्रो Line 3 · हिंजवडी IT Corridor Connectivity
+                  </span>
+                  <span style={{ color: 'rgba(212,175,55,0.4)', display: isMobile ? 'none' : 'inline' }}>|</span>
+                  <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: isMobile ? '0.68rem' : '0.75rem' }}>
+                    Direct transit from Megapolis Terminal &amp; Phase 1 to Shivajinagar
+                  </span>
+                </div>
+
                 {/* ══════════════════════════════════════════════════════════════════
                     ✦ NAUKRI & 99ACRES STYLE HERO SEARCH DOCK WITH AI INTEGRATION
                    ══════════════════════════════════════════════════════════════════ */}
@@ -3760,14 +3786,19 @@ export default function Portal({ onViewChange }) {
                             }}
                           >
                             <option value="">All Pune West</option>
-                            <option value="HINJEWADI_PHASE_1">📍 Hinjewadi Phase 1</option>
-                            <option value="HINJEWADI_PHASE_2">📍 Hinjewadi Phase 2</option>
-                            <option value="HINJEWADI_PHASE_3">📍 Hinjewadi Phase 3 (Megapolis)</option>
-                            <option value="MAHALUNGE">📍 Mahalunge Smart City</option>
-                            <option value="WAKAD">📍 Wakad (Phoenix Mall)</option>
-                            <option value="BANER">📍 Baner</option>
-                            <option value="BALEWADI">📍 Balewadi High Street</option>
-                            <option value="TATHAWADE">📍 Tathawade</option>
+                            <optgroup label="Hinjewadi IT Corridor (Pune Metro Line 3)">
+                              <option value="HINJEWADI_PHASE_1">📍 Hinjewadi Phase 1 (Wipro/Blue Ridge)</option>
+                              <option value="HINJEWADI_PHASE_2">📍 Hinjewadi Phase 2 (Embassy Techzone)</option>
+                              <option value="HINJEWADI_PHASE_3">📍 Hinjewadi Phase 3 (Megapolis Township)</option>
+                            </optgroup>
+                            <optgroup label="Prime West Pune Micro-Markets">
+                              <option value="MAHALUNGE">📍 Mahalunge Smart City</option>
+                              <option value="WAKAD">📍 Wakad (Phoenix Mall)</option>
+                              <option value="BANER">📍 Baner High Street</option>
+                              <option value="BALEWADI">📍 Balewadi Stadium</option>
+                              <option value="TATHAWADE">📍 Tathawade Expressway</option>
+                              <option value="KHARADI">📍 Kharadi IT Hub</option>
+                            </optgroup>
                           </select>
                         </div>
 
@@ -3846,18 +3877,22 @@ export default function Portal({ onViewChange }) {
                             }}
                           >
                             <option value="">All Top Developers</option>
-                            <option value="Lodha">Lodha Group</option>
-                            <option value="Godrej">Godrej Properties</option>
-                            <option value="VTP">VTP Realty</option>
-                            <option value="Joyville">Joyville (Shapoorji)</option>
-                            <option value="Kohinoor">Kohinoor Group</option>
-                            <option value="Pride Purple">Pride Purple Group</option>
-                            <option value="Paranjape">Paranjape Schemes</option>
-                            <option value="Kolte">Kolte Patil Developers</option>
-                            <option value="Gera">Gera Developments</option>
-                            <option value="Kasturi">Kasturi Housing</option>
-                            <option value="Mahindra">Mahindra Lifespaces</option>
-                            <option value="Raheja">K. Raheja Corp</option>
+                            {builders && builders.length > 0 ? (
+                              builders.map(b => (
+                                <option key={b.id || b.slug} value={b.name}>{b.name}</option>
+                              ))
+                            ) : (
+                              <>
+                                <option value="Kolte Patil Developers">Kolte Patil Developers</option>
+                                <option value="Shapoorji Pallonji Real Estate">Shapoorji Pallonji</option>
+                                <option value="Godrej Properties">Godrej Properties</option>
+                                <option value="Paranjape Schemes">Paranjape Schemes</option>
+                                <option value="Vilas Javdekar Developers (VJ)">Vilas Javdekar (VJ)</option>
+                                <option value="VTP Realty">VTP Realty</option>
+                                <option value="Kohinoor Group">Kohinoor Group</option>
+                                <option value="Rohan Builders">Rohan Builders</option>
+                              </>
+                            )}
                           </select>
                         </div>
 

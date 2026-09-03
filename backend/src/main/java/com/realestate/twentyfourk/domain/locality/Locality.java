@@ -31,6 +31,14 @@ public class Locality {
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
 
+    @Column(name = "locality_type", length = 50)
+    @Builder.Default
+    private String localityType = "MICRO_MARKET";
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_locality_id")
+    private Locality parentLocality;
+
     /**
      * Hinjewadi phase classification — assigned only from verified official address.
      * Do NOT assign phase from developer marketing claims.

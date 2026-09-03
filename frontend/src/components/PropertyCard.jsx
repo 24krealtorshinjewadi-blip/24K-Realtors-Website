@@ -116,7 +116,13 @@ export default function PropertyCard({
   onOpenBrochure
 }) {
   const cardImgSrc = getForbesTeslaPropertyImage(property);
-  const builderName = getBuilderName(property.title, property.description);
+  const builderName = property.builderName || property.developer || property.builder?.name || getBuilderName(property.title, property.description);
+  const hasAerial = Boolean(
+    property.hasAerialView || 
+    property.isAerial || 
+    property.aerialImage || 
+    (property.imageUrl && (property.imageUrl.includes('aerial') || property.imageUrl.includes('01_aerial_hero')))
+  );
 
   return (
     <div 
@@ -302,31 +308,33 @@ export default function PropertyCard({
             : (formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType))}
         </span>
 
-        {/* Aerial / Drone Concept Badge */}
-        <span 
-          style={{
-            position: 'absolute',
-            bottom: '12px',
-            right: '12px',
-            background: 'rgba(4, 8, 20, 0.82)',
-            border: '1px solid rgba(212, 175, 55, 0.45)',
-            color: '#F5D77F',
-            fontSize: '0.62rem',
-            fontWeight: 800,
-            padding: '3px 8px',
-            borderRadius: '50px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            zIndex: 2,
-            backdropFilter: 'blur(6px)',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.5)'
-          }}
-          title="Real aerial/drone shot available"
-        >
-          <span>🚁</span>
-          <span>Aerial View</span>
-        </span>
+        {/* Authentic Aerial / Drone Badge - Shown ONLY when authentic aerial asset exists */}
+        {hasAerial && (
+          <span 
+            style={{
+              position: 'absolute',
+              bottom: '12px',
+              right: '12px',
+              background: 'rgba(4, 8, 20, 0.88)',
+              border: '1px solid rgba(212, 175, 55, 0.55)',
+              color: '#F5D77F',
+              fontSize: '0.62rem',
+              fontWeight: 800,
+              padding: '3px 8px',
+              borderRadius: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              zIndex: 2,
+              backdropFilter: 'blur(6px)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.5)'
+            }}
+            title="Verified authentic aerial drone asset"
+          >
+            <span>🚁</span>
+            <span>Aerial View</span>
+          </span>
+        )}
       </div>
 
       {/* 2. Text Info Panel */}

@@ -78,6 +78,18 @@ public class Lead {
     @JoinColumn(name = "property_id")
     private com.realestate.twentyfourk.domain.property.Property property;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "society_id")
+    private com.realestate.twentyfourk.domain.society.Society society;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inventory_id")
+    private com.realestate.twentyfourk.domain.inventory.InventoryUnit inventory;
+
+    @Column(name = "lead_source", length = 100)
+    @Builder.Default
+    private String leadSource = "PORTAL_HERO";
+
     @CreationTimestamp
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;

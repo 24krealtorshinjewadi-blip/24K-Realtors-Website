@@ -68,6 +68,16 @@ public class InventoryUnit {
     @Column(name = "total_price", nullable = false, precision = 15, scale = 2)
     private BigDecimal totalPrice;
 
+    @Column(name = "price_per_sqft", precision = 15, scale = 2)
+    private BigDecimal pricePerSqft;
+
+    @Column(name = "parking", length = 50)
+    private String parking;
+
+    @Column(name = "currency", length = 10)
+    @Builder.Default
+    private String currency = "INR";
+
     @Column(name = "facing", length = 50)
     private String facing;
 
@@ -80,6 +90,22 @@ public class InventoryUnit {
     @Column(name = "status", nullable = false, length = 50)
     @Builder.Default
     private UnitStatus status = UnitStatus.AVAILABLE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "publication_status", nullable = false, length = 50)
+    @Builder.Default
+    private PublicationStatus publicationStatus = PublicationStatus.PUBLISHED;
+
+    @Column(name = "published", nullable = false)
+    @Builder.Default
+    private boolean published = true;
+
+    @Column(name = "last_verified_at")
+    private LocalDateTime lastVerifiedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_id")
+    private InventorySource source;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "society_id")
