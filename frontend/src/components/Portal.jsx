@@ -5979,12 +5979,13 @@ export default function Portal({ onViewChange }) {
             </div>
 
             {/* Experts Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: isMobile ? '16px' : '28px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? '16px' : '28px' }}>
               {[
                 { name: 'Neeraj Giri', role: 'Founder & Owner', area: 'Hinjewadi · Wakad · Baner', phone: '9673000053', initials: 'NG', deals: '500+', rating: '4.9/5' },
                 { name: 'Nilesh Omprakash Rai', role: 'Team Lead', area: 'Baner · Balewadi · Kharadi', phone: '9359595851', initials: 'NR', deals: '350+', rating: '4.8/5' },
                 { name: 'Jyoti Dhale', role: 'Sales Expert', area: 'All Corridors · Pan Pune West', phone: '9356559727', initials: 'JD', deals: '420+', rating: '5.0/5' },
                 { name: 'Urvashi', role: 'Sales Expert', area: 'Hinjewadi · Wakad · Baner', phone: '6353745408', initials: 'UV', deals: '100+', rating: '4.9/5' },
+                { name: 'Yash Murkute', role: 'Sales Expert', area: 'Hinjewadi · Wakad · Baner', phone: '9822551862', initials: 'YM', deals: '250+', rating: '4.8/5' },
               ].map((expert, i) => (
                 <div key={i} style={{
                   background: 'rgba(255,255,255,0.03)',
@@ -6011,7 +6012,7 @@ export default function Portal({ onViewChange }) {
                     </div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <a href={`https://wa.me/${expert.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: '#fff', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>WhatsApp Chat</a>
+                    <a href={`https://wa.me/91${expert.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I am reaching out from the 24K Realtors website. I am looking to buy/rent a property in Pune. Could you please assist me with some options?')}`} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: '#fff', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>WhatsApp Chat</a>
                     <a href={`tel:${expert.phone}`} style={{ border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontSize: '0.8rem' }}>Call Directly</a>
                   </div>
                 </div>
