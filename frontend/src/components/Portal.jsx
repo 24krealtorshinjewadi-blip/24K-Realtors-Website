@@ -1481,7 +1481,7 @@ export default function Portal({ onViewChange }) {
     } catch (err) {
       console.warn('Property fetch warning, loading verified catalog:', err);
       try {
-        const fallbackData = await apiService.getProperties({ ...queryFilters }, 0, 50);
+        const fallbackData = await apiService.getProperties({ ...filters }, 0, 50);
         if (fallbackData?.content?.length) {
           setProperties(fallbackData.content);
           setTotalPages(fallbackData.totalPages || 1);
