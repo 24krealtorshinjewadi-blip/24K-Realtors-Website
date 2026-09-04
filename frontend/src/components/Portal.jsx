@@ -23,6 +23,7 @@ const ChatWidget = lazy(() => import('./ChatWidget'));
 const DataLabsView = lazy(() => import('./DataLabsView'));
 import PdfBrochureModal from './PdfBrochureModal';
 import DeveloperLogoMarquee from './DeveloperLogoMarquee';
+import AdvancedPropertyFilterBar from './AdvancedPropertyFilterBar';
 
 const DEFAULT_GALLERY_ITEMS = [
   {
@@ -4247,6 +4248,19 @@ export default function Portal({ onViewChange }) {
                   </div>
                 </div>
 
+                {/* ── 99acres-Style Advanced Property Filter Dock ── */}
+                <AdvancedPropertyFilterBar
+                  filters={filters}
+                  onFilterChange={(newFilters) => {
+                    setFilters(newFilters);
+                    setShowAllGrid(true);
+                  }}
+                  onResetFilters={handleResetFilters}
+                  totalCount={totalElements > 0 ? totalElements : properties.length}
+                  isMobile={isMobile}
+                  builders={builders}
+                />
+
               {/* Listings Controls — Responsive two-row layout */}
               <div style={{ marginBottom: '24px' }}>
                 {/* Row 1: Count + View Toggle */}
@@ -6013,42 +6027,293 @@ export default function Portal({ onViewChange }) {
               </p>
             </div>
 
-            {/* Experts Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? '16px' : '28px' }}>
+            {/* Experts Grid — Ultra-Luxury Private Client Advisory Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(320px, 1fr))', gap: isMobile ? '20px' : '28px' }}>
               {[
-                { name: 'Neeraj Giri', role: 'Founder & Owner', area: 'Hinjewadi · Wakad · Baner', phone: '9673000053', initials: 'NG', deals: '500+', rating: '4.9/5' },
-                { name: 'Nilesh Omprakash Rai', role: 'Team Lead', area: 'Baner · Balewadi · Kharadi', phone: '9359595851', initials: 'NR', deals: '350+', rating: '4.8/5' },
-                { name: 'Jyoti Dhale', role: 'Sales Expert', area: 'All Corridors · Pan Pune West', phone: '9356559727', initials: 'JD', deals: '420+', rating: '5.0/5' },
-                { name: 'Urvashi', role: 'Sales Expert', area: 'Hinjewadi · Wakad · Baner', phone: '6353745408', initials: 'UV', deals: '100+', rating: '4.9/5' },
-                { name: 'Yash Murkute', role: 'Sales Expert', area: 'Hinjewadi · Wakad · Baner', phone: '9822551862', initials: 'YM', deals: '250+', rating: '4.8/5' },
+                { 
+                  name: 'Neeraj Giri', 
+                  role: 'Founder & Principal Advisor', 
+                  specialization: 'Ultra-HNWI Portfolios & Strategic Land Parcels',
+                  area: 'Hinjewadi · Wakad · Baner', 
+                  phone: '9673000053', 
+                  initials: 'NG', 
+                  deals: '500+', 
+                  volume: '₹350 Cr+',
+                  rating: '4.9 ★', 
+                  badge: '👑 Founder & Lead' 
+                },
+                { 
+                  name: 'Nilesh Omprakash Rai', 
+                  role: 'Managing Partner & Team Lead', 
+                  specialization: 'Hinjewadi IT Phase 1–3 & Township Mandates',
+                  area: 'Baner · Balewadi · Kharadi', 
+                  phone: '9359595851', 
+                  initials: 'NR', 
+                  deals: '350+', 
+                  volume: '₹220 Cr+',
+                  rating: '4.8 ★', 
+                  badge: '🏆 Hinjewadi Lead' 
+                },
+                { 
+                  name: 'Jyoti Dhale', 
+                  role: 'Senior Private Client Advisor', 
+                  specialization: 'Luxury Residential & NRI Investment Portfolios',
+                  area: 'Pan Pune West Corridors', 
+                  phone: '9356559727', 
+                  initials: 'JD', 
+                  deals: '420+', 
+                  volume: '₹260 Cr+',
+                  rating: '5.0 ★', 
+                  badge: '⭐ 5.0 Star Rated' 
+                },
+                { 
+                  name: 'Urvashi', 
+                  role: 'Senior Portfolio Consultant', 
+                  specialization: 'Tech Professional Housing & 3–4 BHK Upgrades',
+                  area: 'Hinjewadi · Wakad · Baner', 
+                  phone: '6353745408', 
+                  initials: 'UV', 
+                  deals: '180+', 
+                  volume: '₹120 Cr+',
+                  rating: '4.9 ★', 
+                  badge: '✨ Prime Residences' 
+                },
+                { 
+                  name: 'Yash Murkute', 
+                  role: 'Commercial & High-Yield Specialist', 
+                  specialization: 'Grade-A IT Offices, Retail & Pre-Leased Yields',
+                  area: 'Hinjewadi Techzone · Baner', 
+                  phone: '9822551862', 
+                  initials: 'YM', 
+                  deals: '250+', 
+                  volume: '₹180 Cr+',
+                  rating: '4.8 ★', 
+                  badge: '💼 Commercial Yields' 
+                },
               ].map((expert, i) => (
-                <div key={i} style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(212,175,55,0.12)',
-                  borderRadius: '24px',
-                  padding: '32px 24px',
-                  textAlign: 'center',
-                  transition: 'all 0.3s ease',
-                  position: 'relative'
-                }}>
-                  <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)', border: '2px solid rgba(212,175,55,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: '#D4AF37', fontWeight: 700, margin: '0 auto 20px' }}>
-                    {expert.initials}
+                <div 
+                  key={i} 
+                  style={{
+                    background: 'linear-gradient(145deg, rgba(13, 25, 48, 0.85) 0%, rgba(6, 12, 24, 0.95) 100%)',
+                    border: '1.5px solid rgba(212, 175, 55, 0.28)',
+                    borderRadius: '24px',
+                    padding: '28px 24px',
+                    textAlign: 'center',
+                    transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                    position: 'relative',
+                    boxShadow: '0 16px 36px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-6px)';
+                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.65)';
+                    e.currentTarget.style.boxShadow = '0 24px 50px rgba(0,0,0,0.7), 0 0 30px rgba(212,175,55,0.22)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.28)';
+                    e.currentTarget.style.boxShadow = '0 16px 36px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)';
+                  }}
+                >
+                  {/* Subtle Top Gold Highlight */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: '20%',
+                    right: '20%',
+                    height: '2px',
+                    background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.8), transparent)'
+                  }} />
+
+                  {/* Card Header Tag Bar */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <span style={{
+                      background: 'rgba(212, 175, 55, 0.12)',
+                      border: '1px solid rgba(212, 175, 55, 0.35)',
+                      borderRadius: '50px',
+                      padding: '4px 12px',
+                      fontSize: '0.68rem',
+                      fontWeight: 800,
+                      color: '#F5D77F',
+                      letterSpacing: '0.04em'
+                    }}>
+                      {expert.badge}
+                    </span>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      fontSize: '0.65rem',
+                      color: '#22c55e',
+                      fontWeight: 700
+                    }}>
+                      <span style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        background: '#22c55e',
+                        boxShadow: '0 0 8px #22c55e'
+                      }} />
+                      ONLINE
+                    </span>
                   </div>
-                  <h4 style={{ color: '#fff', fontSize: '1.1rem', margin: '0 0 4px 0', fontFamily: "'Cinzel', serif" }}>{expert.name}</h4>
-                  <p style={{ color: '#D4AF37', fontSize: '0.8rem', margin: '0 0 16px 0', fontWeight: 600 }}>{expert.role}</p>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '24px' }}>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}>{expert.deals}</div>
-                      <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem' }}>Deals Closed</div>
+
+                  {/* Avatar with Dual Gold Rings */}
+                  <div style={{
+                    width: '84px',
+                    height: '84px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #1A2639 0%, #0D1626 100%)',
+                    border: '2px solid #D4AF37',
+                    boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 16px',
+                    position: 'relative'
+                  }}>
+                    <span style={{
+                      fontFamily: "'Cinzel', serif",
+                      fontSize: '1.6rem',
+                      fontWeight: 800,
+                      color: '#FFFFFF',
+                      textShadow: '0 2px 10px rgba(212,175,55,0.5)'
+                    }}>
+                      {expert.initials}
+                    </span>
+                    <span style={{
+                      position: 'absolute',
+                      bottom: '-2px',
+                      right: '-2px',
+                      background: '#D4AF37',
+                      color: '#040814',
+                      borderRadius: '50%',
+                      width: '22px',
+                      height: '22px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.68rem',
+                      fontWeight: 900,
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.5)'
+                    }} title="MahaRERA Certified Advisor">
+                      ✓
+                    </span>
+                  </div>
+
+                  {/* Advisor Identity */}
+                  <h4 style={{
+                    color: '#FFFFFF',
+                    fontSize: '1.18rem',
+                    margin: '0 0 4px',
+                    fontFamily: "'Cinzel', serif",
+                    fontWeight: 700,
+                    letterSpacing: '0.02em'
+                  }}>
+                    {expert.name}
+                  </h4>
+                  <div style={{
+                    color: '#D4AF37',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    marginBottom: '8px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em'
+                  }}>
+                    {expert.role}
+                  </div>
+                  <div style={{
+                    color: 'rgba(255, 255, 255, 0.65)',
+                    fontSize: '0.72rem',
+                    lineHeight: 1.4,
+                    marginBottom: '8px',
+                    minHeight: '28px'
+                  }}>
+                    {expert.specialization}
+                  </div>
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    color: 'rgba(212, 175, 55, 0.8)',
+                    fontSize: '0.70rem',
+                    marginBottom: '18px'
+                  }}>
+                    <span>📍</span>
+                    <span>{expert.area}</span>
+                  </div>
+
+                  {/* 3-Metric Performance Bar */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: '8px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '12px',
+                    padding: '12px 8px',
+                    marginBottom: '20px'
+                  }}>
+                    <div>
+                      <div style={{ color: '#FFFFFF', fontSize: '0.92rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif" }}>{expert.deals}</div>
+                      <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.62rem', textTransform: 'uppercase' }}>Deals Closed</div>
                     </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}>{expert.rating}</div>
-                      <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem' }}>Client Rating</div>
+                    <div style={{ borderLeft: '1px solid rgba(255,255,255,0.08)', borderRight: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ color: '#F5D77F', fontSize: '0.92rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif" }}>{expert.volume}</div>
+                      <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.62rem', textTransform: 'uppercase' }}>Volume</div>
+                    </div>
+                    <div>
+                      <div style={{ color: '#22c55e', fontSize: '0.92rem', fontWeight: 800, fontFamily: "'Montserrat', sans-serif" }}>{expert.rating}</div>
+                      <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.62rem', textTransform: 'uppercase' }}>Trust Score</div>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <a href={`https://wa.me/91${expert.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I am reaching out from the 24K Realtors website. I am looking to buy/rent a property in Pune. Could you please assist me with some options?')}`} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: '#fff', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 700 }}>WhatsApp Chat</a>
-                    <a href={`tel:${expert.phone}`} style={{ border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontSize: '0.8rem' }}>Call Directly</a>
+
+                  {/* Action CTAs */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <a 
+                      href={`https://wa.me/91${expert.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi ${expert.name}, I am contacting you from the 24K Realtors portal. I would like personalized guidance regarding verified properties in ${expert.area}.`)}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
+                        color: '#FFFFFF',
+                        padding: '12px 16px',
+                        borderRadius: '10px',
+                        textDecoration: 'none',
+                        fontSize: '0.82rem',
+                        fontWeight: 800,
+                        boxShadow: '0 4px 15px rgba(37, 211, 102, 0.3)',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <span>💬 WhatsApp Concierge</span>
+                    </a>
+                    <a 
+                      href={`tel:${expert.phone}`} 
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        background: 'rgba(212, 175, 55, 0.06)',
+                        border: '1px solid rgba(212, 175, 55, 0.35)',
+                        color: '#F5D77F',
+                        padding: '10px 16px',
+                        borderRadius: '10px',
+                        textDecoration: 'none',
+                        fontSize: '0.78rem',
+                        fontWeight: 700,
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <span>📞 Call: +91 {expert.phone}</span>
+                    </a>
                   </div>
                 </div>
               ))}
