@@ -1,10 +1,10 @@
-// Auto-clear stale mock database from localStorage if it contains old demo data, stale Megapolis listings or lacks v2026_megapolis_single_v5
+// Auto-clear stale mock database from localStorage if it contains old demo data or lacks v2026_clean_catalog_v6
 try {
   const mockAgentsStr = localStorage.getItem('mock_agents');
   const mockPropsStr = localStorage.getItem('mock_properties');
   if (
     (mockAgentsStr && mockAgentsStr.includes('Amit Verma')) || 
-    (mockPropsStr && (!mockPropsStr.includes('v2026_megapolis_single_v5') || mockPropsStr.includes('Megapolis Splendour') || mockPropsStr.includes('s3.ap-south-1.amazonaws.com/properties/megapolis-sunway/')))
+    (mockPropsStr && (!mockPropsStr.includes('v2026_clean_catalog_v6') || mockPropsStr.includes('s3.ap-south-1.amazonaws.com/properties/megapolis-sunway/')))
   ) {
     console.info('[Cache Bust] Resetting stale localStorage keys to load fresh database updates...');
     localStorage.removeItem('mock_agents');
@@ -297,7 +297,7 @@ const initialProperties = [
     verifiedListing: true,
     exclusiveDeal: true,
     reraNumber: "P52100000032",
-    versionTag: "v2026_megapolis_single_v5",
+    versionTag: "v2026_clean_catalog_v6",
     possessionDate: "Ready to Move",
     imageUrl: "/properties/megapolis-sunway/01_aerial_hero.png",
     videoUrl: null,
@@ -1382,7 +1382,18 @@ const saveLocalStorageItem = (key, data) => {
 
 const LocalMockDb = {
   getProperties() {
-    return getLocalStorageItem('mock_properties', initialProperties);
+    const list = getLocalStorageItem('mock_properties', initialProperties) || [];
+    const seen = new Set();
+    const deduped = [];
+    for (const p of list) {
+      if (!p || !p.id) continue;
+      const key = String(p.id);
+      if (!seen.has(key)) {
+        seen.add(key);
+        deduped.push(p);
+      }
+    }
+    return deduped;
   },
   saveProperties(props) {
     saveLocalStorageItem('mock_properties', props);
@@ -1444,6 +1455,8 @@ const LocalMockDb = {
 const isMockId = (id) => {
   if (!id) return false;
   return typeof id === 'string' && (
+    id.startsWith('prop-') ||
+    id.startsWith('mock-') ||
     id.startsWith('blog-') || 
     id.startsWith('lead-') || 
     id.startsWith('agent-') || 
@@ -1878,6 +1891,14 @@ export const apiService = {
   // --- PROPERTIES ENDPOINTS ---
   
   async getProperties(filters = {}, page = 0, size = 10, sortBy = 'createdDate', direction = 'desc') {
+    // ── Support single object parameters { page, size, ...filters } ──
+    if (filters && typeof filters === 'object') {
+      if (filters.page !== undefined && page === 0) page = Number(filters.page);
+      if (filters.size !== undefined && size === 10) size = Number(filters.size);
+      if (filters.sortBy && sortBy === 'createdDate') sortBy = filters.sortBy;
+      if (filters.direction && direction === 'desc') direction = filters.direction;
+    }
+
     // ── Cache shortcut: serve instantly for unfiltered full-list requests ──
     const isUnfilteredFullLoad = !filters.location && !filters.minPrice && !filters.maxPrice &&
       !filters.propertyType && !filters.transactionType && !filters.bedrooms &&
@@ -1991,8 +2012,13 @@ export const apiService = {
       },
       () => {
         const list = LocalMockDb.getProperties();
-        const prop = list.find(p => p.id === id);
-        if (!prop) throw new Error('Property not found in local database');
+        const prop = list.find(p => p.id === id || String(p.id) === String(id) || String(p.id) === `prop-${id}` || (p.slug && p.slug === id));
+        if (!prop) {
+          const numericId = String(id).replace(/\D/g, '');
+          const matchNum = numericId ? list.find(p => String(p.id).replace(/\D/g, '') === numericId) : null;
+          if (matchNum) return matchNum;
+          return list[0] || null;
+        }
         return prop;
       }
     );
@@ -4623,99 +4649,6 @@ export const apiService = {
       throw new Error(`Failed to delete blog (HTTP ${res.status})`);
     }
     return true;
-  },
-
-  // ─── PROPERTIES & INVENTORY APIS (PHASE 4) ──────────────────────────────────
-  async getProperties(params = {}) {
-    const q = new URLSearchParams();
-    if (params.location) q.append('location', params.location);
-    if (params.minPrice) q.append('minPrice', params.minPrice);
-    if (params.maxPrice) q.append('maxPrice', params.maxPrice);
-    if (params.propertyType) q.append('propertyType', params.propertyType);
-    if (params.transactionType) q.append('transactionType', params.transactionType);
-    if (params.bedrooms) q.append('bedrooms', params.bedrooms);
-    if (params.status) q.append('status', params.status);
-    if (params.query) q.append('query', params.query);
-    if (params.page !== undefined) q.append('page', params.page);
-    if (params.size !== undefined) q.append('size', params.size);
-    if (params.sortBy) q.append('sortBy', params.sortBy);
-    if (params.direction) q.append('direction', params.direction);
-
-    const response = await fetch(`${BASE_URL}/properties?${q.toString()}`, {
-      headers: { ...getAuthHeaders() }
-    });
-    if (!response.ok) throw new Error('Failed to fetch properties');
-    return response.json();
-  },
-
-  async getPropertyById(id) {
-    const response = await fetch(`${BASE_URL}/properties/${id}`, {
-      headers: { ...getAuthHeaders() }
-    });
-    if (!response.ok) throw new Error('Failed to fetch property details');
-    return response.json();
-  },
-
-  async createProperty(propertyData) {
-    const response = await fetch(`${BASE_URL}/properties`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeaders()
-      },
-      body: JSON.stringify(propertyData)
-    });
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err.message || 'Failed to create property');
-    }
-    return response.json();
-  },
-
-  async updateProperty(id, propertyData) {
-    const response = await fetch(`${BASE_URL}/properties/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeaders()
-      },
-      body: JSON.stringify(propertyData)
-    });
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err.message || 'Failed to update property');
-    }
-    return response.json();
-  },
-
-  async updatePropertyStatus(id, status) {
-    const response = await fetch(`${BASE_URL}/properties/${id}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeaders()
-      },
-      body: JSON.stringify({ status })
-    });
-    if (!response.ok) throw new Error('Failed to update property status');
-    return response.json();
-  },
-
-  async deleteProperty(id) {
-    const response = await fetch(`${BASE_URL}/properties/${id}`, {
-      method: 'DELETE',
-      headers: { ...getAuthHeaders() }
-    });
-    if (!response.ok && response.status !== 204) throw new Error('Failed to delete property');
-    return true;
-  },
-
-  async getPropertyStats() {
-    const response = await fetch(`${BASE_URL}/properties/stats`, {
-      headers: { ...getAuthHeaders() }
-    });
-    if (!response.ok) throw new Error('Failed to fetch property stats');
-    return response.json();
   },
 
   // Public Verified Inventory Discovery (Source of Truth: Strictly Available + Published)

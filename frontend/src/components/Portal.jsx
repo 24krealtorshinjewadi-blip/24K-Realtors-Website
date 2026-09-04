@@ -754,8 +754,11 @@ export default function Portal({ onViewChange }) {
       const hash = window.location.hash.replace('#', '');
       if (hash.startsWith('property/')) {
         const propId = hash.replace('property/', '');
+        if (selectedPropertyDetail && (String(selectedPropertyDetail.id) === String(propId) || String(selectedPropertyDetail.id) === `prop-${propId}`)) {
+          return;
+        }
         const pool = (allRawProperties && allRawProperties.length > 0) ? allRawProperties : properties;
-        let found = pool.find(p => String(p.id) === String(propId));
+        let found = pool.find(p => String(p.id) === String(propId) || String(p.id) === `prop-${propId}` || (p.slug && p.slug === propId));
         if (found) {
           setSelectedPropertyDetail(found);
           setActiveSubView(null);
@@ -769,7 +772,7 @@ export default function Portal({ onViewChange }) {
               window.scrollTo(0, 0);
             }
           } catch (e) {
-            console.warn('[HashRouter] Property not found for ID:', propId);
+            console.warn('[HashRouter] Property lookup notice for ID:', propId, e);
           }
         }
       } else if (hash === 'portal' || hash === '' || hash === 'listings') {
@@ -786,7 +789,7 @@ export default function Portal({ onViewChange }) {
       window.removeEventListener('hashchange', handlePortalHashChange);
       window.removeEventListener('popstate', handlePortalHashChange);
     };
-  }, [allRawProperties, properties]);
+  }, [allRawProperties, properties, selectedPropertyDetail]);
 
   // Spotlight Keyboard Shortcut & Natural Query Parser
   useEffect(() => {
@@ -1355,7 +1358,18 @@ export default function Portal({ onViewChange }) {
     const loadRawProperties = async () => {
       try {
         const data = await apiService.getProperties({}, 0, 100);
-        setAllRawProperties(data.content || []);
+        const raw = data.content || [];
+        const seen = new Set();
+        const unique = [];
+        for (const p of raw) {
+          if (!p || !p.id) continue;
+          const key = String(p.id);
+          if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(p);
+          }
+        }
+        setAllRawProperties(unique);
       } catch (err) {
         console.error("Error loading raw properties for carousels:", err);
       } finally {
@@ -1467,13 +1481,32 @@ export default function Portal({ onViewChange }) {
       }
 
       const data = await apiService.getProperties(queryFilters, page, 12);
+      const newItems = data.content || [];
       if (page === 0) {
-        setProperties(data.content || []);
+        const seen = new Set();
+        const unique = [];
+        for (const p of newItems) {
+          if (!p || !p.id) continue;
+          const key = String(p.id);
+          if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(p);
+          }
+        }
+        setProperties(unique);
       } else {
         setProperties(prev => {
-          const newItems = data.content || [];
-          const existingIds = new Set(prev.map(p => p.id));
-          return [...prev, ...newItems.filter(p => !existingIds.has(p.id))];
+          const seen = new Set(prev.map(p => String(p.id)));
+          const next = [...prev];
+          for (const p of newItems) {
+            if (!p || !p.id) continue;
+            const key = String(p.id);
+            if (!seen.has(key)) {
+              seen.add(key);
+              next.push(p);
+            }
+          }
+          return next;
         });
       }
       setTotalPages(data.totalPages || 0);
@@ -1483,9 +1516,19 @@ export default function Portal({ onViewChange }) {
       try {
         const fallbackData = await apiService.getProperties({ ...filters }, 0, 50);
         if (fallbackData?.content?.length) {
-          setProperties(fallbackData.content);
+          const seen = new Set();
+          const unique = [];
+          for (const p of fallbackData.content) {
+            if (!p || !p.id) continue;
+            const key = String(p.id);
+            if (!seen.has(key)) {
+              seen.add(key);
+              unique.push(p);
+            }
+          }
+          setProperties(unique);
           setTotalPages(fallbackData.totalPages || 1);
-          setTotalElements(fallbackData.totalElements || fallbackData.content.length);
+          setTotalElements(fallbackData.totalElements || unique.length);
           setError(null);
         } else {
           setError(null);
@@ -4322,42 +4365,6 @@ export default function Portal({ onViewChange }) {
                 </div>
               ) : error ? (
                 <div className="error-card">{error}</div>
-              ) : (!isSearchActive && activeCollection === 'ALL' && !showAllGrid && properties.length > 0) ? (
-                renderCuratedCarousels()
-              ) : (showAllGrid && properties.length > 0) ? (
-                <>
-                  {/* Back to curated view */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-                    <button
-                      onClick={() => { setShowAllGrid(false); setPage(0); }}
-                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', borderRadius: '50px', padding: '8px 18px', fontSize: '0.72rem', fontWeight: 600, fontFamily: "'Montserrat', sans-serif", cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s ease' }}
-                      onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(197,168,128,0.4)'}
-                      onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
-                    >
-                      ← Curated View
-                    </button>
-                    <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.4)', fontFamily: "'Montserrat', sans-serif" }}>
-                      Showing all {properties.length} verified listings
-                    </span>
-                  </div>
-                  <div className="properties-grid">
-                    {properties.map((property) => (
-                      <PropertyCard
-                        key={property.id}
-                        property={property}
-                        isHnwiMode={isHnwiMode}
-                        isCompared={selectedForCompare.some(p => p.id === property.id)}
-                        isWishlisted={wishlistIds.includes(property.id)}
-                        formatPrice={formatPrice}
-                        onToggleCompare={handleToggleCompare}
-                        onToggleWishlist={handleToggleWishlist}
-                        onOpenRera={handleOpenReraDrawer}
-                        onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)}
-                        onOpenDetail={handleOpenPropertyDetail}
-                      />
-                    ))}
-                  </div>
-                </>
               ) : properties.length === 0 ? (
                 <div className="empty-state">
                   <p>No premium properties match the filter configuration.</p>

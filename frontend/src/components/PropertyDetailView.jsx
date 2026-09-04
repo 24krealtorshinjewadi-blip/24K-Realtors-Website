@@ -95,7 +95,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const aiInputRef                                = useRef(null);
 
   // EMI Calculator State
-  const [emiPrice, setEmiPrice]                   = useState(property.price || 14500000);
+  const initialPrice = typeof property?.price === 'number' && property.price > 0 ? property.price : (Number(property?.price) || 14500000);
+  const [emiPrice, setEmiPrice]                   = useState(initialPrice);
   const [downPaymentPct, setDownPaymentPct]       = useState(20);
   const [interestRate, setInterestRate]           = useState(8.35);
   const [tenureYears, setTenureYears]             = useState(20);
@@ -109,7 +110,11 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [property?.id]);
+    if (property?.price) {
+      const p = typeof property.price === 'number' && property.price > 0 ? property.price : (Number(property.price) || 14500000);
+      setEmiPrice(p);
+    }
+  }, [property?.id, property?.price]);
 
   /* ── Core Property Intelligence Metadata ── */
   const title         = property.title        || '24K Opula Premium 3 BHK';
@@ -135,7 +140,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     : (property.minCarpetSqft && property.maxCarpetSqft ? `${property.minCarpetSqft}–${property.maxCarpetSqft} sq.ft` : 'Carpet area on request');
   const investmentScore = property.investmentScore || property.aiScore || 92;
   const address       = property.address || (property.location ? `${title}, ${property.location}, Pune` : `${title}, Pune`);
-  const rawPriceNum   = typeof property.price === 'number' && property.price > 0 ? property.price : null;
+  const rawPriceNum   = typeof property.price === 'number' && property.price > 0 ? property.price : (Number(property.price) || 12500000);
   const displayPrice  = rawPriceNum 
     ? (typeof formatPrice === 'function' 
         ? formatPrice(rawPriceNum, property.transactionType) 
@@ -143,7 +148,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     : (property.priceDisplay || 'Price on Request');
 
   /* ── Cost Breakdown Calculations (20-Year Real Estate Model) ── */
-  const agreementValue = rawPriceNum;
+  const agreementValue = rawPriceNum || 12500000;
   const stampDuty      = Math.round(agreementValue * 0.07); // 6% + 1% Metro cess in Maharashtra
   const registration   = 30000; // Flat for > ₹30 Lakhs in Maharashtra
   const gstCharges     = Math.round(agreementValue * 0.05); // 5% standard RERA residential
