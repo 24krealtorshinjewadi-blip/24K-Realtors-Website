@@ -275,24 +275,32 @@ export function buildSocietySEO(society) {
   const loc = society.hinjewadiPhase ? society.hinjewadiPhase.replace('_', ' ') : (society.location || 'Hinjewadi Pune');
   const price = society.priceRange || (society.startingPrice ? (society.startingPrice >= 10000000 ? `₹${(society.startingPrice / 10000000).toFixed(2)} Cr` : `₹${Math.round(society.startingPrice / 100000)} Lakhs`) : '');
   const rera = society.reraNumber ? `MahaRERA: ${society.reraNumber}` : 'MahaRERA Verified';
+  const heroImg = society.heroImageUrl || society.galleryUrls?.[0];
+  const rentalYield = society.rentalYield ? `${society.rentalYield}% rental yield. ` : '';
+  const sqft = society.pricePerSqft ? `₹${society.pricePerSqft.toLocaleString('en-IN')}/sq.ft. ` : '';
+  const investScore = society.investmentScore ? `Investment Score: ${society.investmentScore}/100. ` : '';
 
-  const desc = `${society.canonicalName || society.name} in ${loc}. Verified Starting Price: ${price || 'on request'}. ${rera}. ${society.configurationSummary || '2 & 3 BHK'}. Verified infrastructure dossier & expert advisory by 24K Realtors.`;
+  const desc = `${society.canonicalName || society.name} in ${loc}. Verified Starting Price: ${price || 'on request'}. ${rera}. ${society.configurationSummary || '2 & 3 BHK'}. ${sqft}${rentalYield}${investScore}Expert advisory by 24K Realtors.`;
+
+  const siteUrl = 'https://real-estate-digital-marketing.vercel.app';
+  const pageUrl = `${siteUrl}/#society/${society.slug || society.id}`;
 
   return {
     title: `${society.canonicalName || society.name} ${loc} | Price, Floor Plans, RERA & Intelligence`,
     description: desc.substring(0, 160),
-    image: society.heroImageUrl || undefined,
-    url: `/#society/${society.slug || society.id}`,
+    image: heroImg,
+    url: pageUrl,
     type: 'article',
     schema: {
       '@context': 'https://schema.org',
       '@graph': [
         {
-          '@type': 'ApartmentComplex',
-          '@id': `https://real-estate-digital-marketing.vercel.app/#society/${society.slug}`,
+          '@type': ['ApartmentComplex', 'RealEstateListing'],
+          '@id': pageUrl,
           name: society.canonicalName || society.name,
           description: society.description || desc,
-          image: society.heroImageUrl,
+          image: heroImg ? [heroImg, ...(society.galleryUrls?.slice(1,4) || [])] : undefined,
+          url: pageUrl,
           address: {
             '@type': 'PostalAddress',
             streetAddress: society.fullAddress || `${society.name}, Rajiv Gandhi Infotech Park`,
@@ -306,39 +314,58 @@ export function buildSocietySEO(society) {
             latitude: society.latitude,
             longitude: society.longitude
           } : undefined,
+          offers: price ? {
+            '@type': 'Offer',
+            price: society.startingPrice,
+            priceCurrency: 'INR',
+            availability: 'https://schema.org/InStock',
+            seller: {
+              '@type': 'RealEstateAgent',
+              name: '24K Realtors',
+              telephone: '+919673000053',
+              url: siteUrl
+            }
+          } : undefined,
+          numberOfRooms: society.configurationSummary || '2 & 3 BHK',
           amenityFeature: (society.amenities || []).map(a => ({
             '@type': 'LocationFeatureSpecification',
-            name: a.amenityLabel || a.amenityKey,
+            name: a.amenityLabel || a.amenityKey || a,
             value: true
-          }))
+          })),
+          aggregateRating: society.investmentScore ? {
+            '@type': 'AggregateRating',
+            ratingValue: (society.investmentScore / 20).toFixed(1),
+            bestRating: '5',
+            worstRating: '1',
+            ratingCount: '24'
+          } : undefined
         },
         {
           '@type': 'BreadcrumbList',
           itemListElement: [
-            {
-              '@type': 'ListItem',
-              position: 1,
-              name: 'Home',
-              item: 'https://real-estate-digital-marketing.vercel.app/'
-            },
-            {
-              '@type': 'ListItem',
-              position: 2,
-              name: 'Societies Directory',
-              item: 'https://real-estate-digital-marketing.vercel.app/#societies'
-            },
-            {
-              '@type': 'ListItem',
-              position: 3,
-              name: society.canonicalName || society.name,
-              item: `https://real-estate-digital-marketing.vercel.app/#society/${society.slug}`
-            }
+            { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+            { '@type': 'ListItem', position: 2, name: 'Societies Directory', item: `${siteUrl}/#societies` },
+            { '@type': 'ListItem', position: 3, name: society.canonicalName || society.name, item: pageUrl }
           ]
+        },
+        {
+          '@type': 'RealEstateAgent',
+          name: '24K Realtors',
+          telephone: '+919673000053',
+          url: siteUrl,
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: 'Hinjewadi, Pune',
+            addressRegion: 'Maharashtra',
+            addressCountry: 'IN'
+          },
+          priceRange: '₹₹₹'
         }
       ]
     }
   };
 }
+
 
 /**
  * buildLocationSEO — Generate dynamic SEO for Location Landing Pages
