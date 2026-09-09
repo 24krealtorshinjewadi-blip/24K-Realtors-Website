@@ -493,11 +493,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   ];
 
   /* ── Construction Lifecycle Milestone Stages (status-aware) ── */
-  const isReadyToMove = possession && (
+  const isReadyToMove = (typeof possession === 'string' && (
     possession.toLowerCase().includes('ready') ||
-    possession.toLowerCase().includes('completed') ||
-    (projectStatus || '').toLowerCase().includes('ready')
-  );
+    possession.toLowerCase().includes('completed')
+  )) || (typeof projectStatus === 'string' && projectStatus.toLowerCase().includes('ready'));
 
   const CONSTRUCTION_STAGES = isReadyToMove ? [
     { stage: 'Phase 1: Foundation & Basement Excavation', status: 'COMPLETED', pct: 100, date: 'Completed', desc: 'Multi-level basement piling, raft foundation and retaining walls 100% complete.' },

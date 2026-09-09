@@ -216,24 +216,37 @@ export function buildPropertySEO(property) {
   if (!property) return SEO_CONFIGS.portal;
 
   const price = property.price
-    ? (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} Lakhs`)
+    ? (typeof property.price === 'number'
+        ? (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} Lakhs`)
+        : String(property.price))
     : '';
 
-  const loc = property.location ? property.location.replace(/_/g, ' ') : 'Pune';
+  const rawLoc = typeof property.location === 'string'
+    ? property.location
+    : (typeof property.location?.name === 'string'
+        ? property.location.name
+        : (typeof property.locality?.name === 'string'
+            ? property.locality.name
+            : (typeof property.locationName === 'string' ? property.locationName : 'Pune')));
+
+  const loc = rawLoc.replace(/_/g, ' ');
+  const locSlug = (rawLoc || 'hinjewadi').toLowerCase().replace(/_/g, '-');
+  const title = property.title || '24K Luxury Property';
+
   const desc = [
     property.description
-      ? property.description.substring(0, 120) + '…'
-      : `${property.bedrooms ? property.bedrooms + ' BHK ' : ''}${property.propertyType?.toLowerCase() || 'luxury residence'} in ${loc}.`,
+      ? String(property.description).substring(0, 120) + '…'
+      : `${property.bedrooms ? property.bedrooms + ' BHK ' : ''}${typeof property.propertyType === 'string' ? property.propertyType.toLowerCase() : 'luxury residence'} in ${loc}.`,
     price && `Starting at ${price}.`,
     property.reraNumber && `MahaRERA: ${property.reraNumber}.`,
     'Zero brokerage VIP chauffeur site visits by 24K Realtors Pune.'
   ].filter(Boolean).join(' ');
 
   const siteUrl = 'https://real-estate-digital-marketing.vercel.app';
-  const pageUrl = `${siteUrl}/property/${property.id}`;
+  const pageUrl = `${siteUrl}/property/${property.id || 'prop-1'}`;
 
   return {
-    title: `${property.title} | ${loc} ${property.bedrooms ? property.bedrooms + ' BHK' : ''} — 24K Realtors`,
+    title: `${title} | ${loc} ${property.bedrooms ? property.bedrooms + ' BHK' : ''} — 24K Realtors`,
     description: desc.substring(0, 160),
     image: property.imageUrl || undefined,
     url: pageUrl,
@@ -244,13 +257,13 @@ export function buildPropertySEO(property) {
         {
           '@type': ['Apartment', 'RealEstateListing'],
           '@id': pageUrl,
-          name: property.title,
+          name: title,
           description: property.description || desc,
           image: property.imageUrl ? [property.imageUrl] : undefined,
           url: pageUrl,
           address: {
             '@type': 'PostalAddress',
-            streetAddress: property.address || `${property.title}, ${loc}`,
+            streetAddress: property.address || `${title}, ${loc}`,
             addressLocality: loc,
             addressRegion: 'Maharashtra',
             postalCode: '411057',
@@ -288,8 +301,8 @@ export function buildPropertySEO(property) {
           '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
-            { '@type': 'ListItem', position: 2, name: loc, item: `${siteUrl}/locations/${(property.location || 'hinjewadi').toLowerCase().replace(/_/g, '-')}` },
-            { '@type': 'ListItem', position: 3, name: property.title, item: pageUrl }
+            { '@type': 'ListItem', position: 2, name: loc, item: `${siteUrl}/locations/${locSlug}` },
+            { '@type': 'ListItem', position: 3, name: title, item: pageUrl }
           ]
         }
       ]

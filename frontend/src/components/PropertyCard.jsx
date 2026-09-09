@@ -504,6 +504,10 @@ export default function PropertyCard({
 
           <span 
             className="view-details-cta"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onOpenDetail) onOpenDetail(property);
+            }}
             style={{
               fontSize: '0.78rem',
               color: '#E6C35C',
@@ -511,7 +515,8 @@ export default function PropertyCard({
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
-              transition: 'transform 0.3s ease'
+              transition: 'transform 0.3s ease',
+              cursor: 'pointer'
             }}
           >
             View Details <ArrowRight size={12} />

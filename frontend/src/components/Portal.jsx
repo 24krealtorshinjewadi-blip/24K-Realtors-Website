@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiService } from '../services/apiService';
 import { chatWithVisitor } from '../services/geminiService';
 import { 
@@ -455,6 +456,7 @@ function AnimatedCounter({ value, duration = 2000 }) {
 }
 
 export default function Portal({ onViewChange }) {
+  const navigate = useNavigate();
   const [isHnwiMode, setIsHnwiMode] = useState(false);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -486,18 +488,20 @@ export default function Portal({ onViewChange }) {
 
   const handleOpenPropertyDetail = useCallback((prop) => {
     if (!prop) return;
-    setSelectedPropertyDetail(prop);
-    setActiveSubView(null);
-    if (prop.id) {
-      window.history.pushState({ propertyId: prop.id }, '', `/property/${prop.id}`);
+    const targetKey = prop.id || prop.slug;
+    if (targetKey) {
+      navigate(`/property/${targetKey}`, { state: { property: prop } });
+    } else {
+      setSelectedPropertyDetail(prop);
+      setActiveSubView(null);
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, []);
+  }, [navigate]);
 
   const handleClosePropertyDetail = useCallback(() => {
     setSelectedPropertyDetail(null);
     if (window.location.pathname.startsWith('/property/')) {
-      window.history.pushState(null, '', '/');
+      navigate('/');
     }
     if (window.location.hash.startsWith('#property/')) {
       window.history.replaceState(null, '', window.location.pathname);
@@ -506,7 +510,7 @@ export default function Portal({ onViewChange }) {
       const el = document.getElementById('listings-anchor');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -657,7 +661,7 @@ export default function Portal({ onViewChange }) {
             console.warn('[HashRouter] Property lookup notice for ID:', propId, e);
           }
         }
-      } else if (hash === 'portal' || hash === '' || hash === 'listings') {
+      } else if (hash === 'portal' || hash === 'listings') {
         setSelectedPropertyDetail(null);
       }
     };
@@ -671,7 +675,7 @@ export default function Portal({ onViewChange }) {
       window.removeEventListener('hashchange', handlePortalHashChange);
       window.removeEventListener('popstate', handlePortalHashChange);
     };
-  }, [allRawProperties, properties, selectedPropertyDetail]);
+  }, [allRawProperties, properties]);
 
   // Spotlight Keyboard Shortcut & Natural Query Parser
   useEffect(() => {

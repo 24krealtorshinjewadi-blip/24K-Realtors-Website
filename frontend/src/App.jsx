@@ -129,12 +129,21 @@ function PropertyDetailRouteWrapper() {
 
   useEffect(() => {
     let isMounted = true;
-    if (!property || (property.id !== propertyKey && property.slug !== propertyKey)) {
+    const matchesKey = property && (
+      String(property.id) === String(propertyKey) ||
+      `prop-${property.id}` === String(propertyKey) ||
+      String(property.id) === `prop-${propertyKey}` ||
+      property.slug === propertyKey
+    );
+
+    if (!property || !matchesKey) {
       setLoading(true);
       apiService.getPropertyById(propertyKey)
         .then(res => {
           if (isMounted && res) {
             setProperty(res);
+            setLoading(false);
+          } else if (isMounted) {
             setLoading(false);
           }
         })
@@ -173,18 +182,29 @@ function PropertyDetailRouteWrapper() {
     );
   }
 
+  const handleBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <PropertyDetailView
       property={property}
       allProperties={allProps}
-      onBack={() => navigate('/')}
+      onBack={handleBack}
       onOpenInquiry={() => {
         window.open(`https://wa.me/919673000053?text=Hi%2024K%20Realtors%2C%20I%20am%20interested%20in%20${encodeURIComponent(property.title || 'this property')}%20%7C%20Price%3A%20${encodeURIComponent(property.price ? '₹' + property.price : '')}`, '_blank');
       }}
       onOpenChauffeur={() => {
         window.open(`https://wa.me/919673000053?text=Hi%2024K%20Realtors%2C%20I%20would%20like%20to%20schedule%20a%20private%20site%20visit%20for%20${encodeURIComponent(property.title || 'this property')}`, '_blank');
       }}
-      onOpenBrochure={() => {}}
+      onOpenBrochure={(prop) => {
+        const p = prop || property;
+        window.open(`https://wa.me/919673000053?text=Hi%2024K%20Realtors%2C%20please%20share%20the%20official%20PDF%20brochure%20and%20pricing%20breakup%20for%20${encodeURIComponent(p?.title || 'this property')}`, '_blank');
+      }}
     />
   );
 }
