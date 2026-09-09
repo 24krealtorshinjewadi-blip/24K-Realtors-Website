@@ -36,7 +36,7 @@ const DEFAULT_GALLERY_ITEMS = [
     img: '/gallery_handover_1.png',
     rating: '5.0',
     reviewer: 'Dr. Anand Kulkarni & Family',
-    reviewSnippet: '“Neeraj & the 24K team made our Wakad flat handover completely stress-free with 100% RERA verified title clarity.”',
+    reviewSnippet: '"Neeraj & the 24K team made our Wakad flat handover completely stress-free with 100% RERA verified title clarity."',
     desc: 'Neeraj Giri (Senior Property Advisor) handing over VIP possession keys to happy family at Wakad Central estate.'
   },
   {
@@ -49,7 +49,7 @@ const DEFAULT_GALLERY_ITEMS = [
     img: '/gallery_handover_2.png',
     rating: '5.0',
     reviewer: 'Rajesh & Pooja Deshmukh',
-    reviewSnippet: '“Best investment guidance in Pune West. Transparent pricing, zero hidden charges, and quick bank loan clearance.”',
+    reviewSnippet: '"Best investment guidance in Pune West. Transparent pricing, zero hidden charges, and quick bank loan clearance."',
     desc: 'Nilesh Rai (Investment Specialist) finalizing 100% RERA verified agreement and key handover at VTP Blue Waters.'
   },
   {
@@ -62,7 +62,7 @@ const DEFAULT_GALLERY_ITEMS = [
     img: '/gallery_handover_3.png',
     rating: '5.0',
     reviewer: 'Vikramaditya Singhania (NRI)',
-    reviewSnippet: '“Being in Singapore, Jyoti managed everything from virtual walkthrough to final registry seamlessly.”',
+    reviewSnippet: '"Being in Singapore, Jyoti managed everything from virtual walkthrough to final registry seamlessly."',
     desc: 'Jyoti Dhale celebrating successful key handover with client at Baner High Street luxury penthouse.'
   },
   {
@@ -75,21 +75,8 @@ const DEFAULT_GALLERY_ITEMS = [
     img: '/gallery_handover_4.png',
     rating: '5.0',
     reviewer: 'Amitava Sen (Tech VP)',
-    reviewSnippet: '“Got ₹18L savings via exclusive 24K Realtors developer mandate on our 4 BHK township booking.”',
+    reviewSnippet: '"Got ₹18L savings via exclusive 24K Realtors developer mandate on our 4 BHK township booking."',
     desc: 'Exclusive mandate spot booking milestone achieved for 400-acre township buyer.'
-  },
-  {
-    id: 5,
-    title: 'Grand Duplex Villa Key Handover',
-    location: 'Baner Pashan Link Road',
-    category: 'HANDOVER',
-    categoryLabel: '🔑 Key Handover',
-    dev: '24K Executive Desk & Client',
-    img: '/gallery_handover_1.png',
-    rating: '5.0',
-    reviewer: 'Col. Sanjeev Mehra (Retd.)',
-    reviewSnippet: '“Absolute integrity and professionalism. The golden key ceremony was deeply memorable for our entire family.”',
-    desc: 'Exclusive 5 BHK private luxury villa possession ceremony with custom golden key presentation.'
   },
   {
     id: 6,
@@ -120,16 +107,6 @@ const DEFAULT_GALLERY_ITEMS = [
     dev: 'Jyoti Dhale (Site Coordinator)',
     img: '/gallery_visit_3.png',
     desc: 'Guided tour of German show flat layout, clubhouse amenities, and upcoming metro line access.'
-  },
-  {
-    id: 9,
-    title: 'Helicopter Aerial Township Site Tour',
-    location: 'Baner – Hinjewadi Corridor',
-    category: 'VISITS',
-    categoryLabel: '🚗 VIP Site Visit',
-    dev: '24K VIP Aviation Desk',
-    img: '/gallery_visit_1.png',
-    desc: 'Panoramic aerial site inspection tour of 400-acre smart township projects for international investors.'
   },
   {
     id: 10,
@@ -172,16 +149,6 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Premium high-rise township cluster right opposite Embassy Techzone IT Park.'
   },
   {
-    id: 14,
-    title: 'Panchshil Business Park Glass Skyscraper',
-    location: 'Baner High Street',
-    category: 'TOWERS',
-    categoryLabel: '🏙️ High-Rise',
-    dev: 'Panchshil Realty',
-    img: '/gallery_vj_supernova_tower.png',
-    desc: 'Ultra-modern Grade-A commercial glass skyscraper with rooftop lounge.'
-  },
-  {
     id: 15,
     title: 'Sky Club 24K Rooftop Infinity Pool',
     location: 'Wakad Central',
@@ -202,26 +169,6 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Expansive 1,450 sq.ft. sample living room featuring Italian Bottochino marble flooring.'
   },
   {
-    id: 17,
-    title: 'Penthouse Master Bedroom Suite',
-    location: 'Baner – Balewadi',
-    category: 'INTERIORS',
-    categoryLabel: '🛋️ Show Flat',
-    dev: 'Godrej Properties',
-    img: '/gallery_sample_flat_interior.png',
-    desc: 'Full-height acoustic glass wall bedroom with walk-in wardrobe and balcony.'
-  },
-  {
-    id: 18,
-    title: 'German Modular Island Kitchen',
-    location: 'Hinjewadi IT Corridor',
-    category: 'INTERIORS',
-    categoryLabel: '🛋️ Show Flat',
-    dev: 'Paranjape Schemes',
-    img: '/gallery_sample_flat_interior.png',
-    desc: 'Hafele fitted modular island kitchen with breakfast bar and quartz countertop.'
-  },
-  {
     id: 19,
     title: '2-Acre Elevated Podium Central Park',
     location: 'Hinjewadi Phase 1',
@@ -230,26 +177,6 @@ const DEFAULT_GALLERY_ITEMS = [
     dev: 'Pharande Spaces',
     img: '/gallery_tower_2.png',
     desc: 'Vehicle-free 2-acre elevated podium garden featuring cascading water walls.'
-  },
-  {
-    id: 20,
-    title: '3-Tier Cascading Water Fountain & Sky Lounge',
-    location: 'Wakad Kaspate Wasti',
-    category: 'INTERIORS',
-    categoryLabel: '🏊 Resort Amenities',
-    dev: 'Bhandari Associates',
-    img: '/gallery_infinity_pool.png',
-    desc: 'Resort-style 3-tier architectural water fountain wall with evening ambient LED lighting.'
-  },
-  {
-    id: 21,
-    title: 'Paranjape Blue Ridge 138-Acre Riverfront Township',
-    location: 'Hinjewadi Phase 1',
-    category: 'HINJEWADI',
-    categoryLabel: '🏙️ Hinjewadi Township',
-    dev: 'Paranjape Schemes',
-    img: '/gallery_tower_3.png',
-    desc: '138-acre iconic riverfront township with 18-hole golf course, school & riverwalk promenade.'
   },
   {
     id: 22,
@@ -272,74 +199,14 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: '150-acre integrated smart township with 60+ amenities, resort pool, grand clubhouse, and direct walkability to TCS, Infosys & Wipro IT hubs.'
   },
   {
-    id: 24,
-    title: 'Godrej Woodsville & Elements Luxury Township',
-    location: 'Hinjewadi Phase 1 Corridor',
+    id: 21,
+    title: 'Paranjape Blue Ridge 138-Acre Riverfront Township',
+    location: 'Hinjewadi Phase 1',
     category: 'HINJEWADI',
     categoryLabel: '🏙️ Hinjewadi Township',
-    dev: 'Godrej Properties',
-    img: '/gallery_infinity_pool.png',
-    desc: '80% open green space luxury township with elevated skywalks, lap pool & 4-tier security.'
-  },
-  {
-    id: 25,
-    title: 'TCG Crown Greens Aerial Drone View',
-    location: 'Hinjewadi Phase 3',
-    category: 'HINJEWADI',
-    categoryLabel: '🏙️ Hinjewadi Aerial View',
-    dev: 'TCG Real Estate',
-    img: '/gallery_tower_2.png',
-    desc: 'High-altitude aerial drone view of high-rise towers nestled next to green hills & IT park.'
-  },
-  {
-    id: 26,
-    title: 'Kohinoor Coral & Famville 22-Story Skyline',
-    location: 'Hinjewadi Phase 2',
-    category: 'HINJEWADI',
-    categoryLabel: '🏙️ Hinjewadi Aerial View',
-    dev: 'Kohinoor Group',
-    img: '/gallery_vj_supernova_tower.png',
-    desc: 'Drone view of twin 22-story luxury towers featuring podium amenities and sports arena.'
-  },
-  {
-    id: 27,
-    title: 'Kasturi EON Homes 4-Acre Central Courtyard',
-    location: 'Hinjewadi Phase 3',
-    category: 'HINJEWADI',
-    categoryLabel: '🏙️ Hinjewadi Aerial View',
-    dev: 'Kasturi Housing',
+    dev: 'Paranjape Schemes',
     img: '/gallery_tower_3.png',
-    desc: 'Bird-eye aerial view of luxury glass towers surrounding 4-acre central landscaped courtyard.'
-  },
-  {
-    id: 28,
-    title: 'Shapoorji Joyville Sensorium Riverfront Deck',
-    location: 'Hinjewadi Phase 2',
-    category: 'HINJEWADI',
-    categoryLabel: '🏙️ Hinjewadi Aerial View',
-    dev: 'Shapoorji Pallonji',
-    img: '/gallery_tower_2.png',
-    desc: 'Aerial view of smart home towers with sunken riverfront deck and infinity view pool.'
-  },
-  {
-    id: 29,
-    title: 'VTP Earth One High-Altitude Drone Panorama',
-    location: 'Mahalunge-Hinjewadi Smart Corridor',
-    category: 'HINJEWADI',
-    categoryLabel: '🏙️ Hinjewadi Aerial View',
-    dev: 'VTP Realty',
-    img: '/gallery_tower_3.png',
-    desc: 'Panoramic aerial drone panorama capturing Mula River bend & 34-story high-rise cluster.'
-  },
-  {
-    id: 30,
-    title: 'Pride Purple Park Connect 30-Story Drone View',
-    location: 'Hinjewadi – Wakad Connector',
-    category: 'HINJEWADI',
-    categoryLabel: '🏙️ Hinjewadi Aerial View',
-    dev: 'Pride Purple Group',
-    img: '/gallery_vj_supernova_tower.png',
-    desc: 'High-definition aerial drone perspective of 30-story towers connected to Mumbai-Pune Expressway.'
+    desc: '138-acre iconic riverfront township with 18-hole golf course, school & riverwalk promenade.'
   },
   {
     id: 31,
@@ -442,6 +309,8 @@ const DEFAULT_GALLERY_ITEMS = [
     desc: 'Stage 10: Happy executive client receiving golden key box with 24K Realtors VIP advisory team.'
   }
 ];
+
+
 
 
 
@@ -6040,62 +5909,52 @@ export default function Portal({ onViewChange }) {
                 { 
                   name: 'Neeraj Giri', 
                   role: 'Founder & Principal Advisor', 
-                  specialization: 'Ultra-HNWI Portfolios & Strategic Land Parcels',
                   area: 'Hinjewadi · Wakad · Baner', 
                   phone: '9673000053', 
                   initials: 'NG', 
                   deals: '500+', 
                   volume: '₹350 Cr+',
-                  rating: '4.9 ★', 
-                  badge: '👑 Founder & Lead' 
+                  rating: '4.9 ★'
                 },
                 { 
                   name: 'Nilesh Omprakash Rai', 
                   role: 'Managing Partner & Team Lead', 
-                  specialization: 'Hinjewadi IT Phase 1–3 & Township Mandates',
                   area: 'Baner · Balewadi · Kharadi', 
                   phone: '9359595851', 
                   initials: 'NR', 
                   deals: '350+', 
                   volume: '₹220 Cr+',
-                  rating: '4.8 ★', 
-                  badge: '🏆 Hinjewadi Lead' 
+                  rating: '4.8 ★'
                 },
                 { 
                   name: 'Jyoti Dhale', 
                   role: 'Senior Private Client Advisor', 
-                  specialization: 'Luxury Residential & NRI Investment Portfolios',
                   area: 'Pan Pune West Corridors', 
                   phone: '9356559727', 
                   initials: 'JD', 
                   deals: '420+', 
                   volume: '₹260 Cr+',
-                  rating: '5.0 ★', 
-                  badge: '⭐ 5.0 Star Rated' 
+                  rating: '5.0 ★'
                 },
                 { 
                   name: 'Urvashi', 
                   role: 'Senior Portfolio Consultant', 
-                  specialization: 'Tech Professional Housing & 3–4 BHK Upgrades',
                   area: 'Hinjewadi · Wakad · Baner', 
                   phone: '6353745408', 
                   initials: 'UV', 
                   deals: '180+', 
                   volume: '₹120 Cr+',
-                  rating: '4.9 ★', 
-                  badge: '✨ Prime Residences' 
+                  rating: '4.9 ★'
                 },
                 { 
                   name: 'Yash Murkute', 
                   role: 'Commercial & High-Yield Specialist', 
-                  specialization: 'Grade-A IT Offices, Retail & Pre-Leased Yields',
                   area: 'Hinjewadi Techzone · Baner', 
                   phone: '9822551862', 
                   initials: 'YM', 
                   deals: '250+', 
                   volume: '₹180 Cr+',
-                  rating: '4.8 ★', 
-                  badge: '💼 Commercial Yields' 
+                  rating: '4.8 ★'
                 },
               ].map((expert, i) => (
                 <div 
@@ -6134,36 +5993,20 @@ export default function Portal({ onViewChange }) {
                     background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.8), transparent)'
                   }} />
 
-                  {/* Card Header Tag Bar */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                  {/* MahaRERA Verified Tag */}
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
                     <span style={{
-                      background: 'rgba(212, 175, 55, 0.12)',
-                      border: '1px solid rgba(212, 175, 55, 0.35)',
+                      background: 'rgba(212, 175, 55, 0.1)',
+                      border: '1px solid rgba(212, 175, 55, 0.3)',
                       borderRadius: '50px',
-                      padding: '4px 12px',
-                      fontSize: '0.68rem',
-                      fontWeight: 800,
-                      color: '#F5D77F',
-                      letterSpacing: '0.04em'
+                      padding: '4px 14px',
+                      fontSize: '0.66rem',
+                      fontWeight: 700,
+                      color: 'rgba(212, 175, 55, 0.85)',
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase'
                     }}>
-                      {expert.badge}
-                    </span>
-                    <span style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      fontSize: '0.65rem',
-                      color: '#22c55e',
-                      fontWeight: 700
-                    }}>
-                      <span style={{
-                        width: '6px',
-                        height: '6px',
-                        borderRadius: '50%',
-                        background: '#22c55e',
-                        boxShadow: '0 0 8px #22c55e'
-                      }} />
-                      ONLINE
+                      MahaRERA Certified
                     </span>
                   </div>
 
@@ -6231,15 +6074,7 @@ export default function Portal({ onViewChange }) {
                   }}>
                     {expert.role}
                   </div>
-                  <div style={{
-                    color: 'rgba(255, 255, 255, 0.65)',
-                    fontSize: '0.72rem',
-                    lineHeight: 1.4,
-                    marginBottom: '8px',
-                    minHeight: '28px'
-                  }}>
-                    {expert.specialization}
-                  </div>
+
                   <div style={{
                     display: 'inline-flex',
                     alignItems: 'center',
