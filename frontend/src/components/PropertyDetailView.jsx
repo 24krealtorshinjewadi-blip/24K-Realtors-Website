@@ -487,13 +487,25 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     { category: 'KITCHEN', icon: '🍳', title: 'Modular Kitchen Infrastructure', desc: 'Granite / Quartz stone countertop with double bowl stainless steel sink by Franke. Piped gas connection (MNGL), water purifier point, and dedicated utility dry balcony.' },
   ];
 
-  /* ── Construction Lifecycle Milestone Stages ── */
-  const CONSTRUCTION_STAGES = [
-    { stage: 'Phase 1: Foundation & Basement Excavation', status: 'COMPLETED', pct: 100, date: 'Q1 2024', desc: 'Multi-level basement piling, raft foundation and retaining walls 100% complete.' },
-    { stage: 'Phase 2: RCC Superstructure & 28 Slabs', status: 'COMPLETED', pct: 100, date: 'Q4 2025', desc: 'All 28 structural residential slab castings completed with seismic safety zone III compliance.' },
-    { stage: 'Phase 3: Façade Glazing & External Plaster', status: 'COMPLETED', pct: 100, date: 'Q2 2026', desc: 'External waterproofing, double coat plastering and Saint-Gobain glass façade installation done.' },
-    { stage: 'Phase 4: Internal MEP & Italian Marble Flooring', status: 'IN PROGRESS', pct: 85, date: 'Q1 2027', desc: 'Internal electrical conduits, concealed plumbing, lift installations, and flooring in advanced stage.' },
-    { stage: 'Phase 5: Occupancy Certificate (O.C.) & Key Handover', status: 'UPCOMING', pct: 20, date: possession, desc: 'Final finishing, society club handover, MahaRERA inspection, and VIP key presentation.' },
+  /* ── Construction Lifecycle Milestone Stages (status-aware) ── */
+  const isReadyToMove = possession && (
+    possession.toLowerCase().includes('ready') ||
+    possession.toLowerCase().includes('completed') ||
+    (projectStatus || '').toLowerCase().includes('ready')
+  );
+
+  const CONSTRUCTION_STAGES = isReadyToMove ? [
+    { stage: 'Phase 1: Foundation & Basement Excavation', status: 'COMPLETED', pct: 100, date: 'Completed', desc: 'Multi-level basement piling, raft foundation and retaining walls 100% complete.' },
+    { stage: 'Phase 2: RCC Superstructure & All Slabs', status: 'COMPLETED', pct: 100, date: 'Completed', desc: 'All structural residential slab castings completed with seismic safety zone III compliance.' },
+    { stage: 'Phase 3: Façade Glazing & External Plaster', status: 'COMPLETED', pct: 100, date: 'Completed', desc: 'External waterproofing, double coat plastering and glass façade installation fully done.' },
+    { stage: 'Phase 4: Internal MEP, Marble Flooring & Finishing', status: 'COMPLETED', pct: 100, date: 'Completed', desc: 'Internal electrical, plumbing, lift installations, flooring, and all interior finishing 100% complete.' },
+    { stage: 'Phase 5: Occupancy Certificate (O.C.) & Key Handover', status: 'COMPLETED', pct: 100, date: 'Ready to Move', desc: 'O.C. received from local authority. Society handed over. VIP key possession available immediately.' },
+  ] : [
+    { stage: 'Phase 1: Foundation & Basement Excavation', status: 'COMPLETED', pct: 100, date: 'Completed', desc: 'Multi-level basement piling, raft foundation and retaining walls 100% complete.' },
+    { stage: 'Phase 2: RCC Superstructure & Structural Slabs', status: 'COMPLETED', pct: 100, date: 'Completed', desc: 'All structural residential slab castings completed with seismic safety zone III compliance.' },
+    { stage: 'Phase 3: Façade Glazing & External Plaster', status: 'COMPLETED', pct: 100, date: 'Completed', desc: 'External waterproofing, double coat plastering and Saint-Gobain glass façade installation done.' },
+    { stage: 'Phase 4: Internal MEP & Italian Marble Flooring', status: 'IN PROGRESS', pct: 82, date: `Target: ${possession}`, desc: 'Internal electrical conduits, concealed plumbing, lift installations, and premium flooring in advanced stage.' },
+    { stage: 'Phase 5: Occupancy Certificate (O.C.) & Key Handover', status: 'UPCOMING', pct: 15, date: possession, desc: 'Final finishing, society club handover, MahaRERA inspection, and VIP key presentation.' },
   ];
 
   /* ── Resort Amenities ── */
@@ -515,12 +527,50 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     { name: 'Pune International Airport (Lohegaon / Purandar)', time: '45 Mins', pct: 30, Icon: Plane },
   ];
 
-  const FLOOR_PLANS = [
-    { type: '2 BHK Luxury Suite', area: '920 – 1,050 sq.ft', price: '₹95 Lakhs – ₹1.15 Cr', pct: 78, bhk: '2 BHK', rooms: '2 Bed • 2 Bath • 1 Balcony' },
-    { type: '3 BHK Royale Residence', area: '1,350 – 1,650 sq.ft', price: '₹1.45 Cr – ₹1.85 Cr', pct: 88, bhk: '3 BHK', rooms: '3 Bed • 3 Bath • 2 Balconies' },
-    { type: '4 BHK Grand Penthouse Suite', area: '2,100 – 2,450 sq.ft', price: '₹2.30 Cr – ₹3.20 Cr', pct: 100, bhk: '4 BHK', rooms: '4 Bed • 4 Bath • Private Terrace' },
-  ];
+  /* ── Floor Plans: derived from actual property data ── */
+  const bhkFromTitle = (t) => {
+    if ((t || '').match(/\b4\s*BHK/i)) return '4 BHK';
+    if ((t || '').match(/\b3\.5\s*BHK/i)) return '3.5 BHK';
+    if ((t || '').match(/\b3\s*BHK/i)) return '3 BHK';
+    if ((t || '').match(/\b2\.5\s*BHK/i)) return '2.5 BHK';
+    if ((t || '').match(/\b2\s*BHK/i)) return '2 BHK';
+    if ((t || '').match(/\b1\s*BHK/i)) return '1 BHK';
+    return null;
+  };
 
+  const primaryBhk = bhkFromTitle(title) || property.bhkType || property.bedrooms || '3 BHK';
+  const basePrice = rawPriceNum;
+
+  // Build floor plans anchored to the actual property BHK and price
+  const buildFloorPlans = () => {
+    const bhk = String(primaryBhk);
+    if (bhk.includes('4')) {
+      return [
+        { type: '3 BHK Premium', area: '1,350 – 1,600 sq.ft', price: `₹${Math.round(basePrice * 0.72 / 100000)} – ₹${Math.round(basePrice * 0.85 / 100000)} Lakhs`, pct: 72, bhk: '3 BHK', rooms: '3 Bed • 3 Bath • 2 Balconies' },
+        { type: '4 BHK Grand Suite', area: carpetArea, price: displayPrice, pct: 100, bhk: '4 BHK', rooms: '4 Bed • 4 Bath • Private Terrace' },
+      ];
+    }
+    if (bhk.includes('3')) {
+      return [
+        { type: '2 BHK Luxury', area: '920 – 1,050 sq.ft', price: `₹${Math.round(basePrice * 0.68 / 100000)} – ₹${Math.round(basePrice * 0.80 / 100000)} Lakhs`, pct: 72, bhk: '2 BHK', rooms: '2 Bed • 2 Bath • 1 Balcony' },
+        { type: '3 BHK Royale Residence', area: carpetArea, price: displayPrice, pct: 100, bhk: '3 BHK', rooms: '3 Bed • 3 Bath • 2 Balconies' },
+      ];
+    }
+    if (bhk.includes('2')) {
+      return [
+        { type: '2 BHK Luxury Suite', area: carpetArea, price: displayPrice, pct: 100, bhk: '2 BHK', rooms: '2 Bed • 2 Bath • 1 Balcony' },
+        { type: '3 BHK Royale (Upgrade)', area: '1,350 – 1,650 sq.ft', price: `₹${Math.round(basePrice * 1.35 / 100000)} – ₹${Math.round(basePrice * 1.65 / 100000)} Lakhs`, pct: 80, bhk: '3 BHK', rooms: '3 Bed • 3 Bath • 2 Balconies' },
+      ];
+    }
+    // Default
+    return [
+      { type: '2 BHK Luxury Suite', area: '920 – 1,050 sq.ft', price: `₹${Math.round(basePrice * 0.72 / 100000)} – ₹${Math.round(basePrice * 0.85 / 100000)} Lakhs`, pct: 72, bhk: '2 BHK', rooms: '2 Bed • 2 Bath • 1 Balcony' },
+      { type: '3 BHK Royale Residence', area: carpetArea, price: displayPrice, pct: 100, bhk: '3 BHK', rooms: '3 Bed • 3 Bath • 2 Balconies' },
+      { type: '4 BHK Grand Penthouse', area: '2,100 – 2,450 sq.ft', price: `₹${Math.round(basePrice * 1.60 / 100000)} – ₹${Math.round(basePrice * 2.20 / 100000)} Lakhs`, pct: 80, bhk: '4 BHK', rooms: '4 Bed • 4 Bath • Private Terrace' },
+    ];
+  };
+
+  const FLOOR_PLANS = buildFloorPlans();
   const filteredFloorPlans = selectedBhk === 'ALL' ? FLOOR_PLANS : FLOOR_PLANS.filter(fp => fp.bhk.includes(selectedBhk));
 
   const RATING_SCORES = [
