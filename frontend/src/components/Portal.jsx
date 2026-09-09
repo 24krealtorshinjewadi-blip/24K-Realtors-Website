@@ -489,13 +489,16 @@ export default function Portal({ onViewChange }) {
     setSelectedPropertyDetail(prop);
     setActiveSubView(null);
     if (prop.id) {
-      window.location.hash = `property/${prop.id}`;
+      window.history.pushState({ propertyId: prop.id }, '', `/property/${prop.id}`);
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
   const handleClosePropertyDetail = useCallback(() => {
     setSelectedPropertyDetail(null);
+    if (window.location.pathname.startsWith('/property/')) {
+      window.history.pushState(null, '', '/');
+    }
     if (window.location.hash.startsWith('#property/')) {
       window.history.replaceState(null, '', window.location.pathname);
     }
@@ -503,6 +506,16 @@ export default function Portal({ onViewChange }) {
       const el = document.getElementById('listings-anchor');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (!window.location.pathname.startsWith('/property/')) {
+        setSelectedPropertyDetail(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const [allRawProperties, setAllRawProperties] = useState([]);

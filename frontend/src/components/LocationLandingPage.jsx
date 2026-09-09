@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   MapPin, ShieldCheck, Building2, TrendingUp, Train, School, 
   HeartPulse, Sparkles, ArrowLeft, ArrowUpRight, CheckCircle2, 
-  Clock, ChevronRight, HelpCircle, Layers, Award
+  Clock, ChevronRight, HelpCircle, Layers, Award, Laptop,
+  MessageSquare, Phone, Briefcase
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { apiService } from '../services/apiService';
@@ -174,6 +175,108 @@ export default function LocationLandingPage({ locationSlug = 'hinjewadi-phase-1'
             <p style={{ color: '#A0AEC0' }}>Contact our Hinjewadi Desk to discover upcoming off-market society launches.</p>
           </div>
         )}
+      </section>
+
+      {/* ── Section 3: Pune Metro Line 3 & Infrastructure Corridor ──────── */}
+      <section className="pi-container" style={{ padding: '20px 24px 40px' }}>
+        <div style={{ padding: '28px', borderRadius: '20px', background: 'linear-gradient(145deg, #0D1E38 0%, #081224 100%)', border: '1px solid rgba(212,175,55,0.25)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Train size={20} color="#10B981" />
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', color: '#FFF', margin: 0 }}>
+                  Pune Metro Line 3 &amp; Transit Grid
+                </h3>
+              </div>
+              <p style={{ fontSize: '0.78rem', color: '#94A3B8', margin: '4px 0 0' }}>
+                Direct connectivity from {data.name} to Civil Court, Shivajinagar &amp; Pune Junction
+              </p>
+            </div>
+            <span className="pi-badge pi-badge-green">
+              <CheckCircle2 size={11} /> 23.2 km Elevated Corridor
+            </span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+            {[
+              { station: 'Hinjewadi Megapolis Station', dist: '~450 meters', status: 'Near Completion', time: '2 min walk' },
+              { station: 'Infosys Phase 2 Station', dist: '~1.1 km', status: 'Trial Runs Underway', time: '3 min drive' },
+              { station: 'Wipro Phase 1 Station', dist: '~2.4 km', status: 'Station Slabs Ready', time: '6 min drive' },
+              { station: 'Shivaji Chowk Junction', dist: '~3.2 km', status: 'Major Interchange', time: '8 min drive' }
+            ].map((st, i) => (
+              <div key={i} style={{ padding: '14px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#F3E5AB', marginBottom: '4px' }}>{st.station}</div>
+                <div style={{ fontSize: '0.72rem', color: '#10B981', fontWeight: 600 }}>{st.dist} · {st.time}</div>
+                <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: '6px' }}>Status: {st.status}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Section 4: Tech Parks & Corporate Employment Hub ──────────── */}
+      <section className="pi-container" style={{ padding: '0 24px 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+          
+          <div style={{ padding: '24px', borderRadius: '18px', background: '#0B1628', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <Laptop size={18} color="#60A5FA" />
+              <h4 style={{ color: '#FFF', fontSize: '1rem', margin: 0, fontWeight: 700 }}>Major Tech Campuses</h4>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[
+                { name: 'Infosys Campus', desc: '50-acre corporate campus with 35,000+ tech workforce' },
+                { name: 'Wipro Technologies', desc: 'Major development center and R&D lab' },
+                { name: 'TCS Sahyadri Park', desc: 'Largest IT campus in Hinjewadi Phase 3 with 20,000+ workforce' },
+                { name: 'Embassy Techzone', desc: 'SEZ hosting IBM, Cognizant, Tech Mahindra & Atos' }
+              ].map((tp, i) => (
+                <div key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
+                  <div style={{ color: '#E2E8F0', fontSize: '0.82rem', fontWeight: 700 }}>{tp.name}</div>
+                  <div style={{ color: '#94A3B8', fontSize: '0.72rem', marginTop: '2px' }}>{tp.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Location Advisory Specialist Desk */}
+          <div style={{ padding: '24px', borderRadius: '18px', background: 'linear-gradient(145deg, rgba(212,175,55,0.08) 0%, rgba(11,22,40,0.95) 100%)', border: '1px solid rgba(212,175,55,0.3)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '50px', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', marginBottom: '14px' }}>
+                <Sparkles size={11} color="#D4AF37" />
+                <span style={{ color: '#F3E5AB', fontSize: '0.66rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Corridor Specialist Desk</span>
+              </div>
+              <h4 style={{ color: '#FFF', fontSize: '1.15rem', fontFamily: "'Cinzel', serif", margin: '0 0 8px' }}>
+                Need Private Advisory for {data.name}?
+              </h4>
+              <p style={{ color: '#CBD5E1', fontSize: '0.80rem', lineHeight: 1.6, margin: '0 0 16px' }}>
+                Our Hinjewadi &amp; Pune West specialists offer bespoke portfolio guidance, off-market developer allocations, and zero-brokerage home loan pre-approvals.
+              </p>
+              <div style={{ fontSize: '0.74rem', color: '#94A3B8', marginBottom: '16px' }}>
+                MahaRERA Reg. <strong>A051262603190</strong> · Senior Advisor: Neeraj Giri
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <a
+                href={`https://wa.me/919673000053?text=${encodeURIComponent(`Hi 24K Realtors, I am researching properties in ${data.name}. Please share available inventory and price trends.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pi-btn-whatsapp"
+                style={{ flex: 1, padding: '12px', justifyContent: 'center', fontSize: '0.80rem' }}
+              >
+                <MessageSquare size={14} /> WhatsApp Specialist
+              </a>
+              <a
+                href="tel:+919673000053"
+                className="pi-btn-outline"
+                style={{ padding: '12px 18px', fontSize: '0.80rem' }}
+              >
+                <Phone size={14} /> Call Desk
+              </a>
+            </div>
+          </div>
+
+        </div>
       </section>
 
     </div>

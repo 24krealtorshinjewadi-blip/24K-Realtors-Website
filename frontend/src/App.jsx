@@ -15,6 +15,7 @@ import { auth, onForegroundMessage } from './services/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Lenis from 'lenis';
 import { useSEO, SEO_CONFIGS } from './services/seoService';
+import { apiService } from './services/apiService';
 import ToastContainer from './components/Toast';
 import './App.css';
 
@@ -26,6 +27,7 @@ const ListPropertyPage = lazy(() => import('./components/ListPropertyPage'));
 const AiAssistantPanel = lazy(() => import('./components/AiAssistantPanel'));
 const PublicSocietiesPage = lazy(() => import('./components/PublicSocietiesPage'));
 const PublicSocietyDetailPage = lazy(() => import('./components/PublicSocietyDetailPage'));
+const PropertyDetailView = lazy(() => import('./components/PropertyDetailView'));
 const LocationLandingPage = lazy(() => import('./components/LocationLandingPage'));
 const BlogListPage   = lazy(() => import('./components/BlogListPage'));
 const BlogDetailPage = lazy(() => import('./components/BlogDetailPage'));
@@ -116,6 +118,77 @@ function SocietyDetailRouteWrapper({ onBack }) {
   );
 }
 
+function PropertyDetailRouteWrapper() {
+  const { id, slug } = useParams();
+  const propertyKey = id || slug || 'prop-1';
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [property, setProperty] = useState(location.state?.property || null);
+  const [loading, setLoading] = useState(!location.state?.property);
+  const [allProps, setAllProps] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!property || (property.id !== propertyKey && property.slug !== propertyKey)) {
+      setLoading(true);
+      apiService.getPropertyById(propertyKey)
+        .then(res => {
+          if (isMounted && res) {
+            setProperty(res);
+            setLoading(false);
+          }
+        })
+        .catch(err => {
+          console.error('[PropertyDetailRouteWrapper] Failed to fetch:', err);
+          if (isMounted) setLoading(false);
+        });
+    }
+
+    apiService.getProperties({}, 0, 50)
+      .then(res => {
+        if (isMounted) setAllProps(res.content || res || []);
+      })
+      .catch(() => {});
+
+    return () => { isMounted = false; };
+  }, [propertyKey]);
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#040814', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#F3E5AB', fontFamily: "'Cinzel', serif" }}>
+        <div style={{ width: '44px', height: '44px', border: '3px solid rgba(212,175,55,0.2)', borderTopColor: '#D4AF37', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
+        <p style={{ letterSpacing: '0.12em', fontSize: '0.9rem', textTransform: 'uppercase' }}>Accessing 24K Property Dossier...</p>
+        <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  if (!property) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#040814', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#FFF', gap: '16px', padding: '24px', textAlign: 'center' }}>
+        <h2 style={{ fontFamily: "'Cinzel', serif", color: '#F3E5AB' }}>Property Dossier Not Found</h2>
+        <p style={{ color: '#94A3B8', maxWidth: '400px' }}>The requested property record could not be loaded or may have been updated.</p>
+        <button onClick={() => navigate('/')} className="pi-btn-gold">Explore All Properties</button>
+      </div>
+    );
+  }
+
+  return (
+    <PropertyDetailView
+      property={property}
+      allProperties={allProps}
+      onBack={() => navigate('/')}
+      onOpenInquiry={() => {
+        window.open(`https://wa.me/919673000053?text=Hi%2024K%20Realtors%2C%20I%20am%20interested%20in%20${encodeURIComponent(property.title || 'this property')}%20%7C%20Price%3A%20${encodeURIComponent(property.price ? '₹' + property.price : '')}`, '_blank');
+      }}
+      onOpenChauffeur={() => {
+        window.open(`https://wa.me/919673000053?text=Hi%2024K%20Realtors%2C%20I%20would%20like%20to%20schedule%20a%20private%20site%20visit%20for%20${encodeURIComponent(property.title || 'this property')}`, '_blank');
+      }}
+      onOpenBrochure={() => {}}
+    />
+  );
+}
+
 function LocationLandingRouteWrapper() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -153,7 +226,8 @@ function LegacyHashRedirectHandler() {
       if (!hash) return;
 
       if (hash.startsWith('property/')) {
-        // Portal handles property modal via hash
+        const propId = hash.replace('property/', '');
+        navigate(`/property/${propId}`, { replace: true });
         return;
       }
 
@@ -366,6 +440,10 @@ function AppContent() {
 
               {/* Society Detail */}
               <Route path="/society/:slug" element={<SocietyDetailRouteWrapper />} />
+
+              {/* Property Detail (First-Class Deep Linking) */}
+              <Route path="/property/:id" element={<PropertyDetailRouteWrapper />} />
+              <Route path="/property/slug/:slug" element={<PropertyDetailRouteWrapper />} />
 
               {/* Location Landing */}
               <Route path="/locations/:slug" element={<LocationLandingRouteWrapper />} />
