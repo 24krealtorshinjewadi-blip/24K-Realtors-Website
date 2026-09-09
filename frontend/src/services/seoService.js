@@ -219,47 +219,80 @@ export function buildPropertySEO(property) {
     ? (property.price >= 10000000 ? `₹${(property.price / 10000000).toFixed(2)} Cr` : `₹${Math.round(property.price / 100000)} Lakhs`)
     : '';
 
+  const loc = property.location ? property.location.replace(/_/g, ' ') : 'Pune';
   const desc = [
     property.description
       ? property.description.substring(0, 120) + '…'
-      : `${property.bedrooms || ''} BHK ${property.propertyType?.toLowerCase() || 'property'} in ${property.location}.`,
-    price && `Priced at ${price}.`,
-    property.reraNumber && `RERA: ${property.reraNumber}.`,
-    'Contact 24K Realtors for verified site visit.'
+      : `${property.bedrooms ? property.bedrooms + ' BHK ' : ''}${property.propertyType?.toLowerCase() || 'luxury residence'} in ${loc}.`,
+    price && `Starting at ${price}.`,
+    property.reraNumber && `MahaRERA: ${property.reraNumber}.`,
+    'Zero brokerage VIP chauffeur site visits by 24K Realtors Pune.'
   ].filter(Boolean).join(' ');
 
+  const siteUrl = 'https://real-estate-digital-marketing.vercel.app';
+  const pageUrl = `${siteUrl}/property/${property.id}`;
+
   return {
-    title: `${property.title} — ${property.location} ${property.bedrooms ? property.bedrooms + ' BHK' : ''}`,
+    title: `${property.title} | ${loc} ${property.bedrooms ? property.bedrooms + ' BHK' : ''} — 24K Realtors`,
     description: desc.substring(0, 160),
     image: property.imageUrl || undefined,
-    url: `/#property/${property.id}`,
-    type: 'product',
+    url: pageUrl,
+    type: 'article',
     schema: {
       '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: property.title,
-      description: property.description || desc,
-      image: property.imageUrl,
-      offers: {
-        '@type': 'Offer',
-        price: property.price,
-        priceCurrency: 'INR',
-        availability: property.status === 'AVAILABLE'
-          ? 'https://schema.org/InStock'
-          : 'https://schema.org/SoldOut',
-        seller: {
-          '@type': 'RealEstateAgent',
-          name: '24K Realtors Pune',
-          telephone: '+91-96730-00053',
+      '@graph': [
+        {
+          '@type': ['Apartment', 'RealEstateListing'],
+          '@id': pageUrl,
+          name: property.title,
+          description: property.description || desc,
+          image: property.imageUrl ? [property.imageUrl] : undefined,
+          url: pageUrl,
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: property.address || `${property.title}, ${loc}`,
+            addressLocality: loc,
+            addressRegion: 'Maharashtra',
+            postalCode: '411057',
+            addressCountry: 'IN'
+          },
+          geo: property.latitude && property.longitude ? {
+            '@type': 'GeoCoordinates',
+            latitude: property.latitude,
+            longitude: property.longitude
+          } : undefined,
+          offers: price ? {
+            '@type': 'Offer',
+            price: property.price,
+            priceCurrency: 'INR',
+            availability: property.status === 'AVAILABLE'
+              ? 'https://schema.org/InStock'
+              : 'https://schema.org/SoldOut',
+            seller: {
+              '@type': 'RealEstateAgent',
+              name: '24K Realtors Pune',
+              telephone: '+919673000053',
+              url: siteUrl
+            }
+          } : undefined,
+          numberOfRooms: property.bedrooms,
+          additionalProperty: [
+            { '@type': 'PropertyValue', name: 'Bedrooms',     value: property.bedrooms },
+            { '@type': 'PropertyValue', name: 'Bathrooms',    value: property.bathrooms },
+            { '@type': 'PropertyValue', name: 'Area (sqft)',  value: property.areaSquareFeet },
+            { '@type': 'PropertyValue', name: 'RERA Number',  value: property.reraNumber },
+            { '@type': 'PropertyValue', name: 'Location',     value: loc },
+          ].filter(p => p.value)
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
+            { '@type': 'ListItem', position: 2, name: loc, item: `${siteUrl}/locations/${(property.location || 'hinjewadi').toLowerCase().replace(/_/g, '-')}` },
+            { '@type': 'ListItem', position: 3, name: property.title, item: pageUrl }
+          ]
         }
-      },
-      additionalProperty: [
-        { '@type': 'PropertyValue', name: 'Bedrooms',     value: property.bedrooms },
-        { '@type': 'PropertyValue', name: 'Bathrooms',    value: property.bathrooms },
-        { '@type': 'PropertyValue', name: 'Area (sqft)',  value: property.areaSquareFeet },
-        { '@type': 'PropertyValue', name: 'RERA Number',  value: property.reraNumber },
-        { '@type': 'PropertyValue', name: 'Location',     value: property.location },
-      ].filter(p => p.value)
+      ]
     }
   };
 }
@@ -283,7 +316,7 @@ export function buildSocietySEO(society) {
   const desc = `${society.canonicalName || society.name} in ${loc}. Verified Starting Price: ${price || 'on request'}. ${rera}. ${society.configurationSummary || '2 & 3 BHK'}. ${sqft}${rentalYield}${investScore}Expert advisory by 24K Realtors.`;
 
   const siteUrl = 'https://real-estate-digital-marketing.vercel.app';
-  const pageUrl = `${siteUrl}/#society/${society.slug || society.id}`;
+  const pageUrl = `${siteUrl}/society/${society.slug || society.id}`;
 
   return {
     title: `${society.canonicalName || society.name} ${loc} | Price, Floor Plans, RERA & Intelligence`,

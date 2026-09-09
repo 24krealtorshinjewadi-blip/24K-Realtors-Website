@@ -39,6 +39,7 @@ import {
   ChevronLeft, Camera, Copy
 } from 'lucide-react';
 import { apiService } from '../services/apiService';
+import { useSEO, buildPropertySEO } from '../services/seoService';
 import './PropertyIntelligence.css';
 
 /* ── Section Label ── */
@@ -73,7 +74,10 @@ function AnimSection({ children, id, style = {} }) {
   );
 }
 
-export default function PropertyDetailView({ property = {}, onBack, onOpenInquiry, onOpenBrochure, formatPrice }) {
+export default function PropertyDetailView({ property = {}, onBack, onOpenInquiry, onOpenBrochure, formatPrice, allProperties = [] }) {
+  // Inject Dynamic Real Estate Listing & Breadcrumb JSON-LD SEO
+  useSEO(buildPropertySEO(property));
+
   /* ── Component State ── */
   const [activeTab, setActiveTab]                 = useState('overview');
   const [saved, setSaved]                         = useState(false);
@@ -467,6 +471,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const TABS = [
     { id: 'overview',        label: 'Overview & Highlights' },
     { id: 'floorplans',      label: 'Configurations & Plans' },
+    { id: 'tour',            label: '3D Walkthrough & Tour' },
     { id: 'specs',           label: 'Specifications & Materials' },
     { id: 'cost-sheet',      label: 'Transparent Cost Sheet' },
     { id: 'construction',    label: 'RERA Construction Progress' },
@@ -1057,8 +1062,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                         />
                       </div>
                       <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={onOpenInquiry} className="pi-btn-outline" style={{ flex: 1, padding: '8px', fontSize: '0.76rem', justifyContent: 'center' }}>
-                          <ZoomIn size={13} /> View 3D Plan
+                        <button onClick={() => scrollTo('tour')} className="pi-btn-outline" style={{ flex: 1, padding: '8px', fontSize: '0.76rem', justifyContent: 'center' }}>
+                          <ZoomIn size={13} /> View 3D Tour
                         </button>
                         <button onClick={() => setBrochureModalOpen(true)} className="pi-btn-gold" style={{ flex: 1, padding: '8px', fontSize: '0.76rem', justifyContent: 'center' }}>
                           <Download size={13} /> Download PDF
@@ -1066,6 +1071,52 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                       </div>
                     </div>
                   ))}
+                </div>
+              </section>
+            </AnimSection>
+
+            {/* ─ 2b. 3D VIRTUAL WALKTHROUGH & VIDEO SHOWCASE ─ */}
+            <AnimSection id="tour">
+              <section className="pi-card">
+                <div className="pi-card__header" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="pi-card__icon-wrap">
+                      <Play size={18} color="#D4AF37" />
+                    </div>
+                    <div>
+                      <h2 className="pi-card__title">Interactive 3D Virtual Walkthrough &amp; Video Tour</h2>
+                      <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '2px 0 0 0' }}>Explore interior architecture with immersive digital twin</p>
+                    </div>
+                  </div>
+                  <span className="pi-badge pi-badge-gold">
+                    <Sparkles size={11} /> 4K Virtual Experience
+                  </span>
+                </div>
+
+                <div style={{ marginTop: '16px', borderRadius: '14px', overflow: 'hidden', border: '1px solid rgba(212,175,55,0.3)', background: '#000', position: 'relative' }}>
+                  <iframe
+                    src={property.threeDTourUrl || "https://my.matterport.com/show/?m=JGPmBB6q58g&play=1&qs=1"}
+                    style={{ width: '100%', height: '420px', border: 'none', display: 'block' }}
+                    allowFullScreen
+                    allow="xr-spatial-tracking"
+                    title={`${title} 3D Tour`}
+                  />
+                  <div style={{ padding: '12px 18px', background: 'rgba(9,17,31,0.95)', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                    <div style={{ fontSize: '0.76rem', color: '#94A3B8' }}>
+                      💡 <strong>Controls:</strong> Click &amp; drag inside the tour to look around 360°, click floor rings to walk through rooms.
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <a
+                        href={`https://wa.me/919673000053?text=${encodeURIComponent(`Hi 24K Realtors, I explored the 3D tour of ${title} (${cleanLocation}). Please arrange a live guided walkthrough.`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="pi-btn-whatsapp"
+                        style={{ padding: '7px 14px', fontSize: '0.75rem' }}
+                      >
+                        <MessageSquare size={13} /> Request Live Video Walkthrough
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </section>
             </AnimSection>
@@ -1340,13 +1391,48 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                         style={{ width: '100%' }}
                       />
                     </div>
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.80rem', alignItems: 'center' }}>
+                        <span style={{ color: '#CBD5E0' }}>Interest Rate ({interestRate}% p.a.)</span>
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                          {[
+                            { name: 'SBI', rate: 8.35 },
+                            { name: 'HDFC', rate: 8.45 },
+                            { name: 'ICICI', rate: 8.50 },
+                          ].map(b => (
+                            <button
+                              key={b.name}
+                              type="button"
+                              onClick={() => setInterestRate(b.rate)}
+                              style={{
+                                padding: '2px 7px',
+                                borderRadius: '4px',
+                                fontSize: '0.66rem',
+                                fontWeight: 700,
+                                background: interestRate === b.rate ? '#D4AF37' : 'rgba(255,255,255,0.08)',
+                                color: interestRate === b.rate ? '#040814' : '#CBD5E0',
+                                border: '1px solid ' + (interestRate === b.rate ? '#D4AF37' : 'rgba(255,255,255,0.1)'),
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {b.name} {b.rate}%
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <input type="range" min="7.5" max="12.0" step="0.05" value={interestRate}
+                        onChange={e => setInterestRate(Number(e.target.value))}
+                        className="pdv-emi-slider"
+                        style={{ width: '100%' }}
+                      />
+                    </div>
                   </div>
 
                   {/* Monthly EMI Result Box */}
                   <div style={{ padding: '20px', borderRadius: '14px', background: '#091322', border: '1px solid rgba(212,175,55,0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div>
                       <div style={{ fontSize: '0.68rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 800 }}>Estimated Monthly EMI</div>
-                      <div style={{ fontFamily: "'Cinzel', serif", fontSize: '2rem', fontWeight: 800, color: '#F3E5AB', margin: '6px 0 12px' }}>
+                      <div style={{ fontFamily: "'Cinzel', serif", fontSize: '2.2rem', fontWeight: 800, color: '#F3E5AB', margin: '6px 0 12px' }}>
                         ₹{emi.toLocaleString('en-IN')}<span style={{ fontSize: '0.8rem', color: '#64748B' }}>/mo</span>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.76rem', color: '#A0AEC0' }}>
@@ -1363,11 +1449,28 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                           <strong style={{ color: '#10B981' }}>₹{(totalPayment / 100000).toFixed(2)} L</strong>
                         </div>
                       </div>
+
+                      {/* Visual Principal vs Interest Bar */}
+                      <div style={{ marginTop: '14px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', marginBottom: '4px' }}>
+                          <span style={{ color: '#6EE7B7' }}>Principal: {totalPayment > 0 ? Math.round((loanAmount / totalPayment) * 100) : 0}%</span>
+                          <span style={{ color: '#F3E5AB' }}>Interest: {totalPayment > 0 ? Math.round((totalInterest / totalPayment) * 100) : 0}%</span>
+                        </div>
+                        <div style={{ height: '6px', borderRadius: '4px', overflow: 'hidden', background: '#F3E5AB', display: 'flex' }}>
+                          <div style={{ width: `${totalPayment > 0 ? (loanAmount / totalPayment) * 100 : 50}%`, background: '#10B981' }} />
+                        </div>
+                      </div>
                     </div>
 
-                    <button onClick={onOpenInquiry} className="pi-btn-gold" style={{ marginTop: '16px', justifyContent: 'center' }}>
-                      Get Pre-Approved Loan at 8.35% →
-                    </button>
+                    <a
+                      href={`https://wa.me/919673000053?text=${encodeURIComponent(`Hi 24K Realtors, I calculated an EMI of ₹${emi.toLocaleString('en-IN')}/mo for ${title}. Can you assist with bank pre-approval at ${interestRate}%?`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="pi-btn-gold"
+                      style={{ marginTop: '16px', justifyContent: 'center', textAlign: 'center' }}
+                    >
+                      Get Pre-Approved Loan at {interestRate}% →
+                    </a>
                   </div>
                 </div>
               </section>
