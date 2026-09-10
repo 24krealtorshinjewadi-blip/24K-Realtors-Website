@@ -5824,3 +5824,20 @@
 }
 
 
+/* Urgency Badge Pulse Animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 2px 8px rgba(239,68,68,0.5); }
+  50% { opacity: 0.85; box-shadow: 0 2px 16px rgba(239,68,68,0.85); }
+}
+
+/* Trust Counter Strip — Stat glow effect */
+.trust-counter-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+.trust-counter-stat:hover {
+  transform: translateY(-3px);
+}
+

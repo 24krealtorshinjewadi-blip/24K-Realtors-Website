@@ -4129,6 +4129,64 @@ export default function Portal({ onViewChange }) {
           </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
+          ✦ ANIMATED TRUST COUNTER STRIP — Social Proof at a Glance
+      ══════════════════════════════════════════════════════════════════════ */}
+      {!selectedPropertyDetail && !activeSubView && (
+        <div style={{
+          background: 'linear-gradient(90deg, #040814 0%, #070f1e 50%, #040814 100%)',
+          borderTop: '1px solid rgba(212,175,55,0.18)',
+          borderBottom: '1px solid rgba(212,175,55,0.18)',
+          padding: isMobile ? '18px 16px' : '22px 32px',
+        }}>
+          <div style={{
+            maxWidth: isWideDesktop ? '1680px' : '1380px',
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(5, 1fr)',
+            gap: '0',
+            alignItems: 'center',
+          }}>
+            {[
+              { value: '800+', label: 'Verified Listings', icon: '🏢', color: '#E6C35C' },
+              { value: '15K+', label: 'Happy Families', icon: '👨‍👩‍👧', color: '#25D366' },
+              { value: '₹2,400 Cr+', label: 'Portfolio Value', icon: '📈', color: '#60A5FA' },
+              { value: '100%', label: 'MahaRERA Verified', icon: '🛡️', color: '#2EC4B6' },
+              { value: '0%', label: 'Brokerage Fee', icon: '💎', color: '#F59E0B' },
+            ].map((stat, i) => (
+              <div key={i} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                padding: isMobile ? '12px 8px' : '10px 16px',
+                borderRight: i < 4 && !isMobile ? '1px solid rgba(255,255,255,0.07)' : 'none',
+              }}>
+                <div style={{ fontSize: isMobile ? '1.4rem' : '1.6rem', marginBottom: '4px' }}>{stat.icon}</div>
+                <div style={{
+                  fontFamily: "'Cinzel', serif",
+                  fontSize: isMobile ? '1.15rem' : '1.5rem',
+                  fontWeight: 800,
+                  color: stat.color,
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.02em',
+                  textShadow: `0 0 20px ${stat.color}40`,
+                }}>{stat.value}</div>
+                <div style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontSize: isMobile ? '0.6rem' : '0.66rem',
+                  fontWeight: 600,
+                  color: 'rgba(255,255,255,0.5)',
+                  marginTop: '3px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                }}>{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════
           ✦ TRUSTED BRANDS & PARTNERS - MOVING ORIGINAL DEVELOPER LOGOS
           Infinite authentic vector logo ribbon · Zero image dependency
       ══════════════════════════════════════════════════════════════════════ */}
@@ -5135,49 +5193,79 @@ export default function Portal({ onViewChange }) {
 
       {/* Pune-Targeted Inquiry Modal with Mortgage Calculator */}
       {isModalOpen && selectedProperty && (
-        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setIsModalOpen(false)} style={{ display: "flex", justifyContent: "center", alignItems: "center", position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.85)", zIndex: 1000, backdropFilter: "blur(12px)" }}>
-          <div className="modal-content" style={{ maxWidth: "460px", width: "90%", borderRadius: "20px", border: "1px solid rgba(197,168,128,0.22)", background: "linear-gradient(135deg, #070f1e 0%, #0a1828 100%)", boxShadow: "0 40px 80px rgba(0,0,0,0.7)", padding: "36px 30px", position: "relative" }}>
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setIsModalOpen(false)} style={{ display: "flex", justifyContent: "center", alignItems: "center", position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.88)", zIndex: 1000, backdropFilter: "blur(16px)" }}>
+          <div className="modal-content" style={{ maxWidth: "480px", width: "92%", borderRadius: "24px", border: "1px solid rgba(212,175,55,0.3)", background: "linear-gradient(135deg, #060d1c 0%, #0b1628 50%, #060d1c 100%)", boxShadow: "0 40px 100px rgba(0,0,0,0.85), 0 0 40px rgba(212,175,55,0.12)", padding: "36px 30px", position: "relative", animation: 'fadeIn 0.25s ease' }}>
             <button className="modal-close" onClick={() => setIsModalOpen(false)} style={{ position: "absolute", top: "16px", right: "16px", fontSize: "1.4rem", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "rgba(255,255,255,0.7)", transition: "all 0.2s" }}>×</button>
 
-            <div style={{ marginBottom: "6px", display: "flex", alignItems: "center", gap: "8px" }}>
-              <span style={{ fontSize: "0.68rem", fontWeight: 800, letterSpacing: "0.1em", color: "#E6C35C", textTransform: "uppercase", background: "rgba(197,168,128,0.1)", border: "1px solid rgba(197,168,128,0.15)", padding: "3px 10px", borderRadius: "20px" }}>🏙️ Pune Luxury Desk</span>
+            {/* Modal Header with urgency badges */}
+            <div style={{ marginBottom: "16px" }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                <span style={{ fontSize: "0.68rem", fontWeight: 800, letterSpacing: "0.1em", color: "#E6C35C", textTransform: "uppercase", background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.25)", padding: "3px 10px", borderRadius: "20px" }}>🏙️ Pune Luxury Desk</span>
+                <span style={{ fontSize: "0.66rem", fontWeight: 700, color: '#25D366', background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.25)', padding: "3px 10px", borderRadius: "20px" }}>⚡ Response in &lt;15 min</span>
+              </div>
+              <h3 className="modal-title" style={{ fontSize: "1.4rem", marginBottom: "6px", color: "#fff", fontWeight: 700, fontFamily: "'Cinzel', serif", lineHeight: 1.2 }}>Schedule a Free
+                <span style={{ color: '#E6C35C' }}> Expert Call</span>
+              </h3>
+              <p className="modal-subtitle" style={{ marginBottom: "0", fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>
+                For <strong style={{ color: "#E6C35C" }}>{selectedProperty.title || "Premium Listing"}</strong> · Zero brokerage · Direct developer
+              </p>
             </div>
-            <h3 className="modal-title" style={{ fontSize: "1.35rem", marginBottom: "6px", color: "#fff", fontWeight: 700, fontFamily: "'Cinzel', serif" }}>Quick Property Enquiry</h3>
-            <p className="modal-subtitle" style={{ marginBottom: "24px", fontSize: "0.82rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
-              Enquiring for <strong style={{ color: "#E6C35C" }}>{selectedProperty.title || "Premium Listing"}</strong>
-            </p>
 
-            <form onSubmit={handleLeadSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {/* Trust Mini Bar */}
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '22px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '10px 14px', flexWrap: 'wrap' }}>
+              {['🛡️ MahaRERA Verified', '💎 0% Brokerage', '📞 Direct Developer'].map((item, i) => (
+                <span key={i} style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.6)', fontWeight: 600, fontFamily: "'Montserrat', sans-serif", display: 'flex', alignItems: 'center', gap: '3px' }}>
+                  {i > 0 && <span style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>}
+                  {item}
+                </span>
+              ))}
+            </div>
+
+            <form onSubmit={handleLeadSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div className="form-group">
-                <label className="form-label" style={{ fontSize: "0.72rem", fontWeight: 700, color: "rgba(197,168,128,0.7)", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>Full Name *</label>
+                <label className="form-label" style={{ fontSize: "0.72rem", fontWeight: 700, color: "rgba(212,175,55,0.8)", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>Full Name *</label>
                 <input type="text" className="form-input" required placeholder="e.g. Rahul Sharma"
                   value={leadForm.name} onChange={e => setLeadForm({ ...leadForm, name: e.target.value })}
-                  style={{ borderRadius: "10px", width: "100%", boxSizing: "border-box", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)", padding: "12px", color: "#fff" }}/>
+                  style={{ borderRadius: "12px", width: "100%", boxSizing: "border-box", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", padding: "13px 15px", color: "#fff", fontSize: '0.88rem', outline: 'none', transition: 'border-color 0.2s' }}
+                  onFocus={e => e.target.style.borderColor = 'rgba(212,175,55,0.5)'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                />
               </div>
 
               <div className="form-group">
-                <label className="form-label" style={{ fontSize: "0.72rem", fontWeight: 700, color: "rgba(197,168,128,0.7)", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>📱 WhatsApp Number (+91) *</label>
+                <label className="form-label" style={{ fontSize: "0.72rem", fontWeight: 700, color: "rgba(212,175,55,0.8)", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>📱 WhatsApp Number (+91) *</label>
                 <input type="tel" className="form-input" required placeholder="98765 43210"
                   value={leadForm.phone} onChange={e => setLeadForm({ ...leadForm, phone: e.target.value })}
-                  style={{ borderRadius: "10px", width: "100%", boxSizing: "border-box", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)", padding: "12px", color: "#fff" }}/>
+                  style={{ borderRadius: "12px", width: "100%", boxSizing: "border-box", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", padding: "13px 15px", color: "#fff", fontSize: '0.88rem', outline: 'none', transition: 'border-color 0.2s' }}
+                  onFocus={e => e.target.style.borderColor = 'rgba(212,175,55,0.5)'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                />
               </div>
 
               <div className="form-group">
-                <label className="form-label" style={{ fontSize: "0.72rem", fontWeight: 700, color: "rgba(197,168,128,0.7)", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>Email ID *</label>
-                <input type="email" className="form-input" required placeholder="you@gmail.com"
+                <label className="form-label" style={{ fontSize: "0.72rem", fontWeight: 700, color: "rgba(212,175,55,0.8)", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>Email ID</label>
+                <input type="email" className="form-input" placeholder="you@gmail.com (optional)"
                   value={leadForm.email} onChange={e => setLeadForm({ ...leadForm, email: e.target.value })}
-                  style={{ borderRadius: "10px", width: "100%", boxSizing: "border-box", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)", padding: "12px", color: "#fff" }}/>
+                  style={{ borderRadius: "12px", width: "100%", boxSizing: "border-box", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", padding: "13px 15px", color: "#fff", fontSize: '0.88rem', outline: 'none', transition: 'border-color 0.2s' }}
+                  onFocus={e => e.target.style.borderColor = 'rgba(212,175,55,0.5)'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                />
               </div>
 
               <button type="submit" className="btn-gold"
-                style={{ width: "100%", justifyContent: "center", marginTop: "8px", borderRadius: "12px", padding: "14px", fontSize: "0.85rem", fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: "0.05em", cursor: "pointer", background: "linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)", border: "none", color: "#040814" }}
+                style={{ width: "100%", justifyContent: "center", marginTop: "6px", borderRadius: "14px", padding: "15px", fontSize: "0.88rem", fontWeight: 800, fontFamily: "'Montserrat', sans-serif", letterSpacing: "0.06em", cursor: "pointer", background: "linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #C59B27 100%)", border: "none", color: "#040814", boxShadow: '0 6px 24px rgba(212,175,55,0.4)', transition: 'all 0.25s ease', display: 'flex', alignItems: 'center', gap: '8px' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 32px rgba(212,175,55,0.55)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,175,55,0.4)'; }}
                 disabled={submitLoading}>
-                {submitLoading ? <Loader className="animate-spin" size={20} /> : "Submit Enquiry"}
+                {submitLoading ? <Loader className="animate-spin" size={20} /> : (<><Phone size={16} /><span>Get Expert Callback — Free</span></>)}
               </button>
 
-              <p style={{ textAlign: "center", fontSize: "0.68rem", color: "rgba(255,255,255,0.3)", marginTop: "8px", lineHeight: "1.4" }}>
-                Zero spam guarantee · Your details are securely shared with our direct advisory desk
-              </p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '4px' }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <p style={{ textAlign: "center", fontSize: "0.68rem", color: "rgba(255,255,255,0.3)", margin: 0, lineHeight: "1.4" }}>
+                  Zero spam · No cold calls · Shared only with certified 24K advisor
+                </p>
+              </div>
             </form>
           </div>
         </div>

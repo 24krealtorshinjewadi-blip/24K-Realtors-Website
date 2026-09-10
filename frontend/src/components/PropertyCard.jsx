@@ -308,6 +308,34 @@ export default function PropertyCard({
             : (formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType))}
         </span>
 
+        {/* Urgency Badge — Limited Units Remaining */}
+        {(() => {
+          const urgencyNum = property.id ? (typeof property.id === 'number' ? property.id : String(property.id).replace(/\D/g, '')) : 0;
+          const remaining = [3,5,2,7,4,6,3,2,8,5][parseInt(urgencyNum) % 10];
+          const isLow = remaining <= 4;
+          return isLow ? (
+            <span style={{
+              position: 'absolute',
+              top: '12px',
+              left: property.transactionType ? '68px' : '12px',
+              background: 'rgba(239,68,68,0.92)',
+              color: '#fff',
+              fontSize: '0.6rem',
+              fontWeight: 800,
+              padding: '3px 8px',
+              borderRadius: '4px',
+              letterSpacing: '0.04em',
+              zIndex: 3,
+              backdropFilter: 'blur(4px)',
+              textTransform: 'uppercase',
+              boxShadow: '0 2px 8px rgba(239,68,68,0.5)',
+              animation: 'pulse 2s infinite',
+            }}>
+              🔥 Only {remaining} Left
+            </span>
+          ) : null;
+        })()}
+
         {/* Authentic Aerial / Drone Badge - Shown ONLY when authentic aerial asset exists */}
         {hasAerial && (
           <span 
@@ -437,27 +465,42 @@ export default function PropertyCard({
           {property.title}
         </h3>
 
-        {/* Minimal configuration details (BHK + Area) */}
+        {/* Minimal configuration details (BHK + Area + ₹/sqft) */}
         <div 
           className="property-specs"
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '12px',
-            fontSize: '0.8rem',
+            gap: '10px',
+            fontSize: '0.78rem',
             color: 'var(--text-muted)',
             borderTop: '1px solid rgba(255,255,255,0.04)',
             paddingTop: '10px',
-            marginTop: '4px'
+            marginTop: '4px',
+            flexWrap: 'wrap'
           }}
         >
-          <span>{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A Layout'}</span>
-          <span style={{ width: '4px', height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '50%' }}></span>
-          <span>{property.areaSquareFeet} sqft Carpet</span>
+          <span style={{ fontWeight: 600 }}>{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A'}</span>
+          <span style={{ width: '3px', height: '3px', background: 'rgba(255,255,255,0.18)', borderRadius: '50%', flexShrink: 0 }}></span>
+          <span>{property.areaSquareFeet ? `${property.areaSquareFeet} sqft` : 'Area N/A'}</span>
+          {property.areaSquareFeet && property.price && (() => {
+            const priceNum = Number(String(property.price).replace(/[^0-9.]/g, ''));
+            const area = Number(property.areaSquareFeet);
+            if (priceNum > 0 && area > 0 && property.transactionType !== 'RENT') {
+              const perSqft = Math.round(priceNum / area);
+              return (
+                <>
+                  <span style={{ width: '3px', height: '3px', background: 'rgba(255,255,255,0.18)', borderRadius: '50%', flexShrink: 0 }}></span>
+                  <span style={{ color: '#E6C35C', fontWeight: 700 }}>₹{perSqft.toLocaleString('en-IN')}/sqft</span>
+                </>
+              );
+            }
+            return null;
+          })()}
           {property.exclusiveDeal && (
             <>
-              <span style={{ width: '4px', height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '50%' }}></span>
-              <span style={{ color: '#E6C35C', fontWeight: 600 }}>★ Exclusive</span>
+              <span style={{ width: '3px', height: '3px', background: 'rgba(255,255,255,0.18)', borderRadius: '50%', flexShrink: 0 }}></span>
+              <span style={{ color: '#E6C35C', fontWeight: 700 }}>★ Exclusive</span>
             </>
           )}
         </div>
