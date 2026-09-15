@@ -29,8 +29,9 @@ const PublicSocietiesPage = lazy(() => import('./components/PublicSocietiesPage'
 const PublicSocietyDetailPage = lazy(() => import('./components/PublicSocietyDetailPage'));
 const PropertyDetailView = lazy(() => import('./components/PropertyDetailView'));
 const LocationLandingPage = lazy(() => import('./components/LocationLandingPage'));
-const BlogListPage   = lazy(() => import('./components/BlogListPage'));
-const BlogDetailPage = lazy(() => import('./components/BlogDetailPage'));
+const BlogListPage       = lazy(() => import('./components/BlogListPage'));
+const BlogDetailPage     = lazy(() => import('./components/BlogDetailPage'));
+const PublicTownshipPage = lazy(() => import('./components/PublicTownshipPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -251,6 +252,10 @@ function LegacyHashRedirectHandler() {
         return;
       }
 
+      if (hash === 'townships' || hash === 'township-explorer') {
+        navigate('/townships', { replace: true });
+        return;
+      }
       if (hash === 'societies' || hash === 'properties' || hash === 'signature-collection' || hash === 'signature') {
         navigate('/societies', { replace: true });
       } else if (hash.startsWith('society/')) {
@@ -375,6 +380,10 @@ function AppContent() {
       navigate('/societies');
       return;
     }
+    if (view === 'townships' || view === 'township-explorer') {
+      navigate('/townships');
+      return;
+    }
     if (view.startsWith('society/')) {
       const slug = view.replace('society/', '');
       navigate(`/society/${slug}`);
@@ -457,6 +466,17 @@ function AppContent() {
                 }
               />
               <Route path="/properties" element={<Navigate to="/societies" replace />} />
+
+              {/* Township Explorer */}
+              <Route
+                path="/townships"
+                element={
+                  <PublicTownshipPage
+                    onBackHome={() => navigate('/')}
+                    onSelectSociety={(slug) => navigate(`/society/${slug}`)}
+                  />
+                }
+              />
 
               {/* Society Detail */}
               <Route path="/society/:slug" element={<SocietyDetailRouteWrapper />} />

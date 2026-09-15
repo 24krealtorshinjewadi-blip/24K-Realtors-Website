@@ -483,6 +483,32 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
           {/* ── Main Results Section (Right) ────────────────────────────── */}
           <main style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
             
+            {/* ── Township Explorer CTA Banner ─────────────────────── */}
+            <div className="pi-township-cta-banner">
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '6px' }}>
+                  <Layers size={15} color="#A78BFA" />
+                  <span style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A78BFA' }}>
+                    NEW: HIERARCHICAL BROWSE
+                  </span>
+                </div>
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1rem', color: '#FFF', margin: '0 0 4px 0' }}>
+                  🏙️ Browse by Township → Society → BHK
+                </h3>
+                <p style={{ fontSize: '0.76rem', color: '#64748B', margin: 0 }}>
+                  Megapolis Sparkle/Sunway/Splendour · TCG Phase 3 · Life Republic &amp; more — with smart accordion filters
+                </p>
+              </div>
+              <button
+                onClick={() => window.location.href = '/townships'}
+                className="pi-btn-gold"
+                style={{ padding: '10px 20px', fontSize: '0.8rem', whiteSpace: 'nowrap', flexShrink: 0 }}
+              >
+                <ArrowRight size={14} style={{ marginRight: '6px' }} />
+                Township Explorer
+              </button>
+            </div>
+
             {/* Results Header Strip */}
             <div style={{
               display: 'flex',
