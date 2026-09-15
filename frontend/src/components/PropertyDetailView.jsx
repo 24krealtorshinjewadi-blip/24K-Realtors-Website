@@ -242,11 +242,29 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     }
     if (t.includes('megapolis')) {
       return {
-        landParcel: '150-Acre Mega Township',
-        towers: 'Smart Towers × 21 Floors',
-        possession: 'Ready to Move',
-        carpet: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '920 – 1,280 sq.ft',
+        landParcel: '150-Acre Integrated Township',
+        towers: property.totalTowers || '80+ Towers × G+21 Floors',
+        possession: property.possessionDate || 'Ready to Move',
+        carpet: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '425 – 1,080 sq.ft',
+        investmentScore: 94
+      };
+    }
+    if (t.includes('cliff') || t.includes('tcg')) {
+      return {
+        landParcel: '28 Acres Hillside Township',
+        towers: property.totalTowers || '12 Towers × 2B+G+24 Floors',
+        possession: property.possessionDate || 'Ready / Dec 2025',
+        carpet: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '410 – 890 sq.ft',
         investmentScore: 93
+      };
+    }
+    if (t.includes('eon') || t.includes('kasturi')) {
+      return {
+        landParcel: '22 Acres Master Integrated Project',
+        towers: property.totalTowers || '12 Towers × 2B+G+21 Floors',
+        possession: property.possessionDate || 'Ready to Move (OC Received)',
+        carpet: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '780 – 1,220 sq.ft',
+        investmentScore: 98
       };
     }
     if (t.includes('opula')) {
@@ -260,7 +278,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     }
     return {
       landParcel: property.projectArea || property.landParcel || (property.totalLandAcres ? `${property.totalLandAcres} Acres` : 'Master Plan Registered'),
-      towers: property.towers || '4 Towers × 28 Floors',
+      towers: property.towers || property.totalTowers || '4 Towers × 28 Floors',
       possession: property.possessionDate || property.possession || 'Ready to Move',
       carpet: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : (property.minCarpetSqft && property.maxCarpetSqft ? `${property.minCarpetSqft}–${property.maxCarpetSqft} sq.ft` : 'Carpet area on request'),
       investmentScore: property.investmentScore || property.aiScore || 92
@@ -299,16 +317,16 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   const heroImages = (() => {
     const imgs = [];
     if (property.imageUrl && !property.imageUrl.includes('unsplash')) imgs.push(property.imageUrl);
+    if (property.slideshowImages && property.slideshowImages.length) {
+      property.slideshowImages.forEach(s => { if (!imgs.includes(s)) imgs.push(s); });
+    }
     if (property.gallery && property.gallery.length) imgs.push(...property.gallery.map(g => g.url || g));
     const t = (title || '').toLowerCase();
     const curated = [];
-    if (t.includes('opula')) curated.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png', '/dev_lodha_tower.png', '/dev_shapoorji_township.png', '/dev_vtp_township.png');
-    else if (t.includes('blue ridge') || t.includes('paranjape')) curated.push('/dev_paranjape_township.png', '/dev_kolte_patil_township.png', '/dev_vtp_township.png', '/dev_godrej_building.png', '/dev_lodha_tower.png', '/dev_vj_building.png');
-    else if (t.includes('godrej')) curated.push('/dev_godrej_building.png', '/dev_kolte_patil_township.png', '/dev_shapoorji_township.png', '/dev_vj_building.png', '/dev_lodha_tower.png', '/dev_paranjape_township.png');
-    else if (t.includes('shapoorji') || t.includes('joyville')) curated.push('/dev_shapoorji_township.png', '/dev_vtp_township.png', '/dev_godrej_building.png', '/dev_kolte_patil_township.png', '/dev_lodha_tower.png', '/dev_vj_building.png');
-    else if (t.includes('gera')) curated.push('/dev_gera_tower.png', '/dev_godrej_building.png', '/dev_paranjape_township.png', '/dev_kolte_patil_township.png', '/dev_vtp_township.png', '/dev_shapoorji_township.png');
-    else if (t.includes('lodha')) curated.push('/dev_lodha_tower.png', '/dev_vj_building.png', '/dev_godrej_building.png', '/dev_kolte_patil_township.png', '/dev_shapoorji_township.png', '/dev_vtp_township.png');
-    else if (t.includes('vtp')) curated.push('/dev_vtp_township.png', '/dev_kolte_patil_township.png', '/dev_lodha_tower.png', '/dev_godrej_building.png', '/dev_shapoorji_township.png', '/dev_vj_building.png');
+    if (t.includes('megapolis')) curated.push('/properties/megapolis-sunway/01_aerial_hero.png', '/properties/megapolis-sunway/02_architecture.png', '/properties/megapolis-sunway/04_living_room.png', '/properties/megapolis-sunway/05_balcony_view.png', '/properties/megapolis-sunway/08_clubhouse.png', '/properties/megapolis-sunway/09_swimming_pool.png');
+    else if (t.includes('cliff') || t.includes('tcg')) curated.push('/dev_shapoorji_township.png', '/gallery_tower_2.png', '/lodha_7_infinity_pool.png', '/floorplan_3bhk.png', '/gallery_visit_1.png', '/gallery_tower_3.png');
+    else if (t.includes('eon') || t.includes('kasturi')) curated.push('/dev_kasturi_forbes.png', '/lodha_8_clubhouse_gardens.png', '/gallery_infinity_pool.png', '/lodha_4_grand_lobby.png', '/floorplan_3bhk.png', '/luxury_sunset_pool.png');
+    else if (t.includes('opula')) curated.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png', '/dev_lodha_tower.png', '/dev_shapoorji_township.png', '/dev_vtp_township.png');
     else curated.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png', '/dev_shapoorji_township.png', '/dev_lodha_tower.png', '/dev_paranjape_township.png');
     
     for (const img of curated) {
@@ -547,6 +565,21 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
   // Build floor plans anchored to the actual property BHK and price
   const buildFloorPlans = () => {
+    if (property.configurations && property.configurations.length > 0) {
+      return property.configurations.map((cfg, idx) => {
+        const bhkMatch = (cfg.name || '').match(/(\d+(\.\d+)?)\s*BHK/i);
+        const bhk = bhkMatch ? `${bhkMatch[1]} BHK` : '2 BHK';
+        return {
+          type: cfg.name,
+          area: cfg.area,
+          price: cfg.price,
+          pct: idx === 0 ? 68 : (idx === 1 ? 84 : 100),
+          bhk: bhk,
+          rooms: bhk.includes('1') ? '1 Bed • 1 Bath • 1 Balcony' : (bhk.includes('2') ? '2 Bed • 2 Bath • 1 Balcony' : '3 Bed • 3 Bath • 2 Balconies'),
+          status: cfg.status || 'Available'
+        };
+      });
+    }
     const bhk = String(primaryBhk);
     if (bhk.includes('4')) {
       return [
@@ -585,10 +618,10 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
   ];
 
   const SIMILAR = [
-    { title: 'Kolte Patil Life Republic', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹1.05 Cr - ₹2.50 Cr', tag: 'LUXURY TOWNSHIP', match: 92, img: '/dev_kolte_patil_township.png' },
-    { title: 'Paranjape Blue Ridge', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹78 Lakhs - ₹1.85 Cr', tag: '138-ACRE TOWNSHIP', match: 91, img: '/dev_paranjape_township.png' },
-    { title: 'Shapoorji Joyville Vyomora', loc: 'Hinjewadi Phase 1', config: '2 & 3 BHK', price: '₹84 Lakhs - ₹1.95 Cr', tag: 'ICONIC BRAND', match: 86, img: '/dev_shapoorji_township.png' },
-    { title: 'Gera Joy On The Banks', loc: 'Hinjewadi', config: '2 & 3 BHK', price: '₹88 Lakhs - ₹1.75 Cr', tag: 'CHILD CENTRIC', match: 84, img: '/dev_gera_tower.png' },
+    { title: 'Megapolis Mystic 3 BHK', loc: 'Hinjewadi Phase 3', config: '2 & 3 BHK', price: '₹76L – ₹1.15 Cr', tag: '150-ACRE TOWNSHIP', match: 96, img: '/properties/megapolis-sunway/01_aerial_hero.png' },
+    { title: 'TCG The Cliff Garden', loc: 'Hinjewadi Phase 3', config: '1, 2 & 3 BHK', price: '₹42L – ₹1.05 Cr', tag: 'HILLSIDE TOWNSHIP', match: 94, img: '/gallery_tower_2.png' },
+    { title: 'Kasturi Eon Homes', loc: 'Hinjewadi Phase 3', config: '2, 2.5 & 3 BHK', price: '₹92L – ₹1.48 Cr', tag: 'LUXURY PODIUM PARK', match: 98, img: '/dev_kasturi_forbes.png' },
+    { title: 'Megapolis Sunway Smart Homes', loc: 'Hinjewadi Phase 3', config: '2 BHK', price: '₹72 Lakhs', tag: 'NEAR TCS SAHYADRI', match: 92, img: '/properties/megapolis-sunway/02_architecture.png' },
   ];
 
   const TRUST = [

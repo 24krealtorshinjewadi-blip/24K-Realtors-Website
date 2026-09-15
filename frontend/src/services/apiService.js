@@ -1380,9 +1380,25 @@ const saveLocalStorageItem = (key, data) => {
   localStorage.setItem(key, JSON.stringify(data));
 };
 
+const HINJEWADI_PROP_VERSION = 'v2026_hinjewadi_phase3_v2';
+
 const LocalMockDb = {
   getProperties() {
-    const list = getLocalStorageItem('mock_properties', initialProperties) || [];
+    let list = null;
+    try {
+      const storedVer = localStorage.getItem('mock_properties_version');
+      if (storedVer === HINJEWADI_PROP_VERSION) {
+        list = getLocalStorageItem('mock_properties', null);
+      } else {
+        localStorage.setItem('mock_properties_version', HINJEWADI_PROP_VERSION);
+        saveLocalStorageItem('mock_properties', initialProperties);
+        list = initialProperties;
+      }
+    } catch (e) {
+      list = initialProperties;
+    }
+    if (!list || !list.length) list = initialProperties;
+
     const seen = new Set();
     const deduped = [];
     for (const p of list) {
