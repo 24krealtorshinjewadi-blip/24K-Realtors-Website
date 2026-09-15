@@ -1318,52 +1318,41 @@ export default function Portal({ onViewChange }) {
         return;
       }
       
-      if (activeCollection === 'NEW') {
-        const newLaunches = allRawProperties.filter(p => 
-          p.id === 'prop-21' || 
-          p.id === 'prop-22' || 
-          p.id === 21 ||
-          p.id === 22 ||
-          (p.title && (
-            p.title.toLowerCase().includes('ivara') || 
-            p.title.toLowerCase().includes('vyomora') ||
-            p.title.toLowerCase().includes('joyville') ||
-            p.title.toLowerCase().includes('shapoorji') ||
-            p.title.toLowerCase().includes('elements')
-          ))
-        );
-        setProperties(newLaunches);
+      if (activeCollection === 'MEGAPOLIS') {
+        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('megapolis'));
+        setProperties(filtered);
         setTotalPages(1);
-        setTotalElements(newLaunches.length);
+        setTotalElements(filtered.length);
         setLoading(false);
         return;
       }
-
-      if (activeCollection === 'APARTMENT') {
-        queryFilters.propertyType = 'RESIDENTIAL';
-      } else if (activeCollection === 'VILLA') {
-        queryFilters.bedrooms = '4';
-      } else if (activeCollection === 'PENTHOUSE') {
-        queryFilters.bedrooms = '4';
-        queryFilters.propertyType = 'RESIDENTIAL';
-      } else if (activeCollection === 'COMMERCIAL') {
-        queryFilters.propertyType = 'COMMERCIAL';
+      if (activeCollection === 'TCG') {
+        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('tcg') || (p.title || '').toLowerCase().includes('cliff garden'));
+        setProperties(filtered);
+        setTotalPages(1);
+        setTotalElements(filtered.length);
+        setLoading(false);
+        return;
+      }
+      if (activeCollection === 'EON_HOMES') {
+        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('eon') || (p.title || '').toLowerCase().includes('kasturi'));
+        setProperties(filtered);
+        setTotalPages(1);
+        setTotalElements(filtered.length);
+        setLoading(false);
+        return;
+      }
+      if (activeCollection === '1_BHK') {
+        queryFilters.bedrooms = '1';
+      } else if (activeCollection === '2_BHK') {
+        queryFilters.bedrooms = '2';
+      } else if (activeCollection === '3_BHK') {
+        queryFilters.bedrooms = '3';
+      } else if (activeCollection === 'RENT') {
+        queryFilters.transactionType = 'RENT';
       } else if (activeCollection === 'READY') {
         queryFilters.propertyType = 'RESIDENTIAL';
         queryFilters.transactionType = 'BUY';
-      } else if (activeCollection === 'SKY_PENTHOUSE') {
-        queryFilters.bedrooms = '4';
-        queryFilters.propertyType = 'RESIDENTIAL';
-      } else if (activeCollection === 'TECH_OFFICE') {
-        queryFilters.propertyType = 'COMMERCIAL';
-      } else if (activeCollection === 'READY_TO_MOVE') {
-        queryFilters.propertyType = 'RESIDENTIAL';
-        queryFilters.transactionType = 'BUY';
-      } else if (activeCollection === 'RENT') {
-        queryFilters.transactionType = 'RENT';
-      } else if (activeCollection === 'HINJEWADI_RENTALS') {
-        queryFilters.location = 'HINJEWADI';
-        queryFilters.transactionType = 'RENT';
       }
 
       const data = await apiService.getProperties(queryFilters, page, 12);
@@ -4215,10 +4204,10 @@ export default function Portal({ onViewChange }) {
                 <div className="subpage-header-banner" id="listings-anchor" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '24px' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <h2 style={{ margin: 0, fontFamily: "'Cinzel', serif", fontSize: 'clamp(1rem, 4vw, 1.45rem)', color: '#fff', letterSpacing: '0.03em' }}>
-                      ⚜️ Verified Estates &amp; Luxury Portfolios
+                      ⚜️ Signature Collection
                     </h2>
                     <span style={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.65)', fontFamily: "'Montserrat', sans-serif", marginTop: '4px', display: 'block', lineHeight: 1.5 }}>
-                      Curated MahaRERA verified residences · Hinjewadi, Wakad, Baner
+                      Megapolis · TCG Cliff Garden · Eon Homes — Hinjewadi Phase 3, MahaRERA verified
                     </span>
                   </div>
                   {/* Badges — hide on very small mobile, show on tablet+ */}
@@ -4275,15 +4264,15 @@ export default function Portal({ onViewChange }) {
                 {/* Row 2: Segmented Category Pills — full width horizontal scroll */}
                 <div className="luxury-segmented-controls" style={{ display: 'flex', overflowX: 'auto', paddingBottom: '6px', scrollbarWidth: 'none', msOverflowStyle: 'none', gap: '6px', flexWrap: 'nowrap' }}>
                   {[
-                    { id: 'ALL', label: 'All', icon: '\u2726', count: allRawProperties.length },
-                    { id: 'APARTMENT', label: 'Apartments', icon: '\ud83c\udfe2', count: allRawProperties.filter(p => p.propertyType === 'RESIDENTIAL' && (p.bedrooms || 0) <= 3).length },
-                    { id: 'VILLA', label: 'Villas', icon: '\ud83c\udfe1', count: allRawProperties.filter(p => (p.bedrooms || 0) >= 4 && p.propertyType === 'RESIDENTIAL').length },
-                    { id: 'PENTHOUSE', label: 'Penthouse', icon: '\ud83c\udf06', count: allRawProperties.filter(p => (p.bedrooms || 0) >= 4).length },
-                    { id: 'COMMERCIAL', label: 'Commercial', icon: '\ud83c\udfe6', count: allRawProperties.filter(p => p.propertyType === 'COMMERCIAL').length },
-                    { id: 'READY', label: 'Ready', icon: '\u2705', count: allRawProperties.filter(p => p.status === 'AVAILABLE' && p.transactionType === 'BUY').length },
-                    { id: 'NEW', label: 'New Launch', icon: '\ud83d\ude80', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('vyomora') || (p.title || '').toLowerCase().includes('ivara') || (p.title || '').toLowerCase().includes('joyville') || (p.title || '').toLowerCase().includes('elements')).length },
-                    { id: 'RENT', label: 'Rent', icon: '\ud83d\udd11', count: allRawProperties.filter(p => p.transactionType === 'RENT').length },
-                    { id: 'WISHLIST', label: 'Saved', icon: '\u2665', count: wishlistIds.length },
+                    { id: 'ALL', label: 'All Phase 3', icon: '⚜️', count: allRawProperties.length },
+                    { id: 'MEGAPOLIS', label: 'Megapolis (150-Acres)', icon: '🏙️', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('megapolis')).length },
+                    { id: 'TCG', label: 'TCG Cliff Garden', icon: '⛰️', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('tcg') || (p.title || '').toLowerCase().includes('cliff garden')).length },
+                    { id: 'EON_HOMES', label: 'Kasturi Eon Homes', icon: '💎', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('eon') || (p.title || '').toLowerCase().includes('kasturi')).length },
+                    { id: '1_BHK', label: '1 BHK', icon: '🔑', count: allRawProperties.filter(p => p.bedrooms === 1).length },
+                    { id: '2_BHK', label: '2 BHK', icon: '🛏️', count: allRawProperties.filter(p => p.bedrooms === 2).length },
+                    { id: '3_BHK', label: '3 BHK', icon: '👑', count: allRawProperties.filter(p => p.bedrooms === 3).length },
+                    { id: 'RENT', label: 'IT Rentals', icon: '🏢', count: allRawProperties.filter(p => p.transactionType === 'RENT').length },
+                    { id: 'WISHLIST', label: 'Saved', icon: '♥', count: wishlistIds.length },
                   ].map(({ id, label, icon, count }) => (
                     <button
                       key={id}
