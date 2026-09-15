@@ -55,7 +55,7 @@ const formatStatus = (status) => {
   }
 };
 
-export default function SocietyCard({ society, onSelect }) {
+export default function SocietyCard({ society, onSelect, parentTownship }) {
   if (!society) return null;
 
   const statusInfo = formatStatus(society.projectStatus);
@@ -122,6 +122,14 @@ export default function SocietyCard({ society, onSelect }) {
       <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', flexGrow: 1, justifyContent: 'space-between', gap: '14px' }}>
         
         <div>
+          {/* Township parent badge (shown from TownshipExplorer) */}
+          {parentTownship && (
+            <div className="pi-township-badge">
+              <Building2 size={9} />
+              {parentTownship}
+            </div>
+          )}
+
           {/* Developer Legacy */}
           <div style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#D4AF37', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <Building2 size={12} color="#D4AF37" />
