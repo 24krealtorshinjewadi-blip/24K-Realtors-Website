@@ -16,7 +16,7 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('glitterati') || title.includes('penthouse')) return '/lodha_7_infinity_pool.png';
   if (title.includes('mahalunge') || title.includes('oasis')) return '/gallery_tower_3.png';
   if (title.includes('studio') || title.includes('corporate')) return '/dev_vj_building.png';
-  if (title.includes('megapolis')) return '/properties/megapolis-sunway/01_aerial_hero.png';
+  if (title.includes('godrej 24') || title === 'godrej 24') return '/godrej_24_project_card.jpg';
   if (title.includes('elements') || title.includes('godrej elements')) return '/dev_godrej_building.png';
   if (title.includes('crown') || title.includes('tcg')) return '/gallery_tower_2.png';
   if (title.includes('kasturi') || title.includes('apostle')) return '/dev_kasturi_forbes.png';
@@ -180,6 +180,7 @@ export default function PropertyCard({
             width: '100%', 
             height: '100%', 
             objectFit: 'cover',
+            objectPosition: cardImgSrc.includes('godrej_24') ? 'center 35%' : 'center',
             transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         />
