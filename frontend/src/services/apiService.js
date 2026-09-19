@@ -178,7 +178,10 @@ const initialProperties = [
     exclusiveDeal: true,
     reraNumber: "P52100016626",
     possessionDate: "Ready to Move",
-    imageUrl: "/dev_godrej_building.png",
+    imageUrl: "/godrej_elements_project_card.jpg",
+    galleryImages: [
+      "/godrej_elements_project_card.jpg"
+    ],
     furnishingStatus: "UNFURNISHED",
     gasPipeline: true,
     societySlug: "godrej-elements-hinjewadi",
@@ -354,6 +357,10 @@ const initialSocieties = [
     name: "Godrej Elements",
     canonicalName: "Godrej Elements Hinjewadi Phase 1",
     slug: "godrej-elements-hinjewadi",
+    imageUrl: "/godrej_elements_project_card.jpg",
+    galleryImages: [
+      "/godrej_elements_project_card.jpg"
+    ],
     location: "HINJEWADI",
     hinjewadiPhase: "PHASE_1",
     developer: "Godrej Properties",
@@ -505,7 +512,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_godrej_verified_only_v5';
+const HINJEWADI_PROP_VERSION = 'v2026_godrej_verified_only_v6';
 
 const LocalMockDb = {
   getProperties() {

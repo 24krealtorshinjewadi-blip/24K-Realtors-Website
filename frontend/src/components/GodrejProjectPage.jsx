@@ -17,7 +17,8 @@ import {
   MapPin, ShieldCheck, Phone, MessageSquare, ArrowLeft,
   CheckCircle2, Star, Clock, Zap, Car, Dumbbell, Trees,
   Wifi, Lock, Coffee, Users, Home, IndianRupee, ExternalLink,
-  ChevronDown, ChevronUp, Building2, Award, X, ChevronLeft, ChevronRight, Maximize2
+  ChevronDown, ChevronUp, Building2, Award, X, ChevronLeft, ChevronRight, Maximize2,
+  ZoomIn, ZoomOut, RotateCcw
 } from 'lucide-react';
 import { useSEO } from '../services/seoService';
 import CompanyLogo from './CompanyLogo';
@@ -216,6 +217,24 @@ const GODREJ_ELEMENTS = {
   accentColor: '#1a3a6b',
   accentGradient: 'linear-gradient(135deg, #0a1f40 0%, #1a3a6b 50%, #2d5e9e 100%)',
   heroBg: 'linear-gradient(160deg, #040a14 0%, #0a1f40 40%, #0f2d6b 100%)',
+  showcaseImage: '/godrej_elements_project_card.jpg',
+  gallery: [
+    {
+      id: 1,
+      tag: 'Project Overview',
+      icon: '🏢',
+      roomName: 'Grand Elevation & Club',
+      title: 'Godrej Elements — Live Connected, Live Ahead',
+      subtitle: 'Premium 2 & 3 BHK residences in Hinjewadi Phase 1 featuring modern elevation, central clubhouse, resort swimming pool, sports zone, landscaped greenery and 24x7 security.',
+      src: '/godrej_elements_project_card.jpg',
+      features: [
+        { icon: '🏊', title: 'Swimming Pool', desc: 'Resort-style pool with expansive lounging deck' },
+        { icon: '🏋️', title: 'Gymnasium & Sports', desc: 'Fully equipped fitness club and active outdoor sports court' },
+        { icon: '🌿', title: 'Landscaped Gardens', desc: 'Serene zen gardens, walking promenades and green pods' },
+        { icon: '🛡️', title: '24x7 Security Grid', desc: '21-point safety system with round-the-clock CCTV surveillance' }
+      ]
+    }
+  ],
   uniqueFeatures: [
     'Home Automation System',
     '21-Point Integrated Safety Grid',
@@ -390,13 +409,100 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
   const [openFaq, setOpenFaq] = useState(null);
   const [activeGalleryIdx, setActiveGalleryIdx] = useState(0);
   const [lightboxIdx, setLightboxIdx] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const heroRef = useRef(null);
+
+  // Reset zoom on photo change or close
+  const resetZoom = () => {
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    resetZoom();
+  }, [lightboxIdx]);
+
+  const handleZoomIn = (e) => {
+    e?.stopPropagation?.();
+    setZoomLevel(prev => Math.min(Number((prev + 0.5).toFixed(1)), 3.5));
+  };
+
+  const handleZoomOut = (e) => {
+    e?.stopPropagation?.();
+    setZoomLevel(prev => {
+      const next = Math.max(Number((prev - 0.5).toFixed(1)), 1);
+      if (next === 1) setPanPosition({ x: 0, y: 0 });
+      return next;
+    });
+  };
+
+  const handleResetZoom = (e) => {
+    e?.stopPropagation?.();
+    resetZoom();
+  };
+
+  const handleWheel = (e) => {
+    if (lightboxIdx === null) return;
+    if (e.deltaY < 0) {
+      setZoomLevel(prev => Math.min(Number((prev + 0.25).toFixed(2)), 3.5));
+    } else {
+      setZoomLevel(prev => {
+        const next = Math.max(Number((prev - 0.25).toFixed(2)), 1);
+        if (next === 1) setPanPosition({ x: 0, y: 0 });
+        return next;
+      });
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    if (zoomLevel <= 1) return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - panPosition.x, y: e.clientY - panPosition.y });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || zoomLevel <= 1) return;
+    setPanPosition({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleDoubleClick = (e) => {
+    e.stopPropagation();
+    if (zoomLevel > 1) {
+      resetZoom();
+    } else {
+      setZoomLevel(2);
+    }
+  };
 
   // Keyboard navigation for Lightbox
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (lightboxIdx === null) return;
       if (e.key === 'Escape') setLightboxIdx(null);
+      if (e.key === '+' || e.key === '=') {
+        setZoomLevel(prev => Math.min(Number((prev + 0.5).toFixed(1)), 3.5));
+      }
+      if (e.key === '-' || e.key === '_') {
+        setZoomLevel(prev => {
+          const next = Math.max(Number((prev - 0.5).toFixed(1)), 1);
+          if (next === 1) setPanPosition({ x: 0, y: 0 });
+          return next;
+        });
+      }
+      if (e.key === '0') {
+        resetZoom();
+      }
       if (e.key === 'ArrowRight' && p.gallery) {
         setLightboxIdx(prev => (prev + 1) % p.gallery.length);
       }
@@ -920,7 +1026,85 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
                 </div>
               </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {/* Zoom Controls */}
+              <div 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '4px', 
+                  background: 'rgba(255,255,255,0.06)', 
+                  border: '1px solid rgba(212,175,55,0.3)', 
+                  borderRadius: '30px', 
+                  padding: '3px 8px' 
+                }}
+              >
+                <button
+                  onClick={handleZoomOut}
+                  disabled={zoomLevel <= 1}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: zoomLevel <= 1 ? 'rgba(255,255,255,0.25)' : '#F3E5AB',
+                    cursor: zoomLevel <= 1 ? 'not-allowed' : 'pointer',
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s'
+                  }}
+                  title="Zoom Out (- or Scroll down)"
+                >
+                  <ZoomOut size={16} />
+                </button>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#D4AF37', minWidth: '42px', textAlign: 'center' }}>
+                  {Math.round(zoomLevel * 100)}%
+                </span>
+                <button
+                  onClick={handleZoomIn}
+                  disabled={zoomLevel >= 3.5}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: zoomLevel >= 3.5 ? 'rgba(255,255,255,0.25)' : '#F3E5AB',
+                    cursor: zoomLevel >= 3.5 ? 'not-allowed' : 'pointer',
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s'
+                  }}
+                  title="Zoom In (+ or Scroll up)"
+                >
+                  <ZoomIn size={16} />
+                </button>
+                {zoomLevel !== 1 && (
+                  <button
+                    onClick={handleResetZoom}
+                    style={{
+                      background: 'rgba(212,175,55,0.18)',
+                      border: '1px solid rgba(212,175,55,0.4)',
+                      color: '#F3E5AB',
+                      cursor: 'pointer',
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginLeft: '2px'
+                    }}
+                    title="Reset Zoom (Press 0)"
+                  >
+                    <RotateCcw size={13} />
+                  </button>
+                )}
+              </div>
+
               <span style={{ fontSize: '0.8rem', color: '#D4AF37', fontWeight: 700, background: 'rgba(212,175,55,0.12)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(212,175,55,0.3)' }}>
                 {lightboxIdx + 1} / {p.gallery.length}
               </span>
@@ -962,20 +1146,60 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
               <ChevronLeft size={24} />
             </button>
 
-            {/* High-Res Full Image */}
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '0 20px' }}>
+            {/* High-Res Full Image with Zoom & Pan */}
+            <div 
+              style={{ 
+                flex: 1, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                height: '100%', 
+                padding: '0 20px',
+                overflow: 'hidden',
+                position: 'relative',
+                cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+                userSelect: 'none'
+              }}
+              onWheel={handleWheel}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onDoubleClick={handleDoubleClick}
+              title={zoomLevel > 1 ? 'Drag to pan · Double-click or click Reset to return' : 'Double-click or click + to zoom'}
+            >
               <img
                 src={p.gallery[lightboxIdx]?.src}
                 alt={p.gallery[lightboxIdx]?.title}
+                draggable={false}
                 style={{
                   maxHeight: '74vh',
                   maxWidth: '86vw',
                   objectFit: 'contain',
                   borderRadius: '12px',
                   boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 35px rgba(212,175,55,0.2)',
-                  border: '1px solid rgba(212,175,55,0.35)'
+                  border: '1px solid rgba(212,175,55,0.35)',
+                  transform: `scale(${zoomLevel}) translate(${panPosition.x / zoomLevel}px, ${panPosition.y / zoomLevel}px)`,
+                  transition: isDragging ? 'none' : 'transform 0.2s ease-out',
+                  pointerEvents: 'auto'
                 }}
               />
+              {zoomLevel > 1 && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: '8px',
+                  background: 'rgba(4, 8, 20, 0.88)',
+                  border: '1px solid rgba(212,175,55,0.4)',
+                  borderRadius: '20px',
+                  padding: '4px 14px',
+                  fontSize: '0.72rem',
+                  color: '#F3E5AB',
+                  pointerEvents: 'none',
+                  backdropFilter: 'blur(6px)'
+                }}>
+                  ✋ Drag to pan · Scroll wheel to zoom · Double-click to reset
+                </div>
+              )}
             </div>
 
             {/* Next Button */}
