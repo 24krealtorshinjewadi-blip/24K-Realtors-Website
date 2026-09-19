@@ -120,6 +120,13 @@ const initialProperties = [
     reraNumber: "P52100018596",
     possessionDate: "Ready to Move",
     imageUrl: "/godrej_living_room_banner.jpg",
+    galleryImages: [
+      "/godrej_living_room_banner.jpg",
+      "/godrej_24_master_bedroom.jpg",
+      "/godrej_24_modern_bathroom.jpg",
+      "/godrej_24_modular_kitchen.jpg",
+      "/godrej_24_private_balcony.jpg"
+    ],
     furnishingStatus: "UNFURNISHED",
     gasPipeline: true,
     societySlug: "godrej-24-hinjewadi",
@@ -292,6 +299,13 @@ const initialSocieties = [
     canonicalName: "Godrej 24 Hinjewadi Phase 1",
     slug: "godrej-24-hinjewadi",
     imageUrl: "/godrej_living_room_banner.jpg",
+    galleryImages: [
+      "/godrej_living_room_banner.jpg",
+      "/godrej_24_master_bedroom.jpg",
+      "/godrej_24_modern_bathroom.jpg",
+      "/godrej_24_modular_kitchen.jpg",
+      "/godrej_24_private_balcony.jpg"
+    ],
     location: "HINJEWADI",
     hinjewadiPhase: "PHASE_1",
     developer: "Godrej Properties",
@@ -489,7 +503,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_godrej_verified_only_v2';
+const HINJEWADI_PROP_VERSION = 'v2026_godrej_verified_only_v3';
 
 const LocalMockDb = {
   getProperties() {

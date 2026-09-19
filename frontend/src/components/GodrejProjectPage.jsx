@@ -17,7 +17,7 @@ import {
   MapPin, ShieldCheck, Phone, MessageSquare, ArrowLeft,
   CheckCircle2, Star, Clock, Zap, Car, Dumbbell, Trees,
   Wifi, Lock, Coffee, Users, Home, IndianRupee, ExternalLink,
-  ChevronDown, ChevronUp, Building2, Award
+  ChevronDown, ChevronUp, Building2, Award, X, ChevronLeft, ChevronRight, Maximize2
 } from 'lucide-react';
 import { useSEO } from '../services/seoService';
 import CompanyLogo from './CompanyLogo';
@@ -40,13 +40,82 @@ const GODREJ_24 = {
   accentGradient: 'linear-gradient(135deg, #0f4029 0%, #1a6b3c 50%, #2d9e5f 100%)',
   heroBg: 'linear-gradient(160deg, #040f08 0%, #0a2b18 40%, #0f4029 100%)',
   showcaseImage: '/godrej_living_room_banner.jpg',
-  showcaseTitle: 'Spacious Living Area — 2 BHK Residence',
-  showcaseSubtitle: 'Bright interiors, open layout and a balcony that brings the outdoors in.',
-  showcaseFeatures: [
-    { icon: '🛋️', title: 'Spacious Layout', desc: 'Maximized usable living space with ergonomic planning' },
-    { icon: '☀️', title: 'Natural Light & Ventilation', desc: 'Large sliding glass apertures for fresh cross breeze' },
-    { icon: '🌅', title: 'Balcony with Open View', desc: 'Uninterrupted panoramic nature & Hinjewadi skyline views' },
-    { icon: '🏢', title: 'Ideal for Modern Living', desc: 'Crafted for tech professionals & contemporary families' }
+  gallery: [
+    {
+      id: 1,
+      tag: 'Living Area',
+      icon: '🛋️',
+      roomName: 'Spacious Living Area',
+      title: 'Spacious Living Area — 2 BHK Residence',
+      subtitle: 'Bright interiors, open layout and a balcony that brings the outdoors in.',
+      src: '/godrej_living_room_banner.jpg',
+      features: [
+        { icon: '🛋️', title: 'Spacious Layout', desc: 'Maximized usable living space with ergonomic planning' },
+        { icon: '☀️', title: 'Natural Light & Ventilation', desc: 'Large sliding glass apertures for fresh cross breeze' },
+        { icon: '🌅', title: 'Balcony with Open View', desc: 'Uninterrupted panoramic nature & Hinjewadi skyline views' },
+        { icon: '🏢', title: 'Ideal for Modern Living', desc: 'Crafted for tech professionals & contemporary families' }
+      ]
+    },
+    {
+      id: 2,
+      tag: 'Master Bedroom',
+      icon: '🛏️',
+      roomName: 'Master Bedroom',
+      title: 'Master Bedroom — Peaceful Space with Open Views',
+      subtitle: 'A peaceful space with open views for a better tomorrow.',
+      src: '/godrej_24_master_bedroom.jpg',
+      features: [
+        { icon: '🛏️', title: 'Spacious Layout', desc: 'Generously proportioned bedroom with ample wardrobe niche' },
+        { icon: '☀️', title: 'Natural Light & Ventilation', desc: 'Large floor-to-ceiling glass sliding balcony aperture' },
+        { icon: '🚪', title: 'Private Balcony Access', desc: 'Step out directly to your personal attached viewing balcony' },
+        { icon: '💨', title: 'With Ceiling Fan & Lighting', desc: 'Fitted premium electrical points, fan & ambient fixtures' }
+      ]
+    },
+    {
+      id: 3,
+      tag: 'Modern Bathroom',
+      icon: '🚿',
+      roomName: 'Modern Bathroom',
+      title: 'Modern Bathroom — Clean, Elegant & Functional',
+      subtitle: 'Clean. Elegant. Functional. Designed for your everyday comfort.',
+      src: '/godrej_24_modern_bathroom.jpg',
+      features: [
+        { icon: '🚿', title: 'Modern Fittings', desc: 'Branded CP fixtures & luxury rain shower system' },
+        { icon: '🚽', title: 'Spacious Layout', desc: 'Ergonomically zoned wet and dry bathing areas' },
+        { icon: '💨', title: 'Well Ventilated', desc: 'Dedicated frosted exhaust ventilation window' },
+        { icon: '✨', title: 'Premium Sanitaryware', desc: 'Designer wall-hung basin, granite counter & concealed flush' }
+      ]
+    },
+    {
+      id: 4,
+      tag: 'Modular Kitchen',
+      icon: '🍳',
+      roomName: 'Modular Kitchen',
+      title: 'Modular Kitchen — Practical Design & Ample Storage',
+      subtitle: 'Modern design, practical layout and ample storage for your everyday convenience.',
+      src: '/godrej_24_modular_kitchen.jpg',
+      features: [
+        { icon: '🍳', title: 'Modular Kitchen', desc: 'Factory-finished sleek cabinets with smooth hydraulic drawers' },
+        { icon: '🪟', title: 'Spacious Countertop', desc: 'Polished granite cooking platform with stainless steel sink' },
+        { icon: '🗄️', title: 'Ample Storage', desc: 'Upper and lower cabinetry with dedicated utility provisions' },
+        { icon: '💨', title: 'Well Ventilated', desc: 'Wide utility window providing fresh air & natural daylight' }
+      ]
+    },
+    {
+      id: 5,
+      tag: 'Private Balcony',
+      icon: '🌇',
+      roomName: 'Private Balcony',
+      title: 'Private Balcony — Sunset & Open Nature Views',
+      subtitle: 'Breathe in freshness, with open views for a better tomorrow.',
+      src: '/godrej_24_private_balcony.jpg',
+      features: [
+        { icon: '🌇', title: 'Open City Views', desc: 'Unobstructed scenic view of Hinjewadi greenery & hills' },
+        { icon: '🌿', title: 'Spacious Layout', desc: 'Deep sit-out balcony accommodating lounge seating & planters' },
+        { icon: '☀️', title: 'Abundant Natural Light', desc: 'Golden hour sunset exposure with all-day fresh breeze' },
+        { icon: '☕', title: 'Perfect Relaxation Spot', desc: 'Ideal coffee and evening unwind sanctuary after IT shifts' }
+      ]
+    }
   ],
   uniqueFeatures: [
     '24×7 Functional Gymnasium',
@@ -304,7 +373,35 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
   const navigate = useNavigate();
   const p = project === 'godrej24' ? GODREJ_24 : GODREJ_ELEMENTS;
   const [openFaq, setOpenFaq] = useState(null);
+  const [activeGalleryIdx, setActiveGalleryIdx] = useState(0);
+  const [lightboxIdx, setLightboxIdx] = useState(null);
   const heroRef = useRef(null);
+
+  // Keyboard navigation for Lightbox
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (lightboxIdx === null) return;
+      if (e.key === 'Escape') setLightboxIdx(null);
+      if (e.key === 'ArrowRight' && p.gallery) {
+        setLightboxIdx(prev => (prev + 1) % p.gallery.length);
+      }
+      if (e.key === 'ArrowLeft' && p.gallery) {
+        setLightboxIdx(prev => (prev - 1 + p.gallery.length) % p.gallery.length);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxIdx, p.gallery]);
+
+  // Lock scroll when lightbox is open
+  useEffect(() => {
+    if (lightboxIdx !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [lightboxIdx]);
 
   // Inject SEO
   useSEO(buildGodrejSEO(project, bhkFilter));
@@ -438,76 +535,190 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
         </div>
       </section>
 
-      {/* ── VERIFIED LIVING AREA SHOWCASE (IF AVAILABLE) ── */}
-      {p.showcaseImage && (
+      {/* ── VERIFIED INTERIOR & SPACES GALLERY (WITH LIGHTBOX) ── */}
+      {p.gallery && p.gallery.length > 0 && (
         <section style={{ position: 'relative', zIndex: 1, padding: '50px 24px 20px', maxWidth: '1100px', margin: '0 auto' }}>
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(212, 175, 55, 0.35)',
-            borderRadius: '20px',
-            overflow: 'hidden',
-            boxShadow: '0 25px 60px rgba(0,0,0,0.6)',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          }}>
-            {/* Visual Creative Image */}
-            <div style={{ position: 'relative', minHeight: '340px', background: '#020610' }}>
-              <img 
-                src={p.showcaseImage} 
-                alt={`${p.name} 2 BHK Spacious Living Area Creative`}
-                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-              />
+          {/* Section Heading */}
+          <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '20px', padding: '5px 16px', marginBottom: '12px' }}>
+              <span style={{ fontSize: '0.7rem', color: '#F3E5AB', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                ✨ Verified Visual Tour · {p.gallery.length} Official Photos
+              </span>
+            </div>
+            <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 700, color: '#F3E5AB', marginBottom: '8px' }}>
+              Explore Verified Apartment Interiors
+            </h2>
+            <p style={{ color: '#94A3B8', fontSize: '0.88rem', maxWidth: '560px', margin: '0 auto' }}>
+              Click any photo to open full-screen view. Authentic 24K Realtors marketing creatives for {p.name}.
+            </p>
+          </div>
+
+          {/* Room Filter Tabs */}
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '24px' }}>
+            {p.gallery.map((item, idx) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveGalleryIdx(idx)}
+                style={{
+                  background: activeGalleryIdx === idx ? 'linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%)' : 'rgba(255,255,255,0.04)',
+                  color: activeGalleryIdx === idx ? '#040814' : '#CBD5E1',
+                  border: activeGalleryIdx === idx ? '1px solid #D4AF37' : '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '30px',
+                  padding: '8px 18px',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'all 0.2s',
+                  boxShadow: activeGalleryIdx === idx ? '0 4px 16px rgba(212,175,55,0.3)' : 'none'
+                }}
+              >
+                <span>{item.icon}</span>
+                <span>{item.roomName}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Active Creative Showcase Card */}
+          {(() => {
+            const cur = p.gallery[activeGalleryIdx] || p.gallery[0];
+            return (
               <div style={{
-                position: 'absolute',
-                top: '14px',
-                left: '14px',
-                background: 'rgba(4, 8, 20, 0.88)',
-                border: '1px solid #D4AF37',
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
                 borderRadius: '20px',
-                padding: '5px 12px',
-                fontSize: '0.68rem',
-                color: '#F3E5AB',
-                fontWeight: 700,
-                letterSpacing: '0.06em',
-                backdropFilter: 'blur(8px)'
+                overflow: 'hidden',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.6)',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
               }}>
-                ✨ VERIFIED 24K SHOWCASE
-              </div>
-            </div>
-
-            {/* Feature Breakdown & Direct Action */}
-            <div style={{ padding: '36px 30px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <div style={{ fontSize: '0.72rem', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
-                Verified Apartment Visual
-              </div>
-              <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.3rem, 2.5vw, 1.8rem)', color: '#fff', marginBottom: '10px', fontWeight: 700, lineHeight: 1.25 }}>
-                {p.showcaseTitle}
-              </h3>
-              <p style={{ color: '#94A3B8', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '22px' }}>
-                {p.showcaseSubtitle}
-              </p>
-
-              {/* Feature 4-grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '24px' }}>
-                {p.showcaseFeatures.map((feat, idx) => (
-                  <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '1.1rem', marginBottom: '3px' }}>{feat.icon}</div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#E2E8F0', marginBottom: '2px' }}>{feat.title}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#64748B', lineHeight: 1.3 }}>{feat.desc}</div>
+                {/* Visual Image with Zoom Overlay */}
+                <div 
+                  onClick={() => setLightboxIdx(activeGalleryIdx)}
+                  style={{ position: 'relative', minHeight: '360px', background: '#020610', cursor: 'pointer', overflow: 'hidden' }}
+                  title="Click to view full image in Lightbox"
+                >
+                  <img 
+                    src={cur.src} 
+                    alt={cur.title}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', transition: 'transform 0.4s ease' }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: '14px',
+                    left: '14px',
+                    background: 'rgba(4, 8, 20, 0.88)',
+                    border: '1px solid #D4AF37',
+                    borderRadius: '20px',
+                    padding: '5px 12px',
+                    fontSize: '0.68rem',
+                    color: '#F3E5AB',
+                    fontWeight: 700,
+                    letterSpacing: '0.06em',
+                    backdropFilter: 'blur(8px)'
+                  }}>
+                    ✨ 24K VERIFIED · {cur.tag}
                   </div>
-                ))}
-              </div>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setLightboxIdx(activeGalleryIdx); }}
+                    style={{
+                      position: 'absolute',
+                      bottom: '14px',
+                      right: '14px',
+                      background: 'rgba(4, 8, 20, 0.85)',
+                      border: '1px solid rgba(212,175,55,0.6)',
+                      color: '#F3E5AB',
+                      borderRadius: '8px',
+                      padding: '6px 14px',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      backdropFilter: 'blur(6px)'
+                    }}
+                  >
+                    <Maximize2 size={13} /> View Fullscreen
+                  </button>
+                </div>
 
-              {/* Direct Actions */}
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <button onClick={handleSiteVisit} style={{ flex: 1, background: 'linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%)', color: '#040814', border: 'none', borderRadius: '8px', padding: '12px 18px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                  <Car size={15} /> Book Site Visit →
-                </button>
-                <button onClick={handleWhatsApp} style={{ background: 'rgba(255,255,255,0.06)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '12px 16px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <MessageSquare size={15} /> Price & Details
-                </button>
+                {/* Feature Breakdown & Direct Action */}
+                <div style={{ padding: '36px 30px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ fontSize: '0.72rem', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
+                    Photo {activeGalleryIdx + 1} of {p.gallery.length} · {cur.tag}
+                  </div>
+                  <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.3rem, 2.5vw, 1.8rem)', color: '#fff', marginBottom: '10px', fontWeight: 700, lineHeight: 1.25 }}>
+                    {cur.title}
+                  </h3>
+                  <p style={{ color: '#94A3B8', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '22px' }}>
+                    {cur.subtitle}
+                  </p>
+
+                  {/* Feature 4-grid */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '24px' }}>
+                    {cur.features.map((feat, idx) => (
+                      <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '10px 12px' }}>
+                        <div style={{ fontSize: '1.1rem', marginBottom: '3px' }}>{feat.icon}</div>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#E2E8F0', marginBottom: '2px' }}>{feat.title}</div>
+                        <div style={{ fontSize: '0.7rem', color: '#64748B', lineHeight: 1.3 }}>{feat.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Direct Actions */}
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    <button onClick={() => setLightboxIdx(activeGalleryIdx)} style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid #D4AF37', color: '#F3E5AB', borderRadius: '8px', padding: '12px 16px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Maximize2 size={14} /> Fullscreen
+                    </button>
+                    <button onClick={handleSiteVisit} style={{ flex: 1, background: 'linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%)', color: '#040814', border: 'none', borderRadius: '8px', padding: '12px 18px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                      <Car size={15} /> Book Site Visit →
+                    </button>
+                    <button onClick={handleWhatsApp} style={{ background: 'rgba(255,255,255,0.06)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '12px 14px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <MessageSquare size={15} /> Details
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            );
+          })()}
+
+          {/* Filmstrip / Thumbnail Row below */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '12px', marginTop: '20px' }}>
+            {p.gallery.map((item, idx) => (
+              <div
+                key={item.id}
+                onClick={() => setActiveGalleryIdx(idx)}
+                style={{
+                  background: activeGalleryIdx === idx ? 'rgba(212,175,55,0.12)' : 'rgba(255,255,255,0.03)',
+                  border: activeGalleryIdx === idx ? '2px solid #D4AF37' : '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: activeGalleryIdx === idx ? '0 4px 20px rgba(212,175,55,0.2)' : 'none',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
+                <div style={{ height: '95px', background: '#020610', overflow: 'hidden', position: 'relative' }}>
+                  <img src={item.src} alt={item.tag} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  {activeGalleryIdx === idx && (
+                    <div style={{ position: 'absolute', top: '6px', right: '6px', background: '#D4AF37', color: '#040814', fontSize: '0.6rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>
+                      ACTIVE
+                    </div>
+                  )}
+                </div>
+                <div style={{ padding: '8px 10px', fontSize: '0.75rem', fontWeight: 600, color: activeGalleryIdx === idx ? '#F3E5AB' : '#94A3B8', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span>{item.icon}</span>
+                  <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.tag}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       )}
@@ -661,6 +872,166 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
       </section>
 
       {/* Cleanup temp script reminder — delete after verification */}
+      {/* ── FULLSCREEN LIGHTBOX MODAL ── */}
+      {lightboxIdx !== null && p.gallery && (
+        <div 
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 99999,
+            background: 'rgba(2, 6, 16, 0.96)',
+            backdropFilter: 'blur(16px)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            padding: '16px 20px',
+            animation: 'fadeInUp 0.25s ease both'
+          }}
+          onClick={() => setLightboxIdx(null)}
+        >
+          {/* Top Bar */}
+          <div 
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid rgba(212,175,55,0.2)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '1.2rem' }}>{p.gallery[lightboxIdx]?.icon}</span>
+              <div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#F3E5AB', fontFamily: "'Cinzel', serif" }}>
+                  {p.gallery[lightboxIdx]?.title}
+                </div>
+                <div style={{ fontSize: '0.72rem', color: '#94A3B8' }}>
+                  {p.name} · Verified 24K Realtors Creative
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <span style={{ fontSize: '0.8rem', color: '#D4AF37', fontWeight: 700, background: 'rgba(212,175,55,0.12)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(212,175,55,0.3)' }}>
+                {lightboxIdx + 1} / {p.gallery.length}
+              </span>
+              <button 
+                onClick={() => setLightboxIdx(null)} 
+                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                title="Close (Esc)"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+
+          {/* Center Stage with Prev / Next */}
+          <div 
+            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', position: 'relative' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Prev Button */}
+            <button
+              onClick={() => setLightboxIdx((lightboxIdx - 1 + p.gallery.length) % p.gallery.length)}
+              style={{
+                background: 'rgba(4, 8, 20, 0.8)',
+                border: '1px solid rgba(212,175,55,0.4)',
+                color: '#F3E5AB',
+                width: '46px',
+                height: '46px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 10,
+                transition: 'all 0.2s',
+                marginLeft: '10px'
+              }}
+              title="Previous Photo (Left Arrow)"
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            {/* High-Res Full Image */}
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '0 20px' }}>
+              <img
+                src={p.gallery[lightboxIdx]?.src}
+                alt={p.gallery[lightboxIdx]?.title}
+                style={{
+                  maxHeight: '74vh',
+                  maxWidth: '86vw',
+                  objectFit: 'contain',
+                  borderRadius: '12px',
+                  boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 35px rgba(212,175,55,0.2)',
+                  border: '1px solid rgba(212,175,55,0.35)'
+                }}
+              />
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={() => setLightboxIdx((lightboxIdx + 1) % p.gallery.length)}
+              style={{
+                background: 'rgba(4, 8, 20, 0.8)',
+                border: '1px solid rgba(212,175,55,0.4)',
+                color: '#F3E5AB',
+                width: '46px',
+                height: '46px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 10,
+                transition: 'all 0.2s',
+                marginRight: '10px'
+              }}
+              title="Next Photo (Right Arrow)"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+
+          {/* Bottom Bar with Thumbnails & CTAs */}
+          <div 
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.08)', gap: '16px', flexWrap: 'wrap' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Mini thumbnails */}
+            <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+              {p.gallery.map((item, idx) => (
+                <div
+                  key={item.id}
+                  onClick={() => setLightboxIdx(idx)}
+                  style={{
+                    width: '65px',
+                    height: '44px',
+                    borderRadius: '6px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    border: lightboxIdx === idx ? '2px solid #D4AF37' : '1px solid rgba(255,255,255,0.2)',
+                    opacity: lightboxIdx === idx ? 1 : 0.5,
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <img src={item.src} alt={item.tag} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Actions */}
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button 
+                onClick={handleSiteVisit}
+                style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%)', color: '#040814', border: 'none', borderRadius: '8px', padding: '10px 20px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Car size={15} /> Book Site Visit
+              </button>
+              <button 
+                onClick={handleWhatsApp}
+                style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 18px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <MessageSquare size={15} /> WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
