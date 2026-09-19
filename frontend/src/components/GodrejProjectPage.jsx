@@ -39,10 +39,25 @@ const GODREJ_24 = {
   accentColor: '#1a6b3c',
   accentGradient: 'linear-gradient(135deg, #0f4029 0%, #1a6b3c 50%, #2d9e5f 100%)',
   heroBg: 'linear-gradient(160deg, #040f08 0%, #0a2b18 40%, #0f4029 100%)',
-  showcaseImage: '/godrej_living_room_banner.jpg',
+  showcaseImage: '/godrej_24_project_card.jpg',
   gallery: [
     {
       id: 1,
+      tag: 'Project Overview',
+      icon: '🏢',
+      roomName: 'Grand Courtyard & Towers',
+      title: 'Godrej 24 — A Brighter Tomorrow Begins Here',
+      subtitle: 'Grand central courtyard, Olympic-style swimming pool, sports arena and high-rise towers in Hinjewadi Phase 1.',
+      src: '/godrej_24_project_card.jpg',
+      features: [
+        { icon: '🏊', title: 'Swimming Pool', desc: 'Resort-style central swimming pool with sun deck' },
+        { icon: '🏋️', title: 'Gymnasium & Sports', desc: '24x7 functional gym and multisport floodlit arena' },
+        { icon: '🌳', title: 'Landscaped Gardens', desc: 'Sprawling podium greenery and serene walking trails' },
+        { icon: '🛡️', title: '24x7 Security Grid', desc: 'Multi-tier CCTV surveillance and gated perimeter security' }
+      ]
+    },
+    {
+      id: 2,
       tag: 'Living Area',
       icon: '🛋️',
       roomName: 'Spacious Living Area',
@@ -57,7 +72,7 @@ const GODREJ_24 = {
       ]
     },
     {
-      id: 2,
+      id: 3,
       tag: 'Master Bedroom',
       icon: '🛏️',
       roomName: 'Master Bedroom',
@@ -72,7 +87,7 @@ const GODREJ_24 = {
       ]
     },
     {
-      id: 3,
+      id: 4,
       tag: 'Modern Bathroom',
       icon: '🚿',
       roomName: 'Modern Bathroom',
@@ -87,7 +102,7 @@ const GODREJ_24 = {
       ]
     },
     {
-      id: 4,
+      id: 5,
       tag: 'Modular Kitchen',
       icon: '🍳',
       roomName: 'Modular Kitchen',
@@ -102,7 +117,7 @@ const GODREJ_24 = {
       ]
     },
     {
-      id: 5,
+      id: 6,
       tag: 'Private Balcony',
       icon: '🌇',
       roomName: 'Private Balcony',
