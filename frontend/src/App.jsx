@@ -32,6 +32,7 @@ const LocationLandingPage = lazy(() => import('./components/LocationLandingPage'
 const BlogListPage       = lazy(() => import('./components/BlogListPage'));
 const BlogDetailPage     = lazy(() => import('./components/BlogDetailPage'));
 const PublicTownshipPage = lazy(() => import('./components/PublicTownshipPage'));
+const GodrejProjectPage  = lazy(() => import('./components/GodrejProjectPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -509,6 +510,41 @@ function AppContent() {
 
               {/* Catch-all */}
               <Route path="*" element={<Navigate to="/" replace />} />
+
+              {/* ─── GODREJ 24 — Dedicated SEO Pages ──────────────────────────── */}
+              {/* /godrej-24-hinjewadi — Project overview page */}
+              <Route
+                path="/godrej-24-hinjewadi"
+                element={<GodrejProjectPage project="godrej24" bhkFilter={null} />}
+              />
+              {/* /godrej-24-2-bhk — 2 BHK only page */}
+              <Route
+                path="/godrej-24-2-bhk"
+                element={<GodrejProjectPage project="godrej24" bhkFilter="2 BHK" />}
+              />
+              {/* /godrej-24-3-bhk — 3 BHK only page */}
+              <Route
+                path="/godrej-24-3-bhk"
+                element={<GodrejProjectPage project="godrej24" bhkFilter="3 BHK" />}
+              />
+
+              {/* ─── GODREJ ELEMENTS — Dedicated SEO Pages ──────────────────────── */}
+              {/* /godrej-elements-hinjewadi — Project overview page */}
+              <Route
+                path="/godrej-elements-hinjewadi"
+                element={<GodrejProjectPage project="elements" bhkFilter={null} />}
+              />
+              {/* /godrej-elements-2-bhk — 2 BHK only page */}
+              <Route
+                path="/godrej-elements-2-bhk"
+                element={<GodrejProjectPage project="elements" bhkFilter="2 BHK" />}
+              />
+              {/* /godrej-elements-3-bhk — 3 BHK only page */}
+              <Route
+                path="/godrej-elements-3-bhk"
+                element={<GodrejProjectPage project="elements" bhkFilter="3 BHK" />}
+              />
+
             </Routes>
           </Suspense>
         </main>

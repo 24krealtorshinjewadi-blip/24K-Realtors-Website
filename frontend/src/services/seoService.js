@@ -171,8 +171,47 @@ export const SEO_CONFIGS = {
         url: 'https://real-estate-digital-marketing.vercel.app/'
       }
     }
-  }
+  },
+
+  // ─── Godrej 24 — Hinjewadi Phase 1 ─────────────────────────────────────────
+  godrej24: {
+    title: 'Godrej 24 Hinjewadi Phase 1 | 2 & 3 BHK Verified Listings | 24K Realtors Pune',
+    description: 'Verified 2 & 3 BHK listings in Godrej 24 Hinjewadi Phase 1 by Godrej Properties. Carpet areas: 725, 820, 940 (2BHK) & 1167, 1488 sq.ft (3BHK). Ready to move. MahaRERA P52100018596.',
+    url: '/godrej-24-hinjewadi',
+  },
+
+  godrej24_2bhk: {
+    title: 'Godrej 24 2 BHK Hinjewadi Phase 1 | Carpet 725, 820, 940 sq.ft | 24K Realtors',
+    description: 'Godrej 24 2 BHK apartments in Hinjewadi Phase 1. Verified carpet areas: 725 sq.ft, 820 sq.ft, 940 sq.ft. Ready to move. MahaRERA: P52100018596. Contact 24K Realtors for pricing.',
+    url: '/godrej-24-2-bhk',
+  },
+
+  godrej24_3bhk: {
+    title: 'Godrej 24 3 BHK Hinjewadi Phase 1 | Carpet 1167, 1488 sq.ft | 24K Realtors',
+    description: 'Godrej 24 3 BHK apartments in Hinjewadi Phase 1. Verified carpet areas: 1167 sq.ft and 1488 sq.ft. Ready to move. MahaRERA: P52100018596. Contact 24K Realtors for current pricing.',
+    url: '/godrej-24-3-bhk',
+  },
+
+  // ─── Godrej Elements — Hinjewadi Phase 1 ─────────────────────────────────────
+  godrejElements: {
+    title: 'Godrej Elements Hinjewadi Phase 1 | 2 & 3 BHK Smart Homes | 24K Realtors Pune',
+    description: 'Verified 2 & 3 BHK listings in Godrej Elements Hinjewadi Phase 1. Smart homes with home automation, 21-point safety, infinity pool. Carpet 725–1488 sq.ft. MahaRERA P52100016626.',
+    url: '/godrej-elements-hinjewadi',
+  },
+
+  godrejElements_2bhk: {
+    title: 'Godrej Elements 2 BHK Hinjewadi Phase 1 | Carpet 725, 820, 940 sq.ft | 24K Realtors',
+    description: 'Godrej Elements 2 BHK smart apartments in Hinjewadi Phase 1. Verified carpet areas: 725 sq.ft, 820 sq.ft, 940 sq.ft. Home automation, infinity pool. MahaRERA: P52100016626.',
+    url: '/godrej-elements-2-bhk',
+  },
+
+  godrejElements_3bhk: {
+    title: 'Godrej Elements 3 BHK Hinjewadi Phase 1 | Carpet 1167, 1488 sq.ft | 24K Realtors',
+    description: 'Godrej Elements 3 BHK smart apartments in Hinjewadi Phase 1. Verified carpet areas: 1167 sq.ft and 1488 sq.ft. Smart home automation, 21-point safety. MahaRERA: P52100016626.',
+    url: '/godrej-elements-3-bhk',
+  },
 };
+
 
 /**
  * buildBlogSEO — Generate dynamic SEO metadata and Article schema for a Blog Post
