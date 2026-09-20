@@ -85,7 +85,7 @@ const DEFAULT_GALLERY_ITEMS = [
     location: 'Hinjewadi Phase 1',
     category: 'VISITS',
     categoryLabel: '🚗 VIP Site Visit',
-    dev: '24K Luxury Concierge Desk',
+    dev: '24K Luxury Advisory Desk',
     img: '/gallery_visit_1.png',
     desc: 'Complimentary door-to-door Mercedes pickup & drop for HNWI client inspecting Hinjewadi IT park high-rises.'
   },
@@ -247,7 +247,7 @@ const DEFAULT_GALLERY_ITEMS = [
     categoryLabel: '🏛️ Lodha 5-Star Amenities',
     dev: 'Lodha Group',
     img: '/lodha_4_grand_lobby.png',
-    desc: 'Stage 4: Double-height entrance lobby with Italian Statuario marble, chandelier & 24/7 concierge.'
+    desc: 'Stage 4: Double-height entrance lobby with Italian Statuario marble, chandelier & 24/7 front desk.'
   },
   {
     id: 35,
@@ -4106,7 +4106,7 @@ export default function Portal({ onViewChange }) {
               { value: '15K+', label: 'Happy Families', icon: '👨‍👩‍👧', color: '#25D366' },
               { value: '₹2,400 Cr+', label: 'Portfolio Value', icon: '📈', color: '#60A5FA' },
               { value: '100%', label: 'MahaRERA Verified', icon: '🛡️', color: '#2EC4B6' },
-              { value: '0%', label: 'Brokerage Fee', icon: '💎', color: '#F59E0B' },
+              { value: '4.9 ★', label: 'Client Rating', icon: '⭐', color: '#F59E0B' },
             ].map((stat, i) => (
               <div key={i} style={{
                 display: 'flex',
@@ -4185,7 +4185,7 @@ export default function Portal({ onViewChange }) {
                       <span>🛡️ MahaRERA</span>
                     </div>
                     <div className="subpage-stats-badge" style={{ background: 'rgba(46,196,182,0.08)', borderColor: 'rgba(46,196,182,0.3)', color: '#2EC4B6' }}>
-                      <span>💎 0% Brokerage</span>
+                      <span>💎 Direct Developer</span>
                     </div>
                   </div>
                 </div>
@@ -4491,7 +4491,7 @@ export default function Portal({ onViewChange }) {
                     Premium Societies &amp; <span style={{ color: '#D4AF37' }}>Townships</span>
                   </h2>
                   <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>
-                    Discover tier-1 residential developments, smart townships, and luxury high-rise communities across Pune West. Direct developer mandates — 0% brokerage.
+                    Discover tier-1 residential developments, smart townships, and luxury high-rise communities across Pune West. Direct developer mandates and verified pricing.
                   </p>
                 </div>
 
@@ -4695,7 +4695,7 @@ export default function Portal({ onViewChange }) {
                     Tier-1 <span style={{ color: '#D4AF37' }}>Authorized Developers</span>
                   </h2>
                   <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>
-                    Partnered developer profiles. We coordinate directly with core offices to negotiate institutional prices, priority allotments, and zero brokerage terms.
+                    Partnered developer profiles. We coordinate directly with core offices to negotiate institutional prices, priority allotments, and verified direct terms.
                   </p>
                 </div>
 
@@ -5159,13 +5159,13 @@ export default function Portal({ onViewChange }) {
                 <span style={{ color: '#E6C35C' }}> Expert Call</span>
               </h3>
               <p className="modal-subtitle" style={{ marginBottom: "0", fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>
-                For <strong style={{ color: "#E6C35C" }}>{selectedProperty.title || "Premium Listing"}</strong> · Zero brokerage · Direct developer
+                For <strong style={{ color: "#E6C35C" }}>{selectedProperty.title || "Premium Listing"}</strong> · Verified Pricing · Direct Developer
               </p>
             </div>
 
             {/* Trust Mini Bar */}
             <div style={{ display: 'flex', gap: '10px', marginBottom: '22px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '10px 14px', flexWrap: 'wrap' }}>
-              {['🛡️ MahaRERA Verified', '💎 0% Brokerage', '📞 Direct Developer'].map((item, i) => (
+              {['🛡️ MahaRERA Verified', '💎 Verified Pricing', '📞 Direct Developer'].map((item, i) => (
                 <span key={i} style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.6)', fontWeight: 600, fontFamily: "'Montserrat', sans-serif", display: 'flex', alignItems: 'center', gap: '3px' }}>
                   {i > 0 && <span style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>}
                   {item}
@@ -6174,7 +6174,7 @@ export default function Portal({ onViewChange }) {
                         transition: 'all 0.2s'
                       }}
                     >
-                      <span>💬 WhatsApp Concierge</span>
+                      <span>💬 Direct WhatsApp</span>
                     </a>
                     <a 
                       href={`tel:${expert.phone}`} 
@@ -6223,7 +6223,7 @@ export default function Portal({ onViewChange }) {
                 <span style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Seller Advisory</span>
               </div>
               <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 700, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>
-                List Your Property with <span style={{ color: '#D4AF37' }}>Zero Brokerage</span>
+                List Your Property with <span style={{ color: '#D4AF37' }}>24K Realtors</span>
               </h2>
               <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', maxWidth: '520px', margin: '0 auto', lineHeight: 1.6 }}>
                 Register your mandate directly with Pune West's most trusted advisory team. Reach verified buyers, NRI investors, and institutional funds.
@@ -6255,7 +6255,7 @@ export default function Portal({ onViewChange }) {
                   </div>
                 </div>
                 <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: isMobile ? '1.35rem' : '1.7rem', color: '#fff', margin: '0 0 14px', lineHeight: 1.25, letterSpacing: '-0.01em' }}>
-                  Your Property.<br/><span style={{ color: '#E6C35C' }}>Our Buyers.</span> Zero Brokerage.
+                  Your Property.<br/><span style={{ color: '#E6C35C' }}>Our Verified Buyers.</span> Direct Mandate.
                 </h3>
                 <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: '28px' }}>
                   Direct access to 10,000+ verified buyer inquiries monthly, institutional property funds, NRI investors, and HNWI clients in Baner, Wakad & Hinjewadi.
@@ -6264,7 +6264,7 @@ export default function Portal({ onViewChange }) {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {[
                     { icon: '✅', label: 'MahaRERA Verified' },
-                    { icon: '💸', label: '0% Brokerage' },
+                    { icon: '🎯', label: 'Verified Buyers' },
                     { icon: '⚡', label: 'Live in 2 Minutes' },
                   ].map((b, bi) => (
                     <div key={bi} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(212,175,55,0.07)', border: '1px solid rgba(212,175,55,0.18)', borderRadius: '50px', padding: '6px 14px' }}>

@@ -20,7 +20,7 @@
  *  • Interactive EMI & Amortization Calculator with Donut Chart
  *  • Society & Vastu Shastra Intelligence Dossier
  *  • Curated Market Alternatives & Similar Properties
- *  • Assigned Senior Portfolio Advisor Card & Direct WhatsApp / Call Concierge
+ *  • Assigned Senior Portfolio Advisor Card & Direct WhatsApp / Call
  *  • Instant 4K PDF Brochure & Site Visit Lead Capture Modals
  * ─────────────────────────────────────────────────────────────────────────────
  */
@@ -419,8 +419,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     }
   };
 
-  /* ── AI Concierge Responses ── */
-  const CONCIERGE_SUGGESTED_QUESTIONS = [
+  /* ── AI Property Specialist Responses ── */
+  const AI_SUGGESTED_QUESTIONS = [
     `What is the all-inclusive on-road price?`,
     `What are the luxury specifications and marble fittings?`,
     `How is the RERA construction milestone progress?`,
@@ -428,12 +428,12 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     `Which banks offer pre-approved 8.35% home loans?`,
   ];
 
-  const getConciergeResponse = (question) => {
+  const getAiPropertyResponse = (question) => {
     const q = question.toLowerCase();
     const t = title;
     const loc = cleanLocation;
     if (q.includes('price') || q.includes('cost') || q.includes('stamp') || q.includes('all-inclusive')) {
-      return `📊 **All-Inclusive Cost Analysis for ${t}**:\n\n• **Agreement Value**: ${displayPrice}\n• **Stamp Duty (7%)**: ~₹${(stampDuty/100000).toFixed(2)} Lakhs\n• **MahaRERA Registration**: ₹30,000\n• **GST (5%)**: ~₹${(gstCharges/100000).toFixed(2)} Lakhs\n• **Infra, Parking & Club**: ₹3.50 Lakhs\n• **Total Estimated On-Road**: ~₹${(totalAllInclusive/10000000).toFixed(2)} Cr\n\n*Zero brokerage applicable on exclusive 24K developer mandates.*`;
+      return `📊 **All-Inclusive Cost Analysis for ${t}**:\n\n• **Agreement Value**: ${displayPrice}\n• **Stamp Duty (7%)**: ~₹${(stampDuty/100000).toFixed(2)} Lakhs\n• **MahaRERA Registration**: ₹30,000\n• **GST (5%)**: ~₹${(gstCharges/100000).toFixed(2)} Lakhs\n• **Infra, Parking & Club**: ₹3.50 Lakhs\n• **Total Estimated On-Road**: ~₹${(totalAllInclusive/10000000).toFixed(2)} Cr\n\n*Transparent all-inclusive pricing on exclusive 24K developer mandates.*`;
     }
     if (q.includes('spec') || q.includes('material') || q.includes('marble') || q.includes('fittings')) {
       return `🏛️ **Architectural Specifications Schedule for ${t}**:\n\n• **Flooring**: Imported Italian Botticino Marble in Living/Dining; Engineered Oak Timber in Master Suites.\n• **Sanitaryware**: Grohe concealed thermostatic divertors with Toto wall-hung commodes.\n• **Windows**: Saint-Gobain Double Glazed Units (DGU) with soundproof acoustic insulation.\n• **Smart Tech**: Daikin VRV multi-split climate control + Legrand IoT automation & Yale biometric door lock.`;
@@ -454,7 +454,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     setAiMessages(prev => [...prev, { role: 'user', text: question }]);
     setAiThinking(true);
     await new Promise(r => setTimeout(r, 600 + Math.random() * 300));
-    const response = getConciergeResponse(question);
+    const response = getAiPropertyResponse(question);
     setAiMessages(prev => [...prev, { role: 'ai', text: response }]);
     setAiThinking(false);
   };
@@ -628,7 +628,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     { Icon: Lock,        text: 'Direct Developer Allotment Pricing' },
     { Icon: Users,       text: 'Complimentary AC Chauffeur Site Tours' },
     { Icon: BadgeCheck,  text: '🛡️ MahaRERA Registration Verified' },
-    { Icon: ShieldCheck, text: 'Zero Brokerage & Complete Loan Facilitation' },
+    { Icon: ShieldCheck, text: 'Direct Pricing & Complete Loan Facilitation' },
   ];
 
   return (
@@ -895,7 +895,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
               <div className="pi-hero-chip pi-hero-chip--gold">
                 <Award size={13} />
-                <span>Zero Brokerage Verified</span>
+                <span>Direct Mandate Verified</span>
               </div>
             </div>
 
@@ -1698,7 +1698,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
               </button>
             </div>
 
-            {/* AI Concierge Trigger */}
+            {/* AI Property Specialist Trigger */}
             <button
               onClick={openAiChat}
               style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 16px', borderRadius: '14px', background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(11,22,40,0.9) 100%)', border: '1px solid rgba(212,175,55,0.4)', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
@@ -1730,7 +1730,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
           MODALS
       ═══════════════════════════════════════════════════════════ */}
 
-      {/* 1. AI Concierge Modal */}
+      {/* 1. AI Property Specialist Modal */}
       {aiChatOpen && (
         <div
           onClick={(e) => { if (e.target === e.currentTarget) setAiChatOpen(false); }}
@@ -1770,7 +1770,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
             {aiMessages.filter(m => m.role === 'user').length === 0 && (
               <div style={{ padding: '0 12px 10px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {CONCIERGE_SUGGESTED_QUESTIONS.slice(0, 3).map((q, i) => (
+                {AI_SUGGESTED_QUESTIONS.slice(0, 3).map((q, i) => (
                   <button key={i} onClick={() => handleAiSend(q)} style={{ padding: '5px 10px', borderRadius: '100px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.3)', color: '#F3E5AB', fontSize: '0.68rem', fontWeight: 600, cursor: 'pointer' }}>
                     {q}
                   </button>

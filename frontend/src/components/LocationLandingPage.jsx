@@ -249,7 +249,7 @@ export default function LocationLandingPage({ locationSlug = 'hinjewadi-phase-1'
                 Need Private Advisory for {data.name}?
               </h4>
               <p style={{ color: '#CBD5E1', fontSize: '0.80rem', lineHeight: 1.6, margin: '0 0 16px' }}>
-                Our Hinjewadi &amp; Pune West specialists offer bespoke portfolio guidance, off-market developer allocations, and zero-brokerage home loan pre-approvals.
+                Our Hinjewadi &amp; Pune West specialists offer bespoke portfolio guidance, off-market developer allocations, and competitive home loan pre-approvals.
               </p>
               <div style={{ fontSize: '0.74rem', color: '#94A3B8', marginBottom: '16px' }}>
                 MahaRERA Reg. <strong>A051262603190</strong> · Senior Advisor: Neeraj Giri

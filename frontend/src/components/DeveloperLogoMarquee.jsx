@@ -606,7 +606,7 @@ export default function DeveloperLogoMarquee({ onSelectDeveloper, isMobile = fal
             </span>
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: isMobile ? '0.78rem' : '0.86rem', maxWidth: '580px', margin: '0 auto', lineHeight: 1.6, fontFamily: "'Montserrat', sans-serif" }}>
-            Direct institutional mandates with Pune West's 16 landmark builders · 100% MahaRERA registered inventory · Zero brokerage to direct buyers
+            Direct institutional mandates with Pune West's 16 landmark builders · 100% MahaRERA registered inventory · Direct developer pricing
           </p>
         </div>
       </div>
