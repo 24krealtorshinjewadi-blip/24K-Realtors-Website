@@ -1,8 +1,8 @@
-// Auto-clear stale mock database from localStorage if it lacks v2026_three_flagship_projects_v10
+// Auto-clear stale mock database from localStorage if it lacks v2026_four_flagship_projects_v11
 try {
   const currentPropVer = localStorage.getItem('mock_properties_version');
-  if (currentPropVer !== 'v2026_three_flagship_projects_v10') {
-    console.info('[Cache Bust] Refreshing catalog to 3 flagship projects (Godrej 24, Godrej Elements, Megapolis)...');
+  if (currentPropVer !== 'v2026_four_flagship_projects_v11') {
+    console.info('[Cache Bust] Refreshing catalog to 4 flagship projects (Godrej 24, Godrej Elements, Megapolis, VJ YashOne)...');
     localStorage.removeItem('mock_properties');
     localStorage.removeItem('mock_properties_version');
     localStorage.removeItem('mock_agents');
@@ -257,6 +257,58 @@ const initialProperties = [
       "Commercial High-Street & Marts",
       "Jogging & Cycling Tracks",
       "Children Play Zones & Creche"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 4 — VILAS JAVDEKAR YASHONE HINJEWADI
+  // Hinjewadi Phase 1 | Carpet: 678 sq.ft | Ready to Move / Verified
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-vj-yashone",
+    title: "VJ YashOne",
+    projectName: "YashOne Hinjewadi",
+    builderName: "Vilas Javdekar Developers",
+    description: "Premium residences in the heart of Hinjewadi Phase 1 by Vilas Javdekar (VJ). Featuring 678 sq.ft carpet 2 BHK homes with lush green surroundings, modern lifestyle amenities, and prime connectivity to Phase 1 IT parks.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 6800000,
+    location: "HINJEWADI_PHASE_1",
+    address: "YashOne, Hinjewadi Phase 1, Rajiv Gandhi Infotech Park, Pune — 411057",
+    latitude: 18.5940,
+    longitude: 73.7360,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100021676",
+    possessionDate: "Ready to Move",
+    imageUrl: "/yashone_hero_card.jpg",
+    galleryImages: [
+      "/yashone_hero_card.jpg",
+      "/yashone_living_room.jpg",
+      "/yashone_bedroom.jpg",
+      "/yashone_bathroom.jpg",
+      "/yashone_balcony.jpg"
+    ],
+    furnishingStatus: "UNFURNISHED",
+    gasPipeline: true,
+    societySlug: "vj-yashone-hinjewadi",
+    configurations: [
+      { bhk: "2 BHK", carpet: "678 sq.ft", highlight: true }
+    ],
+    amenities: [
+      "Modern Gymnasium & Fitness Club",
+      "Community Clubhouse & Hall",
+      "Landscaped Green Podium Gardens",
+      "Children Play & Adventure Area",
+      "24x7 Multi-Tier Security & CCTV Grid",
+      "Jogging & Walking Track",
+      "Covered Car Parking",
+      "EV Charging Infrastructure",
+      "Rainwater Harvesting & Solar Water",
+      "High-Speed Passenger Elevators"
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
@@ -1128,7 +1180,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_three_flagship_projects_v10';
+const HINJEWADI_PROP_VERSION = 'v2026_four_flagship_projects_v11';
 
 const LocalMockDb = {
   getProperties() {

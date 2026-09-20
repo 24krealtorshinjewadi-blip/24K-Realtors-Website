@@ -35,6 +35,7 @@ const PublicTownshipPage        = lazy(() => import('./components/PublicTownship
 const GodrejProjectPage         = lazy(() => import('./components/GodrejProjectPage'));
 const MegapolisTownshipPage     = lazy(() => import('./components/MegapolisTownshipPage'));
 const MegapolisSocietyListingsPage = lazy(() => import('./components/MegapolisSocietyListingsPage'));
+const YashOneProjectPage        = lazy(() => import('./components/YashOneProjectPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -582,6 +583,14 @@ function AppContent() {
                 path="/godrej-elements-3-bhk"
                 element={<GodrejProjectPage project="elements" bhkFilter="3 BHK" />}
               />
+
+              {/* ─── VJ YASHONE — Dedicated Showcase Pages ─────────────────────── */}
+              <Route
+                path="/vj-yashone-hinjewadi"
+                element={<YashOneProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route path="/yashone-hinjewadi" element={<Navigate to="/vj-yashone-hinjewadi" replace />} />
+              <Route path="/yashone" element={<Navigate to="/vj-yashone-hinjewadi" replace />} />
 
               {/* Catch-all (MUST BE LAST) */}
               <Route path="*" element={<Navigate to="/" replace />} />

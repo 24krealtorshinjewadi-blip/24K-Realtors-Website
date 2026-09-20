@@ -1260,7 +1260,8 @@ export default function Portal({ onViewChange }) {
           if (t.includes('godrej 24') || p?.id === 'prop-godrej-24') return 1;
           if (t.includes('elements') || p?.id === 'prop-godrej-elements') return 2;
           if (t.includes('megapolis') || p?.id === 'prop-megapolis-township') return 3;
-          return 4;
+          if (t.includes('yashone') || t.includes('javdekar') || p?.id === 'prop-vj-yashone') return 4;
+          return 5;
         };
         unique.sort((a, b) => sortOrder(a) - sortOrder(b));
         setAllRawProperties(unique);
@@ -1350,6 +1351,14 @@ export default function Portal({ onViewChange }) {
         setLoading(false);
         return;
       }
+      if (activeCollection === 'VJ_YASHONE') {
+        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('yashone'));
+        setProperties(filtered);
+        setTotalPages(1);
+        setTotalElements(filtered.length);
+        setLoading(false);
+        return;
+      }
       if (activeCollection === '1_BHK') {
         queryFilters.bedrooms = '1';
       } else if (activeCollection === '2_BHK') {
@@ -1381,7 +1390,8 @@ export default function Portal({ onViewChange }) {
           if (t.includes('godrej 24') || p?.id === 'prop-godrej-24') return 1;
           if (t.includes('elements') || p?.id === 'prop-godrej-elements') return 2;
           if (t.includes('megapolis') || p?.id === 'prop-megapolis-township') return 3;
-          return 4;
+          if (t.includes('yashone') || t.includes('javdekar') || p?.id === 'prop-vj-yashone') return 4;
+          return 5;
         };
         unique.sort((a, b) => sortOrder(a) - sortOrder(b));
         setProperties(unique);
@@ -4258,6 +4268,7 @@ export default function Portal({ onViewChange }) {
                     { id: 'GODREJ_24', label: 'Godrej 24', icon: '🌿', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('godrej 24')).length },
                     { id: 'GODREJ_ELEMENTS', label: 'Godrej Elements', icon: '⚡', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('elements')).length },
                     { id: 'MEGAPOLIS', label: 'Megapolis', icon: '🏙️', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('megapolis')).length },
+                    { id: 'VJ_YASHONE', label: 'VJ YashOne', icon: '🏢', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('yashone')).length },
                     { id: '2_BHK', label: '2 BHK Residences', icon: '🛏️', count: allRawProperties.filter(p => (p.configurations || []).some(c => c.bhk.includes('2')) || p.bedrooms === 2).length },
                     { id: '3_BHK', label: '3 BHK Residences', icon: '👑', count: allRawProperties.filter(p => (p.configurations || []).some(c => c.bhk.includes('3')) || p.bedrooms === 3).length },
                     { id: 'WISHLIST', label: 'Saved', icon: '♥', count: wishlistIds.length },
