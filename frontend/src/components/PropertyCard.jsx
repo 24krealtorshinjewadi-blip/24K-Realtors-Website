@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MapPin, ShieldCheck, Sliders, Heart, ArrowRight, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -15,8 +16,8 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('glitterati') || title.includes('penthouse')) return '/lodha_7_infinity_pool.png';
   if (title.includes('mahalunge') || title.includes('oasis')) return '/gallery_tower_3.png';
   if (title.includes('studio') || title.includes('corporate')) return '/dev_vj_building.png';
-  if (title.includes('megapolis')) return '/properties/megapolis-sunway/01_aerial_hero.png';
-  if (title.includes('elements') || title.includes('godrej elements')) return '/dev_godrej_building.png';
+  if (title.includes('godrej 24') || title === 'godrej 24') return '/godrej_24_project_card.jpg';
+  if (title.includes('elements') || title.includes('godrej elements')) return '/godrej_elements_project_card.jpg';
   if (title.includes('crown') || title.includes('tcg')) return '/gallery_tower_2.png';
   if (title.includes('kasturi') || title.includes('apostle')) return '/dev_kasturi_forbes.png';
   if (title.includes('republic') || title.includes('life republic')) return '/dev_kolte_patil_township.png';
@@ -115,6 +116,7 @@ export default function PropertyCard({
   onOpenRera,
   onOpenBrochure
 }) {
+  const navigate = useNavigate();
   const cardImgSrc = getForbesTeslaPropertyImage(property);
   const builderName = property.builderName || property.developer || property.builder?.name || getBuilderName(property.title, property.description);
   const hasAerial = Boolean(
@@ -123,6 +125,19 @@ export default function PropertyCard({
     property.aerialImage || 
     (property.imageUrl && (property.imageUrl.includes('aerial') || property.imageUrl.includes('01_aerial_hero')))
   );
+
+  const rawPriceStr = formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType);
+  const displayPrice = (!rawPriceStr || rawPriceStr === 'N/A' || rawPriceStr === 'NaN') ? 'Price on Request' : rawPriceStr;
+
+  // For consolidated project cards (e.g. Godrej 24, Godrej Elements) with a societySlug,
+  // clicking navigates to the dedicated SEO landing page.
+  const handleCardClick = () => {
+    if (property.societySlug) {
+      navigate(`/${property.societySlug}`);
+    } else if (onOpenDetail) {
+      onOpenDetail(property);
+    }
+  };
 
   return (
     <div 
@@ -140,7 +155,7 @@ export default function PropertyCard({
         transform: 'translateZ(0)',
         willChange: 'transform'
       }}
-      onClick={() => onOpenDetail ? onOpenDetail(property) : null}
+      onClick={handleCardClick}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px) translateZ(0)'; e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.5)'; e.currentTarget.style.boxShadow = '0 18px 45px rgba(0,0,0,0.65), 0 0 25px rgba(212, 175, 55, 0.15)'; }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0) translateZ(0)'; e.currentTarget.style.borderColor = 'rgba(197, 168, 128, 0.22)'; e.currentTarget.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.45)'; }}
     >
@@ -165,6 +180,7 @@ export default function PropertyCard({
             width: '100%', 
             height: '100%', 
             objectFit: 'cover',
+            objectPosition: (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements')) ? 'center 35%' : 'center',
             transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         />
@@ -296,16 +312,22 @@ export default function PropertyCard({
             position: 'absolute',
             bottom: '12px',
             left: '12px',
-            fontSize: '1.2rem',
-            fontWeight: 800,
+            fontSize: displayPrice === 'Price on Request' ? '0.86rem' : '1.15rem',
+            fontWeight: 700,
             color: '#E6C35C',
             textShadow: '0 2px 4px rgba(0,0,0,0.7)',
-            zIndex: 2
+            zIndex: 2,
+            background: 'rgba(4, 8, 20, 0.82)',
+            padding: '4px 10px',
+            borderRadius: '6px',
+            border: '1px solid rgba(230, 195, 92, 0.35)',
+            backdropFilter: 'blur(6px)',
+            letterSpacing: '0.02em'
           }}
         >
           {isHnwiMode 
-            ? `Yield: ${property?.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType)}` 
-            : (formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType))}
+            ? `Yield: ${property?.propertyType === 'COMMERCIAL' ? '7.2%' : '4.4%'} | ${displayPrice}` 
+            : displayPrice}
         </span>
 
         {/* Urgency Badge — Limited Units Remaining */}
@@ -465,45 +487,108 @@ export default function PropertyCard({
           {property.title}
         </h3>
 
-        {/* Minimal configuration details (BHK + Area + ₹/sqft) */}
-        <div 
-          className="property-specs"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            fontSize: '0.78rem',
-            color: 'var(--text-muted)',
-            borderTop: '1px solid rgba(255,255,255,0.04)',
+        {/* Configuration Chips Grid — shown when property has multiple BHK variants */}
+        {property.configurations && property.configurations.length > 0 ? (
+          <div style={{
+            marginTop: '10px',
             paddingTop: '10px',
-            marginTop: '4px',
-            flexWrap: 'wrap'
-          }}
-        >
-          <span style={{ fontWeight: 600 }}>{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A'}</span>
-          <span style={{ width: '3px', height: '3px', background: 'rgba(255,255,255,0.18)', borderRadius: '50%', flexShrink: 0 }}></span>
-          <span>{property.areaSquareFeet ? `${property.areaSquareFeet} sqft` : 'Area N/A'}</span>
-          {property.areaSquareFeet && property.price && (() => {
-            const priceNum = Number(String(property.price).replace(/[^0-9.]/g, ''));
-            const area = Number(property.areaSquareFeet);
-            if (priceNum > 0 && area > 0 && property.transactionType !== 'RENT') {
-              const perSqft = Math.round(priceNum / area);
-              return (
-                <>
-                  <span style={{ width: '3px', height: '3px', background: 'rgba(255,255,255,0.18)', borderRadius: '50%', flexShrink: 0 }}></span>
-                  <span style={{ color: '#E6C35C', fontWeight: 700 }}>₹{perSqft.toLocaleString('en-IN')}/sqft</span>
-                </>
-              );
-            }
-            return null;
-          })()}
-          {property.exclusiveDeal && (
-            <>
-              <span style={{ width: '3px', height: '3px', background: 'rgba(255,255,255,0.18)', borderRadius: '50%', flexShrink: 0 }}></span>
-              <span style={{ color: '#E6C35C', fontWeight: 700 }}>★ Exclusive</span>
-            </>
-          )}
-        </div>
+            borderTop: '1px solid rgba(255,255,255,0.05)'
+          }}>
+            <div style={{ fontSize: '0.65rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 700, marginBottom: '8px' }}>
+              Available Configurations
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {property.configurations.map((cfg, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    background: cfg.highlight
+                      ? 'rgba(230,195,92,0.12)'
+                      : 'rgba(255,255,255,0.04)',
+                    border: cfg.highlight
+                      ? '1px solid rgba(230,195,92,0.45)'
+                      : '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '8px',
+                    padding: '6px 10px',
+                    minWidth: '72px',
+                    cursor: 'default',
+                    position: 'relative'
+                  }}
+                >
+                  {cfg.highlight && (
+                    <span style={{
+                      position: 'absolute',
+                      top: '-7px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      background: 'linear-gradient(90deg,#D4AF37,#F3E5AB)',
+                      color: '#1a1a1a',
+                      fontSize: '0.52rem',
+                      fontWeight: 800,
+                      padding: '1px 6px',
+                      borderRadius: '20px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      whiteSpace: 'nowrap'
+                    }}>Popular</span>
+                  )}
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: cfg.highlight ? '#E6C35C' : '#CBD5E1' }}>
+                    {cfg.bhk}
+                  </span>
+                  <span style={{ fontSize: '0.68rem', color: '#64748B', marginTop: '2px' }}>
+                    {cfg.carpet}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: '6px', fontSize: '0.62rem', color: '#374151', fontStyle: 'italic' }}>
+              MahaRERA: {property.reraNumber} · Carpet area as per RERA
+            </div>
+          </div>
+        ) : (
+          /* Original specs row for non-consolidated properties */
+          <div
+            className="property-specs"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              fontSize: '0.78rem',
+              color: 'var(--text-muted)',
+              borderTop: '1px solid rgba(255,255,255,0.04)',
+              paddingTop: '10px',
+              marginTop: '4px',
+              flexWrap: 'wrap'
+            }}
+          >
+            <span style={{ fontWeight: 600 }}>{property.bedrooms > 0 ? `${property.bedrooms} BHK` : 'N/A'}</span>
+            <span style={{ width: '3px', height: '3px', background: 'rgba(255,255,255,0.18)', borderRadius: '50%', flexShrink: 0 }}></span>
+            <span>{property.areaSquareFeet ? `${property.areaSquareFeet} sqft` : 'Area N/A'}</span>
+            {property.areaSquareFeet && property.price && (() => {
+              const priceNum = Number(String(property.price).replace(/[^0-9.]/g, ''));
+              const area = Number(property.areaSquareFeet);
+              if (priceNum > 0 && area > 0 && property.transactionType !== 'RENT') {
+                const perSqft = Math.round(priceNum / area);
+                return (
+                  <>
+                    <span style={{ width: '3px', height: '3px', background: 'rgba(255,255,255,0.18)', borderRadius: '50%', flexShrink: 0 }}></span>
+                    <span style={{ color: '#E6C35C', fontWeight: 700 }}>₹{perSqft.toLocaleString('en-IN')}/sqft</span>
+                  </>
+                );
+              }
+              return null;
+            })()}
+            {property.exclusiveDeal && (
+              <>
+                <span style={{ width: '3px', height: '3px', background: 'rgba(255,255,255,0.18)', borderRadius: '50%', flexShrink: 0 }}></span>
+                <span style={{ color: '#E6C35C', fontWeight: 700 }}>★ Exclusive</span>
+              </>
+            )}
+          </div>
+        )}
 
         {/* Sleek CTA Bar with WhatsApp Direct Inquiry */}
         <div 
@@ -519,7 +604,9 @@ export default function PropertyCard({
           {/* WhatsApp Direct Inquiry Button */}
           <a
             href={`https://wa.me/919673000053?text=${encodeURIComponent(
-              `Namaste 24K Realtors! 🏠\n\nI am interested in:\n📌 *${property.title}*\n📍 Location: ${property.location}\n💰 Price: ${formatPrice ? formatPrice(property.price) : property.price}\n🛡️ RERA: ${property.reraNumber || 'Verified'}\n\nPlease share floor plans, pricing breakup, and available site visit slots.`
+              property.configurations && property.configurations.length > 0
+                ? `Namaste 24K Realtors! 🏠\n\nI am interested in:\n📌 *${property.title}* — Hinjewadi Phase 1\n📍 ${property.address}\n🏢 Developer: ${builderName}\n🛡️ MahaRERA: ${property.reraNumber}\n\n📐 Available Configurations:\n${property.configurations.map(c => `  • ${c.bhk} — ${c.carpet}`).join('\n')}\n\nPlease share current pricing, floor plans, and available site visit slots.`
+                : `Namaste 24K Realtors! 🏠\n\nI am interested in:\n📌 *${property.title}*\n📍 Location: ${property.location}\n💰 Price: ${formatPrice ? formatPrice(property.price) : property.price}\n🛡️ RERA: ${property.reraNumber || 'Verified'}\n\nPlease share floor plans, pricing breakup, and available site visit slots.`
             )}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -549,7 +636,7 @@ export default function PropertyCard({
             className="view-details-cta"
             onClick={(e) => {
               e.stopPropagation();
-              if (onOpenDetail) onOpenDetail(property);
+              handleCardClick();
             }}
             style={{
               fontSize: '0.78rem',

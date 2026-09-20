@@ -1318,24 +1318,16 @@ export default function Portal({ onViewChange }) {
         return;
       }
       
-      if (activeCollection === 'MEGAPOLIS') {
-        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('megapolis'));
+      if (activeCollection === 'GODREJ_24') {
+        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('godrej 24'));
         setProperties(filtered);
         setTotalPages(1);
         setTotalElements(filtered.length);
         setLoading(false);
         return;
       }
-      if (activeCollection === 'TCG') {
-        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('tcg') || (p.title || '').toLowerCase().includes('cliff garden'));
-        setProperties(filtered);
-        setTotalPages(1);
-        setTotalElements(filtered.length);
-        setLoading(false);
-        return;
-      }
-      if (activeCollection === 'EON_HOMES') {
-        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('eon') || (p.title || '').toLowerCase().includes('kasturi'));
+      if (activeCollection === 'GODREJ_ELEMENTS') {
+        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('elements'));
         setProperties(filtered);
         setTotalPages(1);
         setTotalElements(filtered.length);
@@ -3259,7 +3251,7 @@ export default function Portal({ onViewChange }) {
   };
 
   const formatPrice = (price, transactionType = null) => {
-    if (!price) return 'N/A';
+    if (!price) return 'Price on Request';
     if (typeof price === 'string') {
       const crMatch = price.match(/0\.(\d+)\s*Cr/i);
       if (crMatch) {
@@ -4264,14 +4256,11 @@ export default function Portal({ onViewChange }) {
                 {/* Row 2: Segmented Category Pills — full width horizontal scroll */}
                 <div className="luxury-segmented-controls" style={{ display: 'flex', overflowX: 'auto', paddingBottom: '6px', scrollbarWidth: 'none', msOverflowStyle: 'none', gap: '6px', flexWrap: 'nowrap' }}>
                   {[
-                    { id: 'ALL', label: 'All Phase 3', icon: '⚜️', count: allRawProperties.length },
-                    { id: 'MEGAPOLIS', label: 'Megapolis (150-Acres)', icon: '🏙️', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('megapolis')).length },
-                    { id: 'TCG', label: 'TCG Cliff Garden', icon: '⛰️', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('tcg') || (p.title || '').toLowerCase().includes('cliff garden')).length },
-                    { id: 'EON_HOMES', label: 'Kasturi Eon Homes', icon: '💎', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('eon') || (p.title || '').toLowerCase().includes('kasturi')).length },
-                    { id: '1_BHK', label: '1 BHK', icon: '🔑', count: allRawProperties.filter(p => p.bedrooms === 1).length },
-                    { id: '2_BHK', label: '2 BHK', icon: '🛏️', count: allRawProperties.filter(p => p.bedrooms === 2).length },
-                    { id: '3_BHK', label: '3 BHK', icon: '👑', count: allRawProperties.filter(p => p.bedrooms === 3).length },
-                    { id: 'RENT', label: 'IT Rentals', icon: '🏢', count: allRawProperties.filter(p => p.transactionType === 'RENT').length },
+                    { id: 'ALL', label: 'All Verified', icon: '⚜️', count: allRawProperties.length },
+                    { id: 'GODREJ_24', label: 'Godrej 24', icon: '🌿', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('godrej 24')).length },
+                    { id: 'GODREJ_ELEMENTS', label: 'Godrej Elements', icon: '⚡', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('elements')).length },
+                    { id: '2_BHK', label: '2 BHK Residences', icon: '🛏️', count: allRawProperties.filter(p => (p.configurations || []).some(c => c.bhk.includes('2')) || p.bedrooms === 2).length },
+                    { id: '3_BHK', label: '3 BHK Residences', icon: '👑', count: allRawProperties.filter(p => (p.configurations || []).some(c => c.bhk.includes('3')) || p.bedrooms === 3).length },
                     { id: 'WISHLIST', label: 'Saved', icon: '♥', count: wishlistIds.length },
                   ].map(({ id, label, icon, count }) => (
                     <button
