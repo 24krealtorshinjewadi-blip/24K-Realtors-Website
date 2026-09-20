@@ -501,7 +501,7 @@ export default function ListPropertyPage({ onBack }) {
               transition: 'all 0.25s ease'
             }}
           >
-            <Home size={15} /> LIST FOR SALE (0% Brokerage)
+            <Home size={15} /> LIST FOR SALE
           </button>
           
           <button
@@ -767,7 +767,7 @@ export default function ListPropertyPage({ onBack }) {
                   <Eye size={14} /> LIVE LISTING PREVIEW CARD
                 </span>
                 <span style={{ background: 'rgba(16,185,129,0.15)', color: '#10B981', padding: '3px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 800 }}>
-                  0% BROKERAGE
+                  VERIFIED LISTING
                 </span>
               </div>
 

@@ -97,7 +97,7 @@ Keep under 120 words. Use emojis appropriately. Sound personal and helpful. Incl
     welcome: `Namaste ${lead.name || 'ji'}! 🏠\n\n24K Realtors Pune mein aapka swagat hai. Aapki query receive hui hai premium properties ke liye.\n\nHamari team ne ${lead.preferredLocation || 'Baner/Wakad'} mein top luxury projects shortlist kiye hain.\n\nEk quick call arrange karein? 📞\n\n- 24K Realtors VIP Advisory 🏆`,
     followup: `Namaste ${lead.name || 'ji'}! 👋\n\nHope aap badhiya hain. 24K Realtors ki taraf se follow-up kar raha hoon.\n\nKya aap ${lead.preferredLocation || 'Pune'} property plan continue kar rahe hain? Humare paas new inventory launch hui hai.\n\nKab baat ho sakti hai? 😊`,
     sitevisit: `Namaste ${lead.name || 'ji'}! 🚘\n\nAapke liye ${lead.preferredLocation || 'Hinjewadi'} location pe exclusive site visit arrange kar di hai.\n\nComplimentary Mercedes / BMW Chauffeur pickup available hai! Kab chalna chahenge? 🌟`,
-    offer: `Namaste ${lead.name || 'ji'}! 🎯\n\nSpecial 24K Realtors Limited Offer: Exclusive early bird discount and zero brokerage benefits on premium inventory.\n\nOffer valid for 48 hours only! Direct connect karein: +91 96730 00053 📞`
+    offer: `Namaste ${lead.name || 'ji'}! 🎯\n\nSpecial 24K Realtors Limited Offer: Exclusive early bird discount and verified direct developer benefits on premium inventory.\n\nOffer valid for 48 hours only! Direct connect karein: +91 96730 00053 📞`
   };
 
   return fallbacks[messageType] || fallbacks.followup;
@@ -346,7 +346,7 @@ User Message: "${userMessage}"`;
 }
 
 export async function chatWithVisitor(userMessage, propertyContext = null) {
-  const prompt = `You are "24K Premium Concierge", AI real estate advisor for 24K Realtors Pune (MahaRERA: A051262603190).
+  const prompt = `You are "24K AI Property Specialist", AI real estate advisor for 24K Realtors Pune (MahaRERA: A051262603190).
 Visitor query: "${userMessage}"
 Reply in elegant Hinglish under 80 words. Promote free Maybach VIP Site Visits and WhatsApp +91 96730 00053.`;
 

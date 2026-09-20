@@ -233,7 +233,7 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
             </div>
             <div className="pi-hero-chip" style={{ padding: '6px 14px', fontSize: '0.74rem' }}>
               <Award size={13} color="#D4AF37" />
-              <span>Zero Brokerage on Developer Sales</span>
+              <span>Direct Developer Mandates</span>
             </div>
             <div className="pi-hero-chip pi-hero-chip--white" style={{ padding: '6px 14px', fontSize: '0.74rem' }}>
               <TrendingUp size={13} color="#60A5FA" />
@@ -655,7 +655,7 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
                   Request Bespoke Private Site Tour &amp; Pre-Launch Allotments
                 </h3>
                 <p style={{ color: '#94A3B8', fontSize: '0.84rem', margin: 0, maxWidth: '650px' }}>
-                  Our Hinjewadi Specialist Desk arranges private chauffeur-driven walkthroughs, Vastu evaluations, and direct developer pricing with zero brokerage.
+                  Our Hinjewadi Specialist Desk arranges private chauffeur-driven walkthroughs, Vastu evaluations, and direct developer pricing.
                 </p>
               </div>
 

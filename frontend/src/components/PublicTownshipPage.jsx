@@ -656,7 +656,7 @@ export default function PublicTownshipPage({ onBackHome, onSelectSociety }) {
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px' }}>
             {[
               { icon: <ShieldCheck size={13} />, label: '100% MahaRERA Verified', cls: 'pi-hero-chip--green' },
-              { icon: <Award size={13} color="#D4AF37" />, label: 'Zero Brokerage' },
+              { icon: <Award size={13} color="#D4AF37" />, label: 'Direct Pricing' },
               { icon: <TrendingUp size={13} color="#60A5FA" />, label: '4.5%+ Rental Yield', cls: 'pi-hero-chip--white' },
               { icon: <Calendar size={13} color="#D4AF37" />, label: 'Private Site Tours', cls: 'pi-hero-chip--white' }
             ].map((chip, i) => (
@@ -880,7 +880,7 @@ export default function PublicTownshipPage({ onBackHome, onSelectSociety }) {
                   Private Advisory
                 </h4>
                 <p style={{ fontSize: '0.72rem', color: '#64748B', margin: '0 0 12px 0', lineHeight: 1.5 }}>
-                  Pre-launch allotments &amp; direct developer pricing with zero brokerage.
+                  Pre-launch allotments &amp; direct developer pricing.
                 </p>
                 <a
                   href="tel:+919673000053"
@@ -1083,7 +1083,7 @@ export default function PublicTownshipPage({ onBackHome, onSelectSociety }) {
                     Request Bespoke Private Site Tour
                   </h3>
                   <p style={{ color: '#94A3B8', fontSize: '0.82rem', margin: 0, maxWidth: '600px' }}>
-                    Our Hinjewadi Specialist Desk arranges private chauffeur-driven walkthroughs, direct developer allotments and zero-brokerage pricing for all townships.
+                    Our Hinjewadi Specialist Desk arranges private chauffeur-driven walkthroughs, direct developer allotments and verified pricing for all townships.
                   </p>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>

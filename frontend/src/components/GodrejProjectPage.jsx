@@ -135,7 +135,7 @@ const GODREJ_24 = {
   ],
   uniqueFeatures: [
     '24×7 Functional Gymnasium',
-    '24×7 Concierge Desk',
+    '24×7 Reception Desk',
     '24×7 Convenience Store',
     '24×7 Creche & Day Care',
   ],
@@ -148,7 +148,7 @@ const GODREJ_24 = {
   ],
   amenities: [
     { icon: <Dumbbell size={18} />, label: '24×7 Gymnasium' },
-    { icon: <Coffee size={18} />, label: '24×7 Concierge' },
+    { icon: <Coffee size={18} />, label: '24×7 Reception' },
     { icon: <Home size={18} />, label: '24×7 Convenience Store' },
     { icon: <Users size={18} />, label: '24×7 Creche' },
     { icon: <Trees size={18} />, label: 'Swimming Pool' },
@@ -176,7 +176,7 @@ const GODREJ_24 = {
   faqs: [
     {
       q: 'What makes Godrej 24 unique in Hinjewadi?',
-      a: "Godrej 24 is designed exclusively for IT shift workers — it is India's first residential project with all key lifestyle amenities (gym, creche, concierge, store) operational 24 hours a day, 7 days a week."
+      a: "Godrej 24 is designed exclusively for IT shift workers — it is India's first residential project with all key lifestyle amenities (gym, creche, reception desk, store) operational 24 hours a day, 7 days a week."
     },
     {
       q: 'What carpet areas are available in Godrej 24?',

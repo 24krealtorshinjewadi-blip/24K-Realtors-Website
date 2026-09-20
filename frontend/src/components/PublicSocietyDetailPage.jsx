@@ -978,7 +978,7 @@ export default function PublicSocietyDetailPage({ slug, onBack }) {
                 {[
                   {
                     q: `What is the verified starting price for ${data.canonicalName || data.name}?`,
-                    a: `Verified starting price is ${data.priceRange || formatInr(data.startingPrice)} as confirmed on ${data.priceLastVerified || getTodayFormatted()}. Prices vary by floor rise, tower orientation, and BHK type. Contact our specialist for the best negotiated developer pricing — zero brokerage.`
+                    a: `Verified starting price is ${data.priceRange || formatInr(data.startingPrice)} as confirmed on ${data.priceLastVerified || getTodayFormatted()}. Prices vary by floor rise, tower orientation, and BHK type. Contact our specialist for the best negotiated direct developer pricing.`
                   },
                   {
                     q: `Is ${data.canonicalName || data.name} legally registered with MahaRERA?`,
@@ -990,7 +990,7 @@ export default function PublicSocietyDetailPage({ slug, onBack }) {
                   },
                   {
                     q: `Can 24K Realtors arrange a VIP site visit and direct developer pricing?`,
-                    a: `Absolutely! Our ${data.location || 'Hinjewadi'} Property Specialists offer chauffeur-driven private site tours, vastu compliance walkthroughs, direct developer cost negotiation, and home loan pre-approval assistance — all at zero brokerage. Call us on +91 96730 00053.`
+                    a: `Absolutely! Our ${data.location || 'Hinjewadi'} Property Specialists offer chauffeur-driven private site tours, vastu compliance walkthroughs, direct developer cost negotiation, and home loan pre-approval assistance. Call us on +91 96730 00053.`
                   },
                   {
                     q: `What is the rental yield and capital appreciation potential?`,
@@ -1083,7 +1083,7 @@ export default function PublicSocietyDetailPage({ slug, onBack }) {
                 Why Choose 24K Realtors
               </div>
               {[
-                { icon: <ShieldCheck size={14} />, text: 'Zero brokerage on developer sales' },
+                { icon: <ShieldCheck size={14} />, text: 'Direct developer sales & verified pricing' },
                 { icon: <Award size={14} />, text: '100% MahaRERA verified listings' },
                 { icon: <Users size={14} />, text: 'Dedicated Hinjewadi property specialists' },
                 { icon: <TrendingUp size={14} />, text: 'Best negotiated pricing guaranteed' },

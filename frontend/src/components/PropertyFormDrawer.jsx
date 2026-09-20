@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { X, Sparkles, Loader } from 'lucide-react';
 import ImageUploader from './ImageUploader';
 
@@ -35,7 +35,7 @@ export default function PropertyFormDrawer({
             <span>Smart Listing Auto-Fill Parser</span>
           </label>
           <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '10px' }}>
-            Paste flat listing details text below (e.g. <i>"3 BHK premium flat in Hinjewadi, 1650 sqft, price 1.45 Cr, no brokerage"</i>) and click parse.
+            Paste flat listing details text below (e.g. <i>"3 BHK premium flat in Hinjewadi, 1650 sqft, price 1.45 Cr, direct seller"</i>) and click parse.
           </p>
           <div style={{ display: 'flex', gap: '10px' }}>
             <textarea 
@@ -279,7 +279,7 @@ export default function PropertyFormDrawer({
               checked={propertyForm.noBrokerage} 
               onChange={e => setPropertyForm({...propertyForm, noBrokerage: e.target.checked})} 
             />
-            No Brokerage
+            Direct Mandate
           </label>
         </div>
 

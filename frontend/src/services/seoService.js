@@ -278,7 +278,7 @@ export function buildPropertySEO(property) {
       : `${property.bedrooms ? property.bedrooms + ' BHK ' : ''}${typeof property.propertyType === 'string' ? property.propertyType.toLowerCase() : 'luxury residence'} in ${loc}.`,
     price && `Starting at ${price}.`,
     property.reraNumber && `MahaRERA: ${property.reraNumber}.`,
-    'Zero brokerage VIP chauffeur site visits by 24K Realtors Pune.'
+    'Verified VIP chauffeur site visits by 24K Realtors Pune.'
   ].filter(Boolean).join(' ');
 
   const siteUrl = 'https://real-estate-digital-marketing.vercel.app';

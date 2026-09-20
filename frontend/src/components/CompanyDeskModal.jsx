@@ -268,10 +268,10 @@ export default function CompanyDeskModal({ isOpen, onClose, initialTab = 'about'
                   24K Realtors acts as a licensed Real Estate Agent under MahaRERA License Registration Number: <strong>A051262603190</strong>. All developer marketing, property listings, and site visits comply with MahaRERA guidelines.
                 </p>
 
-                <h3 style={{ fontSize: '0.9rem', color: GOLD, margin: '14px 0 6px 0' }}>2. Brokerage &amp; Service Fee Policy</h3>
+                <h3 style={{ fontSize: '0.9rem', color: GOLD, margin: '14px 0 6px 0' }}>2. Advisory &amp; Service Fee Policy</h3>
                 <ul style={{ paddingLeft: '18px', margin: '4px 0' }}>
-                  <li><strong>Direct Developer Bookings (Primary Market):</strong> 0% brokerage charged to property buyers.</li>
-                  <li><strong>Resale Transactions (Secondary Market):</strong> Standard 2% brokerage + GST charged to buyer and seller upon sale deed execution.</li>
+                  <li><strong>Direct Developer Bookings (Primary Market):</strong> No advisory fee charged to property buyers.</li>
+                  <li><strong>Resale Transactions (Secondary Market):</strong> Standard professional advisory fee + GST charged upon sale deed execution.</li>
                   <li><strong>Rental / Lease Transactions:</strong> Standard 1 month rent + GST charged to lessor and lessee upon agreement registration.</li>
                 </ul>
 
