@@ -1,17 +1,13 @@
-// Auto-clear stale mock database from localStorage if it contains old demo data or lacks v2026_clean_catalog_v6
+// Auto-clear stale mock database from localStorage if it lacks v2026_three_flagship_projects_v10
 try {
-  const mockAgentsStr = localStorage.getItem('mock_agents');
-  const mockPropsStr = localStorage.getItem('mock_properties');
-  if (
-    (mockAgentsStr && mockAgentsStr.includes('Amit Verma')) || 
-    (mockPropsStr && (!mockPropsStr.includes('v2026_clean_catalog_v6') || mockPropsStr.includes('s3.ap-south-1.amazonaws.com/properties/megapolis-sunway/')))
-  ) {
-    console.info('[Cache Bust] Resetting stale localStorage keys to load fresh database updates...');
+  const currentPropVer = localStorage.getItem('mock_properties_version');
+  if (currentPropVer !== 'v2026_three_flagship_projects_v10') {
+    console.info('[Cache Bust] Refreshing catalog to 3 flagship projects (Godrej 24, Godrej Elements, Megapolis)...');
+    localStorage.removeItem('mock_properties');
+    localStorage.removeItem('mock_properties_version');
     localStorage.removeItem('mock_agents');
     localStorage.removeItem('mock_leads');
     localStorage.removeItem('mock_tasks');
-    localStorage.removeItem('mock_properties');
-    localStorage.removeItem('mock_societies');
   }
 } catch (e) {
   console.error('[Cache Bust] Failed to inspect/clear localStorage', e);
@@ -264,8 +260,11 @@ const initialProperties = [
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
-  },
+  }
+];
 
+// ── Auxiliary Megapolis Society Properties (Retained for deep linking / lookup without crowding 3-card catalog) ──
+const megapolisSubSocietiesProperties = [
   // ═══════════════════════════════════════════════════════════════════
   // PROJECT 4 — MEGAPOLIS SANGRIA
   // MahaRERA: P52100047112 | Hinjewadi Phase 3 | Ready to Move
@@ -1129,7 +1128,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_megapolis_authentic_photos_v9';
+const HINJEWADI_PROP_VERSION = 'v2026_three_flagship_projects_v10';
 
 const LocalMockDb = {
   getProperties() {
@@ -1159,6 +1158,9 @@ const LocalMockDb = {
       }
     }
     return deduped;
+  },
+  getAllKnownProperties() {
+    return [...this.getProperties(), ...megapolisSubSocietiesProperties];
   },
   saveProperties(props) {
     saveLocalStorageItem('mock_properties', props);
@@ -1801,7 +1803,7 @@ export const apiService = {
         return response.json();
       },
       () => {
-        const list = LocalMockDb.getProperties();
+        const list = LocalMockDb.getAllKnownProperties();
         const prop = list.find(p => p.id === id || String(p.id) === String(id) || String(p.id) === `prop-${id}` || (p.slug && p.slug === id));
         if (!prop) {
           const numericId = String(id).replace(/\D/g, '');

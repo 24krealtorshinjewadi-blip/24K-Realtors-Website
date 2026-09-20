@@ -1255,6 +1255,14 @@ export default function Portal({ onViewChange }) {
             unique.push(p);
           }
         }
+        const sortOrder = (p) => {
+          const t = (p?.title || '').toLowerCase();
+          if (t.includes('godrej 24') || p?.id === 'prop-godrej-24') return 1;
+          if (t.includes('elements') || p?.id === 'prop-godrej-elements') return 2;
+          if (t.includes('megapolis') || p?.id === 'prop-megapolis-township') return 3;
+          return 4;
+        };
+        unique.sort((a, b) => sortOrder(a) - sortOrder(b));
         setAllRawProperties(unique);
       } catch (err) {
         console.error("Error loading raw properties for carousels:", err);
@@ -1334,6 +1342,14 @@ export default function Portal({ onViewChange }) {
         setLoading(false);
         return;
       }
+      if (activeCollection === 'MEGAPOLIS') {
+        const filtered = allRawProperties.filter(p => (p.title || '').toLowerCase().includes('megapolis'));
+        setProperties(filtered);
+        setTotalPages(1);
+        setTotalElements(filtered.length);
+        setLoading(false);
+        return;
+      }
       if (activeCollection === '1_BHK') {
         queryFilters.bedrooms = '1';
       } else if (activeCollection === '2_BHK') {
@@ -1360,6 +1376,14 @@ export default function Portal({ onViewChange }) {
             unique.push(p);
           }
         }
+        const sortOrder = (p) => {
+          const t = (p?.title || '').toLowerCase();
+          if (t.includes('godrej 24') || p?.id === 'prop-godrej-24') return 1;
+          if (t.includes('elements') || p?.id === 'prop-godrej-elements') return 2;
+          if (t.includes('megapolis') || p?.id === 'prop-megapolis-township') return 3;
+          return 4;
+        };
+        unique.sort((a, b) => sortOrder(a) - sortOrder(b));
         setProperties(unique);
       } else {
         setProperties(prev => {
@@ -4179,7 +4203,7 @@ export default function Portal({ onViewChange }) {
                   {/* Badges — hide on very small mobile, show on tablet+ */}
                   <div className="subpage-banner-badges" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     <div className="subpage-stats-badge">
-                      <span>📌 {allRawProperties.length || 22}+ Listings</span>
+                      <span>📌 {allRawProperties.length || 3} Landmark Listings</span>
                     </div>
                     <div className="subpage-stats-badge" style={{ background: 'rgba(37,211,102,0.08)', borderColor: 'rgba(37,211,102,0.3)', color: '#25D366' }}>
                       <span>🛡️ MahaRERA</span>
@@ -4233,6 +4257,7 @@ export default function Portal({ onViewChange }) {
                     { id: 'ALL', label: 'All Verified', icon: '⚜️', count: allRawProperties.length },
                     { id: 'GODREJ_24', label: 'Godrej 24', icon: '🌿', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('godrej 24')).length },
                     { id: 'GODREJ_ELEMENTS', label: 'Godrej Elements', icon: '⚡', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('elements')).length },
+                    { id: 'MEGAPOLIS', label: 'Megapolis', icon: '🏙️', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('megapolis')).length },
                     { id: '2_BHK', label: '2 BHK Residences', icon: '🛏️', count: allRawProperties.filter(p => (p.configurations || []).some(c => c.bhk.includes('2')) || p.bedrooms === 2).length },
                     { id: '3_BHK', label: '3 BHK Residences', icon: '👑', count: allRawProperties.filter(p => (p.configurations || []).some(c => c.bhk.includes('3')) || p.bedrooms === 3).length },
                     { id: 'WISHLIST', label: 'Saved', icon: '♥', count: wishlistIds.length },
