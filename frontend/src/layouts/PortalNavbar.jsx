@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Phone, Calendar, Menu, X, ArrowRight, ShieldCheck, 
   UserCheck, LayoutDashboard, FileText, Compass, Info, Award, Building, Building2,
-  Home, Search, Heart, ChevronDown, TrendingUp, Camera, Sparkles, BookOpen
+  Home, Search, Heart, ChevronDown, TrendingUp, Sparkles, BookOpen
 } from 'lucide-react';
 
 import CompanyLogo from '../components/CompanyLogo';
@@ -109,7 +109,7 @@ export default function PortalNavbar({
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="nav-transaction-tabs" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div className="nav-transaction-tabs" style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <div className="nav-dropdown-item-wrapper">
               <button 
                 className={`nav-dropdown-trigger-btn ${activeSection === 'listings' && exclusiveTab === 'BUY' ? 'active' : ''}`} 
@@ -195,91 +195,11 @@ export default function PortalNavbar({
             </div>
 
             <button 
-              className={activeSection === 'listings' && !exclusiveTab ? 'active' : ''} 
-              onClick={() => onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, null)}
-            >
-              PROJECTS
-            </button>
-            <button 
-              onClick={() => {
-                if (window.location.pathname === '/') {
-                  const el = document.getElementById('listings-anchor');
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  if (onApplyMegaFilter) onApplyMegaFilter({}, 'listings');
-                } else {
-                  if (onViewChange) onViewChange('portal');
-                  setTimeout(() => {
-                    const el = document.getElementById('listings-anchor');
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }, 180);
-                }
-              }}
-              className={activeSection === 'listings' ? 'active' : ''}
-              style={{ 
-                color: '#F3E5AB', 
-                fontWeight: 700, 
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '6px',
-                background: 'rgba(212,175,55,0.12)',
-                border: '1px solid rgba(212,175,55,0.35)',
-                padding: '6px 14px',
-                borderRadius: '50px',
-                letterSpacing: '0.04em',
-                transition: 'all 0.25s ease'
-              }}
-            >
-              <Sparkles size={13} style={{ color: '#D4AF37' }} />
-              <span>⚜️ SIGNATURE COLLECTION</span>
-            </button>
-            <button 
-              className={activeSection === 'listings' && filters?.propertyType === 'COMMERCIAL' ? 'active' : ''} 
-              onClick={() => onApplyMegaFilter && onApplyMegaFilter({ propertyType: 'COMMERCIAL' }, 'listings', null, 'properties-sale')}
-            >
-              COMMERCIAL
-            </button>
-            <button 
-              className={activeSection === 'listings' && activeSubView === 'market-intelligence' ? 'active' : ''} 
-              onClick={() => onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, 'market-intelligence')}
-              style={{ color: '#2ec4b6', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-            >
-              <TrendingUp size={13} />
-              <span>TRENDS</span>
-            </button>
-            <button 
-              className={activeSubView === 'gallery' ? 'active' : ''}
-              onClick={(e) => {
-                e.preventDefault();
-                onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, 'gallery');
-              }}
-              style={{ color: '#E6C35C', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-            >
-              <Camera size={13} />
-              <span>GALLERY</span>
-            </button>
-            <button 
               onClick={() => onViewChange && onViewChange('list-property')}
-              style={{ color: '#E6C35C', fontWeight: 'bold' }}
+              className={`nav-dropdown-trigger-btn ${activeSection === 'list-property' ? 'active' : ''}`}
+              style={{ display: 'inline-flex', alignItems: 'center' }}
             >
-              ⚜️ SELL/RENT
-            </button>
-            <button 
-              onClick={() => {
-                if (onViewChange) onViewChange('blog');
-                else window.location.hash = 'blog';
-              }}
-              style={{ color: '#F3E5AB', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-            >
-              <BookOpen size={13} style={{ color: '#D4AF37' }} />
-              <span>BLOG</span>
-            </button>
-            <button 
-              onClick={() => {
-                const footer = document.querySelector('footer');
-                if (footer) footer.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              CONTACT
+              <span>SELL/RENT</span>
             </button>
           </div>
 
