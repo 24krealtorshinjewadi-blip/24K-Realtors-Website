@@ -208,6 +208,295 @@ const initialProperties = [
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 3 — MEGAPOLIS TOWNSHIP
+  // MahaRERA: P52100047112 | Hinjewadi Phase 3 | Ready to Move & Ongoing
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-township",
+    title: "Megapolis Township",
+    projectName: "Megapolis Township",
+    builderName: "Pride Purple Group",
+    description: "Pune's largest integrated 142+ acre smart township in Hinjewadi Phase 3 by Pride Purple Group. Comprising landmark clusters: Sangria, Mystic, Splendour, Sunway, and Sparkle. Features resort-grade clubhouses, Olympic-sized swimming pools, multi-sport arenas, Pawar Public School within campus, and seamless walking proximity to Phase 3 IT hubs (Tech Mahindra, TCS, Cognizant).",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 6500000,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Circle, Rajiv Gandhi Infotech Park, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5785,
+    longitude: 73.6934,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100047112",
+    possessionDate: "Ready to Move & Ongoing",
+    imageUrl: "/dev_kolte_patil_township.png",
+    galleryImages: [
+      "/dev_kolte_patil_township.png",
+      "/gallery_tower_3.png",
+      "/gallery_infinity_pool.png",
+      "/luxury_sunset_pool.png",
+      "/gallery_sample_flat_interior.png"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "megapolis-sangria",
+    configurations: [
+      { bhk: "1 BHK", carpet: "440–510 sq.ft", highlight: false },
+      { bhk: "2 BHK", carpet: "645–730 sq.ft", highlight: true },
+      { bhk: "2.5 BHK", carpet: "800–880 sq.ft", highlight: false },
+      { bhk: "3 BHK", carpet: "990–1100 sq.ft", highlight: true }
+    ],
+    amenities: [
+      "Olympic-size Swimming Pool",
+      "Pawar Public School on Campus",
+      "Grand Multipurpose Clubhouses",
+      "Floodlit Tennis & Basketball Courts",
+      "24x7 Multi-Tier Security & CCTV",
+      "Dedicated EV Charging Stations",
+      "Internal Bus Shuttle Service",
+      "Commercial High-Street & Marts",
+      "Jogging & Cycling Tracks",
+      "Children Play Zones & Creche"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 4 — MEGAPOLIS SANGRIA
+  // MahaRERA: P52100047112 | Hinjewadi Phase 3 | Ready to Move
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-sangria",
+    title: "Megapolis Sangria",
+    projectName: "Megapolis Sangria",
+    builderName: "Pride Purple Group",
+    description: "Vibrant high-rise residential cluster within Megapolis Township, Hinjewadi Phase 3. 2, 2.5 & 3 BHK luxury residences with direct pool views, sky decks, double-height designer entrance lobbies, and modern modular layouts.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 9500000,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Sangria, Megapolis Circle, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5788,
+    longitude: 73.6938,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100047112",
+    possessionDate: "Ready to Move",
+    imageUrl: "/dev_kolte_patil_township.png",
+    galleryImages: [
+      "/dev_kolte_patil_township.png",
+      "/gallery_tower_3.png",
+      "/gallery_infinity_pool.png"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "megapolis-sangria",
+    configurations: [
+      { bhk: "2 BHK", carpet: "645 sq.ft", highlight: false },
+      { bhk: "2 BHK", carpet: "695 sq.ft", highlight: true },
+      { bhk: "2.5 BHK", carpet: "850 sq.ft", highlight: true },
+      { bhk: "3 BHK", carpet: "1050 sq.ft", highlight: true }
+    ],
+    amenities: [
+      "Pool View Deck",
+      "Full Clubhouse Access",
+      "Sky Lounge & Yoga Deck",
+      "24x7 Security & Intercom",
+      "Power Backup for Common Areas",
+      "Children Play Arena"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 5 — MEGAPOLIS MYSTIC
+  // MahaRERA: P52100046891 | Hinjewadi Phase 3 | Ready to Move
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-mystic",
+    title: "Megapolis Mystic",
+    projectName: "Megapolis Mystic",
+    builderName: "Pride Purple Group",
+    description: "Tranquil hillside residences in Megapolis Township, Hinjewadi Phase 3. 2 & 3 BHK spacious homes with sweeping Sahyadri hill views, zen meditation gardens, and lush landscaped surroundings.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 10500000,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Mystic, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5792,
+    longitude: 73.6942,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100046891",
+    possessionDate: "Ready to Move",
+    imageUrl: "/gallery_tower_2.png",
+    galleryImages: [
+      "/gallery_tower_2.png",
+      "/gallery_infinity_pool.png"
+    ],
+    furnishingStatus: "UNFURNISHED",
+    gasPipeline: true,
+    societySlug: "megapolis-mystic",
+    configurations: [
+      { bhk: "2 BHK", carpet: "720 sq.ft", highlight: false },
+      { bhk: "2 BHK", carpet: "790 sq.ft", highlight: true },
+      { bhk: "3 BHK", carpet: "1150 sq.ft", highlight: true }
+    ],
+    amenities: [
+      "Garden & Hill Facing Balconies",
+      "Terrace Lounge",
+      "Zen Meditation Pavilion",
+      "24x7 Security & CCTV",
+      "Covered Car Parking"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 6 — MEGAPOLIS SPLENDOUR
+  // MahaRERA: P52100048230 | Hinjewadi Phase 3 | New Towers
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-splendour",
+    title: "Megapolis Splendour",
+    projectName: "Megapolis Splendour",
+    builderName: "Pride Purple Group",
+    description: "Grand scale luxury enclave featuring 2, 2.5, 3 & 3.5 BHK premium apartments with rooftop infinity pool, amphitheatre, high-speed elevators, and imported finishings.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 11000000,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Splendour, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5798,
+    longitude: 73.6948,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100048230",
+    possessionDate: "Ready & Ongoing",
+    imageUrl: "/gallery_tower_3.png",
+    galleryImages: [
+      "/gallery_tower_3.png",
+      "/luxury_sunset_pool.png"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "megapolis-splendour",
+    configurations: [
+      { bhk: "2 BHK", carpet: "680 sq.ft", highlight: false },
+      { bhk: "2.5 BHK", carpet: "880 sq.ft", highlight: true },
+      { bhk: "3 BHK", carpet: "1100 sq.ft", highlight: true },
+      { bhk: "3.5 BHK", carpet: "1350 sq.ft", highlight: false }
+    ],
+    amenities: [
+      "Rooftop Swimming Pool",
+      "Open Air Amphitheatre",
+      "Banquet & Party Lawn",
+      "State-of-the-Art Fitness Center",
+      "High-Speed Elevators"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 7 — MEGAPOLIS SUNWAY
+  // MahaRERA: P52100045780 | Hinjewadi Phase 3 | Ready to Move
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-sunway",
+    title: "Megapolis Sunway",
+    projectName: "Megapolis Sunway",
+    builderName: "Pride Purple Group",
+    description: "Sun-drenched, smart layouts in 1 & 2 BHK configurations. Perfect for IT professionals seeking high rental yields, minimal maintenance, and unmatched connectivity.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 6500000,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Sunway, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5779,
+    longitude: 73.6925,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100045780",
+    possessionDate: "Ready to Move",
+    imageUrl: "/dev_kolte_patil_township.png",
+    galleryImages: [
+      "/dev_kolte_patil_township.png",
+      "/gallery_sample_flat_interior.png"
+    ],
+    furnishingStatus: "UNFURNISHED",
+    gasPipeline: true,
+    societySlug: "megapolis-sunway",
+    configurations: [
+      { bhk: "1 BHK", carpet: "440 sq.ft", highlight: false },
+      { bhk: "1 BHK", carpet: "490 sq.ft", highlight: true },
+      { bhk: "2 BHK", carpet: "680 sq.ft", highlight: true }
+    ],
+    amenities: [
+      "Vaastu Compliant Units",
+      "Corner Unit Open Views",
+      "Solar Water Heating",
+      "24x7 Security & CCTV",
+      "Low Maintenance Township Grid"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 8 — MEGAPOLIS SPARKLE
+  // MahaRERA: P52100046550 | Hinjewadi Phase 3 | Ready to Move
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-sparkle",
+    title: "Megapolis Sparkle",
+    projectName: "Megapolis Sparkle",
+    builderName: "Pride Purple Group",
+    description: "Bright and airy 2 & 3 BHK residences in Megapolis Township, Hinjewadi Phase 3. Scenic podium views, dedicated clubhouse access, and prime proximity to IT corridor bus bays.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 10000000,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Sparkle, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5775,
+    longitude: 73.6920,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100046550",
+    possessionDate: "Ready to Move",
+    imageUrl: "/gallery_tower_3.png",
+    galleryImages: [
+      "/gallery_tower_3.png",
+      "/gallery_infinity_pool.png"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "megapolis-sparkle",
+    configurations: [
+      { bhk: "2 BHK", carpet: "700 sq.ft", highlight: false },
+      { bhk: "2 BHK", carpet: "760 sq.ft", highlight: true },
+      { bhk: "3 BHK", carpet: "1080 sq.ft", highlight: true }
+    ],
+    amenities: [
+      "Central Park Facing Units",
+      "Modern Gymnasium",
+      "Badminton Court",
+      "Children Play Area",
+      "24x7 Gated Security"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
   }
 ];
 
@@ -397,6 +686,325 @@ const initialSocieties = [
     faqs: "Q: What smart home features does Godrej Elements offer?\nA: Godrej Elements features a complete home automation grid and 21-point integrated safety system including RFID vehicle tags, video door phones, intercom, fire detection, and CCTV surveillance.\n\nQ: What carpet areas are available in Godrej Elements?\nA: 2 BHK: 725, 820 and 940 sq.ft. 3 BHK: 1167 and 1488 sq.ft.\n\nQ: Is Godrej Elements MahaRERA registered?\nA: Yes. MahaRERA number: P52100016626.\n\nQ: Is Godrej Elements ready to move in?\nA: Yes. Godrej Elements is a ready-to-move project.\n\nQ: Where is Godrej Elements located?\nA: Godrej Elements is located in Hinjewadi Phase 1, Rajiv Gandhi Infotech Park, Pune — 411057.\n\nQ: Is Godrej Elements and Godrej 24 the same project?\nA: No. Godrej Elements and Godrej 24 are two completely separate residential projects by Godrej Properties in Hinjewadi Phase 1. They have different towers, floor plans, amenities, and RERA registrations.",
     seoTitle: "Godrej Elements Hinjewadi Phase 1 | 2 & 3 BHK Verified Listings | 24K Realtors",
     seoDescription: "Verified listings for Godrej Elements Hinjewadi Phase 1 by Godrej Properties. 2 BHK (725/820/940 sq.ft) & 3 BHK (1167/1488 sq.ft). Smart homes. MahaRERA: P52100016626."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-3: MEGAPOLIS SANGRIA — Hinjewadi Phase 3
+  // MahaRERA: P52100047112 | Developer: Pride Purple Group
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-megapolis-sangria",
+    name: "Megapolis Sangria",
+    canonicalName: "Megapolis Sangria Hinjewadi Phase 3",
+    slug: "megapolis-sangria",
+    imageUrl: "/dev_kolte_patil_township.png",
+    galleryImages: [
+      "/dev_kolte_patil_township.png",
+      "/gallery_tower_3.png",
+      "/gallery_infinity_pool.png"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    townshipName: "Megapolis",
+    parentProjectId: "megapolis",
+    developer: "Pride Purple Group",
+    reraNumber: "P52100047112",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 9500000,
+    priceLastVerified: "20 Sep 2026",
+    possessionDate: "Ready to Move",
+    projectArea: "142+ Acres Integrated Township",
+    overview: "Megapolis Sangria is a vibrant high-rise residential society located inside the landmark Megapolis Township in Hinjewadi Phase 3, Pune. Developed by Pride Purple Group, Sangria offers 2 BHK, 2.5 BHK, and 3 BHK luxury residences designed with double-height entrance lobbies, high-speed elevators, and panoramic views of landscaped podiums and pool decks. Situated directly adjacent to Rajiv Gandhi Infotech Park Phase 3, residents enjoy walking proximity to tech campuses like Tech Mahindra, TCS Sahyadri Park, and Cognizant.",
+    amenities: "Olympic Swimming Pool, Sky Deck & Terrace Lounge, Clubhouse & Banquet, Floodlit Tennis Court, Fully Equipped Gym, 24x7 Multi-Tier Security, CCTV Surveillance, Pawar Public School within campus, EV Charging Bays, Landscaped Gardens, Dedicated Children Play Zone",
+    priceRange: "₹95 L – ₹1.85 Cr",
+    configuration: "2 BHK (645–695 sq.ft) | 2.5 BHK (850 sq.ft) | 3 BHK (1050 sq.ft)",
+    configurationSummary: "2 BHK, 2.5 BHK & 3 BHK",
+    configurations: [
+      { bhkType: "2 BHK", carpetArea: "645 sq.ft", priceLabel: "₹95 L – ₹1.10 Cr", status: "Available" },
+      { bhkType: "2 BHK", carpetArea: "695 sq.ft", priceLabel: "₹1.05 Cr – ₹1.25 Cr", status: "Available" },
+      { bhkType: "2.5 BHK", carpetArea: "850 sq.ft", priceLabel: "₹1.25 Cr – ₹1.45 Cr", status: "Available" },
+      { bhkType: "3 BHK", carpetArea: "1050 sq.ft", priceLabel: "₹1.55 Cr – ₹1.85 Cr", status: "Available" }
+    ],
+    nearbySchools: "Pawar Public School (Within Township - 200m), Blue Ridge Public School (4.5 km), Mercedes-Benz International (5.5 km)",
+    nearbyHospitals: "Ruby Hall Clinic Hinjewadi (5.0 km), Sanjeevani Hospital (3.2 km)",
+    nearbyItParks: "Tech Mahindra Hinjewadi Phase 3 (400m), TCS Sahyadri Park (600m), Cognizant Phase 3 (800m), Persistent Systems (1.5 km)",
+    nearbyMetro: "Megapolis Circle Metro Station (Upcoming Line 3 terminal station - 300m)",
+    nearbyMalls: "Megapolis Commercial High Street (Within Campus), Grand Highstreet (4.8 km)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6934!3d18.5785!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Sangria!5e0!3m2!1sen!2sin!4v1725118",
+    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Phase 1 Wipro Circle: 8 mins drive | Mumbai-Pune Expressway: 18 mins",
+    investmentScore: 92,
+    rentalYield: 5.4,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: Is Megapolis Sangria ready to move in?\nA: Yes, Megapolis Sangria is a fully ready-to-move residential cluster with occupancy certificates received.\n\nQ: What is the distance to Tech Mahindra and TCS from Sangria?\nA: Sangria is located within 400–600 meters of Tech Mahindra and TCS campuses in Hinjewadi Phase 3.\n\nQ: Are schools available within the campus?\nA: Yes, the renowned Pawar Public School is operational inside the Megapolis Township campus.",
+    seoTitle: "Megapolis Sangria Hinjewadi Phase 3 | 2 & 3 BHK Flats | 24K Realtors",
+    seoDescription: "Verified flats in Megapolis Sangria Hinjewadi Phase 3 by Pride Purple. 2 BHK, 2.5 BHK & 3 BHK with carpet 645-1050 sq.ft. Ready to move. MahaRERA P52100047112."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-4: MEGAPOLIS MYSTIC — Hinjewadi Phase 3
+  // MahaRERA: P52100046891 | Developer: Pride Purple Group
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-megapolis-mystic",
+    name: "Megapolis Mystic",
+    canonicalName: "Megapolis Mystic Hinjewadi Phase 3",
+    slug: "megapolis-mystic",
+    imageUrl: "/gallery_tower_2.png",
+    galleryImages: [
+      "/gallery_tower_2.png",
+      "/gallery_infinity_pool.png"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    townshipName: "Megapolis",
+    parentProjectId: "megapolis",
+    developer: "Pride Purple Group",
+    reraNumber: "P52100046891",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 10500000,
+    priceLastVerified: "20 Sep 2026",
+    possessionDate: "Ready to Move",
+    projectArea: "142+ Acres Integrated Township",
+    overview: "Megapolis Mystic offers serene hillside living within the Megapolis Township in Hinjewadi Phase 3. Surrounded by the picturesque Sahyadri hills, Mystic features spacious 2 BHK and 3 BHK luxury residences with large viewing balconies, peaceful zen gardens, and premium interior specifications.",
+    amenities: "Zen Garden, Hillside Viewing Deck, Gymnasium, Clubhouse, Tennis Court, Children Play Area, 24x7 Security & CCTV, Multi-level Covered Parking, Solar Water Heating",
+    priceRange: "₹1.05 Cr – ₹1.95 Cr",
+    configuration: "2 BHK (720–790 sq.ft) | 3 BHK (1150–1200 sq.ft)",
+    configurationSummary: "2 BHK & 3 BHK",
+    configurations: [
+      { bhkType: "2 BHK", carpetArea: "720 sq.ft", priceLabel: "₹1.05 Cr – ₹1.25 Cr", status: "Available" },
+      { bhkType: "2 BHK", carpetArea: "790 sq.ft", priceLabel: "₹1.20 Cr – ₹1.40 Cr", status: "Available" },
+      { bhkType: "3 BHK", carpetArea: "1150 sq.ft", priceLabel: "₹1.65 Cr – ₹1.95 Cr", status: "Available" }
+    ],
+    nearbySchools: "Pawar Public School (300m), Blue Ridge Public School (4.5 km)",
+    nearbyHospitals: "Ruby Hall Clinic Hinjewadi (5.0 km), Hinjawadi Hospital (4.0 km)",
+    nearbyItParks: "Tech Mahindra (500m), TCS Sahyadri (700m), Cognizant (800m)",
+    nearbyMetro: "Megapolis Metro Station (400m)",
+    nearbyMalls: "Megapolis High Street (Within Campus)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6942!3d18.5792!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Mystic!5e0!3m2!1sen!2sin!4v1725118",
+    travelTimeInfo: "Tech Mahindra: 3 mins walk | TCS: 5 mins walk | Hinjewadi Phase 1: 8 mins | Mumbai Expressway: 18 mins",
+    investmentScore: 91,
+    rentalYield: 5.2,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What configurations are available in Megapolis Mystic?\nA: Mystic offers 2 BHK (720-790 sq.ft) and 3 BHK (1150-1200 sq.ft) luxury apartments.\n\nQ: Does Megapolis Mystic offer hill views?\nA: Yes, Mystic has open balconies facing the scenic Sahyadri foothills.",
+    seoTitle: "Megapolis Mystic Hinjewadi Phase 3 | 2 & 3 BHK Homes | 24K Realtors",
+    seoDescription: "Explore verified 2 & 3 BHK residences in Megapolis Mystic Hinjewadi Phase 3. Hillside views, 142-acre township amenities. MahaRERA P52100046891."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-5: MEGAPOLIS SPLENDOUR — Hinjewadi Phase 3
+  // MahaRERA: P52100048230 | Developer: Pride Purple Group
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-megapolis-splendour",
+    name: "Megapolis Splendour",
+    canonicalName: "Megapolis Splendour Hinjewadi Phase 3",
+    slug: "megapolis-splendour",
+    imageUrl: "/gallery_tower_3.png",
+    galleryImages: [
+      "/gallery_tower_3.png",
+      "/luxury_sunset_pool.png"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    townshipName: "Megapolis",
+    parentProjectId: "megapolis",
+    developer: "Pride Purple Group",
+    reraNumber: "P52100048230",
+    projectStatus: "UNDER_CONSTRUCTION",
+    startingPrice: 11000000,
+    priceLastVerified: "20 Sep 2026",
+    possessionDate: "Dec 2026",
+    projectArea: "142+ Acres Integrated Township",
+    overview: "Megapolis Splendour is the marquee luxury residential cluster of Megapolis Township in Hinjewadi Phase 3. Featuring premium 2 BHK, 2.5 BHK, 3 BHK and 3.5 BHK grand apartments, Splendour includes an exclusive rooftop swimming pool, open-air amphitheatre, designer clubhouse, and smart home provisions.",
+    amenities: "Rooftop Swimming Pool, Open-Air Amphitheatre, Luxury Clubhouse, Multi-sport Arena, High-Speed Elevators, 24x7 Security, Pawar Public School within campus",
+    priceRange: "₹1.1 Cr – ₹2.2 Cr",
+    configuration: "2 BHK (680 sq.ft) | 2.5 BHK (880 sq.ft) | 3 BHK (1100 sq.ft) | 3.5 BHK (1350 sq.ft)",
+    configurationSummary: "2 BHK, 2.5 BHK, 3 BHK & 3.5 BHK",
+    configurations: [
+      { bhkType: "2 BHK", carpetArea: "680 sq.ft", priceLabel: "₹1.10 Cr – ₹1.30 Cr", status: "Available" },
+      { bhkType: "2.5 BHK", carpetArea: "880 sq.ft", priceLabel: "₹1.35 Cr – ₹1.60 Cr", status: "Available" },
+      { bhkType: "3 BHK", carpetArea: "1100 sq.ft", priceLabel: "₹1.75 Cr – ₹2.00 Cr", status: "Available" },
+      { bhkType: "3.5 BHK", carpetArea: "1350 sq.ft", priceLabel: "₹2.05 Cr – ₹2.20 Cr", status: "Available" }
+    ],
+    nearbySchools: "Pawar Public School (350m)",
+    nearbyHospitals: "Ruby Hall Clinic (5.0 km)",
+    nearbyItParks: "Tech Mahindra (500m), TCS Sahyadri (600m), Cognizant (800m)",
+    nearbyMetro: "Megapolis Metro Station (400m)",
+    nearbyMalls: "Megapolis High Street (Within Campus)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6948!3d18.5798!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Splendour!5e0!3m2!1sen!2sin!4v1725118",
+    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Wipro Circle: 8 mins | Expressway: 18 mins",
+    investmentScore: 94,
+    rentalYield: 5.1,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What is the possession date for Megapolis Splendour?\nA: Expected possession begins December 2026.\n\nQ: Are 3.5 BHK units available in Splendour?\nA: Yes, Splendour offers expansive 3.5 BHK layouts with carpet area of 1,350 sq.ft.",
+    seoTitle: "Megapolis Splendour Hinjewadi Phase 3 | 2, 3 & 3.5 BHK | 24K Realtors",
+    seoDescription: "Book premium flats in Megapolis Splendour Hinjewadi Phase 3. Rooftop pool, amphitheatre, 680-1350 sq.ft carpet. MahaRERA P52100048230."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-6: MEGAPOLIS SUNWAY — Hinjewadi Phase 3
+  // MahaRERA: P52100045780 | Developer: Pride Purple Group
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-megapolis-sunway",
+    name: "Megapolis Sunway",
+    canonicalName: "Megapolis Sunway Hinjewadi Phase 3",
+    slug: "megapolis-sunway",
+    imageUrl: "/dev_kolte_patil_township.png",
+    galleryImages: [
+      "/dev_kolte_patil_township.png",
+      "/gallery_sample_flat_interior.png"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    townshipName: "Megapolis",
+    parentProjectId: "megapolis",
+    developer: "Pride Purple Group",
+    reraNumber: "P52100045780",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 6500000,
+    priceLastVerified: "20 Sep 2026",
+    possessionDate: "Ready to Move",
+    projectArea: "142+ Acres Integrated Township",
+    overview: "Megapolis Sunway is a premier residential society in Hinjewadi Phase 3 offering smart, sun-drenched 1 BHK, 2 BHK, and 2.5 BHK apartments. Highly sought after by IT professionals for its efficient floor plans, high rental yields, and tranquil location within the Megapolis Township.",
+    amenities: "Corner Unit Open Views, Solar Water Heating, Clubhouse, Gymnasium, Jogging Track, Children Play Area, 24x7 Security & CCTV",
+    priceRange: "₹65 L – ₹1.35 Cr",
+    configuration: "1 BHK (440–490 sq.ft) | 2 BHK (680 sq.ft) | 2.5 BHK (870 sq.ft)",
+    configurationSummary: "1 BHK, 2 BHK & 2.5 BHK",
+    configurations: [
+      { bhkType: "1 BHK", carpetArea: "440 sq.ft", priceLabel: "₹65 L – ₹72 L", status: "Available" },
+      { bhkType: "1 BHK", carpetArea: "490 sq.ft", priceLabel: "₹72 L – ₹80 L", status: "Available" },
+      { bhkType: "2 BHK", carpetArea: "680 sq.ft", priceLabel: "₹95 L – ₹1.15 Cr", status: "Available" }
+    ],
+    nearbySchools: "Pawar Public School (300m)",
+    nearbyHospitals: "Ruby Hall Clinic (5.0 km)",
+    nearbyItParks: "Tech Mahindra (400m), TCS (600m), Cognizant (700m)",
+    nearbyMetro: "Megapolis Metro Station (350m)",
+    nearbyMalls: "Megapolis High Street (Within Campus)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6925!3d18.5779!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Sunway!5e0!3m2!1sen!2sin!4v1725118",
+    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Infosys Phase 1: 8 mins | Expressway: 18 mins",
+    investmentScore: 93,
+    rentalYield: 5.6,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What is the rental yield in Megapolis Sunway?\nA: Sunway delivers an excellent rental yield of 5.5%–5.8% due to constant IT rental demand from Phase 3 companies.\n\nQ: Are 1 BHK flats available in Sunway?\nA: Yes, Sunway has verified 1 BHK flats ranging between 440 and 490 sq.ft carpet.",
+    seoTitle: "Megapolis Sunway Hinjewadi Phase 3 | 1 & 2 BHK Apartments | 24K Realtors",
+    seoDescription: "High ROI 1 & 2 BHK apartments in Megapolis Sunway Hinjewadi Phase 3. 440-870 sq.ft carpet. Ready to move. MahaRERA P52100045780."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-7: MEGAPOLIS SPARKLE — Hinjewadi Phase 3
+  // MahaRERA: P52100046550 | Developer: Pride Purple Group
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-megapolis-sparkle",
+    name: "Megapolis Sparkle",
+    canonicalName: "Megapolis Sparkle Hinjewadi Phase 3",
+    slug: "megapolis-sparkle",
+    imageUrl: "/gallery_tower_3.png",
+    galleryImages: [
+      "/gallery_tower_3.png",
+      "/gallery_infinity_pool.png"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    townshipName: "Megapolis",
+    parentProjectId: "megapolis",
+    developer: "Pride Purple Group",
+    reraNumber: "P52100046550",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 10000000,
+    priceLastVerified: "20 Sep 2026",
+    possessionDate: "Ready to Move",
+    projectArea: "142+ Acres Integrated Township",
+    overview: "Megapolis Sparkle is an established residential community within Megapolis Township, Hinjewadi Phase 3. Offering well-planned 2 BHK and 3 BHK homes with central park views, spacious layouts, and convenient access to internal transport and schools.",
+    amenities: "Central Park Facing Units, Modern Gymnasium, Badminton Court, Children Play Area, 24x7 Gated Security, Intercom, Power Backup",
+    priceRange: "₹1.0 Cr – ₹1.75 Cr",
+    configuration: "2 BHK (700–760 sq.ft) | 3 BHK (1080–1100 sq.ft)",
+    configurationSummary: "2 BHK & 3 BHK",
+    configurations: [
+      { bhkType: "2 BHK", carpetArea: "700 sq.ft", priceLabel: "₹1.00 Cr – ₹1.20 Cr", status: "Available" },
+      { bhkType: "2 BHK", carpetArea: "760 sq.ft", priceLabel: "₹1.15 Cr – ₹1.35 Cr", status: "Available" },
+      { bhkType: "3 BHK", carpetArea: "1080 sq.ft", priceLabel: "₹1.50 Cr – ₹1.75 Cr", status: "Available" }
+    ],
+    nearbySchools: "Pawar Public School (250m)",
+    nearbyHospitals: "Ruby Hall Clinic (5.0 km)",
+    nearbyItParks: "Tech Mahindra (400m), TCS (600m), Cognizant (750m)",
+    nearbyMetro: "Megapolis Metro Station (350m)",
+    nearbyMalls: "Megapolis High Street (Within Campus)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6920!3d18.5775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Sparkle!5e0!3m2!1sen!2sin!4v1725118",
+    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Wipro Circle: 8 mins | Expressway: 18 mins",
+    investmentScore: 90,
+    rentalYield: 5.3,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What is the status of Megapolis Sparkle?\nA: Megapolis Sparkle is fully ready to move with active residents and families.\n\nQ: Does Sparkle have park facing flats?\nA: Yes, Sparkle towers feature scenic views overlooking the Megapolis central gardens.",
+    seoTitle: "Megapolis Sparkle Hinjewadi Phase 3 | 2 & 3 BHK Homes | 24K Realtors",
+    seoDescription: "Ready to move 2 & 3 BHK apartments in Megapolis Sparkle Hinjewadi Phase 3. 700-1100 sq.ft carpet. MahaRERA P52100046550."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-8: MEGAPOLIS TOWNSHIP (Master Listing) — Hinjewadi Phase 3
+  // Developer: Pride Purple Group
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-megapolis-township",
+    name: "Megapolis Township",
+    canonicalName: "Megapolis Township Hinjewadi Phase 3",
+    slug: "megapolis-township",
+    imageUrl: "/dev_kolte_patil_township.png",
+    galleryImages: [
+      "/dev_kolte_patil_township.png",
+      "/gallery_tower_3.png",
+      "/gallery_infinity_pool.png",
+      "/luxury_sunset_pool.png"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    townshipName: "Megapolis",
+    parentProjectId: "megapolis",
+    developer: "Pride Purple Group",
+    reraNumber: "P52100047112",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 6500000,
+    priceLastVerified: "20 Sep 2026",
+    possessionDate: "Ready to Move & Ongoing",
+    projectArea: "142+ Acres Integrated Township",
+    overview: "Megapolis is Pune's flagship 142+ acre integrated smart township located in Hinjewadi Phase 3, developed by the esteemed Pride Purple Group. Designed to provide a complete self-sustained lifestyle next to IT hubs, it houses iconic societies including Sangria, Mystic, Splendour, Sunway, and Sparkle. The township features the operational Pawar Public School, Olympic-sized swimming pools, multi-sport stadiums, shuttle transit, convenience marts, and upcoming metro line 3 terminal connectivity.",
+    amenities: "142-Acre Master Township, Pawar Public School, Olympic Swimming Pools, Grand Clubhouses, Tennis & Basketball Courts, Shuttle Bus, Commercial High Street, 24x7 Multi-Tier Security",
+    priceRange: "₹65 L – ₹2.2 Cr",
+    configuration: "1 BHK, 2 BHK, 2.5 BHK, 3 BHK & 3.5 BHK (440 – 1,350 sq.ft)",
+    configurationSummary: "1, 2, 2.5, 3 & 3.5 BHK",
+    configurations: [
+      { bhkType: "1 BHK", carpetArea: "440–510 sq.ft", priceLabel: "₹65 L – ₹80 L", status: "Available" },
+      { bhkType: "2 BHK", carpetArea: "645–790 sq.ft", priceLabel: "₹95 L – ₹1.40 Cr", status: "Available" },
+      { bhkType: "2.5 BHK", carpetArea: "800–880 sq.ft", priceLabel: "₹1.25 Cr – ₹1.60 Cr", status: "Available" },
+      { bhkType: "3 BHK", carpetArea: "990–1200 sq.ft", priceLabel: "₹1.55 Cr – ₹1.95 Cr", status: "Available" },
+      { bhkType: "3.5 BHK", carpetArea: "1350 sq.ft", priceLabel: "₹2.05 Cr – ₹2.20 Cr", status: "Available" }
+    ],
+    nearbySchools: "Pawar Public School (Within Township Campus)",
+    nearbyHospitals: "Ruby Hall Clinic Hinjewadi (5.0 km), Sanjeevani Hospital (3.2 km)",
+    nearbyItParks: "Tech Mahindra (300m), TCS Sahyadri (500m), Cognizant (700m)",
+    nearbyMetro: "Megapolis Terminal Metro Station (Line 3 - 300m)",
+    nearbyMalls: "Megapolis High Street Retail Arcade",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6934!3d18.5785!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Township!5e0!3m2!1sen!2sin!4v1725118",
+    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Wipro Circle: 8 mins | Expressway: 18 mins",
+    investmentScore: 95,
+    rentalYield: 5.5,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: Which societies are part of Megapolis Township?\nA: Megapolis includes Sangria, Mystic, Splendour, Sunway, Sparkle and Smart Homes clusters.\n\nQ: Is Pawar Public School located inside the township?\nA: Yes, Pawar Public School is fully operational within the Megapolis Township boundary.",
+    seoTitle: "Megapolis Township Hinjewadi Phase 3 | 1 to 3.5 BHK Flats | 24K Realtors",
+    seoDescription: "Explore Pune's largest 142-acre integrated township Megapolis in Hinjewadi Phase 3. 1, 2, 2.5, 3 & 3.5 BHK verified listings. MahaRERA registered."
   }
 ];
 
@@ -512,7 +1120,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_godrej_verified_only_v6';
+const HINJEWADI_PROP_VERSION = 'v2026_megapolis_godrej_verified_v8';
 
 const LocalMockDb = {
   getProperties() {
@@ -575,7 +1183,32 @@ const LocalMockDb = {
     saveLocalStorageItem('mock_users', users);
   },
   getSocieties() {
-    return getLocalStorageItem('mock_societies', initialSocieties);
+    let list = null;
+    try {
+      const storedVer = localStorage.getItem('mock_societies_version');
+      if (storedVer === HINJEWADI_PROP_VERSION) {
+        list = getLocalStorageItem('mock_societies', null);
+      } else {
+        localStorage.setItem('mock_societies_version', HINJEWADI_PROP_VERSION);
+        saveLocalStorageItem('mock_societies', initialSocieties);
+        list = initialSocieties;
+      }
+    } catch (e) {
+      list = initialSocieties;
+    }
+    if (!list || !list.length) list = initialSocieties;
+
+    const seen = new Set();
+    const deduped = [];
+    for (const s of list) {
+      if (!s || !s.id) continue;
+      const key = String(s.id);
+      if (!seen.has(key)) {
+        seen.add(key);
+        deduped.push(s);
+      }
+    }
+    return deduped;
   },
   saveSocieties(societies) {
     saveLocalStorageItem('mock_societies', societies);

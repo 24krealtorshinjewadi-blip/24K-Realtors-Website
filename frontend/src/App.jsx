@@ -486,6 +486,7 @@ function AppContent() {
                   <PublicTownshipPage
                     onBackHome={() => navigate('/')}
                     onSelectSociety={(slug) => navigate(`/society/${slug}`)}
+                    onExploreTownship={(id) => navigate(`/townships/${id}`)}
                   />
                 }
               />
@@ -509,6 +510,15 @@ function AppContent() {
                   />
                 }
               />
+
+              {/* Megapolis SEO & Direct Friendly Alias Routes */}
+              <Route path="/megapolis-hinjewadi" element={<Navigate to="/townships/megapolis" replace />} />
+              <Route path="/megapolis-township" element={<Navigate to="/townships/megapolis" replace />} />
+              <Route path="/megapolis-sangria" element={<Navigate to="/townships/megapolis/sangria" replace />} />
+              <Route path="/megapolis-mystic" element={<Navigate to="/townships/megapolis/mystic" replace />} />
+              <Route path="/megapolis-splendour" element={<Navigate to="/townships/megapolis/splendour" replace />} />
+              <Route path="/megapolis-sunway" element={<Navigate to="/townships/megapolis/sunway" replace />} />
+              <Route path="/megapolis-sparkle" element={<Navigate to="/townships/megapolis/sparkle" replace />} />
 
               {/* Society Detail */}
               <Route path="/society/:slug" element={<SocietyDetailRouteWrapper />} />
@@ -538,9 +548,6 @@ function AppContent() {
                 }
               />
               <Route path="/blog/:slug" element={<BlogDetailRouteWrapper />} />
-
-              {/* Catch-all */}
-              <Route path="*" element={<Navigate to="/" replace />} />
 
               {/* ─── GODREJ 24 — Dedicated SEO Pages ──────────────────────────── */}
               {/* /godrej-24-hinjewadi — Project overview page */}
@@ -576,6 +583,8 @@ function AppContent() {
                 element={<GodrejProjectPage project="elements" bhkFilter="3 BHK" />}
               />
 
+              {/* Catch-all (MUST BE LAST) */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
         </main>

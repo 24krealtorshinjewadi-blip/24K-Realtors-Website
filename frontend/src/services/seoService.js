@@ -210,6 +210,43 @@ export const SEO_CONFIGS = {
     description: 'Godrej Elements 3 BHK smart apartments in Hinjewadi Phase 1. Verified carpet areas: 1167 sq.ft and 1488 sq.ft. Smart home automation, 21-point safety. MahaRERA: P52100016626.',
     url: '/godrej-elements-3-bhk',
   },
+
+  // ─── Megapolis Township — Hinjewadi Phase 3 ──────────────────────────────
+  megapolis: {
+    title: 'Megapolis Township Hinjewadi Phase 3 | 1, 2 & 3 BHK Flats | 24K Realtors',
+    description: 'Explore Pune\'s landmark 142+ acre integrated smart township Megapolis in Hinjewadi Phase 3 by Pride Purple Group. 5 iconic societies, Pawar Public School, Olympic pool. MahaRERA P52100047112.',
+    url: '/townships/megapolis',
+  },
+
+  megapolis_sangria: {
+    title: 'Megapolis Sangria Hinjewadi Phase 3 | 2, 2.5 & 3 BHK Flats | 24K Realtors',
+    description: 'Verified 2, 2.5 & 3 BHK luxury residences in Megapolis Sangria Hinjewadi Phase 3. Carpet 645-1050 sq.ft. Ready to move. Next to Tech Mahindra & TCS. MahaRERA P52100047112.',
+    url: '/townships/megapolis/sangria',
+  },
+
+  megapolis_mystic: {
+    title: 'Megapolis Mystic Hinjewadi Phase 3 | 2 & 3 BHK Hillside Homes | 24K Realtors',
+    description: 'Scenic hillside 2 & 3 BHK apartments in Megapolis Mystic Hinjewadi Phase 3. Panoramic Sahyadri views, zen gardens, ready to move. MahaRERA P52100046891.',
+    url: '/townships/megapolis/mystic',
+  },
+
+  megapolis_splendour: {
+    title: 'Megapolis Splendour Hinjewadi Phase 3 | 2, 3 & 3.5 BHK | 24K Realtors',
+    description: 'Grand scale luxury residences in Megapolis Splendour Hinjewadi Phase 3. Rooftop pool, amphitheatre, 680-1350 sq.ft carpet. MahaRERA P52100048230.',
+    url: '/townships/megapolis/splendour',
+  },
+
+  megapolis_sunway: {
+    title: 'Megapolis Sunway Hinjewadi Phase 3 | 1 & 2 BHK Smart Homes | 24K Realtors',
+    description: 'High ROI 1 & 2 BHK sun-drenched apartments in Megapolis Sunway Hinjewadi Phase 3. 440-870 sq.ft carpet. Ready to move. MahaRERA P52100045780.',
+    url: '/townships/megapolis/sunway',
+  },
+
+  megapolis_sparkle: {
+    title: 'Megapolis Sparkle Hinjewadi Phase 3 | 2 & 3 BHK Homes | 24K Realtors',
+    description: 'Spacious 2 & 3 BHK park-facing apartments in Megapolis Sparkle Hinjewadi Phase 3. Active gated community, Pawar Public School nearby. MahaRERA P52100046550.',
+    url: '/townships/megapolis/sparkle',
+  },
 };
 
 
