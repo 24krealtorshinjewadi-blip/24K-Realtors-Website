@@ -229,8 +229,10 @@ function Toggle({ id, checked, onChange, label, icon }) {
 /* ═══════════════════════════════════════════════════════════════════
    TOWNSHIP GROUP — The header + card grid block in main area
 ═══════════════════════════════════════════════════════════════════ */
-function TownshipGroup({ township, societies, onSelectSociety, index }) {
+function TownshipGroup({ township, societies, onSelectSociety, onExploreTownship, index }) {
   if (societies.length === 0) return null;
+
+  const isMegapolis = township.id === 'megapolis';
 
   return (
     <motion.div
@@ -299,6 +301,27 @@ function TownshipGroup({ township, societies, onSelectSociety, index }) {
           <div className="pi-township-group__price-range">
             {township.priceRange}
           </div>
+
+          {/* Deep-link CTA for Megapolis */}
+          {isMegapolis && onExploreTownship && (
+            <button
+              onClick={() => onExploreTownship(township.id)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '5px',
+                padding: '7px 14px', borderRadius: '8px',
+                background: 'linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(212,175,55,0.1) 100%)',
+                border: '1px solid rgba(124,58,237,0.4)',
+                color: '#C4B5FD', fontSize: '0.73rem', fontWeight: 700,
+                cursor: 'pointer', letterSpacing: '0.02em',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(212,175,55,0.6)'; e.currentTarget.style.color = '#F3E5AB'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(124,58,237,0.4)'; e.currentTarget.style.color = '#C4B5FD'; }}
+            >
+              <span>🏙️ Explore All Listings</span>
+              <ArrowRight size={13} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -1038,6 +1061,9 @@ export default function PublicTownshipPage({ onBackHome, onSelectSociety }) {
                     township={township}
                     societies={socs}
                     onSelectSociety={handleSocietySelect}
+                    onExploreTownship={(twpId) => {
+                      if (twpId === 'megapolis') navigate('/townships/megapolis');
+                    }}
                     index={i}
                   />
                 )) : (
