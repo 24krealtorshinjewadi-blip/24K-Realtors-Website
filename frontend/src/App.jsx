@@ -31,8 +31,10 @@ const PropertyDetailView = lazy(() => import('./components/PropertyDetailView'))
 const LocationLandingPage = lazy(() => import('./components/LocationLandingPage'));
 const BlogListPage       = lazy(() => import('./components/BlogListPage'));
 const BlogDetailPage     = lazy(() => import('./components/BlogDetailPage'));
-const PublicTownshipPage = lazy(() => import('./components/PublicTownshipPage'));
-const GodrejProjectPage  = lazy(() => import('./components/GodrejProjectPage'));
+const PublicTownshipPage        = lazy(() => import('./components/PublicTownshipPage'));
+const GodrejProjectPage         = lazy(() => import('./components/GodrejProjectPage'));
+const MegapolisTownshipPage     = lazy(() => import('./components/MegapolisTownshipPage'));
+const MegapolisSocietyListingsPage = lazy(() => import('./components/MegapolisSocietyListingsPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -257,6 +259,15 @@ function LegacyHashRedirectHandler() {
         navigate('/townships', { replace: true });
         return;
       }
+      if (hash === 'townships/megapolis' || hash === 'megapolis') {
+        navigate('/townships/megapolis', { replace: true });
+        return;
+      }
+      if (hash.startsWith('townships/megapolis/')) {
+        const socId = hash.replace('townships/megapolis/', '');
+        navigate(`/townships/megapolis/${socId}`, { replace: true });
+        return;
+      }
       if (hash === 'societies' || hash === 'properties' || hash === 'signature-collection' || hash === 'signature') {
         navigate('/societies', { replace: true });
       } else if (hash.startsWith('society/')) {
@@ -475,6 +486,26 @@ function AppContent() {
                   <PublicTownshipPage
                     onBackHome={() => navigate('/')}
                     onSelectSociety={(slug) => navigate(`/society/${slug}`)}
+                  />
+                }
+              />
+
+              {/* Megapolis Township — Collection / Landing Page */}
+              <Route
+                path="/townships/megapolis"
+                element={
+                  <MegapolisTownshipPage
+                    onBackHome={() => navigate('/townships')}
+                  />
+                }
+              />
+
+              {/* Megapolis Society Listings — Dual Panel Filter + Units */}
+              <Route
+                path="/townships/megapolis/:societyId"
+                element={
+                  <MegapolisSocietyListingsPage
+                    onBack={() => navigate('/townships/megapolis')}
                   />
                 }
               />
