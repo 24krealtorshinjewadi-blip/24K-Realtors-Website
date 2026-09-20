@@ -3558,34 +3558,8 @@ export default function Portal({ onViewChange }) {
                   letterSpacing: '0.01em',
                   textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 4px 20px rgba(0,0,0,0.8)',
                 }}>
-                  3 &amp; 4 BHK Premium Homes in <strong style={{ color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>Hinjewadi Phase 1, 2, 3</strong> &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
+                  1, 2, 3 &amp; 4 BHK Premium Homes in <strong style={{ color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>Hinjewadi Phase 1, 2, 3</strong> &amp; Balewadi, Wakad, Baner, Mahalunge, Smart City &amp; PCMC – Curated for you.
                 </p>
-
-                {/* ── Pune Metro Line 3 & Local Identity Transit Strip (Section 21) ── */}
-                <div style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '8px 14px',
-                  background: 'rgba(4, 8, 20, 0.78)',
-                  border: '1px solid rgba(212, 175, 55, 0.40)',
-                  borderRadius: '50px',
-                  padding: isMobile ? '6px 14px' : '8px 20px',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
-                  marginBottom: isMobile ? '16px' : '22px',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.6), 0 0 15px rgba(212,175,55,0.12)',
-                  fontSize: isMobile ? '0.72rem' : '0.80rem',
-                }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#F5D77F', fontWeight: 800, letterSpacing: '0.02em' }}>
-                    <span style={{ fontSize: '0.95rem' }}>🚇</span>
-                    पुणे मेट्रो Line 3 · हिंजवडी IT Corridor Connectivity
-                  </span>
-                  <span style={{ color: 'rgba(212,175,55,0.4)', display: isMobile ? 'none' : 'inline' }}>|</span>
-                  <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: isMobile ? '0.68rem' : '0.75rem' }}>
-                    Direct transit from Megapolis Terminal &amp; Phase 1 to Shivajinagar
-                  </span>
-                </div>
 
                 {/* ══════════════════════════════════════════════════════════════════
                     ✦ NAUKRI & 99ACRES STYLE HERO SEARCH DOCK WITH AI INTEGRATION
@@ -5992,7 +5966,6 @@ export default function Portal({ onViewChange }) {
                 { 
                   name: 'Neeraj Giri', 
                   role: 'Founder & Principal Advisor', 
-                  area: 'Hinjewadi · Wakad · Baner', 
                   phone: '9673000053', 
                   initials: 'NG', 
                   deals: '500+', 
@@ -6001,8 +5974,6 @@ export default function Portal({ onViewChange }) {
                 },
                 { 
                   name: 'Nilesh Omprakash Rai', 
-                  role: 'Managing Partner & Team Lead', 
-                  area: 'Baner · Balewadi · Kharadi', 
                   phone: '9359595851', 
                   initials: 'NR', 
                   deals: '350+', 
@@ -6011,8 +5982,6 @@ export default function Portal({ onViewChange }) {
                 },
                 { 
                   name: 'Jyoti Dhale', 
-                  role: 'Senior Private Client Advisor', 
-                  area: 'Pan Pune West Corridors', 
                   phone: '9356559727', 
                   initials: 'JD', 
                   deals: '420+', 
@@ -6021,8 +5990,6 @@ export default function Portal({ onViewChange }) {
                 },
                 { 
                   name: 'Urvashi', 
-                  role: 'Senior Portfolio Consultant', 
-                  area: 'Hinjewadi · Wakad · Baner', 
                   phone: '6353745408', 
                   initials: 'UV', 
                   deals: '180+', 
@@ -6031,8 +5998,6 @@ export default function Portal({ onViewChange }) {
                 },
                 { 
                   name: 'Yash Murkute', 
-                  role: 'Commercial & High-Yield Specialist', 
-                  area: 'Hinjewadi Techzone · Baner', 
                   phone: '9822551862', 
                   initials: 'YM', 
                   deals: '250+', 
@@ -6147,28 +6112,20 @@ export default function Portal({ onViewChange }) {
                   }}>
                     {expert.name}
                   </h4>
-                  <div style={{
-                    color: '#D4AF37',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    marginBottom: '8px',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em'
-                  }}>
-                    {expert.role}
-                  </div>
-
-                  <div style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    color: 'rgba(212, 175, 55, 0.8)',
-                    fontSize: '0.70rem',
-                    marginBottom: '18px'
-                  }}>
-                    <span>📍</span>
-                    <span>{expert.area}</span>
-                  </div>
+                  {expert.role ? (
+                    <div style={{
+                      color: '#D4AF37',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      marginBottom: '18px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em'
+                    }}>
+                      {expert.role}
+                    </div>
+                  ) : (
+                    <div style={{ marginBottom: '18px' }} />
+                  )}
 
                   {/* 3-Metric Performance Bar */}
                   <div style={{
