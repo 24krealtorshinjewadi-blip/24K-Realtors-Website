@@ -193,7 +193,7 @@ export default function PropertyCard({
             width: '100%', 
             height: '100%', 
             objectFit: 'cover',
-            objectPosition: (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements')) ? 'center 35%' : 'center',
+            objectPosition: (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : 'center',
             transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         />
@@ -464,22 +464,23 @@ export default function PropertyCard({
               if (onOpenRera) onOpenRera(property, e);
             }}
             style={{
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              background: 'rgba(37, 211, 102, 0.08)',
+              border: '1px solid rgba(37, 211, 102, 0.28)',
               borderRadius: '4px',
               padding: '3px 8px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
-              fontSize: '0.68rem',
-              color: '#FFF4D0',
-              fontWeight: 600
+              fontSize: '0.66rem',
+              color: '#4ADE80',
+              fontWeight: 700,
+              letterSpacing: '0.02em'
             }}
-            title="MahaRERA dossier"
+            title={property.reraNumber ? `MahaRERA Registration: ${property.reraNumber}` : "MahaRERA dossier"}
           >
-            <ShieldCheck size={11} color="#E6C35C" />
-            <span>RERA Certified</span>
+            <ShieldCheck size={11} color="#22C55E" />
+            <span>{property.reraNumber ? `RERA: ${property.reraNumber}` : 'MahaRERA Verified'}</span>
           </button>
         </div>
 
@@ -712,25 +713,43 @@ export default function PropertyCard({
             <span>💬 WhatsApp</span>
           </a>
 
-          <span 
+          <button 
+            type="button"
             className="view-details-cta"
             onClick={(e) => {
               e.stopPropagation();
               handleCardClick();
             }}
             style={{
-              fontSize: '0.78rem',
-              color: '#E6C35C',
+              fontSize: '0.74rem',
+              fontFamily: "'Montserrat', sans-serif",
+              color: '#F4D068',
               fontWeight: 700,
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: '4px',
-              transition: 'transform 0.3s ease',
-              cursor: 'pointer'
+              gap: '6px',
+              background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(197, 168, 128, 0.08))',
+              border: '1px solid rgba(212, 175, 55, 0.4)',
+              borderRadius: '30px',
+              padding: '6px 14px',
+              cursor: 'pointer',
+              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(197, 168, 128, 0.2))';
+              e.currentTarget.style.borderColor = 'rgba(244, 208, 104, 0.7)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(197, 168, 128, 0.08))';
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            View Details <ArrowRight size={12} />
-          </span>
+            <span>Explore Project</span>
+            <ArrowRight size={12} />
+          </button>
         </div>
       </div>
     </div>
