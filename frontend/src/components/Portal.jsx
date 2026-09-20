@@ -4237,57 +4237,90 @@ export default function Portal({ onViewChange }) {
                   builders={builders}
                 />
 
-              {/* Listings Controls — Responsive two-row layout */}
-              <div style={{ marginBottom: '24px' }}>
-                {/* Row 1: Count + View Toggle */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
-                  <span className="total-found-badge" style={{ margin: 0, fontSize: 'clamp(0.72rem, 2.5vw, 0.8rem)' }}>
-                    🏢 {totalElements > 0 ? totalElements : properties.length} listings · {filters.location || 'Pune West'}
-                  </span>
-                  <div style={{ display: 'flex', background: 'rgba(7,15,30,0.6)', border: '1px solid rgba(197,168,128,0.15)', borderRadius: '50px', padding: '3px', gap: '2px' }}>
-                    <button
-                      onClick={() => setViewMode('GRID')}
-                      type="button"
-                      style={{ background: viewMode === 'GRID' ? 'linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))' : 'transparent', border: viewMode === 'GRID' ? '1px solid rgba(197,168,128,0.35)' : '1px solid transparent', color: viewMode === 'GRID' ? '#E6C35C' : 'rgba(255,255,255,0.45)', padding: '7px 14px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", cursor: 'pointer', transition: 'all 0.25s ease', whiteSpace: 'nowrap' }}
-                    >
-                      ☰ Grid
-                    </button>
-                    <button
-                      onClick={() => setViewMode('MAP')}
-                      type="button"
-                      style={{ background: viewMode === 'MAP' ? 'linear-gradient(135deg, rgba(197,168,128,0.15), rgba(212,175,55,0.08))' : 'transparent', border: viewMode === 'MAP' ? '1px solid rgba(197,168,128,0.35)' : '1px solid transparent', color: viewMode === 'MAP' ? '#E6C35C' : 'rgba(255,255,255,0.45)', padding: '7px 14px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", cursor: 'pointer', transition: 'all 0.25s ease', whiteSpace: 'nowrap' }}
-                    >
-                      🗺️ Map
-                    </button>
+              {/* Premium Luxury Listings Count Header — Streamlined & Prestigious */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '14px',
+                margin: '12px 0 28px',
+                padding: '4px 0'
+              }}>
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  background: 'linear-gradient(135deg, rgba(16, 26, 46, 0.88) 0%, rgba(7, 15, 30, 0.96) 100%)',
+                  border: '1px solid rgba(212, 175, 55, 0.35)',
+                  borderRadius: '50px',
+                  padding: '9px 24px',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12)',
+                  backdropFilter: 'blur(12px)',
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.28), rgba(197, 168, 128, 0.12))',
+                    border: '1px solid rgba(212, 175, 55, 0.45)',
+                    fontSize: '0.95rem'
+                  }}>
+                    🏢
                   </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{
+                      fontFamily: "'Cinzel', serif",
+                      color: '#F4D068',
+                      fontSize: 'clamp(0.85rem, 2.5vw, 0.98rem)',
+                      fontWeight: 700,
+                      letterSpacing: '0.04em'
+                    }}>
+                      {totalElements > 0 ? totalElements : properties.length} Listings
+                    </span>
+                    <span style={{ color: 'rgba(212, 175, 55, 0.45)', fontSize: '0.9rem' }}>•</span>
+                    <span style={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      color: 'rgba(255, 255, 255, 0.88)',
+                      fontSize: 'clamp(0.75rem, 2vw, 0.84rem)',
+                      fontWeight: 600,
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase'
+                    }}>
+                      {filters.location || 'Pune West'}
+                    </span>
+                  </div>
+                  <div style={{
+                    width: '7px',
+                    height: '7px',
+                    borderRadius: '50%',
+                    backgroundColor: '#10B981',
+                    boxShadow: '0 0 10px #10B981',
+                    marginLeft: '4px'
+                  }} title="Live Verified Registry" />
                 </div>
-                {/* Row 2: Segmented Category Pills — full width horizontal scroll */}
-                <div className="luxury-segmented-controls" style={{ display: 'flex', overflowX: 'auto', paddingBottom: '6px', scrollbarWidth: 'none', msOverflowStyle: 'none', gap: '6px', flexWrap: 'nowrap' }}>
-                  {[
-                    { id: 'ALL', label: 'All Verified', icon: '⚜️', count: allRawProperties.length },
-                    { id: 'GODREJ_24', label: 'Godrej 24', icon: '🌿', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('godrej 24')).length },
-                    { id: 'GODREJ_ELEMENTS', label: 'Godrej Elements', icon: '⚡', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('elements')).length },
-                    { id: 'MEGAPOLIS', label: 'Megapolis', icon: '🏙️', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('megapolis')).length },
-                    { id: 'VJ_YASHONE', label: 'VJ YashOne', icon: '🏢', count: allRawProperties.filter(p => (p.title || '').toLowerCase().includes('yashone')).length },
-                    { id: '2_BHK', label: '2 BHK Residences', icon: '🛏️', count: allRawProperties.filter(p => (p.configurations || []).some(c => c.bhk.includes('2')) || p.bedrooms === 2).length },
-                    { id: '3_BHK', label: '3 BHK Residences', icon: '👑', count: allRawProperties.filter(p => (p.configurations || []).some(c => c.bhk.includes('3')) || p.bedrooms === 3).length },
-                    { id: 'WISHLIST', label: 'Saved', icon: '♥', count: wishlistIds.length },
-                  ].map(({ id, label, icon, count }) => (
-                    <button
-                      key={id}
-                      onClick={() => handleCollectionChange(id)}
-                      className={`luxury-segment-btn ${activeCollection === id ? 'active' : ''}`}
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}
-                    >
-                      <span style={{ fontSize: '0.82em' }}>{icon}</span>
-                      {label}
-                      {count > 0 && (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: '17px', height: '17px', borderRadius: '50px', padding: '0 4px', fontSize: '0.58rem', fontWeight: 800, background: activeCollection === id ? 'rgba(7,15,30,0.5)' : 'rgba(197,168,128,0.08)', color: activeCollection === id ? '#E6C35C' : 'rgba(197,168,128,0.5)', border: `1px solid ${activeCollection === id ? 'rgba(230,195,92,0.4)' : 'rgba(197,168,128,0.2)'}`, marginLeft: '2px' }}>
-                          {count}
-                        </span>
-                      )}
-                    </button>
-                  ))}
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '0.72rem',
+                    color: 'rgba(212, 175, 55, 0.85)',
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 600,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    background: 'rgba(212, 175, 55, 0.08)',
+                    border: '1px solid rgba(212, 175, 55, 0.22)',
+                    borderRadius: '30px',
+                    padding: '6px 14px'
+                  }}>
+                    <span style={{ color: '#25D366' }}>●</span> 100% MahaRERA Verified Mandates
+                  </span>
                 </div>
               </div>
 
