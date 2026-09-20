@@ -479,6 +479,10 @@ export default function MegapolisTownshipPage({ onBackHome }) {
           @keyframes blobFloat { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(3%,3%) scale(1.04); } }
           @keyframes fadeInUp { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
           @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+          @media (max-width: 768px) {
+            .mobile-subpage-cta-bar { display: flex !important; }
+            .desktop-call-pill { display: none !important; }
+          }
         `}</style>
       </div>
 
@@ -495,7 +499,7 @@ export default function MegapolisTownshipPage({ onBackHome }) {
           <button onClick={handleBack} style={{ background: 'transparent', border: `1px solid ${p.accentColor}60`, color: '#CBD5E1', padding: '7px 16px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <ArrowLeft size={14} /> Back
           </button>
-          <a href="tel:+919673000053" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.3)', padding: '7px 14px', borderRadius: '30px', color: '#FFF4D0', fontSize: '0.78rem', fontWeight: 600 }}>
+          <a href="tel:+919673000053" className="desktop-call-pill" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.3)', padding: '7px 14px', borderRadius: '30px', color: '#FFF4D0', fontSize: '0.78rem', fontWeight: 600 }}>
             <Phone size={12} color="#E6C35C" />
             <span>+91 96730 00053</span>
           </a>
@@ -839,11 +843,13 @@ export default function MegapolisTownshipPage({ onBackHome }) {
                   <h4 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.05rem', fontWeight: 700, color: '#F3E5AB', marginBottom: '4px' }}>
                     {soc.displayName}
                   </h4>
-                  <div style={{ fontSize: '0.72rem', color: '#94A3B8', marginBottom: '10px' }}>
-                    {soc.bhkOptions.join(' · ')}
-                  </div>
-                  <div style={{ fontSize: '0.72rem', color: '#64748B', marginBottom: '6px' }}>
-                    Carpet: {soc.carpetRange}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '8px 0 10px' }}>
+                    <span style={{ background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)', color: '#F3E5AB', fontSize: '0.68rem', fontWeight: 600, padding: '3px 8px', borderRadius: '4px' }}>
+                      📐 {soc.carpetRange}
+                    </span>
+                    <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#CBD5E1', fontSize: '0.68rem', fontWeight: 500, padding: '3px 8px', borderRadius: '4px' }}>
+                      {soc.bhkOptions.join(' · ')}
+                    </span>
                   </div>
                 </div>
 
@@ -1296,6 +1302,66 @@ export default function MegapolisTownshipPage({ onBackHome }) {
           </div>
         </div>
       )}
+
+      {/* ── Mobile Floating Action Bar ── */}
+      <div className="mobile-subpage-cta-bar" style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 99,
+        background: 'rgba(4, 8, 20, 0.96)',
+        backdropFilter: 'blur(16px)',
+        borderTop: `1px solid ${p.accentColor}50`,
+        padding: '10px 16px',
+        display: 'none',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '10px',
+        boxShadow: '0 -10px 25px rgba(0,0,0,0.7)'
+      }}>
+        <a
+          href="tel:+919673000053"
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            color: '#fff',
+            textDecoration: 'none',
+            padding: '11px 0',
+            borderRadius: '8px',
+            fontSize: '0.84rem',
+            fontWeight: 600
+          }}
+        >
+          <Phone size={14} color="#D4AF37" /> Call Advisor
+        </a>
+        <button
+          onClick={handleWhatsApp}
+          style={{
+            flex: 1.3,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            background: 'linear-gradient(135deg, #25D366, #128C7E)',
+            border: 'none',
+            color: '#fff',
+            padding: '11px 0',
+            borderRadius: '8px',
+            fontSize: '0.84rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            boxShadow: '0 4px 15px rgba(37,211,102,0.3)'
+          }}
+        >
+          <MessageSquare size={14} /> WhatsApp Price
+        </button>
+      </div>
     </div>
   );
 }

@@ -559,21 +559,29 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
           @keyframes fadeInUp { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
           @keyframes shimmerGold { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
           @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+          @media (max-width: 768px) {
+            .mobile-subpage-cta-bar { display: flex !important; }
+            .desktop-call-pill { display: none !important; }
+          }
         `}</style>
       </div>
 
       {/* ── NAVBAR ── */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(4,8,20,0.92)', backdropFilter: 'blur(20px)', borderBottom: `1px solid ${p.accentColor}30`, padding: '0 24px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(4,8,20,0.92)', backdropFilter: 'blur(20px)', borderBottom: `1px solid ${p.accentColor}35`, padding: '0 24px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }} onClick={() => navigate('/')}>
           <CompanyLogo variant="compact" />
           <span style={{ fontSize: '0.78rem', fontFamily: "'Cinzel', serif", color: '#D4AF37', letterSpacing: '0.06em', fontWeight: 700, textTransform: 'uppercase' }}>⚜️ 24K Realtors</span>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button onClick={() => navigate('/societies')} style={{ background: 'transparent', border: `1px solid ${p.accentColor}60`, color: '#94A3B8', padding: '7px 16px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <ArrowLeft size={14} /> All Properties
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button onClick={() => navigate('/')} style={{ background: 'transparent', border: `1px solid ${p.accentColor}60`, color: '#CBD5E1', padding: '7px 16px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <ArrowLeft size={14} /> Home
           </button>
-          <button onClick={handleWhatsApp} style={{ background: p.accentGradient, border: 'none', color: '#fff', padding: '7px 18px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>
-            Get Price
+          <a href="tel:+919673000053" className="desktop-call-pill" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.3)', padding: '7px 14px', borderRadius: '30px', color: '#FFF4D0', fontSize: '0.78rem', fontWeight: 600 }}>
+            <Phone size={12} color="#E6C35C" />
+            <span>+91 96730 00053</span>
+          </a>
+          <button onClick={handleWhatsApp} style={{ background: p.accentGradient, border: 'none', color: '#fff', padding: '7px 18px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 700, boxShadow: '0 4px 15px rgba(212,175,55,0.25)' }}>
+            Get Price & Units
           </button>
         </div>
       </nav>
@@ -1271,6 +1279,66 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
           </div>
         </div>
       )}
+
+      {/* ── Mobile Floating Action Bar ── */}
+      <div className="mobile-subpage-cta-bar" style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 99,
+        background: 'rgba(4, 8, 20, 0.96)',
+        backdropFilter: 'blur(16px)',
+        borderTop: `1px solid ${p.accentColor}50`,
+        padding: '10px 16px',
+        display: 'none',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '10px',
+        boxShadow: '0 -10px 25px rgba(0,0,0,0.7)'
+      }}>
+        <a
+          href="tel:+919673000053"
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            color: '#fff',
+            textDecoration: 'none',
+            padding: '11px 0',
+            borderRadius: '8px',
+            fontSize: '0.84rem',
+            fontWeight: 600
+          }}
+        >
+          <Phone size={14} color="#D4AF37" /> Call Advisor
+        </a>
+        <button
+          onClick={handleWhatsApp}
+          style={{
+            flex: 1.3,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            background: 'linear-gradient(135deg, #25D366, #128C7E)',
+            border: 'none',
+            color: '#fff',
+            padding: '11px 0',
+            borderRadius: '8px',
+            fontSize: '0.84rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            boxShadow: '0 4px 15px rgba(37,211,102,0.3)'
+          }}
+        >
+          <MessageSquare size={14} /> WhatsApp Price
+        </button>
+      </div>
     </div>
   );
 }
