@@ -1,8 +1,6 @@
 {
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "cleanUrls": true,
-  "trailingSlash": false,
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -36,30 +34,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/assets/(.*)", "destination": "/assets/$1" },
-    { "source": "/(.*)\\.(.+)", "destination": "/$1.$2" },
-    { "source": "/townships/megapolis/:societyId", "destination": "/index.html" },
-    { "source": "/townships/megapolis", "destination": "/index.html" },
-    { "source": "/townships/(.*)", "destination": "/index.html" },
-    { "source": "/townships", "destination": "/index.html" },
-    { "source": "/megapolis-(.*)", "destination": "/index.html" },
-    { "source": "/society/:slug", "destination": "/index.html" },
-    { "source": "/societies", "destination": "/index.html" },
-    { "source": "/locations/:slug", "destination": "/index.html" },
-    { "source": "/location/:slug", "destination": "/index.html" },
-    { "source": "/property/:id", "destination": "/index.html" },
-    { "source": "/blog/:slug", "destination": "/index.html" },
-    { "source": "/blog", "destination": "/index.html" },
-    { "source": "/dashboard", "destination": "/index.html" },
-    { "source": "/login", "destination": "/index.html" },
-    { "source": "/list-property", "destination": "/index.html" },
-    { "source": "/godrej-24-hinjewadi", "destination": "/index.html" },
-    { "source": "/godrej-24-2-bhk", "destination": "/index.html" },
-    { "source": "/godrej-24-3-bhk", "destination": "/index.html" },
-    { "source": "/godrej-elements-hinjewadi", "destination": "/index.html" },
-    { "source": "/godrej-elements-2-bhk", "destination": "/index.html" },
-    { "source": "/godrej-elements-3-bhk", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
-
