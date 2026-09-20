@@ -63,7 +63,7 @@ function furnishLabel(f) {
 
 /* ── Default fallback images per society ────────────────────────── */
 const SOCIETY_IMAGES = {
-  sangria:    '/dev_kolte_patil_township.png',
+  sangria:    '/sangria_living_room.jpg',
   mystic:     '/dev_kolte_patil_township.png',
   splendour:  '/dev_kolte_patil_township.png',
   sunway:     '/dev_kolte_patil_township.png',

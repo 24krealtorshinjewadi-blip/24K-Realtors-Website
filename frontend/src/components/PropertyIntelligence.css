@@ -2438,7 +2438,7 @@ input[type="range"].pi-slider::-webkit-slider-thumb:hover {
 /* ── Megapolis Hero Section ────────────────────────────────────────── */
 .pi-megapolis-hero {
   position: relative;
-  background: radial-gradient(ellipse at 50% 0%, #1A0830 0%, #0C1020 50%, #060D1A 100%);
+  background: linear-gradient(180deg, rgba(10, 14, 28, 0.82) 0%, rgba(6, 13, 26, 0.95) 100%), url('/megapolis_hero_card.jpg') center/cover no-repeat;
   border-bottom: 1px solid rgba(212,175,55,0.18);
   padding: 56px 24px 40px;
   overflow: hidden;
@@ -3249,15 +3249,250 @@ input[type="range"].pi-slider::-webkit-slider-thumb:hover {
   overflow: hidden;
   height: 380px;
 }
-.pi-skeleton-shimmer {
+/* ══ MEGAPOLIS DIRECT SOCIETY FILTER & SUBPAGE STYLES ══════════════ */
+.megapolis-card-filter-box {
+  transition: border-color 0.25s ease;
+}
+.megapolis-card-filter-box:hover {
+  border-color: rgba(212, 175, 55, 0.45) !important;
+}
+.megapolis-filter-chip {
+  outline: none;
+  font-family: inherit;
+}
+.megapolis-filter-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.megapolis-filter-chip.featured {
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.25);
+}
+
+/* ══ QUICK SOCIETY SWITCHER BAR (Subpage top) ═══════════════════════ */
+.pi-quick-society-bar-wrap {
+  background: rgba(10, 16, 30, 0.95);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 10px 24px;
+  position: sticky;
+  top: 64px;
+  z-index: 200;
+  backdrop-filter: blur(12px);
+}
+.pi-quick-society-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 2px;
+}
+.pi-quick-society-bar::-webkit-scrollbar {
+  height: 3px;
+}
+.pi-quick-society-bar::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
+.pi-quick-soc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+.pi-quick-soc-btn:hover {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.4);
+  color: #F3E5AB;
+}
+.pi-quick-soc-btn.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(124, 58, 237, 0.2) 100%);
+  border-color: #D4AF37;
+  color: #FFF;
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.25);
+}
+.pi-quick-soc-btn.has-photos {
+  border-color: rgba(225, 29, 72, 0.4);
+}
+.pi-quick-photo-tag {
+  background: #E11D48;
+  color: #FFF;
+  font-size: 0.58rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 20px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* ══ SANGRIA AUTHENTIC ROOM SHOWCASE ════════════════════════════════ */
+.pi-sangria-showcase {
+  background: linear-gradient(145deg, rgba(14, 22, 40, 0.95) 0%, rgba(9, 14, 26, 0.98) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+.pi-sangria-hero-frame {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #040812;
+}
+@media (max-width: 768px) {
+  .pi-sangria-hero-frame {
+    height: 240px;
+  }
+}
+.pi-sangria-main-img {
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
-  background-size: 200% 100%;
-  animation: pi-skeleton-shine 1.5s ease infinite;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease, opacity 0.3s ease;
 }
-@keyframes pi-skeleton-shine {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+.pi-sangria-badge-floating {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(4, 8, 20, 0.88);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: #F5D77F;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  z-index: 2;
 }
+.pi-sangria-caption-floating {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(4, 8, 20, 0.95) 0%, rgba(4, 8, 20, 0.7) 60%, transparent 100%);
+  padding: 36px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  z-index: 2;
+}
+.pi-sangria-room-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #FFF;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.02em;
+}
+.pi-sangria-room-desc {
+  font-size: 0.78rem;
+  color: #CBD5E1;
+  line-height: 1.4;
+}
+
+/* Room Selector Thumbnails Bar */
+.pi-sangria-thumbs-bar {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.pi-sangria-thumbs-bar::-webkit-scrollbar {
+  display: none;
+}
+.pi-sangria-thumb-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: #CBD5E1;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+  flex-shrink: 0;
+}
+.pi-sangria-thumb-btn:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.4);
+  color: #FFF;
+  transform: translateY(-1px);
+}
+.pi-sangria-thumb-btn.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(225, 29, 72, 0.2) 100%);
+  border-color: #D4AF37;
+  color: #F3E5AB;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+}
+
+/* Verified Specs Bar */
+.pi-sangria-specs-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.pi-sangria-spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.pi-spec-label {
+  font-size: 0.64rem;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+.pi-spec-val {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #F1F5F9;
+}
+
+/* Other society subpage banner */
+.pi-other-society-banner {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(212, 175, 55, 0.08) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
 

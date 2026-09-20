@@ -16,6 +16,8 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('glitterati') || title.includes('penthouse')) return '/lodha_7_infinity_pool.png';
   if (title.includes('mahalunge') || title.includes('oasis')) return '/gallery_tower_3.png';
   if (title.includes('studio') || title.includes('corporate')) return '/dev_vj_building.png';
+  if (title.includes('sangria')) return '/sangria_living_room.jpg';
+  if (title.includes('megapolis')) return '/megapolis_hero_card.jpg';
   if (title.includes('godrej 24') || title === 'godrej 24') return '/godrej_24_project_card.jpg';
   if (title.includes('elements') || title.includes('godrej elements')) return '/godrej_elements_project_card.jpg';
   if (title.includes('crown') || title.includes('tcg')) return '/gallery_tower_2.png';
@@ -51,6 +53,7 @@ const getForbesTeslaPropertyImage = (property) => {
 
 const getBuilderName = (title = '', desc = '') => {
   const t = ((title || '') + ' ' + (desc || '')).toLowerCase();
+  if (t.includes('megapolis') || t.includes('sangria') || t.includes('pride purple')) return 'PRIDE PURPLE GROUP';
   if (t.includes('lodha')) return 'LODHA GROUP';
   if (t.includes('godrej')) return 'GODREJ PROPERTIES';
   if (t.includes('vtp')) return 'VTP REALTY';
@@ -129,11 +132,21 @@ export default function PropertyCard({
   const rawPriceStr = formatPrice ? formatPrice(property?.price, property?.transactionType) : formatPriceFallback(property?.price, property?.transactionType);
   const displayPrice = (!rawPriceStr || rawPriceStr === 'N/A' || rawPriceStr === 'NaN') ? 'Price on Request' : rawPriceStr;
 
-  // For consolidated project cards (e.g. Godrej 24, Godrej Elements) with a societySlug,
+  const isMegapolis = Boolean(
+    (property.title || '').toLowerCase().includes('megapolis') || 
+    (property.projectName || '').toLowerCase().includes('megapolis') ||
+    property.id === 'prop-megapolis-township' ||
+    (property.societySlug && property.societySlug.includes('megapolis'))
+  );
+
+  // For consolidated project cards (e.g. Godrej 24, Godrej Elements, Megapolis Township) with a societySlug,
   // clicking navigates to the dedicated SEO landing page.
   const handleCardClick = () => {
-    if (property.societySlug) {
-      navigate(`/${property.societySlug}`);
+    if (isMegapolis && !property.title?.toLowerCase().includes('sangria')) {
+      navigate('/townships/megapolis');
+    } else if (property.societySlug) {
+      const slug = property.societySlug.startsWith('/') ? property.societySlug : `/${property.societySlug}`;
+      navigate(slug);
     } else if (onOpenDetail) {
       onOpenDetail(property);
     }
@@ -587,6 +600,73 @@ export default function PropertyCard({
                 <span style={{ color: '#E6C35C', fontWeight: 700 }}>★ Exclusive</span>
               </>
             )}
+          </div>
+        )}
+
+        {/* Megapolis Society Filter & Subpage Launcher */}
+        {isMegapolis && (
+          <div 
+            className="megapolis-card-filter-box"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              marginTop: '12px',
+              padding: '10px 12px',
+              background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(124, 58, 237, 0.06) 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.28)',
+              borderRadius: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#F5D77F', letterSpacing: '0.04em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span>⚡</span> Society Filter & Subpages:
+              </span>
+              <span style={{ fontSize: '0.62rem', color: '#94A3B8' }}>Select to open subpage</span>
+            </div>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {[
+                { id: 'sangria', name: 'Sangria 📸', isFeatured: true, badge: '5 Photos' },
+                { id: 'mystic', name: 'Mystic' },
+                { id: 'splendour', name: 'Splendour' },
+                { id: 'sunway', name: 'Sunway' },
+                { id: 'sparkle', name: 'Sparkle' },
+              ].map((soc) => (
+                <button
+                  key={soc.id}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/townships/megapolis/${soc.id}`);
+                  }}
+                  className={`megapolis-filter-chip ${soc.isFeatured ? 'featured' : ''}`}
+                  style={{
+                    background: soc.isFeatured 
+                      ? 'linear-gradient(135deg, rgba(225,29,72,0.3) 0%, rgba(212,175,55,0.25) 100%)' 
+                      : 'rgba(255, 255, 255, 0.06)',
+                    border: soc.isFeatured 
+                      ? '1px solid rgba(225,29,72,0.7)' 
+                      : '1px solid rgba(255, 255, 255, 0.12)',
+                    borderRadius: '6px',
+                    padding: '4px 9px',
+                    color: soc.isFeatured ? '#FFE4E6' : '#E2E8F0',
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                  title={`Open ${soc.name} Subpage & Details`}
+                >
+                  <span>{soc.name}</span>
+                  <ArrowRight size={10} style={{ opacity: 0.7 }} />
+                </button>
+              ))}
+            </div>
           </div>
         )}
 

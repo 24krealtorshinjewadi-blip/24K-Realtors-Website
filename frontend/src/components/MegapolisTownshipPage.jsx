@@ -41,7 +41,7 @@ export const MEGAPOLIS_SOCIETIES = [
     status: 'READY_TO_MOVE',
     reraNumber: 'P52100047112',
     accentHex: '#E11D48',
-    imageUrl: '/dev_kolte_patil_township.png',
+    imageUrl: '/sangria_living_room.jpg',
     features: ['Pool View Units', 'Club Access', 'Sky Deck'],
     possession: 'Ready'
   },

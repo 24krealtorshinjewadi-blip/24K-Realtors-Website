@@ -232,17 +232,18 @@ const initialProperties = [
     exclusiveDeal: true,
     reraNumber: "P52100047112",
     possessionDate: "Ready to Move & Ongoing",
-    imageUrl: "/dev_kolte_patil_township.png",
+    imageUrl: "/megapolis_hero_card.jpg",
     galleryImages: [
-      "/dev_kolte_patil_township.png",
-      "/gallery_tower_3.png",
-      "/gallery_infinity_pool.png",
-      "/luxury_sunset_pool.png",
-      "/gallery_sample_flat_interior.png"
+      "/megapolis_hero_card.jpg",
+      "/sangria_living_room.jpg",
+      "/sangria_bedroom.jpg",
+      "/sangria_kitchen.jpg",
+      "/sangria_bathroom.jpg",
+      "/sangria_balcony.jpg"
     ],
     furnishingStatus: "SEMI_FURNISHED",
     gasPipeline: true,
-    societySlug: "megapolis-sangria",
+    societySlug: "townships/megapolis",
     configurations: [
       { bhk: "1 BHK", carpet: "440–510 sq.ft", highlight: false },
       { bhk: "2 BHK", carpet: "645–730 sq.ft", highlight: true },
@@ -287,15 +288,18 @@ const initialProperties = [
     exclusiveDeal: true,
     reraNumber: "P52100047112",
     possessionDate: "Ready to Move",
-    imageUrl: "/dev_kolte_patil_township.png",
+    imageUrl: "/sangria_living_room.jpg",
     galleryImages: [
-      "/dev_kolte_patil_township.png",
-      "/gallery_tower_3.png",
-      "/gallery_infinity_pool.png"
+      "/sangria_living_room.jpg",
+      "/sangria_bedroom.jpg",
+      "/sangria_kitchen.jpg",
+      "/sangria_bathroom.jpg",
+      "/sangria_balcony.jpg",
+      "/megapolis_hero_card.jpg"
     ],
     furnishingStatus: "SEMI_FURNISHED",
     gasPipeline: true,
-    societySlug: "megapolis-sangria",
+    societySlug: "townships/megapolis/sangria",
     configurations: [
       { bhk: "2 BHK", carpet: "645 sq.ft", highlight: false },
       { bhk: "2 BHK", carpet: "695 sq.ft", highlight: true },
@@ -697,11 +701,14 @@ const initialSocieties = [
     name: "Megapolis Sangria",
     canonicalName: "Megapolis Sangria Hinjewadi Phase 3",
     slug: "megapolis-sangria",
-    imageUrl: "/dev_kolte_patil_township.png",
+    imageUrl: "/sangria_living_room.jpg",
     galleryImages: [
-      "/dev_kolte_patil_township.png",
-      "/gallery_tower_3.png",
-      "/gallery_infinity_pool.png"
+      "/sangria_living_room.jpg",
+      "/sangria_bedroom.jpg",
+      "/sangria_kitchen.jpg",
+      "/sangria_bathroom.jpg",
+      "/sangria_balcony.jpg",
+      "/megapolis_hero_card.jpg"
     ],
     location: "HINJEWADI",
     hinjewadiPhase: "PHASE_3",
@@ -960,12 +967,14 @@ const initialSocieties = [
     name: "Megapolis Township",
     canonicalName: "Megapolis Township Hinjewadi Phase 3",
     slug: "megapolis-township",
-    imageUrl: "/dev_kolte_patil_township.png",
+    imageUrl: "/megapolis_hero_card.jpg",
     galleryImages: [
-      "/dev_kolte_patil_township.png",
-      "/gallery_tower_3.png",
-      "/gallery_infinity_pool.png",
-      "/luxury_sunset_pool.png"
+      "/megapolis_hero_card.jpg",
+      "/sangria_living_room.jpg",
+      "/sangria_bedroom.jpg",
+      "/sangria_kitchen.jpg",
+      "/sangria_bathroom.jpg",
+      "/sangria_balcony.jpg"
     ],
     location: "HINJEWADI",
     hinjewadiPhase: "PHASE_3",
@@ -1120,7 +1129,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_megapolis_godrej_verified_v8';
+const HINJEWADI_PROP_VERSION = 'v2026_megapolis_authentic_photos_v9';
 
 const LocalMockDb = {
   getProperties() {

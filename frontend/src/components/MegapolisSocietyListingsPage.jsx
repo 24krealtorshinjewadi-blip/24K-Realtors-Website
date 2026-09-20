@@ -45,6 +45,14 @@ function buildMockUnits(societyId) {
     '3.5 BHK': { carpet: [1200, 1250, 1300], builtUp: 1650, basePrice: 19500000, psf: 16000 },
   };
 
+  const SANGRIA_UNIT_IMAGES = [
+    '/sangria_living_room.jpg',
+    '/sangria_bedroom.jpg',
+    '/sangria_kitchen.jpg',
+    '/sangria_bathroom.jpg',
+    '/sangria_balcony.jpg'
+  ];
+
   const VIEWS    = ['Pool View', 'Garden View', 'City View', 'Open View'];
   const FURNISH  = ['Unfurnished', 'Semi-Furnished', 'Furnished'];
   const STATUSES = ['AVAILABLE', 'AVAILABLE', 'AVAILABLE', 'RESALE', 'AVAILABLE', 'BOOKED'];
@@ -64,6 +72,9 @@ function buildMockUnits(societyId) {
       const furnish = FURNISH[i % FURNISH.length];
       const view    = VIEWS[i % VIEWS.length];
       const status  = STATUSES[i % STATUSES.length];
+      const unitImg = soc.id === 'sangria' 
+        ? SANGRIA_UNIT_IMAGES[(idx - 1) % SANGRIA_UNIT_IMAGES.length] 
+        : (soc.imageUrl || '/dev_kolte_patil_township.png');
 
       units.push({
         id: `mock-${soc.id}-${bhk.replace(/\s/g, '')}-${idx++}`,
@@ -79,7 +90,7 @@ function buildMockUnits(societyId) {
         viewType: view,
         availabilityStatus: status,
         reraNumber: soc.reraNumber,
-        imageUrl: soc.imageUrl,
+        imageUrl: unitImg,
         possessionDate: soc.possession,
         isMock: true,
       });
@@ -136,6 +147,15 @@ function FilterSection({ label, icon, isOpen, onToggle, badge, children }) {
   );
 }
 
+/* ── Authentic Room Gallery for Megapolis Sangria ──────────────── */
+export const SANGRIA_PHOTOS = [
+  { label: 'Living Room', icon: '🛋️', url: '/sangria_living_room.jpg', desc: 'Spacious sun-lit hall with imported vitrified tile flooring & attached open balcony.' },
+  { label: 'Master Bedroom', icon: '🛏️', url: '/sangria_bedroom.jpg', desc: 'Airy master bedroom with large sliding aluminium windows and scenic exterior views.' },
+  { label: 'Modular Kitchen', icon: '🍳', url: '/sangria_kitchen.jpg', desc: 'L-shaped black granite countertop, stainless steel sink & glazed wall dado.' },
+  { label: 'Designer Bathroom', icon: '🚿', url: '/sangria_bathroom.jpg', desc: 'Designer wall tiling, backlit LED mirror, multi-jet shower panel & branded fixtures.' },
+  { label: 'Panoramic Balcony', icon: '🌅', url: '/sangria_balcony.jpg', desc: 'Panoramic high-rise view overlooking lush green landscaped township courtyards.' },
+];
+
 /* ══════════════════════════════════════════════════════════════════
    MAIN PAGE COMPONENT
 ══════════════════════════════════════════════════════════════════ */
@@ -154,14 +174,22 @@ export default function MegapolisSocietyListingsPage({ onBack }) {
     canonical: `https://24krealtors.in/townships/megapolis/${societyId}`
   });
 
-  /* ── State: Data ───────────────────────────────────────────────── */
+  /* ── State: Data & Media ───────────────────────────────────────── */
   const [allUnits, setAllUnits]   = useState([]);
   const [loading, setLoading]     = useState(true);
+  const [activePhotoIdx, setActivePhotoIdx] = useState(0);
 
   /* ── State: Filters ────────────────────────────────────────────── */
   const [selectedSocieties, setSelectedSocieties] = useState(
     societyId ? [societyId] : []
   );
+
+  useEffect(() => {
+    if (societyId) {
+      setSelectedSocieties([societyId]);
+      setActivePhotoIdx(0);
+    }
+  }, [societyId]);
   const [selectedBhk, setSelectedBhk]       = useState(searchParams.get('bhk') || '');
   const [maxBudget, setMaxBudget]           = useState(BUDGET_MAX);
   const [carpetMin, setCarpetMin]           = useState('');
@@ -439,6 +467,36 @@ export default function MegapolisSocietyListingsPage({ onBack }) {
         <span className="pi-breadcrumb-item active">{currentSociety.displayName}</span>
       </nav>
 
+      {/* ── QUICK SOCIETY FILTER BAR ────────────────────────────────── */}
+      <div className="pi-quick-society-bar-wrap">
+        <div className="pi-quick-society-bar">
+          <button
+            onClick={() => navigate('/townships/megapolis')}
+            className="pi-quick-soc-btn"
+            title="Megapolis Integrated Township Overview"
+          >
+            <span>🏙️ Township Overview</span>
+          </button>
+          {MEGAPOLIS_SOCIETIES.map(s => {
+            const isActive = s.id === societyId;
+            return (
+              <button
+                key={s.id}
+                onClick={() => {
+                  if (s.id !== societyId) {
+                    navigate(`/townships/megapolis/${s.id}`);
+                  }
+                }}
+                className={`pi-quick-soc-btn ${isActive ? 'active' : ''} ${s.id === 'sangria' ? 'has-photos' : ''}`}
+              >
+                <span>{s.displayName}</span>
+                {s.id === 'sangria' && <span className="pi-quick-photo-tag">📸 5 Photos</span>}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* ── DUAL PANEL LAYOUT ───────────────────────────────────────── */}
       <div className="pi-dual-panel">
 
@@ -703,6 +761,99 @@ export default function MegapolisSocietyListingsPage({ onBack }) {
 
         {/* ══ RIGHT LISTINGS AREA ══════════════════════════════════════ */}
         <div className="pi-listings-area">
+
+          {/* ── SANGRIA AUTHENTIC ROOM SHOWCASE ────────────────────────── */}
+          {societyId === 'sangria' && (
+            <div className="pi-sangria-showcase">
+              <div className="pi-sangria-hero-frame">
+                <img
+                  src={SANGRIA_PHOTOS[activePhotoIdx].url}
+                  alt={`Megapolis Sangria ${SANGRIA_PHOTOS[activePhotoIdx].label}`}
+                  className="pi-sangria-main-img"
+                />
+                <div className="pi-sangria-badge-floating">
+                  <span>📸</span>
+                  <span>Authentic Verified Site Photos — 24K Realtors</span>
+                </div>
+                <div className="pi-sangria-caption-floating">
+                  <span className="pi-sangria-room-name">
+                    {SANGRIA_PHOTOS[activePhotoIdx].icon} {SANGRIA_PHOTOS[activePhotoIdx].label}
+                  </span>
+                  <span className="pi-sangria-room-desc">
+                    {SANGRIA_PHOTOS[activePhotoIdx].desc}
+                  </span>
+                </div>
+              </div>
+
+              {/* Photo Selector Tabs */}
+              <div className="pi-sangria-thumbs-bar">
+                {SANGRIA_PHOTOS.map((photo, pIdx) => (
+                  <button
+                    key={photo.label}
+                    type="button"
+                    onClick={() => setActivePhotoIdx(pIdx)}
+                    className={`pi-sangria-thumb-btn ${activePhotoIdx === pIdx ? 'active' : ''}`}
+                  >
+                    <span className="pi-thumb-icon">{photo.icon}</span>
+                    <span className="pi-thumb-label">{photo.label}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Verified Specs Bar */}
+              <div className="pi-sangria-specs-bar">
+                <div className="pi-sangria-spec-item">
+                  <span className="pi-spec-label">Configurations</span>
+                  <span className="pi-spec-val">2, 2.5 & 3 BHK</span>
+                </div>
+                <div className="pi-sangria-spec-item">
+                  <span className="pi-spec-label">Carpet Area</span>
+                  <span className="pi-spec-val">645 – 1,150 sqft</span>
+                </div>
+                <div className="pi-sangria-spec-item">
+                  <span className="pi-spec-label">Starting Price</span>
+                  <span className="pi-spec-val" style={{ color: '#E6C35C' }}>₹95 Lakhs*</span>
+                </div>
+                <div className="pi-sangria-spec-item">
+                  <span className="pi-spec-label">MahaRERA</span>
+                  <span className="pi-spec-val" style={{ color: '#10B981' }}>P52100047112</span>
+                </div>
+                <div className="pi-sangria-spec-item">
+                  <span className="pi-spec-label">Status</span>
+                  <span className="pi-spec-val">Ready to Move</span>
+                </div>
+                <div className="pi-sangria-spec-item">
+                  <span className="pi-spec-label">IT Hub Proximity</span>
+                  <span className="pi-spec-val">2 mins to TCS / Tech M</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── OTHER SOCIETY HEADER BANNER ────────────────────────────── */}
+          {societyId !== 'sangria' && (
+            <div className="pi-other-society-banner">
+              <div>
+                <div style={{ fontSize: '0.68rem', color: '#D4AF37', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>🏢</span> Megapolis Society Subpage
+                </div>
+                <h2 style={{ fontSize: '1.4rem', color: '#fff', margin: '4px 0 6px 0', fontFamily: "'Cinzel', serif" }}>
+                  Megapolis {currentSociety.displayName}
+                </h2>
+                <p style={{ fontSize: '0.8rem', color: '#94A3B8', margin: 0 }}>
+                  {currentSociety.tagline} · {currentSociety.carpetRange} · {currentSociety.priceRange}
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.72rem', padding: '6px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', color: '#CBD5E1' }}>
+                  MahaRERA: {currentSociety.reraNumber}
+                </span>
+                <span style={{ fontSize: '0.72rem', padding: '6px 12px', background: 'rgba(16,185,129,0.15)', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', color: '#10B981', fontWeight: 700 }}>
+                  {currentSociety.possession ? `Possession: ${currentSociety.possession}` : 'Verified'}
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Listings Topbar */}
           <div className="pi-listings-topbar">
