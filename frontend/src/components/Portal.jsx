@@ -1926,62 +1926,7 @@ export default function Portal({ onViewChange }) {
     );
   };
 
-  const renderCuratedCarousels = () => {
-    // Show all verified/exclusive properties directly — no sub-tabs
-    const displayData = allRawProperties.filter(p => p.exclusiveDeal || p.verifiedListing);
-    return (
-      <div style={{ paddingBottom: '20px' }}>
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-            <div>
-              <span style={{ fontSize: '0.65rem', color: 'rgba(197,168,128,0.6)', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif", fontWeight: 700, display: 'block', marginBottom: '8px' }}>Curated Portfolio</span>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)', color: '#fff', margin: 0, fontWeight: 700, letterSpacing: '-0.01em' }}>⚜️ Signature Collection</h2>
-              <p style={{ fontFamily: "'Playfair Display', serif", fontStyle: 'italic', color: 'rgba(255,255,255,0.5)', fontSize: '0.92rem', marginTop: '6px', marginBottom: 0 }}>Editor&apos;s picks — verified, exclusive, and hand-curated</p>
-            </div>
-          </div>
-          <div style={{ marginTop: '24px', height: '1px', background: 'linear-gradient(to right, rgba(197,168,128,0.3), rgba(197,168,128,0.06), transparent)' }} />
-        </div>
-        {displayData.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.3)', fontFamily: "'Playfair Display', serif", fontStyle: 'italic', fontSize: '1.1rem' }}>No properties in this collection yet.</div>
-        ) : (
-          <>
-            <div style={{ position: 'relative' }}>
-              <div id="editorial-carousel-track" style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '8px' }}>
-                {displayData.slice(0, 10).map(property => (
-                  <div key={property.id} style={{ flexShrink: 0, width: 'clamp(270px, 75vw, 360px)' }}>
-                    <PropertyCard property={property} isHnwiMode={isHnwiMode} isCompared={selectedForCompare.some(p => p.id === property.id)} isWishlisted={wishlistIds.includes(property.id)} formatPrice={formatPrice} onToggleCompare={handleToggleCompare} onToggleWishlist={handleToggleWishlist} onOpenRera={handleOpenReraDrawer} onOpenBrochure={(prop) => setSelectedBrochureProperty(prop)} onOpenDetail={handleOpenPropertyDetail} />
-                  </div>
-                ))}
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
-                <button onClick={() => { const t = document.getElementById('editorial-carousel-track'); if(t) t.scrollBy({ left: -t.clientWidth * 0.7, behavior: 'smooth' }); }} type="button" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid rgba(197,168,128,0.3)', background: 'rgba(7,15,30,0.6)', color: 'rgba(197,168,128,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(197,168,128,0.7)'; e.currentTarget.style.color = '#E6C35C'; }} onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(197,168,128,0.3)'; e.currentTarget.style.color = 'rgba(197,168,128,0.7)'; }}><ChevronLeft size={16} /></button>
-                <button onClick={() => { const t = document.getElementById('editorial-carousel-track'); if(t) t.scrollBy({ left: t.clientWidth * 0.7, behavior: 'smooth' }); }} type="button" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid rgba(197,168,128,0.3)', background: 'rgba(7,15,30,0.6)', color: 'rgba(197,168,128,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(197,168,128,0.7)'; e.currentTarget.style.color = '#E6C35C'; }} onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(197,168,128,0.3)'; e.currentTarget.style.color = 'rgba(197,168,128,0.7)'; }}><ChevronRight size={16} /></button>
-              </div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '36px' }}>
-              <button
-                onClick={() => {
-                  setShowAllGrid(true);
-                  setPage(0);
-                  // scroll to grid
-                  setTimeout(() => {
-                    const el = document.getElementById('listings-anchor');
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }, 80);
-                }}
-                type="button"
-                style={{ background: 'linear-gradient(135deg, rgba(197,168,128,0.08) 0%, rgba(212,175,55,0.04) 100%)', border: '1px solid rgba(197,168,128,0.4)', color: '#E6C35C', padding: '13px 40px', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.12em', cursor: 'pointer', textTransform: 'uppercase', transition: 'all 0.3s ease', display: 'inline-flex', alignItems: 'center', gap: '10px', boxShadow: '0 4px 16px rgba(197,168,128,0.12)' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(197,168,128,0.14)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.7)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(197,168,128,0.2)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'linear-gradient(135deg, rgba(197,168,128,0.08) 0%, rgba(212,175,55,0.04) 100%)'; e.currentTarget.style.borderColor = 'rgba(197,168,128,0.4)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(197,168,128,0.12)'; }}
-              >
-                View All {allRawProperties.length} Properties <ArrowRight size={14} />
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    );
-  };
+
   const handleCollectionChange = (collection) => {
     setActiveCollection(collection);
     setPage(0);

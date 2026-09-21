@@ -270,7 +270,9 @@ function LegacyHashRedirectHandler() {
         navigate(`/townships/megapolis/${socId}`, { replace: true });
         return;
       }
-      if (hash === 'societies' || hash === 'properties' || hash === 'signature-collection' || hash === 'signature') {
+      if (hash === 'signature-collection' || hash === 'signature') {
+        navigate('/', { replace: true });
+      } else if (hash === 'societies' || hash === 'properties') {
         navigate('/societies', { replace: true });
       } else if (hash.startsWith('society/')) {
         const slug = hash.replace('society/', '');
