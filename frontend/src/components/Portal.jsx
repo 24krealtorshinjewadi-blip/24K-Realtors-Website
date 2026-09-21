@@ -1261,7 +1261,8 @@ export default function Portal({ onViewChange }) {
           if (t.includes('elements') || p?.id === 'prop-godrej-elements') return 2;
           if (t.includes('megapolis') || p?.id === 'prop-megapolis-township') return 3;
           if (t.includes('yashone') || t.includes('javdekar') || p?.id === 'prop-vj-yashone') return 4;
-          return 5;
+          if (t.includes('sportsville') || t.includes('kohinoor') || p?.id === 'prop-kohinoor-sportsville') return 5;
+          return 6;
         };
         unique.sort((a, b) => sortOrder(a) - sortOrder(b));
         setAllRawProperties(unique);
@@ -1391,7 +1392,8 @@ export default function Portal({ onViewChange }) {
           if (t.includes('elements') || p?.id === 'prop-godrej-elements') return 2;
           if (t.includes('megapolis') || p?.id === 'prop-megapolis-township') return 3;
           if (t.includes('yashone') || t.includes('javdekar') || p?.id === 'prop-vj-yashone') return 4;
-          return 5;
+          if (t.includes('sportsville') || t.includes('kohinoor') || p?.id === 'prop-kohinoor-sportsville') return 5;
+          return 6;
         };
         unique.sort((a, b) => sortOrder(a) - sortOrder(b));
         setProperties(unique);

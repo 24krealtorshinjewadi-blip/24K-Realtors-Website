@@ -105,7 +105,7 @@ const initialProperties = [
     description: "India's first 24/7 lifestyle residential community by Godrej Properties in Hinjewadi Phase 1, Pune. Round-the-clock gym, reception desk, creche and convenience store designed exclusively for IT professionals.",
     propertyType: "RESIDENTIAL",
     transactionType: "BUY",
-    price: null,
+    price: 6800000,
     location: "HINJEWADI_PHASE_1",
     address: "Godrej 24, Hinjewadi Phase 1, Rajiv Gandhi Infotech Park, Pune — 411057",
     latitude: 18.5960,
@@ -132,8 +132,7 @@ const initialProperties = [
       { bhk: "2 BHK", carpet: "725 sq.ft",  highlight: false },
       { bhk: "2 BHK", carpet: "820 sq.ft",  highlight: false },
       { bhk: "2 BHK", carpet: "940 sq.ft",  highlight: true  },
-      { bhk: "3 BHK", carpet: "1167 sq.ft", highlight: false },
-      { bhk: "3 BHK", carpet: "1488 sq.ft", highlight: true  }
+      { bhk: "3 BHK", carpet: "1167 sq.ft", highlight: false }
     ],
     amenities: [
       "24x7 Functional Gymnasium",
@@ -164,7 +163,7 @@ const initialProperties = [
     description: "Premium smart residential development by Godrej Properties in Hinjewadi Phase 1, Pune. Tech-integrated living with home automation, 21-point safety system, and infinity rooftop pool.",
     propertyType: "RESIDENTIAL",
     transactionType: "BUY",
-    price: null,
+    price: 6800000,
     location: "HINJEWADI_PHASE_1",
     address: "Godrej Elements, Hinjewadi Phase 1, Rajiv Gandhi Infotech Park, Pune — 411057",
     latitude: 18.5955,
@@ -186,8 +185,7 @@ const initialProperties = [
       { bhk: "2 BHK", carpet: "725 sq.ft",  highlight: false },
       { bhk: "2 BHK", carpet: "820 sq.ft",  highlight: false },
       { bhk: "2 BHK", carpet: "940 sq.ft",  highlight: true  },
-      { bhk: "3 BHK", carpet: "1167 sq.ft", highlight: false },
-      { bhk: "3 BHK", carpet: "1488 sq.ft", highlight: true  }
+      { bhk: "3 BHK", carpet: "1167 sq.ft", highlight: false }
     ],
     amenities: [
       "Home Automation System",
@@ -241,10 +239,9 @@ const initialProperties = [
     gasPipeline: true,
     societySlug: "townships/megapolis",
     configurations: [
-      { bhk: "1 BHK", carpet: "440–510 sq.ft", highlight: false },
-      { bhk: "2 BHK", carpet: "645–730 sq.ft", highlight: true },
-      { bhk: "2.5 BHK", carpet: "800–880 sq.ft", highlight: false },
-      { bhk: "3 BHK", carpet: "990–1100 sq.ft", highlight: true }
+      { bhk: "1 BHK", carpet: "440-510 sq.ft", highlight: false },
+      { bhk: "2 BHK", carpet: "645-780 sq.ft", highlight: true },
+      { bhk: "2.5 BHK", carpet: "800-880 sq.ft", highlight: false }
     ],
     amenities: [
       "Olympic-size Swimming Pool",
@@ -268,7 +265,7 @@ const initialProperties = [
   // ═══════════════════════════════════════════════════════════════════
   {
     id: "prop-vj-yashone",
-    title: "VJ YashOne",
+    title: "VJ Yashone",
     projectName: "YashOne Hinjewadi",
     builderName: "Vilas Javdekar Developers",
     description: "Premium residences in the heart of Hinjewadi Phase 1 by Vilas Javdekar (VJ). Featuring 678 sq.ft carpet 2 BHK homes with lush green surroundings, modern lifestyle amenities, and prime connectivity to Phase 1 IT parks.",
@@ -282,7 +279,7 @@ const initialProperties = [
     status: "AVAILABLE",
     verifiedListing: true,
     exclusiveDeal: true,
-    reraNumber: "P52100021676",
+    reraNumber: "P52100021616",
     possessionDate: "Ready to Move",
     imageUrl: "/yashone_hero_card.jpg",
     galleryImages: [
@@ -296,7 +293,8 @@ const initialProperties = [
     gasPipeline: true,
     societySlug: "vj-yashone-hinjewadi",
     configurations: [
-      { bhk: "2 BHK", carpet: "678 sq.ft", highlight: true }
+      { bhk: "2 BHK", carpet: "678 sq.ft", highlight: false },
+      { bhk: "3 BHK", carpet: "948 sq.ft", highlight: false }
     ],
     amenities: [
       "Modern Gymnasium & Fitness Club",
@@ -309,6 +307,60 @@ const initialProperties = [
       "EV Charging Infrastructure",
       "Rainwater Harvesting & Solar Water",
       "High-Speed Passenger Elevators"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 5 — KOHINOOR SPORTSVILLE HINJEWADI
+  // Hinjewadi Phase 1 | 3 BHK Carpet: 930 sq.ft | MahaRERA: P52100029650
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-kohinoor-sportsville",
+    title: "Kohinoor Sportsville",
+    projectName: "Kohinoor Sportsville",
+    builderName: "Kohinoor Group",
+    description: "Sports-centric premium residential community by Kohinoor Group in Hinjewadi Phase 1, Pune. Live Active. Live Better. Featuring 930 sq.ft carpet 3 BHK luxury residences with 5 international sports arenas, swimming pool, luxury clubhouse, and prime walking proximity to Hinjewadi Phase 1 IT parks.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: null, // "Price on Request"
+    location: "HINJEWADI_PHASE_1",
+    address: "Kohinoor Sportsville, Hinjewadi Phase 1, Rajiv Gandhi Infotech Park, Pune — 411057",
+    latitude: 18.5980,
+    longitude: 73.7340,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100029650",
+    possessionDate: "Ready to Move / Ongoing",
+    imageUrl: "/kohinoor_hero_card.jpg",
+    galleryImages: [
+      "/kohinoor_hero_card.jpg",
+      "/kohinoor_living_room.jpg",
+      "/kohinoor_kitchen_1.jpg",
+      "/kohinoor_bedroom.jpg",
+      "/kohinoor_kitchen_2.jpg"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "kohinoor-sportsville-hinjewadi",
+    configurations: [
+      { bhk: "1 BHK", carpet: "480+ sq.ft", highlight: false },
+      { bhk: "2 BHK", carpet: "630+ sq.ft", highlight: false },
+      { bhk: "3 BHK", carpet: "930 sq.ft",  highlight: true  }
+    ],
+    amenities: [
+      "5 International Sports Arenas",
+      "Olympic-Grade Swimming Pool",
+      "Multi-Storey Clubhouse & Recreation Hub",
+      "Tennis & Badminton Courts",
+      "Lush Green Landscaped Podium Gardens",
+      "High-Tech Gymnasium & Fitness Studio",
+      "24x7 Multi-Tier Security & CCTV Grid",
+      "Jogging & Cycling Track",
+      "Dedicated Children Play Area & Creche",
+      "EV Charging Stations"
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
@@ -1180,7 +1232,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_four_flagship_projects_v11';
+const HINJEWADI_PROP_VERSION = 'v2026_five_flagship_projects_v12';
 
 const LocalMockDb = {
   getProperties() {
