@@ -340,6 +340,7 @@ export default function PropertyCard({
   const locationLabel = formatCorridorLabel(property?.location);
 
   const handleCardClick = () => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
     if (isMegapolis && !property.title?.toLowerCase().includes('sangria')) {
       navigate('/townships/megapolis');
     } else if (property.societySlug) {

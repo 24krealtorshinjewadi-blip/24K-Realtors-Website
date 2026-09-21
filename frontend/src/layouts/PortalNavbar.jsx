@@ -372,33 +372,6 @@ export default function PortalNavbar({
             <ArrowRight size={14} className="arrow-icon" />
           </button>
 
-          <div className="drawer-section-title">⚜️ SIGNATURE PORTFOLIO</div>
-          
-          <button 
-            onClick={() => { 
-              setIsDrawerOpen(false); 
-              if (window.location.pathname === '/') {
-                const el = document.getElementById('listings-anchor');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                if (onApplyMegaFilter) onApplyMegaFilter({}, 'listings');
-              } else {
-                if (onViewChange) onViewChange('portal');
-                setTimeout(() => {
-                  const el = document.getElementById('listings-anchor');
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 180);
-              }
-            }} 
-            className="drawer-item-link"
-            style={{ width: '100%', border: 'none', background: 'rgba(212, 175, 55, 0.14)', textAlign: 'left' }}
-          >
-            <Sparkles size={18} color="#D4AF37" />
-            <div className="drawer-item-text">
-              <strong style={{ color: '#F3E5AB' }}>⚜️ Signature Collection</strong>
-              <span>Megapolis, TCG Cliff Garden &amp; Eon Homes — Hinjewadi Phase 3</span>
-            </div>
-            <ArrowRight size={14} className="arrow-icon" color="#D4AF37" />
-          </button>
 
           <button 
             onClick={() => { setIsDrawerOpen(false); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY' }, 'listings', null, 'properties-sale'); }} 

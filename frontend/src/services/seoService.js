@@ -120,13 +120,13 @@ export const SEO_CONFIGS = {
   },
 
   societies: {
-    title: '⚜️ Signature Collection — Master Societies & Luxury Residences Pune | 24K Realtors',
-    description: 'Explore 24K Realtors Signature Collection: 100% MahaRERA verified master residential societies, gated townships & penthouses in Hinjewadi Phase 1, Phase 2, Phase 3, Wakad, Baner & Mahalunge.',
+    title: '🏢 Master Societies & Luxury Residences Pune | 24K Realtors',
+    description: 'Explore 24K Realtors Verified Residences: 100% MahaRERA verified master residential societies, gated townships & penthouses in Hinjewadi Phase 1, Phase 2, Phase 3, Wakad, Baner & Mahalunge.',
     url: '/#societies',
     schema: {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
-      name: '⚜️ 24K Signature Collection — Master Societies & Residences Pune',
+      name: '🏢 24K Master Societies & Residences Pune',
       description: 'Exclusive portfolio of MahaRERA verified residential townships, luxury societies and gated communities in Pune West.',
       url: 'https://real-estate-digital-marketing.vercel.app/#societies',
       publisher: {

@@ -580,7 +580,7 @@ export default function PublicTownshipPage({ onBackHome, onSelectSociety }) {
           <CompanyLogo variant="compact" />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
             <span style={{ fontSize: '0.64rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>
-              Signature Collection
+              Pune West Townships
             </span>
             <span style={{ fontSize: '0.88rem', fontFamily: "'Cinzel', serif", fontWeight: 800, color: '#F3E5AB', letterSpacing: '0.03em' }}>
               🏙️ Township Explorer

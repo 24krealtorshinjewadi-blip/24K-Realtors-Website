@@ -12,7 +12,7 @@ import CompanyLogo from './CompanyLogo';
 import './PropertyIntelligence.css';
 
 export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
-  // Inject SEO for Signature Collection Directory
+  // Inject SEO for Verified Residences Directory
   useSEO(SEO_CONFIGS.societies);
 
   const [societies, setSocieties] = useState([]);
@@ -117,7 +117,7 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
           <CompanyLogo variant="compact" />
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ fontSize: '0.9rem', fontFamily: "'Cinzel', serif", fontWeight: 800, color: '#F3E5AB', letterSpacing: '0.04em' }}>
-              ⚜️ SIGNATURE COLLECTION
+              🏢 VERIFIED RESIDENCES
             </span>
           </div>
         </div>
@@ -142,7 +142,7 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <a
-            href="https://wa.me/919673000053?text=Hi%2C%20I%20would%20like%20to%20inquire%20about%2024K%20Signature%20Collection%20properties"
+            href="https://wa.me/919673000053?text=Hi%2C%20I%20would%20like%20to%20inquire%20about%20verified%20properties"
             target="_blank"
             rel="noopener noreferrer"
             className="pi-btn-whatsapp"
@@ -204,7 +204,7 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
             letterSpacing: '-0.01em',
             lineHeight: 1.15
           }}>
-            ⚜️ Signature Collection
+            Master Societies &amp; Penthouses
           </h1>
 
           <p style={{
@@ -605,7 +605,7 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
             {loading ? (
               <div style={{ padding: '80px 20px', textAlign: 'center' }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '50%', border: '3px solid rgba(212,175,55,0.2)', borderTopColor: '#D4AF37', animation: 'spin 1s linear infinite', margin: '0 auto 16px auto' }} />
-                <p style={{ color: '#94A3B8', fontSize: '0.88rem' }}>Querying verified Signature Collection database...</p>
+                <p style={{ color: '#94A3B8', fontSize: '0.88rem' }}>Querying verified residences database...</p>
                 <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
               </div>
             ) : societies.length > 0 ? (

@@ -4408,7 +4408,7 @@
     flex-shrink: 0 !important;
   }
 
-  /* Center Signature Collection Segmented Controls & Property Cards on Mobile */
+  /* Center Segmented Controls & Property Cards on Mobile */
   .luxury-segmented-controls {
     justify-content: center !important;
     margin-left: auto !important;
