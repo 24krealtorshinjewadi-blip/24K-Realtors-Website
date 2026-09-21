@@ -36,6 +36,7 @@ const GodrejProjectPage         = lazy(() => import('./components/GodrejProjectP
 const MegapolisTownshipPage     = lazy(() => import('./components/MegapolisTownshipPage'));
 const MegapolisSocietyListingsPage = lazy(() => import('./components/MegapolisSocietyListingsPage'));
 const YashOneProjectPage        = lazy(() => import('./components/YashOneProjectPage'));
+const KohinoorProjectPage       = lazy(() => import('./components/KohinoorProjectPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -591,6 +592,14 @@ function AppContent() {
               />
               <Route path="/yashone-hinjewadi" element={<Navigate to="/vj-yashone-hinjewadi" replace />} />
               <Route path="/yashone" element={<Navigate to="/vj-yashone-hinjewadi" replace />} />
+
+              {/* ─── KOHINOOR SPORTSVILLE — Dedicated Subpage ───────────────────── */}
+              <Route
+                path="/kohinoor-sportsville-hinjewadi"
+                element={<KohinoorProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route path="/kohinoor-sportsville" element={<Navigate to="/kohinoor-sportsville-hinjewadi" replace />} />
+              <Route path="/kohinoor" element={<Navigate to="/kohinoor-sportsville-hinjewadi" replace />} />
 
               {/* Catch-all (MUST BE LAST) */}
               <Route path="*" element={<Navigate to="/" replace />} />

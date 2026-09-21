@@ -44,6 +44,7 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('blue waters') || title.includes('vtp')) return '/dev_vtp_township.png';
   if (title.includes('vyomora') || title.includes('joyville')) return '/dev_shapoorji_township.png';
   if (title.includes('yashwin') || title.includes('vj')) return '/dev_vj_building.png';
+  if (title.includes('sportsville') || title.includes('kohinoor')) return '/kohinoor_hero_card.jpg';
   if (title.includes('belmondo') || title.includes('lodha')) return '/lodha_3_completed_aerial.png';
   if (title.includes('rohan')) return '/dev_rohan_forbes.png';
   if (title.includes('pharande') || title.includes('puneville')) return '/dev_pharande_building.png';
@@ -214,6 +215,21 @@ const DeveloperBrandMark = ({ builderName = '', title = '' }) => {
     );
   }
 
+  if (b.includes('kohinoor') || b.includes('sportsville')) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+          <rect x="2" y="2" width="20" height="20" rx="4" fill="#C53030" />
+          <path d="M7 6v12M17 6l-6 6 6 6" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+          <span style={{ fontSize: '0.52rem', fontWeight: 900, letterSpacing: '0.06em', color: '#FFFFFF' }}>KOHINOOR</span>
+          <span style={{ fontSize: '0.44rem', fontWeight: 700, letterSpacing: '0.08em', color: '#FEB2B2' }}>SPORTSVILLE</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
       <span style={{ 
@@ -238,6 +254,7 @@ const getImageTagline = (property) => {
   if (t.includes('elements')) return 'ELEVATE EVERYDAY LIVING';
   if (t.includes('megapolis')) return 'MEGAPOLIS\nA WORLD WITHIN';
   if (t.includes('yashone') || t.includes('vj')) return 'MODERN HOMES\nBRIGHTER TOMORROWS';
+  if (t.includes('sportsville') || t.includes('kohinoor')) return 'MORE THAN A HOME\nA HEALTHIER TOMORROW';
   if (property.tagline) return property.tagline;
   return 'PREMIUM HOMES • BETTER LIVING';
 };
@@ -275,6 +292,14 @@ const getCardHighlights = (property) => {
       { icon: Sun, line1: 'Premium', line2: 'Design' },
       { icon: Building, line1: 'Urban', line2: 'Lifestyle' },
       { icon: MapPin, line1: 'Excellent', line2: 'Connectivity' }
+    ];
+  }
+
+  if (t.includes('sportsville') || t.includes('kohinoor')) {
+    return [
+      { icon: Trophy, line1: 'Sports-Centric', line2: 'Living' },
+      { icon: Home, line1: 'Clubhouse &', line2: 'Pool' },
+      { icon: MapPin, line1: 'Prime', line2: 'Hinjewadi Ph 1' }
     ];
   }
 
@@ -378,7 +403,7 @@ export default function PropertyCard({
             width: '100%', 
             height: '100%', 
             objectFit: 'cover',
-            objectPosition: (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : 'center',
+            objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : 'center',
             transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         />
