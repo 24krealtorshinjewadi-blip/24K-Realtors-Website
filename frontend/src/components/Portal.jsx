@@ -4202,42 +4202,8 @@ export default function Portal({ onViewChange }) {
               <>
 
 
-                {/* Ultra-Premium Subpage Header Banner */}
-                <div className="subpage-header-banner" id="listings-anchor" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '24px' }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <h2 style={{ margin: 0, fontFamily: "'Cinzel', serif", fontSize: 'clamp(1rem, 4vw, 1.45rem)', color: '#fff', letterSpacing: '0.03em' }}>
-                      ⚜️ Signature Collection
-                    </h2>
-                    <span style={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.65)', fontFamily: "'Montserrat', sans-serif", marginTop: '4px', display: 'block', lineHeight: 1.5 }}>
-                      Megapolis · TCG Cliff Garden · Eon Homes — Hinjewadi Phase 3, MahaRERA verified
-                    </span>
-                  </div>
-                  {/* Badges — hide on very small mobile, show on tablet+ */}
-                  <div className="subpage-banner-badges" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    <div className="subpage-stats-badge">
-                      <span>📌 {allRawProperties.length || 3} Landmark Listings</span>
-                    </div>
-                    <div className="subpage-stats-badge" style={{ background: 'rgba(37,211,102,0.08)', borderColor: 'rgba(37,211,102,0.3)', color: '#25D366' }}>
-                      <span>🛡️ MahaRERA</span>
-                    </div>
-                    <div className="subpage-stats-badge" style={{ background: 'rgba(46,196,182,0.08)', borderColor: 'rgba(46,196,182,0.3)', color: '#2EC4B6' }}>
-                      <span>💎 Direct Developer</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── 99acres-Style Advanced Property Filter Dock ── */}
-                <AdvancedPropertyFilterBar
-                  filters={filters}
-                  onFilterChange={(newFilters) => {
-                    setFilters(newFilters);
-                    setShowAllGrid(true);
-                  }}
-                  onResetFilters={handleResetFilters}
-                  totalCount={totalElements > 0 ? totalElements : properties.length}
-                  isMobile={isMobile}
-                  builders={builders}
-                />
+                {/* Listings Anchor Target */}
+                <div id="listings-anchor" style={{ scrollMarginTop: '80px' }} />
 
               {/* Premium Luxury Listings Count Header — Streamlined & Prestigious */}
               <div style={{
