@@ -175,7 +175,11 @@ const initialProperties = [
     possessionDate: "Ready to Move",
     imageUrl: "/godrej_elements_project_card.jpg",
     galleryImages: [
-      "/godrej_elements_project_card.jpg"
+      "/godrej_elements_living_room.jpg",
+      "/godrej_elements_hall_dining.jpg",
+      "/godrej_elements_kitchen.jpg",
+      "/godrej_elements_bathroom.jpg",
+      "/godrej_elements_balcony.jpg"
     ],
     furnishingStatus: "UNFURNISHED",
     gasPipeline: true,

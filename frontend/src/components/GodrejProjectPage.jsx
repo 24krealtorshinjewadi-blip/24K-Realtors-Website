@@ -221,17 +221,77 @@ const GODREJ_ELEMENTS = {
   gallery: [
     {
       id: 1,
-      tag: 'Project Overview',
-      icon: '🏢',
-      roomName: 'Grand Elevation & Club',
-      title: 'Godrej Elements — Live Connected, Live Ahead',
-      subtitle: 'Premium 2 & 3 BHK residences in Hinjewadi Phase 1 featuring modern elevation, central clubhouse, resort swimming pool, sports zone, landscaped greenery and 24x7 security.',
-      src: '/godrej_elements_project_card.jpg',
+      tag: 'Spacious Living Room',
+      icon: '🛋️',
+      roomName: 'Living Room',
+      title: 'Spacious Living Room with French Balcony Doors',
+      subtitle: 'Bright and airy living hall featuring glossy vitrified nano-finish tiles, ceiling fan, and sliding French glass doors welcoming abundant daylight and fresh breeze.',
+      src: '/godrej_elements_living_room.jpg',
       features: [
-        { icon: '🏊', title: 'Swimming Pool', desc: 'Resort-style pool with expansive lounging deck' },
-        { icon: '🏋️', title: 'Gymnasium & Sports', desc: 'Fully equipped fitness club and active outdoor sports court' },
-        { icon: '🌿', title: 'Landscaped Gardens', desc: 'Serene zen gardens, walking promenades and green pods' },
-        { icon: '🛡️', title: '24x7 Security Grid', desc: '21-point safety system with round-the-clock CCTV surveillance' }
+        { icon: '🛋️', title: 'Open Living Space', desc: 'Ergonomically designed living area providing ample space for entertainment' },
+        { icon: '☀️', title: 'French Balcony Doors', desc: 'Floor-to-ceiling glass sliding doors opening to private outdoor balcony' },
+        { icon: '✨', title: 'Vitrified Finish', desc: 'Premium reflective vitrified floor tiles amplifying natural ambient lighting' },
+        { icon: '🌬️', title: 'Natural Cross Breeze', desc: 'Direct exterior orientation ensuring continuous airflow throughout the room' }
+      ]
+    },
+    {
+      id: 2,
+      tag: 'Grand Hall & Dining',
+      icon: '✨',
+      roomName: 'Hall & Dining',
+      title: 'Grand Open-Plan Living & Dining Area',
+      subtitle: 'Expansive open-concept living and dining hall with dual ceiling fans, integrated home automation entry, and seamless fluid transition to the open kitchen.',
+      src: '/godrej_elements_hall_dining.jpg',
+      features: [
+        { icon: '📐', title: 'Expansive Floor Space', desc: 'Generous hall layout easily accommodating large sofa lounge and 6-seater dining' },
+        { icon: '⚡', title: 'Dual Ceiling Fans', desc: 'Multi-point electrical setup with modern tube lights and high-speed fans' },
+        { icon: '🍽️', title: 'Open Dining Concept', desc: 'Seamlessly connects living area to modular kitchen for effortless hosting' },
+        { icon: '🚪', title: 'Smart Entry Security', desc: 'Video door phone and smart digital access control at main entrance' }
+      ]
+    },
+    {
+      id: 3,
+      tag: 'Designer Modular Kitchen',
+      icon: '🍳',
+      roomName: 'Modular Kitchen',
+      title: 'Sleek Modular Kitchen with Ample Storage',
+      subtitle: 'Contemporary modular kitchen fitted with white storage cabinets, drawers, heavy-duty black granite platform, SS sink, piped gas, and wide sliding window.',
+      src: '/godrej_elements_kitchen.jpg',
+      features: [
+        { icon: '🍳', title: 'Full Modular Storage', desc: 'Upper and lower white modular cabinets with smooth-sliding utensil drawers' },
+        { icon: '🖤', title: 'Black Granite Platform', desc: 'Polished stain-resistant granite cooking counter with glazed ceramic dado' },
+        { icon: '🪟', title: 'Sliding Vent Window', desc: 'Frosted sliding aluminium window ensuring rapid dissipation of cooking fumes' },
+        { icon: '🔥', title: 'Piped Gas & RO Ready', desc: 'Pre-fitted piped gas line connection and dedicated electrical points for water purifier' }
+      ]
+    },
+    {
+      id: 4,
+      tag: 'Designer Master Bathroom',
+      icon: '🚿',
+      roomName: 'Master Bathroom',
+      title: 'Contemporary Bathroom with Designer Mosaic Tiles',
+      subtitle: 'Luxury master bathroom equipped with granite vanity counter, undermount washbasin, wall-hung WC, chrome fixtures, and artistic geometric mosaic accent tiles.',
+      src: '/godrej_elements_bathroom.jpg',
+      features: [
+        { icon: '🪞', title: 'Granite Vanity Counter', desc: 'Wide polished granite countertop with seamless undermount ceramic washbasin' },
+        { icon: '🚽', title: 'Wall-Hung WC', desc: 'Modern wall-mounted toilet with concealed cistern and chrome health faucet' },
+        { icon: '🎨', title: 'Mosaic Accent Wall', desc: 'Intricate patterned monochrome mosaic tiles adding luxury boutique styling' },
+        { icon: '💨', title: 'Exhaust & Natural Light', desc: 'Dedicated window aperture with high-speed exhaust fan and shower fixtures' }
+      ]
+    },
+    {
+      id: 5,
+      tag: 'Private Balcony Terrace',
+      icon: '🌇',
+      roomName: 'Balcony Terrace',
+      title: 'Expansive Private Sit-Out Balcony with Podium Views',
+      subtitle: 'Massive open-air viewing balcony with safety railing, textured terracotta feature wall, and sweeping panoramic views overlooking the central clubhouse and towers.',
+      src: '/godrej_elements_balcony.jpg',
+      features: [
+        { icon: '🌇', title: 'Panoramic Podium View', desc: 'Spectacular elevated view overlooking central gardens, towers, and skyline' },
+        { icon: '🌿', title: 'Deep Sit-Out Space', desc: 'Wide terrace floor area easily accommodating outdoor lounge chairs & planters' },
+        { icon: '🛡️', title: 'Sturdy Safety Railing', desc: 'Heavy-duty powder-coated MS security railing with bird-netting provisions' },
+        { icon: '☕', title: 'Private Relaxation Hub', desc: 'The perfect outdoor morning coffee and evening sunset relaxation retreat' }
       ]
     }
   ],
