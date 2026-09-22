@@ -1,7 +1,7 @@
 // Auto-clear stale mock database from localStorage if it lacks v2026_seven_flagship_projects_v15
 try {
   const currentPropVer = localStorage.getItem('mock_properties_version');
-  if (currentPropVer !== 'v2026_seven_flagship_clean_v16') {
+  if (currentPropVer !== 'v2026_seven_flagship_luxury_v17') {
     console.info('[Cache Bust] Refreshing catalog to 7 flagship projects with official VTP card image...');
     localStorage.removeItem('mock_properties');
     localStorage.removeItem('mock_properties_version');
@@ -136,6 +136,32 @@ const initialProperties = [
       { bhk: "2 BHK", carpet: "940 sq.ft",  highlight: true  },
       { bhk: "3 BHK", carpet: "1167 sq.ft", highlight: false }
     ],
+    amenityCategories: {
+      recreationalSports: [
+        "24x7 Creche & Day Care",
+        "Multipurpose Sports Arena",
+        "Clubhouse & Indoor Games Lounge",
+        "Children Adventure Play Park"
+      ],
+      fitnessOutdoors: [
+        "24x7 Functional Gymnasium",
+        "Temperature-Controlled Swimming Pool",
+        "Jogging Track & Zen Pavilion",
+        "Podium Landscaped Green Gardens"
+      ],
+      convenienceSafety: [
+        "24x7 Reception Desk & Concierge",
+        "24x7 Convenience Store",
+        "Multi-Tier 5-Level Security Grid",
+        "Dedicated EV Charging Stations"
+      ],
+      internalFeatures: [
+        "Imported Marble Vitrified Flooring",
+        "Premium Modular Kitchen with Black Granite Counter",
+        "Branded CP Bath Fittings with Diverters",
+        "Anodized Aluminum Sliding Windows"
+      ]
+    },
     amenities: [
       "24x7 Functional Gymnasium",
       "24x7 Reception Desk",
@@ -193,6 +219,32 @@ const initialProperties = [
       { bhk: "2 BHK", carpet: "940 sq.ft",  highlight: true  },
       { bhk: "3 BHK", carpet: "1167 sq.ft", highlight: false }
     ],
+    amenityCategories: {
+      recreationalSports: [
+        "Community Celebration Hall",
+        "Billiards & Gaming Lounge",
+        "Outdoor Multi-Sports Court",
+        "Kids Creative Play Deck"
+      ],
+      fitnessOutdoors: [
+        "Infinity Rooftop Swimming Pool",
+        "High-Tech Fitness Studio",
+        "Yoga & Aerial Meditation Deck",
+        "Landscaped Zen Gardens"
+      ],
+      convenienceSafety: [
+        "Home Automation & Smart Digital Access",
+        "21-Point Integrated Safety Grid",
+        "Dedicated EV Fast-Charging Bays",
+        "24/7 Security & High-Speed Elevators"
+      ],
+      internalFeatures: [
+        "Smart Home Lighting & Lock Automation",
+        "Anti-Skid Designer Flooring",
+        "Black Granite Kitchen Platform with SS Sink",
+        "Premium Sound-Insulated Windows"
+      ]
+    },
     amenities: [
       "Home Automation System",
       "21-Point Integrated Safety Grid",
@@ -249,6 +301,32 @@ const initialProperties = [
       { bhk: "2 BHK", carpet: "645-780 sq.ft", highlight: true },
       { bhk: "2.5 BHK", carpet: "800-880 sq.ft", highlight: false }
     ],
+    amenityCategories: {
+      recreationalSports: [
+        "Pawar Public School within Campus",
+        "Olympic-Sized Swimming Pool",
+        "Floodlit Tennis & Basketball Courts",
+        "Township Amphitheatre & High Street"
+      ],
+      fitnessOutdoors: [
+        "Multiple High-Tech Gymnasiums",
+        "Dedicated Jogging & Cycling Tracks",
+        "Central Park & Landscaped Acres",
+        "Peaceful Meditation Groves"
+      ],
+      convenienceSafety: [
+        "Township Security & CCTV Surveillance Grid",
+        "Piped Natural Gas (MNGL)",
+        "Commercial Marts & Banks within Campus",
+        "STP & Water Treatment Plants"
+      ],
+      internalFeatures: [
+        "Spacious Layouts with Sunlit Balconies",
+        "Vitrified Tile Flooring throughout",
+        "Polished Granite Kitchen Counter with Sink",
+        "Heavy-Duty Branded Electrical Fixtures"
+      ]
+    },
     amenities: [
       "Olympic-size Swimming Pool",
       "Pawar Public School on Campus",
@@ -302,6 +380,32 @@ const initialProperties = [
       { bhk: "2 BHK", carpet: "678 sq.ft", highlight: false },
       { bhk: "3 BHK", carpet: "948 sq.ft", highlight: false }
     ],
+    amenityCategories: {
+      recreationalSports: [
+        "Grand Community Clubhouse",
+        "Indoor Games & Reading Lounge",
+        "Children Adventure Play Park",
+        "Party Lawn & Celebration Deck"
+      ],
+      fitnessOutdoors: [
+        "Modern Gymnasium & Cardio Deck",
+        "Acrobatic Yoga & Meditation Lawn",
+        "Landscaped Green Podium Gardens",
+        "Jogging & Walking Track"
+      ],
+      convenienceSafety: [
+        "Multi-Tier Security with CCTV Grid",
+        "High-Speed Passenger Elevators with ARD",
+        "Covered Car Parking with EV Readiness",
+        "Solar Water Heating System & STP"
+      ],
+      internalFeatures: [
+        "Large Format Vitrified Tile Flooring",
+        "Granite Kitchen Countertop with Service Platform",
+        "Branded Sanitaryware & CP Fixtures",
+        "Powder-Coated Sliding Windows with Safety Grills"
+      ]
+    },
     amenities: [
       "Modern Gymnasium & Fitness Club",
       "Community Clubhouse & Hall",
@@ -356,6 +460,32 @@ const initialProperties = [
       { bhk: "2 BHK", carpet: "630+ sq.ft", highlight: false },
       { bhk: "3 BHK", carpet: "930 sq.ft",  highlight: true  }
     ],
+    amenityCategories: {
+      recreationalSports: [
+        "5 International Sports Arenas",
+        "Tennis, Badminton & Squash Courts",
+        "Multi-Storey Recreation Clubhouse",
+        "Kids Multi-Sport Academy & Arena"
+      ],
+      fitnessOutdoors: [
+        "Olympic-Grade Swimming Pool",
+        "High-Tech Gymnasium & Aerobics Deck",
+        "CrossFit Training Lawn",
+        "Jogging & Cycling Tracks"
+      ],
+      convenienceSafety: [
+        "5-Pillar 'Sada Sukhi Raho' Maintenance Commitment",
+        "24x7 Multi-Tier Security & CCTV Grid",
+        "Dedicated Covered Parking & EV Bays",
+        "High-Speed Elevators with Automatic Rescue"
+      ],
+      internalFeatures: [
+        "Vitrified Tile Flooring throughout Living & Bedrooms",
+        "Jet Black Granite Kitchen Counter",
+        "Premium Anti-Skid Ceramic Tiles in Bathrooms",
+        "Branded Concealed Copper Wiring & Switches"
+      ]
+    },
     amenities: [
       "5 International Sports Arenas",
       "Olympic-Grade Swimming Pool",
@@ -1530,7 +1660,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_clean_v16';
+const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_luxury_v17';
 
 const LocalMockDb = {
   getProperties() {

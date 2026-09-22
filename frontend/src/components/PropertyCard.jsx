@@ -392,13 +392,48 @@ export default function PropertyCard({
   const navigate = useNavigate();
   const cardImgSrc = getForbesTeslaPropertyImage(property);
   const builderName = property.builderName || property.developer || property.builder?.name || getBuilderName(property.title, property.description);
-  
-  const isMegapolis = Boolean(
-    (property.title || '').toLowerCase().includes('megapolis') || 
-    (property.projectName || '').toLowerCase().includes('megapolis') ||
-    property.id === 'prop-megapolis-township' ||
+  const isMegapolis = (
+    (property.title && property.title.toLowerCase().includes('megapolis')) ||
+    (property.location && property.location.includes('HINJEWADI_PHASE_3')) ||
     (property.societySlug && property.societySlug.includes('megapolis'))
   );
+
+  const getDedicatedProjectUrl = (prop) => {
+    if (!prop) return null;
+    const id = String(prop.id || '').toLowerCase();
+    const title = String(prop.title || '').toLowerCase();
+    const slug = String(prop.societySlug || '').toLowerCase();
+
+    // 1. TCG The Cliff Garden
+    if (id.includes('tcg') || title.includes('cliff') || title.includes('clip') || slug.includes('tcg')) {
+      return '/tcg-cliff-garden-hinjewadi';
+    }
+    // 2. VTP Blue Waters
+    if (id.includes('vtp') || title.includes('blue waters') || title.includes('bluewater') || slug.includes('vtp')) {
+      return '/vtp-blue-waters-mahalunge';
+    }
+    // 3. Kohinoor Sportsville
+    if (id.includes('kohinoor') || title.includes('sportsville') || slug.includes('kohinoor')) {
+      return '/kohinoor-sportsville-hinjewadi';
+    }
+    // 4. Vilas Javdekar YashOne
+    if (id.includes('yashone') || title.includes('yashone') || slug.includes('yashone')) {
+      return '/vj-yashone-hinjewadi';
+    }
+    // 5. Godrej 24
+    if (id === 'prop-godrej-24' || title === 'godrej 24' || (title.includes('godrej') && title.includes('24'))) {
+      return '/godrej-24-hinjewadi';
+    }
+    // 6. Godrej Elements
+    if (id === 'prop-godrej-elements' || (title.includes('godrej') && title.includes('element')) || title.includes('elements')) {
+      return '/godrej-elements-hinjewadi';
+    }
+    // 7. Megapolis Township
+    if (id.includes('megapolis') || title.includes('megapolis') || slug.includes('megapolis')) {
+      return '/townships/megapolis';
+    }
+    return null;
+  };
 
   const priceObj = formatCardPrice(property?.price, property?.transactionType, property?.title);
   const imageTagline = getImageTagline(property);
@@ -408,6 +443,11 @@ export default function PropertyCard({
 
   const handleCardClick = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+    const dedicatedUrl = getDedicatedProjectUrl(property);
+    if (dedicatedUrl) {
+      navigate(dedicatedUrl);
+      return;
+    }
     if (isMegapolis && !property.title?.toLowerCase().includes('sangria')) {
       navigate('/townships/megapolis');
     } else if (property.societySlug) {
@@ -418,8 +458,9 @@ export default function PropertyCard({
     }
   };
 
+  const isNegotiable = property.priceNegotiable || property.priceNote === 'Negotiable' || property.title?.toLowerCase().includes('cliff') || property.title?.toLowerCase().includes('blue waters');
   const whatsappInquiryMessage = encodeURIComponent(
-    `Namaste 24K Realtors! 🏠\n\nI am interested in:\n📌 *${property.title}* — ${subtitleCorridor}\n📍 Location: ${locationLabel}\n🏢 Developer: ${builderName}\n💰 Price: ${priceObj.main} ${priceObj.suffix}\n🛡️ MahaRERA: ${property.reraNumber || 'Verified'}\n\nPlease share current pricing breakup, verified floor plans, and schedule a site visit.`
+    `Namaste 24K Realtors! 🏛️\n\nI am interested in:\n📌 *${property.title}* — ${subtitleCorridor}\n📍 Location: ${locationLabel}\n🏢 Developer: ${builderName}\n💰 Listed Price: ${priceObj.main} ${priceObj.suffix}${isNegotiable ? ' (Negotiable)' : ''}\n🛡️ MahaRERA: ${property.reraNumber || 'Verified'}\n\nPlease share the official developer pricing sheet, verified floor plans, and negotiation margin.`
   );
 
   return (
@@ -577,7 +618,7 @@ export default function PropertyCard({
             position: 'absolute',
             bottom: '10px',
             left: '16px',
-            right: '16px',
+            right: '110px',
             zIndex: 2,
             pointerEvents: 'none'
           }}
@@ -595,6 +636,30 @@ export default function PropertyCard({
           }}>
             {imageTagline}
           </div>
+        </div>
+
+        {/* Authentic Photos Badge */}
+        <div 
+          style={{
+            position: 'absolute',
+            bottom: '10px',
+            right: '12px',
+            background: 'rgba(5, 10, 20, 0.85)',
+            border: '1px solid rgba(212, 175, 55, 0.45)',
+            color: '#E6C35C',
+            fontSize: '0.62rem',
+            fontWeight: 700,
+            padding: '3px 8px',
+            borderRadius: '20px',
+            zIndex: 2,
+            backdropFilter: 'blur(6px)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.5)'
+          }}
+        >
+          <span>📷 {property.galleryImages?.length || 6} Photos</span>
         </div>
       </div>
 
@@ -660,31 +725,66 @@ export default function PropertyCard({
           <DeveloperBrandMark builderName={builderName} title={property.title} />
         </div>
 
-        {/* Price Row: Bold Price + Onwards */}
-        <div style={{ display: 'flex', alignItems: 'baseline', marginTop: '2px' }}>
-          <span 
-            style={{
-              fontSize: '1.38rem',
-              fontWeight: 800,
-              color: '#FFFFFF',
-              letterSpacing: '-0.01em',
-              fontFamily: "'Montserrat', sans-serif"
-            }}
-          >
-            {priceObj.main}
-          </span>
-          {priceObj.suffix && (
+        {/* Price Row: Bold Price + Onwards + Negotiable Tag + Asset Score */}
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginTop: '2px' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline' }}>
             <span 
               style={{
-                fontSize: '0.78rem',
-                color: '#94A3B8',
-                fontWeight: 400,
-                marginLeft: '6px'
+                fontSize: '1.38rem',
+                fontWeight: 800,
+                color: '#FFFFFF',
+                letterSpacing: '-0.01em',
+                fontFamily: "'Montserrat', sans-serif"
               }}
             >
-              {priceObj.suffix}
+              {priceObj.main}
+            </span>
+            {priceObj.suffix && (
+              <span 
+                style={{
+                  fontSize: '0.78rem',
+                  color: '#94A3B8',
+                  fontWeight: 400,
+                  marginLeft: '6px'
+                }}
+              >
+                {priceObj.suffix}
+              </span>
+            )}
+          </div>
+          {isNegotiable && (
+            <span style={{
+              background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #B8860B 100%)',
+              color: '#040814',
+              fontSize: '0.62rem',
+              fontWeight: 900,
+              padding: '3px 8px',
+              borderRadius: '4px',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              boxShadow: '0 2px 8px rgba(230,195,92,0.35)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '3px'
+            }}>
+              ✨ NEGOTIABLE
             </span>
           )}
+          <span style={{
+            marginLeft: 'auto',
+            background: 'rgba(212,175,55,0.1)',
+            border: '1px solid rgba(212,175,55,0.3)',
+            color: '#D4AF37',
+            fontSize: '0.62rem',
+            fontWeight: 800,
+            padding: '2px 7px',
+            borderRadius: '4px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '3px'
+          }}>
+            ⭐ 95/100 ASSET
+          </span>
         </div>
 
         {/* Location & MahaRERA Pill Row */}
@@ -754,7 +854,14 @@ export default function PropertyCard({
                 RERA
               </span>
               <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#A7F3D0', letterSpacing: '0.02em' }}>
-                {property.reraNumber ? property.reraNumber : 'VERIFIED'}
+                {(() => {
+                  if (!property.reraNumber) return 'VERIFIED';
+                  if (property.reraNumber.includes('/')) {
+                    const parts = property.reraNumber.split('/');
+                    return `${parts[0].trim()} (+${parts.length - 1} Wings)`;
+                  }
+                  return property.reraNumber;
+                })()}
               </span>
             </div>
           </button>
@@ -957,7 +1064,7 @@ export default function PropertyCard({
             <span>WhatsApp</span>
           </a>
 
-          {/* Explore Project Button */}
+          {/* Explore Showcase Button */}
           <button 
             type="button"
             className="explore-project-cta"
@@ -968,30 +1075,30 @@ export default function PropertyCard({
             style={{
               fontSize: '0.82rem',
               color: '#F5D77F',
-              fontWeight: 600,
+              fontWeight: 700,
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '6px',
-              background: 'rgba(5, 10, 20, 0.65)',
-              border: '1px solid rgba(212, 175, 55, 0.45)',
+              background: 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(5,10,20,0.85) 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.55)',
               borderRadius: '8px',
               padding: '9px 12px',
               cursor: 'pointer',
               transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = 'rgba(212, 175, 55, 0.15)';
-              e.currentTarget.style.borderColor = 'rgba(244, 208, 104, 0.75)';
+              e.currentTarget.style.background = 'rgba(212, 175, 55, 0.25)';
+              e.currentTarget.style.borderColor = '#F4D068';
               e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = 'rgba(5, 10, 20, 0.65)';
-              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(5,10,20,0.85) 100%)';
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.55)';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            <span>Explore Project</span>
+            <span>Explore Showcase</span>
             <ArrowRight size={13} />
           </button>
         </div>
