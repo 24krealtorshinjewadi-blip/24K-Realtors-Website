@@ -422,7 +422,7 @@ export default function YashOneProjectPage({ onBackHome }) {
             { icon: <Home size={14} />, label: 'Carpet Area', value: '678 sq.ft (2 BHK)' },
             { icon: <Clock size={14} />, label: 'Status', value: 'Ready to Move' },
             { icon: <Award size={14} />, label: 'Investment Score', value: `${p.investmentScore}/100` },
-            { icon: <IndianRupee size={14} />, label: 'Rental Yield', value: p.rentalYield },
+            { icon: <CheckCircle2 size={14} />, label: 'Title Status', value: 'Clear & Verified' },
           ].map((stat, i) => (
             <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '10px', minWidth: '180px' }}>
               <span style={{ color: '#D4AF37' }}>{stat.icon}</span>

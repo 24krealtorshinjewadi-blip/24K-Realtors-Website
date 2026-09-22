@@ -315,7 +315,7 @@ export function buildPropertySEO(property) {
       : `${property.bedrooms ? property.bedrooms + ' BHK ' : ''}${typeof property.propertyType === 'string' ? property.propertyType.toLowerCase() : 'luxury residence'} in ${loc}.`,
     price && `Starting at ${price}.`,
     property.reraNumber && `MahaRERA: ${property.reraNumber}.`,
-    'Verified VIP chauffeur site visits by 24K Realtors Pune.'
+    'Verified guided site visits by 24K Realtors Pune.'
   ].filter(Boolean).join(' ');
 
   const siteUrl = 'https://real-estate-digital-marketing.vercel.app';
@@ -398,11 +398,10 @@ export function buildSocietySEO(society) {
   const price = society.priceRange || (society.startingPrice ? (society.startingPrice >= 10000000 ? `₹${(society.startingPrice / 10000000).toFixed(2)} Cr` : `₹${Math.round(society.startingPrice / 100000)} Lakhs`) : '');
   const rera = society.reraNumber ? `MahaRERA: ${society.reraNumber}` : 'MahaRERA Verified';
   const heroImg = society.heroImageUrl || society.galleryUrls?.[0];
-  const rentalYield = society.rentalYield ? `${society.rentalYield}% rental yield. ` : '';
   const sqft = society.pricePerSqft ? `₹${society.pricePerSqft.toLocaleString('en-IN')}/sq.ft. ` : '';
   const investScore = society.investmentScore ? `Investment Score: ${society.investmentScore}/100. ` : '';
 
-  const desc = `${society.canonicalName || society.name} in ${loc}. Verified Starting Price: ${price || 'on request'}. ${rera}. ${society.configurationSummary || '2 & 3 BHK'}. ${sqft}${rentalYield}${investScore}Expert advisory by 24K Realtors.`;
+  const desc = `${society.canonicalName || society.name} in ${loc}. Verified Starting Price: ${price || 'on request'}. ${rera}. ${society.configurationSummary || '2 & 3 BHK'}. ${sqft}${investScore}Expert advisory by 24K Realtors.`;
 
   const siteUrl = 'https://real-estate-digital-marketing.vercel.app';
   const pageUrl = `${siteUrl}/society/${society.slug || society.id}`;

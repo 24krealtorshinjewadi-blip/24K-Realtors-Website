@@ -112,7 +112,7 @@ export default function LocationLandingPage({ locationSlug = 'hinjewadi-phase-1'
               {data.name} Real Estate &amp; Societies
             </h1>
             <p style={{ fontSize: '0.92rem', color: '#CBD5E1', maxWidth: '750px', lineHeight: 1.6, margin: 0 }}>
-              {data.description || `${data.name} represents the focal IT growth corridor of Pune West. Featuring premier residential townships, high rental yields, and upcoming Metro Line 3 connectivity.`}
+              {data.description || `${data.name} represents the focal IT growth corridor of Pune West. Featuring premier residential townships, robust infrastructure, and upcoming Metro Line 3 connectivity.`}
             </p>
           </div>
 
@@ -137,8 +137,8 @@ export default function LocationLandingPage({ locationSlug = 'hinjewadi-phase-1'
             <div className="pi-metric-card">
               <div className="pi-metric-icon"><Award size={20} /></div>
               <div>
-                <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Avg Rental Yield</div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#34D399' }}>{data.averageRentalYield || '4.8% / year'}</div>
+                <div style={{ fontSize: '0.68rem', color: '#A0AEC0', textTransform: 'uppercase' }}>Livability Score</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#34D399' }}>95 / 100</div>
               </div>
             </div>
           </div>

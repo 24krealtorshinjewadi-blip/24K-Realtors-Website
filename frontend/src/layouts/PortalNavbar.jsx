@@ -146,7 +146,7 @@ export default function PortalNavbar({
                   </div>
                   <div className="mega-menu-column highlight-column">
                     <h5 className="mega-menu-title">Home Buying Advice</h5>
-                    <p className="mega-menu-desc">Analyze commute times, check title RERA compliance status, and calculate local rental yields before buying.</p>
+                    <p className="mega-menu-desc">Analyze commute times, check title RERA compliance status, and compare verified property pricing before buying.</p>
                     <a href="#localities" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'localities', null, 'locality-guides'); }} className="mega-menu-cta-btn">Locality Guide <ArrowRight size={12} /></a>
                   </div>
                 </div>
@@ -420,7 +420,7 @@ export default function PortalNavbar({
             <TrendingUp size={18} color="#2ec4b6" />
             <div className="drawer-item-text">
               <strong>Market Trends &amp; Analytics</strong>
-              <span>Rental yields, price growth &amp; area telemetry</span>
+              <span>Price growth, capital appreciation &amp; area telemetry</span>
             </div>
             <ArrowRight size={14} className="arrow-icon" />
           </button>

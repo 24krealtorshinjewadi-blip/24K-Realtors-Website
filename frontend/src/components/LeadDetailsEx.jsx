@@ -435,7 +435,7 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
                 <label style={{ fontSize: '0.75rem', display: 'block', marginBottom: '4px' }}>Transport Mode</label>
                 <select value={visitForm.transportMode} onChange={e => setVisitForm({ ...visitForm, transportMode: e.target.value })} className="form-input" style={{ width: '100%' }}>
                   <option value="SELF">🚗 Self Drive</option>
-                  <option value="VIP_CHAUFFEUR">✨ VIP Chauffeur Service</option>
+                  <option value="VIP_CHAUFFEUR">✨ Guided Chauffeur Service</option>
                 </select>
               </div>
               <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'end' }}>
@@ -475,7 +475,7 @@ export default function LeadDetailsEx({ lead, onClose, agents, properties: initi
                           <button onClick={() => handleVisitCheckIn(v.id)} className="btn-outline" style={{ padding: '4px 8px', fontSize: '0.72rem' }}>Check In</button>
                           <a 
                             href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
-                              `Namaste ${lead.name} ji! 👋\n\n24K Realtors ki taraf se aapka VIP Site Tour scheduled hai:\n🏡 Property: ${v.property?.title}\n📅 Date & Time: ${new Date(v.scheduledTime).toLocaleString()}\n🚗 Transport: ${v.transportMode === 'VIP_CHAUFFEUR' ? 'VIP Chauffeur Service (Pickup arranged)' : 'Self Drive'}\n🧑‍💼 RM: ${v.assignedAgent?.fullName || 'Assigned Agent'}\n\nHum aapse reach out karenge. Please confirm if this time suits you. Dhanyawad! 🙏`
+                              `Namaste ${lead.name} ji! 👋\n\n24K Realtors ki taraf se aapka Private Site Tour scheduled hai:\n🏡 Property: ${v.property?.title}\n📅 Date & Time: ${new Date(v.scheduledTime).toLocaleString()}\n🚗 Transport: ${v.transportMode === 'VIP_CHAUFFEUR' ? 'Guided Chauffeur Service (Pickup arranged)' : 'Self Drive'}\n🧑‍💼 RM: ${v.assignedAgent?.fullName || 'Assigned Agent'}\n\nHum aapse reach out karenge. Please confirm if this time suits you. Dhanyawad! 🙏`
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"

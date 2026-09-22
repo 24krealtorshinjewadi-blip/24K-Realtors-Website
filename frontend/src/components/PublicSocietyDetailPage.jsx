@@ -432,7 +432,7 @@ export default function PublicSocietyDetailPage({ slug, onBack }) {
                     <TrendingUp size={13} /> Capital Appreciation
                   </div>
                   <div className="pi-highlight-card__text">
-                    {data.rentalYield ? `${data.rentalYield}%` : '4.2–5.1%'} estimated gross rental yield with consistent tech-workforce housing demand.
+                    High capital appreciation trajectory backed by consistent tech-workforce housing demand.
                   </div>
                 </div>
               </div>
@@ -989,12 +989,12 @@ export default function PublicSocietyDetailPage({ slug, onBack }) {
                     a: `${data.canonicalName || data.name} is located in ${data.location || 'Hinjewadi'} — ${data.hinjewadiPhase ? data.hinjewadiPhase.replace(/_/g, ' ') + ', ' : ''}within convenient reach of Infosys, Wipro, Quadron Business Park, and Embassy Techzone. Pune Metro Line 3 further improves transit connectivity.`
                   },
                   {
-                    q: `Can 24K Realtors arrange a VIP site visit and direct developer pricing?`,
-                    a: `Absolutely! Our ${data.location || 'Hinjewadi'} Property Specialists offer chauffeur-driven private site tours, vastu compliance walkthroughs, direct developer cost negotiation, and home loan pre-approval assistance. Call us on +91 96730 00053.`
+                    q: `Can 24K Realtors arrange a guided site visit and direct developer pricing?`,
+                    a: `Absolutely! Our ${data.location || 'Hinjewadi'} Property Specialists offer dedicated private site tours, vastu compliance walkthroughs, direct developer cost negotiation, and home loan pre-approval assistance. Call us on +91 96730 00053.`
                   },
                   {
-                    q: `What is the rental yield and capital appreciation potential?`,
-                    a: `${data.canonicalName || data.name} offers an estimated gross rental yield of ${data.rentalYield ? data.rentalYield + '%' : '4.2–5.1%'} per annum — one of Pune's strongest IT-corridor returns, driven by 2.3 lakh+ tech professionals working in Hinjewadi. Investment Score: ${computeInvestmentScore(data)}/100.`
+                    q: `What is the capital appreciation potential?`,
+                    a: `${data.canonicalName || data.name} offers strong capital appreciation potential — driven by robust IT corridor expansion and infrastructure upgrades in Hinjewadi. Investment Score: ${computeInvestmentScore(data)}/100.`
                   }
                 ].map((faq, i) => (
                   <div key={i} className={`pi-faq-item${expandedFaq === i ? ' open' : ''}`}>
@@ -1109,7 +1109,7 @@ export default function PublicSocietyDetailPage({ slug, onBack }) {
               </div>
               <div style={{ fontSize: '0.72rem', color: '#64748B' }}>out of 100</div>
               <div style={{ marginTop: '10px', fontSize: '0.75rem', color: '#94A3B8' }}>
-                Based on RERA compliance, possession status, price appreciation trajectory, and rental yield
+                Based on RERA compliance, possession status, and price appreciation trajectory
               </div>
             </div>
 

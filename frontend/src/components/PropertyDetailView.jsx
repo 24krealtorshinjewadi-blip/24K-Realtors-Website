@@ -473,7 +473,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     if (aiMessages.length === 0) {
       setAiMessages([{
         role: 'ai',
-        text: `Namaste! 👋 Welcome to 24K Senior Property Intelligence Desk.\n\nI have complete verified records for **${title}** (${developerName}) — pricing breakup, Italian marble specifications, RERA milestone progress, Vastu orientations, and rental yield analytics.\n\nHow may I assist you today?`
+        text: `Namaste! 👋 Welcome to 24K Senior Property Intelligence Desk.\n\nI have complete verified records for **${title}** (${developerName}) — pricing breakup, Italian marble specifications, RERA milestone progress, Vastu orientations, and capital growth analytics.\n\nHow may I assist you today?`
       }]);
     }
     setAiChatOpen(true);
@@ -931,7 +931,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                   onClick={onOpenInquiry}
                   className="pi-btn-gold pi-btn-hero"
                 >
-                  <Clock size={16} /> Schedule VIP Chauffeur Tour
+                  <Clock size={16} /> Schedule Guided Site Visit
                 </button>
                 <button
                   onClick={() => setBrochureModalOpen(true)}
@@ -1051,7 +1051,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
                       <TrendingUp size={13} /> +14.8% Capital Appreciation
                     </div>
                     <div className="pi-highlight-card__text">
-                      Projected 4.8%–5.4% gross rental yield driven by 150,000+ tech workforce housing demand in the Hinjewadi-Baner tech belt.
+                      High capital appreciation trajectory driven by 150,000+ tech workforce housing demand in the Hinjewadi-Baner tech belt.
                     </div>
                   </div>
                 </div>

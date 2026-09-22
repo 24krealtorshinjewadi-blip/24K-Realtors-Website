@@ -13,7 +13,7 @@
  *  - 100% Authentic Photos: Elevation, Living Room, Modular Kitchen, Bedroom, Bathroom, Balcony
  *  - 4-Pillar Lifestyle Amenities: Riverside Leisure, Sports & Fitness, Safety & Infrastructure, Smart Interiors
  *  - Mahalunge-Hinjewadi Bridge Transit & Proximity Matrix
- *  - Direct WhatsApp & VIP Chauffeur Site Tour Booking
+ *  - Direct WhatsApp & Guided Site Tour Booking
  * ─────────────────────────────────────────────────────────────────────────────
  */
 

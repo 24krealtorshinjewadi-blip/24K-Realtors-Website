@@ -300,8 +300,8 @@ const MEGAPOLIS_DATA = {
       a: 'Major societies such as Sangria, Mystic, Sunway, and Sparkle are completely ready to move with full Occupancy Certificates (OC). Splendour and select newer phases have ready as well as upcoming delivery options.'
     },
     {
-      q: 'What are the rental yields and investment potential in Megapolis?',
-      a: 'Due to its unmatched walking distance to Infosys Phase 3 and Embassy Techzone, Megapolis commands the highest IT rental occupancy in Pune West. Rental yields consistently range between 4.8% and 5.4%, with continuous tenant demand from tech engineers.'
+      q: 'What is the long-term investment potential in Megapolis?',
+      a: 'Due to its unmatched walking distance to Infosys Phase 3 and Embassy Techzone, Megapolis commands the highest IT residential occupancy in Pune West, with continuous tenant demand from tech engineers and steady capital appreciation.'
     },
     {
       q: 'What is the MahaRERA registration status for Megapolis?',
@@ -547,7 +547,7 @@ export default function MegapolisTownshipPage({ onBackHome }) {
             { icon: <Building2 size={14} />, label: 'Developer', value: 'Pride Purple Group' },
             { icon: <Clock size={14} />, label: 'Possession', value: 'Ready to Move & New Phase' },
             { icon: <Award size={14} />, label: 'Investment Score', value: `${p.investmentScore}/100` },
-            { icon: <IndianRupee size={14} />, label: 'Rental Yield', value: p.rentalYield },
+            { icon: <CheckCircle2 size={14} />, label: 'Township Status', value: '100% Integrated' },
           ].map((stat, i) => (
             <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '10px', minWidth: '180px' }}>
               <span style={{ color: '#D4AF37' }}>{stat.icon}</span>
