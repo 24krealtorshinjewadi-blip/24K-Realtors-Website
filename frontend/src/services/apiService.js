@@ -1,8 +1,8 @@
-// Auto-clear stale mock database from localStorage if it lacks v2026_six_flagship_projects_v13
+// Auto-clear stale mock database from localStorage if it lacks v2026_seven_flagship_projects_v14
 try {
   const currentPropVer = localStorage.getItem('mock_properties_version');
-  if (currentPropVer !== 'v2026_six_flagship_projects_v13') {
-    console.info('[Cache Bust] Refreshing catalog to 6 flagship projects (Godrej 24, Godrej Elements, Megapolis, VJ YashOne, Kohinoor, TCG The Cliff Garden)...');
+  if (currentPropVer !== 'v2026_seven_flagship_projects_v14') {
+    console.info('[Cache Bust] Refreshing catalog to 7 flagship projects (Godrej 24, Godrej Elements, Megapolis, VJ YashOne, Kohinoor, TCG The Cliff Garden, VTP Blue Waters)...');
     localStorage.removeItem('mock_properties');
     localStorage.removeItem('mock_properties_version');
     localStorage.removeItem('mock_societies');
@@ -455,6 +455,93 @@ const initialProperties = [
       "Dedicated Covered Vehicle Parking",
       "Vitrified Tile Flooring & Granite Modular Kitchen",
       "Children Play Adventure Park"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 7 — VTP BLUE WATERS MAHALUNGE
+  // Mahalunge (Hinjewadi-Baner Annex Corridor) | 2 BHK: 640 sq.ft (₹72L Negotiable)
+  // MahaRERA: P52100009531, P52100009529, P52100007943, P52100026772, P52100020112, P52100019986
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-vtp-blue-waters",
+    title: "VTP Blue Waters",
+    projectName: "VTP Blue Waters",
+    builderName: "VTP Realty",
+    description: "Iconic 100+ acre riverside township by VTP Realty in Mahalunge, Pune, directly at the Mahalunge-Hinjewadi bridge (5 mins to Hinjewadi Phase 1). Verified 2 BHK (640 sq.ft carpet, ₹72 Lakhs - negotiable) residence featuring 100% authentic on-site photos (living room with marble vitrified tiles, modular kitchen with black granite counter, master bedroom, grey marble bathroom with geyser, and wood-finish tile balcony with glass railing). Multi-phase township covered by six MahaRERA registrations (P52100009531, P52100009529, P52100007943, P52100026772, P52100020112, P52100019986) with 1 km riverfront promenade and 5 luxury clubhouses.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 7200000,
+    priceNegotiable: true,
+    priceNote: "Negotiable",
+    location: "MAHALUNGE",
+    address: "VTP Blue Waters, Near Mahalunge-Hinjewadi Bridge, Mahalunge, Pune — 411045",
+    latitude: 18.5775,
+    longitude: 73.7482,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100009531 / P52100009529 / P52100007943 / P52100026772 / P52100020112 / P52100019986",
+    imageUrl: "/properties/vtp-blue-waters/01_elevation.png",
+    galleryImages: [
+      "/properties/vtp-blue-waters/01_elevation.png",
+      "/properties/vtp-blue-waters/02_living_room.jpg",
+      "/properties/vtp-blue-waters/03_kitchen.jpg",
+      "/properties/vtp-blue-waters/04_bedroom.jpg",
+      "/properties/vtp-blue-waters/05_bathroom.jpg",
+      "/properties/vtp-blue-waters/06_balcony.jpg"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "vtp-blue-waters-mahalunge",
+    configurations: [
+      { bhk: "2 BHK", carpet: "640 sq.ft", price: "₹72 Lakhs", highlight: true, note: "Negotiable" }
+    ],
+    amenityCategories: {
+      riversideLeisure: [
+        "1 km Scenic Riverfront Promenade",
+        "5 Themed Grand Clubhouses",
+        "Olympic-Size Swimming Pool & Kid Pool",
+        "Amphitheatre & Riverside Deck",
+        "Central Landscaped Green Acres"
+      ],
+      sportsFitness: [
+        "Professional Tennis & Badminton Courts",
+        "Multipurpose Sports Ground & Cricket Pitch",
+        "Fully-Equipped High-Tech Gymnasium",
+        "Dedicated Jogging & Cycling Tracks",
+        "Yoga & Aerial Meditation Pavilion"
+      ],
+      convenienceSafety: [
+        "24/7 Security Grid & RFID Access Control",
+        "High-Speed Passenger & Service Elevators",
+        "Dedicated Multi-Level Covered Parking",
+        "Piped Gas Connection (MNGL)",
+        "STP & Rainwater Harvesting Infrastructure"
+      ],
+      internalFeatures: [
+        "Glossy Marble-Finish Vitrified Tile Flooring",
+        "Modular Lower Drawers with Jet Black Granite Counter",
+        "Grey Marble Wall Tiles & Fitted Water Heater Geyser",
+        "Scenic Balcony with Wooden Finish Tiles & Glass Railing",
+        "Heavy-Gauge Safety Grilled Sliding Windows",
+        "Concealed Copper Wiring & Branded Modular Switches"
+      ]
+    },
+    amenities: [
+      "1 km Riverfront Promenade",
+      "5 Luxury Clubhouses",
+      "Olympic-Size Swimming Pool",
+      "Modern Fitness Gymnasium",
+      "Tennis & Badminton Courts",
+      "24/7 Multi-Tier Security & CCTV Grid",
+      "Modular Kitchen with Granite Counter",
+      "Scenic Balcony with Glass Railing",
+      "Piped Gas (MNGL)",
+      "High-Speed Elevators with Power Backup",
+      "Children Adventure Play Zone"
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
@@ -1269,6 +1356,63 @@ const initialSocieties = [
     faqs: "Q: What are the MahaRERA numbers for TCG The Cliff Garden?\nA: The project wings are registered under P52100004906, P52100015759, and P52100028926.\n\nQ: Are the prices negotiable?\nA: Yes, both 1 BHK (₹55L) and 2 BHK (₹75L) prices are negotiable through 24K Realtors.",
     seoTitle: "TCG The Cliff Garden Hinjewadi Phase 3 | 1 & 2 BHK Flats | 24K Realtors",
     seoDescription: "TCG The Cliff Garden Hinjewadi Phase 3. 1 BHK 462 sq.ft (₹55L) & 2 BHK 662 sq.ft (₹75L) negotiable. Triple MahaRERA P52100004906, P52100015759, P52100028926."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-10: VTP BLUE WATERS — Mahalunge (Hinjewadi-Baner Corridor)
+  // MahaRERA: P52100009531 / P52100009529 / P52100007943 / P52100026772 / P52100020112 / P52100019986 | Developer: VTP Realty
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-vtp-blue-waters",
+    name: "VTP Blue Waters",
+    canonicalName: "VTP Blue Waters Mahalunge Pune",
+    slug: "vtp-blue-waters-mahalunge",
+    imageUrl: "/properties/vtp-blue-waters/01_elevation.png",
+    galleryImages: [
+      "/properties/vtp-blue-waters/01_elevation.png",
+      "/properties/vtp-blue-waters/02_living_room.jpg",
+      "/properties/vtp-blue-waters/03_kitchen.jpg",
+      "/properties/vtp-blue-waters/04_bedroom.jpg",
+      "/properties/vtp-blue-waters/05_bathroom.jpg",
+      "/properties/vtp-blue-waters/06_balcony.jpg"
+    ],
+    location: "MAHALUNGE",
+    hinjewadiPhase: "MAHALUNGE_HINJEWADI",
+    developer: "VTP Realty",
+    reraNumber: "P52100009531 / P52100009529 / P52100007943 / P52100026772 / P52100020112 / P52100019986",
+    projectStatus: "UNDER_CONSTRUCTION",
+    startingPrice: 7200000,
+    priceLastVerified: "22 Sep 2026",
+    possessionDate: "Multiple Phases / Ready & Dec 2026",
+    projectArea: "100+ Acres Riverside Township",
+    overview: "VTP Blue Waters is Pune West's flagship 100+ acre mega integrated riverside township situated in Mahalunge, right at the newly developed bridge to Hinjewadi Phase 1. Designed by VTP Realty, the township comprises multiple luxury residential clusters, 1 km scenic river promenade, 5 luxury clubhouses, and verified 2 BHK (640 sq.ft carpet, ₹72 Lakhs - negotiable) inventory. Registered under six MahaRERA numbers (P52100009531, P52100009529, P52100007943, P52100026772, P52100020112, P52100019986).",
+    amenities: "1 km Riverfront Walkway, 5 Themed Clubhouses, Olympic-Size Swimming Pool, Modern Gymnasium, Tennis & Badminton Courts, 24/7 Security Grid, Glass Railing Balconies, Modular Kitchen, High-Speed Elevators, EV Charging",
+    priceRange: "₹72 Lakhs (Negotiable)",
+    configuration: "2 BHK (640 sq.ft)",
+    configurationSummary: "2 BHK 640 sq.ft",
+    configurations: [
+      { bhkType: "2 BHK", carpetArea: "640 sq.ft", priceLabel: "₹72 Lakhs (Negotiable)", status: "Available" }
+    ],
+    highlights: [
+      "100+ Acre Mega Riverside Township by VTP Realty",
+      "Direct Mahalunge-Hinjewadi Bridge (5 mins to Phase 1)",
+      "Six MahaRERA Registrations for Complete Transparency",
+      "Authentic On-Site Photos with Modular Kitchen & Glass Balcony",
+      "₹72 Lakhs Negotiable Direct Exclusive Mandate"
+    ],
+    nearbySchools: "Radcliff School (1.2 km), Birlac International (2.5 km), Blue Ridge School (4.5 km)",
+    nearbyHospitals: "Jupiter Hospital Baner (6.5 km), Ruby Hall Hinjewadi (5.5 km), Manipal Hospital (6.0 km)",
+    nearbyItParks: "Hinjewadi Phase 1 IT Park (3.5 km / 5 mins), Embassy Tech Zone (6.5 km)",
+    nearbyMetro: "Upcoming Balewadi / Hinjewadi Metro Station (4.0 km)",
+    nearbyMalls: "Balewadi High Street (5.5 km / 8 mins), Phoenix Mall of the Millennium (6.8 km)",
+    travelTimeInfo: "Mahalunge-Hinjewadi Bridge: 2 mins | Hinjewadi Phase 1: 5 mins | Balewadi High Street: 8 mins | Baner: 10 mins | Expressway: 12 mins",
+    investmentScore: 96,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: Why does VTP Blue Waters have multiple MahaRERA numbers?\nA: VTP Blue Waters is a 100+ acre township spanning multiple individual clusters and residential towers (Acheron, Leonara, Bel Air, Alpine, Earth One, Town Center) registered under P52100009531, P52100009529, P52100007943, P52100026772, P52100020112, and P52100019986.\n\nQ: What is the price of the 2 BHK unit?\nA: The 2 BHK unit has 640 sq.ft carpet area and is priced at ₹72 Lakhs (negotiable) through 24K Realtors.",
+    seoTitle: "VTP Blue Waters Mahalunge Pune | 2 BHK 640 sq.ft Flats | 24K Realtors",
+    seoDescription: "VTP Blue Waters Mahalunge near Hinjewadi. 2 BHK (640 sq.ft, ₹72L Negotiable). 100+ Acre riverside township with 6 MahaRERA numbers: P52100009531, P52100009529, P52100007943, P52100026772, P52100020112, P52100019986."
   }
 ];
 
@@ -1384,7 +1528,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_six_flagship_projects_v13';
+const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_projects_v14';
 
 const LocalMockDb = {
   getProperties() {

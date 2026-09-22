@@ -42,7 +42,7 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('gera') || title.includes('joy')) return '/dev_gera_tower.png';
   if (title.includes('pride') || title.includes('landmark')) return '/gallery_tower_3.png';
   if (title.includes('sportsville')) return '/dev_kohinoor_tower.png';
-  if (title.includes('blue waters') || title.includes('vtp')) return '/dev_vtp_township.png';
+  if (title.includes('blue waters') || title.includes('bluewater') || title.includes('vtp')) return '/properties/vtp-blue-waters/01_elevation.png';
   if (title.includes('vyomora') || title.includes('joyville')) return '/dev_shapoorji_township.png';
   if (title.includes('yashwin') || title.includes('vj')) return '/dev_vj_building.png';
   if (title.includes('sportsville') || title.includes('kohinoor')) return '/kohinoor_hero_card.jpg';
@@ -126,6 +126,9 @@ const formatCardPrice = (p, transactionType, propertyTitle = '') => {
     if (t.includes('cliff') || t.includes('clip') || t.includes('tcg')) {
       return { main: '₹55 Lakhs*', suffix: '(Negotiable)' };
     }
+    if (t.includes('blue waters') || t.includes('bluewater') || t.includes('vtp')) {
+      return { main: '₹72 Lakhs*', suffix: '(Negotiable)' };
+    }
     return { main: 'Price on Request', suffix: '' };
   }
 
@@ -151,7 +154,8 @@ const formatCardPrice = (p, transactionType, propertyTitle = '') => {
     return { main: `₹${(num / 10000000).toFixed(2)} Cr*`, suffix: 'Onwards' };
   }
   if (num >= 100000) {
-    return { main: `₹${Math.round(num / 100000)} Lakhs*`, suffix: 'Onwards' };
+    const isNeg = t.includes('cliff') || t.includes('clip') || t.includes('tcg') || t.includes('blue water') || t.includes('bluewater') || t.includes('vtp');
+    return { main: `₹${Math.round(num / 100000)} Lakhs*`, suffix: isNeg ? '(Negotiable)' : 'Onwards' };
   }
   return { main: `₹${num.toLocaleString('en-IN')}`, suffix: 'Onwards' };
 };
@@ -255,6 +259,26 @@ const DeveloperBrandMark = ({ builderName = '', title = '' }) => {
     );
   }
 
+  if (b.includes('vtp') || b.includes('blue waters') || b.includes('bluewater')) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <span style={{ 
+          fontFamily: "'Cinzel', 'Playfair Display', serif", 
+          fontWeight: 900, 
+          fontSize: '1.02rem', 
+          color: '#38BDF8', 
+          letterSpacing: '0.04em' 
+        }}>
+          VTP
+        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+          <span style={{ fontSize: '0.48rem', fontWeight: 800, letterSpacing: '0.08em', color: '#E2E8F0' }}>REALTY</span>
+          <span style={{ fontSize: '0.42rem', fontWeight: 600, letterSpacing: '0.06em', color: '#7DD3FC' }}>PUNE NO. 1</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
       <span style={{ 
@@ -281,6 +305,7 @@ const getImageTagline = (property) => {
   if (t.includes('yashone') || t.includes('vj')) return 'MODERN HOMES\nBRIGHTER TOMORROWS';
   if (t.includes('sportsville') || t.includes('kohinoor')) return 'MORE THAN A HOME\nA HEALTHIER TOMORROW';
   if (t.includes('cliff') || t.includes('clip') || t.includes('tcg')) return 'PANORAMIC HILLSIDE LIVING\nHINJEWADI PHASE 3';
+  if (t.includes('blue waters') || t.includes('bluewater') || t.includes('vtp')) return '100+ ACRE RIVERSIDE TOWNSHIP\nMAHALUNGE-HINJEWADI';
   if (property.tagline) return property.tagline;
   return 'PREMIUM HOMES • BETTER LIVING';
 };
@@ -334,6 +359,14 @@ const getCardHighlights = (property) => {
       { icon: Building2, line1: '1 & 2 BHK', line2: 'Scenic Views' },
       { icon: ShieldCheck, line1: 'Triple MahaRERA', line2: 'Verified' },
       { icon: MapPin, line1: 'Hinjewadi', line2: 'Phase 3' }
+    ];
+  }
+
+  if (t.includes('blue waters') || t.includes('bluewater') || t.includes('vtp')) {
+    return [
+      { icon: Building2, line1: '2 BHK (640 sq.ft)', line2: 'Scenic River View' },
+      { icon: ShieldCheck, line1: 'Multi-RERA', line2: '6 Numbers Reg.' },
+      { icon: MapPin, line1: 'Mahalunge', line2: 'Hinjewadi Annex' }
     ];
   }
 
@@ -438,7 +471,7 @@ export default function PropertyCard({
             width: '100%', 
             height: '100%', 
             objectFit: 'cover',
-            objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : (cardImgSrc.includes('tcg') || cardImgSrc.includes('cliff')) ? 'center 20%' : 'center',
+            objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : (cardImgSrc.includes('tcg') || cardImgSrc.includes('cliff')) ? 'center 20%' : (cardImgSrc.includes('vtp') || cardImgSrc.includes('blue-waters')) ? 'center 35%' : 'center',
             transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         />

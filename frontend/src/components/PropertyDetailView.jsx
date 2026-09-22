@@ -258,6 +258,15 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
         investmentScore: 93
       };
     }
+    if (t.includes('blue waters') || t.includes('bluewater') || t.includes('vtp')) {
+      return {
+        landParcel: '100+ Acres Integrated Township',
+        towers: property.totalTowers || 'Multiple Clusters & High-Rise Towers',
+        possession: property.possessionDate || 'Multiple Phases / Ready & Dec 2026',
+        carpet: property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : '640 sq.ft (2 BHK)',
+        investmentScore: 96
+      };
+    }
     if (t.includes('eon') || t.includes('kasturi')) {
       return {
         landParcel: '22 Acres Master Integrated Project',
@@ -324,7 +333,8 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
     const t = (title || '').toLowerCase();
     const curated = [];
     if (t.includes('megapolis')) curated.push('/properties/megapolis-sunway/01_aerial_hero.png', '/properties/megapolis-sunway/02_architecture.png', '/properties/megapolis-sunway/04_living_room.png', '/properties/megapolis-sunway/05_balcony_view.png', '/properties/megapolis-sunway/08_clubhouse.png', '/properties/megapolis-sunway/09_swimming_pool.png');
-    else if (t.includes('cliff') || t.includes('tcg')) curated.push('/dev_shapoorji_township.png', '/gallery_tower_2.png', '/lodha_7_infinity_pool.png', '/floorplan_3bhk.png', '/gallery_visit_1.png', '/gallery_tower_3.png');
+    else if (t.includes('cliff') || t.includes('tcg')) curated.push('/properties/tcg-the-cliff-garden/00_project_card.jpg', '/properties/tcg-the-cliff-garden/05_living_room.jpg', '/properties/tcg-the-cliff-garden/04_kitchen.jpg', '/properties/tcg-the-cliff-garden/02_bedroom.jpg', '/properties/tcg-the-cliff-garden/03_bathroom.jpg', '/properties/tcg-the-cliff-garden/01_balcony_view.jpg');
+    else if (t.includes('blue waters') || t.includes('bluewater') || t.includes('vtp')) curated.push('/properties/vtp-blue-waters/01_elevation.png', '/properties/vtp-blue-waters/02_living_room.jpg', '/properties/vtp-blue-waters/03_kitchen.jpg', '/properties/vtp-blue-waters/04_bedroom.jpg', '/properties/vtp-blue-waters/05_bathroom.jpg', '/properties/vtp-blue-waters/06_balcony.jpg');
     else if (t.includes('eon') || t.includes('kasturi')) curated.push('/dev_kasturi_forbes.png', '/lodha_8_clubhouse_gardens.png', '/gallery_infinity_pool.png', '/lodha_4_grand_lobby.png', '/floorplan_3bhk.png', '/luxury_sunset_pool.png');
     else if (t.includes('opula')) curated.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png', '/dev_lodha_tower.png', '/dev_shapoorji_township.png', '/dev_vtp_township.png');
     else curated.push('/dev_kolte_patil_township.png', '/dev_godrej_building.png', '/dev_vj_building.png', '/dev_shapoorji_township.png', '/dev_lodha_tower.png', '/dev_paranjape_township.png');

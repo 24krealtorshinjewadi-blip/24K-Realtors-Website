@@ -38,6 +38,7 @@ const MegapolisSocietyListingsPage = lazy(() => import('./components/MegapolisSo
 const YashOneProjectPage        = lazy(() => import('./components/YashOneProjectPage'));
 const KohinoorProjectPage       = lazy(() => import('./components/KohinoorProjectPage'));
 const TcgCliffGardenProjectPage  = lazy(() => import('./components/TcgCliffGardenProjectPage'));
+const VtpBlueWatersProjectPage   = lazy(() => import('./components/VtpBlueWatersProjectPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -629,6 +630,22 @@ function AppContent() {
               <Route path="/projects/tcg-cliff-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
               <Route path="/projects/tcg-the-cliff-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
               <Route path="/projects/tcg-the-clip-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
+
+              {/* ─── VTP BLUE WATERS — Dedicated Showcase Subpage ────────────── */}
+              <Route
+                path="/vtp-blue-waters-mahalunge"
+                element={<VtpBlueWatersProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/vtp-bluewater-mahalunge"
+                element={<VtpBlueWatersProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route path="/vtp-blue-waters" element={<Navigate to="/vtp-blue-waters-mahalunge" replace />} />
+              <Route path="/vtp-bluewater" element={<Navigate to="/vtp-blue-waters-mahalunge" replace />} />
+              <Route path="/vtp-blue-water" element={<Navigate to="/vtp-blue-waters-mahalunge" replace />} />
+              <Route path="/vtp-mahalunge" element={<Navigate to="/vtp-blue-waters-mahalunge" replace />} />
+              <Route path="/projects/vtp-blue-waters" element={<Navigate to="/vtp-blue-waters-mahalunge" replace />} />
+              <Route path="/projects/vtp-bluewater" element={<Navigate to="/vtp-blue-waters-mahalunge" replace />} />
 
               {/* Catch-all (MUST BE LAST) */}
               <Route path="*" element={<Navigate to="/" replace />} />
