@@ -144,8 +144,8 @@ const KOHINOOR_DATA = {
       isPopular: false,
       carpet: '630+ sq.ft',
       priceText: 'Price on Request',
-      priceSub: 'High Rental Yield Opportunity',
-      desc: 'Optimized 2 BHK layout designed for maximum utility, cross-ventilation, and high rental return from IT workforce in Hinjewadi Phase 1.',
+      priceSub: 'Prime Investment Opportunity',
+      desc: 'Optimized 2 BHK layout designed for maximum utility, cross-ventilation, and high residential demand from IT workforce in Hinjewadi Phase 1.',
       features: ['630+ sq.ft Efficient Carpet', 'Master Bed with Attached Bath', 'L-Shaped Living/Dining Space', 'Modern Lifestyle Amenities', 'High Demand by IT Expats']
     },
     {

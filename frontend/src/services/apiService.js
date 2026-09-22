@@ -1,7 +1,7 @@
 // Auto-clear stale mock database from localStorage if it lacks v2026_seven_flagship_projects_v15
 try {
   const currentPropVer = localStorage.getItem('mock_properties_version');
-  if (currentPropVer !== 'v2026_seven_flagship_projects_v15') {
+  if (currentPropVer !== 'v2026_seven_flagship_clean_v16') {
     console.info('[Cache Bust] Refreshing catalog to 7 flagship projects with official VTP card image...');
     localStorage.removeItem('mock_properties');
     localStorage.removeItem('mock_properties_version');
@@ -705,7 +705,7 @@ const megapolisSubSocietiesProperties = [
     title: "Megapolis Sunway",
     projectName: "Megapolis Sunway",
     builderName: "Pride Purple Group",
-    description: "Sun-drenched, smart layouts in 1 & 2 BHK configurations. Perfect for IT professionals seeking high rental yields, minimal maintenance, and unmatched connectivity.",
+    description: "Sun-drenched, smart layouts in 1 & 2 BHK configurations. Perfect for IT professionals seeking high capital appreciation, minimal maintenance, and unmatched connectivity.",
     propertyType: "RESIDENTIAL",
     transactionType: "BUY",
     price: 6500000,
@@ -859,11 +859,11 @@ const initialBlogs = [
     id: "blog-1",
     title: "Top 5 Reasons to Invest in Wakad Real Estate",
     slug: "top-5-reasons-to-invest-in-wakad",
-    content: "Wakad is rapidly emerging as one of Pune's premier residential corridors. With direct connectivity to the Hinjewadi IT Park, Wakad offers excellent rental yields and steady capital appreciation. In this article, we analyze five major infrastructure projects that will boost Wakad in 2026...",
+    content: "Wakad is rapidly emerging as one of Pune's premier residential corridors. With direct connectivity to the Hinjewadi IT Park, Wakad offers excellent capital appreciation and robust infrastructure growth. In this article, we analyze five major infrastructure projects that will boost Wakad in 2026...",
     coverImageUrl: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80",
     author: "Prasad Kulkarni",
     seoTitle: "Invest in Wakad Real Estate - Top 5 Reasons",
-    seoDescription: "Discover why Wakad, Pune is the ideal location for property investment in 2026. Insights on rental yields, IT park proximity, and capital growth.",
+    seoDescription: "Discover why Wakad, Pune is the ideal location for property investment in 2026. Insights on infrastructure, IT park proximity, and capital growth.",
     published: true,
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
@@ -1164,7 +1164,7 @@ const initialSocieties = [
     priceLastVerified: "20 Sep 2026",
     possessionDate: "Ready to Move",
     projectArea: "142+ Acres Integrated Township",
-    overview: "Megapolis Sunway is a premier residential society in Hinjewadi Phase 3 offering smart, sun-drenched 1 BHK, 2 BHK, and 2.5 BHK apartments. Highly sought after by IT professionals for its efficient floor plans, high rental yields, and tranquil location within the Megapolis Township.",
+    overview: "Megapolis Sunway is a premier residential society in Hinjewadi Phase 3 offering smart, sun-drenched 1 BHK, 2 BHK, and 2.5 BHK apartments. Highly sought after by IT professionals for its efficient floor plans, high capital appreciation, and tranquil location within the Megapolis Township.",
     amenities: "Corner Unit Open Views, Solar Water Heating, Clubhouse, Gymnasium, Jogging Track, Children Play Area, 24x7 Security & CCTV",
     priceRange: "₹65 L – ₹1.35 Cr",
     configuration: "1 BHK (440–490 sq.ft) | 2 BHK (680 sq.ft) | 2.5 BHK (870 sq.ft)",
@@ -1186,7 +1186,7 @@ const initialSocieties = [
     hasResale: true,
     hasRental: true,
     reraRegistered: true,
-    faqs: "Q: What is the rental yield in Megapolis Sunway?\nA: Sunway delivers an excellent rental yield of 5.5%–5.8% due to constant IT rental demand from Phase 3 companies.\n\nQ: Are 1 BHK flats available in Sunway?\nA: Yes, Sunway has verified 1 BHK flats ranging between 440 and 490 sq.ft carpet.",
+    faqs: "Q: What is the capital appreciation potential in Megapolis Sunway?\nA: Sunway delivers strong capital appreciation due to constant IT housing demand from Phase 3 companies.\n\nQ: Are 1 BHK flats available in Sunway?\nA: Yes, Sunway has verified 1 BHK flats ranging between 440 and 490 sq.ft carpet.",
     seoTitle: "Megapolis Sunway Hinjewadi Phase 3 | 1 & 2 BHK Apartments | 24K Realtors",
     seoDescription: "High ROI 1 & 2 BHK apartments in Megapolis Sunway Hinjewadi Phase 3. 440-870 sq.ft carpet. Ready to move. MahaRERA P52100045780."
   },
@@ -1530,7 +1530,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_projects_v15';
+const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_clean_v16';
 
 const LocalMockDb = {
   getProperties() {

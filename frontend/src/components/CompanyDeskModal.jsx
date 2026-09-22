@@ -161,12 +161,12 @@ export default function CompanyDeskModal({ isOpen, onClose, initialTab = 'about'
                 </div>
 
                 <p>
-                  <strong>24K Realtors</strong> is a premier luxury real estate advisory and mandate management firm headquartered in Pune, Maharashtra. We specialize in high-yield residential properties, gated township clusters, commercial IT parks, and off-market luxury penthouses across Pune's prime growth corridors.
+                  <strong>24K Realtors</strong> is a premier luxury real estate advisory and mandate management firm headquartered in Pune, Maharashtra. We specialize in prime residential properties, gated township clusters, commercial IT parks, and off-market luxury penthouses across Pune's prime growth corridors.
                 </p>
 
                 <h3 style={{ fontSize: '0.96rem', color: GOLD, marginTop: '20px', marginBottom: '8px' }}>Key Operational Hubs:</h3>
                 <ul style={{ paddingLeft: '20px', margin: 0 }}>
-                  <li><strong>Hinjewadi Phase 1, 2 &amp; 3</strong> — IT Hub &amp; High-Density Rental Yield Clusters</li>
+                  <li><strong>Hinjewadi Phase 1, 2 &amp; 3</strong> — IT Hub &amp; High-Growth Residential Clusters</li>
                   <li><strong>Wakad &amp; Tathawade</strong> — Premium 2 &amp; 3 BHK Gated Residential Townships</li>
                   <li><strong>Baner &amp; Balewadi Link Road</strong> — High-End Luxury Residencies &amp; Balewadi High Street Commercials</li>
                   <li><strong>Kharadi &amp; Viman Nagar</strong> — East Pune IT Corridors &amp; Commercial Parks</li>

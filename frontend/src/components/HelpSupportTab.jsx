@@ -169,7 +169,7 @@ const CHANGELOG = [
   ]},
   { version: 'v2.2.0', date: '25 Jul 2026', tag: 'PREV', color: '#8B5CF6', changes: [
     'AiAssistantPanel — voice input integrated',
-    'SiteVisitsTab — VIP Chauffeur scheduling',
+    'SiteVisitsTab — Guided site visit scheduling',
     'DealsTab — 7-stage Kanban pipeline',
     'FollowUpsTab — calendar view',
   ]},

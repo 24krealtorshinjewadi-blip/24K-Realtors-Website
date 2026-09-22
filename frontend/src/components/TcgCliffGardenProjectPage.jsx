@@ -12,7 +12,7 @@
  *  - 100% Authentic Photos: Balcony Valley View, Living Room, Modular Kitchen, Master Bed, Bathroom
  *  - Comprehensive 4-Pillar Amenities: Recreational & Sports, Fitness & Outdoors, Convenience & Safety, Internal Apartment Features
  *  - Hinjewadi Phase 3 Transit & Strategic IT Hub Proximity Matrix
- *  - Direct WhatsApp & VIP Chauffeur Site Tour Booking
+ *  - Direct WhatsApp & Guided Site Tour Booking
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -162,7 +162,7 @@ const TCG_DATA = {
         'Private Scenic Balcony with Valley Views',
         'Fitted Modular Kitchen with Cabinets',
         'Walking Proximity to Megapolis & Phase 3 IT Hub',
-        'Price Negotiable · High Rental Yield for IT Professionals'
+        'Price Negotiable · Ideal for IT Professionals'
       ]
     },
     {
@@ -276,7 +276,7 @@ const TCG_DATA = {
     },
     {
       q: 'How can I schedule a private visit and check the flat in person?',
-      a: 'You can contact 24K Realtors via WhatsApp (+91 96730 00053) or schedule a complimentary VIP Chauffeur site visit. Our Hinjewadi Phase 3 specialist will guide you through the property.'
+      a: 'You can contact 24K Realtors via WhatsApp (+91 96730 00053) or schedule a complimentary guided site visit. Our Hinjewadi Phase 3 specialist will guide you through the property.'
     }
   ]
 };

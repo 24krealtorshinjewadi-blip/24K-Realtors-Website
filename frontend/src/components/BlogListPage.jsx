@@ -125,7 +125,7 @@ const SAMPLE_BLOGS = [
   {
     id: '5', slug: 'nri-investment-guide-hinjewadi-pune-2026',
     title: 'NRI Investment Guide: Why Hinjewadi Pune Is India\'s Best Real Estate Bet in 2026',
-    seoDescription: 'Complete NRI investment guide for Hinjewadi Pune 2026. FEMA compliance, NRE/NRO accounts, rental yield projections (4.8–5.5%), and virtual site visit process.',
+    seoDescription: 'Complete NRI investment guide for Hinjewadi Pune 2026. FEMA compliance, NRE/NRO accounts, capital appreciation projections, and virtual site visit process.',
     coverImageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=75',
     author: 'NRI Advisory Desk', createdDate: '2026-07-30T10:00:00',
     content: 'Hinjewadi IT corridor is now among the top 3 preferred destinations for NRI real estate investment...'

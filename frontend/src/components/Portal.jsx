@@ -2819,7 +2819,7 @@ export default function Portal({ onViewChange }) {
                   24K Luxury <span style={{ color: '#E6C35C' }}>Media &amp; Client Gallery</span>
                 </h1>
                 <p style={{ margin: 0, color: 'rgba(255,255,255,0.6)', fontSize: '0.88rem', fontFamily: "'Montserrat', sans-serif" }}>
-                  Real Pune Key Handover Celebrations, VIP Chauffeur Site Visit Tours &amp; High-Rise Townships in Wakad, Baner &amp; Hinjewadi.
+                  Real Pune Key Handover Celebrations, Guided Site Visit Tours &amp; High-Rise Townships in Wakad, Baner &amp; Hinjewadi.
                 </p>
               </div>
 
@@ -3014,7 +3014,7 @@ export default function Portal({ onViewChange }) {
           rentalYield = '5.4%';
           connectivityScore = '9.0/10';
           matchPercent = '98%';
-          explanation = 'Hinjewadi IT Corridor is your top match! 300,000+ tech professionals drive high rental demand, delivering Pune West’s highest rental yields (5.4%) & steady 14.8% capital growth.';
+          explanation = 'Hinjewadi IT Corridor is your top match! 300,000+ tech professionals drive strong housing demand & steady 14.8% capital growth.';
         } else if (recommendedCorridor === 'BANER' || aiPriority === 'commute') {
           recommendedCorridor = 'BANER';
           appreciationIndex = '16.5%';
@@ -3573,9 +3573,7 @@ export default function Portal({ onViewChange }) {
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                       {[
                         { id: 'BUY', label: 'Buy' },
-                        { id: 'RENT', label: 'Rent' },
-                        { id: 'COMMERCIAL', label: 'Commercial' },
-                        { id: 'TOWNSHIPS', label: 'Townships' }
+                        { id: 'RENT', label: 'Rent' }
                       ].map(tab => (
                         <button
                           key={tab.id}
@@ -3597,312 +3595,174 @@ export default function Portal({ onViewChange }) {
                         </button>
                       ))}
                     </div>
-
-                    {/* Dual Mode Switch: AI Natural Search Toggle */}
-                    <button
-                      type="button"
-                      onClick={() => setIsAiSearchActive(!isAiSearchActive)}
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        background: isAiSearchActive ? 'linear-gradient(135deg, #9333ea 0%, #d946ef 100%)' : 'rgba(147, 51, 234, 0.15)',
-                        border: '1px solid #d946ef',
-                        color: '#fff',
-                        fontSize: isMobile ? '0.72rem' : '0.78rem',
-                        fontWeight: 700,
-                        padding: '6px 14px',
-                        borderRadius: '50px',
-                        cursor: 'pointer',
-                        boxShadow: isAiSearchActive ? '0 0 15px rgba(217, 70, 239, 0.5)' : 'none',
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      <Sparkles size={14} />
-                      <span>{isAiSearchActive ? 'Switch to Standard Filters' : '✨ AI Natural Search'}</span>
-                    </button>
                   </div>
 
-                  {/* Row 2: Standard Filter Controls vs AI Prompt Input */}
-                  {!isAiSearchActive ? (
-                    <form onSubmit={handleLuxurySearch}>
-                      <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(170px, 1fr)) 160px',
-                        gap: '12px',
-                        alignItems: 'center'
-                      }}>
-                        {/* 1. Location / Phase Dropdown */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            Location / Phase
-                          </label>
-                          <select
-                            value={searchLocation}
-                            onChange={e => setSearchLocation(e.target.value)}
-                            style={{
-                              background: 'rgba(15, 23, 42, 0.95)',
-                              border: '1px solid rgba(212, 175, 55, 0.35)',
-                              color: '#fff',
-                              padding: '10px 12px',
-                              borderRadius: '10px',
-                              fontSize: '0.82rem',
-                              outline: 'none',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            <option value="">All Pune West</option>
-                            <optgroup label="Hinjewadi IT Corridor (Pune Metro Line 3)">
-                              <option value="HINJEWADI_PHASE_1">📍 Hinjewadi Phase 1 (Wipro/Blue Ridge)</option>
-                              <option value="HINJEWADI_PHASE_2">📍 Hinjewadi Phase 2 (Embassy Techzone)</option>
-                              <option value="HINJEWADI_PHASE_3">📍 Hinjewadi Phase 3 (Megapolis Township)</option>
-                            </optgroup>
-                            <optgroup label="Prime West Pune Micro-Markets">
-                              <option value="MAHALUNGE">📍 Mahalunge Smart City</option>
-                              <option value="WAKAD">📍 Wakad (Phoenix Mall)</option>
-                              <option value="BANER">📍 Baner High Street</option>
-                              <option value="BALEWADI">📍 Balewadi Stadium</option>
-                              <option value="TATHAWADE">📍 Tathawade Expressway</option>
-                              <option value="KHARADI">📍 Kharadi IT Hub</option>
-                            </optgroup>
-                          </select>
-                        </div>
-
-                        {/* 2. BHK Dropdown */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            Bedrooms (BHK)
-                          </label>
-                          <select
-                            value={searchBHK}
-                            onChange={e => setSearchBHK(e.target.value)}
-                            style={{
-                              background: 'rgba(15, 23, 42, 0.95)',
-                              border: '1px solid rgba(212, 175, 55, 0.35)',
-                              color: '#fff',
-                              padding: '10px 12px',
-                              borderRadius: '10px',
-                              fontSize: '0.82rem',
-                              outline: 'none',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            <option value="">Any BHK</option>
-                            <option value="1">1 BHK</option>
-                            <option value="2">2 BHK</option>
-                            <option value="3">3 BHK</option>
-                            <option value="4">4+ BHK</option>
-                          </select>
-                        </div>
-
-                        {/* 3. Budget Dropdown */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            Max Budget
-                          </label>
-                          <select
-                            value={searchBudget}
-                            onChange={e => setSearchBudget(e.target.value)}
-                            style={{
-                              background: 'rgba(15, 23, 42, 0.95)',
-                              border: '1px solid rgba(212, 175, 55, 0.35)',
-                              color: '#fff',
-                              padding: '10px 12px',
-                              borderRadius: '10px',
-                              fontSize: '0.82rem',
-                              outline: 'none',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            <option value="">Any Budget</option>
-                            <option value="5000000">Under ₹50 Lakhs</option>
-                            <option value="10000000">Under ₹1.0 Crore</option>
-                            <option value="15000000">Under ₹1.5 Crore</option>
-                            <option value="25000000">Under ₹2.5 Crore</option>
-                            <option value="50000000">Under ₹5.0 Crore</option>
-                          </select>
-                        </div>
-
-                        {/* 4. Top Developers Dropdown */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            Top Developer
-                          </label>
-                          <select
-                            value={searchBuilder}
-                            onChange={e => setSearchBuilder(e.target.value)}
-                            style={{
-                              background: 'rgba(15, 23, 42, 0.95)',
-                              border: '1px solid rgba(212, 175, 55, 0.35)',
-                              color: '#fff',
-                              padding: '10px 12px',
-                              borderRadius: '10px',
-                              fontSize: '0.82rem',
-                              outline: 'none',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            <option value="">All Top Developers</option>
-                            {builders && builders.length > 0 ? (
-                              builders.map(b => (
-                                <option key={b.id || b.slug} value={b.name}>{b.name}</option>
-                              ))
-                            ) : (
-                              <>
-                                <option value="Kolte Patil Developers">Kolte Patil Developers</option>
-                                <option value="Shapoorji Pallonji Real Estate">Shapoorji Pallonji</option>
-                                <option value="Godrej Properties">Godrej Properties</option>
-                                <option value="Paranjape Schemes">Paranjape Schemes</option>
-                                <option value="Vilas Javdekar Developers (VJ)">Vilas Javdekar (VJ)</option>
-                                <option value="VTP Realty">VTP Realty</option>
-                                <option value="Kohinoor Group">Kohinoor Group</option>
-                                <option value="Rohan Builders">Rohan Builders</option>
-                              </>
-                            )}
-                          </select>
-                        </div>
-
-                        {/* 5. Submit Button */}
-                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                          <button
-                            type="submit"
-                            style={{
-                              background: 'linear-gradient(135deg, #C59B27 0%, #F0D060 45%, #B8860B 100%)',
-                              border: 'none',
-                              color: '#040814',
-                              fontWeight: 800,
-                              fontFamily: "'Montserrat', sans-serif",
-                              fontSize: '0.85rem',
-                              padding: '11px 18px',
-                              borderRadius: '10px',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '8px',
-                              boxShadow: '0 4px 20px rgba(212,175,55,0.4)',
-                              transition: 'all 0.25s ease'
-                            }}
-                          >
-                            <Search size={16} strokeWidth={2.5} />
-                            <span>SEARCH</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* MahaRERA Checkbox + Fast Links */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', flexWrap: 'wrap', gap: '10px' }}>
-                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '0.78rem', color: '#FFF' }}>
-                          <input
-                            type="checkbox"
-                            checked={searchReraOnly}
-                            onChange={e => setSearchReraOnly(e.target.checked)}
-                            style={{ accentColor: '#D4AF37', cursor: 'pointer' }}
-                          />
-                          <span style={{ color: '#F5D77F', fontWeight: 700 }}>🛡️ MahaRERA Approved Properties Only</span>
+                  {/* Standard Filter Controls */}
+                  <form onSubmit={handleLuxurySearch}>
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(170px, 1fr)) 160px',
+                      gap: '12px',
+                      alignItems: 'center'
+                    }}>
+                      {/* 1. Location / Phase Dropdown */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Location / Phase
                         </label>
+                        <select
+                          value={searchLocation}
+                          onChange={e => setSearchLocation(e.target.value)}
+                          style={{
+                            background: 'rgba(15, 23, 42, 0.95)',
+                            border: '1px solid rgba(212, 175, 55, 0.35)',
+                            color: '#fff',
+                            padding: '10px 12px',
+                            borderRadius: '10px',
+                            fontSize: '0.82rem',
+                            outline: 'none',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <option value="">All Pune West</option>
+                          <optgroup label="Hinjewadi IT Corridor (Pune Metro Line 3)">
+                            <option value="HINJEWADI_PHASE_1">📍 Hinjewadi Phase 1 (Wipro/Blue Ridge)</option>
+                            <option value="HINJEWADI_PHASE_2">📍 Hinjewadi Phase 2 (Embassy Techzone)</option>
+                            <option value="HINJEWADI_PHASE_3">📍 Hinjewadi Phase 3 (Megapolis Township)</option>
+                          </optgroup>
+                          <optgroup label="Prime West Pune Micro-Markets">
+                            <option value="MAHALUNGE">📍 Mahalunge Smart City</option>
+                            <option value="WAKAD">📍 Wakad (Phoenix Mall)</option>
+                            <option value="BANER">📍 Baner High Street</option>
+                            <option value="BALEWADI">📍 Balewadi Stadium</option>
+                            <option value="TATHAWADE">📍 Tathawade Expressway</option>
+                            <option value="KHARADI">📍 Kharadi IT Hub</option>
+                          </optgroup>
+                        </select>
                       </div>
-                    </form>
-                  ) : (
-                    /* AI Natural Language Search Mode */
-                    <div>
-                      <form
-                        onSubmit={e => {
-                          e.preventDefault();
-                          handleHeroSearch(e);
-                        }}
-                        style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}
-                      >
-                        <div style={{ flex: 1, minWidth: '260px', position: 'relative' }}>
-                          <input
-                            type="text"
-                            value={heroSearchText}
-                            onChange={e => handleSmartInputChange(e.target.value)}
-                            placeholder="Type naturally e.g. '3 BHK in Hinjewadi Phase 1 under 1.2 Cr near Metro'..."
-                            style={{
-                              width: '100%',
-                              background: 'rgba(15, 23, 42, 0.95)',
-                              border: '1.5px solid #d946ef',
-                              color: '#fff',
-                              padding: '12px 16px',
-                              borderRadius: '12px',
-                              fontSize: '0.88rem',
-                              outline: 'none',
-                              boxShadow: '0 0 15px rgba(217, 70, 239, 0.2)'
-                            }}
-                          />
-                        </div>
+
+                      {/* 2. BHK Dropdown */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Bedrooms (BHK)
+                        </label>
+                        <select
+                          value={searchBHK}
+                          onChange={e => setSearchBHK(e.target.value)}
+                          style={{
+                            background: 'rgba(15, 23, 42, 0.95)',
+                            border: '1px solid rgba(212, 175, 55, 0.35)',
+                            color: '#fff',
+                            padding: '10px 12px',
+                            borderRadius: '10px',
+                            fontSize: '0.82rem',
+                            outline: 'none',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <option value="">Any BHK</option>
+                          <option value="1">1 BHK</option>
+                          <option value="2">2 BHK</option>
+                          <option value="3">3 BHK</option>
+                          <option value="4">4+ BHK</option>
+                        </select>
+                      </div>
+
+                      {/* 3. Budget Dropdown */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Max Budget
+                        </label>
+                        <select
+                          value={searchBudget}
+                          onChange={e => setSearchBudget(e.target.value)}
+                          style={{
+                            background: 'rgba(15, 23, 42, 0.95)',
+                            border: '1px solid rgba(212, 175, 55, 0.35)',
+                            color: '#fff',
+                            padding: '10px 12px',
+                            borderRadius: '10px',
+                            fontSize: '0.82rem',
+                            outline: 'none',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <option value="">Any Budget</option>
+                          <option value="5000000">Under ₹50 Lakhs</option>
+                          <option value="10000000">Under ₹1.0 Crore</option>
+                          <option value="15000000">Under ₹1.5 Crore</option>
+                          <option value="25000000">Under ₹2.5 Crore</option>
+                          <option value="50000000">Under ₹5.0 Crore</option>
+                        </select>
+                      </div>
+
+                      {/* 4. Top Developers Dropdown */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Top Developer
+                        </label>
+                        <select
+                          value={searchBuilder}
+                          onChange={e => setSearchBuilder(e.target.value)}
+                          style={{
+                            background: 'rgba(15, 23, 42, 0.95)',
+                            border: '1px solid rgba(212, 175, 55, 0.35)',
+                            color: '#fff',
+                            padding: '10px 12px',
+                            borderRadius: '10px',
+                            fontSize: '0.82rem',
+                            outline: 'none',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <option value="">All Top Developers</option>
+                          {builders && builders.length > 0 ? (
+                            builders.map(b => (
+                              <option key={b.id || b.slug} value={b.name}>{b.name}</option>
+                            ))
+                          ) : (
+                            <>
+                              <option value="Kolte Patil Developers">Kolte Patil Developers</option>
+                              <option value="Shapoorji Pallonji Real Estate">Shapoorji Pallonji</option>
+                              <option value="Godrej Properties">Godrej Properties</option>
+                              <option value="Paranjape Schemes">Paranjape Schemes</option>
+                              <option value="Vilas Javdekar Developers (VJ)">Vilas Javdekar (VJ)</option>
+                              <option value="VTP Realty">VTP Realty</option>
+                              <option value="Kohinoor Group">Kohinoor Group</option>
+                              <option value="Rohan Builders">Rohan Builders</option>
+                            </>
+                          )}
+                        </select>
+                      </div>
+
+                      {/* 5. Submit Button */}
+                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                         <button
                           type="submit"
                           style={{
-                            background: 'linear-gradient(135deg, #9333ea 0%, #d946ef 100%)',
+                            background: 'linear-gradient(135deg, #C59B27 0%, #F0D060 45%, #B8860B 100%)',
                             border: 'none',
-                            color: '#fff',
+                            color: '#040814',
                             fontWeight: 800,
+                            fontFamily: "'Montserrat', sans-serif",
                             fontSize: '0.85rem',
-                            padding: '12px 24px',
-                            borderRadius: '12px',
+                            padding: '11px 18px',
+                            borderRadius: '10px',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
+                            justifyContent: 'center',
                             gap: '8px',
-                            boxShadow: '0 4px 20px rgba(217, 70, 239, 0.4)'
+                            boxShadow: '0 4px 20px rgba(212,175,55,0.4)',
+                            transition: 'all 0.25s ease'
                           }}
                         >
-                          <Sparkles size={16} />
-                          <span>AI SEARCH</span>
+                          <Search size={16} strokeWidth={2.5} />
+                          <span>SEARCH</span>
                         </button>
-                      </form>
+                      </div>
                     </div>
-                  )}
-
-                  {/* Row 3: 99acres-Style Instant Filter Chips */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    flexWrap: 'wrap',
-                    marginTop: '14px',
-                    paddingTop: '10px',
-                    borderTop: '1px solid rgba(255,255,255,0.06)'
-                  }}>
-                    <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', fontWeight: 700, textTransform: 'uppercase' }}>
-                      POPULAR:
-                    </span>
-                    {[
-                      { label: '🛡️ MahaRERA Approved', onClick: () => { setSearchReraOnly(true); handleHeroSearch(null, 'RERA Approved'); } },
-                      { label: '🏢 Hinjewadi Phase 1', onClick: () => { setSearchLocation('HINJEWADI_PHASE_1'); handleHeroSearch(null, 'Hinjewadi Phase 1'); } },
-                      { label: '🌿 Hinjewadi Phase 2', onClick: () => { setSearchLocation('HINJEWADI_PHASE_2'); handleHeroSearch(null, 'Hinjewadi Phase 2'); } },
-                      { label: '🏔️ Megapolis Phase 3', onClick: () => { setSearchLocation('HINJEWADI_PHASE_3'); handleHeroSearch(null, 'Megapolis Phase 3'); } },
-                      { label: '🌊 Mahalunge Smart City', onClick: () => { setSearchLocation('MAHALUNGE'); handleHeroSearch(null, 'Mahalunge'); } },
-                      { label: '🛍️ Wakad Junction', onClick: () => { setSearchLocation('WAKAD'); handleHeroSearch(null, 'Wakad'); } },
-                      { label: '💎 3 BHK Under 1.5 Cr', onClick: () => { setSearchBHK('3'); setSearchBudget('15000000'); handleHeroSearch(null, '3 BHK under 1.5 Cr'); } },
-                      { label: '🚇 Near Metro Line 3', onClick: () => { handleHeroSearch(null, 'Near Metro Line 3'); } },
-                      { label: '🏗️ Commercial', onClick: () => { handleApplyMegaFilter({ propertyType: 'COMMERCIAL' }, 'listings'); setTimeout(() => { const el = document.getElementById('listings-anchor'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); } },
-                      { label: '🏡 Townships', onClick: () => { handleApplyMegaFilter({}, 'townships'); } },
-                    ].map((chip, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={chip.onClick}
-                        style={{
-                          background: 'rgba(255,255,255,0.06)',
-                          border: '1px solid rgba(212,175,55,0.3)',
-                          color: '#E2E8F0',
-                          fontSize: '0.72rem',
-                          fontWeight: 600,
-                          padding: '4px 10px',
-                          borderRadius: '20px',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.2)'; e.currentTarget.style.borderColor = '#D4AF37'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'; }}
-                      >
-                        {chip.label}
-                      </button>
-                    ))}
-                  </div>
+                  </form>
                 </div>
 
                 {/* CTA Buttons */}
@@ -5559,8 +5419,8 @@ export default function Portal({ onViewChange }) {
                         <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>YoY Appreciation</div>
                       </div>
                       <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px 6px' }}>
-                        <div style={{ fontSize: '1rem', fontWeight: 800, color: '#60A5FA' }}>{aiReport.rentalYield}</div>
-                        <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>Rental Yield</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 800, color: '#60A5FA' }}>9.2/10</div>
+                        <div style={{ fontSize: '0.64rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>Demand Score</div>
                       </div>
                       <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px 6px' }}>
                         <div style={{ fontSize: '1rem', fontWeight: 800, color: '#F59E0B' }}>{aiReport.transitScore}</div>

@@ -147,7 +147,7 @@ const CORRIDOR_DATA = {
 const COMPARISON_MATRIX = [
   { metric: 'Avg Price / sq.ft', hinjewadi: '₹7,800', wakad: '₹8,650', baner: '₹11,200', mahalunge: '₹7,200' },
   { metric: '5-Year Growth Rate', hinjewadi: '+55.5%', wakad: '+46.0%', baner: '+42.8%', mahalunge: '+62.4%' },
-  { metric: 'Gross Rental Yield', hinjewadi: '5.25%', wakad: '4.50%', baner: '3.90%', mahalunge: '4.85%' },
+  { metric: 'Annual Capital Appreciation', hinjewadi: '+12.5%', wakad: '+10.8%', baner: '+9.9%', mahalunge: '+13.2%' },
   { metric: 'Occupancy Rate', hinjewadi: '97.2%', wakad: '95.0%', baner: '93.5%', mahalunge: '91.0%' },
   { metric: 'Tenant Profile', hinjewadi: 'IT / Tech Leads', wakad: 'IT & Finance Families', baner: 'HNWIs & CXOs', mahalunge: 'Young Techies' },
   { metric: 'MahaRERA Risk Rating', hinjewadi: 'AAA (Low Risk)', wakad: 'AA+ (Stable)', baner: 'AAA (Luxury)', mahalunge: 'AA (High Growth)' }
@@ -343,7 +343,7 @@ export default function DataLabsView({ onBack, onOpenInquiry }) {
               {[
                 { label: 'AVERAGE SQ.FT BENCHMARK', val: currentData.avgPrice, sub: 'Weighted median transaction rate', color: '#F59E0B', icon: Building2 },
                 { label: '5-YEAR APPRECIATION RATE', val: currentData.appreciation5Yr, sub: 'Peak growth in West Maharashtra', color: '#10B981', icon: TrendingUp },
-                { label: 'GROSS RENTAL YIELD', val: currentData.avgYield, sub: 'IT Workforce driven returns', color: '#F59E0B', icon: DollarSign },
+                { label: 'ANNUAL CAPITAL APPRECIATION', val: currentData.avgYield, sub: 'IT Workforce driven growth', color: '#F59E0B', icon: TrendingUp },
                 { label: 'MAHARERA RISK RATING', val: currentData.riskGrade, sub: 'Audit verified developer track', color: '#10B981', icon: ShieldCheck }
               ].map((kpi, idx) => {
                 const KIcon = kpi.icon;
@@ -360,7 +360,7 @@ export default function DataLabsView({ onBack, onOpenInquiry }) {
               })}
             </div>
 
-            {/* SVG Interactive Line Chart & Rental Yield Breakdown */}
+            {/* SVG Interactive Line Chart & Capital Growth Breakdown */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(480px, 1fr))', gap: '28px', marginBottom: '40px' }}>
               
               {/* Chart 1: Price Growth Curve */}
@@ -416,15 +416,15 @@ export default function DataLabsView({ onBack, onOpenInquiry }) {
                 </div>
               </div>
 
-              {/* Chart 2: Rental Yield Typology */}
+              {/* Chart 2: Typology Growth Typology */}
               <div style={{ background: '#0F172A', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '18px', padding: '26px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <div>
-                    <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', color: '#FFF', margin: 0 }}>💰 Typology Yield Breakdown</h3>
-                    <p style={{ fontSize: '0.76rem', color: 'rgba(248,250,252,0.4)', margin: '4px 0 0 0' }}>Annual return by bedroom category in {currentData.name}</p>
+                    <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', color: '#FFF', margin: 0 }}>💰 Typology Demand Breakdown</h3>
+                    <p style={{ fontSize: '0.76rem', color: 'rgba(248,250,252,0.4)', margin: '4px 0 0 0' }}>Annual demand index by bedroom category in {currentData.name}</p>
                   </div>
                   <span style={{ fontSize: '0.7rem', background: 'rgba(16,185,129,0.15)', color: '#10B981', padding: '4px 10px', borderRadius: '4px', fontWeight: 700 }}>
-                    Peak Yield: {currentData.avgYield}
+                    Peak Demand: {currentData.avgYield}
                   </span>
                 </div>
 
@@ -506,7 +506,7 @@ export default function DataLabsView({ onBack, onOpenInquiry }) {
               <div style={{ background: '#030712', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '10px' }}>
-                    <div style={{ fontSize: '0.65rem', color: 'rgba(248,250,252,0.4)', textTransform: 'uppercase' }}>Gross Rental Yield</div>
+                    <div style={{ fontSize: '0.65rem', color: 'rgba(248,250,252,0.4)', textTransform: 'uppercase' }}>Annual Capital Appreciation</div>
                     <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#10B981' }}>{currentYield}%</div>
                   </div>
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '10px' }}>
@@ -547,7 +547,7 @@ export default function DataLabsView({ onBack, onOpenInquiry }) {
               ⚔️ Pune West Corridor Head-to-Head Matrix
             </h3>
             <p style={{ color: 'rgba(248,250,252,0.5)', fontSize: '0.86rem', margin: '0 0 24px 0' }}>
-              Comparative breakdown across pricing, rental yields, tenant demographic profiles, and MahaRERA audit status.
+              Comparative breakdown across pricing, capital appreciation, tenant demographic profiles, and MahaRERA audit status.
             </p>
 
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.84rem' }}>

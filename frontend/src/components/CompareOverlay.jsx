@@ -323,7 +323,7 @@ export default function CompareOverlay({ isOpen, selectedForCompare, onClose, fo
                       <ScoreBar label="Connectivity"   value={sc.connectivity}   maxValue={10}  isWinner={actualIdx === connWinner} />
                       <ScoreBar label="Infrastructure" value={sc.infrastructure} maxValue={10}  isWinner={actualIdx === connWinner} />
                       <ScoreBar label="Appreciation"   value={sc.appreciation}   maxValue={25}  isWinner={actualIdx === apprecWinner} />
-                      <ScoreBar label="Rental Yield"   value={sc.yield}          maxValue={8}   isWinner={actualIdx === yieldWinner} />
+                      <ScoreBar label="Investment ROI" value={sc.yield}          maxValue={8}   isWinner={actualIdx === yieldWinner} />
 
                       {/* CTA Buttons */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px' }}>
@@ -408,8 +408,8 @@ export default function CompareOverlay({ isOpen, selectedForCompare, onClose, fo
                 <SpecRow label="Carpet Area"  values={props.map(p => p.areaSquareFeet)}   winnerIdx={areaWinner}   format={v => `${Number(v).toLocaleString()} sqft`} />
                 <SpecRow label="Bedrooms"     values={props.map(p => p.bedrooms)}          winnerIdx={winIdx(props.map(p => p.bedrooms))}   format={v => v > 0 ? `${v} BHK` : 'N/A'} />
                 <SpecRow label="Bathrooms"    values={props.map(p => p.bathrooms)}         winnerIdx={winIdx(props.map(p => p.bathrooms))}  format={v => `${v} Bath`} />
-                <SpecRow label="Appreciation" values={scores.map(s => s.appreciation)}     winnerIdx={apprecWinner} format={v => `${v}% p.a.`} />
-                <SpecRow label="Rental Yield" values={scores.map(s => s.yield)}            winnerIdx={yieldWinner}  format={v => `${v}%`} />
+                <SpecRow label="Appreciation"   values={scores.map(s => s.appreciation)}     winnerIdx={apprecWinner} format={v => `${v}% p.a.`} />
+                <SpecRow label="Investment ROI" values={scores.map(s => s.yield)}            winnerIdx={yieldWinner}  format={v => `${v}%`} />
                 <SpecRow label="Status"       values={props.map(p => p.status || 'AVAILABLE')} winnerIdx={-1} />
                 <SpecRow label="Developer"    values={props.map(p => getBuilderName(p.title))} winnerIdx={-1} />
                 <SpecRow label="RERA"         values={props.map(p => p.reraNumber || 'Approved')} winnerIdx={-1} />

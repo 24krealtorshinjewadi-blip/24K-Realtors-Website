@@ -324,7 +324,7 @@ export default function Dashboard({ onViewChange }) {
       leadScore: 50,
       status: 'QUALIFIED',
       lastContacted: 'Yesterday, 6:20 PM',
-      notes: [{ text: 'High net-worth investor. Looking for rental yield ROI > 7%.', author: 'Yash Murkute - Yesterday, 6:20 PM' }]
+      notes: [{ text: 'High net-worth investor. Looking for capital appreciation ROI > 12%.', author: 'Yash Murkute - Yesterday, 6:20 PM' }]
     },
     {
       id: '4',
@@ -698,7 +698,7 @@ export default function Dashboard({ onViewChange }) {
               leads: 'Manage, Track & Convert Your Leads Efficiently',
               customers: 'High-Net-Worth Individuals, NRI Portfolios & KYC Ledger',
               properties: 'All Active Projects & Inventory',
-              site_visits: 'Scheduled Visits & VIP Chauffeur Tours',
+              site_visits: 'Scheduled Visits & Guided Site Tours',
               follow_ups: 'Due Reminders & Callback Tracker',
               deals: '7-Stage Kanban Pipeline — Rs.4.82 Cr',
               team: 'Agents, RMs & Sales Leaderboard',

@@ -151,7 +151,7 @@ const TAB_NAVIGATION_MAP = [
   {
     keywords: ['site visit', 'visit schedul', 'site tour', 'property visit', 'chauffeur', 'site dekhna', 'location visit'],
     tab: 'site_visits',
-    reply: 'Site Visits Desk open! Aaj ke scheduled visits aur VIP Chauffeur tours manage kar sakte hain. 🚘'
+    reply: 'Site Visits Desk open! Aaj ke scheduled visits aur guided site tours manage kar sakte hain. 🚘'
   },
   {
     keywords: ['follow up', 'followup', 'reminder', 'callback', 'call back', 'follow-up', 'yaad dilao', 'call schedule'],
