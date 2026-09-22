@@ -54,7 +54,7 @@ const VTP_DATA = {
   accentColor: '#0284C7',
   accentGradient: 'linear-gradient(135deg, #0369A1 0%, #0284C7 50%, #38BDF8 100%)',
   heroBg: 'radial-gradient(ellipse at 50% 0%, #0b2545 0%, #06152a 45%, #040814 100%)',
-  showcaseImage: '/properties/vtp-blue-waters/01_elevation.png',
+  showcaseImage: '/properties/vtp-blue-waters/00_project_card.jpg',
   investmentScore: 96,
   priceNegotiable: true,
   whatsappText: 'Hi 24K Realtors, I am interested in VTP Blue Waters Mahalunge (2 BHK 640 sq.ft carpet, ₹72 Lakhs - Negotiable). Please share floor plans, pricing breakup, and schedule a private site visit.',
@@ -62,17 +62,17 @@ const VTP_DATA = {
   gallery: [
     {
       id: 1,
-      tag: '100+ Acre Township Elevation',
+      tag: 'Township Project Showcase',
       icon: '🏢',
-      roomName: 'Grand Elevation',
-      title: 'VTP Blue Waters — 100+ Acre Mega Township Landmark',
-      subtitle: 'Iconic master-planned riverside township seamlessly connecting Mahalunge, Baner, and Hinjewadi Phase 1. Multi-phase MahaRERA approved with five resort clubhouses.',
-      src: '/properties/vtp-blue-waters/01_elevation.png',
+      roomName: 'Township Showcase',
+      title: 'VTP Blue Waters — A Greener, Brighter, Better Tomorrow',
+      subtitle: 'Mahalunge, Pune — A premium township living by VTP Realty. 100+ acre master township, lush green spaces, modern amenities, thoughtful design, and MahaRERA registered (P52100026772).',
+      src: '/properties/vtp-blue-waters/00_project_card.jpg',
       features: [
-        { icon: '🌊', title: '1 km River Promenade', desc: 'Scenic Mula-Mutha riverfront walkway with nature trails & green decks' },
-        { icon: '🏛️', title: '5 Mega Clubhouses', desc: 'Resort-grade lifestyle hubs with Olympic-sized pools and banquet facilities' },
-        { icon: '🛡️', title: 'Multi-RERA Compliance', desc: 'Six distinct RERA registrations assuring 100% legal title transparency' },
-        { icon: '🌉', title: 'Bridge to Hinjewadi', desc: 'Direct bridge connecting Mahalunge to Hinjewadi Phase 1 in just 5 mins' }
+        { icon: '🌿', title: 'Lush Green Spaces', desc: 'Nature connects better living with sprawling green acres and riverfront trails' },
+        { icon: '🏊', title: 'Modern Amenities', desc: '5 grand clubhouses, Olympic pool, sports facilities, and landscaped gardens' },
+        { icon: '📐', title: 'Thoughtful Design', desc: 'High-efficiency space planning with maximum natural light and ventilation' },
+        { icon: '🛡️', title: 'MahaRERA Registered', desc: 'Official MahaRERA registration P52100026772 for 100% verified compliance' }
       ]
     },
     {
@@ -149,6 +149,21 @@ const VTP_DATA = {
         { icon: '🌳', title: 'Open Horizon View', desc: 'Sweeping outdoor view of Pune West greenery, mountains, and skyline' },
         { icon: '☕', title: 'Outdoor Sit-Out', desc: 'Perfect space for morning coffee, evening tea, and potted plant garden' }
       ]
+    },
+    {
+      id: 7,
+      tag: '100+ Acre Township Elevation',
+      icon: '🌊',
+      roomName: 'Township Elevation',
+      title: 'VTP Blue Waters — 100+ Acre Mega Riverside Township Landmark',
+      subtitle: 'Iconic master-planned riverside township seamlessly connecting Mahalunge, Baner, and Hinjewadi Phase 1. Multi-phase MahaRERA approved with five resort clubhouses.',
+      src: '/properties/vtp-blue-waters/01_elevation.png',
+      features: [
+        { icon: '🌊', title: '1 km River Promenade', desc: 'Scenic Mula-Mutha riverfront walkway with nature trails & green decks' },
+        { icon: '🏛️', title: '5 Mega Clubhouses', desc: 'Resort-grade lifestyle hubs with Olympic-sized pools and banquet facilities' },
+        { icon: '🛡️', title: 'Multi-RERA Compliance', desc: 'Six distinct RERA registrations assuring 100% legal title transparency' },
+        { icon: '🌉', title: 'Bridge to Hinjewadi', desc: 'Direct bridge connecting Mahalunge to Hinjewadi Phase 1 in just 5 mins' }
+      ]
     }
   ],
 
@@ -176,7 +191,7 @@ const VTP_DATA = {
       isPopular: false,
       carpet: '450+ sq.ft',
       priceText: 'Price on Request',
-      priceSub: '(High Rental Yield)',
+      priceSub: '(Negotiable)',
       desc: 'Compact, high-efficiency 1 BHK residence within the mega township. Exceptional rental demand from Hinjewadi tech corridor workforce.',
       features: [
         '450+ sq.ft Optimized Carpet Area',

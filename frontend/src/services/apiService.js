@@ -1,8 +1,8 @@
-// Auto-clear stale mock database from localStorage if it lacks v2026_seven_flagship_projects_v14
+// Auto-clear stale mock database from localStorage if it lacks v2026_seven_flagship_projects_v15
 try {
   const currentPropVer = localStorage.getItem('mock_properties_version');
-  if (currentPropVer !== 'v2026_seven_flagship_projects_v14') {
-    console.info('[Cache Bust] Refreshing catalog to 7 flagship projects (Godrej 24, Godrej Elements, Megapolis, VJ YashOne, Kohinoor, TCG The Cliff Garden, VTP Blue Waters)...');
+  if (currentPropVer !== 'v2026_seven_flagship_projects_v15') {
+    console.info('[Cache Bust] Refreshing catalog to 7 flagship projects with official VTP card image...');
     localStorage.removeItem('mock_properties');
     localStorage.removeItem('mock_properties_version');
     localStorage.removeItem('mock_societies');
@@ -484,14 +484,15 @@ const initialProperties = [
     verifiedListing: true,
     exclusiveDeal: true,
     reraNumber: "P52100009531 / P52100009529 / P52100007943 / P52100026772 / P52100020112 / P52100019986",
-    imageUrl: "/properties/vtp-blue-waters/01_elevation.png",
+    imageUrl: "/properties/vtp-blue-waters/00_project_card.jpg",
     galleryImages: [
-      "/properties/vtp-blue-waters/01_elevation.png",
+      "/properties/vtp-blue-waters/00_project_card.jpg",
       "/properties/vtp-blue-waters/02_living_room.jpg",
       "/properties/vtp-blue-waters/03_kitchen.jpg",
       "/properties/vtp-blue-waters/04_bedroom.jpg",
       "/properties/vtp-blue-waters/05_bathroom.jpg",
-      "/properties/vtp-blue-waters/06_balcony.jpg"
+      "/properties/vtp-blue-waters/06_balcony.jpg",
+      "/properties/vtp-blue-waters/01_elevation.png"
     ],
     furnishingStatus: "SEMI_FURNISHED",
     gasPipeline: true,
@@ -1367,14 +1368,15 @@ const initialSocieties = [
     name: "VTP Blue Waters",
     canonicalName: "VTP Blue Waters Mahalunge Pune",
     slug: "vtp-blue-waters-mahalunge",
-    imageUrl: "/properties/vtp-blue-waters/01_elevation.png",
+    imageUrl: "/properties/vtp-blue-waters/00_project_card.jpg",
     galleryImages: [
-      "/properties/vtp-blue-waters/01_elevation.png",
+      "/properties/vtp-blue-waters/00_project_card.jpg",
       "/properties/vtp-blue-waters/02_living_room.jpg",
       "/properties/vtp-blue-waters/03_kitchen.jpg",
       "/properties/vtp-blue-waters/04_bedroom.jpg",
       "/properties/vtp-blue-waters/05_bathroom.jpg",
-      "/properties/vtp-blue-waters/06_balcony.jpg"
+      "/properties/vtp-blue-waters/06_balcony.jpg",
+      "/properties/vtp-blue-waters/01_elevation.png"
     ],
     location: "MAHALUNGE",
     hinjewadiPhase: "MAHALUNGE_HINJEWADI",
@@ -1528,7 +1530,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_projects_v14';
+const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_projects_v15';
 
 const LocalMockDb = {
   getProperties() {

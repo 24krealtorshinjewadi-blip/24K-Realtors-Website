@@ -42,7 +42,7 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('gera') || title.includes('joy')) return '/dev_gera_tower.png';
   if (title.includes('pride') || title.includes('landmark')) return '/gallery_tower_3.png';
   if (title.includes('sportsville')) return '/dev_kohinoor_tower.png';
-  if (title.includes('blue waters') || title.includes('bluewater') || title.includes('vtp')) return '/properties/vtp-blue-waters/01_elevation.png';
+  if (title.includes('blue waters') || title.includes('bluewater') || title.includes('vtp')) return '/properties/vtp-blue-waters/00_project_card.jpg';
   if (title.includes('vyomora') || title.includes('joyville')) return '/dev_shapoorji_township.png';
   if (title.includes('yashwin') || title.includes('vj')) return '/dev_vj_building.png';
   if (title.includes('sportsville') || title.includes('kohinoor')) return '/kohinoor_hero_card.jpg';
