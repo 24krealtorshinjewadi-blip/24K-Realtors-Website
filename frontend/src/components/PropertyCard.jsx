@@ -35,7 +35,7 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('megapolis')) return '/megapolis_hero_card.jpg';
   if (title.includes('godrej 24') || title === 'godrej 24') return '/godrej_24_project_card.jpg';
   if (title.includes('elements') || title.includes('godrej elements')) return '/godrej_elements_project_card.jpg';
-  if (title.includes('cliff') || title.includes('clip') || title.includes('tcg')) return '/properties/tcg-the-cliff-garden/hero.jpg';
+  if (title.includes('cliff') || title.includes('clip') || title.includes('tcg')) return '/properties/tcg-the-cliff-garden/00_project_card.jpg';
   if (title.includes('crown')) return '/gallery_tower_2.png';
   if (title.includes('kasturi') || title.includes('apostle')) return '/dev_kasturi_forbes.png';
   if (title.includes('republic') || title.includes('life republic')) return '/dev_kolte_patil_township.png';
@@ -438,7 +438,7 @@ export default function PropertyCard({
             width: '100%', 
             height: '100%', 
             objectFit: 'cover',
-            objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : 'center',
+            objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : (cardImgSrc.includes('tcg') || cardImgSrc.includes('cliff')) ? 'center 20%' : 'center',
             transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         />

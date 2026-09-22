@@ -396,14 +396,14 @@ const initialProperties = [
     verifiedListing: true,
     exclusiveDeal: true,
     reraNumber: "P52100004906 / P52100015759 / P52100028926",
-    possessionDate: "Ready to Move",
-    imageUrl: "/properties/tcg-the-cliff-garden/hero.jpg",
+    imageUrl: "/properties/tcg-the-cliff-garden/00_project_card.jpg",
     galleryImages: [
-      "/properties/tcg-the-cliff-garden/01_balcony_view.jpg",
+      "/properties/tcg-the-cliff-garden/00_project_card.jpg",
       "/properties/tcg-the-cliff-garden/05_living_room.jpg",
       "/properties/tcg-the-cliff-garden/04_kitchen.jpg",
       "/properties/tcg-the-cliff-garden/02_bedroom.jpg",
-      "/properties/tcg-the-cliff-garden/03_bathroom.jpg"
+      "/properties/tcg-the-cliff-garden/03_bathroom.jpg",
+      "/properties/tcg-the-cliff-garden/01_balcony_view.jpg"
     ],
     furnishingStatus: "SEMI_FURNISHED",
     gasPipeline: true,
@@ -1222,13 +1222,14 @@ const initialSocieties = [
     name: "TCG The Cliff Garden",
     canonicalName: "TCG The Cliff Garden Hinjewadi Phase 3",
     slug: "tcg-cliff-garden-hinjewadi",
-    imageUrl: "/properties/tcg-the-cliff-garden/hero.jpg",
+    imageUrl: "/properties/tcg-the-cliff-garden/00_project_card.jpg",
     galleryImages: [
-      "/properties/tcg-the-cliff-garden/01_balcony_view.jpg",
+      "/properties/tcg-the-cliff-garden/00_project_card.jpg",
       "/properties/tcg-the-cliff-garden/05_living_room.jpg",
       "/properties/tcg-the-cliff-garden/04_kitchen.jpg",
       "/properties/tcg-the-cliff-garden/02_bedroom.jpg",
-      "/properties/tcg-the-cliff-garden/03_bathroom.jpg"
+      "/properties/tcg-the-cliff-garden/03_bathroom.jpg",
+      "/properties/tcg-the-cliff-garden/01_balcony_view.jpg"
     ],
     location: "HINJEWADI",
     hinjewadiPhase: "PHASE_3",

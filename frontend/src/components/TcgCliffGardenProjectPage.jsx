@@ -58,17 +58,17 @@ const TCG_DATA = {
   gallery: [
     {
       id: 1,
-      tag: 'Hillside & Valley View',
-      icon: '🌄',
-      roomName: 'Balcony View',
-      title: 'Panoramic Balcony View — Sahyadri Greens & Metro Corridor',
-      subtitle: 'Unobstructed scenic vistas framing lush tropical canopies, Hinjewadi Phase 3 IT skyline, and serene mountain horizons with breezy cross-ventilation.',
-      src: '/properties/tcg-the-cliff-garden/01_balcony_view.jpg',
+      tag: 'Grand Elevation & Gate',
+      icon: '🏢',
+      roomName: 'Grand Elevation',
+      title: 'TCG The Cliff Garden — Premium Hinjewadi Phase 3 Living',
+      subtitle: 'Iconic high-rise towers and grand entrance portal set amidst the lush green Sahyadri hills in Hinjewadi Phase 3. MahaRERA registered: P52100028926.',
+      src: '/properties/tcg-the-cliff-garden/00_project_card.jpg',
       features: [
-        { icon: '🌿', title: 'Perpetual Greenery', desc: 'Direct views of Sahyadri hill slopes and open protected tree canopy' },
-        { icon: '🌬️', title: 'Natural Breeze', desc: 'Elevated cliff vantage point ensuring cool air and ample natural sunlight' },
-        { icon: '🛡️', title: 'Safety Netting', desc: 'Full-height pigeon & safety mesh installed for family comfort' },
-        { icon: '🚇', title: 'Metro Corridor', desc: 'Clear sightline of upcoming Hinjewadi Metro Line 3 transit alignment' }
+        { icon: '🏢', title: 'Grand Entry Portal', desc: 'Secure gated entrance with landscaped boundary and security cabin' },
+        { icon: '🌿', title: 'Perpetual Greenery', desc: 'Hillside vantage point with fresh breezes and panoramic views' },
+        { icon: '🛡️', title: 'MahaRERA Registered', desc: 'Registered with clear title: P52100004906, P52100015759, P52100028926' },
+        { icon: '📍', title: 'Prime Phase 3', desc: 'Minutes away from Megapolis circle, Tech Mahindra and TCS' }
       ]
     },
     {
@@ -129,6 +129,21 @@ const TCG_DATA = {
         { icon: '🪞', title: 'Vanity Mirror Cabinet', desc: 'Pre-installed mirror cabinet for organized toiletry storage' },
         { icon: '🚿', title: 'Hot & Cold Shower', desc: 'Branded chrome-plated diverter, overhead shower, and geyser electrical point' },
         { icon: '💨', title: 'Exhaust Fan Window', desc: 'Frosted louvered window with fitted electric exhaust fan for active ventilation' }
+      ]
+    },
+    {
+      id: 6,
+      tag: 'Hillside & Valley View',
+      icon: '🌄',
+      roomName: 'Balcony View',
+      title: 'Panoramic Balcony View — Sahyadri Greens & Metro Corridor',
+      subtitle: 'Unobstructed scenic vistas framing lush tropical canopies, Hinjewadi Phase 3 IT skyline, and serene mountain horizons with breezy cross-ventilation.',
+      src: '/properties/tcg-the-cliff-garden/01_balcony_view.jpg',
+      features: [
+        { icon: '🌿', title: 'Perpetual Greenery', desc: 'Direct views of Sahyadri hill slopes and open protected tree canopy' },
+        { icon: '🌬️', title: 'Natural Breeze', desc: 'Elevated cliff vantage point ensuring cool air and ample natural sunlight' },
+        { icon: '🛡️', title: 'Safety Netting', desc: 'Full-height pigeon & safety mesh installed for family comfort' },
+        { icon: '🚇', title: 'Metro Corridor', desc: 'Clear sightline of upcoming Hinjewadi Metro Line 3 transit alignment' }
       ]
     }
   ],
@@ -902,10 +917,10 @@ export default function TcgCliffGardenProjectPage({ onBackHome, initialBhkFilter
           </div>
         </div>
 
-        {/* 5 Thumbnails Grid */}
+        {/* 6 Thumbnails Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
           gap: '12px'
         }}>
           {p.gallery.map((item, idx) => {
@@ -1681,6 +1696,15 @@ export default function TcgCliffGardenProjectPage({ onBackHome, initialBhkFilter
             <img
               src={p.gallery[lightboxIdx].src}
               alt={p.gallery[lightboxIdx].title}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                if (zoomLevel > 1) {
+                  resetZoom();
+                } else {
+                  setZoomLevel(2.2);
+                }
+              }}
+              title={zoomLevel > 1 ? "Double-click to reset zoom, or drag to pan" : "Double-click to zoom in, or use buttons above"}
               style={{
                 maxHeight: '80vh',
                 maxWidth: '90vw',
@@ -1688,7 +1712,8 @@ export default function TcgCliffGardenProjectPage({ onBackHome, initialBhkFilter
                 transform: `translate(${panPosition.x}px, ${panPosition.y}px) scale(${zoomLevel})`,
                 transition: isDragging ? 'none' : 'transform 0.15s ease-out',
                 userSelect: 'none',
-                pointerEvents: 'auto'
+                pointerEvents: 'auto',
+                cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in'
               }}
               draggable={false}
             />
