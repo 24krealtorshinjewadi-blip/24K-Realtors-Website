@@ -237,7 +237,7 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
             </div>
             <div className="pi-hero-chip pi-hero-chip--white" style={{ padding: '6px 14px', fontSize: '0.74rem' }}>
               <TrendingUp size={13} color="#60A5FA" />
-              <span>4.5% – 5.2% Avg Rental Yield</span>
+              <span>Capital Growth Properties</span>
             </div>
             <div className="pi-hero-chip pi-hero-chip--white" style={{ padding: '6px 14px', fontSize: '0.74rem' }}>
               <Calendar size={13} color="#D4AF37" />
@@ -449,7 +449,7 @@ export default function PublicSocietiesPage({ onSelectSociety, onBackHome }) {
                     onChange={e => setHasRental(e.target.checked)}
                     style={{ accentColor: '#D4AF37' }}
                   />
-                  <span>High Rental Yield Assets</span>
+                  <span>Capital Growth Properties</span>
                 </label>
               </div>
 

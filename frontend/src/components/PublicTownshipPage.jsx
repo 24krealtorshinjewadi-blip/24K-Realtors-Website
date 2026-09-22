@@ -680,7 +680,7 @@ export default function PublicTownshipPage({ onBackHome, onSelectSociety }) {
             {[
               { icon: <ShieldCheck size={13} />, label: '100% MahaRERA Verified', cls: 'pi-hero-chip--green' },
               { icon: <Award size={13} color="#D4AF37" />, label: 'Direct Pricing' },
-              { icon: <TrendingUp size={13} color="#60A5FA" />, label: '4.5%+ Rental Yield', cls: 'pi-hero-chip--white' },
+              { icon: <TrendingUp size={13} color="#60A5FA" />, label: 'Direct Developer Pricing', cls: 'pi-hero-chip--white' },
               { icon: <Calendar size={13} color="#D4AF37" />, label: 'Private Site Tours', cls: 'pi-hero-chip--white' }
             ].map((chip, i) => (
               <div key={i} className={`pi-hero-chip ${chip.cls || ''}`} style={{ padding: '6px 14px', fontSize: '0.73rem' }}>
@@ -891,7 +891,7 @@ export default function PublicTownshipPage({ onBackHome, onSelectSociety }) {
                   id="rental-toggle"
                   checked={hasRental}
                   onChange={setHasRental}
-                  label="High Rental Yield"
+                  label="Capital Growth Corridor"
                   icon={<IndianRupee size={13} />}
                 />
               </FilterSection>

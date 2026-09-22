@@ -442,7 +442,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
       return `🏗️ **Construction Lifecycle & RERA Status for ${t}**:\n\n• **MahaRERA ID**: ${reraNumber}\n• **Excavation & RCC Structure**: 100% Completed\n• **External Façade & Glazing**: 100% Completed\n• **Internal MEP & Italian Flooring**: 85% Completed (In Progress)\n• **Target Handover**: ${possession}\n\n*100% legal title clearance with zero encumbrance.*`;
     }
     if (q.includes('appreciation') || q.includes('investment') || q.includes('yield') || q.includes('roi')) {
-      return `📈 **Micro-Market Investment Metrics for ${loc}**:\n\n• **5-Year Historical CAGR**: +14.8% per annum\n• **Projected Gross Rental Yield**: 4.8% – 5.4% p.a. (Top tier for Pune IT corridors)\n• **Demand Catalyst**: Pune Metro Line 3 Station (500m) & Balewadi High Street proximity.\n• **Specialist Verdict**: Strong Buy for capital growth & HNI rental liquidity. 🟢`;
+      return `📈 **Micro-Market Investment Metrics for ${loc}**:\n\n• **5-Year Historical CAGR**: +14.8% per annum\n• **5-Year Capital Appreciation**: +78% cumulative growth\n• **Demand Catalyst**: Pune Metro Line 3 Station (500m) & Balewadi High Street proximity.\n• **Specialist Verdict**: Strong Buy for capital growth & portfolio appreciation. 🟢`;
     }
     return `Great question regarding ${t}! It is a flagship ${developerName} luxury project offering high carpet efficiency and an Investment Score of ${investmentScore}/100.\n\nWould you like our senior advisor to schedule a private AC cab site visit or share the official PDF cost sheet? 📞`;
   };
@@ -612,7 +612,7 @@ export default function PropertyDetailView({ property = {}, onBack, onOpenInquir
 
   const RATING_SCORES = [
     { label: 'Location & Transit Proximity', score: 96, color: '#D4AF37' },
-    { label: 'Rental Yield & Capital Appreciation CAGR', score: 93, color: '#10B981' },
+    { label: 'Capital Appreciation & Market Growth CAGR', score: 93, color: '#10B981' },
     { label: 'Builder Track Record & Legal Title Clearance', score: 98, color: '#3B82F6' },
     { label: 'Vaastu Shastra Harmony & Spatial Efficiency', score: 94, color: '#F472B6' },
   ];
