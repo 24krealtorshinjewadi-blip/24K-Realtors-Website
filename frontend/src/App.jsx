@@ -131,6 +131,31 @@ function PropertyDetailRouteWrapper() {
   const propertyKey = id || slug || 'prop-1';
   const navigate = useNavigate();
   const location = useLocation();
+
+  // ── Direct Redirection for 7 Flagship Dedicated Showcases ──
+  const keyStr = String(propertyKey).toLowerCase();
+  if (keyStr.includes('tcg') || keyStr.includes('cliff') || keyStr.includes('clip')) {
+    return <Navigate to="/tcg-cliff-garden-hinjewadi" replace />;
+  }
+  if (keyStr.includes('vtp') || keyStr.includes('bluewater') || keyStr.includes('blue-water')) {
+    return <Navigate to="/vtp-blue-waters-mahalunge" replace />;
+  }
+  if (keyStr.includes('kohinoor') || keyStr.includes('sportsville')) {
+    return <Navigate to="/kohinoor-sportsville-hinjewadi" replace />;
+  }
+  if (keyStr.includes('yashone') || keyStr.includes('yash-one')) {
+    return <Navigate to="/vj-yashone-hinjewadi" replace />;
+  }
+  if (keyStr === 'prop-godrej-24' || keyStr === 'godrej-24') {
+    return <Navigate to="/godrej-24-hinjewadi" replace />;
+  }
+  if (keyStr === 'prop-godrej-elements' || keyStr === 'godrej-elements') {
+    return <Navigate to="/godrej-elements-hinjewadi" replace />;
+  }
+  if (keyStr.includes('megapolis-township') || keyStr === 'prop-megapolis-township') {
+    return <Navigate to="/townships/megapolis" replace />;
+  }
+
   const [property, setProperty] = useState(location.state?.property || null);
   const [loading, setLoading] = useState(!location.state?.property);
   const [allProps, setAllProps] = useState([]);
@@ -143,6 +168,17 @@ function PropertyDetailRouteWrapper() {
       String(property.id) === `prop-${propertyKey}` ||
       property.slug === propertyKey
     );
+
+    if (property) {
+      const t = (property.title || '').toLowerCase();
+      if (t.includes('cliff') || t.includes('tcg')) { navigate('/tcg-cliff-garden-hinjewadi', { replace: true }); return; }
+      if (t.includes('blue waters') || t.includes('bluewater') || (t.includes('vtp') && t.includes('water'))) { navigate('/vtp-blue-waters-mahalunge', { replace: true }); return; }
+      if (t.includes('sportsville') || t.includes('kohinoor')) { navigate('/kohinoor-sportsville-hinjewadi', { replace: true }); return; }
+      if (t.includes('yashone')) { navigate('/vj-yashone-hinjewadi', { replace: true }); return; }
+      if (t.includes('godrej 24') || (t.includes('godrej') && t.includes('24'))) { navigate('/godrej-24-hinjewadi', { replace: true }); return; }
+      if (t.includes('godrej elements') || (t.includes('godrej') && t.includes('element'))) { navigate('/godrej-elements-hinjewadi', { replace: true }); return; }
+      if (t.includes('megapolis township')) { navigate('/townships/megapolis', { replace: true }); return; }
+    }
 
     if (!property || !matchesKey) {
       setLoading(true);
