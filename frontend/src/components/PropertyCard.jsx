@@ -35,7 +35,8 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('megapolis')) return '/megapolis_hero_card.jpg';
   if (title.includes('godrej 24') || title === 'godrej 24') return '/godrej_24_project_card.jpg';
   if (title.includes('elements') || title.includes('godrej elements')) return '/godrej_elements_project_card.jpg';
-  if (title.includes('crown') || title.includes('tcg')) return '/gallery_tower_2.png';
+  if (title.includes('cliff') || title.includes('clip') || title.includes('tcg')) return '/properties/tcg-the-cliff-garden/00_project_card.jpg';
+  if (title.includes('crown')) return '/gallery_tower_2.png';
   if (title.includes('kasturi') || title.includes('apostle')) return '/dev_kasturi_forbes.png';
   if (title.includes('republic') || title.includes('life republic')) return '/dev_kolte_patil_township.png';
   if (title.includes('gera') || title.includes('joy')) return '/dev_gera_tower.png';
@@ -83,6 +84,7 @@ const getBuilderName = (title = '', desc = '') => {
   if (t.includes('pharande')) return 'Pharande Spaces';
   if (t.includes('rohan')) return 'Rohan Builders';
   if (t.includes('yashone') || t.includes('vj') || t.includes('vilas')) return 'Vilas Javdekar Developers';
+  if (t.includes('tcg') || t.includes('cliff') || t.includes('clip')) return 'TCG Real Estate';
   return 'Premium Developer';
 };
 
@@ -120,6 +122,9 @@ const formatCardPrice = (p, transactionType, propertyTitle = '') => {
     }
     if (t.includes('megapolis')) {
       return { main: '₹65 Lakhs*', suffix: 'Onwards' };
+    }
+    if (t.includes('cliff') || t.includes('clip') || t.includes('tcg')) {
+      return { main: '₹55 Lakhs*', suffix: '(Negotiable)' };
     }
     return { main: 'Price on Request', suffix: '' };
   }
@@ -230,6 +235,26 @@ const DeveloperBrandMark = ({ builderName = '', title = '' }) => {
     );
   }
 
+  if (b.includes('tcg') || b.includes('cliff') || b.includes('clip')) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <span style={{ 
+          fontFamily: "'Cinzel', 'Playfair Display', serif", 
+          fontWeight: 900, 
+          fontSize: '0.98rem', 
+          color: '#10B981', 
+          letterSpacing: '0.04em' 
+        }}>
+          TCG
+        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+          <span style={{ fontSize: '0.48rem', fontWeight: 800, letterSpacing: '0.08em', color: '#E2E8F0' }}>REAL</span>
+          <span style={{ fontSize: '0.44rem', fontWeight: 600, letterSpacing: '0.06em', color: '#6EE7B7' }}>ESTATE</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
       <span style={{ 
@@ -255,6 +280,7 @@ const getImageTagline = (property) => {
   if (t.includes('megapolis')) return 'MEGAPOLIS\nA WORLD WITHIN';
   if (t.includes('yashone') || t.includes('vj')) return 'MODERN HOMES\nBRIGHTER TOMORROWS';
   if (t.includes('sportsville') || t.includes('kohinoor')) return 'MORE THAN A HOME\nA HEALTHIER TOMORROW';
+  if (t.includes('cliff') || t.includes('clip') || t.includes('tcg')) return 'PANORAMIC HILLSIDE LIVING\nHINJEWADI PHASE 3';
   if (property.tagline) return property.tagline;
   return 'PREMIUM HOMES • BETTER LIVING';
 };
@@ -300,6 +326,14 @@ const getCardHighlights = (property) => {
       { icon: Trophy, line1: 'Sports-Centric', line2: 'Living' },
       { icon: Home, line1: 'Clubhouse &', line2: 'Pool' },
       { icon: MapPin, line1: 'Prime', line2: 'Hinjewadi Ph 1' }
+    ];
+  }
+
+  if (t.includes('cliff') || t.includes('clip') || t.includes('tcg')) {
+    return [
+      { icon: Building2, line1: '1 & 2 BHK', line2: 'Scenic Views' },
+      { icon: ShieldCheck, line1: 'Triple MahaRERA', line2: 'Verified' },
+      { icon: MapPin, line1: 'Hinjewadi', line2: 'Phase 3' }
     ];
   }
 
@@ -404,7 +438,7 @@ export default function PropertyCard({
             width: '100%', 
             height: '100%', 
             objectFit: 'cover',
-            objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : 'center',
+            objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : (cardImgSrc.includes('tcg') || cardImgSrc.includes('cliff')) ? 'center 20%' : 'center',
             transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         />

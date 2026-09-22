@@ -568,7 +568,7 @@ export default function PublicSocietyDetailPage({ slug, onBack }) {
                 {/* Rental */}
                 <div className="pi-price-tier-card">
                   <div className="pi-price-tier-card__type" style={{ color: '#86EFAC' }}>
-                    <IndianRupee size={14} /> Rental Yield / Month
+                    <IndianRupee size={14} /> Monthly Lease / Month
                   </div>
                   <div className="pi-price-tier-card__range" style={{ color: '#86EFAC' }}>
                     {data.allPrices?.find(p => p.priceType === 'RENT')
@@ -882,7 +882,7 @@ export default function PublicSocietyDetailPage({ slug, onBack }) {
                       <th style={{ padding: '12px 14px', color: '#F3E5AB', fontWeight: 700 }}>Project / Society</th>
                       <th style={{ padding: '12px 14px', color: '#F3E5AB', fontWeight: 700 }}>Starting Price</th>
                       <th style={{ padding: '12px 14px', color: '#F3E5AB', fontWeight: 700 }}>Avg ₹/sq.ft</th>
-                      <th style={{ padding: '12px 14px', color: '#F3E5AB', fontWeight: 700 }}>Rental Yield</th>
+                      <th style={{ padding: '12px 14px', color: '#F3E5AB', fontWeight: 700 }}>Investment Grade</th>
                       <th style={{ padding: '12px 14px', color: '#F3E5AB', fontWeight: 700 }}>Land Parcel</th>
                       <th style={{ padding: '12px 14px', color: '#F3E5AB', fontWeight: 700 }}>RERA Status</th>
                     </tr>

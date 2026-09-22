@@ -1870,7 +1870,7 @@ export default function Portal({ onViewChange }) {
                   {[
                     { label: 'Avg Price', val: `₹${node.price}/sqft`, color: '#E6C35C' },
                     { label: '5-Yr Growth', val: node.growth, color: '#22c55e' },
-                    { label: 'Rental Yield', val: node.yield, color: '#60a5fa' },
+                    { label: 'Investment Score', val: node.investScore || '9.1/10', color: '#60a5fa' },
                     { label: 'Listings', val: `${count} active`, color: '#e2e8f0' },
                   ].map(({ label, val, color }) => (
                     <div key={label}>
@@ -1904,7 +1904,7 @@ export default function Portal({ onViewChange }) {
               {[
                 { label: 'Avg Price', value: `₹${node.price}/sqft`, color: '#E6C35C' },
                 { label: '5-Yr Growth', value: node.growth, color: '#22c55e' },
-                { label: 'Rental Yield', value: node.yield, color: '#60a5fa' },
+                { label: 'Investment Score', value: node.investScore || '9.1/10', color: '#60a5fa' },
                 { label: 'Active', value: `${count}`, color: '#fff' },
                 ...(minPrice ? [{ label: 'From', value: formatPrice(minPrice), color: 'rgba(255,255,255,0.6)' }] : []),
               ].map(({ label, value, color }) => (
@@ -3877,7 +3877,9 @@ export default function Portal({ onViewChange }) {
                       { label: '🌊 Mahalunge Smart City', onClick: () => { setSearchLocation('MAHALUNGE'); handleHeroSearch(null, 'Mahalunge'); } },
                       { label: '🛍️ Wakad Junction', onClick: () => { setSearchLocation('WAKAD'); handleHeroSearch(null, 'Wakad'); } },
                       { label: '💎 3 BHK Under 1.5 Cr', onClick: () => { setSearchBHK('3'); setSearchBudget('15000000'); handleHeroSearch(null, '3 BHK under 1.5 Cr'); } },
-                      { label: '🚇 Near Metro Line 3', onClick: () => { handleHeroSearch(null, 'Near Metro Line 3'); } }
+                      { label: '🚇 Near Metro Line 3', onClick: () => { handleHeroSearch(null, 'Near Metro Line 3'); } },
+                      { label: '🏗️ Commercial', onClick: () => { handleApplyMegaFilter({ propertyType: 'COMMERCIAL' }, 'listings'); setTimeout(() => { const el = document.getElementById('listings-anchor'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); } },
+                      { label: '🏡 Townships', onClick: () => { handleApplyMegaFilter({}, 'townships'); } },
                     ].map((chip, idx) => (
                       <button
                         key={idx}
@@ -4405,8 +4407,8 @@ export default function Portal({ onViewChange }) {
                         <strong style={{ fontSize: '1.1rem', color: '#2ec4b6' }}>{selectedSocietyDetail.investmentScore || 85}/100</strong>
                       </div>
                       <div style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '6px', padding: '8px 12px', textAlign: 'center' }}>
-                        <span style={{ fontSize: '0.62rem', color: 'var(--gold-primary)', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Avg Rental Yield</span>
-                        <strong style={{ fontSize: '1.1rem', color: 'var(--gold-primary)' }}>{selectedSocietyDetail.rentalYield || '4.0'}%</strong>
+                        <span style={{ fontSize: '0.62rem', color: 'var(--gold-primary)', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Capital Appreciation</span>
+                        <strong style={{ fontSize: '1.1rem', color: 'var(--gold-primary)' }}>14.8% CAGR</strong>
                       </div>
                     </div>
 
@@ -4801,7 +4803,7 @@ export default function Portal({ onViewChange }) {
                     </div>
                     <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-muted)' }}>
                       <strong style={{ color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '6px' }}>📈 Investment</strong>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.investmentAnalysis} (Demand: {selectedLocalityDetail.rentalDemand})</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{selectedLocalityDetail.investmentAnalysis} (Demand: High)</span>
                     </div>
                   </div>
 
@@ -4899,8 +4901,8 @@ export default function Portal({ onViewChange }) {
                             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{loc.hospitals}</span>
                           </div>
                           <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '6px', border: '1px solid var(--border-muted)' }}>
-                            <span style={{ fontWeight: 'bold', color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>📈 Investment Analysis & Yields</span>
-                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{loc.investmentAnalysis} ({loc.rentalDemand})</span>
+                            <span style={{ fontWeight: 'bold', color: 'var(--gold-primary)', display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>📈 Investment Analysis & Appreciation</span>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{loc.investmentAnalysis} (High Demand)</span>
                           </div>
                         </div>
 
@@ -5489,7 +5491,7 @@ export default function Portal({ onViewChange }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {[
                     ['appreciation', '📈 Maximum Capital Appreciation', 'Focus on 15%+ YoY property price growth'],
-                    ['yield', '💰 High Rental Yield (5%+)', 'Focus on corporate tenant rental income'],
+                    ['resale', '🏠 High Resale Value Corridor', 'Focus on strong secondary market & demand'],
                     ['commute', '🚗 IT Park Commute & Lifestyle', 'Direct transit to Hinjewadi IT Park & High Street']
                   ].map(([val, label, sub]) => (
                     <button key={val} onClick={() => { setAiPriority(val); setAiStep(3); }} style={{ background: aiPriority === val ? 'rgba(230,195,92,0.12)' : 'rgba(255,255,255,0.02)', border: `1px solid ${aiPriority === val ? '#E6C35C' : 'rgba(255,255,255,0.08)'}`, borderRadius: '14px', padding: '14px 18px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}>
@@ -5537,7 +5539,7 @@ export default function Portal({ onViewChange }) {
                   <div style={{ textAlign: 'center', padding: '28px 0' }}>
                     <div style={{ width: '48px', height: '48px', border: '3px solid rgba(230,195,92,0.2)', borderTop: '3px solid #E6C35C', borderRadius: '50%', margin: '0 auto 20px auto', animation: 'spin 0.8s linear infinite' }} />
                     <p style={{ fontSize: '0.92rem', color: '#E6C35C', fontFamily: "'Montserrat', sans-serif", fontWeight: 700, margin: '0 0 6px 0' }}>Computing Market Metrics ({aiProgress}%)...</p>
-                    <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)', margin: 0 }}>Evaluating capital appreciation indices, rental yields &amp; transit scores</p>
+                    <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)', margin: 0 }}>Evaluating capital appreciation indices, investment scores &amp; transit scores</p>
                   </div>
                 ) : aiReport ? (
                   <div style={{ animation: 'fadeIn 0.35s ease' }}>

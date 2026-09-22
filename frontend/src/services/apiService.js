@@ -1,10 +1,12 @@
-// Auto-clear stale mock database from localStorage if it lacks v2026_four_flagship_projects_v11
+// Auto-clear stale mock database from localStorage if it lacks v2026_six_flagship_projects_v13
 try {
   const currentPropVer = localStorage.getItem('mock_properties_version');
-  if (currentPropVer !== 'v2026_four_flagship_projects_v11') {
-    console.info('[Cache Bust] Refreshing catalog to 4 flagship projects (Godrej 24, Godrej Elements, Megapolis, VJ YashOne)...');
+  if (currentPropVer !== 'v2026_six_flagship_projects_v13') {
+    console.info('[Cache Bust] Refreshing catalog to 6 flagship projects (Godrej 24, Godrej Elements, Megapolis, VJ YashOne, Kohinoor, TCG The Cliff Garden)...');
     localStorage.removeItem('mock_properties');
     localStorage.removeItem('mock_properties_version');
+    localStorage.removeItem('mock_societies');
+    localStorage.removeItem('mock_societies_version');
     localStorage.removeItem('mock_agents');
     localStorage.removeItem('mock_leads');
     localStorage.removeItem('mock_tasks');
@@ -365,6 +367,94 @@ const initialProperties = [
       "Jogging & Cycling Track",
       "Dedicated Children Play Area & Creche",
       "EV Charging Stations"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 6 — TCG THE CLIFF GARDEN HINJEWADI
+  // Hinjewadi Phase 3 | 1 BHK: 462 sq.ft (₹55L) | 2 BHK: 662 sq.ft (₹75L)
+  // MahaRERA: P52100004906 / P52100015759 / P52100028926
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-tcg-the-cliff-garden",
+    title: "TCG The Cliff Garden",
+    projectName: "TCG The Cliff Garden",
+    builderName: "TCG Real Estate",
+    description: "Scenic hillside residential development by TCG Real Estate in Hinjewadi Phase 3, Pune. 100% verified 1 BHK (462 sq.ft carpet, ₹55 Lakhs - negotiable) and 2 BHK (662 sq.ft carpet, ₹75 Lakhs - negotiable) residences framing serene Sahyadri hill slopes and valley views. Multiple phases registered under MahaRERA (P52100004906, P52100015759, P52100028926). Featuring comprehensive lifestyle amenities across Recreational & Sports, Fitness & Outdoors, Convenience & Safety, and internal apartment features.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 5500000,
+    priceNegotiable: true,
+    priceNote: "Negotiable",
+    location: "HINJEWADI_PHASE_3",
+    address: "TCG The Cliff Garden, Hinjewadi Phase 3, Rajiv Gandhi Infotech Park, Pune — 411057",
+    latitude: 18.5725,
+    longitude: 73.6890,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100004906 / P52100015759 / P52100028926",
+    imageUrl: "/properties/tcg-the-cliff-garden/00_project_card.jpg",
+    galleryImages: [
+      "/properties/tcg-the-cliff-garden/00_project_card.jpg",
+      "/properties/tcg-the-cliff-garden/05_living_room.jpg",
+      "/properties/tcg-the-cliff-garden/04_kitchen.jpg",
+      "/properties/tcg-the-cliff-garden/02_bedroom.jpg",
+      "/properties/tcg-the-cliff-garden/03_bathroom.jpg",
+      "/properties/tcg-the-cliff-garden/01_balcony_view.jpg"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "tcg-cliff-garden-hinjewadi",
+    configurations: [
+      { bhk: "1 BHK", carpet: "462 sq.ft", price: "₹55 Lakhs", highlight: true, note: "Negotiable" },
+      { bhk: "2 BHK", carpet: "662 sq.ft", price: "₹75 Lakhs", highlight: true, note: "Negotiable" }
+    ],
+    amenityCategories: {
+      recreationalSports: [
+        "Clubhouse & Indoor Games Pavilion",
+        "Multipurpose Sports Court",
+        "Children Play Adventure Park",
+        "Amphitheatre & Community Gathering Arena",
+        "Party Lawn & Gazebos"
+      ],
+      fitnessOutdoors: [
+        "Modern Fully Equipped Gymnasium",
+        "Swimming Pool with Kid Splash Deck",
+        "Jogging & Strolling Track",
+        "Yoga & Meditation Lawn",
+        "Lush Landscaped Hillside Gardens"
+      ],
+      convenienceSafety: [
+        "24/7 Security & CCTV Surveillance Grid",
+        "High-Speed Passenger Elevators with ARD",
+        "Intercom Facility & Boom Barriers",
+        "Dedicated Covered Vehicle Parking",
+        "Rainwater Harvesting & Sewage Treatment Plant"
+      ],
+      internalFeatures: [
+        "Vitrified Tile Flooring throughout Living & Bedroom",
+        "Polished Jet Black Granite Counter with SS Sink",
+        "Concealed Copper Wiring with Branded Modular Switches",
+        "Designer Glazed Ceramic Tiles up to Lintel Level in Bathrooms",
+        "Branded CP Sanitary Fittings & Water-Saving Fixtures",
+        "Powder-Coated Aluminum Sliding Windows with Safety Grills"
+      ]
+    },
+    amenities: [
+      "Clubhouse & Indoor Games Pavilion",
+      "Multipurpose Sports Court",
+      "Modern Fully Equipped Gymnasium",
+      "Swimming Pool with Kid Splash Deck",
+      "Jogging & Strolling Track",
+      "Yoga & Meditation Lawn",
+      "24/7 Security & CCTV Surveillance Grid",
+      "High-Speed Passenger Elevators with ARD",
+      "Dedicated Covered Vehicle Parking",
+      "Vitrified Tile Flooring & Granite Modular Kitchen",
+      "Children Play Adventure Park"
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
@@ -1121,6 +1211,64 @@ const initialSocieties = [
     faqs: "Q: Which societies are part of Megapolis Township?\nA: Megapolis includes Sangria, Mystic, Splendour, Sunway, Sparkle and Smart Homes clusters.\n\nQ: Is Pawar Public School located inside the township?\nA: Yes, Pawar Public School is fully operational within the Megapolis Township boundary.",
     seoTitle: "Megapolis Township Hinjewadi Phase 3 | 1 to 3.5 BHK Flats | 24K Realtors",
     seoDescription: "Explore Pune's largest 142-acre integrated township Megapolis in Hinjewadi Phase 3. 1, 2, 2.5, 3 & 3.5 BHK verified listings. MahaRERA registered."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-9: TCG THE CLIFF GARDEN — Hinjewadi Phase 3
+  // MahaRERA: P52100004906 / P52100015759 / P52100028926 | Developer: TCG Real Estate
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-tcg-the-cliff-garden",
+    name: "TCG The Cliff Garden",
+    canonicalName: "TCG The Cliff Garden Hinjewadi Phase 3",
+    slug: "tcg-cliff-garden-hinjewadi",
+    imageUrl: "/properties/tcg-the-cliff-garden/00_project_card.jpg",
+    galleryImages: [
+      "/properties/tcg-the-cliff-garden/00_project_card.jpg",
+      "/properties/tcg-the-cliff-garden/05_living_room.jpg",
+      "/properties/tcg-the-cliff-garden/04_kitchen.jpg",
+      "/properties/tcg-the-cliff-garden/02_bedroom.jpg",
+      "/properties/tcg-the-cliff-garden/03_bathroom.jpg",
+      "/properties/tcg-the-cliff-garden/01_balcony_view.jpg"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    developer: "TCG Real Estate",
+    reraNumber: "P52100004906 / P52100015759 / P52100028926",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 5500000,
+    priceLastVerified: "22 Sep 2026",
+    possessionDate: "Ready to Move",
+    projectArea: "Hillside Development",
+    overview: "TCG The Cliff Garden is a serene hillside residential development nestled against the Sahyadri hill slopes in Hinjewadi Phase 3, Pune. Developed by TCG Real Estate across multiple MahaRERA registered phases (P52100004906, P52100015759, P52100028926), the project features 1 BHK (462 sq.ft carpet, ₹55 Lakhs - negotiable) and 2 BHK (662 sq.ft carpet, ₹75 Lakhs - negotiable) homes with panoramic valley views, modular kitchens, clubhouses, sports courts, and pristine natural surroundings walking distance to major Phase 3 IT giants.",
+    amenities: "Clubhouse & Indoor Games Pavilion, Multipurpose Sports Court, Swimming Pool with Kid Deck, Modern Gymnasium, Jogging Track, Yoga Lawn, 24/7 Security & CCTV Grid, High-Speed Elevators with ARD, Covered Parking, Children Play Park",
+    priceRange: "₹55 Lakhs - ₹75 Lakhs (Negotiable)",
+    configuration: "1 BHK (462 sq.ft) | 2 BHK (662 sq.ft)",
+    configurationSummary: "1 BHK & 2 BHK",
+    configurations: [
+      { bhkType: "1 BHK", carpetArea: "462 sq.ft", priceLabel: "₹55 Lakhs (Negotiable)", status: "Available" },
+      { bhkType: "2 BHK", carpetArea: "662 sq.ft", priceLabel: "₹75 Lakhs (Negotiable)", status: "Available" }
+    ],
+    highlights: [
+      "Perpetual Sahyadri Hillside & Valley Views",
+      "Triple MahaRERA Verification (P52100004906, P52100015759, P52100028926)",
+      "Ready to Move with Authentic On-Site Photos",
+      "Close to Megapolis, Tech Mahindra, TCS & Metro Line 3",
+      "Negotiable Pricing on 1 BHK & 2 BHK Configurations"
+    ],
+    nearbySchools: "Pawar Public School (1.8 km), Blue Ridge Public School (5.5 km)",
+    nearbyHospitals: "Ruby Hall Clinic Hinjewadi (6.0 km), Sanjeevani Hospital (3.5 km)",
+    nearbyItParks: "Tech Mahindra (2.0 km), TCS (2.2 km), Cognizant (2.5 km)",
+    nearbyMetro: "Upcoming Metro Line 3 Phase 3 Terminal (2.5 km)",
+    nearbyMalls: "Megapolis High Street (1.5 km), Grand Highstreet (5.5 km)",
+    travelTimeInfo: "Megapolis Circle: 3 mins | Tech Mahindra: 4 mins | TCS: 5 mins | Hinjewadi Phase 1: 12 mins | Expressway: 12 mins",
+    investmentScore: 94,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What are the MahaRERA numbers for TCG The Cliff Garden?\nA: The project wings are registered under P52100004906, P52100015759, and P52100028926.\n\nQ: Are the prices negotiable?\nA: Yes, both 1 BHK (₹55L) and 2 BHK (₹75L) prices are negotiable through 24K Realtors.",
+    seoTitle: "TCG The Cliff Garden Hinjewadi Phase 3 | 1 & 2 BHK Flats | 24K Realtors",
+    seoDescription: "TCG The Cliff Garden Hinjewadi Phase 3. 1 BHK 462 sq.ft (₹55L) & 2 BHK 662 sq.ft (₹75L) negotiable. Triple MahaRERA P52100004906, P52100015759, P52100028926."
   }
 ];
 
@@ -1236,7 +1384,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_five_flagship_projects_v12';
+const HINJEWADI_PROP_VERSION = 'v2026_six_flagship_projects_v13';
 
 const LocalMockDb = {
   getProperties() {
