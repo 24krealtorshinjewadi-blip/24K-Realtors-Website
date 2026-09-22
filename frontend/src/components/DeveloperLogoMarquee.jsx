@@ -2,7 +2,7 @@ import React from 'react';
 
 // ══════════════════════════════════════════════════════════════════════
 // ✦ PREMIUM VERIFIED DEVELOPER LOGO MARQUEE — PUNE WEST LANDMARK BUILDERS
-// 16 Verified Real Estate Brands · 100% Authentic Corporate Identity
+// 17 Verified Real Estate Brands · 100% Authentic Corporate Identity
 // Ultra-Sharp Vector SVG Logos · Glassmorphism Cards · Brand Reveal on Hover
 // ══════════════════════════════════════════════════════════════════════
 
@@ -546,6 +546,37 @@ export const DEVELOPERS_DATA = [
         <text x="44" y="26" fontFamily="'Montserrat', sans-serif" fontSize="16" fontWeight="900" fill="#FFFFFF" letterSpacing="0.08em">KUMAR</text>
         <text x="46" y="38" fontFamily="'Montserrat', sans-serif" fontSize="6.2" fontWeight="800" fill="#34D399" letterSpacing="0.22em">PROPERTIES · SINCE 1966</text>
         <text x="46" y="47" fontFamily="'Montserrat', sans-serif" fontSize="4.8" fontWeight="600" fill="rgba(255,255,255,0.4)" letterSpacing="0.16em">MEGAPOLIS TOWNSHIP · HINJEWADI PHASE 3</text>
+      </svg>
+    )
+  },
+
+  // 17. TCG REAL ESTATE
+  {
+    id: 'tcg-real-estate',
+    name: 'TCG Real Estate',
+    searchQuery: 'TCG',
+    color: '#10B981',
+    icon: (
+      <svg viewBox="0 0 40 40" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="32" height="32" rx="6" fill="#10B981" />
+        <text x="7" y="27" fontFamily="'Cinzel', serif" fontSize="16" fontWeight="900" fill="#FFFFFF">TCG</text>
+      </svg>
+    ),
+    logo: (
+      <svg viewBox="0 0 200 56" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="tcgGrn" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#34D399" />
+            <stop offset="100%" stopColor="#059669" />
+          </linearGradient>
+        </defs>
+        <g transform="translate(6, 8)">
+          <rect x="2" y="4" width="32" height="30" rx="6" fill="url(#tcgGrn)" />
+          <text x="4" y="25" fontFamily="'Cinzel', serif" fontSize="13" fontWeight="900" fill="#FFFFFF">TCG</text>
+        </g>
+        <text x="46" y="27" fontFamily="'Cinzel', serif" fontSize="17" fontWeight="900" fill="#FFFFFF" letterSpacing="0.1em">TCG</text>
+        <text x="96" y="27" fontFamily="'Montserrat', sans-serif" fontSize="11" fontWeight="800" fill="#34D399" letterSpacing="0.16em">REAL ESTATE</text>
+        <text x="47" y="40" fontFamily="'Montserrat', sans-serif" fontSize="5.2" fontWeight="700" fill="rgba(255,255,255,0.6)" letterSpacing="0.22em">THE CLIFF GARDEN · HINJEWADI PHASE 3</text>
       </svg>
     )
   }

@@ -37,6 +37,7 @@ const MegapolisTownshipPage     = lazy(() => import('./components/MegapolisTowns
 const MegapolisSocietyListingsPage = lazy(() => import('./components/MegapolisSocietyListingsPage'));
 const YashOneProjectPage        = lazy(() => import('./components/YashOneProjectPage'));
 const KohinoorProjectPage       = lazy(() => import('./components/KohinoorProjectPage'));
+const TcgCliffGardenProjectPage  = lazy(() => import('./components/TcgCliffGardenProjectPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -602,6 +603,32 @@ function AppContent() {
               />
               <Route path="/kohinoor-sportsville" element={<Navigate to="/kohinoor-sportsville-hinjewadi" replace />} />
               <Route path="/kohinoor" element={<Navigate to="/kohinoor-sportsville-hinjewadi" replace />} />
+
+              {/* ─── TCG THE CLIFF GARDEN — Dedicated Showcase Subpage ──────────── */}
+              <Route
+                path="/tcg-cliff-garden-hinjewadi"
+                element={<TcgCliffGardenProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/tcg-the-cliff-garden-hinjewadi"
+                element={<TcgCliffGardenProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/tcg-cliff-garden-1-bhk"
+                element={<TcgCliffGardenProjectPage initialBhkFilter="1 BHK" onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/tcg-cliff-garden-2-bhk"
+                element={<TcgCliffGardenProjectPage initialBhkFilter="2 BHK" onBackHome={() => navigate('/')} />}
+              />
+              <Route path="/tcg-the-cliff-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
+              <Route path="/tcg-the-clip-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
+              <Route path="/tcg-cliff-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
+              <Route path="/tcg-clip-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
+              <Route path="/tcg-hinjewadi" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
+              <Route path="/projects/tcg-cliff-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
+              <Route path="/projects/tcg-the-cliff-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
+              <Route path="/projects/tcg-the-clip-garden" element={<Navigate to="/tcg-cliff-garden-hinjewadi" replace />} />
 
               {/* Catch-all (MUST BE LAST) */}
               <Route path="*" element={<Navigate to="/" replace />} />
