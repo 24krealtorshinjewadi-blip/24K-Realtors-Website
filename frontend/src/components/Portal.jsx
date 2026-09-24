@@ -2247,19 +2247,38 @@ export default function Portal({ onViewChange }) {
   const handleLuxurySearch = (e) => {
     if (e) e.preventDefault();
     setSelectedPropertyDetail(null);
+
+    const isCommercialUnit = ['SHOP', 'SHOWROOM', 'OFFICE'].includes(searchBHK);
+    let minP = '';
+    let maxP = '';
+    if (searchBudget) {
+      if (searchBudget.includes('-')) {
+        const [minVal, maxVal] = searchBudget.split('-');
+        minP = minVal || '';
+        maxP = maxVal || '';
+      } else if (searchBudget.endsWith('+')) {
+        minP = searchBudget.replace('+', '');
+        maxP = '';
+      } else {
+        maxP = searchBudget;
+      }
+    }
+
     setFilters(prev => {
-      const isCommercial = heroTab === 'COMMERCIAL';
+      const isCommercial = heroTab === 'COMMERCIAL' || isCommercialUnit;
       const isTownships = heroTab === 'TOWNSHIPS';
       return {
         ...prev,
-        transactionType: isCommercial ? 'BUY' : (isTownships ? 'BUY' : heroTab),
+        transactionType: isCommercial ? (heroTab === 'RENT' ? 'RENT' : 'BUY') : (isTownships ? 'BUY' : heroTab),
         location: searchLocation,
         propertyType: isCommercial ? 'COMMERCIAL' : (isTownships ? 'TOWNSHIP' : searchPropType),
-        bedrooms: searchBHK,
-        maxPrice: searchBudget,
+        bedrooms: isCommercialUnit ? '' : searchBHK,
+        commercialUnitType: isCommercialUnit ? searchBHK : '',
+        minPrice: minP,
+        maxPrice: maxP,
         builder: searchBuilder,
         reraOnly: searchReraOnly,
-        query: ''
+        query: isCommercialUnit ? searchBHK.toLowerCase() : ''
       };
     });
     setExclusiveTab(heroTab === 'COMMERCIAL' ? 'BUY' : (heroTab === 'TOWNSHIPS' ? 'BUY' : heroTab));
@@ -3070,6 +3089,10 @@ export default function Portal({ onViewChange }) {
   };
 
   const handleResetFilters = () => {
+    setSearchLocation('');
+    setSearchBHK('');
+    setSearchBudget('');
+    setSearchBuilder('');
     setFilters({
       location: '',
       propertyType: '',
@@ -3605,10 +3628,10 @@ export default function Portal({ onViewChange }) {
                       gap: '12px',
                       alignItems: 'center'
                     }}>
-                      {/* 1. Location / Phase Dropdown */}
+                      {/* 1. Location Dropdown */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                          Location / Phase
+                          Location
                         </label>
                         <select
                           value={searchLocation}
@@ -3625,19 +3648,18 @@ export default function Portal({ onViewChange }) {
                           }}
                         >
                           <option value="">All Pune West</option>
-                          <optgroup label="Hinjewadi IT Corridor (Pune Metro Line 3)">
-                            <option value="HINJEWADI_PHASE_1">📍 Hinjewadi Phase 1 (Wipro/Blue Ridge)</option>
-                            <option value="HINJEWADI_PHASE_2">📍 Hinjewadi Phase 2 (Embassy Techzone)</option>
-                            <option value="HINJEWADI_PHASE_3">📍 Hinjewadi Phase 3 (Megapolis Township)</option>
-                          </optgroup>
-                          <optgroup label="Prime West Pune Micro-Markets">
-                            <option value="MAHALUNGE">📍 Mahalunge Smart City</option>
-                            <option value="WAKAD">📍 Wakad (Phoenix Mall)</option>
-                            <option value="BANER">📍 Baner High Street</option>
-                            <option value="BALEWADI">📍 Balewadi Stadium</option>
-                            <option value="TATHAWADE">📍 Tathawade Expressway</option>
-                            <option value="KHARADI">📍 Kharadi IT Hub</option>
-                          </optgroup>
+                          <option value="HINJEWADI">📍 Hinjewadi IT Corridor</option>
+                          <option value="HINJEWADI_PHASE_1">📍 Hinjewadi Phase 1</option>
+                          <option value="HINJEWADI_PHASE_2">📍 Hinjewadi Phase 2</option>
+                          <option value="HINJEWADI_PHASE_3">📍 Hinjewadi Phase 3</option>
+                          <option value="MAHALUNGE">📍 Mahalunge</option>
+                          <option value="WAKAD">📍 Wakad</option>
+                          <option value="BANER">📍 Baner</option>
+                          <option value="BALEWADI">📍 Balewadi</option>
+                          <option value="TATHAWADE">📍 Tathawade Expressway</option>
+                          <option value="KHARADI">📍 Kharadi East Pune</option>
+                          <option value="RAVET">📍 Ravet</option>
+                          <option value="PUNEWALE">📍 Punewale</option>
                         </select>
                       </div>
 
@@ -3665,13 +3687,16 @@ export default function Portal({ onViewChange }) {
                           <option value="2">2 BHK</option>
                           <option value="3">3 BHK</option>
                           <option value="4">4+ BHK</option>
+                          <option value="SHOP">Shop</option>
+                          <option value="SHOWROOM">Showroom</option>
+                          <option value="OFFICE">Office</option>
                         </select>
                       </div>
 
                       {/* 3. Budget Dropdown */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <label style={{ fontSize: '0.65rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                          Max Budget
+                          Budget
                         </label>
                         <select
                           value={searchBudget}
@@ -3688,11 +3713,10 @@ export default function Portal({ onViewChange }) {
                           }}
                         >
                           <option value="">Any Budget</option>
-                          <option value="5000000">Under ₹50 Lakhs</option>
-                          <option value="10000000">Under ₹1.0 Crore</option>
-                          <option value="15000000">Under ₹1.5 Crore</option>
-                          <option value="25000000">Under ₹2.5 Crore</option>
-                          <option value="50000000">Under ₹5.0 Crore</option>
+                          <option value="0-5000000">Upto 50 Lakhs</option>
+                          <option value="10000000-13000000">1Cr to 1.3Cr</option>
+                          <option value="13000000-18000000">1.3Cr to 1.8Cr</option>
+                          <option value="18000000+">1.8Cr onwards</option>
                         </select>
                       </div>
 
@@ -3722,14 +3746,14 @@ export default function Portal({ onViewChange }) {
                             ))
                           ) : (
                             <>
-                              <option value="Kolte Patil Developers">Kolte Patil Developers</option>
-                              <option value="Shapoorji Pallonji Real Estate">Shapoorji Pallonji</option>
+                              <option value="Lodha">Lodha</option>
                               <option value="Godrej Properties">Godrej Properties</option>
-                              <option value="Paranjape Schemes">Paranjape Schemes</option>
-                              <option value="Vilas Javdekar Developers (VJ)">Vilas Javdekar (VJ)</option>
-                              <option value="VTP Realty">VTP Realty</option>
+                              <option value="Shapoorji Pallonji Real Estate">Shapoorji Pallonji</option>
+                              <option value="Kasturi Housing">Kasturi Housing</option>
                               <option value="Kohinoor Group">Kohinoor Group</option>
-                              <option value="Rohan Builders">Rohan Builders</option>
+                              <option value="VTP Realty">VTP Realty</option>
+                              <option value="Gera Developments">Gera Developments</option>
+                              <option value="Pride Purple Group">Pride Purple Group</option>
                             </>
                           )}
                         </select>
@@ -5000,7 +5024,7 @@ export default function Portal({ onViewChange }) {
                 <span style={{ fontSize: "0.66rem", fontWeight: 700, color: '#25D366', background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.25)', padding: "3px 10px", borderRadius: "20px" }}>⚡ Response in &lt;15 min</span>
               </div>
               <h3 className="modal-title" style={{ fontSize: "1.4rem", marginBottom: "6px", color: "#fff", fontWeight: 700, fontFamily: "'Cinzel', serif", lineHeight: 1.2 }}>Schedule a Free
-                <span style={{ color: '#E6C35C' }}> Expert Call</span>
+                <span style={{ color: '#E6C35C' }}> Expert Call Back</span>
               </h3>
               <p className="modal-subtitle" style={{ marginBottom: "0", fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>
                 For <strong style={{ color: "#E6C35C" }}>{selectedProperty.title || "Premium Listing"}</strong> · Verified Pricing · Direct Developer

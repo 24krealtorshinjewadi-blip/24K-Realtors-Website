@@ -916,6 +916,192 @@ const megapolisSubSocietiesProperties = [
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
+  },
+  // ── Commercial & Extended Localities Listings ──
+  {
+    id: "prop-comm-shop-wakad",
+    title: "Prime High-Footfall Retail Shop",
+    projectName: "Wakad Commercial Galleria",
+    builderName: "Kohinoor Group",
+    description: "High-street retail shop space located on main Wakad-Hinjewadi road near Phoenix Mall. Exceptional road frontage, 14-ft floor-to-ceiling height, perfect for pharmacy, boutique or cafe.",
+    propertyType: "COMMERCIAL",
+    unitType: "SHOP",
+    transactionType: "BUY",
+    price: 7500000,
+    location: "WAKAD",
+    address: "Phoenix Marketcity Road, Wakad, Pune — 411057",
+    latitude: 18.5985,
+    longitude: 73.7620,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100028911",
+    possessionDate: "Ready to Move",
+    imageUrl: "/gallery_retail_boulevard.png",
+    galleryImages: [
+      "/gallery_retail_boulevard.png",
+      "/gallery_tower_3.png"
+    ],
+    furnishingStatus: "UNFURNISHED",
+    configurations: [
+      { bhk: "Shop", carpet: "420 sq.ft", highlight: true }
+    ],
+    amenities: ["100% DG Power Backup", "Dedicated Customer Parking", "24/7 Fire Detection & Suppression", "High-Speed Service Elevators"],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+  {
+    id: "prop-comm-showroom-baner",
+    title: "Luxury Flagship Retail Showroom",
+    projectName: "Baner High Street Boulevard",
+    builderName: "Pride Purple Group",
+    description: "Ultra-prime corner showroom space on Baner High Street with full double-glazed glass facade. Massive brand visibility, wide frontage, ideal for luxury automotive, jewelry, or electronics flagship.",
+    propertyType: "COMMERCIAL",
+    unitType: "SHOWROOM",
+    transactionType: "BUY",
+    price: 18500000,
+    location: "BANER",
+    address: "Main High Street Road, Baner, Pune — 411045",
+    latitude: 18.5590,
+    longitude: 73.7868,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100031890",
+    possessionDate: "Immediate",
+    imageUrl: "/gallery_retail_boulevard.png",
+    galleryImages: [
+      "/gallery_retail_boulevard.png"
+    ],
+    furnishingStatus: "UNFURNISHED",
+    configurations: [
+      { bhk: "Showroom", carpet: "1150 sq.ft", highlight: true }
+    ],
+    amenities: ["Double Height Ceilings", "Valet Parking Provision", "Centralized HVAC Ducts", "Triple Height Glass Front"],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+  {
+    id: "prop-comm-office-hinjewadi",
+    title: "Grade-A IT Executive Corporate Office",
+    projectName: "Hinjewadi Tech Park Phase 1",
+    builderName: "Godrej Properties",
+    description: "Fully IT-enabled corporate office suite with dedicated server room, boardrooms, and executive cabins inside Rajiv Gandhi Infotech Park Phase 1. Walking distance from upcoming metro station.",
+    propertyType: "COMMERCIAL",
+    unitType: "OFFICE",
+    transactionType: "BUY",
+    price: 12500000,
+    location: "HINJEWADI_PHASE_1",
+    address: "Phase 1 Infotech Hub, Hinjewadi, Pune — 411057",
+    latitude: 18.5912,
+    longitude: 73.7380,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100019280",
+    possessionDate: "Ready for Fit-out",
+    imageUrl: "/gallery_business_lounge.png",
+    galleryImages: [
+      "/gallery_business_lounge.png"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    configurations: [
+      { bhk: "Office", carpet: "850 sq.ft", highlight: true }
+    ],
+    amenities: ["24x7 High-Speed Fiber Optics", "LEED Gold Certified", "Executive Cafeteria", "Multi-Tier Biometric Security"],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+  {
+    id: "prop-ravet-skyline",
+    title: "Urban Skyline Premium Residences",
+    projectName: "Urban Skyline Ravet",
+    builderName: "Urban Space Creators",
+    description: "Iconic high-rise tower project in Ravet overlooking the Mumbai-Pune Expressway BRTS corridor. World-class 70+ lifestyle amenities including sky lounge and infinity pool.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 6800000,
+    bedrooms: 2,
+    location: "RAVET",
+    address: "Near Mumbai-Pune Expressway, Ravet, Pune — 412101",
+    latitude: 18.6475,
+    longitude: 73.7430,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    reraNumber: "P52100021430",
+    possessionDate: "December 2026",
+    imageUrl: "/vtp_bluewaters_hero.jpg",
+    galleryImages: [
+      "/vtp_bluewaters_hero.jpg"
+    ],
+    furnishingStatus: "UNFURNISHED",
+    configurations: [
+      { bhk: "2 BHK", carpet: "765 sq.ft", highlight: true },
+      { bhk: "3 BHK", carpet: "1025 sq.ft", highlight: false }
+    ],
+    amenities: ["Rooftop Sky Lounge", "Infinity Swimming Pool", "Squash Court", "EV Charging", "Children Play Arena"],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+  {
+    id: "prop-punewale-westview",
+    title: "Kohinoor Westview Reserve",
+    projectName: "Kohinoor Westview Reserve",
+    builderName: "Kohinoor Group",
+    description: "Nature-inspired luxury residences nestled in Punewale bypass corridor. Beautiful green views, close to Hinjewadi Phase 1 IT hub with premium SadaSukhi assurance.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 6200000,
+    bedrooms: 2,
+    location: "PUNEWALE",
+    address: "Punewale Bypass, Pune — 411033",
+    latitude: 18.6250,
+    longitude: 73.7490,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    reraNumber: "P52100050855",
+    possessionDate: "Ready to Move",
+    imageUrl: "/tcg_cliff_garden_card.jpg",
+    galleryImages: [
+      "/tcg_cliff_garden_card.jpg"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    configurations: [
+      { bhk: "2 BHK", carpet: "720 sq.ft", highlight: true },
+      { bhk: "3 BHK", carpet: "980 sq.ft", highlight: false }
+    ],
+    amenities: ["Clubhouse 3.0", "Swimming Pool", "Jogging Track", "Multipurpose Hall", "Landscaped Forest Walk"],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+  {
+    id: "prop-lodha-belmondo",
+    title: "Lodha Belmondo Golf Luxury",
+    projectName: "Lodha Belmondo",
+    builderName: "Lodha",
+    description: "Super-luxury resort living by Lodha overlooking an international 9-hole golf course and river pavilion. Quick 15 min drive from Hinjewadi Phase 1.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 16500000,
+    bedrooms: 3,
+    location: "BANER",
+    address: "Baner Expressway Corridor, Pune",
+    latitude: 18.6720,
+    longitude: 73.6890,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100000283",
+    possessionDate: "Ready to Move",
+    imageUrl: "/godrej_living_room_banner.jpg",
+    galleryImages: ["/godrej_living_room_banner.jpg"],
+    furnishingStatus: "FULLY_FURNISHED",
+    configurations: [
+      { bhk: "3 BHK", carpet: "1450 sq.ft", highlight: true }
+    ],
+    amenities: ["9-Hole Golf Course", "50,000 sq.ft Clubhouse", "Private Helipad", "Concierge Service"],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
   }
 ];
 
@@ -1660,7 +1846,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_luxury_v17';
+const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_luxury_v18';
 
 const LocalMockDb = {
   getProperties() {
@@ -2289,6 +2475,15 @@ export const apiService = {
         if (filters.bedrooms) list = list.filter(p => p.bedrooms === Number(filters.bedrooms));
         if (filters.status) list = list.filter(p => p.status === filters.status);
         if (filters.furnishingStatus) list = list.filter(p => p.furnishingStatus === filters.furnishingStatus);
+        if (filters.commercialUnitType) {
+          const cType = filters.commercialUnitType.toLowerCase();
+          list = list.filter(p => 
+            p.propertyType === 'COMMERCIAL' ||
+            (p.unitType && p.unitType.toLowerCase().includes(cType)) ||
+            (p.title && p.title.toLowerCase().includes(cType)) ||
+            (p.description && p.description.toLowerCase().includes(cType))
+          );
+        }
         if (filters.query) {
           const q = filters.query.toLowerCase();
           list = list.filter(p => 
