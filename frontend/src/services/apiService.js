@@ -2144,7 +2144,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_eight_flagship_blue_ridge_v21';
+const HINJEWADI_PROP_VERSION = 'v2026_eight_flagship_blue_ridge_v25';
 
 const LocalMockDb = {
   getProperties() {
@@ -2167,6 +2167,13 @@ const LocalMockDb = {
     const deduped = [];
     for (const p of list) {
       if (!p || !p.id) continue;
+      // Guarantee Blue Ridge uses new poster card image
+      if (p.id === 'prop-paranjape-blue-ridge' || (p.title && p.title.toLowerCase().includes('blue ridge'))) {
+        p.imageUrl = '/blue_ridge_project_card.jpg';
+        if (Array.isArray(p.galleryImages) && p.galleryImages[0] !== '/blue_ridge_project_card.jpg') {
+          p.galleryImages = ['/blue_ridge_project_card.jpg', ...p.galleryImages.filter(img => img !== '/blue_ridge_project_card.jpg')];
+        }
+      }
       const key = String(p.id);
       if (!seen.has(key)) {
         seen.add(key);
@@ -2229,6 +2236,13 @@ const LocalMockDb = {
     const deduped = [];
     for (const s of list) {
       if (!s || !s.id) continue;
+      // Guarantee Blue Ridge uses new poster card image
+      if (s.id === 'soc-paranjape-blue-ridge' || (s.name && s.name.toLowerCase().includes('blue ridge'))) {
+        s.imageUrl = '/blue_ridge_project_card.jpg';
+        if (Array.isArray(s.galleryImages) && s.galleryImages[0] !== '/blue_ridge_project_card.jpg') {
+          s.galleryImages = ['/blue_ridge_project_card.jpg', ...s.galleryImages.filter(img => img !== '/blue_ridge_project_card.jpg')];
+        }
+      }
       const key = String(s.id);
       if (!seen.has(key)) {
         seen.add(key);
