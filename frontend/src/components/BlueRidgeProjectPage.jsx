@@ -57,7 +57,7 @@ const BLUE_RIDGE_DATA = {
   accentColor: '#10B981',
   accentGradient: 'linear-gradient(135deg, #047857 0%, #10B981 50%, #34D399 100%)',
   heroBg: 'radial-gradient(ellipse at 50% 0%, #06281e 0%, #031812 45%, #040814 100%)',
-  showcaseImage: '/blue_ridge_living.jpg',
+  showcaseImage: '/blue_ridge_project_card.jpg',
   investmentScore: 98,
   priceNegotiable: true,
   whatsappText: 'Hi 24K Realtors, I am interested in Paranjape Blue Ridge Hinjewadi Phase 1 (Golf Facing 3 BHK, ₹1.95 Cr - Negotiable). Please share floor plans, pricing breakup, and schedule a private site visit.',
@@ -65,6 +65,21 @@ const BLUE_RIDGE_DATA = {
   gallery: [
     {
       id: 1,
+      tag: 'Township Overview & Project Dossier',
+      icon: '🏢',
+      roomName: 'Township Overview',
+      title: 'Paranjape Blue Ridge — Elevate Your Lifestyle in Hinjewadi Phase 1',
+      subtitle: 'Pioneering 138-acre riverfront & golf township by Paranjape Schemes. Ready homes available across 1 BHK, 2 BHK, and 3 BHK & Larger configurations. Featuring 40+ acres of development, lush open greens, signature golf course, and immediate IT park proximity.',
+      src: '/blue_ridge_project_card.jpg',
+      features: [
+        { icon: '🏙️', title: 'Premium Township', desc: '138-acre master-planned riverfront township with signature golf course' },
+        { icon: '🌳', title: 'Lush Green Spaces', desc: '40+ acres of open greens, tree-lined avenues, and riverfront parks' },
+        { icon: '🏊', title: 'Clubhouse & Amenities', desc: 'Olympic pool, tennis & badminton courts, modern gym, and recreation' },
+        { icon: '🚇', title: 'Prime Hinjewadi Location', desc: 'Walking distance to Cognizant, Infosys, schools, and upcoming metro line 3' }
+      ]
+    },
+    {
+      id: 2,
       tag: 'Grand Living & Dining Hall',
       icon: '🛋️',
       roomName: 'Living & Dining',
@@ -79,7 +94,7 @@ const BLUE_RIDGE_DATA = {
       ]
     },
     {
-      id: 2,
+      id: 3,
       tag: 'Airy Master Bedroom',
       icon: '🛏️',
       roomName: 'Master Bedroom',
@@ -94,7 +109,7 @@ const BLUE_RIDGE_DATA = {
       ]
     },
     {
-      id: 3,
+      id: 4,
       tag: 'Modular Kitchen with Chimney',
       icon: '🍳',
       roomName: 'Modular Kitchen',
@@ -109,7 +124,7 @@ const BLUE_RIDGE_DATA = {
       ]
     },
     {
-      id: 4,
+      id: 5,
       tag: 'Luxury Designer Bathroom',
       icon: '🚿',
       roomName: 'Luxury Bathroom',
@@ -124,7 +139,7 @@ const BLUE_RIDGE_DATA = {
       ]
     },
     {
-      id: 5,
+      id: 6,
       tag: 'Panoramic Golf-Facing Balcony',
       icon: '⛳',
       roomName: 'Golf Balcony',
@@ -512,9 +527,10 @@ export default function BlueRidgeProjectPage({ onBackHome }) {
               boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8)', background: '#0a101d', position: 'relative'
             }}>
               <img
-                src="/blue_ridge_living.jpg"
-                alt="Paranjape Blue Ridge Living Room"
-                style={{ width: '100%', height: '360px', objectFit: 'cover', display: 'block' }}
+                src="/blue_ridge_project_card.jpg"
+                alt="Paranjape Blue Ridge Project Overview & Master Township"
+                style={{ width: '100%', height: '390px', objectFit: 'cover', display: 'block', cursor: 'pointer' }}
+                onClick={() => openLightbox(0)}
               />
               <div style={{
                 position: 'absolute', bottom: 0, left: 0, right: 0,
@@ -522,13 +538,13 @@ export default function BlueRidgeProjectPage({ onBackHome }) {
                 padding: '20px 24px'
               }}>
                 <span style={{ background: '#10B981', color: '#040814', fontSize: '0.7rem', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase' }}>
-                  100% On-Site Authentic Photo
+                  Township Overview Dossier
                 </span>
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', margin: '8px 0 4px' }}>
-                  Spacious Living Hall with Wooden Ceiling Rafters
+                  Elevate Your Lifestyle at Paranjape Blue Ridge
                 </h3>
                 <p style={{ margin: 0, fontSize: '0.82rem', color: '#cbd5e1' }}>
-                  Direct access to scenic golf-facing balcony · Hinjewadi Phase 1
+                  138-Acre Township · 9-Hole Golf Course · Hinjewadi Phase 1
                 </p>
               </div>
               <button
@@ -536,11 +552,12 @@ export default function BlueRidgeProjectPage({ onBackHome }) {
                 style={{
                   position: 'absolute', top: '16px', right: '16px',
                   background: 'rgba(4,8,20,0.75)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)',
-                  color: '#fff', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 600
+                  color: '#fff', padding: '8px 14px', borderRadius: '8px', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 700,
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.5)'
                 }}
               >
-                <Maximize2 size={14} /> Fullscreen Gallery
+                <Maximize2 size={15} /> Fullscreen &amp; Zoom
               </button>
             </div>
           </div>
