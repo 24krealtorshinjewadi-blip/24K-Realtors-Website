@@ -123,6 +123,24 @@ export const MEGAPOLIS_SOCIETIES = [
     imageUrl: '/dev_kolte_patil_township.png',
     features: ['Clubhouse', 'Children Play Zone', 'Central Lawn'],
     possession: 'Ready'
+  },
+  {
+    id: 'serenity',
+    slug: 'megapolis-serenity',
+    displayName: 'Serenity',
+    fullName: 'Megapolis Serenity',
+    tagline: 'Peaceful Living. Elevated Comfort.',
+    bhkOptions: ['2 BHK'],
+    carpetRange: '700 sqft',
+    priceRange: '₹78 Lakhs',
+    unitCount: 320,
+    towers: 4,
+    status: 'READY_TO_MOVE',
+    reraNumber: 'P52100046552',
+    accentHex: '#0EA5E9',
+    imageUrl: '/megapolis_serenity_living.jpg',
+    features: ['700 sq.ft Carpet Area', 'L-Shaped Granite Kitchen', 'Attached Dry Balcony'],
+    possession: 'Ready'
   }
 ];
 

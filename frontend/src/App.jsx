@@ -561,6 +561,7 @@ function AppContent() {
               <Route path="/megapolis-splendour" element={<Navigate to="/townships/megapolis/splendour" replace />} />
               <Route path="/megapolis-sunway" element={<Navigate to="/townships/megapolis/sunway" replace />} />
               <Route path="/megapolis-sparkle" element={<Navigate to="/townships/megapolis/sparkle" replace />} />
+              <Route path="/megapolis-serenity" element={<Navigate to="/townships/megapolis/serenity" replace />} />
 
               {/* Society Detail */}
               <Route path="/society/:slug" element={<SocietyDetailRouteWrapper />} />
