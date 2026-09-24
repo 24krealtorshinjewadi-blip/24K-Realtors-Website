@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 
 import CompanyLogo from '../components/CompanyLogo';
+import CompanyDeskModal from '../components/CompanyDeskModal';
 
 export default function PortalNavbar({ 
   isHnwiMode, 
@@ -29,6 +30,7 @@ export default function PortalNavbar({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isAtListings, setIsAtListings] = useState(false);
+  const [deskModalTab, setDeskModalTab] = useState(null);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -128,26 +130,32 @@ export default function PortalNavbar({
                     <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', status: 'AVAILABLE' }, 'listings', null, 'properties-sale'); }}>Properties for Sale</h5>
                     <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', status: 'AVAILABLE' }, 'listings', null, 'properties-sale'); }}>Active Listings</a>
                     <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', query: 'verified' }, 'listings', null, 'verified-flats'); }}>100% Verified Flats</a>
-                    <a href="#maharera-trust-banner" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, 'maharera-directory'); }}>MahaRERA Onboarded</a>
+                    <a href="#maharera-trust-banner" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, 'maharera-directory'); }}>Approved</a>
                     <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', query: 'exclusive' }, 'listings', null, 'exclusive-deals'); }}>Exclusive Agency Deals</a>
                   </div>
                   <div className="mega-menu-column">
-                    <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'localities', null, 'locality-guides'); }}>Explore Neighborhoods</h5>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'HINJEWADI' }, 'listings', null, 'properties-sale'); }}>Hinjewadi</a>
+                    <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'localities', null, 'locality-guides'); }}>Location</h5>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'HINJEWADI_PHASE_1' }, 'listings', null, 'properties-sale'); }}>Hinjewadi Phase 1</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'HINJEWADI_PHASE_2' }, 'listings', null, 'properties-sale'); }}>Hinjewadi Phase 2</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'HINJEWADI_PHASE_3' }, 'listings', null, 'properties-sale'); }}>Hinjewadi Phase 3</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'MAHALUNGE' }, 'listings', null, 'properties-sale'); }}>Mahalunge</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'BALEWADI' }, 'listings', null, 'properties-sale'); }}>Balewadi</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'KHARADI' }, 'listings', null, 'properties-sale'); }}>Kharadi</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'RAVET' }, 'listings', null, 'properties-sale'); }}>Ravet</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'PUNEWALE' }, 'listings', null, 'properties-sale'); }}>Punewale</a>
                     <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'WAKAD' }, 'listings', null, 'properties-sale'); }}>Wakad</a>
                     <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'BANER' }, 'listings', null, 'properties-sale'); }}>Baner</a>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', location: 'TATHAWADE' }, 'listings', null, 'properties-sale'); }}>Tathawade</a>
                   </div>
                   <div className="mega-menu-column">
-                    <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'builders', null, 'developer-portfolios'); }}>Developer Portfolios</h5>
-                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'builders', null, 'developer-portfolios'); }}>Pride Purple Group</a>
-                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'builders', null, 'developer-portfolios'); }}>Kolte Patil Developers</a>
-                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'builders', null, 'developer-portfolios'); }}>Gera Developments</a>
-                  </div>
-                  <div className="mega-menu-column highlight-column">
-                    <h5 className="mega-menu-title">Home Buying Advice</h5>
-                    <p className="mega-menu-desc">Analyze commute times, check title RERA compliance status, and compare verified property pricing before buying.</p>
-                    <a href="#localities" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'localities', null, 'locality-guides'); }} className="mega-menu-cta-btn">Locality Guide <ArrowRight size={12} /></a>
+                    <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'builders', null, 'developer-portfolios'); }}>Top Builder</h5>
+                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', builder: 'Lodha' }, 'listings', null, 'developer-portfolios'); }}>Lodha</a>
+                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', builder: 'Godrej' }, 'listings', null, 'developer-portfolios'); }}>Godrej</a>
+                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', builder: 'Shapoorji' }, 'listings', null, 'developer-portfolios'); }}>Shapoorji</a>
+                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', builder: 'Kasturi' }, 'listings', null, 'developer-portfolios'); }}>Kasturi</a>
+                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', builder: 'Kohinoor' }, 'listings', null, 'developer-portfolios'); }}>Kohinoor</a>
+                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', builder: 'VTP' }, 'listings', null, 'developer-portfolios'); }}>VTP</a>
+                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'BUY', builder: 'Gera' }, 'listings', null, 'developer-portfolios'); }}>Gera</a>
+                    <a href="#builders-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'builders', null, 'developer-portfolios'); }}>Many More</a>
                   </div>
                 </div>
               </div>
@@ -162,7 +170,7 @@ export default function PortalNavbar({
                 }}
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
               >
-                <span>RENT</span>
+                <span>RENT/LEASE</span>
                 <ChevronDown size={11} style={{ opacity: 0.8 }} />
               </button>
               <div className="mega-dropdown-menu mega-menu-rent">
@@ -170,25 +178,19 @@ export default function PortalNavbar({
                   <div className="mega-menu-column">
                     <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', status: 'AVAILABLE' }, 'listings', null, 'properties-rent'); }}>Apartments for Rent</h5>
                     <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', status: 'AVAILABLE' }, 'listings', null, 'properties-rent'); }}>Premium Rented Flats</a>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', bedrooms: 2, furnishingStatus: 'SEMI_FURNISHED' }, 'listings', null, 'properties-rent'); }}>Semi-Furnished 2 BHK</a>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', bedrooms: 3, furnishingStatus: 'FULLY_FURNISHED' }, 'listings', null, 'properties-rent'); }}>Fully Furnished 3 BHK</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', furnishingStatus: 'SEMI_FURNISHED' }, 'listings', null, 'properties-rent'); }}>Semi-Furnished Flat</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', furnishingStatus: 'FULLY_FURNISHED' }, 'listings', null, 'properties-rent'); }}>Fully Furnished Flat</a>
                   </div>
                   <div className="mega-menu-column">
                     <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT' }, 'listings', null, 'properties-rent'); }}>Renter Tools</h5>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', query: 'verified' }, 'listings', null, 'properties-rent'); }}>Verified Rental Listings</a>
-                    <a href="#mortgage-desk" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', 'mortgage-desk'); }}>Rent vs Buy Estimator</a>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', query: 'direct' }, 'listings', null, 'properties-rent'); }}>Direct Developer Pricing</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', propertyType: 'RESIDENTIAL' }, 'listings', null, 'properties-rent'); }}>Verified Residential Properties</a>
+                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT', propertyType: 'COMMERCIAL' }, 'listings', null, 'properties-rent'); }}>Verified Commercial Properties</a>
                   </div>
                   <div className="mega-menu-column">
-                    <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', 'seller-mandate-anchor'); }}>Landlord Tools</h5>
-                    <a href="#seller-mandate-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', 'seller-mandate-anchor'); }}>List Your Rental Flat</a>
-                    <a href="#maharera-trust-banner" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', null, 'maharera-directory'); }}>Tenant Verification Guide</a>
-                    <a href="#seller-mandate-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({}, 'listings', 'seller-mandate-anchor'); }}>Request Yield Analysis</a>
-                  </div>
-                  <div className="mega-menu-column highlight-column">
-                    <h5 className="mega-menu-title">Home Renting Advice</h5>
-                    <p className="mega-menu-desc">Embassy Techzone and Phase 2 IT Park proximity analysis. Clean NOC layouts and online rental registry templates.</p>
-                    <a href="#listings-anchor" onClick={(e) => { e.preventDefault(); onApplyMegaFilter && onApplyMegaFilter({ transactionType: 'RENT' }, 'listings', null, 'properties-rent'); }} className="mega-menu-cta-btn">Explore Rentals <ArrowRight size={12} /></a>
+                    <h5 className="mega-menu-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); onViewChange && onViewChange('list-property'); }}>Landlord Tools</h5>
+                    <a href="#seller-mandate-anchor" onClick={(e) => { e.preventDefault(); onViewChange && onViewChange('list-property'); }}>Owner Zone</a>
+                    <a href="#seller-mandate-anchor" onClick={(e) => { e.preventDefault(); onViewChange && onViewChange('list-property'); }}>List Your Rental Flat</a>
+                    <a href="#terms-modal" onClick={(e) => { e.preventDefault(); setDeskModalTab('terms'); }}>Terms &amp; Conditions</a>
                   </div>
                 </div>
               </div>
@@ -521,6 +523,12 @@ export default function PortalNavbar({
           <span>Contact</span>
         </button>
       </div>
+
+      <CompanyDeskModal 
+        isOpen={Boolean(deskModalTab)} 
+        onClose={() => setDeskModalTab(null)} 
+        initialTab={deskModalTab || 'terms'} 
+      />
     </>
   );
 }

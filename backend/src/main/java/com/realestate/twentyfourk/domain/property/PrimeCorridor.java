@@ -10,5 +10,7 @@ public enum PrimeCorridor {
     BALEWADI,
     TATHAWADE,
     MAHALUNGE,
-    KHARADI
+    KHARADI,
+    RAVET,
+    PUNEWALE
 }

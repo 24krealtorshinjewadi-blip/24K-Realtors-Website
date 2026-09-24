@@ -6,11 +6,10 @@ import {
 
 const BUDGET_PRESETS = [
   { id: 'all', label: 'All Budgets', min: '', max: '' },
-  { id: 'under-60l', label: '< ₹60 Lakhs', min: '', max: '6000000' },
-  { id: '60l-1cr', label: '₹60L – ₹1 Cr', min: '6000000', max: '10000000' },
-  { id: '1cr-1.5cr', label: '₹1 – ₹1.5 Cr', min: '10000000', max: '15000000' },
-  { id: '1.5cr-2.5cr', label: '₹1.5 – ₹2.5 Cr', min: '15000000', max: '25000000' },
-  { id: 'above-2.5cr', label: '₹2.5 Cr+', min: '25000000', max: '' },
+  { id: 'under-50l', label: 'Upto 50 Lakhs', min: '', max: '5000000' },
+  { id: '1cr-1.3cr', label: '1Cr to 1.3Cr', min: '10000000', max: '13000000' },
+  { id: '1.3cr-1.8cr', label: '1.3Cr to 1.8Cr', min: '13000000', max: '18000000' },
+  { id: 'above-1.8cr', label: '1.8Cr onwards', min: '18000000', max: '' },
 ];
 
 const BHK_PRESETS = [
@@ -19,6 +18,9 @@ const BHK_PRESETS = [
   { id: '2', label: '2 BHK' },
   { id: '3', label: '3 BHK' },
   { id: '4', label: '4+ BHK' },
+  { id: 'SHOP', label: 'Shop' },
+  { id: 'SHOWROOM', label: 'Showroom' },
+  { id: 'OFFICE', label: 'Office' },
 ];
 
 export default function AdvancedPropertyFilterBar({
@@ -164,6 +166,8 @@ export default function AdvancedPropertyFilterBar({
               <option value="BALEWADI">📍 Balewadi Stadium</option>
               <option value="TATHAWADE">📍 Tathawade Expressway</option>
               <option value="KHARADI">📍 Kharadi IT Park</option>
+              <option value="RAVET">📍 Ravet</option>
+              <option value="PUNEWALE">📍 Punewale</option>
             </optgroup>
           </select>
         </div>
