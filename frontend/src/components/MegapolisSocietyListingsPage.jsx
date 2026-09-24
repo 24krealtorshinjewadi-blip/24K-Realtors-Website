@@ -37,6 +37,94 @@ import './PropertyIntelligence.css';
 function buildMockUnits(societyId) {
   const soc = MEGAPOLIS_SOCIETIES.find(s => s.id === societyId) || MEGAPOLIS_SOCIETIES[0];
 
+  if (soc.id === 'serenity') {
+    const SERENITY_UNIT_IMAGES = [
+      '/megapolis_serenity_living.jpg',
+      '/megapolis_serenity_bedroom.jpg',
+      '/megapolis_serenity_kitchen.jpg',
+      '/megapolis_serenity_bathroom.jpg',
+      '/megapolis_serenity_balcony.jpg'
+    ];
+    return [
+      {
+        id: 'unit-megapolis-serenity-2bhk-700-primary',
+        bhkType: '2 BHK',
+        societySlug: 'serenity',
+        societyName: 'Megapolis Serenity',
+        carpetAreaSqft: 700,
+        builtUpAreaSqft: 980,
+        totalPrice: 7800000,
+        tower: 'Tower B',
+        floorNumber: 3,
+        furnishingStatus: 'Unfurnished',
+        viewType: 'Open Garden View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100046552',
+        imageUrl: '/megapolis_serenity_living.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true
+      },
+      {
+        id: 'unit-megapolis-serenity-2bhk-700-fl5',
+        bhkType: '2 BHK',
+        societySlug: 'serenity',
+        societyName: 'Megapolis Serenity',
+        carpetAreaSqft: 700,
+        builtUpAreaSqft: 980,
+        totalPrice: 7900000,
+        tower: 'Tower A',
+        floorNumber: 5,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Sahyadri Hill View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100046552',
+        imageUrl: '/megapolis_serenity_bedroom.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true
+      },
+      {
+        id: 'unit-megapolis-serenity-2bhk-700-fl9',
+        bhkType: '2 BHK',
+        societySlug: 'serenity',
+        societyName: 'Megapolis Serenity',
+        carpetAreaSqft: 700,
+        builtUpAreaSqft: 980,
+        totalPrice: 8050000,
+        tower: 'Tower C',
+        floorNumber: 9,
+        furnishingStatus: 'Unfurnished',
+        viewType: 'Courtyard View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100046552',
+        imageUrl: '/megapolis_serenity_kitchen.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true
+      },
+      {
+        id: 'unit-megapolis-serenity-2bhk-700-fl12',
+        bhkType: '2 BHK',
+        societySlug: 'serenity',
+        societyName: 'Megapolis Serenity',
+        carpetAreaSqft: 700,
+        builtUpAreaSqft: 980,
+        totalPrice: 8200000,
+        tower: 'Tower B',
+        floorNumber: 12,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Panoramic Sunset View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100046552',
+        imageUrl: '/megapolis_serenity_balcony.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true
+      }
+    ];
+  }
+
   const BHK_SPECS = {
     '1 BHK':   { carpet: [440, 490, 510], builtUp: 620, basePrice: 6800000,  psf: 13800 },
     '2 BHK':   { carpet: [645, 695, 730], builtUp: 920, basePrice: 9500000,  psf: 14000 },
@@ -154,6 +242,15 @@ export const SANGRIA_PHOTOS = [
   { label: 'Modular Kitchen', icon: '🍳', url: '/sangria_kitchen.jpg', desc: 'L-shaped black granite countertop, stainless steel sink & glazed wall dado.' },
   { label: 'Designer Bathroom', icon: '🚿', url: '/sangria_bathroom.jpg', desc: 'Designer wall tiling, backlit LED mirror, multi-jet shower panel & branded fixtures.' },
   { label: 'Panoramic Balcony', icon: '🌅', url: '/sangria_balcony.jpg', desc: 'Panoramic high-rise view overlooking lush green landscaped township courtyards.' },
+];
+
+/* ── Authentic Room Gallery for Megapolis Serenity ──────────────── */
+export const SERENITY_PHOTOS = [
+  { label: 'Living Room', icon: '🛋️', url: '/megapolis_serenity_living.jpg', desc: 'Bright, spacious living room with polished vitrified flooring, large sliding doors & scenic balcony view.' },
+  { label: 'Master Bedroom', icon: '🛏️', url: '/megapolis_serenity_bedroom.jpg', desc: 'Airy 2 BHK bedroom with safety grill & wide sliding windows for natural light & cross-ventilation.' },
+  { label: 'Modular Kitchen', icon: '🍳', url: '/megapolis_serenity_kitchen.jpg', desc: 'L-shaped black granite platform with stainless steel sink & glazed tile dado.' },
+  { label: 'Designer Bathroom', icon: '🚿', url: '/megapolis_serenity_bathroom.jpg', desc: 'Contemporary bathroom with designer geometric wall tiling, wall-hung WC and wash basin.' },
+  { label: 'Utility / Dry Balcony', icon: '🌅', url: '/megapolis_serenity_balcony.jpg', desc: 'Dedicated dry balcony and utility area with washing machine inlet and drainage.' },
 ];
 
 /* ══════════════════════════════════════════════════════════════════
@@ -762,76 +859,82 @@ export default function MegapolisSocietyListingsPage({ onBack }) {
         {/* ══ RIGHT LISTINGS AREA ══════════════════════════════════════ */}
         <div className="pi-listings-area">
 
-          {/* ── SANGRIA AUTHENTIC ROOM SHOWCASE ────────────────────────── */}
-          {societyId === 'sangria' && (
-            <div className="pi-sangria-showcase">
-              <div className="pi-sangria-hero-frame">
-                <img
-                  src={SANGRIA_PHOTOS[activePhotoIdx].url}
-                  alt={`Megapolis Sangria ${SANGRIA_PHOTOS[activePhotoIdx].label}`}
-                  className="pi-sangria-main-img"
-                />
-                <div className="pi-sangria-badge-floating">
-                  <span>📸</span>
-                  <span>Authentic Verified Site Photos — 24K Realtors</span>
-                </div>
-                <div className="pi-sangria-caption-floating">
-                  <span className="pi-sangria-room-name">
-                    {SANGRIA_PHOTOS[activePhotoIdx].icon} {SANGRIA_PHOTOS[activePhotoIdx].label}
-                  </span>
-                  <span className="pi-sangria-room-desc">
-                    {SANGRIA_PHOTOS[activePhotoIdx].desc}
-                  </span>
-                </div>
-              </div>
+          {/* ── AUTHENTIC ROOM SHOWCASE (Sangria & Serenity) ──────────────── */}
+          {(societyId === 'sangria' || societyId === 'serenity') && (() => {
+            const showcasePhotos = societyId === 'serenity' ? SERENITY_PHOTOS : SANGRIA_PHOTOS;
+            const currentPhoto = showcasePhotos[activePhotoIdx % showcasePhotos.length] || showcasePhotos[0];
+            const isSerenity = societyId === 'serenity';
 
-              {/* Photo Selector Tabs */}
-              <div className="pi-sangria-thumbs-bar">
-                {SANGRIA_PHOTOS.map((photo, pIdx) => (
-                  <button
-                    key={photo.label}
-                    type="button"
-                    onClick={() => setActivePhotoIdx(pIdx)}
-                    className={`pi-sangria-thumb-btn ${activePhotoIdx === pIdx ? 'active' : ''}`}
-                  >
-                    <span className="pi-thumb-icon">{photo.icon}</span>
-                    <span className="pi-thumb-label">{photo.label}</span>
-                  </button>
-                ))}
-              </div>
+            return (
+              <div className="pi-sangria-showcase">
+                <div className="pi-sangria-hero-frame">
+                  <img
+                    src={currentPhoto.url}
+                    alt={`Megapolis ${isSerenity ? 'Serenity' : 'Sangria'} ${currentPhoto.label}`}
+                    className="pi-sangria-main-img"
+                  />
+                  <div className="pi-sangria-badge-floating">
+                    <span>📸</span>
+                    <span>Authentic Verified Site Photos — 24K Realtors</span>
+                  </div>
+                  <div className="pi-sangria-caption-floating">
+                    <span className="pi-sangria-room-name">
+                      {currentPhoto.icon} {currentPhoto.label}
+                    </span>
+                    <span className="pi-sangria-room-desc">
+                      {currentPhoto.desc}
+                    </span>
+                  </div>
+                </div>
 
-              {/* Verified Specs Bar */}
-              <div className="pi-sangria-specs-bar">
-                <div className="pi-sangria-spec-item">
-                  <span className="pi-spec-label">Configurations</span>
-                  <span className="pi-spec-val">2, 2.5 & 3 BHK</span>
+                {/* Photo Selector Tabs */}
+                <div className="pi-sangria-thumbs-bar">
+                  {showcasePhotos.map((photo, pIdx) => (
+                    <button
+                      key={photo.label}
+                      type="button"
+                      onClick={() => setActivePhotoIdx(pIdx)}
+                      className={`pi-sangria-thumb-btn ${activePhotoIdx === pIdx ? 'active' : ''}`}
+                    >
+                      <span className="pi-thumb-icon">{photo.icon}</span>
+                      <span className="pi-thumb-label">{photo.label}</span>
+                    </button>
+                  ))}
                 </div>
-                <div className="pi-sangria-spec-item">
-                  <span className="pi-spec-label">Carpet Area</span>
-                  <span className="pi-spec-val">645 – 1,150 sqft</span>
-                </div>
-                <div className="pi-sangria-spec-item">
-                  <span className="pi-spec-label">Starting Price</span>
-                  <span className="pi-spec-val" style={{ color: '#E6C35C' }}>₹95 Lakhs*</span>
-                </div>
-                <div className="pi-sangria-spec-item">
-                  <span className="pi-spec-label">MahaRERA</span>
-                  <span className="pi-spec-val" style={{ color: '#10B981' }}>P52100047112</span>
-                </div>
-                <div className="pi-sangria-spec-item">
-                  <span className="pi-spec-label">Status</span>
-                  <span className="pi-spec-val">Ready to Move</span>
-                </div>
-                <div className="pi-sangria-spec-item">
-                  <span className="pi-spec-label">IT Hub Proximity</span>
-                  <span className="pi-spec-val">2 mins to TCS / Tech M</span>
+
+                {/* Verified Specs Bar */}
+                <div className="pi-sangria-specs-bar">
+                  <div className="pi-sangria-spec-item">
+                    <span className="pi-spec-label">Configurations</span>
+                    <span className="pi-spec-val">{isSerenity ? '2 BHK' : '2, 2.5 & 3 BHK'}</span>
+                  </div>
+                  <div className="pi-sangria-spec-item">
+                    <span className="pi-spec-label">Carpet Area</span>
+                    <span className="pi-spec-val">{isSerenity ? '700 sqft Actual' : '645 – 1,150 sqft'}</span>
+                  </div>
+                  <div className="pi-sangria-spec-item">
+                    <span className="pi-spec-label">{isSerenity ? 'Price' : 'Starting Price'}</span>
+                    <span className="pi-spec-val" style={{ color: '#E6C35C' }}>{isSerenity ? '₹78 Lakhs' : '₹95 Lakhs*'}</span>
+                  </div>
+                  <div className="pi-sangria-spec-item">
+                    <span className="pi-spec-label">MahaRERA</span>
+                    <span className="pi-spec-val" style={{ color: '#10B981' }}>{isSerenity ? 'P52100046552' : 'P52100047112'}</span>
+                  </div>
+                  <div className="pi-sangria-spec-item">
+                    <span className="pi-spec-label">Status</span>
+                    <span className="pi-spec-val">Ready to Move</span>
+                  </div>
+                  <div className="pi-sangria-spec-item">
+                    <span className="pi-spec-label">IT Hub Proximity</span>
+                    <span className="pi-spec-val">2 mins to Infosys Ph 3 / TCS</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* ── OTHER SOCIETY HEADER BANNER ────────────────────────────── */}
-          {societyId !== 'sangria' && (
+          {societyId !== 'sangria' && societyId !== 'serenity' && (
             <div className="pi-other-society-banner">
               <div>
                 <div style={{ fontSize: '0.68rem', color: '#D4AF37', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '6px' }}>

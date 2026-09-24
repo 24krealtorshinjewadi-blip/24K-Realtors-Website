@@ -676,11 +676,107 @@ const initialProperties = [
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
+  },
+  // ═══════════════════════════════════════════════════════════════════
+  // MEGAPOLIS SERENITY — 2 BHK 700 SQ.FT (₹78 LAKHS)
+  // MahaRERA: P52100046552 | Hinjewadi Phase 3 | Ready to Move
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-serenity",
+    title: "Megapolis Serenity 2 BHK",
+    projectName: "Megapolis Serenity",
+    builderName: "Pride Purple Group",
+    description: "Ready-to-move 2 BHK flat in Megapolis Serenity, Hinjewadi Phase 3. 700 sq.ft verified carpet area, modern L-shaped granite kitchen, attached dry balcony, designer bathroom with modern fittings, and east-west cross ventilation.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 7800000,
+    bedrooms: 2,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Serenity, Megapolis Circle, Rajiv Gandhi Infotech Park, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5770,
+    longitude: 73.6925,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100046552",
+    possessionDate: "Ready to Move",
+    imageUrl: "/megapolis_serenity_living.jpg",
+    galleryImages: [
+      "/megapolis_serenity_living.jpg",
+      "/megapolis_serenity_bedroom.jpg",
+      "/megapolis_serenity_kitchen.jpg",
+      "/megapolis_serenity_bathroom.jpg",
+      "/megapolis_serenity_balcony.jpg"
+    ],
+    furnishingStatus: "UNFURNISHED",
+    gasPipeline: true,
+    societySlug: "townships/megapolis/serenity",
+    configurations: [
+      { bhk: "2 BHK", carpet: "700 sq.ft", highlight: true }
+    ],
+    amenities: [
+      "700 sq.ft RERA Carpet Area",
+      "L-Shaped Granite Platform Kitchen",
+      "Attached Dry / Utility Balcony",
+      "Modern Anti-Skid Designer Bathroom",
+      "Sahyadri Mountain Facing Views",
+      "Megapolis Township Clubhouse & Pool",
+      "24x7 Multi-Tier Security",
+      "High-Speed Elevators with Power Backup"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
   }
 ];
 
 // ── Auxiliary Megapolis Society Properties (Retained for deep linking / lookup without crowding 3-card catalog) ──
 const megapolisSubSocietiesProperties = [
+  // ═══════════════════════════════════════════════════════════════════
+  // MEGAPOLIS SERENITY — 2 BHK 700 SQ.FT
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-serenity-sub",
+    title: "Megapolis Serenity 2 BHK (700 sq.ft)",
+    projectName: "Megapolis Serenity",
+    builderName: "Pride Purple Group",
+    description: "Peaceful living in Megapolis Serenity, Hinjewadi Phase 3. 2 BHK layout with 700 sq.ft actual carpet area, L-shaped black granite kitchen counter, attached utility balcony, and designer bathroom.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 7800000,
+    bedrooms: 2,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Serenity, Megapolis Circle, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5770,
+    longitude: 73.6925,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100046552",
+    possessionDate: "Ready to Move",
+    imageUrl: "/megapolis_serenity_living.jpg",
+    galleryImages: [
+      "/megapolis_serenity_living.jpg",
+      "/megapolis_serenity_bedroom.jpg",
+      "/megapolis_serenity_kitchen.jpg",
+      "/megapolis_serenity_bathroom.jpg",
+      "/megapolis_serenity_balcony.jpg"
+    ],
+    furnishingStatus: "UNFURNISHED",
+    gasPipeline: true,
+    societySlug: "townships/megapolis/serenity",
+    configurations: [
+      { bhk: "2 BHK", carpet: "700 sq.ft", highlight: true }
+    ],
+    amenities: [
+      "700 sq.ft Carpet",
+      "L-Shaped Granite Platform Kitchen",
+      "Attached Dry Balcony",
+      "Clubhouse & Swimming Pool Access",
+      "24x7 Gated Security"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
   // ═══════════════════════════════════════════════════════════════════
   // PROJECT 4 — MEGAPOLIS SANGRIA
   // MahaRERA: P52100047112 | Hinjewadi Phase 3 | Ready to Move
@@ -1560,6 +1656,57 @@ const initialSocieties = [
   },
 
   // ═══════════════════════════════════════════════════════════════════
+  // SOC: MEGAPOLIS SERENITY — Hinjewadi Phase 3
+  // Developer: Pride Purple Group
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-megapolis-serenity",
+    name: "Megapolis Serenity",
+    canonicalName: "Megapolis Serenity Hinjewadi Phase 3",
+    slug: "megapolis-serenity",
+    imageUrl: "/megapolis_serenity_living.jpg",
+    galleryImages: [
+      "/megapolis_serenity_living.jpg",
+      "/megapolis_serenity_bedroom.jpg",
+      "/megapolis_serenity_kitchen.jpg",
+      "/megapolis_serenity_bathroom.jpg",
+      "/megapolis_serenity_balcony.jpg"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    developer: "Pride Purple Group",
+    reraNumber: "P52100046552",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 7800000,
+    priceLastVerified: "24 Sep 2026",
+    possessionDate: "Ready to Move",
+    projectArea: "142+ Acres Integrated Township",
+    overview: "Megapolis Serenity is an exclusive residential community within Megapolis Township, Hinjewadi Phase 3, Pune. Offering ready-to-move 2 BHK apartments with 700 sq.ft actual carpet area, L-shaped granite platform kitchen, attached dry balcony, and designer bathroom finishes. Located just 2 minutes from TCS, Infosys, and Tech Mahindra campuses.",
+    amenities: "700 sq.ft RERA Carpet, L-Shaped Granite Kitchen, Attached Dry Balcony, Clubhouse, Swimming Pool, Gymnasium, Children Play Area, 24x7 Gated Security Grid, Power Backup",
+    priceRange: "₹78 Lakhs",
+    configuration: "2 BHK (700 sq.ft Carpet Area)",
+    configurationSummary: "2 BHK",
+    configurations: [
+      { bhkType: "2 BHK", carpetArea: "700 sq.ft", priceLabel: "₹78 Lakhs", status: "Available" }
+    ],
+    nearbySchools: "Pawar Public School (250m inside township)",
+    nearbyHospitals: "Ruby Hall Clinic (5.0 km), Sanjeevani Hospital (3.5 km)",
+    nearbyItParks: "Tech Mahindra (400m), TCS Sahyadri (600m), Infosys Phase 3 (800m), Cognizant (1 km)",
+    nearbyMetro: "Megapolis Metro Station (350m — Metro Line 3)",
+    nearbyMalls: "Megapolis High Street (Within Campus)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6920!3d18.5775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Circle!5e0!3m2!1sen!2sin!4v1725118",
+    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Infosys Phase 3: 5 mins | Expressway: 18 mins",
+    investmentScore: 94,
+    rentalYield: 5.4,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What is the carpet area and price of 2 BHK in Megapolis Serenity?\nA: Megapolis Serenity features a 2 BHK apartment with 700 sq.ft carpet area at an attractive price of ₹78 Lakhs.\n\nQ: Is Megapolis Serenity ready to move in?\nA: Yes, Megapolis Serenity is 100% ready to move in with completed amenities.\n\nQ: Does the flat include an attached dry balcony and modular kitchen counter?\nA: Yes, it includes an L-shaped black granite countertop and a dedicated utility/dry balcony.",
+    seoTitle: "Megapolis Serenity Hinjewadi Phase 3 | 2 BHK 700 sq.ft Flat ₹78L | 24K Realtors",
+    seoDescription: "Ready to move 2 BHK apartment in Megapolis Serenity, Hinjewadi Phase 3. 700 sq.ft carpet area at ₹78 Lakhs. Attached dry balcony, modular kitchen, parking. RERA P52100046552."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
   // SOC-8: MEGAPOLIS TOWNSHIP (Master Listing) — Hinjewadi Phase 3
   // Developer: Pride Purple Group
   // ═══════════════════════════════════════════════════════════════════
@@ -1846,7 +1993,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_luxury_v18';
+const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_luxury_v19';
 
 const LocalMockDb = {
   getProperties() {
