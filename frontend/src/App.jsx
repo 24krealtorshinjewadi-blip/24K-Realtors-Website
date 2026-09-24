@@ -39,6 +39,7 @@ const YashOneProjectPage        = lazy(() => import('./components/YashOneProject
 const KohinoorProjectPage       = lazy(() => import('./components/KohinoorProjectPage'));
 const TcgCliffGardenProjectPage  = lazy(() => import('./components/TcgCliffGardenProjectPage'));
 const VtpBlueWatersProjectPage   = lazy(() => import('./components/VtpBlueWatersProjectPage'));
+const BlueRidgeProjectPage       = lazy(() => import('./components/BlueRidgeProjectPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -155,6 +156,9 @@ function PropertyDetailRouteWrapper() {
   if (keyStr.includes('megapolis-township') || keyStr === 'prop-megapolis-township') {
     return <Navigate to="/townships/megapolis" replace />;
   }
+  if (keyStr.includes('blue-ridge') || keyStr.includes('blueridge') || keyStr === 'prop-paranjape-blue-ridge' || keyStr === 'blue-ridge') {
+    return <Navigate to="/blue-ridge-hinjewadi" replace />;
+  }
 
   const [property, setProperty] = useState(location.state?.property || null);
   const [loading, setLoading] = useState(!location.state?.property);
@@ -178,6 +182,7 @@ function PropertyDetailRouteWrapper() {
       if (t.includes('godrej 24') || (t.includes('godrej') && t.includes('24'))) { navigate('/godrej-24-hinjewadi', { replace: true }); return; }
       if (t.includes('godrej elements') || (t.includes('godrej') && t.includes('element'))) { navigate('/godrej-elements-hinjewadi', { replace: true }); return; }
       if (t.includes('megapolis township')) { navigate('/townships/megapolis', { replace: true }); return; }
+      if (t.includes('blue ridge') || t.includes('blueridge') || (t.includes('paranjape') && t.includes('ridge'))) { navigate('/blue-ridge-hinjewadi', { replace: true }); return; }
     }
 
     if (!property || !matchesKey) {
@@ -683,6 +688,24 @@ function AppContent() {
               <Route path="/vtp-mahalunge" element={<Navigate to="/vtp-blue-waters-mahalunge" replace />} />
               <Route path="/projects/vtp-blue-waters" element={<Navigate to="/vtp-blue-waters-mahalunge" replace />} />
               <Route path="/projects/vtp-bluewater" element={<Navigate to="/vtp-blue-waters-mahalunge" replace />} />
+
+              {/* ─── PARANJAPE BLUE RIDGE — Dedicated Showcase Subpage ──────────── */}
+              <Route
+                path="/blue-ridge-hinjewadi"
+                element={<BlueRidgeProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/paranjape-blue-ridge"
+                element={<BlueRidgeProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/paranjape-blue-ridge-hinjewadi"
+                element={<BlueRidgeProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route path="/blue-ridge" element={<Navigate to="/blue-ridge-hinjewadi" replace />} />
+              <Route path="/blueridge" element={<Navigate to="/blue-ridge-hinjewadi" replace />} />
+              <Route path="/projects/blue-ridge" element={<Navigate to="/blue-ridge-hinjewadi" replace />} />
+              <Route path="/projects/paranjape-blue-ridge" element={<Navigate to="/blue-ridge-hinjewadi" replace />} />
 
               {/* Catch-all (MUST BE LAST) */}
               <Route path="*" element={<Navigate to="/" replace />} />

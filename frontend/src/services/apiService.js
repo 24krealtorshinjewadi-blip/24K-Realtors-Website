@@ -678,6 +678,96 @@ const initialProperties = [
     updatedDate: new Date().toISOString()
   },
   // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 8 — PARANJAPE BLUE RIDGE HINJEWADI
+  // Golf Facing | Price: ₹1.95 Cr (Negotiable) | Primary RERA: P52100016328, P52100000054, P52100027419
+  // Newer Sub-Phases & Extensions: P52100055581, P52100029952
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-paranjape-blue-ridge",
+    title: "Paranjape Blue Ridge",
+    projectName: "Paranjape Blue Ridge",
+    builderName: "Paranjape Schemes",
+    description: "Pioneering 138-acre integrated township in Hinjewadi Phase 1 by Paranjape Schemes. Exclusive Golf-Facing 3 BHK luxury residence priced at ₹1.95 Cr (Negotiable) offering 100% authentic on-site photos (living room with exposed wooden ceiling rafters, modular kitchen with chimney, master bedroom with AC and custom wardrobe, luxury bathroom with glass shower cubicle, and high-floor balcony overlooking lush greens and golf fairways). Primary MahaRERA numbers: P52100016328, P52100000054, P52100027419; Newer Extensions: P52100055581, P52100029952. Features 9-hole golf course, Blue Ridge Public School on campus, waterfront river promenades, multi-sport courts, and 24x7 security grid.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 19500000,
+    priceNegotiable: true,
+    priceNote: "Negotiable",
+    bedrooms: 3,
+    facing: "Golf Facing",
+    location: "HINJEWADI_PHASE_1",
+    address: "Blue Ridge Township, Near Cognizant & Symbiosis, Hinjewadi Phase 1, Pune — 411057",
+    latitude: 18.5875,
+    longitude: 73.7410,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100016328 / P52100000054 / P52100027419 (Extensions: P52100055581 / P52100029952)",
+    possessionDate: "Ready to Move",
+    imageUrl: "/blue_ridge_living.jpg",
+    galleryImages: [
+      "/blue_ridge_living.jpg",
+      "/blue_ridge_bedroom.jpg",
+      "/blue_ridge_kitchen.jpg",
+      "/blue_ridge_bathroom.jpg",
+      "/blue_ridge_balcony.jpg"
+    ],
+    furnishingStatus: "FULLY_FURNISHED",
+    gasPipeline: true,
+    societySlug: "blue-ridge-hinjewadi",
+    configurations: [
+      { bhk: "1 BHK", carpet: "~440 to 550 sq.ft", price: "Price on Request", highlight: false },
+      { bhk: "2 BHK", carpet: "~800 to 860 sq.ft", price: "Price on Request", highlight: false },
+      { bhk: "3 BHK & Larger (Golf Facing)", carpet: "~1,110+ sq.ft", price: "₹1.95 Cr (Negotiable)", highlight: true, note: "Golf Facing · Negotiable" }
+    ],
+    amenityCategories: {
+      sportsFitness: [
+        "Golf Course",
+        "Sports Facilities",
+        "Indoor & Outdoor Courts",
+        "Gym / Fitness Centre",
+        "Jogging & Walking Tracks"
+      ],
+      recreationRelaxation: [
+        "Clubhouses",
+        "Swimming Pool",
+        "Waterfront / Riverfront Areas",
+        "Entertainment Spaces",
+        "Landscaped & Nature Areas"
+      ],
+      communityConveniences: [
+        "Blue Ridge Public School",
+        "Children's Play Areas",
+        "Podium / Landscaped Gardens",
+        "Daily Retail & Shopping",
+        "Business / Commercial Facilities"
+      ],
+      infrastructureSecurity: [
+        "24×7 Security",
+        "CCTV / Controlled Access",
+        "Power Backup",
+        "Well-Planned Internal Roads",
+        "Water & Wastewater Infrastructure"
+      ]
+    },
+    amenities: [
+      "Golf Course",
+      "Sports Facilities",
+      "Indoor & Outdoor Courts",
+      "Gym / Fitness Centre",
+      "Jogging & Walking Tracks",
+      "Clubhouses",
+      "Swimming Pool",
+      "Waterfront / Riverfront Areas",
+      "Blue Ridge Public School",
+      "24×7 Security & CCTV",
+      "Daily Retail & Shopping"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
   // MEGAPOLIS SERENITY — 2 BHK 700 SQ.FT (₹78 LAKHS)
   // MahaRERA: P52100046552 | Hinjewadi Phase 3 | Ready to Move
   // ═══════════════════════════════════════════════════════════════════
@@ -1878,6 +1968,65 @@ const initialSocieties = [
     faqs: "Q: Why does VTP Blue Waters have multiple MahaRERA numbers?\nA: VTP Blue Waters is a 100+ acre township spanning multiple individual clusters and residential towers (Acheron, Leonara, Bel Air, Alpine, Earth One, Town Center) registered under P52100009531, P52100009529, P52100007943, P52100026772, P52100020112, and P52100019986.\n\nQ: What is the price of the 2 BHK unit?\nA: The 2 BHK unit has 640 sq.ft carpet area and is priced at ₹72 Lakhs (negotiable) through 24K Realtors.",
     seoTitle: "VTP Blue Waters Mahalunge Pune | 2 BHK 640 sq.ft Flats | 24K Realtors",
     seoDescription: "VTP Blue Waters Mahalunge near Hinjewadi. 2 BHK (640 sq.ft, ₹72L Negotiable). 100+ Acre riverside township with 6 MahaRERA numbers: P52100009531, P52100009529, P52100007943, P52100026772, P52100020112, P52100019986."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-11: PARANJAPE BLUE RIDGE — Hinjewadi Phase 1
+  // Developer: Paranjape Schemes | 138-Acre Integrated Township
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-paranjape-blue-ridge",
+    name: "Paranjape Blue Ridge",
+    canonicalName: "Paranjape Blue Ridge Hinjewadi Phase 1",
+    slug: "blue-ridge-hinjewadi",
+    imageUrl: "/blue_ridge_living.jpg",
+    galleryImages: [
+      "/blue_ridge_living.jpg",
+      "/blue_ridge_bedroom.jpg",
+      "/blue_ridge_kitchen.jpg",
+      "/blue_ridge_bathroom.jpg",
+      "/blue_ridge_balcony.jpg"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_1",
+    developer: "Paranjape Schemes",
+    reraNumber: "P52100016328 / P52100000054 / P52100027419 (Extensions: P52100055581 / P52100029952)",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 19500000,
+    priceLastVerified: "24 Sep 2026",
+    possessionDate: "Ready to Move",
+    projectArea: "138-Acre Integrated Township",
+    overview: "Paranjape Blue Ridge is Pune's pioneering 138-acre integrated riverfront township located in Hinjewadi Phase 1. Known for its world-class master planning, it features a signature 9-hole golf course, Blue Ridge Public School within campus, multi-sport courts, riverfront promenade, and SEZ commercial tech parks. Offering 1 BHK (~440 to 550 sq.ft), 2 BHK (~800 to 860 sq.ft), and exclusive Golf-Facing 3 BHK & Larger (~1,110+ sq.ft) residences priced at ₹1.95 Cr (Negotiable). Primary MahaRERA: P52100016328, P52100000054, P52100027419; Newer Extensions: P52100055581, P52100029952.",
+    amenities: "9-Hole Golf Course, Sports Facilities, Indoor & Outdoor Courts, Gym / Fitness Centre, Jogging & Walking Tracks, Clubhouses, Swimming Pool, Waterfront Areas, Blue Ridge Public School, 24×7 Security, Daily Retail & Shopping",
+    priceRange: "₹1.95 Cr (Negotiable)",
+    configuration: "1 BHK (~440-550 sq.ft) | 2 BHK (~800-860 sq.ft) | 3 BHK & Larger (~1,110+ sq.ft)",
+    configurationSummary: "1 BHK, 2 BHK & 3 BHK (Golf Facing)",
+    configurations: [
+      { bhkType: "1 BHK", carpetArea: "~440 to 550 sq.ft", priceLabel: "Price on Request", status: "Available" },
+      { bhkType: "2 BHK", carpetArea: "~800 to 860 sq.ft", priceLabel: "Price on Request", status: "Available" },
+      { bhkType: "3 BHK (Golf Facing)", carpetArea: "~1,110+ sq.ft", priceLabel: "₹1.95 Cr (Negotiable)", status: "Available" }
+    ],
+    highlights: [
+      "Signature 9-Hole Executive Golf Course & Green Fairways",
+      "Primary MahaRERA: P52100016328, P52100000054, P52100027419",
+      "Newer Sub-Phases & Extensions: P52100055581, P52100029952",
+      "Blue Ridge Public School Operational Inside Township",
+      "100% Authentic Flat Photos (Living, Bedroom, Modular Kitchen, Bathroom, Balcony)",
+      "₹1.95 Cr Negotiable Mandate through 24K Realtors"
+    ],
+    nearbySchools: "Blue Ridge Public School (Within Township - 100m), Mercedes-Benz International (1.5 km), Pawar Public School (4.5 km)",
+    nearbyHospitals: "Ruby Hall Clinic Hinjewadi (2.0 km), Hinjewadi Hospital (1.5 km), Lifepoint Multispecialty (4.0 km)",
+    nearbyItParks: "Cognizant (300m), Symbiosis Infotech Campus (400m), Infosys Phase 1 (1.2 km), Wipro Circle (1.4 km)",
+    nearbyMetro: "Upcoming Hinjewadi Phase 1 Metro Station (Line 3 - 800m)",
+    nearbyMalls: "Blue Ridge High Street Galleria (On Campus), Grand Highstreet (1.8 km), Phoenix Mall of the Millennium (4.2 km)",
+    travelTimeInfo: "Cognizant / Symbiosis: 2 mins walk | Infosys Phase 1: 4 mins | Wipro Circle: 4 mins | Wakad: 8 mins | Baner: 10 mins",
+    investmentScore: 98,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What are the MahaRERA numbers for Paranjape Blue Ridge?\nA: Primary RERA Numbers: P52100016328, P52100000054, P52100027419. Newer Sub-Phases & Extensions: P52100055581, P52100029952.\n\nQ: What is the price and carpet area of the featured Golf Facing flat?\nA: It is a 3 BHK & Larger configuration with ~1,110+ sq.ft carpet area, priced at ₹1.95 Cr (Negotiable).",
+    seoTitle: "Paranjape Blue Ridge Hinjewadi Phase 1 | Golf Facing 3 BHK ₹1.95 Cr | 24K Realtors",
+    seoDescription: "Paranjape Blue Ridge Hinjewadi Phase 1. 138-Acre Township with 9-Hole Golf Course. 3 BHK Golf Facing (~1,110+ sq.ft, ₹1.95 Cr Negotiable). MahaRERA: P52100016328, P52100000054, P52100027419, P52100055581, P52100029952."
   }
 ];
 
@@ -1993,7 +2142,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_seven_flagship_luxury_v19';
+const HINJEWADI_PROP_VERSION = 'v2026_eight_flagship_blue_ridge_v20';
 
 const LocalMockDb = {
   getProperties() {
