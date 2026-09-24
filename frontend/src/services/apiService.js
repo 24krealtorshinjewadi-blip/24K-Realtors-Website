@@ -704,8 +704,9 @@ const initialProperties = [
     exclusiveDeal: true,
     reraNumber: "P52100016328 / P52100000054 / P52100027419 (Extensions: P52100055581 / P52100029952)",
     possessionDate: "Ready to Move",
-    imageUrl: "/blue_ridge_living.jpg",
+    imageUrl: "/blue_ridge_project_card.jpg",
     galleryImages: [
+      "/blue_ridge_project_card.jpg",
       "/blue_ridge_living.jpg",
       "/blue_ridge_bedroom.jpg",
       "/blue_ridge_kitchen.jpg",
@@ -1979,8 +1980,9 @@ const initialSocieties = [
     name: "Paranjape Blue Ridge",
     canonicalName: "Paranjape Blue Ridge Hinjewadi Phase 1",
     slug: "blue-ridge-hinjewadi",
-    imageUrl: "/blue_ridge_living.jpg",
+    imageUrl: "/blue_ridge_project_card.jpg",
     galleryImages: [
+      "/blue_ridge_project_card.jpg",
       "/blue_ridge_living.jpg",
       "/blue_ridge_bedroom.jpg",
       "/blue_ridge_kitchen.jpg",
@@ -2142,7 +2144,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_eight_flagship_blue_ridge_v20';
+const HINJEWADI_PROP_VERSION = 'v2026_eight_flagship_blue_ridge_v21';
 
 const LocalMockDb = {
   getProperties() {
