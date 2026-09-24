@@ -20,10 +20,17 @@ import {
 } from 'lucide-react';
 
 const getForbesTeslaPropertyImage = (property) => {
-  if (property.imageUrl && !property.imageUrl.includes('unsplash.com')) {
+  const title = (property?.title || property?.projectName || '').toLowerCase();
+  const id = String(property?.id || '').toLowerCase();
+
+  // Paranjape Blue Ridge high-definition infographic card poster
+  if (id.includes('blue-ridge') || title.includes('blue ridge') || title.includes('paranjape blue')) {
+    return '/blue_ridge_project_card.jpg';
+  }
+
+  if (property?.imageUrl && !property.imageUrl.includes('unsplash.com')) {
     return property.imageUrl;
   }
-  const title = (property.title || '').toLowerCase();
 
   if (title.includes('opula')) return '/dev_kolte_patil_township.png';
   if (title.includes('office') || title.includes('plaza') || title.includes('commercial')) return '/lodha_4_grand_lobby.png';
@@ -431,6 +438,10 @@ export default function PropertyCard({
     // 7. Megapolis Township
     if (id.includes('megapolis') || title.includes('megapolis') || slug.includes('megapolis')) {
       return '/townships/megapolis';
+    }
+    // 8. Paranjape Blue Ridge
+    if (id.includes('blue-ridge') || title.includes('blue ridge') || slug.includes('blue-ridge')) {
+      return '/blue-ridge-hinjewadi';
     }
     return null;
   };
