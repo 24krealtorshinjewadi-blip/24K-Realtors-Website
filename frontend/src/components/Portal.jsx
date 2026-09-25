@@ -3540,7 +3540,7 @@ export default function Portal({ onViewChange }) {
                   letterSpacing: '-0.01em',
                   textShadow: '0 2px 8px rgba(0,0,0,1), 0 8px 40px rgba(0,0,0,0.95), 0 0 2px rgba(0,0,0,1)',
                 }}>
-                  Your Dream Homes
+                  Your Dream Home
                 </h1>
                 <h1 style={{
                   fontFamily: "'Cinzel', serif",

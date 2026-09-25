@@ -419,61 +419,49 @@ export default function VtpBlueWatersProjectPage({ onBackHome }) {
       fontFamily: "'Montserrat', sans-serif"
     }}>
       {/* ── Top Navigation Bar ────────────────────────────────────────── */}
-      <header style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        backdropFilter: 'blur(20px)',
-        background: 'rgba(4, 8, 20, 0.88)',
-        borderBottom: '1px solid rgba(2, 132, 199, 0.25)',
-        padding: '12px 24px'
-      }}>
+      {/* ── Top Navigation Bar ────────────────────────────────────────── */}
+      <header className="subpage-topbar-wrapper">
         <div style={{
           maxWidth: '1280px',
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '16px'
+          gap: '8px'
         }}>
           {/* Left: Back & Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <button
               onClick={handleBack}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
+                gap: '6px',
                 background: 'rgba(2, 132, 199, 0.1)',
                 border: '1px solid rgba(2, 132, 199, 0.35)',
                 color: '#BAE6FD',
-                padding: '8px 14px',
+                padding: '7px 12px',
                 borderRadius: '8px',
-                fontSize: '0.82rem',
+                fontSize: '0.80rem',
                 fontWeight: 600,
                 cursor: 'pointer',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                minHeight: '38px',
+                touchAction: 'manipulation'
               }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = 'rgba(2, 132, 199, 0.2)';
-                e.currentTarget.style.borderColor = '#38BDF8';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(2, 132, 199, 0.1)';
-                e.currentTarget.style.borderColor = 'rgba(2, 132, 199, 0.35)';
-              }}
+              title="Return to Main Portal"
             >
               <ArrowLeft size={16} />
-              <span>Back to Portal</span>
+              <span className="subpage-hide-mobile">Back to Portal</span>
             </button>
 
             <div onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-              <CompanyLogo variant="compact" height={36} />
+              <CompanyLogo variant="compact" height={32} />
             </div>
           </div>
 
-          {/* Center: RERA Badge with Popup Trigger */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Center: RERA Badge with Popup Trigger (Desktop Only) */}
+          <div className="subpage-hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <button
               onClick={() => setShowReraModal(true)}
               style={{
@@ -508,28 +496,30 @@ export default function VtpBlueWatersProjectPage({ onBackHome }) {
           </div>
 
           {/* Right: Quick Action CTAs */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <a
               href="tel:+919673000053"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '6px',
                 background: 'rgba(255, 255, 255, 0.06)',
                 border: '1px solid rgba(255, 255, 255, 0.15)',
                 color: '#E2E8F0',
-                padding: '8px 14px',
+                padding: '7px 12px',
                 borderRadius: '8px',
-                fontSize: '0.82rem',
+                fontSize: '0.80rem',
                 fontWeight: 600,
                 textDecoration: 'none',
+                minHeight: '38px',
+                touchAction: 'manipulation',
                 transition: 'background 0.2s'
               }}
-              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'}
-              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'}
+              title="Call Senior Advisor Neeraj Giri"
             >
               <Phone size={14} color="#38BDF8" />
-              <span>Call Advisor</span>
+              <span className="subpage-hide-mobile">Call Advisor</span>
             </a>
 
             <button
@@ -537,23 +527,25 @@ export default function VtpBlueWatersProjectPage({ onBackHome }) {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '6px',
                 background: '#22C55E',
                 color: '#FFFFFF',
                 border: 'none',
-                padding: '8px 16px',
+                padding: '7px 14px',
                 borderRadius: '8px',
-                fontSize: '0.82rem',
+                fontSize: '0.80rem',
                 fontWeight: 700,
                 cursor: 'pointer',
+                minHeight: '38px',
+                touchAction: 'manipulation',
                 boxShadow: '0 4px 14px rgba(34, 197, 94, 0.3)',
                 transition: 'all 0.2s'
               }}
-              onMouseEnter={e => e.currentTarget.style.background = '#16A34A'}
-              onMouseLeave={e => e.currentTarget.style.background = '#22C55E'}
+              title="Direct WhatsApp Inquiry"
             >
               <MessageSquare size={14} />
-              <span>WhatsApp Inquiry</span>
+              <span className="subpage-hide-mobile">WhatsApp</span>
             </button>
           </div>
         </div>
