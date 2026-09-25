@@ -1395,6 +1395,72 @@ const megapolisSubSocietiesProperties = [
     amenities: ["9-Hole Golf Course", "50,000 sq.ft Clubhouse", "Private Helipad", "Concierge Service"],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT — JOYVILLE SENSORIUM BY SHAPOORJI PALLONJI
+  // Hinjawadi Phase 1 / Maan, Pune | Riverfront 2 & 3 BHK Sanctuary
+  // MahaRERA Segregated by Residential Towers:
+  //   • Vista: P52100027234
+  //   • Elation: P52100024965
+  //   • Ambrosia: P52100024963
+  //   • Phase IV: P52100027244
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-joyville-sensorium",
+    title: "Joyville Sensorium",
+    projectName: "Joyville Sensorium",
+    builderName: "Shapoorji Pallonji",
+    description: "Joyville Sensorium by Shapoorji Pallonji is a premier 10.5-acre riverfront sanctuary in Hinjawadi, Pune. Featuring 2 BHK (697–792 sq.ft) & 3 BHK (973–979 sq.ft) residences with exclusive inclusions: bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony. Boasts segregated tower MahaRERAs (Vista: P52100027234, Elation: P52100024965, Ambrosia: P52100024963, Phase IV: P52100027244) and 35+ wellness amenities including Riverfront Clubhouse, Swimming Pools, Courts & Pitches, and Tracks & Fitness.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 7800000,
+    priceNegotiable: true,
+    location: "HINJEWADI",
+    address: "Joyville Sensorium, Near Mula River, Maan / Hinjawadi Phase 1, Pune — 411057",
+    latitude: 18.5942,
+    longitude: 73.7118,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "Vista: P52100027234 | Elation: P52100024965 | Ambrosia: P52100024963 | Phase IV: P52100027244",
+    possessionDate: "Phased Possession",
+    imageUrl: "/joyville_sensorium_balcony.jpg",
+    galleryImages: [
+      "/joyville_sensorium_balcony.jpg",
+      "/joyville_sensorium_living.jpg",
+      "/joyville_sensorium_bedroom.jpg",
+      "/joyville_sensorium_kitchen.jpg",
+      "/joyville_sensorium_bathroom.jpg"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "joyville-sensorium",
+    configurations: [
+      {
+        bhk: "2 BHK",
+        carpet: "697 to 792 sq. ft.",
+        highlight: true,
+        note: "2 bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony"
+      },
+      {
+        bhk: "3 BHK",
+        carpet: "973 to 979 sq. ft.",
+        highlight: true,
+        note: "3 bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony"
+      }
+    ],
+    amenities: [
+      "Riverfront Clubhouse & Swimming Pools",
+      "Relaxation Zones, Spa & Steam, Meditation Deck",
+      "Sports & Outdoor Recreation: Courts & Pitches",
+      "Tracks & Fitness: Jogging Track & Outdoor Gym",
+      "Family & Social Spaces, Amphitheatre & Kids Play Area",
+      "24x7 Multi-Tier Security & Controlled Access",
+      "100% DG Power Backup & Covered Car Parking"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
   }
 ];
 
@@ -2253,6 +2319,83 @@ const initialSocieties = [
     faqs: "Q: What are the MahaRERA numbers for Paranjape Blue Ridge?\nA: Primary RERA Numbers: P52100016328, P52100000054, P52100027419. Newer Sub-Phases & Extensions: P52100055581, P52100029952.\n\nQ: What is the price and carpet area of the featured Golf Facing flat?\nA: It is a 3 BHK & Larger configuration with ~1,110+ sq.ft carpet area, priced at ₹1.95 Cr (Negotiable).",
     seoTitle: "Paranjape Blue Ridge Hinjewadi Phase 1 | Golf Facing 3 BHK ₹1.95 Cr | 24K Realtors",
     seoDescription: "Paranjape Blue Ridge Hinjewadi Phase 1. 138-Acre Township with 9-Hole Golf Course. 3 BHK Golf Facing (~1,110+ sq.ft, ₹1.95 Cr Negotiable). MahaRERA: P52100016328, P52100000054, P52100027419, P52100055581, P52100029952."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-JOYVILLE: JOYVILLE SENSORIUM — Hinjawadi Phase 1 / Maan
+  // Developer: Shapoorji Pallonji (Joyville Shapoorji Housing)
+  // MahaRERA Segregated by Residential Towers:
+  //   • Vista: P52100027234
+  //   • Elation: P52100024965
+  //   • Ambrosia: P52100024963
+  //   • Phase IV: P52100027244
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-joyville-sensorium",
+    name: "Joyville Sensorium",
+    canonicalName: "Joyville Sensorium Hinjawadi Pune",
+    slug: "joyville-sensorium",
+    imageUrl: "/joyville_sensorium_balcony.jpg",
+    galleryImages: [
+      "/joyville_sensorium_balcony.jpg",
+      "/joyville_sensorium_living.jpg",
+      "/joyville_sensorium_bedroom.jpg",
+      "/joyville_sensorium_kitchen.jpg",
+      "/joyville_sensorium_bathroom.jpg"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_1",
+    developer: "Shapoorji Pallonji",
+    reraNumber: "Vista: P52100027234, Elation: P52100024965, Ambrosia: P52100024963, Phase IV: P52100027244",
+    projectStatus: "UNDER_CONSTRUCTION",
+    startingPrice: 7800000,
+    priceLastVerified: "25 Sep 2026",
+    possessionDate: "Phased Possession",
+    projectArea: "10.5+ Acres Riverfront Development",
+    overview: "Joyville Sensorium by Shapoorji Pallonji in Hinjawadi, Pune is an expansive 10.5-acre riverfront sanctuary crafted around immersive sensory living. MahaRERA registration numbers are segregated by specific residential towers — Vista: P52100027234, Elation: P52100024965, Ambrosia: P52100024963, Phase IV: P52100027244. Offering thoughtfully designed 2 BHK (697 to 792 sq.ft) & 3 BHK (973 to 979 sq.ft) residences, each with terrace and dry balcony inclusions, overlooking the serene Mula River. Features 35+ sensory and wellness amenities including Riverfront Clubhouse, Swimming Pools, Courts & Pitches, Fitness Tracks, and Family Spaces.",
+    amenities: "Riverfront Clubhouse, Swimming Pools, Relaxation Zones, Sports & Outdoor Recreation, Courts & Pitches, Tracks & Fitness, Family & Social Spaces, 24x7 Security, Power Backup, Covered Parking",
+    priceRange: "₹78 Lakhs – ₹1.25 Cr (Negotiable)",
+    configuration: "2 BHK (697–792 sq.ft) | 3 BHK (973–979 sq.ft)",
+    configurationSummary: "2 BHK & 3 BHK Riverfront Residences",
+    configurations: [
+      {
+        bhkType: "2 BHK",
+        carpetArea: "697 to 792 sq. ft.",
+        priceLabel: "₹78 L – ₹88 L (Negotiable)",
+        status: "Available",
+        note: "2 bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony"
+      },
+      {
+        bhkType: "3 BHK",
+        carpetArea: "973 to 979 sq. ft.",
+        priceLabel: "₹1.10 Cr – ₹1.25 Cr (Negotiable)",
+        status: "Available",
+        note: "3 bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony"
+      }
+    ],
+    highlights: [
+      "Tower-Wise MahaRERA: Vista (P52100027234), Elation (P52100024965), Ambrosia (P52100024963), Phase IV (P52100027244)",
+      "Carpet: 2 BHK (697 to 792 sq. ft.) & 3 BHK (973 to 979 sq. ft.)",
+      "Key Inclusions: Terrace + Dry Balcony in every configuration",
+      "Scenic Mula Riverfront location with hill & water views",
+      "Wellness & Leisure Amenities: Riverfront Clubhouse, Pools, Relaxation Zones",
+      "Sports & Outdoor: Courts, Pitches, Tracks & Fitness, Family Social Spaces",
+      "Shapoorji Pallonji 150+ Years Construction Legacy"
+    ],
+    nearbySchools: "Blue Ridge Public School (3.2 km), Mercedes-Benz International School (4.0 km), Pawar Public School (4.5 km)",
+    nearbyHospitals: "Ruby Hall Clinic Hinjawadi (3.5 km), Hinjawadi Hospital (3.0 km)",
+    nearbyItParks: "Wipro Circle Phase 1 (2.5 km), Infosys Phase 1 (3.0 km), TCS Sahyadri (4.5 km)",
+    nearbyMetro: "Upcoming Hinjewadi Phase 1 Metro Station (Line 3 - 2.8 km)",
+    nearbyMalls: "Grand Highstreet Hinjewadi (3.0 km), Phoenix Mall of the Millennium (6.0 km)",
+    travelTimeInfo: "Wipro Circle: 5 mins | Infosys Phase 1: 7 mins | Blue Ridge: 6 mins | Mumbai-Pune Expressway: 12 mins",
+    investmentScore: 96,
+    rentalYield: 5.4,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What are the MahaRERA numbers for Joyville Sensorium?\nA: Tower MahaRERAs are: Vista: P52100027234, Elation: P52100024965, Ambrosia: P52100024963, Phase IV: P52100027244.\n\nQ: Who is the developer of Joyville Sensorium?\nA: Joyville Sensorium is developed by Shapoorji Pallonji (Joyville Shapoorji Housing).\n\nQ: What are the carpet area ranges and inclusions?\nA: 2 BHK is 697 to 792 sq. ft. and 3 BHK is 973 to 979 sq. ft. Both configurations include bedrooms, bathrooms, living & dining, kitchen, terrace, and a dry balcony.",
+    seoTitle: "Joyville Sensorium Hinjawadi Pune | 2 & 3 BHK Riverfront Flats | Shapoorji Pallonji",
+    seoDescription: "Joyville Sensorium by Shapoorji Pallonji in Hinjawadi, Pune. 2 BHK (697-792 sq.ft) & 3 BHK (973-979 sq.ft) with terrace & dry balcony. Tower RERAs: Vista P52100027234, Elation P52100024965, Ambrosia P52100024963, Phase IV P52100027244."
   }
 ];
 

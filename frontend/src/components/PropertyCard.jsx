@@ -28,6 +28,11 @@ const getForbesTeslaPropertyImage = (property) => {
     return '/blue_ridge_project_card.jpg';
   }
 
+  // Joyville Sensorium by Shapoorji Pallonji
+  if (id.includes('sensorium') || title.includes('sensorium') || title.includes('joyville')) {
+    return '/joyville_sensorium_balcony.jpg';
+  }
+
   if (property?.imageUrl && !property.imageUrl.includes('unsplash.com')) {
     return property.imageUrl;
   }
@@ -139,6 +144,9 @@ const formatCardPrice = (p, transactionType, propertyTitle = '') => {
     }
     if (t.includes('blue waters') || t.includes('bluewater') || t.includes('vtp')) {
       return { main: '₹72 Lakhs*', suffix: '(Negotiable)' };
+    }
+    if (t.includes('sensorium') || t.includes('joyville')) {
+      return { main: '₹78 Lakhs*', suffix: 'Onwards' };
     }
     return { main: 'Price on Request', suffix: '' };
   }
@@ -290,6 +298,26 @@ const DeveloperBrandMark = ({ builderName = '', title = '' }) => {
     );
   }
 
+  if (b.includes('shapoorji') || b.includes('joyville') || b.includes('sensorium')) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <span style={{ 
+          fontFamily: "'Cinzel', 'Playfair Display', serif", 
+          fontWeight: 900, 
+          fontSize: '0.96rem', 
+          color: '#10B981', 
+          letterSpacing: '0.04em' 
+        }}>
+          SHAPOORJI
+        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+          <span style={{ fontSize: '0.48rem', fontWeight: 800, letterSpacing: '0.08em', color: '#E2E8F0' }}>PALLONJI</span>
+          <span style={{ fontSize: '0.42rem', fontWeight: 600, letterSpacing: '0.06em', color: '#6EE7B7' }}>150+ YRS LEGACY</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
       <span style={{ 
@@ -317,6 +345,7 @@ const getImageTagline = (property) => {
   if (t.includes('sportsville') || t.includes('kohinoor')) return 'MORE THAN A HOME\nA HEALTHIER TOMORROW';
   if (t.includes('cliff') || t.includes('clip') || t.includes('tcg')) return 'PANORAMIC HILLSIDE LIVING\nHINJEWADI PHASE 3';
   if (t.includes('blue waters') || t.includes('bluewater') || t.includes('vtp')) return '100+ ACRE RIVERSIDE TOWNSHIP\nMAHALUNGE-HINJEWADI';
+  if (t.includes('sensorium') || t.includes('joyville')) return 'RIVERFRONT SANCTUARY\nHINJEWADI, PUNE';
   if (property.tagline) return property.tagline;
   return 'PREMIUM HOMES • BETTER LIVING';
 };
@@ -397,6 +426,14 @@ const getCardHighlights = (property) => {
     ];
   }
 
+  if (t.includes('sensorium') || t.includes('joyville')) {
+    return [
+      { icon: Building2, line1: '2 & 3 BHK', line2: 'Terrace + Dry Balc.' },
+      { icon: ShieldCheck, line1: '4 Tower RERA', line2: 'P52100027234+' },
+      { icon: Trophy, line1: 'Riverfront', line2: 'Clubhouse & Pools' }
+    ];
+  }
+
   return [
     { icon: Building2, line1: 'Modern', line2: 'Amenities' },
     { icon: MapPin, line1: 'Prime', line2: 'Location' },
@@ -474,6 +511,10 @@ export default function PropertyCard({
     // 8. Paranjape Blue Ridge
     if (id.includes('blue-ridge') || title.includes('blue ridge') || slug.includes('blue-ridge')) {
       return '/blue-ridge-hinjewadi';
+    }
+    // 9. Joyville Sensorium by Shapoorji Pallonji
+    if (id.includes('sensorium') || title.includes('sensorium') || slug.includes('sensorium') || title.includes('joyville')) {
+      return '/joyville-sensorium';
     }
     return null;
   };

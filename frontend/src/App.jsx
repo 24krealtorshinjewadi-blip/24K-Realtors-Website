@@ -43,6 +43,7 @@ const KohinoorProjectPage       = lazy(() => import('./components/KohinoorProjec
 const TcgCliffGardenProjectPage  = lazy(() => import('./components/TcgCliffGardenProjectPage'));
 const VtpBlueWatersProjectPage   = lazy(() => import('./components/VtpBlueWatersProjectPage'));
 const BlueRidgeProjectPage       = lazy(() => import('./components/BlueRidgeProjectPage'));
+const JoyvilleSensoriumProjectPage = lazy(() => import('./components/JoyvilleSensoriumProjectPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -122,6 +123,10 @@ function ProtectedDashboardRoute({ onViewChange }) {
 function SocietyDetailRouteWrapper({ onBack }) {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const s = String(slug || '').toLowerCase();
+  if (s.includes('sensorium') || s === 'joyville-sensorium') {
+    return <Navigate to="/joyville-sensorium" replace />;
+  }
   return (
     <PublicSocietyDetailPage
       slug={slug || 'kolte-patil-life-republic-hinjewadi'}
@@ -161,6 +166,9 @@ function PropertyDetailRouteWrapper() {
   }
   if (keyStr.includes('blue-ridge') || keyStr.includes('blueridge') || keyStr === 'prop-paranjape-blue-ridge' || keyStr === 'blue-ridge') {
     return <Navigate to="/blue-ridge-hinjewadi" replace />;
+  }
+  if (keyStr.includes('sensorium') || keyStr.includes('joyville') || keyStr === 'prop-joyville-sensorium') {
+    return <Navigate to="/joyville-sensorium" replace />;
   }
 
   const [property, setProperty] = useState(location.state?.property || null);
@@ -323,6 +331,10 @@ function LegacyHashRedirectHandler() {
         navigate('/megapolis-splendour', { replace: true });
         return;
       }
+      if (hash === 'joyville-sensorium' || hash === 'sensorium' || hash === 'joyville' || hash === 'joyville-hinjewadi') {
+        navigate('/joyville-sensorium', { replace: true });
+        return;
+      }
       if (hash.startsWith('townships/megapolis/')) {
         const socId = hash.replace('townships/megapolis/', '');
         navigate(`/townships/megapolis/${socId}`, { replace: true });
@@ -383,6 +395,9 @@ function AppContent() {
                   : pathname === '/megapolis-saffron-1-bhk' ? SEO_CONFIGS.megapolis_saffron_1bhk
                   : pathname === '/megapolis-saffron-2-bhk' ? SEO_CONFIGS.megapolis_saffron_2bhk
                   : pathname === '/megapolis-splendour' || pathname === '/megapolis-splendour-hinjewadi' || pathname === '/townships/megapolis/splendour' ? SEO_CONFIGS.megapolis_splendour
+                  : pathname === '/joyville-sensorium' || pathname === '/joyville-sensorium-hinjewadi' || pathname === '/sensorium' || pathname === '/sensorium-hinjewadi' ? SEO_CONFIGS.joyville_sensorium
+                  : pathname === '/joyville-sensorium-2-bhk' ? SEO_CONFIGS.joyville_sensorium_2bhk
+                  : pathname === '/joyville-sensorium-3-bhk' ? SEO_CONFIGS.joyville_sensorium_3bhk
                   : pathname.startsWith('/blog')    ? SEO_CONFIGS.blog
                   : SEO_CONFIGS.portal;
   useSEO(seoConfig);
@@ -827,6 +842,35 @@ function AppContent() {
               <Route path="/blueridge" element={<Navigate to="/blue-ridge-hinjewadi" replace />} />
               <Route path="/projects/blue-ridge" element={<Navigate to="/blue-ridge-hinjewadi" replace />} />
               <Route path="/projects/paranjape-blue-ridge" element={<Navigate to="/blue-ridge-hinjewadi" replace />} />
+
+              {/* ─── JOYVILLE SENSORIUM BY SHAPOORJI PALLONJI — Dedicated Showcase Subpage ─── */}
+              <Route
+                path="/joyville-sensorium"
+                element={<JoyvilleSensoriumProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/joyville-sensorium-hinjewadi"
+                element={<JoyvilleSensoriumProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/sensorium-hinjewadi"
+                element={<JoyvilleSensoriumProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/sensorium"
+                element={<JoyvilleSensoriumProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/joyville-sensorium-2-bhk"
+                element={<JoyvilleSensoriumProjectPage initialBhkFilter="2 BHK" onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/joyville-sensorium-3-bhk"
+                element={<JoyvilleSensoriumProjectPage initialBhkFilter="3 BHK" onBackHome={() => navigate('/')} />}
+              />
+              <Route path="/projects/joyville-sensorium" element={<Navigate to="/joyville-sensorium" replace />} />
+              <Route path="/projects/sensorium" element={<Navigate to="/joyville-sensorium" replace />} />
+              <Route path="/joyville" element={<Navigate to="/joyville-sensorium" replace />} />
 
               {/* Catch-all (MUST BE LAST) */}
               <Route path="*" element={<Navigate to="/" replace />} />

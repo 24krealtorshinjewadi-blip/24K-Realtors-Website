@@ -283,6 +283,24 @@ export const SEO_CONFIGS = {
     description: 'Spacious 2 & 3 BHK park-facing apartments in Megapolis Sparkle Hinjewadi Phase 3. Active gated community, Pawar Public School nearby. MahaRERA P52100046550.',
     url: '/townships/megapolis/sparkle',
   },
+
+  joyville_sensorium: {
+    title: 'Joyville Sensorium Hinjawadi Pune | 2 & 3 BHK Riverfront Flats | Shapoorji Pallonji | 24K Realtors',
+    description: 'Explore Joyville Sensorium by Shapoorji Pallonji in Hinjawadi, Pune. 2 BHK (697–792 sq.ft) & 3 BHK (973–979 sq.ft) riverfront flats with terrace & dry balcony. Tower RERAs: Vista P52100027234, Elation P52100024965, Ambrosia P52100024963, Phase IV P52100027244. 100% authentic site photos.',
+    url: '/joyville-sensorium',
+  },
+
+  joyville_sensorium_2bhk: {
+    title: 'Joyville Sensorium 2 BHK Hinjawadi Pune | Carpet 697 - 792 sq.ft | 24K Realtors',
+    description: 'Verified 2 BHK riverfront flats in Joyville Sensorium by Shapoorji Pallonji, Hinjawadi Pune. Carpet 697 to 792 sq.ft with 2 bedrooms, bathrooms, living & dining, terrace, and dry balcony. MahaRERA registered.',
+    url: '/joyville-sensorium-2-bhk',
+  },
+
+  joyville_sensorium_3bhk: {
+    title: 'Joyville Sensorium 3 BHK Hinjawadi Pune | Carpet 973 - 979 sq.ft | 24K Realtors',
+    description: 'Verified 3 BHK riverfront luxury flats in Joyville Sensorium by Shapoorji Pallonji, Hinjawadi Pune. Carpet 973 to 979 sq.ft with 3 bedrooms, bathrooms, living & dining, terrace, and dry balcony. MahaRERA registered.',
+    url: '/joyville-sensorium-3-bhk',
+  },
 };
 
 
