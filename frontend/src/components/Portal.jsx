@@ -1265,7 +1265,8 @@ export default function Portal({ onViewChange }) {
           if (t.includes('cliff') || t.includes('tcg') || p?.id === 'prop-tcg-the-cliff-garden') return 6;
           if (t.includes('blue waters') || t.includes('vtp') || p?.id === 'prop-vtp-blue-waters') return 7;
           if (t.includes('blue ridge') || t.includes('paranjape') || p?.id === 'prop-paranjape-blue-ridge') return 8;
-          return 9;
+          if (t.includes('sensorium') || t.includes('joyville') || p?.id === 'prop-joyville-sensorium') return 8.5;
+          return 10;
         };
         unique.sort((a, b) => sortOrder(a) - sortOrder(b));
         setAllRawProperties(unique);
@@ -1399,7 +1400,8 @@ export default function Portal({ onViewChange }) {
           if (t.includes('cliff') || t.includes('tcg') || p?.id === 'prop-tcg-the-cliff-garden') return 6;
           if (t.includes('blue waters') || t.includes('vtp') || p?.id === 'prop-vtp-blue-waters') return 7;
           if (t.includes('blue ridge') || t.includes('paranjape') || p?.id === 'prop-paranjape-blue-ridge') return 8;
-          return 9;
+          if (t.includes('sensorium') || t.includes('joyville') || p?.id === 'prop-joyville-sensorium') return 8.5;
+          return 10;
         };
         unique.sort((a, b) => sortOrder(a) - sortOrder(b));
         setProperties(unique);

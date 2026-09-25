@@ -1,8 +1,8 @@
-// Auto-clear stale mock database from localStorage if it lacks v2026_seven_flagship_projects_v15
+// Auto-clear stale mock database from localStorage if it lacks v2026_nine_flagship_joyville_sensorium_v26
 try {
   const currentPropVer = localStorage.getItem('mock_properties_version');
-  if (currentPropVer !== 'v2026_seven_flagship_luxury_v17') {
-    console.info('[Cache Bust] Refreshing catalog to 7 flagship projects with official VTP card image...');
+  if (currentPropVer !== 'v2026_nine_flagship_joyville_sensorium_v26') {
+    console.info('[Cache Bust] Refreshing catalog to include Joyville Sensorium by Shapoorji Pallonji...');
     localStorage.removeItem('mock_properties');
     localStorage.removeItem('mock_properties_version');
     localStorage.removeItem('mock_societies');
@@ -769,6 +769,74 @@ const initialProperties = [
   },
 
   // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 8B — JOYVILLE SENSORIUM BY SHAPOORJI PALLONJI
+  // Hinjawadi Phase 1 / Maan, Pune | Riverfront 2 & 3 BHK Sanctuary
+  // MahaRERA Segregated by Residential Towers:
+  //   • Vista: P52100027234
+  //   • Elation: P52100024965
+  //   • Ambrosia: P52100024963
+  //   • Phase IV: P52100027244
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-joyville-sensorium",
+    title: "Joyville Sensorium",
+    projectName: "Joyville Sensorium",
+    builderName: "Shapoorji Pallonji",
+    description: "Joyville Sensorium by Shapoorji Pallonji is a premier 10.5-acre riverfront sanctuary in Hinjawadi Phase 1, Pune. Featuring 2 BHK (697–792 sq.ft) & 3 BHK (973–979 sq.ft) residences with exclusive inclusions: bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony. Boasts segregated tower MahaRERAs (Vista: P52100027234, Elation: P52100024965, Ambrosia: P52100024963, Phase IV: P52100027244) and 35+ wellness amenities including Riverfront Clubhouse, Swimming Pools, Courts & Pitches, and Tracks & Fitness.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 7800000,
+    priceNegotiable: true,
+    bedrooms: 2,
+    location: "HINJEWADI_PHASE_1",
+    address: "Joyville Sensorium, Near Mula River, Maan / Hinjawadi Phase 1, Pune — 411057",
+    latitude: 18.5942,
+    longitude: 73.7118,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "Vista: P52100027234 | Elation: P52100024965 | Ambrosia: P52100024963 | Phase IV: P52100027244",
+    possessionDate: "Phased Possession",
+    imageUrl: "/joyville_sensorium_project_card.jpg",
+    galleryImages: [
+      "/joyville_sensorium_project_card.jpg",
+      "/joyville_sensorium_balcony.jpg",
+      "/joyville_sensorium_living.jpg",
+      "/joyville_sensorium_bedroom.jpg",
+      "/joyville_sensorium_kitchen.jpg",
+      "/joyville_sensorium_bathroom.jpg"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "joyville-sensorium",
+    configurations: [
+      {
+        bhk: "2 BHK",
+        carpet: "697 to 792 sq. ft.",
+        highlight: true,
+        note: "2 bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony"
+      },
+      {
+        bhk: "3 BHK",
+        carpet: "973 to 979 sq. ft.",
+        highlight: true,
+        note: "3 bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony"
+      }
+    ],
+    amenities: [
+      "Riverfront Clubhouse & Swimming Pools",
+      "Relaxation Zones, Spa & Steam, Meditation Deck",
+      "Sports & Outdoor Recreation: Courts & Pitches",
+      "Tracks & Fitness: Jogging Track & Outdoor Gym",
+      "Family & Social Spaces, Amphitheatre & Kids Play Area",
+      "24x7 Multi-Tier Security & Controlled Access",
+      "100% DG Power Backup & Covered Car Parking"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
   // MEGAPOLIS SERENITY — 2 BHK 700 SQ.FT (₹78 LAKHS)
   // MahaRERA: P52100046552 | Hinjewadi Phase 3 | Ready to Move
   // ═══════════════════════════════════════════════════════════════════
@@ -1393,73 +1461,6 @@ const megapolisSubSocietiesProperties = [
       { bhk: "3 BHK", carpet: "1450 sq.ft", highlight: true }
     ],
     amenities: ["9-Hole Golf Course", "50,000 sq.ft Clubhouse", "Private Helipad", "Concierge Service"],
-    createdDate: new Date().toISOString(),
-    updatedDate: new Date().toISOString()
-  },
-
-  // ═══════════════════════════════════════════════════════════════════
-  // PROJECT — JOYVILLE SENSORIUM BY SHAPOORJI PALLONJI
-  // Hinjawadi Phase 1 / Maan, Pune | Riverfront 2 & 3 BHK Sanctuary
-  // MahaRERA Segregated by Residential Towers:
-  //   • Vista: P52100027234
-  //   • Elation: P52100024965
-  //   • Ambrosia: P52100024963
-  //   • Phase IV: P52100027244
-  // ═══════════════════════════════════════════════════════════════════
-  {
-    id: "prop-joyville-sensorium",
-    title: "Joyville Sensorium",
-    projectName: "Joyville Sensorium",
-    builderName: "Shapoorji Pallonji",
-    description: "Joyville Sensorium by Shapoorji Pallonji is a premier 10.5-acre riverfront sanctuary in Hinjawadi, Pune. Featuring 2 BHK (697–792 sq.ft) & 3 BHK (973–979 sq.ft) residences with exclusive inclusions: bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony. Boasts segregated tower MahaRERAs (Vista: P52100027234, Elation: P52100024965, Ambrosia: P52100024963, Phase IV: P52100027244) and 35+ wellness amenities including Riverfront Clubhouse, Swimming Pools, Courts & Pitches, and Tracks & Fitness.",
-    propertyType: "RESIDENTIAL",
-    transactionType: "BUY",
-    price: 7800000,
-    priceNegotiable: true,
-    location: "HINJEWADI",
-    address: "Joyville Sensorium, Near Mula River, Maan / Hinjawadi Phase 1, Pune — 411057",
-    latitude: 18.5942,
-    longitude: 73.7118,
-    status: "AVAILABLE",
-    verifiedListing: true,
-    exclusiveDeal: true,
-    reraNumber: "Vista: P52100027234 | Elation: P52100024965 | Ambrosia: P52100024963 | Phase IV: P52100027244",
-    possessionDate: "Phased Possession",
-    imageUrl: "/joyville_sensorium_project_card.jpg",
-    galleryImages: [
-      "/joyville_sensorium_project_card.jpg",
-      "/joyville_sensorium_balcony.jpg",
-      "/joyville_sensorium_living.jpg",
-      "/joyville_sensorium_bedroom.jpg",
-      "/joyville_sensorium_kitchen.jpg",
-      "/joyville_sensorium_bathroom.jpg"
-    ],
-    furnishingStatus: "SEMI_FURNISHED",
-    gasPipeline: true,
-    societySlug: "joyville-sensorium",
-    configurations: [
-      {
-        bhk: "2 BHK",
-        carpet: "697 to 792 sq. ft.",
-        highlight: true,
-        note: "2 bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony"
-      },
-      {
-        bhk: "3 BHK",
-        carpet: "973 to 979 sq. ft.",
-        highlight: true,
-        note: "3 bedrooms, bathrooms, living & dining space, kitchen, terrace, and a dry balcony"
-      }
-    ],
-    amenities: [
-      "Riverfront Clubhouse & Swimming Pools",
-      "Relaxation Zones, Spa & Steam, Meditation Deck",
-      "Sports & Outdoor Recreation: Courts & Pitches",
-      "Tracks & Fitness: Jogging Track & Outdoor Gym",
-      "Family & Social Spaces, Amphitheatre & Kids Play Area",
-      "24x7 Multi-Tier Security & Controlled Access",
-      "100% DG Power Backup & Covered Car Parking"
-    ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
   }
@@ -2513,7 +2514,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_eight_flagship_blue_ridge_v25';
+const HINJEWADI_PROP_VERSION = 'v2026_nine_flagship_joyville_sensorium_v26';
 
 const LocalMockDb = {
   getProperties() {
@@ -2532,6 +2533,20 @@ const LocalMockDb = {
     }
     if (!list || !list.length) list = initialProperties;
 
+    // Self-healing: ensure all initialProperties exist in list
+    const existingIds = new Set(list.map(p => p && p.id));
+    let hasNewProps = false;
+    for (const initP of initialProperties) {
+      if (initP && initP.id && !existingIds.has(initP.id)) {
+        list.push(initP);
+        existingIds.add(initP.id);
+        hasNewProps = true;
+      }
+    }
+    if (hasNewProps) {
+      saveLocalStorageItem('mock_properties', list);
+    }
+
     const seen = new Set();
     const deduped = [];
     for (const p of list) {
@@ -2541,6 +2556,13 @@ const LocalMockDb = {
         p.imageUrl = '/blue_ridge_project_card.jpg';
         if (Array.isArray(p.galleryImages) && p.galleryImages[0] !== '/blue_ridge_project_card.jpg') {
           p.galleryImages = ['/blue_ridge_project_card.jpg', ...p.galleryImages.filter(img => img !== '/blue_ridge_project_card.jpg')];
+        }
+      }
+      // Guarantee Joyville Sensorium uses new poster card image
+      if (p.id === 'prop-joyville-sensorium' || (p.title && p.title.toLowerCase().includes('sensorium'))) {
+        p.imageUrl = '/joyville_sensorium_project_card.jpg';
+        if (Array.isArray(p.galleryImages) && p.galleryImages[0] !== '/joyville_sensorium_project_card.jpg') {
+          p.galleryImages = ['/joyville_sensorium_project_card.jpg', ...p.galleryImages.filter(img => img !== '/joyville_sensorium_project_card.jpg')];
         }
       }
       const key = String(p.id);
@@ -2601,6 +2623,20 @@ const LocalMockDb = {
     }
     if (!list || !list.length) list = initialSocieties;
 
+    // Self-healing: ensure all initialSocieties exist in list
+    const existingSocIds = new Set(list.map(s => s && s.id));
+    let hasNewSocs = false;
+    for (const initS of initialSocieties) {
+      if (initS && initS.id && !existingSocIds.has(initS.id)) {
+        list.push(initS);
+        existingSocIds.add(initS.id);
+        hasNewSocs = true;
+      }
+    }
+    if (hasNewSocs) {
+      saveLocalStorageItem('mock_societies', list);
+    }
+
     const seen = new Set();
     const deduped = [];
     for (const s of list) {
@@ -2610,6 +2646,13 @@ const LocalMockDb = {
         s.imageUrl = '/blue_ridge_project_card.jpg';
         if (Array.isArray(s.galleryImages) && s.galleryImages[0] !== '/blue_ridge_project_card.jpg') {
           s.galleryImages = ['/blue_ridge_project_card.jpg', ...s.galleryImages.filter(img => img !== '/blue_ridge_project_card.jpg')];
+        }
+      }
+      // Guarantee Joyville Sensorium uses new poster card image
+      if (s.id === 'soc-joyville-sensorium' || (s.name && s.name.toLowerCase().includes('sensorium'))) {
+        s.imageUrl = '/joyville_sensorium_project_card.jpg';
+        if (Array.isArray(s.galleryImages) && s.galleryImages[0] !== '/joyville_sensorium_project_card.jpg') {
+          s.galleryImages = ['/joyville_sensorium_project_card.jpg', ...s.galleryImages.filter(img => img !== '/joyville_sensorium_project_card.jpg')];
         }
       }
       const key = String(s.id);
@@ -3132,8 +3175,8 @@ export const apiService = {
         
         if (filters.location) {
           const locFilter = String(filters.location).toUpperCase();
-          if (locFilter === 'HINJEWADI') {
-            list = list.filter(p => p.location && p.location.toUpperCase().startsWith('HINJEWADI'));
+          if (locFilter === 'HINJEWADI' || locFilter.startsWith('HINJEWADI')) {
+            list = list.filter(p => p.location && (p.location.toUpperCase().startsWith('HINJEWADI') || locFilter.startsWith(p.location.toUpperCase())));
           } else {
             list = list.filter(p => p.location && (p.location.toUpperCase() === locFilter || p.location.toUpperCase().includes(locFilter)));
           }
@@ -3147,13 +3190,19 @@ export const apiService = {
           );
         }
         if (filters.reraOnly) {
-          list = list.filter(p => p.reraNumber && (p.reraNumber.startsWith('P521000') || p.reraNumber.startsWith('PR126')));
+          list = list.filter(p => p.reraNumber && (p.reraNumber.startsWith('P521000') || p.reraNumber.startsWith('PR126') || p.reraNumber.includes('P521000')));
         }
         if (filters.minPrice) list = list.filter(p => p.price >= Number(filters.minPrice));
         if (filters.maxPrice) list = list.filter(p => p.price <= Number(filters.maxPrice));
         if (filters.propertyType) list = list.filter(p => p.propertyType === filters.propertyType);
         if (filters.transactionType) list = list.filter(p => p.transactionType === filters.transactionType);
-        if (filters.bedrooms) list = list.filter(p => p.bedrooms === Number(filters.bedrooms));
+        if (filters.bedrooms) {
+          const reqBed = Number(filters.bedrooms);
+          list = list.filter(p => 
+            p.bedrooms === reqBed || 
+            (Array.isArray(p.configurations) && p.configurations.some(c => (c.bhk || '').includes(String(reqBed))))
+          );
+        }
         if (filters.status) list = list.filter(p => p.status === filters.status);
         if (filters.furnishingStatus) list = list.filter(p => p.furnishingStatus === filters.furnishingStatus);
         if (filters.commercialUnitType) {
@@ -5584,7 +5633,7 @@ export const apiService = {
           possessionDate: s.possessionDate || 'December 2027',
           confidenceLevel: s.confidenceLevel || 'HIGH',
           lastVerifiedAt: s.lastVerifiedAt || '2026-08-25',
-          heroImageUrl: s.galleryUrls ? s.galleryUrls.split(',')[0] : '/dev_kolte_patil_township.png',
+          heroImageUrl: s.imageUrl || s.heroImageUrl || (Array.isArray(s.galleryImages) && s.galleryImages[0]) || (s.galleryUrls ? s.galleryUrls.split(',')[0] : '/joyville_sensorium_project_card.jpg'),
           hasNewSale: true,
           hasResale: true,
           hasRental: true
