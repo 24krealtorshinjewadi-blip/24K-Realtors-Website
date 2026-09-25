@@ -1068,6 +1068,58 @@ const megapolisSubSocietiesProperties = [
   },
 
   // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 6C — MEGAPOLIS SPARKLET
+  // MahaRERA: A51800000454 & P52100078240 | Hinjewadi Phase 3
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-sparklet",
+    title: "Megapolis Sparklet",
+    projectName: "Megapolis Sparklet",
+    builderName: "Pegasus Properties (Megapolis)",
+    description: "Ready-to-move 1 & 2 BHK scenic hillside residences in Megapolis Township by Pegasus Properties. Dual MahaRERA registered under A51800000454 and P52100078240. Offers 1 BHK (~450–480 sq.ft usable carpet) & 2 BHK (680–760 sq.ft usable carpet) apartments with curved panoramic balcony terraces overlooking the Olympic swimming pool, granite kitchen, fitted bathroom with geyser, and full Megapolis township privileges.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 4800000,
+    priceNegotiable: true,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Sparklet, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5792,
+    longitude: 73.6940,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "A51800000454, P52100078240",
+    possessionDate: "Ready to Move",
+    imageUrl: "/megapolis_sparklet_balcony.jpg",
+    galleryImages: [
+      "/megapolis_sparklet_balcony.jpg",
+      "/megapolis_sparklet_living.jpg",
+      "/megapolis_sparklet_bedroom.jpg",
+      "/megapolis_sparklet_kitchen.jpg",
+      "/megapolis_sparklet_bathroom.jpg"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "megapolis-sparklet",
+    configurations: [
+      { bhk: "1 BHK", carpet: "450 – 480 sq.ft", highlight: true, note: "Usable Carpet Area · High Efficiency" },
+      { bhk: "2 BHK", carpet: "680 – 760 sq.ft", highlight: true, note: "Spacious Curved Balcony Family Layout" }
+    ],
+    amenities: [
+      "Olympic-Sized Swimming Pool & Kids Pool",
+      "High-Tech Gymnasium & Aerobics Studio",
+      "Grand Mega-Clubhouse & Banquet Hall",
+      "Floodlit Tennis Courts & Cricket Nets",
+      "Scenic Jogging Track & Children Play Zone",
+      "Pawar Public School within Township Campus",
+      "24x7 Multi-Tier Security & CCTV Surveillance",
+      "100% DG Power Backup & Covered Car Parking"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
   // PROJECT 7 — MEGAPOLIS SUNWAY
   // MahaRERA: P52100045780 | Hinjewadi Phase 3 | Ready to Move
   // ═══════════════════════════════════════════════════════════════════
@@ -1755,6 +1807,63 @@ const initialSocieties = [
     faqs: "Q: What are the MahaRERA numbers for Megapolis Saffron?\nA: Saffron is registered under P52100018779 (Phases A3-A9), P52100021609 (Phases A10-A14), and P52100034988 (Shops).\n\nQ: What are the carpet areas for 1 BHK and 2 BHK?\nA: 1 BHK is 444–445 sq.ft. 2 BHK is 617–637 sq.ft (with select layouts up to 698 sq.ft).\n\nQ: Are commercial shops available in Saffron?\nA: Yes, Saffron features ground-level retail shops registered under MahaRERA P52100034988.",
     seoTitle: "Megapolis Saffron Hinjewadi Phase 3 | Ready 1 & 2 BHK Flats | 24K Realtors",
     seoDescription: "Megapolis Saffron in Hinjewadi Phase 3 by Pegasus Properties. Ready 1 BHK (444-445 sq.ft) & 2 BHK (617-698 sq.ft) + Commercial Shops. Triple MahaRERA P52100018779, P52100021609, P52100034988."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-5C: MEGAPOLIS SPARKLET — Hinjewadi Phase 3
+  // MahaRERA: A51800000454 & P52100078240 | Developer: Pegasus Properties (Megapolis)
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-megapolis-sparklet",
+    name: "Megapolis Sparklet",
+    canonicalName: "Megapolis Sparklet Hinjewadi Phase 3",
+    slug: "megapolis-sparklet",
+    imageUrl: "/megapolis_sparklet_balcony.jpg",
+    galleryImages: [
+      "/megapolis_sparklet_balcony.jpg",
+      "/megapolis_sparklet_living.jpg",
+      "/megapolis_sparklet_bedroom.jpg",
+      "/megapolis_sparklet_kitchen.jpg",
+      "/megapolis_sparklet_bathroom.jpg"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    townshipName: "Megapolis",
+    parentProjectId: "megapolis",
+    developer: "Pegasus Properties (Megapolis)",
+    reraNumber: "A51800000454, P52100078240",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 4800000,
+    priceLastVerified: "25 Sep 2026",
+    possessionDate: "Ready to Move",
+    projectArea: "142+ Acres Integrated Township",
+    overview: "Megapolis Sparklet (also referred to as Spaklet) is an established ready-to-move residential cluster within the 142+ acre Megapolis Township in Hinjewadi Phase 3, Pune. Developed by Pegasus Properties under dual MahaRERA numbers A51800000454 and P52100078240. Features 1 BHK (~450 to 480 sq.ft usable carpet) and 2 BHK (680 to 760 sq.ft usable carpet) apartments with curved panoramic balconies overlooking the Megapolis pool and towers, fitted kitchen with black granite platform, full bathroom with geyser, and comprehensive Megapolis township lifestyle amenities.",
+    amenities: "Olympic Swimming Pool, Gymnasium, Mega-Clubhouse, Floodlit Tennis Courts, Cricket Nets, Jogging Track, Children Play Area, Pawar Public School within campus, 24x7 Multi-Tier Security, 100% DG Power Backup, Car Parking",
+    priceRange: "₹48 Lakhs – ₹82 Lakhs (Negotiable)",
+    configuration: "1 BHK (450–480 sq.ft) | 2 BHK (680–760 sq.ft)",
+    configurationSummary: "1 BHK & 2 BHK Ready Homes",
+    configurations: [
+      { bhkType: "1 BHK", carpetArea: "450 sq.ft", priceLabel: "₹48 Lakhs (Negotiable)", status: "Available", note: "Compact Efficient Layout" },
+      { bhkType: "1 BHK", carpetArea: "480 sq.ft", priceLabel: "₹51 Lakhs (Negotiable)", status: "Available", note: "Premium High Floor 1 BHK" },
+      { bhkType: "2 BHK", carpetArea: "680 sq.ft", priceLabel: "₹72 Lakhs (Negotiable)", status: "Available", note: "Standard Family 2 BHK" },
+      { bhkType: "2 BHK", carpetArea: "720 sq.ft", priceLabel: "₹76 Lakhs (Negotiable)", status: "Available", note: "Curved Balcony Pool Vista" },
+      { bhkType: "2 BHK", carpetArea: "760 sq.ft", priceLabel: "₹81 Lakhs (Negotiable)", status: "Available", note: "Grand Layout 2 BHK" }
+    ],
+    nearbySchools: "Pawar Public School (Within Township - 300m)",
+    nearbyHospitals: "Ruby Hall Clinic (5.0 km)",
+    nearbyItParks: "Tech Mahindra (400m), TCS Sahyadri (600m), Cognizant (800m)",
+    nearbyMetro: "Megapolis Metro Station (400m)",
+    nearbyMalls: "Megapolis High Street (Within Campus)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6948!3d18.5798!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Sparklet!5e0!3m2!1sen!2sin!4v1725118",
+    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Cognizant: 5 mins walk | Wipro Circle: 8 mins | Expressway: 18 mins",
+    investmentScore: 98,
+    rentalYield: 5.6,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What are the MahaRERA numbers for Megapolis Sparklet?\nA: Megapolis Sparklet is registered under A51800000454 and P52100078240.\n\nQ: What are the usable carpet areas for 1 BHK and 2 BHK?\nA: 1 BHK is approximately 450 to 480 sq.ft. 2 BHK ranges between 680 and 760 sq.ft.\n\nQ: Who developed Megapolis Sparklet?\nA: Megapolis Sparklet is developed by Pegasus Properties (Megapolis Township).",
+    seoTitle: "Megapolis Sparklet Hinjewadi Phase 3 | Ready 1 & 2 BHK Flats | 24K Realtors",
+    seoDescription: "Megapolis Sparklet in Hinjewadi Phase 3 by Pegasus Properties. Ready 1 BHK (450-480 sq.ft) & 2 BHK (680-760 sq.ft). Dual MahaRERA A51800000454 & P52100078240. 100% authentic photos."
   },
 
   // ═══════════════════════════════════════════════════════════════════

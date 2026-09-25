@@ -107,6 +107,24 @@ export const MEGAPOLIS_SOCIETIES = [
     possession: 'Ready'
   },
   {
+    id: 'sparklet',
+    slug: 'megapolis-sparklet',
+    displayName: 'Sparklet',
+    fullName: 'Megapolis Sparklet',
+    tagline: 'Scenic Balcony Vistas. Ready 1 & 2 BHK Residences. Pegasus Properties.',
+    bhkOptions: ['1 BHK', '2 BHK'],
+    carpetRange: '450 – 760 sqft (1BHK: 450-480 sqft | 2BHK: 680-760 sqft)',
+    priceRange: '₹48L – ₹82L (Negotiable)',
+    unitCount: 520,
+    towers: 6,
+    status: 'READY_TO_MOVE',
+    reraNumber: 'A51800000454 · P52100078240',
+    accentHex: '#06B6D4',
+    imageUrl: '/megapolis_sparklet_balcony.jpg',
+    features: ['1 BHK (450-480 sq.ft) & 2 BHK (680-760 sq.ft)', 'Dual MahaRERA A51800000454 · P52100078240', 'Olympic Pool, Gym & Sports Club'],
+    possession: 'Ready'
+  },
+  {
     id: 'sunway',
     slug: 'megapolis-sunway',
     displayName: 'Sunway',
@@ -329,11 +347,11 @@ const MEGAPOLIS_DATA = {
     },
     {
       q: 'Which societies are part of Megapolis Township?',
-      a: 'Megapolis features iconic gated society clusters: Splendour (ready 2 & 3 BHK luxury homes), Saffron (ready 1 & 2 BHK smart residences + commercial shops), Sangria (premium ready residences with pool view), Mystic (serene garden-facing 2 & 3 BHKs), Sunway (smart compact 1 & 2 BHKs), and Sparkle (modern community living).'
+      a: 'Megapolis features iconic gated society clusters: Splendour (ready 2 & 3 BHK luxury homes), Saffron (ready 1 & 2 BHK smart residences + commercial shops), Sparklet (ready 1 & 2 BHK hillside homes with dual RERA), Sangria (premium ready residences with pool view), Mystic (serene garden-facing 2 & 3 BHKs), Sunway (smart compact 1 & 2 BHKs), and Sparkle (modern community living).'
     },
     {
       q: 'Are properties in Megapolis ready to move or under construction?',
-      a: 'Major societies including Saffron, Splendour, Sangria, Mystic, Sunway, and Sparkle are completely ready to move with full Occupancy Certificates (OC). Saffron offers 1 BHK (444–445 sq.ft) & 2 BHK (617–637 sq.ft) ready homes, plus ground-level commercial shops.'
+      a: 'Major societies including Sparklet, Saffron, Splendour, Sangria, Mystic, Sunway, and Sparkle are completely ready to move with full Occupancy Certificates (OC). Sparklet offers 1 BHK (450–480 sq.ft) & 2 BHK (680–760 sq.ft) ready homes.'
     },
     {
       q: 'What is the long-term investment potential in Megapolis?',
@@ -341,7 +359,7 @@ const MEGAPOLIS_DATA = {
     },
     {
       q: 'What is the MahaRERA registration status for Megapolis?',
-      a: 'Each society cluster within Megapolis is individually registered with MahaRERA (e.g., Saffron: P52100018779, P52100021609 & P52100034988; Splendour: P52100022957 & P52100023051; Sangria: P52100047112; Mystic: P52100046891). 24K Realtors exclusively deals in verified titles with complete legal documentation.'
+      a: 'Each society cluster within Megapolis is individually registered with MahaRERA (e.g., Sparklet: A51800000454 & P52100078240; Saffron: P52100018779, P52100021609 & P52100034988; Splendour: P52100022957 & P52100023051; Sangria: P52100047112; Mystic: P52100046891). 24K Realtors exclusively deals in verified titles with complete legal documentation.'
     },
     {
       q: 'How can I schedule a private site visit to Megapolis?',
@@ -505,6 +523,8 @@ export default function MegapolisTownshipPage({ onBackHome }) {
       navigate('/megapolis-splendour');
     } else if (society.id === 'saffron') {
       navigate('/megapolis-saffron');
+    } else if (society.id === 'sparklet' || society.id === 'spaklet') {
+      navigate('/megapolis-sparklet');
     } else {
       navigate(`/townships/megapolis/${society.id}`);
     }
@@ -885,6 +905,11 @@ export default function MegapolisTownshipPage({ onBackHome }) {
                 )}
                 {soc.id === 'saffron' && (
                   <div style={{ position: 'absolute', bottom: '8px', right: '8px', background: '#F97316', color: '#FFFFFF', fontSize: '0.62rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
+                    🌟 Showcase Subpage · 5 Photos
+                  </div>
+                )}
+                {soc.id === 'sparklet' && (
+                  <div style={{ position: 'absolute', bottom: '8px', right: '8px', background: '#06B6D4', color: '#040814', fontSize: '0.62rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
                     🌟 Showcase Subpage · 5 Photos
                   </div>
                 )}

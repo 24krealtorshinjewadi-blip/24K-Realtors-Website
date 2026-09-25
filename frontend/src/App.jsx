@@ -37,6 +37,7 @@ const MegapolisTownshipPage     = lazy(() => import('./components/MegapolisTowns
 const MegapolisSocietyListingsPage = lazy(() => import('./components/MegapolisSocietyListingsPage'));
 const MegapolisSplendourProjectPage = lazy(() => import('./components/MegapolisSplendourProjectPage'));
 const MegapolisSaffronProjectPage = lazy(() => import('./components/MegapolisSaffronProjectPage'));
+const MegapolisSparkletProjectPage = lazy(() => import('./components/MegapolisSparkletProjectPage'));
 const YashOneProjectPage        = lazy(() => import('./components/YashOneProjectPage'));
 const KohinoorProjectPage       = lazy(() => import('./components/KohinoorProjectPage'));
 const TcgCliffGardenProjectPage  = lazy(() => import('./components/TcgCliffGardenProjectPage'));
@@ -310,6 +311,10 @@ function LegacyHashRedirectHandler() {
         navigate('/townships/megapolis', { replace: true });
         return;
       }
+      if (hash === 'megapolis-sparklet' || hash === 'sparklet' || hash === 'spaklet' || hash === 'townships/megapolis/sparklet' || hash === 'townships/megapolis/spaklet') {
+        navigate('/megapolis-sparklet', { replace: true });
+        return;
+      }
       if (hash === 'megapolis-saffron' || hash === 'saffron' || hash === 'townships/megapolis/saffron') {
         navigate('/megapolis-saffron', { replace: true });
         return;
@@ -371,6 +376,9 @@ function AppContent() {
                   : pathname === '/dashboard'       ? SEO_CONFIGS.dashboard
                   : pathname === '/login'           ? SEO_CONFIGS.login
                   : pathname === '/list-property'   ? SEO_CONFIGS.listProperty
+                  : pathname === '/megapolis-sparklet' || pathname === '/megapolis-sparklet-hinjewadi' || pathname === '/townships/megapolis/sparklet' || pathname === '/megapolis-spaklet' ? SEO_CONFIGS.megapolis_sparklet
+                  : pathname === '/megapolis-sparklet-1-bhk' ? SEO_CONFIGS.megapolis_sparklet_1bhk
+                  : pathname === '/megapolis-sparklet-2-bhk' ? SEO_CONFIGS.megapolis_sparklet_2bhk
                   : pathname === '/megapolis-saffron' || pathname === '/megapolis-saffron-hinjewadi' || pathname === '/townships/megapolis/saffron' ? SEO_CONFIGS.megapolis_saffron
                   : pathname === '/megapolis-saffron-1-bhk' ? SEO_CONFIGS.megapolis_saffron_1bhk
                   : pathname === '/megapolis-saffron-2-bhk' ? SEO_CONFIGS.megapolis_saffron_2bhk
@@ -619,6 +627,48 @@ function AppContent() {
               <Route path="/projects/megapolis-saffron" element={<Navigate to="/megapolis-saffron" replace />} />
               <Route path="/saffron-hinjewadi" element={<Navigate to="/megapolis-saffron" replace />} />
               <Route path="/saffron" element={<Navigate to="/megapolis-saffron" replace />} />
+
+              {/* ─── MEGAPOLIS SPARKLET — Dedicated Flagship Showcase Subpage ─── */}
+              <Route
+                path="/megapolis-sparklet"
+                element={<MegapolisSparkletProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/megapolis-sparklet-hinjewadi"
+                element={<MegapolisSparkletProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/megapolis-spaklet"
+                element={<MegapolisSparkletProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/townships/megapolis/sparklet"
+                element={<MegapolisSparkletProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/townships/megapolis/spaklet"
+                element={<MegapolisSparkletProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/townships/megapolis/sparklet/units"
+                element={<MegapolisSocietyListingsPage onBack={() => navigate('/megapolis-sparklet')} />}
+              />
+              <Route
+                path="/townships/megapolis/spaklet/units"
+                element={<MegapolisSocietyListingsPage onBack={() => navigate('/megapolis-sparklet')} />}
+              />
+              <Route
+                path="/megapolis-sparklet-1-bhk"
+                element={<MegapolisSparkletProjectPage initialBhkFilter="1 BHK" onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/megapolis-sparklet-2-bhk"
+                element={<MegapolisSparkletProjectPage initialBhkFilter="2 BHK" onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route path="/projects/megapolis-sparklet" element={<Navigate to="/megapolis-sparklet" replace />} />
+              <Route path="/sparklet-hinjewadi" element={<Navigate to="/megapolis-sparklet" replace />} />
+              <Route path="/sparklet" element={<Navigate to="/megapolis-sparklet" replace />} />
+              <Route path="/spaklet" element={<Navigate to="/megapolis-sparklet" replace />} />
 
               {/* Megapolis Society Listings — Dual Panel Filter + Units */}
               <Route

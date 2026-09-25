@@ -334,6 +334,114 @@ function buildMockUnits(societyId) {
     ];
   }
 
+  if (soc.id === 'sparklet' || soc.id === 'spaklet') {
+    return [
+      {
+        id: 'unit-megapolis-sparklet-1bhk-450-primary',
+        bhkType: '1 BHK',
+        societySlug: 'sparklet',
+        societyName: 'Megapolis Sparklet',
+        carpetAreaSqft: 450,
+        builtUpAreaSqft: 620,
+        totalPrice: 4800000,
+        tower: 'Tower S1',
+        floorNumber: 5,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Podium & Garden View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'A51800000454',
+        imageUrl: '/megapolis_sparklet_kitchen.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        exclusiveDeal: true,
+        tag: '1 BHK Smart Unit (450 sq.ft)'
+      },
+      {
+        id: 'unit-megapolis-sparklet-1bhk-480-fl9',
+        bhkType: '1 BHK',
+        societySlug: 'sparklet',
+        societyName: 'Megapolis Sparklet',
+        carpetAreaSqft: 480,
+        builtUpAreaSqft: 660,
+        totalPrice: 5100000,
+        tower: 'Tower S2',
+        floorNumber: 9,
+        furnishingStatus: 'Unfurnished',
+        viewType: 'Open Sahyadri Breeze View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100078240',
+        imageUrl: '/megapolis_sparklet_living.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        tag: '1 BHK Premium (480 sq.ft)'
+      },
+      {
+        id: 'unit-megapolis-sparklet-2bhk-680-standard',
+        bhkType: '2 BHK',
+        societySlug: 'sparklet',
+        societyName: 'Megapolis Sparklet',
+        carpetAreaSqft: 680,
+        builtUpAreaSqft: 935,
+        totalPrice: 7200000,
+        tower: 'Tower S3',
+        floorNumber: 4,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Hillside & Township View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'A51800000454',
+        imageUrl: '/megapolis_sparklet_bedroom.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        exclusiveDeal: true,
+        tag: '2 BHK Standard (680 sq.ft)'
+      },
+      {
+        id: 'unit-megapolis-sparklet-2bhk-720-fl11',
+        bhkType: '2 BHK',
+        societySlug: 'sparklet',
+        societyName: 'Megapolis Sparklet',
+        carpetAreaSqft: 720,
+        builtUpAreaSqft: 990,
+        totalPrice: 7600000,
+        tower: 'Tower S4',
+        floorNumber: 11,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Panoramic Balcony & Pool Vista',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100078240',
+        imageUrl: '/megapolis_sparklet_balcony.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        exclusiveDeal: true,
+        tag: 'Curved Balcony Unit (720 sq.ft)'
+      },
+      {
+        id: 'unit-megapolis-sparklet-2bhk-760-grand',
+        bhkType: '2 BHK',
+        societySlug: 'sparklet',
+        societyName: 'Megapolis Sparklet',
+        carpetAreaSqft: 760,
+        builtUpAreaSqft: 1045,
+        totalPrice: 8100000,
+        tower: 'Tower S5',
+        floorNumber: 14,
+        furnishingStatus: 'Furnished',
+        viewType: 'Skyline Sunset View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100078240',
+        imageUrl: '/megapolis_sparklet_bathroom.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        tag: 'Grand 2 BHK (760 sq.ft)'
+      }
+    ];
+  }
+
   const BHK_SPECS = {
     '1 BHK':   { carpet: [440, 490, 510], builtUp: 620, basePrice: 6800000,  psf: 13800 },
     '2 BHK':   { carpet: [645, 695, 730], builtUp: 920, basePrice: 9500000,  psf: 14000 },
@@ -1148,6 +1256,55 @@ export default function MegapolisSocietyListingsPage({ onBack }) {
                 style={{
                   background: 'linear-gradient(135deg, #F97316, #EA580C)',
                   color: '#FFFFFF',
+                  fontWeight: 800,
+                  fontSize: '0.82rem',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '11px 20px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <span>Explore Full Showcase Subpage</span>
+                <ChevronRight size={14} />
+              </button>
+            </div>
+          )}
+
+          {/* ── MEGAPOLIS SPARKLET FLAGSHIP SUBPAGE VIP BANNER ──────────────── */}
+          {(societyId === 'sparklet' || societyId === 'spaklet') && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(6,182,212,0.18) 0%, rgba(11,17,32,0.95) 70%)',
+              border: '1px solid rgba(6,182,212,0.4)',
+              borderRadius: '14px',
+              padding: '20px 24px',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
+              flexWrap: 'wrap'
+            }}>
+              <div>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(6,182,212,0.2)', border: '1px solid #06B6D4', color: '#67E8F9', padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 800, marginBottom: '6px' }}>
+                  ★ DEDICATED PROJECT SHOWCASE SUBPAGE
+                </div>
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', fontWeight: 700, color: '#FFFFFF', margin: '0 0 4px 0' }}>
+                  Megapolis Sparklet — Flagship Virtual Dossier
+                </h3>
+                <p style={{ color: '#CBD5E1', fontSize: '0.82rem', margin: 0, maxWidth: '600px', lineHeight: 1.45 }}>
+                  Explore 100% authentic on-site photos (panoramic curved balcony, living lounge, bedroom, granite kitchen &amp; fitted bathroom), dual MahaRERA verification (A51800000454 &amp; P52100078240), 1 BHK (450–480 sq.ft) &amp; 2 BHK (680–760 sq.ft) units, and negotiable pricing.
+                </p>
+              </div>
+
+              <button
+                onClick={() => navigate('/megapolis-sparklet')}
+                style={{
+                  background: 'linear-gradient(135deg, #0284C7, #06B6D4)',
+                  color: '#040814',
                   fontWeight: 800,
                   fontSize: '0.82rem',
                   border: 'none',

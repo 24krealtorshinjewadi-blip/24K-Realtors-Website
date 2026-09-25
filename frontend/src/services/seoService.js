@@ -254,6 +254,24 @@ export const SEO_CONFIGS = {
     url: '/megapolis-saffron-2-bhk',
   },
 
+  megapolis_sparklet: {
+    title: 'Megapolis Sparklet Hinjewadi Phase 3 | Ready 1 & 2 BHK Flats | Pegasus Properties | 24K Realtors',
+    description: 'Explore verified ready-to-move 1 BHK (450-480 sq.ft) & 2 BHK (680-760 sq.ft) flats in Megapolis Sparklet, Hinjewadi Phase 3 by Pegasus Properties. Dual MahaRERA A51800000454 & P52100078240. 100% authentic site photos, curved balcony, pool & gym.',
+    url: '/megapolis-sparklet',
+  },
+
+  megapolis_sparklet_1bhk: {
+    title: 'Megapolis Sparklet 1 BHK Hinjewadi Phase 3 | Carpet 450 - 480 sq.ft | 24K Realtors',
+    description: 'Verified 1 BHK hillside smart apartments in Megapolis Sparklet, Hinjewadi Phase 3. Usable carpet: 450 to 480 sq.ft. Ready to move. MahaRERA A51800000454 & P52100078240.',
+    url: '/megapolis-sparklet-1-bhk',
+  },
+
+  megapolis_sparklet_2bhk: {
+    title: 'Megapolis Sparklet 2 BHK Hinjewadi Phase 3 | Carpet 680 - 760 sq.ft | 24K Realtors',
+    description: 'Verified 2 BHK family apartments in Megapolis Sparklet, Hinjewadi Phase 3. Usable carpet: 680 to 760 sq.ft with curved terrace balconies overlooking township pool. Ready to move. MahaRERA A51800000454 & P52100078240.',
+    url: '/megapolis-sparklet-2-bhk',
+  },
+
   megapolis_sunway: {
     title: 'Megapolis Sunway Hinjewadi Phase 3 | 1 & 2 BHK Smart Homes | 24K Realtors',
     description: 'High ROI 1 & 2 BHK sun-drenched apartments in Megapolis Sunway Hinjewadi Phase 3. 440-870 sq.ft carpet. Ready to move. MahaRERA P52100045780.',
