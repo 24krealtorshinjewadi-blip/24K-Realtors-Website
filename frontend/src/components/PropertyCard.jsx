@@ -38,6 +38,7 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('glitterati') || title.includes('penthouse')) return '/lodha_7_infinity_pool.png';
   if (title.includes('mahalunge') || title.includes('oasis')) return '/gallery_tower_3.png';
   if (title.includes('studio') || title.includes('corporate')) return '/dev_vj_building.png';
+  if (title.includes('splendour')) return '/megapolis_splendour_kitchen.jpg';
   if (title.includes('sangria')) return '/sangria_living_room.jpg';
   if (title.includes('megapolis')) return '/megapolis_hero_card.jpg';
   if (title.includes('godrej 24') || title === 'godrej 24') return '/godrej_24_project_card.jpg';
@@ -77,6 +78,7 @@ const getForbesTeslaPropertyImage = (property) => {
 
 const getBuilderName = (title = '', desc = '') => {
   const t = ((title || '') + ' ' + (desc || '')).toLowerCase();
+  if (t.includes('splendour')) return 'Pegasus Properties (Megapolis)';
   if (t.includes('megapolis') || t.includes('sangria') || t.includes('pride purple')) return 'Pride Purple Group';
   if (t.includes('lodha')) return 'Lodha Group';
   if (t.includes('godrej')) return 'Godrej Properties';
@@ -435,7 +437,11 @@ export default function PropertyCard({
     if (id === 'prop-godrej-elements' || (title.includes('godrej') && title.includes('element')) || title.includes('elements')) {
       return '/godrej-elements-hinjewadi';
     }
-    // 7. Megapolis Township
+    // 7. Megapolis Splendour
+    if (id.includes('splendour') || title.includes('splendour') || slug.includes('splendour')) {
+      return '/megapolis-splendour';
+    }
+    // 8. Megapolis Township
     if (id.includes('megapolis') || title.includes('megapolis') || slug.includes('megapolis')) {
       return '/townships/megapolis';
     }

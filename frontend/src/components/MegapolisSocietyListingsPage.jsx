@@ -125,6 +125,110 @@ function buildMockUnits(societyId) {
     ];
   }
 
+  if (soc.id === 'splendour') {
+    return [
+      {
+        id: 'unit-megapolis-splendour-2bhk-855-standard',
+        bhkType: '2 BHK',
+        societySlug: 'splendour',
+        societyName: 'Megapolis Splendour',
+        carpetAreaSqft: 855,
+        builtUpAreaSqft: 1150,
+        totalPrice: 7800000,
+        tower: 'Tower C',
+        floorNumber: 7,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Green Garden & Canopy View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100022957 · P52100023051',
+        imageUrl: '/megapolis_splendour_kitchen.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        exclusiveDeal: true,
+        tag: 'Most Popular Layout (855 sq.ft)'
+      },
+      {
+        id: 'unit-megapolis-splendour-2bhk-741-fl4',
+        bhkType: '2 BHK',
+        societySlug: 'splendour',
+        societyName: 'Megapolis Splendour',
+        carpetAreaSqft: 741,
+        builtUpAreaSqft: 1005,
+        totalPrice: 7400000,
+        tower: 'Tower A',
+        floorNumber: 4,
+        furnishingStatus: 'Unfurnished',
+        viewType: 'Open Sahyadri Breeze View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100022957',
+        imageUrl: '/megapolis_splendour_living.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true
+      },
+      {
+        id: 'unit-megapolis-splendour-2bhk-900-fl11',
+        bhkType: '2 BHK',
+        societySlug: 'splendour',
+        societyName: 'Megapolis Splendour',
+        carpetAreaSqft: 900,
+        builtUpAreaSqft: 1220,
+        totalPrice: 8300000,
+        tower: 'Tower B',
+        floorNumber: 11,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Panoramic High-Rise Skyline View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100023051',
+        imageUrl: '/megapolis_splendour_balcony.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true
+      },
+      {
+        id: 'unit-megapolis-splendour-3bhk-1215-fl6',
+        bhkType: '3 BHK',
+        societySlug: 'splendour',
+        societyName: 'Megapolis Splendour',
+        carpetAreaSqft: 1215,
+        builtUpAreaSqft: 1640,
+        totalPrice: 12200000,
+        tower: 'Tower D',
+        floorNumber: 6,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Dual Balcony Hillside View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100022957',
+        imageUrl: '/megapolis_splendour_hall.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        exclusiveDeal: true,
+        tag: 'Spacious 3 BHK (1,215 sq.ft)'
+      },
+      {
+        id: 'unit-megapolis-splendour-3bhk-1215-fl14',
+        bhkType: '3 BHK',
+        societySlug: 'splendour',
+        societyName: 'Megapolis Splendour',
+        carpetAreaSqft: 1215,
+        builtUpAreaSqft: 1640,
+        totalPrice: 12800000,
+        tower: 'Tower E',
+        floorNumber: 14,
+        furnishingStatus: 'Furnished',
+        viewType: 'Sky Deck & Pool Vista',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100023051',
+        imageUrl: '/megapolis_splendour_bathroom.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true
+      }
+    ];
+  }
+
   const BHK_SPECS = {
     '1 BHK':   { carpet: [440, 490, 510], builtUp: 620, basePrice: 6800000,  psf: 13800 },
     '2 BHK':   { carpet: [645, 695, 730], builtUp: 920, basePrice: 9500000,  psf: 14000 },
@@ -858,6 +962,55 @@ export default function MegapolisSocietyListingsPage({ onBack }) {
 
         {/* ══ RIGHT LISTINGS AREA ══════════════════════════════════════ */}
         <div className="pi-listings-area">
+
+          {/* ── MEGAPOLIS SPLENDOUR FLAGSHIP SUBPAGE VIP BANNER ────────────── */}
+          {societyId === 'splendour' && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(11,17,32,0.95) 70%)',
+              border: '1px solid rgba(212,175,55,0.4)',
+              borderRadius: '14px',
+              padding: '20px 24px',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
+              flexWrap: 'wrap'
+            }}>
+              <div>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(212,175,55,0.2)', border: '1px solid #D4AF37', color: '#F3E5AB', padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 800, marginBottom: '6px' }}>
+                  ★ DEDICATED PROJECT SHOWCASE SUBPAGE
+                </div>
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', fontWeight: 700, color: '#FFFFFF', margin: '0 0 4px 0' }}>
+                  Megapolis Splendour — Flagship Virtual Dossier
+                </h3>
+                <p style={{ color: '#CBD5E1', fontSize: '0.82rem', margin: 0, maxWidth: '600px', lineHeight: 1.45 }}>
+                  Explore 100% authentic on-site photos (fitted granite kitchen, spacious hall, balcony &amp; bathroom), dual MahaRERA verification (P52100022957 &amp; P52100023051), 3-pillar amenities, and negotiable pricing.
+                </p>
+              </div>
+
+              <button
+                onClick={() => navigate('/megapolis-splendour')}
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37, #B8860B)',
+                  color: '#040814',
+                  fontWeight: 800,
+                  fontSize: '0.82rem',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '11px 20px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <span>Explore Full Showcase Subpage</span>
+                <ChevronRight size={14} />
+              </button>
+            </div>
+          )}
 
           {/* ── AUTHENTIC ROOM SHOWCASE (Sangria & Serenity) ──────────────── */}
           {(societyId === 'sangria' || societyId === 'serenity') && (() => {

@@ -75,18 +75,18 @@ export const MEGAPOLIS_SOCIETIES = [
     slug: 'megapolis-splendour',
     displayName: 'Splendour',
     fullName: 'Megapolis Splendour',
-    tagline: 'Grand Scale. Timeless Elegance.',
-    bhkOptions: ['2 BHK', '2.5 BHK', '3 BHK', '3.5 BHK'],
-    carpetRange: '680 – 1,350 sqft',
-    priceRange: '₹1.1Cr – ₹2.2Cr',
+    tagline: 'Ready 2 & 3 BHK Luxury Residences. Pegasus Properties.',
+    bhkOptions: ['2 BHK', '3 BHK'],
+    carpetRange: '741 – 1,215 sqft (Std 855 sqft)',
+    priceRange: '₹74L – ₹1.35Cr (Negotiable)',
     unitCount: 512,
     towers: 5,
-    status: 'UNDER_CONSTRUCTION',
-    reraNumber: 'P52100048230',
+    status: 'READY_TO_MOVE',
+    reraNumber: 'P52100022957 · P52100023051',
     accentHex: '#D4AF37',
-    imageUrl: '/dev_kolte_patil_township.png',
-    features: ['Amphitheatre', 'Rooftop Pool', 'Premium Finishes'],
-    possession: 'Dec 2026'
+    imageUrl: '/megapolis_splendour_kitchen.jpg',
+    features: ['Gym, Pool & Club', 'Tennis & Cricket Nets', '24x7 Security & Power Backup'],
+    possession: 'Ready'
   },
   {
     id: 'sunway',
@@ -311,19 +311,19 @@ const MEGAPOLIS_DATA = {
     },
     {
       q: 'Which societies are part of Megapolis Township?',
-      a: 'Megapolis features 5 distinct gated society clusters: Sangria (premium ready residences with pool view), Mystic (serene garden-facing 2 & 3 BHKs), Splendour (large 2.5, 3 & 3.5 BHK luxury homes), Sunway (smart compact 1 & 2 BHKs), and Sparkle (modern community living).'
+      a: 'Megapolis features iconic gated society clusters: Sangria (premium ready residences with pool view), Mystic (serene garden-facing 2 & 3 BHKs), Splendour (ready 2 & 3 BHK luxury residences by Pegasus Properties, 855 sq.ft standard layout), Sunway (smart compact 1 & 2 BHKs), and Sparkle (modern community living).'
     },
     {
       q: 'Are properties in Megapolis ready to move or under construction?',
-      a: 'Major societies such as Sangria, Mystic, Sunway, and Sparkle are completely ready to move with full Occupancy Certificates (OC). Splendour and select newer phases have ready as well as upcoming delivery options.'
+      a: 'Major societies including Sangria, Mystic, Splendour, Sunway, and Sparkle are completely ready to move with full Occupancy Certificates (OC). Splendour offers ready-to-move 2 BHK (741-900 sq.ft) & 3 BHK (1,215 sq.ft) homes.'
     },
     {
       q: 'What is the long-term investment potential in Megapolis?',
-      a: 'Due to its unmatched walking distance to Infosys Phase 3 and Embassy Techzone, Megapolis commands the highest IT residential occupancy in Pune West, with continuous tenant demand from tech engineers and steady capital appreciation.'
+      a: 'Due to its unmatched walking distance to Tech Mahindra, TCS, Infosys Phase 3 and Embassy Techzone, Megapolis commands the highest IT residential occupancy in Pune West, with continuous tenant demand from tech engineers and steady capital appreciation.'
     },
     {
       q: 'What is the MahaRERA registration status for Megapolis?',
-      a: 'Each society cluster within Megapolis is individually registered with MahaRERA (e.g., Sangria: P52100047112, Mystic: P52100046891, Splendour: P52100048230). 24K Realtors exclusively deals in verified titles with complete legal documentation.'
+      a: 'Each society cluster within Megapolis is individually registered with MahaRERA (e.g., Splendour: P52100022957 & P52100023051, Sangria: P52100047112, Mystic: P52100046891). 24K Realtors exclusively deals in verified titles with complete legal documentation.'
     },
     {
       q: 'How can I schedule a private site visit to Megapolis?',
@@ -483,7 +483,11 @@ export default function MegapolisTownshipPage({ onBackHome }) {
   };
 
   const handleSocietyClick = (society) => {
-    navigate(`/townships/megapolis/${society.id}`);
+    if (society.id === 'splendour') {
+      navigate('/megapolis-splendour');
+    } else {
+      navigate(`/townships/megapolis/${society.id}`);
+    }
   };
 
   return (
@@ -852,6 +856,11 @@ export default function MegapolisTownshipPage({ onBackHome }) {
                 {soc.id === 'sangria' && (
                   <div style={{ position: 'absolute', bottom: '8px', right: '8px', background: '#E11D48', color: '#fff', fontSize: '0.62rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
                     📸 5 Photos
+                  </div>
+                )}
+                {soc.id === 'splendour' && (
+                  <div style={{ position: 'absolute', bottom: '8px', right: '8px', background: '#D4AF37', color: '#040814', fontSize: '0.62rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
+                    🌟 Showcase Subpage · 5 Photos
                   </div>
                 )}
               </div>

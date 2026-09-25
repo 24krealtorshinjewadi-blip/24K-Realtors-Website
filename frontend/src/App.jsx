@@ -35,6 +35,7 @@ const PublicTownshipPage        = lazy(() => import('./components/PublicTownship
 const GodrejProjectPage         = lazy(() => import('./components/GodrejProjectPage'));
 const MegapolisTownshipPage     = lazy(() => import('./components/MegapolisTownshipPage'));
 const MegapolisSocietyListingsPage = lazy(() => import('./components/MegapolisSocietyListingsPage'));
+const MegapolisSplendourProjectPage = lazy(() => import('./components/MegapolisSplendourProjectPage'));
 const YashOneProjectPage        = lazy(() => import('./components/YashOneProjectPage'));
 const KohinoorProjectPage       = lazy(() => import('./components/KohinoorProjectPage'));
 const TcgCliffGardenProjectPage  = lazy(() => import('./components/TcgCliffGardenProjectPage'));
@@ -548,6 +549,35 @@ function AppContent() {
                 }
               />
 
+              {/* ─── MEGAPOLIS SPLENDOUR — Dedicated Flagship Showcase Subpage ─── */}
+              <Route
+                path="/megapolis-splendour"
+                element={<MegapolisSplendourProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/megapolis-splendour-hinjewadi"
+                element={<MegapolisSplendourProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/townships/megapolis/splendour"
+                element={<MegapolisSplendourProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/townships/megapolis/splendour/units"
+                element={<MegapolisSocietyListingsPage onBack={() => navigate('/megapolis-splendour')} />}
+              />
+              <Route
+                path="/megapolis-splendour-2-bhk"
+                element={<MegapolisSplendourProjectPage initialBhkFilter="2 BHK" onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/megapolis-splendour-3-bhk"
+                element={<MegapolisSplendourProjectPage initialBhkFilter="3 BHK" onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route path="/projects/megapolis-splendour" element={<Navigate to="/megapolis-splendour" replace />} />
+              <Route path="/splendour-hinjewadi" element={<Navigate to="/megapolis-splendour" replace />} />
+              <Route path="/splendour" element={<Navigate to="/megapolis-splendour" replace />} />
+
               {/* Megapolis Society Listings — Dual Panel Filter + Units */}
               <Route
                 path="/townships/megapolis/:societyId"
@@ -563,7 +593,6 @@ function AppContent() {
               <Route path="/megapolis-township" element={<Navigate to="/townships/megapolis" replace />} />
               <Route path="/megapolis-sangria" element={<Navigate to="/townships/megapolis/sangria" replace />} />
               <Route path="/megapolis-mystic" element={<Navigate to="/townships/megapolis/mystic" replace />} />
-              <Route path="/megapolis-splendour" element={<Navigate to="/townships/megapolis/splendour" replace />} />
               <Route path="/megapolis-sunway" element={<Navigate to="/townships/megapolis/sunway" replace />} />
               <Route path="/megapolis-sparkle" element={<Navigate to="/townships/megapolis/sparkle" replace />} />
               <Route path="/megapolis-serenity" element={<Navigate to="/townships/megapolis/serenity" replace />} />

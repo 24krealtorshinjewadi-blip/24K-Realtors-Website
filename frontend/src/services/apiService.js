@@ -968,17 +968,18 @@ const megapolisSubSocietiesProperties = [
 
   // ═══════════════════════════════════════════════════════════════════
   // PROJECT 6 — MEGAPOLIS SPLENDOUR
-  // MahaRERA: P52100048230 | Hinjewadi Phase 3 | New Towers
+  // MahaRERA: P52100022957 & P52100023051 | Hinjewadi Phase 3 | Ready to Move
   // ═══════════════════════════════════════════════════════════════════
   {
     id: "prop-megapolis-splendour",
     title: "Megapolis Splendour",
     projectName: "Megapolis Splendour",
-    builderName: "Pride Purple Group",
-    description: "Grand scale luxury enclave featuring 2, 2.5, 3 & 3.5 BHK premium apartments with rooftop infinity pool, amphitheatre, high-speed elevators, and imported finishings.",
+    builderName: "Pegasus Properties (Megapolis)",
+    description: "Established ready-to-move luxury residential cluster in Megapolis Township by Pegasus Properties. Dual MahaRERA registered (P52100022957 & P52100023051). Offers 2 BHK (741–900 sq.ft, std 855 sq.ft) & 3 BHK (1,215 sq.ft) homes with gymnasium, swimming pool, clubhouse, tennis court, cricket nets, jogging track, and 24x7 security.",
     propertyType: "RESIDENTIAL",
     transactionType: "BUY",
-    price: 11000000,
+    price: 7400000,
+    priceNegotiable: true,
     location: "HINJEWADI_PHASE_3",
     address: "Megapolis Splendour, Hinjewadi Phase 3, Pune — 411057",
     latitude: 18.5798,
@@ -986,28 +987,30 @@ const megapolisSubSocietiesProperties = [
     status: "AVAILABLE",
     verifiedListing: true,
     exclusiveDeal: true,
-    reraNumber: "P52100048230",
-    possessionDate: "Ready & Ongoing",
-    imageUrl: "/gallery_tower_3.png",
+    reraNumber: "P52100022957, P52100023051",
+    possessionDate: "Ready to Move",
+    imageUrl: "/megapolis_splendour_kitchen.jpg",
     galleryImages: [
-      "/gallery_tower_3.png",
-      "/luxury_sunset_pool.png"
+      "/megapolis_splendour_kitchen.jpg",
+      "/megapolis_splendour_living.jpg",
+      "/megapolis_splendour_balcony.jpg",
+      "/megapolis_splendour_bathroom.jpg",
+      "/megapolis_splendour_hall.jpg"
     ],
     furnishingStatus: "SEMI_FURNISHED",
     gasPipeline: true,
     societySlug: "megapolis-splendour",
     configurations: [
-      { bhk: "2 BHK", carpet: "680 sq.ft", highlight: false },
-      { bhk: "2.5 BHK", carpet: "880 sq.ft", highlight: true },
-      { bhk: "3 BHK", carpet: "1100 sq.ft", highlight: true },
-      { bhk: "3.5 BHK", carpet: "1350 sq.ft", highlight: false }
+      { bhk: "2 BHK", carpet: "855 sq.ft (741 – 900 sq.ft)", highlight: true, note: "Most Popular Standard Layout" },
+      { bhk: "3 BHK", carpet: "1,215 sq.ft", highlight: true, note: "Spacious 3 Bed + 3 Bath" }
     ],
     amenities: [
-      "Rooftop Swimming Pool",
-      "Open Air Amphitheatre",
-      "Banquet & Party Lawn",
-      "State-of-the-Art Fitness Center",
-      "High-Speed Elevators"
+      "Gymnasium, Swimming Pool & Grand Clubhouse",
+      "Tennis Court, Jogging Track & Cricket Nets",
+      "Kids Adventure Play Area",
+      "24x7 Security Grid & CCTV Surveillance",
+      "100% DG Power Backup & Covered Car Parking",
+      "Daily Conveniences & Pawar Public School on Campus"
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
@@ -1591,55 +1594,58 @@ const initialSocieties = [
 
   // ═══════════════════════════════════════════════════════════════════
   // SOC-5: MEGAPOLIS SPLENDOUR — Hinjewadi Phase 3
-  // MahaRERA: P52100048230 | Developer: Pride Purple Group
+  // MahaRERA: P52100022957 & P52100023051 | Developer: Pegasus Properties (Megapolis)
   // ═══════════════════════════════════════════════════════════════════
   {
     id: "soc-megapolis-splendour",
     name: "Megapolis Splendour",
     canonicalName: "Megapolis Splendour Hinjewadi Phase 3",
     slug: "megapolis-splendour",
-    imageUrl: "/gallery_tower_3.png",
+    imageUrl: "/megapolis_splendour_kitchen.jpg",
     galleryImages: [
-      "/gallery_tower_3.png",
-      "/luxury_sunset_pool.png"
+      "/megapolis_splendour_kitchen.jpg",
+      "/megapolis_splendour_living.jpg",
+      "/megapolis_splendour_balcony.jpg",
+      "/megapolis_splendour_bathroom.jpg",
+      "/megapolis_splendour_hall.jpg"
     ],
     location: "HINJEWADI",
     hinjewadiPhase: "PHASE_3",
     townshipName: "Megapolis",
     parentProjectId: "megapolis",
-    developer: "Pride Purple Group",
-    reraNumber: "P52100048230",
-    projectStatus: "UNDER_CONSTRUCTION",
-    startingPrice: 11000000,
-    priceLastVerified: "20 Sep 2026",
-    possessionDate: "Dec 2026",
+    developer: "Pegasus Properties (Megapolis)",
+    reraNumber: "P52100022957, P52100023051",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 7400000,
+    priceLastVerified: "25 Sep 2026",
+    possessionDate: "Ready to Move",
     projectArea: "142+ Acres Integrated Township",
-    overview: "Megapolis Splendour is the marquee luxury residential cluster of Megapolis Township in Hinjewadi Phase 3. Featuring premium 2 BHK, 2.5 BHK, 3 BHK and 3.5 BHK grand apartments, Splendour includes an exclusive rooftop swimming pool, open-air amphitheatre, designer clubhouse, and smart home provisions.",
-    amenities: "Rooftop Swimming Pool, Open-Air Amphitheatre, Luxury Clubhouse, Multi-sport Arena, High-Speed Elevators, 24x7 Security, Pawar Public School within campus",
-    priceRange: "₹1.1 Cr – ₹2.2 Cr",
-    configuration: "2 BHK (680 sq.ft) | 2.5 BHK (880 sq.ft) | 3 BHK (1100 sq.ft) | 3.5 BHK (1350 sq.ft)",
-    configurationSummary: "2 BHK, 2.5 BHK, 3 BHK & 3.5 BHK",
+    overview: "Megapolis Splendour is an established ready-to-move residential enclave located inside the 142+ acre Megapolis Township in Hinjewadi Phase 3, Pune. Developed by Pegasus Properties (Megapolis) and registered under dual MahaRERA numbers P52100022957 and P52100023051, Splendour offers spacious 2 BHK (741 – 900 sq.ft carpet, with 855 sq.ft being the standard layout) and 3 BHK (1,215 sq.ft carpet) apartments. Features a full suite of lifestyle amenities including gymnasium, swimming pool, clubhouse, tennis court, jogging track, cricket nets, kids play area, 24x7 security, power backup, car parking, and daily conveniences.",
+    amenities: "Gymnasium, Swimming Pool, Clubhouse, Tennis Court, Jogging Track, Cricket Nets, Kids Play Area, 24x7 Security, Power Backup, Car Parking, Daily Conveniences, Pawar Public School within campus",
+    priceRange: "₹74 Lakhs – ₹1.35 Cr (Negotiable)",
+    configuration: "2 BHK (741 – 900 sq.ft, Std 855 sq.ft) | 3 BHK (1,215 sq.ft)",
+    configurationSummary: "2 BHK & 3 BHK",
     configurations: [
-      { bhkType: "2 BHK", carpetArea: "680 sq.ft", priceLabel: "₹1.10 Cr – ₹1.30 Cr", status: "Available" },
-      { bhkType: "2.5 BHK", carpetArea: "880 sq.ft", priceLabel: "₹1.35 Cr – ₹1.60 Cr", status: "Available" },
-      { bhkType: "3 BHK", carpetArea: "1100 sq.ft", priceLabel: "₹1.75 Cr – ₹2.00 Cr", status: "Available" },
-      { bhkType: "3.5 BHK", carpetArea: "1350 sq.ft", priceLabel: "₹2.05 Cr – ₹2.20 Cr", status: "Available" }
+      { bhkType: "2 BHK", carpetArea: "855 sq.ft", priceLabel: "₹78 Lakhs (Negotiable)", status: "Available", note: "Most Popular Standard Layout" },
+      { bhkType: "2 BHK", carpetArea: "741 sq.ft", priceLabel: "₹74 Lakhs (Negotiable)", status: "Available", note: "Compact Efficient Layout" },
+      { bhkType: "2 BHK", carpetArea: "900 sq.ft", priceLabel: "₹83 Lakhs (Negotiable)", status: "Available", note: "Grand Balcony Layout" },
+      { bhkType: "3 BHK", carpetArea: "1,215 sq.ft", priceLabel: "₹1.22 Cr – ₹1.35 Cr (Negotiable)", status: "Available", note: "Spacious 3 Bed + 3 Bath" }
     ],
-    nearbySchools: "Pawar Public School (350m)",
+    nearbySchools: "Pawar Public School (Within Township - 300m)",
     nearbyHospitals: "Ruby Hall Clinic (5.0 km)",
-    nearbyItParks: "Tech Mahindra (500m), TCS Sahyadri (600m), Cognizant (800m)",
+    nearbyItParks: "Tech Mahindra (400m), TCS Sahyadri (600m), Cognizant (800m)",
     nearbyMetro: "Megapolis Metro Station (400m)",
     nearbyMalls: "Megapolis High Street (Within Campus)",
     googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6948!3d18.5798!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Splendour!5e0!3m2!1sen!2sin!4v1725118",
-    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Wipro Circle: 8 mins | Expressway: 18 mins",
-    investmentScore: 94,
-    rentalYield: 5.1,
+    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Cognizant: 5 mins walk | Wipro Circle: 8 mins | Expressway: 18 mins",
+    investmentScore: 96,
+    rentalYield: 5.4,
     hasResale: true,
     hasRental: true,
     reraRegistered: true,
-    faqs: "Q: What is the possession date for Megapolis Splendour?\nA: Expected possession begins December 2026.\n\nQ: Are 3.5 BHK units available in Splendour?\nA: Yes, Splendour offers expansive 3.5 BHK layouts with carpet area of 1,350 sq.ft.",
-    seoTitle: "Megapolis Splendour Hinjewadi Phase 3 | 2, 3 & 3.5 BHK | 24K Realtors",
-    seoDescription: "Book premium flats in Megapolis Splendour Hinjewadi Phase 3. Rooftop pool, amphitheatre, 680-1350 sq.ft carpet. MahaRERA P52100048230."
+    faqs: "Q: What are the MahaRERA numbers for Megapolis Splendour?\nA: Megapolis Splendour carries dual MahaRERA registrations: P52100022957 and P52100023051.\n\nQ: Who is the developer of Megapolis Splendour?\nA: Megapolis Splendour is developed by Pegasus Properties (Megapolis).\n\nQ: What are the carpet areas for 2 BHK and 3 BHK?\nA: 2 BHK ranges between 741 sq.ft and 900 sq.ft (855 sq.ft being the standard layout). 3 BHK offers 1,215 sq.ft.",
+    seoTitle: "Megapolis Splendour Hinjewadi Phase 3 | 2 & 3 BHK Flats | 24K Realtors",
+    seoDescription: "Megapolis Splendour by Pegasus Properties in Hinjewadi Phase 3. Ready 2 BHK (741-900 sq.ft, std 855 sq.ft) & 3 BHK (1215 sq.ft). Dual MahaRERA P52100022957 & P52100023051. 100% authentic photos."
   },
 
   // ═══════════════════════════════════════════════════════════════════

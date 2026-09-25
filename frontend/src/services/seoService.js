@@ -231,9 +231,9 @@ export const SEO_CONFIGS = {
   },
 
   megapolis_splendour: {
-    title: 'Megapolis Splendour Hinjewadi Phase 3 | 2, 3 & 3.5 BHK | 24K Realtors',
-    description: 'Grand scale luxury residences in Megapolis Splendour Hinjewadi Phase 3. Rooftop pool, amphitheatre, 680-1350 sq.ft carpet. MahaRERA P52100048230.',
-    url: '/townships/megapolis/splendour',
+    title: 'Megapolis Splendour Hinjewadi Phase 3 | Ready 2 & 3 BHK Flats | Pegasus Properties | 24K Realtors',
+    description: 'Explore verified ready-to-move 2 BHK (741-900 sq.ft, std 855 sq.ft) & 3 BHK (1,215 sq.ft) flats in Megapolis Splendour, Hinjewadi Phase 3 by Pegasus Properties. Dual MahaRERA P52100022957 & P52100023051. 100% authentic site photos, gym, pool & tennis court.',
+    url: '/megapolis-splendour',
   },
 
   megapolis_sunway: {
