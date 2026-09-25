@@ -236,6 +236,24 @@ export const SEO_CONFIGS = {
     url: '/megapolis-splendour',
   },
 
+  megapolis_saffron: {
+    title: 'Megapolis Saffron Hinjewadi Phase 3 | Ready 1 & 2 BHK Flats & Shops | Pegasus Properties | 24K Realtors',
+    description: 'Explore verified ready-to-move 1 BHK (444-445 sq.ft) & 2 BHK (617-637 sq.ft up to 698 sq.ft) flats and commercial shops in Megapolis Saffron, Hinjewadi Phase 3 by Pegasus Properties. Triple MahaRERA P52100018779 (Phases A3-A9), P52100021609 (Phases A10-A14), P52100034988 (Shops). 100% authentic site photos.',
+    url: '/megapolis-saffron',
+  },
+
+  megapolis_saffron_1bhk: {
+    title: 'Megapolis Saffron 1 BHK Hinjewadi Phase 3 | Carpet 444 - 445 sq.ft | 24K Realtors',
+    description: 'Verified 1 BHK smart apartments in Megapolis Saffron, Hinjewadi Phase 3. Carpet area: 444 to 445 sq.ft. Ready to move. MahaRERA P52100018779 & P52100021609. High rental yield near IT Hub.',
+    url: '/megapolis-saffron-1-bhk',
+  },
+
+  megapolis_saffron_2bhk: {
+    title: 'Megapolis Saffron 2 BHK Hinjewadi Phase 3 | Carpet 617 - 698 sq.ft | 24K Realtors',
+    description: 'Verified 2 BHK apartments in Megapolis Saffron, Hinjewadi Phase 3. Carpet areas: 617 to 637 sq.ft with select layouts up to 698 sq.ft. Ready to move. MahaRERA P52100018779 & P52100021609.',
+    url: '/megapolis-saffron-2-bhk',
+  },
+
   megapolis_sunway: {
     title: 'Megapolis Sunway Hinjewadi Phase 3 | 1 & 2 BHK Smart Homes | 24K Realtors',
     description: 'High ROI 1 & 2 BHK sun-drenched apartments in Megapolis Sunway Hinjewadi Phase 3. 440-870 sq.ft carpet. Ready to move. MahaRERA P52100045780.',

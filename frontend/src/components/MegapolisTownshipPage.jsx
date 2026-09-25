@@ -89,6 +89,24 @@ export const MEGAPOLIS_SOCIETIES = [
     possession: 'Ready'
   },
   {
+    id: 'saffron',
+    slug: 'megapolis-saffron',
+    displayName: 'Saffron',
+    fullName: 'Megapolis Saffron',
+    tagline: 'Ready 1 & 2 BHK Homes. Ground-Floor Retail Shops.',
+    bhkOptions: ['1 BHK', '2 BHK'],
+    carpetRange: '444 – 698 sqft (1BHK: 445 sqft | 2BHK: 637 sqft)',
+    priceRange: '₹46L – ₹75L (Negotiable)',
+    unitCount: 560,
+    towers: 12,
+    status: 'READY_TO_MOVE',
+    reraNumber: 'P52100018779 · P52100021609 · P52100034988',
+    accentHex: '#F97316',
+    imageUrl: '/megapolis_saffron_kitchen.jpg',
+    features: ['1 BHK (445 sq.ft) & 2 BHK (637 sq.ft)', 'Saffron Commercial Shops', 'Gym, Pool & Clubhouse'],
+    possession: 'Ready'
+  },
+  {
     id: 'sunway',
     slug: 'megapolis-sunway',
     displayName: 'Sunway',
@@ -311,11 +329,11 @@ const MEGAPOLIS_DATA = {
     },
     {
       q: 'Which societies are part of Megapolis Township?',
-      a: 'Megapolis features iconic gated society clusters: Sangria (premium ready residences with pool view), Mystic (serene garden-facing 2 & 3 BHKs), Splendour (ready 2 & 3 BHK luxury residences by Pegasus Properties, 855 sq.ft standard layout), Sunway (smart compact 1 & 2 BHKs), and Sparkle (modern community living).'
+      a: 'Megapolis features iconic gated society clusters: Splendour (ready 2 & 3 BHK luxury homes), Saffron (ready 1 & 2 BHK smart residences + commercial shops), Sangria (premium ready residences with pool view), Mystic (serene garden-facing 2 & 3 BHKs), Sunway (smart compact 1 & 2 BHKs), and Sparkle (modern community living).'
     },
     {
       q: 'Are properties in Megapolis ready to move or under construction?',
-      a: 'Major societies including Sangria, Mystic, Splendour, Sunway, and Sparkle are completely ready to move with full Occupancy Certificates (OC). Splendour offers ready-to-move 2 BHK (741-900 sq.ft) & 3 BHK (1,215 sq.ft) homes.'
+      a: 'Major societies including Saffron, Splendour, Sangria, Mystic, Sunway, and Sparkle are completely ready to move with full Occupancy Certificates (OC). Saffron offers 1 BHK (444–445 sq.ft) & 2 BHK (617–637 sq.ft) ready homes, plus ground-level commercial shops.'
     },
     {
       q: 'What is the long-term investment potential in Megapolis?',
@@ -323,7 +341,7 @@ const MEGAPOLIS_DATA = {
     },
     {
       q: 'What is the MahaRERA registration status for Megapolis?',
-      a: 'Each society cluster within Megapolis is individually registered with MahaRERA (e.g., Splendour: P52100022957 & P52100023051, Sangria: P52100047112, Mystic: P52100046891). 24K Realtors exclusively deals in verified titles with complete legal documentation.'
+      a: 'Each society cluster within Megapolis is individually registered with MahaRERA (e.g., Saffron: P52100018779, P52100021609 & P52100034988; Splendour: P52100022957 & P52100023051; Sangria: P52100047112; Mystic: P52100046891). 24K Realtors exclusively deals in verified titles with complete legal documentation.'
     },
     {
       q: 'How can I schedule a private site visit to Megapolis?',
@@ -485,6 +503,8 @@ export default function MegapolisTownshipPage({ onBackHome }) {
   const handleSocietyClick = (society) => {
     if (society.id === 'splendour') {
       navigate('/megapolis-splendour');
+    } else if (society.id === 'saffron') {
+      navigate('/megapolis-saffron');
     } else {
       navigate(`/townships/megapolis/${society.id}`);
     }
@@ -860,6 +880,11 @@ export default function MegapolisTownshipPage({ onBackHome }) {
                 )}
                 {soc.id === 'splendour' && (
                   <div style={{ position: 'absolute', bottom: '8px', right: '8px', background: '#D4AF37', color: '#040814', fontSize: '0.62rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
+                    🌟 Showcase Subpage · 5 Photos
+                  </div>
+                )}
+                {soc.id === 'saffron' && (
+                  <div style={{ position: 'absolute', bottom: '8px', right: '8px', background: '#F97316', color: '#FFFFFF', fontSize: '0.62rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
                     🌟 Showcase Subpage · 5 Photos
                   </div>
                 )}

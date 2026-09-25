@@ -229,6 +229,111 @@ function buildMockUnits(societyId) {
     ];
   }
 
+  if (soc.id === 'saffron') {
+    return [
+      {
+        id: 'unit-megapolis-saffron-1bhk-445-primary',
+        bhkType: '1 BHK',
+        societySlug: 'saffron',
+        societyName: 'Megapolis Saffron',
+        carpetAreaSqft: 445,
+        builtUpAreaSqft: 610,
+        totalPrice: 4700000,
+        tower: 'Tower A5',
+        floorNumber: 6,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Podium Garden View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100018779',
+        imageUrl: '/megapolis_saffron_kitchen.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        exclusiveDeal: true,
+        tag: '1 BHK Smart Home (445 sq.ft)'
+      },
+      {
+        id: 'unit-megapolis-saffron-1bhk-444-fl3',
+        bhkType: '1 BHK',
+        societySlug: 'saffron',
+        societyName: 'Megapolis Saffron',
+        carpetAreaSqft: 444,
+        builtUpAreaSqft: 605,
+        totalPrice: 4600000,
+        tower: 'Tower A8',
+        floorNumber: 3,
+        furnishingStatus: 'Unfurnished',
+        viewType: 'Open Sahyadri Breeze View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100018779',
+        imageUrl: '/megapolis_saffron_living.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true
+      },
+      {
+        id: 'unit-megapolis-saffron-2bhk-637-standard',
+        bhkType: '2 BHK',
+        societySlug: 'saffron',
+        societyName: 'Megapolis Saffron',
+        carpetAreaSqft: 637,
+        builtUpAreaSqft: 875,
+        totalPrice: 6800000,
+        tower: 'Tower A12',
+        floorNumber: 10,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'High-Rise City View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100021609',
+        imageUrl: '/megapolis_saffron_bedroom.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        exclusiveDeal: true,
+        tag: '2 BHK Standard (637 sq.ft)'
+      },
+      {
+        id: 'unit-megapolis-saffron-2bhk-617-fl8',
+        bhkType: '2 BHK',
+        societySlug: 'saffron',
+        societyName: 'Megapolis Saffron',
+        carpetAreaSqft: 617,
+        builtUpAreaSqft: 850,
+        totalPrice: 6400000,
+        tower: 'Tower A11',
+        floorNumber: 8,
+        furnishingStatus: 'Semi-Furnished',
+        viewType: 'Balcony Skyline View',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100021609',
+        imageUrl: '/megapolis_saffron_balcony.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true
+      },
+      {
+        id: 'unit-megapolis-saffron-2bhk-698-grand',
+        bhkType: '2 BHK',
+        societySlug: 'saffron',
+        societyName: 'Megapolis Saffron',
+        carpetAreaSqft: 698,
+        builtUpAreaSqft: 960,
+        totalPrice: 7400000,
+        tower: 'Tower A14',
+        floorNumber: 15,
+        furnishingStatus: 'Furnished',
+        viewType: 'Panoramic Sunset Vista',
+        availabilityStatus: 'AVAILABLE',
+        reraNumber: 'P52100021609',
+        imageUrl: '/megapolis_saffron_bathroom.jpg',
+        possessionDate: 'Ready to Move',
+        isMock: true,
+        verifiedListing: true,
+        tag: 'Grand 2 BHK (698 sq.ft)'
+      }
+    ];
+  }
+
   const BHK_SPECS = {
     '1 BHK':   { carpet: [440, 490, 510], builtUp: 620, basePrice: 6800000,  psf: 13800 },
     '2 BHK':   { carpet: [645, 695, 730], builtUp: 920, basePrice: 9500000,  psf: 14000 },
@@ -994,6 +1099,55 @@ export default function MegapolisSocietyListingsPage({ onBack }) {
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37, #B8860B)',
                   color: '#040814',
+                  fontWeight: 800,
+                  fontSize: '0.82rem',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '11px 20px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <span>Explore Full Showcase Subpage</span>
+                <ChevronRight size={14} />
+              </button>
+            </div>
+          )}
+
+          {/* ── MEGAPOLIS SAFFRON FLAGSHIP SUBPAGE VIP BANNER ──────────────── */}
+          {societyId === 'saffron' && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(249,115,22,0.18) 0%, rgba(11,17,32,0.95) 70%)',
+              border: '1px solid rgba(249,115,22,0.4)',
+              borderRadius: '14px',
+              padding: '20px 24px',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
+              flexWrap: 'wrap'
+            }}>
+              <div>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(249,115,22,0.2)', border: '1px solid #F97316', color: '#FED7AA', padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 800, marginBottom: '6px' }}>
+                  ★ DEDICATED PROJECT SHOWCASE SUBPAGE
+                </div>
+                <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.2rem', fontWeight: 700, color: '#FFFFFF', margin: '0 0 4px 0' }}>
+                  Megapolis Saffron — Flagship Virtual Dossier
+                </h3>
+                <p style={{ color: '#CBD5E1', fontSize: '0.82rem', margin: 0, maxWidth: '600px', lineHeight: 1.45 }}>
+                  Explore 100% authentic on-site photos (fitted modular kitchen, living room, bedroom, balcony &amp; bathroom), triple MahaRERA registration (P52100018779, P52100021609 &amp; P52100034988), commercial shops, and negotiable pricing.
+                </p>
+              </div>
+
+              <button
+                onClick={() => navigate('/megapolis-saffron')}
+                style={{
+                  background: 'linear-gradient(135deg, #F97316, #EA580C)',
+                  color: '#FFFFFF',
                   fontWeight: 800,
                   fontSize: '0.82rem',
                   border: 'none',

@@ -1017,6 +1017,57 @@ const megapolisSubSocietiesProperties = [
   },
 
   // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 6B — MEGAPOLIS SAFFRON
+  // MahaRERA: P52100018779, P52100021609 & P52100034988 | Hinjewadi Phase 3
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-megapolis-saffron",
+    title: "Megapolis Saffron",
+    projectName: "Megapolis Saffron",
+    builderName: "Pegasus Properties (Megapolis)",
+    description: "Ready-to-move 1 & 2 BHK smart homes with ground-level commercial shopping arcade in Megapolis Township by Pegasus Properties. Triple MahaRERA registered: Phases A3 to A9 (P52100018779), Phases A10 to A14 (P52100021609), and Saffron Shops (P52100034988). Features 1 BHK (444–445 sq.ft) & 2 BHK (617–637 sq.ft up to 698 sq.ft) residences with fitted modular kitchen, swimming pool, gym, clubhouse, and commercial daily retail.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 4700000,
+    priceNegotiable: true,
+    location: "HINJEWADI_PHASE_3",
+    address: "Megapolis Saffron, Hinjewadi Phase 3, Pune — 411057",
+    latitude: 18.5785,
+    longitude: 73.6935,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100018779, P52100021609, P52100034988",
+    possessionDate: "Ready to Move",
+    imageUrl: "/megapolis_saffron_kitchen.jpg",
+    galleryImages: [
+      "/megapolis_saffron_kitchen.jpg",
+      "/megapolis_saffron_living.jpg",
+      "/megapolis_saffron_bedroom.jpg",
+      "/megapolis_saffron_balcony.jpg",
+      "/megapolis_saffron_bathroom.jpg"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "megapolis-saffron",
+    configurations: [
+      { bhk: "1 BHK", carpet: "444 – 445 sq.ft", highlight: true, note: "High Rental Demand IT Smart Home" },
+      { bhk: "2 BHK", carpet: "617 – 637 sq.ft (up to 698 sq.ft)", highlight: true, note: "Spacious Balcony Layout" },
+      { bhk: "COMMERCIAL", carpet: "Retail Shops (P52100034988)", highlight: false, note: "Ground Floor High-Street Arcade" }
+    ],
+    amenities: [
+      "Megapolis Saffron Commercial Shops on Campus",
+      "Gymnasium, Swimming Pool & Clubhouse",
+      "Jogging Track & Tennis Court",
+      "Children Adventure Play Zone",
+      "24x7 Security Grid & CCTV Surveillance",
+      "100% DG Power Backup & Covered Car Parking"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
   // PROJECT 7 — MEGAPOLIS SUNWAY
   // MahaRERA: P52100045780 | Hinjewadi Phase 3 | Ready to Move
   // ═══════════════════════════════════════════════════════════════════
@@ -1646,6 +1697,64 @@ const initialSocieties = [
     faqs: "Q: What are the MahaRERA numbers for Megapolis Splendour?\nA: Megapolis Splendour carries dual MahaRERA registrations: P52100022957 and P52100023051.\n\nQ: Who is the developer of Megapolis Splendour?\nA: Megapolis Splendour is developed by Pegasus Properties (Megapolis).\n\nQ: What are the carpet areas for 2 BHK and 3 BHK?\nA: 2 BHK ranges between 741 sq.ft and 900 sq.ft (855 sq.ft being the standard layout). 3 BHK offers 1,215 sq.ft.",
     seoTitle: "Megapolis Splendour Hinjewadi Phase 3 | 2 & 3 BHK Flats | 24K Realtors",
     seoDescription: "Megapolis Splendour by Pegasus Properties in Hinjewadi Phase 3. Ready 2 BHK (741-900 sq.ft, std 855 sq.ft) & 3 BHK (1215 sq.ft). Dual MahaRERA P52100022957 & P52100023051. 100% authentic photos."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-5B: MEGAPOLIS SAFFRON — Hinjewadi Phase 3
+  // MahaRERA: P52100018779, P52100021609, P52100034988 | Developer: Pegasus Properties (Megapolis)
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-megapolis-saffron",
+    name: "Megapolis Saffron",
+    canonicalName: "Megapolis Saffron Hinjewadi Phase 3",
+    slug: "megapolis-saffron",
+    imageUrl: "/megapolis_saffron_kitchen.jpg",
+    galleryImages: [
+      "/megapolis_saffron_kitchen.jpg",
+      "/megapolis_saffron_living.jpg",
+      "/megapolis_saffron_bedroom.jpg",
+      "/megapolis_saffron_balcony.jpg",
+      "/megapolis_saffron_bathroom.jpg"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    townshipName: "Megapolis",
+    parentProjectId: "megapolis",
+    developer: "Pegasus Properties (Megapolis)",
+    reraNumber: "P52100018779, P52100021609, P52100034988",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 4700000,
+    priceLastVerified: "25 Sep 2026",
+    possessionDate: "Ready to Move",
+    projectArea: "142+ Acres Integrated Township",
+    overview: "Megapolis Saffron is a prominent ready-to-move residential and commercial cluster located inside the 142+ acre Megapolis Township in Hinjewadi Phase 3, Pune. Developed by Pegasus Properties across multiple MahaRERA registrations (Phases A3-A9: P52100018779, Phases A10-A14: P52100021609, Commercial Shops: P52100034988). Offers 1 BHK (444 to 445 sq.ft) and 2 BHK (617 to 637 sq.ft, scaling up to 698 sq.ft) residences, alongside ground-level commercial high-street retail shops, clubhouse, pool, gym, sports courts, and immediate proximity to Tech Mahindra and TCS.",
+    amenities: "Saffron Commercial Shops, Gymnasium, Swimming Pool, Clubhouse, Jogging Track, Tennis Court, Children Play Area, 24x7 Security, Power Backup, Car Parking, Pawar Public School within campus",
+    priceRange: "₹46 Lakhs – ₹75 Lakhs (Negotiable)",
+    configuration: "1 BHK (444–445 sq.ft) | 2 BHK (617–637 sq.ft up to 698 sq.ft) | Commercial Shops",
+    configurationSummary: "1 BHK, 2 BHK & Commercial Shops",
+    configurations: [
+      { bhkType: "1 BHK", carpetArea: "445 sq.ft", priceLabel: "₹47 Lakhs (Negotiable)", status: "Available", note: "High Rental IT Favorite" },
+      { bhkType: "1 BHK", carpetArea: "444 sq.ft", priceLabel: "₹46 Lakhs (Negotiable)", status: "Available", note: "Compact Efficient Layout" },
+      { bhkType: "2 BHK", carpetArea: "637 sq.ft", priceLabel: "₹68 Lakhs (Negotiable)", status: "Available", note: "Standard Family 2 BHK" },
+      { bhkType: "2 BHK", carpetArea: "617 sq.ft", priceLabel: "₹64 Lakhs (Negotiable)", status: "Available", note: "Balcony Facing Layout" },
+      { bhkType: "2 BHK", carpetArea: "698 sq.ft", priceLabel: "₹74 Lakhs (Negotiable)", status: "Available", note: "Grand Layout" },
+      { bhkType: "Commercial", carpetArea: "Retail", priceLabel: "On Request (Negotiable)", status: "Available", note: "Saffron Shops (P52100034988)" }
+    ],
+    nearbySchools: "Pawar Public School (Within Township - 300m)",
+    nearbyHospitals: "Ruby Hall Clinic (5.0 km)",
+    nearbyItParks: "Tech Mahindra (400m), TCS Sahyadri (600m), Cognizant (800m)",
+    nearbyMetro: "Megapolis Metro Station (400m)",
+    nearbyMalls: "Saffron Commercial Shops & Megapolis High Street (Within Campus)",
+    googleMapsIframe: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.1!2d73.6948!3d18.5798!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb368!2sMegapolis%20Saffron!5e0!3m2!1sen!2sin!4v1725118",
+    travelTimeInfo: "Tech Mahindra: 2 mins walk | TCS: 4 mins walk | Cognizant: 5 mins walk | Wipro Circle: 8 mins | Expressway: 18 mins",
+    investmentScore: 97,
+    rentalYield: 5.7,
+    hasResale: true,
+    hasRental: true,
+    reraRegistered: true,
+    faqs: "Q: What are the MahaRERA numbers for Megapolis Saffron?\nA: Saffron is registered under P52100018779 (Phases A3-A9), P52100021609 (Phases A10-A14), and P52100034988 (Shops).\n\nQ: What are the carpet areas for 1 BHK and 2 BHK?\nA: 1 BHK is 444–445 sq.ft. 2 BHK is 617–637 sq.ft (with select layouts up to 698 sq.ft).\n\nQ: Are commercial shops available in Saffron?\nA: Yes, Saffron features ground-level retail shops registered under MahaRERA P52100034988.",
+    seoTitle: "Megapolis Saffron Hinjewadi Phase 3 | Ready 1 & 2 BHK Flats | 24K Realtors",
+    seoDescription: "Megapolis Saffron in Hinjewadi Phase 3 by Pegasus Properties. Ready 1 BHK (444-445 sq.ft) & 2 BHK (617-698 sq.ft) + Commercial Shops. Triple MahaRERA P52100018779, P52100021609, P52100034988."
   },
 
   // ═══════════════════════════════════════════════════════════════════

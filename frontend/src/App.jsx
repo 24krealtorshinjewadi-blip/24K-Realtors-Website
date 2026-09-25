@@ -36,6 +36,7 @@ const GodrejProjectPage         = lazy(() => import('./components/GodrejProjectP
 const MegapolisTownshipPage     = lazy(() => import('./components/MegapolisTownshipPage'));
 const MegapolisSocietyListingsPage = lazy(() => import('./components/MegapolisSocietyListingsPage'));
 const MegapolisSplendourProjectPage = lazy(() => import('./components/MegapolisSplendourProjectPage'));
+const MegapolisSaffronProjectPage = lazy(() => import('./components/MegapolisSaffronProjectPage'));
 const YashOneProjectPage        = lazy(() => import('./components/YashOneProjectPage'));
 const KohinoorProjectPage       = lazy(() => import('./components/KohinoorProjectPage'));
 const TcgCliffGardenProjectPage  = lazy(() => import('./components/TcgCliffGardenProjectPage'));
@@ -309,6 +310,14 @@ function LegacyHashRedirectHandler() {
         navigate('/townships/megapolis', { replace: true });
         return;
       }
+      if (hash === 'megapolis-saffron' || hash === 'saffron' || hash === 'townships/megapolis/saffron') {
+        navigate('/megapolis-saffron', { replace: true });
+        return;
+      }
+      if (hash === 'megapolis-splendour' || hash === 'splendour' || hash === 'townships/megapolis/splendour') {
+        navigate('/megapolis-splendour', { replace: true });
+        return;
+      }
       if (hash.startsWith('townships/megapolis/')) {
         const socId = hash.replace('townships/megapolis/', '');
         navigate(`/townships/megapolis/${socId}`, { replace: true });
@@ -362,6 +371,10 @@ function AppContent() {
                   : pathname === '/dashboard'       ? SEO_CONFIGS.dashboard
                   : pathname === '/login'           ? SEO_CONFIGS.login
                   : pathname === '/list-property'   ? SEO_CONFIGS.listProperty
+                  : pathname === '/megapolis-saffron' || pathname === '/megapolis-saffron-hinjewadi' || pathname === '/townships/megapolis/saffron' ? SEO_CONFIGS.megapolis_saffron
+                  : pathname === '/megapolis-saffron-1-bhk' ? SEO_CONFIGS.megapolis_saffron_1bhk
+                  : pathname === '/megapolis-saffron-2-bhk' ? SEO_CONFIGS.megapolis_saffron_2bhk
+                  : pathname === '/megapolis-splendour' || pathname === '/megapolis-splendour-hinjewadi' || pathname === '/townships/megapolis/splendour' ? SEO_CONFIGS.megapolis_splendour
                   : pathname.startsWith('/blog')    ? SEO_CONFIGS.blog
                   : SEO_CONFIGS.portal;
   useSEO(seoConfig);
@@ -577,6 +590,35 @@ function AppContent() {
               <Route path="/projects/megapolis-splendour" element={<Navigate to="/megapolis-splendour" replace />} />
               <Route path="/splendour-hinjewadi" element={<Navigate to="/megapolis-splendour" replace />} />
               <Route path="/splendour" element={<Navigate to="/megapolis-splendour" replace />} />
+
+              {/* ─── MEGAPOLIS SAFFRON — Dedicated Flagship Showcase Subpage ─── */}
+              <Route
+                path="/megapolis-saffron"
+                element={<MegapolisSaffronProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/megapolis-saffron-hinjewadi"
+                element={<MegapolisSaffronProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/townships/megapolis/saffron"
+                element={<MegapolisSaffronProjectPage onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/townships/megapolis/saffron/units"
+                element={<MegapolisSocietyListingsPage onBack={() => navigate('/megapolis-saffron')} />}
+              />
+              <Route
+                path="/megapolis-saffron-1-bhk"
+                element={<MegapolisSaffronProjectPage initialBhkFilter="1 BHK" onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route
+                path="/megapolis-saffron-2-bhk"
+                element={<MegapolisSaffronProjectPage initialBhkFilter="2 BHK" onBackHome={() => navigate('/townships/megapolis')} />}
+              />
+              <Route path="/projects/megapolis-saffron" element={<Navigate to="/megapolis-saffron" replace />} />
+              <Route path="/saffron-hinjewadi" element={<Navigate to="/megapolis-saffron" replace />} />
+              <Route path="/saffron" element={<Navigate to="/megapolis-saffron" replace />} />
 
               {/* Megapolis Society Listings — Dual Panel Filter + Units */}
               <Route

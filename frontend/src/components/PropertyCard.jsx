@@ -39,6 +39,7 @@ const getForbesTeslaPropertyImage = (property) => {
   if (title.includes('mahalunge') || title.includes('oasis')) return '/gallery_tower_3.png';
   if (title.includes('studio') || title.includes('corporate')) return '/dev_vj_building.png';
   if (title.includes('splendour')) return '/megapolis_splendour_kitchen.jpg';
+  if (title.includes('saffron')) return '/megapolis_saffron_kitchen.jpg';
   if (title.includes('sangria')) return '/sangria_living_room.jpg';
   if (title.includes('megapolis')) return '/megapolis_hero_card.jpg';
   if (title.includes('godrej 24') || title === 'godrej 24') return '/godrej_24_project_card.jpg';
@@ -78,7 +79,7 @@ const getForbesTeslaPropertyImage = (property) => {
 
 const getBuilderName = (title = '', desc = '') => {
   const t = ((title || '') + ' ' + (desc || '')).toLowerCase();
-  if (t.includes('splendour')) return 'Pegasus Properties (Megapolis)';
+  if (t.includes('splendour') || t.includes('saffron')) return 'Pegasus Properties (Megapolis)';
   if (t.includes('megapolis') || t.includes('sangria') || t.includes('pride purple')) return 'Pride Purple Group';
   if (t.includes('lodha')) return 'Lodha Group';
   if (t.includes('godrej')) return 'Godrej Properties';
@@ -339,6 +340,14 @@ const getCardHighlights = (property) => {
     ];
   }
 
+  if (t.includes('saffron')) {
+    return [
+      { icon: Building2, line1: '1 & 2 BHK', line2: 'Ready Flats' },
+      { icon: ShieldCheck, line1: 'Triple MahaRERA', line2: 'P52100018779+' },
+      { icon: Trophy, line1: 'Retail Shops', line2: '& Amenities' }
+    ];
+  }
+
   if (t.includes('megapolis')) {
     return [
       { icon: Landmark, line1: 'Integrated', line2: 'Township' },
@@ -440,6 +449,10 @@ export default function PropertyCard({
     // 7. Megapolis Splendour
     if (id.includes('splendour') || title.includes('splendour') || slug.includes('splendour')) {
       return '/megapolis-splendour';
+    }
+    // Megapolis Saffron
+    if (id.includes('saffron') || title.includes('saffron') || slug.includes('saffron')) {
+      return '/megapolis-saffron';
     }
     // 8. Megapolis Township
     if (id.includes('megapolis') || title.includes('megapolis') || slug.includes('megapolis')) {
