@@ -30,7 +30,7 @@ const getForbesTeslaPropertyImage = (property) => {
 
   // Joyville Sensorium by Shapoorji Pallonji
   if (id.includes('sensorium') || title.includes('sensorium') || title.includes('joyville')) {
-    return '/joyville_sensorium_balcony.jpg';
+    return '/joyville_sensorium_project_card.jpg';
   }
 
   if (property?.imageUrl && !property.imageUrl.includes('unsplash.com')) {

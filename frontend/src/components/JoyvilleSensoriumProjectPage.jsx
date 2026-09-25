@@ -87,7 +87,7 @@ const SENSORIUM_DATA = {
   accentColor: '#10B981',
   accentGradient: 'linear-gradient(135deg, #047857 0%, #10B981 50%, #34D399 100%)',
   heroBg: 'linear-gradient(160deg, #040814 0%, #062319 45%, #03140f 100%)',
-  showcaseImage: '/joyville_sensorium_balcony.jpg',
+  showcaseImage: '/joyville_sensorium_project_card.jpg',
   investmentScore: 99,
   priceNegotiable: true,
   whatsappText: 'Hi 24K Realtors, I am interested in Joyville Sensorium by Shapoorji Pallonji in Hinjawadi (2 BHK 697-792 sq.ft / 3 BHK 973-979 sq.ft - Price Negotiable). Please share floor plans, tower inventory, and schedule a private site visit.',
@@ -95,6 +95,21 @@ const SENSORIUM_DATA = {
   gallery: [
     {
       id: 1,
+      tag: 'Grand Project Elevation & Landmark Poster',
+      icon: '🏢',
+      roomName: 'Master Elevation Poster',
+      title: 'Shapoorji Pallonji Joyville Sensorium — 2 & 3 BHK Landmark',
+      subtitle: 'Official architectural master elevation card showcasing the soaring twin residential towers, landscaped podium central lawn, and grand entrance plaza by Shapoorji Pallonji in Hinjewadi, Pune.',
+      src: '/joyville_sensorium_project_card.jpg',
+      badge: 'OFFICIAL PROJECT POSTER',
+      features: [
+        { icon: '🏙️', title: 'High-Rise Architectural Splendour', desc: 'Sleek contemporary multi-storey towers with panoramic sun decks' },
+        { icon: '🌳', title: '2.8-Acre Central Podium Greens', desc: 'Expansive landscaped biophilic lawn, flower gardens, and walking avenues' },
+        { icon: '🛡️', title: '150+ Years Shapoorji Pallonji Legacy', desc: 'World-renowned engineering quality with 4 segregated MahaRERA towers' }
+      ]
+    },
+    {
+      id: 2,
       tag: 'River & Mountain View Terrace',
       icon: '🏞️',
       roomName: 'Riverfront Balcony',
@@ -303,6 +318,26 @@ export default function JoyvilleSensoriumProjectPage({ initialBhkFilter = null, 
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [openFaqIdx, setOpenFaqIdx] = useState(0);
   const [copiedRera, setCopiedRera] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Fullscreen state listener
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
+
+  const handleToggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.().catch(() => {});
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+      setIsFullscreen(false);
+    }
+  };
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -311,6 +346,9 @@ export default function JoyvilleSensoriumProjectPage({ initialBhkFilter = null, 
       if (e.key === 'Escape') closeLightbox();
       if (e.key === 'ArrowRight') nextPhoto();
       if (e.key === 'ArrowLeft') prevPhoto();
+      if (e.key === 'f' || e.key === 'F') handleToggleFullscreen();
+      if (e.key === '+' || e.key === '=') setZoomLevel(prev => Math.min(prev + 0.4, 3.5));
+      if (e.key === '-' || e.key === '_') setZoomLevel(prev => Math.max(prev - 0.4, 1));
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -791,13 +829,13 @@ export default function JoyvilleSensoriumProjectPage({ initialBhkFilter = null, 
                         borderRadius: '4px',
                         letterSpacing: '0.06em'
                       }}>
-                        VERIFIED ON-SITE RIVER VIEW
+                        OFFICIAL PROJECT POSTER
                       </span>
                       <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', color: '#F3E5AB', margin: '8px 0 4px' }}>
-                        Riverfront Balcony with Wood Tile Terrace
+                        Shapoorji Pallonji Joyville Sensorium
                       </h3>
                       <p style={{ fontSize: '0.8rem', color: '#E2E8F0', margin: 0 }}>
-                        Unobstructed panoramas of Mula river and rolling green Sahyadri hills.
+                        2 & 3 BHK Riverfront Luxury Residences in Hinjewadi Phase 1, Pune.
                       </p>
                     </div>
 
@@ -974,7 +1012,7 @@ export default function JoyvilleSensoriumProjectPage({ initialBhkFilter = null, 
           }}>
             <Eye size={14} color="#10B981" />
             <span style={{ fontSize: '0.72rem', color: '#34D399', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              Authentic Visual Dossier · 5 On-Site Verified Photos
+              Authentic Visual Dossier · Project Elevation & 5 On-Site Photos
             </span>
           </div>
 
@@ -1733,6 +1771,20 @@ export default function JoyvilleSensoriumProjectPage({ initialBhkFilter = null, 
                 title="Rotate 90°"
               >
                 <RotateCcw size={16} />
+              </button>
+              <button
+                onClick={handleToggleFullscreen}
+                style={{ 
+                  background: isFullscreen ? 'rgba(16, 185, 129, 0.3)' : 'rgba(255,255,255,0.1)', 
+                  border: isFullscreen ? '1px solid #10B981' : 'none', 
+                  color: isFullscreen ? '#34D399' : '#fff', 
+                  padding: '8px', 
+                  borderRadius: '6px', 
+                  cursor: 'pointer' 
+                }}
+                title={isFullscreen ? "Exit Fullscreen (F)" : "Toggle Fullscreen (F)"}
+              >
+                <Maximize2 size={16} />
               </button>
               <button
                 onClick={handleResetView}

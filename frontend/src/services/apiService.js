@@ -1425,8 +1425,9 @@ const megapolisSubSocietiesProperties = [
     exclusiveDeal: true,
     reraNumber: "Vista: P52100027234 | Elation: P52100024965 | Ambrosia: P52100024963 | Phase IV: P52100027244",
     possessionDate: "Phased Possession",
-    imageUrl: "/joyville_sensorium_balcony.jpg",
+    imageUrl: "/joyville_sensorium_project_card.jpg",
     galleryImages: [
+      "/joyville_sensorium_project_card.jpg",
       "/joyville_sensorium_balcony.jpg",
       "/joyville_sensorium_living.jpg",
       "/joyville_sensorium_bedroom.jpg",
@@ -2335,8 +2336,9 @@ const initialSocieties = [
     name: "Joyville Sensorium",
     canonicalName: "Joyville Sensorium Hinjawadi Pune",
     slug: "joyville-sensorium",
-    imageUrl: "/joyville_sensorium_balcony.jpg",
+    imageUrl: "/joyville_sensorium_project_card.jpg",
     galleryImages: [
+      "/joyville_sensorium_project_card.jpg",
       "/joyville_sensorium_balcony.jpg",
       "/joyville_sensorium_living.jpg",
       "/joyville_sensorium_bedroom.jpg",
