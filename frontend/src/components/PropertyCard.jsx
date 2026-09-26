@@ -516,6 +516,10 @@ export default function PropertyCard({
     if (id.includes('sensorium') || title.includes('sensorium') || slug.includes('sensorium') || title.includes('joyville')) {
       return '/joyville-sensorium';
     }
+    // 10. Kasturi Eon Homes Hinjawadi Phase 3
+    if (id.includes('eon') || title.includes('eon') || slug.includes('eon') || title.includes('kasturi') || slug.includes('kasturi')) {
+      return '/kasturi-eon-homes-hinjawadi';
+    }
     return null;
   };
 
@@ -767,9 +771,11 @@ export default function PropertyCard({
               color: '#FFFFFF',
               margin: '0 0 2px 0',
               lineHeight: 1.25,
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden'
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              minHeight: '2.5em'
             }}
           >
             {property.title}
@@ -1123,7 +1129,9 @@ export default function PropertyCard({
               gap: '6px',
               background: '#22C55E',
               borderRadius: '8px',
-              padding: '9px 12px',
+              padding: '11px 12px',
+              minHeight: '44px',
+              touchAction: 'manipulation',
               color: '#FFFFFF',
               fontSize: '0.82rem',
               fontWeight: 700,
@@ -1167,7 +1175,9 @@ export default function PropertyCard({
               background: 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(5,10,20,0.85) 100%)',
               border: '1px solid rgba(212, 175, 55, 0.55)',
               borderRadius: '8px',
-              padding: '9px 12px',
+              padding: '11px 12px',
+              minHeight: '44px',
+              touchAction: 'manipulation',
               cursor: 'pointer',
               transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
             }}

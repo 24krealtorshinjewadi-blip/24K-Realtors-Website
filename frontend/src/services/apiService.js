@@ -1,8 +1,8 @@
-// Auto-clear stale mock database from localStorage if it lacks v2026_nine_flagship_joyville_sensorium_v26
+// Auto-clear stale mock database from localStorage if it lacks v2026_ten_flagship_kasturi_eon_homes_v27
 try {
   const currentPropVer = localStorage.getItem('mock_properties_version');
-  if (currentPropVer !== 'v2026_nine_flagship_joyville_sensorium_v26') {
-    console.info('[Cache Bust] Refreshing catalog to include Joyville Sensorium by Shapoorji Pallonji...');
+  if (currentPropVer !== 'v2026_ten_flagship_kasturi_eon_homes_v27') {
+    console.info('[Cache Bust] Refreshing catalog to include Kasturi Eon Homes Hinjawadi Phase 3...');
     localStorage.removeItem('mock_properties');
     localStorage.removeItem('mock_properties_version');
     localStorage.removeItem('mock_societies');
@@ -831,6 +831,89 @@ const initialProperties = [
       "Family & Social Spaces, Amphitheatre & Kids Play Area",
       "24x7 Multi-Tier Security & Controlled Access",
       "100% DG Power Backup & Covered Car Parking"
+    ],
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROJECT 8C — KASTURI EON HOMES BY KASTURI HOUSING
+  // Hinjawadi Phase 3, Opposite TCS Sahyadri Park, Pune — 411057
+  // 12 Iconic Symmetrical Towers around 8-Acre Continuous Central Park
+  // MahaRERA Numbers:
+  //   • P52100046679
+  //   • P52100080318
+  //   • P52100055358
+  //   • P52100024680
+  //   • P52100030732
+  //   • P52100048176
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "prop-kasturi-eon-homes",
+    title: "Kasturi Eon Homes",
+    projectName: "Kasturi Eon Homes",
+    builderName: "Kasturi Housing",
+    description: "Kasturi Eon Homes in Hinjawadi Phase 3 is Pune's gold standard of luxury architecture by Kasturi Housing. Features 12 iconic symmetrical high-rise towers encircling an 8-acre continuous vehicle-free central podium park. Offering 2 BHK (839–845 sq.ft), 2.5 BHK (950–970 sq.ft with dedicated study), 3 BHK Mini / Comfort (1,145–1,150 sq.ft), and ultra-spacious 3 BHK Luxury (1,185–1,282 sq.ft) residences. Boasts primary & recent MahaRERAs (P52100046679, P52100080318, P52100055358, P52100024680, P52100030732, P52100048176), 25,000 sq.ft lifestyle clubhouse, Olympic lap pool, squash courts, sports bar, and direct walking connectivity opposite TCS Sahyadri Park.",
+    propertyType: "RESIDENTIAL",
+    transactionType: "BUY",
+    price: 9200000,
+    priceNegotiable: true,
+    bedrooms: 2,
+    location: "HINJEWADI_PHASE_3",
+    address: "Kasturi Eon Homes, Phase 3, Opposite TCS Sahyadri Park, Hinjewadi, Pune — 411057",
+    latitude: 18.5925,
+    longitude: 73.7040,
+    status: "AVAILABLE",
+    verifiedListing: true,
+    exclusiveDeal: true,
+    reraNumber: "P52100046679 | P52100080318 | P52100055358 | P52100024680 | P52100030732 | P52100048176",
+    possessionDate: "Ready to Move & Nearing Possession Wings",
+    imageUrl: "/kasturi_eon_homes_project_card.jpg",
+    galleryImages: [
+      "/kasturi_eon_homes_project_card.jpg",
+      "/kasturi_eon_homes_balcony.jpg",
+      "/kasturi_eon_homes_living.jpg",
+      "/kasturi_eon_homes_bedroom.jpg",
+      "/kasturi_eon_homes_kitchen.jpg",
+      "/kasturi_eon_homes_bathroom.jpg"
+    ],
+    furnishingStatus: "SEMI_FURNISHED",
+    gasPipeline: true,
+    societySlug: "kasturi-eon-homes",
+    configurations: [
+      {
+        bhk: "2 BHK",
+        carpet: "839 to 845 sq. ft.",
+        highlight: true,
+        note: "Standard layouts (some premium variants/older phases quote up to ~914–940 sq. ft.)"
+      },
+      {
+        bhk: "2.5 BHK",
+        carpet: "950 to 970 sq. ft.",
+        highlight: true,
+        note: "Offers extra study / flexible work space"
+      },
+      {
+        bhk: "3 BHK Mini / Comfort",
+        carpet: "1,145 to 1,150 sq. ft.",
+        highlight: true,
+        note: "Standard 3 BHK configuration"
+      },
+      {
+        bhk: "3 BHK Luxury",
+        carpet: "1,185 to 1,282 sq. ft.",
+        highlight: true,
+        note: "Maximum spacious variants available in the property"
+      }
+    ],
+    amenities: [
+      "The Club & Sports Arena: Fully equipped Gymnasium, Lap Pool and Kids Pool",
+      "Squash Court, Badminton Court, Tennis Courts, Basketball Court",
+      "Cricket Pitches, Billiards/Pool Table, and Sports Bar",
+      "Rejuvenation: Aerobics/Meditation Room, Steam Room, Amphitheatre, Mini Theatre",
+      "8-Acre Continuous Vehicle-Free Central Park & Landscaped Podium Gardens",
+      "25,000 Sq. Ft. Lifestyle Club & Schindler High-Speed Elevators",
+      "3-Tier Integrated Security Grid with Biometric & CCTV 24x7 Monitoring"
     ],
     createdDate: new Date().toISOString(),
     updatedDate: new Date().toISOString()
@@ -2399,6 +2482,80 @@ const initialSocieties = [
     faqs: "Q: What are the MahaRERA numbers for Joyville Sensorium?\nA: Tower MahaRERAs are: Vista: P52100027234, Elation: P52100024965, Ambrosia: P52100024963, Phase IV: P52100027244.\n\nQ: Who is the developer of Joyville Sensorium?\nA: Joyville Sensorium is developed by Shapoorji Pallonji (Joyville Shapoorji Housing).\n\nQ: What are the carpet area ranges and inclusions?\nA: 2 BHK is 697 to 792 sq. ft. and 3 BHK is 973 to 979 sq. ft. Both configurations include bedrooms, bathrooms, living & dining, kitchen, terrace, and a dry balcony.",
     seoTitle: "Joyville Sensorium Hinjawadi Pune | 2 & 3 BHK Riverfront Flats | Shapoorji Pallonji",
     seoDescription: "Joyville Sensorium by Shapoorji Pallonji in Hinjawadi, Pune. 2 BHK (697-792 sq.ft) & 3 BHK (973-979 sq.ft) with terrace & dry balcony. Tower RERAs: Vista P52100027234, Elation P52100024965, Ambrosia P52100024963, Phase IV P52100027244."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SOC-KASTURI-EON: KASTURI EON HOMES — Hinjawadi Phase 3
+  // 12 Iconic Symmetrical Towers around 8-Acre Central Park
+  // MahaRERA Numbers:
+  //   • P52100046679
+  //   • P52100080318
+  //   • P52100055358
+  //   • P52100024680
+  //   • P52100030732
+  //   • P52100048176
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    id: "soc-kasturi-eon-homes",
+    name: "Kasturi Eon Homes",
+    canonicalName: "Kasturi Eon Homes Hinjawadi Pune",
+    slug: "kasturi-eon-homes",
+    imageUrl: "/kasturi_eon_homes_project_card.jpg",
+    galleryImages: [
+      "/kasturi_eon_homes_project_card.jpg",
+      "/kasturi_eon_homes_balcony.jpg",
+      "/kasturi_eon_homes_living.jpg",
+      "/kasturi_eon_homes_bedroom.jpg",
+      "/kasturi_eon_homes_kitchen.jpg",
+      "/kasturi_eon_homes_bathroom.jpg"
+    ],
+    location: "HINJEWADI",
+    hinjewadiPhase: "PHASE_3",
+    developer: "Kasturi Housing",
+    reraNumber: "P52100046679, P52100080318, P52100055358, P52100024680, P52100030732, P52100048176",
+    projectStatus: "READY_TO_MOVE",
+    startingPrice: 9200000,
+    priceLastVerified: "26 Sep 2026",
+    possessionDate: "Ready to Move & Nearing Possession",
+    projectArea: "12 Symmetrical Towers around 8-Acre Continuous Central Park",
+    overview: "Kasturi Eon Homes in Hinjawadi Phase 3, Pune is an architectural masterwork by Kasturi Housing. 12 iconic symmetrical towers arranged around a continuous 8-acre vehicle-free central podium park. Features verified 2 BHK (839–845 sq.ft, up to 940 sq.ft), 2.5 BHK (950–970 sq.ft with extra study), 3 BHK Mini / Comfort (1,145–1,150 sq.ft), and 3 BHK Luxury (1,185–1,282 sq.ft). Certified with primary & recent MahaRERAs: P52100046679, P52100080318, P52100055358, P52100024680, P52100030732, P52100048176. Directly opposite TCS Sahyadri Park.",
+    amenities: "Fully Equipped Gym, Lap Pool, Kids Pool, Squash Court, Badminton Court, Tennis Courts, Basketball Court, Cricket Pitches, Billiards Table, Sports Bar, Aerobics Room, Steam Room, Amphitheatre, Mini Theatre, 8-Acre Podium Gardens, 25,000 Sq.Ft Club, 3-Tier Security",
+    priceRange: "₹92 Lakhs – ₹1.58 Cr (Negotiable)",
+    configuration: "2 BHK (839–845 sq.ft) | 2.5 BHK (950–970 sq.ft) | 3 BHK Comfort (1,145–1,150 sq.ft) | 3 BHK Luxury (1,185–1,282 sq.ft)",
+    configurationSummary: "2, 2.5 & 3 BHK Central Park Residences",
+    configurations: [
+      {
+        bhkType: "2 BHK",
+        carpetArea: "839 – 845 sq. ft.",
+        priceLabel: "₹92 L – ₹98 L* (Negotiable)",
+        status: "Available",
+        note: "Standard layouts (some premium variants/older phases quote up to ~914–940 sq. ft.)"
+      },
+      {
+        bhkType: "2.5 BHK",
+        carpetArea: "950 – 970 sq. ft.",
+        priceLabel: "₹1.05 Cr – ₹1.15 Cr* (Negotiable)",
+        status: "Available",
+        note: "Offers extra study / flexible work space"
+      },
+      {
+        bhkType: "3 BHK Mini / Comfort",
+        carpetArea: "1,145 – 1,150 sq. ft.",
+        priceLabel: "₹1.28 Cr – ₹1.38 Cr* (Negotiable)",
+        status: "Available",
+        note: "Standard 3 BHK configuration"
+      },
+      {
+        bhkType: "3 BHK Luxury",
+        carpetArea: "1,185 – 1,282 sq. ft.",
+        priceLabel: "₹1.42 Cr – ₹1.58 Cr* (Negotiable)",
+        status: "Available",
+        note: "Maximum spacious variants available in the property"
+      }
+    ],
+    faqs: "Q: What are the MahaRERA numbers for Kasturi Eon Homes?\\nA: Primary and recent MahaRERA numbers are: P52100046679, P52100080318, P52100055358, P52100024680, P52100030732, P52100048176.\\n\\nQ: What are the carpet area configurations?\\nA: 2 BHK: 839-845 sq.ft (up to 940 sq.ft), 2.5 BHK: 950-970 sq.ft with extra study, 3 BHK Comfort: 1,145-1,150 sq.ft, and 3 BHK Luxury: 1,185-1,282 sq.ft.",
+    seoTitle: "Kasturi Eon Homes Hinjawadi Phase 3 Pune | 2, 2.5 & 3 BHK Luxury Flats | Kasturi Housing",
+    seoDescription: "Kasturi Eon Homes in Hinjawadi Phase 3, Pune opposite TCS Sahyadri Park. 2, 2.5 & 3 BHK luxury flats (839 - 1,282 sq.ft). MahaRERA: P52100046679, P52100080318."
   }
 ];
 
@@ -2514,7 +2671,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_nine_flagship_joyville_sensorium_v26';
+const HINJEWADI_PROP_VERSION = 'v2026_ten_flagship_kasturi_eon_homes_v27';
 
 const LocalMockDb = {
   getProperties() {
@@ -2563,6 +2720,13 @@ const LocalMockDb = {
         p.imageUrl = '/joyville_sensorium_project_card.jpg';
         if (Array.isArray(p.galleryImages) && p.galleryImages[0] !== '/joyville_sensorium_project_card.jpg') {
           p.galleryImages = ['/joyville_sensorium_project_card.jpg', ...p.galleryImages.filter(img => img !== '/joyville_sensorium_project_card.jpg')];
+        }
+      }
+      // Guarantee Kasturi Eon Homes uses new poster card image
+      if (p.id === 'prop-kasturi-eon-homes' || (p.title && (p.title.toLowerCase().includes('eon homes') || p.title.toLowerCase().includes('kasturi')))) {
+        p.imageUrl = '/kasturi_eon_homes_project_card.jpg';
+        if (Array.isArray(p.galleryImages) && p.galleryImages[0] !== '/kasturi_eon_homes_project_card.jpg') {
+          p.galleryImages = ['/kasturi_eon_homes_project_card.jpg', ...p.galleryImages.filter(img => img !== '/kasturi_eon_homes_project_card.jpg')];
         }
       }
       const key = String(p.id);
@@ -2653,6 +2817,13 @@ const LocalMockDb = {
         s.imageUrl = '/joyville_sensorium_project_card.jpg';
         if (Array.isArray(s.galleryImages) && s.galleryImages[0] !== '/joyville_sensorium_project_card.jpg') {
           s.galleryImages = ['/joyville_sensorium_project_card.jpg', ...s.galleryImages.filter(img => img !== '/joyville_sensorium_project_card.jpg')];
+        }
+      }
+      // Guarantee Kasturi Eon Homes uses new poster card image
+      if (s.id === 'soc-kasturi-eon-homes' || (s.name && (s.name.toLowerCase().includes('eon homes') || s.name.toLowerCase().includes('kasturi')))) {
+        s.imageUrl = '/kasturi_eon_homes_project_card.jpg';
+        if (Array.isArray(s.galleryImages) && s.galleryImages[0] !== '/kasturi_eon_homes_project_card.jpg') {
+          s.galleryImages = ['/kasturi_eon_homes_project_card.jpg', ...s.galleryImages.filter(img => img !== '/kasturi_eon_homes_project_card.jpg')];
         }
       }
       const key = String(s.id);

@@ -4912,8 +4912,9 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 64px;
-  background: rgba(7, 15, 30, 0.88);
+  height: calc(60px + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: rgba(7, 15, 30, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid rgba(212, 175, 55, 0.2);
@@ -4929,7 +4930,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   background: none;
   border: none;
   color: var(--text-muted);
@@ -4939,10 +4940,11 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
-  width: 25%;
+  flex: 1;
+  max-width: 20%;
   height: 100%;
   transition: all 0.25s ease;
-  padding: 0;
+  padding: 4px 0;
 }
 
 .mobile-tab-item:active {
@@ -4963,7 +4965,7 @@
 /* Adjust padding-bottom on wrapper on mobile so content is not cut off by bottom tab bar */
 @media (max-width: 768px) {
   .portal-container {
-    padding-bottom: 74px !important;
+    padding-bottom: calc(75px + var(--safe-bottom)) !important;
   }
 }
 
@@ -5765,12 +5767,12 @@
     border-radius: 14px !important;
   }
 
-  /* Floating WhatsApp btn: higher above bottom tab */
+  /* Floating WhatsApp btn: higher above bottom tab with safe area */
   .floating-whatsapp {
-    bottom: 80px !important;
+    bottom: calc(75px + var(--safe-bottom)) !important;
     right: 14px !important;
-    width: 50px !important;
-    height: 50px !important;
+    width: 48px !important;
+    height: 48px !important;
   }
 }
 

@@ -579,6 +579,38 @@ export const DEVELOPERS_DATA = [
         <text x="47" y="40" fontFamily="'Montserrat', sans-serif" fontSize="5.2" fontWeight="700" fill="rgba(255,255,255,0.6)" letterSpacing="0.22em">THE CLIFF GARDEN · HINJEWADI PHASE 3</text>
       </svg>
     )
+  },
+
+  // 18. KASTURI HOUSING
+  {
+    id: 'kasturi-housing',
+    name: 'Kasturi Housing',
+    searchQuery: 'Kasturi',
+    color: '#D4AF37',
+    icon: (
+      <svg viewBox="0 0 40 40" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="20,4 36,14 36,26 20,36 4,26 4,14" stroke="#D4AF37" strokeWidth="2.5" fill="none" />
+        <text x="13.5" y="27" fontFamily="'Cinzel', serif" fontSize="19" fontWeight="900" fill="#D4AF37">K</text>
+      </svg>
+    ),
+    logo: (
+      <svg viewBox="0 0 200 56" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="kasturiGold" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#FFF0B3" />
+            <stop offset="50%" stopColor="#D4AF37" />
+            <stop offset="100%" stopColor="#997819" />
+          </linearGradient>
+        </defs>
+        <g transform="translate(6, 8)">
+          <polygon points="16,3 30,11 30,25 16,33 2,25 2,11" stroke="url(#kasturiGold)" strokeWidth="2" fill="none" />
+          <text x="10" y="24" fontFamily="'Cinzel', serif" fontSize="16" fontWeight="900" fill="url(#kasturiGold)">K</text>
+        </g>
+        <text x="44" y="26" fontFamily="'Cinzel', serif" fontSize="16" fontWeight="900" fill="url(#kasturiGold)" letterSpacing="0.16em">KASTURI</text>
+        <text x="46" y="38" fontFamily="'Montserrat', sans-serif" fontSize="6.2" fontWeight="800" fill="#F3E5AB" letterSpacing="0.22em">HOUSING · CRAFTED LUXURY</text>
+        <text x="46" y="47" fontFamily="'Montserrat', sans-serif" fontSize="4.8" fontWeight="600" fill="rgba(255,255,255,0.4)" letterSpacing="0.16em">EON HOMES · HINJEWADI PHASE 3</text>
+      </svg>
+    )
   }
 ];
 

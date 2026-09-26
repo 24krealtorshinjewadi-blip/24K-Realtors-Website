@@ -301,6 +301,30 @@ export const SEO_CONFIGS = {
     description: 'Verified 3 BHK riverfront luxury flats in Joyville Sensorium by Shapoorji Pallonji, Hinjawadi Pune. Carpet 973 to 979 sq.ft with 3 bedrooms, bathrooms, living & dining, terrace, and dry balcony. MahaRERA registered.',
     url: '/joyville-sensorium-3-bhk',
   },
+
+  kasturi_eon_homes: {
+    title: 'Kasturi Eon Homes Hinjawadi Phase 3 Pune | 2, 2.5 & 3 BHK Luxury Residences | 24K Realtors',
+    description: 'Explore Kasturi Eon Homes in Hinjawadi Phase 3 Pune opposite TCS Sahyadri Park. 12 symmetrical towers around an 8-acre continuous vehicle-free central park. 2 BHK (839-845 sq.ft), 2.5 BHK (950-970 sq.ft with study), 3 BHK Comfort (1145-1150 sq.ft) & 3 BHK Luxury (1185-1282 sq.ft). MahaRERA: P52100046679, P52100080318. 100% verified site photos.',
+    url: '/kasturi-eon-homes-hinjawadi',
+  },
+
+  kasturi_eon_homes_2bhk: {
+    title: 'Kasturi Eon Homes 2 BHK Hinjawadi Phase 3 | Carpet 839 - 845 sq.ft | 24K Realtors',
+    description: 'Verified 2 BHK luxury flats in Kasturi Eon Homes Hinjawadi Phase 3 Pune. Carpet area 839 to 845 sq.ft (variants up to 940 sq.ft) with private park-facing deck, modular kitchen & 25,000 sq.ft club. MahaRERA approved.',
+    url: '/kasturi-eon-homes-2-bhk',
+  },
+
+  kasturi_eon_homes_2_5bhk: {
+    title: 'Kasturi Eon Homes 2.5 BHK Hinjawadi Phase 3 | Carpet 950 - 970 sq.ft with Study | 24K Realtors',
+    description: 'Smart 2.5 BHK luxury homes in Kasturi Eon Homes Hinjawadi Phase 3 Pune with dedicated study / work-from-home office room. Carpet 950 to 970 sq.ft opposite TCS Sahyadri Park.',
+    url: '/kasturi-eon-homes-2-5-bhk',
+  },
+
+  kasturi_eon_homes_3bhk: {
+    title: 'Kasturi Eon Homes 3 BHK Luxury Hinjawadi Phase 3 | Carpet 1145 - 1282 sq.ft | 24K Realtors',
+    description: 'Palatial 3 BHK Mini / Comfort (1,145-1,150 sq.ft) & 3 BHK Luxury (1,185-1,282 sq.ft) residences in Kasturi Eon Homes Hinjawadi Phase 3. 8-acre central park views, glass shower cubicles, Grohe/Toto fittings.',
+    url: '/kasturi-eon-homes-3-bhk',
+  },
 };
 
 

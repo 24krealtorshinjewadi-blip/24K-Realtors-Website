@@ -42,8 +42,8 @@ const YashOneProjectPage        = lazy(() => import('./components/YashOneProject
 const KohinoorProjectPage       = lazy(() => import('./components/KohinoorProjectPage'));
 const TcgCliffGardenProjectPage  = lazy(() => import('./components/TcgCliffGardenProjectPage'));
 const VtpBlueWatersProjectPage   = lazy(() => import('./components/VtpBlueWatersProjectPage'));
-const BlueRidgeProjectPage       = lazy(() => import('./components/BlueRidgeProjectPage'));
 const JoyvilleSensoriumProjectPage = lazy(() => import('./components/JoyvilleSensoriumProjectPage'));
+const KasturiEonHomesProjectPage = lazy(() => import('./components/KasturiEonHomesProjectPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
@@ -127,6 +127,9 @@ function SocietyDetailRouteWrapper({ onBack }) {
   if (s.includes('sensorium') || s === 'joyville-sensorium') {
     return <Navigate to="/joyville-sensorium" replace />;
   }
+  if (s.includes('eon') || s.includes('kasturi')) {
+    return <Navigate to="/kasturi-eon-homes-hinjawadi" replace />;
+  }
   return (
     <PublicSocietyDetailPage
       slug={slug || 'kolte-patil-life-republic-hinjewadi'}
@@ -170,6 +173,9 @@ function PropertyDetailRouteWrapper() {
   if (keyStr.includes('sensorium') || keyStr.includes('joyville') || keyStr === 'prop-joyville-sensorium') {
     return <Navigate to="/joyville-sensorium" replace />;
   }
+  if (keyStr.includes('eon') || keyStr.includes('kasturi') || keyStr === 'prop-kasturi-eon-homes') {
+    return <Navigate to="/kasturi-eon-homes-hinjawadi" replace />;
+  }
 
   const [property, setProperty] = useState(location.state?.property || null);
   const [loading, setLoading] = useState(!location.state?.property);
@@ -194,6 +200,7 @@ function PropertyDetailRouteWrapper() {
       if (t.includes('godrej elements') || (t.includes('godrej') && t.includes('element'))) { navigate('/godrej-elements-hinjewadi', { replace: true }); return; }
       if (t.includes('megapolis township')) { navigate('/townships/megapolis', { replace: true }); return; }
       if (t.includes('blue ridge') || t.includes('blueridge') || (t.includes('paranjape') && t.includes('ridge'))) { navigate('/blue-ridge-hinjewadi', { replace: true }); return; }
+      if (t.includes('eon') || t.includes('kasturi')) { navigate('/kasturi-eon-homes-hinjawadi', { replace: true }); return; }
     }
 
     if (!property || !matchesKey) {
@@ -335,6 +342,10 @@ function LegacyHashRedirectHandler() {
         navigate('/joyville-sensorium', { replace: true });
         return;
       }
+      if (hash === 'kasturi-eon-homes' || hash === 'eon-homes' || hash === 'eon' || hash === 'kasturi' || hash === 'kasturi-eon') {
+        navigate('/kasturi-eon-homes-hinjawadi', { replace: true });
+        return;
+      }
       if (hash.startsWith('townships/megapolis/')) {
         const socId = hash.replace('townships/megapolis/', '');
         navigate(`/townships/megapolis/${socId}`, { replace: true });
@@ -398,6 +409,10 @@ function AppContent() {
                   : pathname === '/joyville-sensorium' || pathname === '/joyville-sensorium-hinjewadi' || pathname === '/sensorium' || pathname === '/sensorium-hinjewadi' ? SEO_CONFIGS.joyville_sensorium
                   : pathname === '/joyville-sensorium-2-bhk' ? SEO_CONFIGS.joyville_sensorium_2bhk
                   : pathname === '/joyville-sensorium-3-bhk' ? SEO_CONFIGS.joyville_sensorium_3bhk
+                  : pathname === '/kasturi-eon-homes' || pathname === '/kasturi-eon-homes-hinjawadi' || pathname === '/eon-homes' || pathname === '/eon-homes-hinjawadi' ? SEO_CONFIGS.kasturi_eon_homes
+                  : pathname === '/kasturi-eon-homes-2-bhk' ? SEO_CONFIGS.kasturi_eon_homes_2bhk
+                  : pathname === '/kasturi-eon-homes-2-5-bhk' ? SEO_CONFIGS.kasturi_eon_homes_2_5bhk
+                  : pathname === '/kasturi-eon-homes-3-bhk' ? SEO_CONFIGS.kasturi_eon_homes_3bhk
                   : pathname.startsWith('/blog')    ? SEO_CONFIGS.blog
                   : SEO_CONFIGS.portal;
   useSEO(seoConfig);
@@ -871,6 +886,39 @@ function AppContent() {
               <Route path="/projects/joyville-sensorium" element={<Navigate to="/joyville-sensorium" replace />} />
               <Route path="/projects/sensorium" element={<Navigate to="/joyville-sensorium" replace />} />
               <Route path="/joyville" element={<Navigate to="/joyville-sensorium" replace />} />
+
+              {/* ─── KASTURI EON HOMES — Dedicated Showcase Subpage ─── */}
+              <Route
+                path="/kasturi-eon-homes"
+                element={<KasturiEonHomesProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/kasturi-eon-homes-hinjawadi"
+                element={<KasturiEonHomesProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/eon-homes"
+                element={<KasturiEonHomesProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/eon-homes-hinjawadi"
+                element={<KasturiEonHomesProjectPage onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/kasturi-eon-homes-2-bhk"
+                element={<KasturiEonHomesProjectPage initialBhkFilter="2 BHK" onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/kasturi-eon-homes-2-5-bhk"
+                element={<KasturiEonHomesProjectPage initialBhkFilter="2.5 BHK" onBackHome={() => navigate('/')} />}
+              />
+              <Route
+                path="/kasturi-eon-homes-3-bhk"
+                element={<KasturiEonHomesProjectPage initialBhkFilter="3 BHK" onBackHome={() => navigate('/')} />}
+              />
+              <Route path="/projects/kasturi-eon-homes" element={<Navigate to="/kasturi-eon-homes-hinjawadi" replace />} />
+              <Route path="/projects/eon-homes" element={<Navigate to="/kasturi-eon-homes-hinjawadi" replace />} />
+              <Route path="/kasturi" element={<Navigate to="/kasturi-eon-homes-hinjawadi" replace />} />
 
               {/* Catch-all (MUST BE LAST) */}
               <Route path="*" element={<Navigate to="/" replace />} />

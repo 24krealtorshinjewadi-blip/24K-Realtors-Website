@@ -112,7 +112,7 @@ export default function PortalFooter({ onViewChange }) {
             <FooterLink href="https://www.koltepatil.com" external>Kolte-Patil Integrated Townships</FooterLink>
             <FooterLink href="https://www.godrejproperties.com/pune" external>Godrej Properties West</FooterLink>
             <FooterLink href="https://www.panchshilrealty.com" external>Panchshil High-Yield Commercial</FooterLink>
-            <FooterLink href="https://wa.me/919673000053?text=Tell%20me%20about%20Kasturi%20ultra-luxury%20portfolios" external>Kasturi Ultra-Luxury Portfolios</FooterLink>
+            <FooterLink href="/kasturi-eon-homes-hinjawadi">Kasturi Eon Homes (Hinjawadi Ph 3)</FooterLink>
             <FooterLink href="https://maharera.maharashtra.gov.in" external>MahaRERA Compliance Guide</FooterLink>
             <FooterLink href="https://wa.me/919673000053?text=I%20am%20interested%20in%20off-market%20property%20listings%20in%20Pune" external>Tier-1 Off-Market Registry</FooterLink>
           </div>

@@ -74,21 +74,21 @@ export default function LocationLandingPage({ locationSlug = 'hinjewadi-phase-1'
       
       {/* ── Top Header ─────────────────────────────────────────────────── */}
       <header className="pi-topbar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <button onClick={onBack} className="pi-btn-outline" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+          <button onClick={onBack} className="pi-btn-outline" style={{ padding: '6px 10px', fontSize: '0.75rem', flexShrink: 0 }}>
             <ArrowLeft size={14} />
-            <span>All Locations</span>
+            <span className="subpage-hide-mobile">All Locations</span>
           </button>
-          <div>
-            <h1 style={{ margin: 0, fontSize: '1rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#F3E5AB' }}>
+          <div style={{ minWidth: 0, overflow: 'hidden' }}>
+            <h1 style={{ margin: 0, fontSize: '0.92rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#F3E5AB', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {data.name} Property Intelligence
             </h1>
-            <span style={{ fontSize: '0.72rem', color: '#A0AEC0' }}>PIN: {data.pincode || '411057'} • Pune IT Corridor</span>
+            <span style={{ fontSize: '0.70rem', color: '#A0AEC0', whiteSpace: 'nowrap' }}>PIN: {data.pincode || '411057'} • Pune IT Corridor</span>
           </div>
         </div>
 
-        <button onClick={onBack} className="pi-btn-gold" style={{ padding: '8px 16px', fontSize: '0.78rem' }}>
-          Explore All Societies
+        <button onClick={onBack} className="pi-btn-gold" style={{ padding: '7px 12px', fontSize: '0.75rem', flexShrink: 0 }}>
+          <span className="subpage-hide-mobile">Explore </span>All Societies
         </button>
       </header>
 
