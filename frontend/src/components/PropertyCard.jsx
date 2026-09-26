@@ -516,6 +516,10 @@ export default function PropertyCard({
     if (id.includes('sensorium') || title.includes('sensorium') || slug.includes('sensorium') || title.includes('joyville')) {
       return '/joyville-sensorium';
     }
+    // 10. Kasturi Eon Homes Hinjawadi Phase 3
+    if (id.includes('eon') || title.includes('eon') || slug.includes('eon') || title.includes('kasturi') || slug.includes('kasturi')) {
+      return '/kasturi-eon-homes-hinjawadi';
+    }
     return null;
   };
 
