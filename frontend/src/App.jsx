@@ -44,6 +44,7 @@ const TcgCliffGardenProjectPage  = lazy(() => import('./components/TcgCliffGarde
 const VtpBlueWatersProjectPage   = lazy(() => import('./components/VtpBlueWatersProjectPage'));
 const JoyvilleSensoriumProjectPage = lazy(() => import('./components/JoyvilleSensoriumProjectPage'));
 const KasturiEonHomesProjectPage = lazy(() => import('./components/KasturiEonHomesProjectPage'));
+const BlueRidgeProjectPage = lazy(() => import('./components/BlueRidgeProjectPage'));
 
 // Full-screen skeleton loader for Suspense fallback
 function AppLoadingScreen() {
