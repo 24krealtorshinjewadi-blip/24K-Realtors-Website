@@ -2,21 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   MapPin, 
-  ShieldCheck, 
   Sliders, 
   Heart, 
   ArrowRight, 
-  FileText,
-  Building2,
-  Building,
-  Home,
-  Leaf,
-  Star,
-  Sparkles,
-  Landmark,
-  Trophy,
-  Share2,
-  Sun
+  Building2 
 } from 'lucide-react';
 
 const getForbesTeslaPropertyImage = (property) => {
@@ -340,110 +329,66 @@ const DeveloperBrandMark = ({ builderName = '', title = '' }) => {
   );
 };
 
-// Tagline overlay on the hero image
-const getImageTagline = (property) => {
-  const t = (property.title || '').toLowerCase();
-  if (t.includes('godrej 24')) return 'LUXURY LIVING IN HINJEWADI';
-  if (t.includes('elements')) return 'ELEVATE EVERYDAY LIVING';
-  if (t.includes('megapolis')) return 'MEGAPOLIS\nA WORLD WITHIN';
-  if (t.includes('yashone') || t.includes('vj')) return 'MODERN HOMES\nBRIGHTER TOMORROWS';
-  if (t.includes('sportsville') || t.includes('kohinoor')) return 'MORE THAN A HOME\nA HEALTHIER TOMORROW';
-  if (t.includes('cliff') || t.includes('clip') || t.includes('tcg')) return 'PANORAMIC HILLSIDE LIVING\nHINJEWADI PHASE 3';
-  if (t.includes('blue waters') || t.includes('bluewater') || t.includes('vtp')) return '100+ ACRE RIVERSIDE TOWNSHIP\nMAHALUNGE-HINJEWADI';
-  if (t.includes('sensorium') || t.includes('joyville')) return 'RIVERFRONT SANCTUARY\nHINJEWADI, PUNE';
-  if (property.tagline) return property.tagline;
-  return 'PREMIUM HOMES • BETTER LIVING';
+// Streamlined luxury configuration summary helper
+const getConfigSummary = (property) => {
+  if (property?.configurations && property.configurations.length > 0) {
+    const rawBhks = property.configurations.map(c => {
+      const b = (c.bhk || '').replace(/ BHK.*$/i, '').trim();
+      return b;
+    }).filter(Boolean);
+    const unique = [...new Set(rawBhks)];
+    if (unique.length === 1) {
+      return `${unique[0]} BHK Residences`;
+    }
+    if (unique.length === 2) {
+      return `${unique[0]} & ${unique[1]} BHK Residences`;
+    }
+    if (unique.length > 2) {
+      const last = unique[unique.length - 1];
+      const rest = unique.slice(0, -1).join(', ');
+      return `${rest} & ${last} BHK Residences`;
+    }
+  }
+  if (property?.bedrooms) {
+    const b = String(property.bedrooms);
+    return b.toLowerCase().includes('bhk') ? `${b} Residences` : `${b} BHK Residences`;
+  }
+  return '2, 2.5 & 3 BHK Residences';
 };
 
-// 3 Key Feature Highlights (Icon + Label) matching exact screenshot aesthetics
-const getCardHighlights = (property) => {
-  const t = (property.title || '').toLowerCase();
+// Streamlined luxury carpet area range summary helper
+const getCarpetSummary = (property) => {
+  if (property?.configurations && property.configurations.length > 0) {
+    const carpets = property.configurations
+      .map(c => c.carpet || '')
+      .filter(Boolean);
+    
+    const allNums = [];
+    carpets.forEach(txt => {
+      const matches = txt.match(/\d[\d,]*/g);
+      if (matches) {
+        matches.forEach(m => {
+          const val = parseInt(m.replace(/,/g, ''), 10);
+          if (!isNaN(val) && val > 100 && val < 25000) {
+            allNums.push(val);
+          }
+        });
+      }
+    });
 
-  if (t.includes('godrej 24')) {
-    return [
-      { icon: Building2, line1: 'Modern', line2: 'Amenities' },
-      { icon: MapPin, line1: 'Prime', line2: 'Location' },
-      { icon: ShieldCheck, line1: 'Trusted', line2: 'Developer' }
-    ];
+    if (allNums.length > 0) {
+      const min = Math.min(...allNums);
+      const max = Math.max(...allNums);
+      if (min === max) {
+        return `${min.toLocaleString('en-IN')} sq.ft`;
+      }
+      return `${min.toLocaleString('en-IN')} – ${max.toLocaleString('en-IN')} sq.ft`;
+    }
   }
-
-  if (t.includes('elements')) {
-    return [
-      { icon: Home, line1: 'Clubhouse', line2: '' },
-      { icon: Leaf, line1: 'Green', line2: 'Spaces' },
-      { icon: Star, line1: 'Lifestyle', line2: 'Amenities' }
-    ];
+  if (property?.areaSquareFeet) {
+    return `${Number(property.areaSquareFeet).toLocaleString('en-IN')} sq.ft`;
   }
-
-  if (t.includes('saffron')) {
-    return [
-      { icon: Building2, line1: '1 & 2 BHK', line2: 'Ready Flats' },
-      { icon: ShieldCheck, line1: 'Triple MahaRERA', line2: 'P52100018779+' },
-      { icon: Trophy, line1: 'Retail Shops', line2: '& Amenities' }
-    ];
-  }
-
-  if (t.includes('sparklet') || t.includes('spaklet')) {
-    return [
-      { icon: Building2, line1: '1 & 2 BHK', line2: 'Curved Balcony' },
-      { icon: ShieldCheck, line1: 'Dual MahaRERA', line2: 'A51800000454' },
-      { icon: Trophy, line1: 'Olympic Pool', line2: '& Clubhouse' }
-    ];
-  }
-
-  if (t.includes('megapolis')) {
-    return [
-      { icon: Landmark, line1: 'Integrated', line2: 'Township' },
-      { icon: Trophy, line1: 'World Class', line2: 'Amenities' },
-      { icon: Share2, line1: 'Great', line2: 'Connectivity' }
-    ];
-  }
-
-  if (t.includes('yashone') || t.includes('vj')) {
-    return [
-      { icon: Sun, line1: 'Premium', line2: 'Design' },
-      { icon: Building, line1: 'Urban', line2: 'Lifestyle' },
-      { icon: MapPin, line1: 'Excellent', line2: 'Connectivity' }
-    ];
-  }
-
-  if (t.includes('sportsville') || t.includes('kohinoor')) {
-    return [
-      { icon: Trophy, line1: 'Sports-Centric', line2: 'Living' },
-      { icon: Home, line1: 'Clubhouse &', line2: 'Pool' },
-      { icon: MapPin, line1: 'Prime', line2: 'Hinjewadi Ph 1' }
-    ];
-  }
-
-  if (t.includes('cliff') || t.includes('clip') || t.includes('tcg')) {
-    return [
-      { icon: Building2, line1: '1 & 2 BHK', line2: 'Scenic Views' },
-      { icon: ShieldCheck, line1: 'Triple MahaRERA', line2: 'Verified' },
-      { icon: MapPin, line1: 'Hinjewadi', line2: 'Phase 3' }
-    ];
-  }
-
-  if (t.includes('blue waters') || t.includes('bluewater') || t.includes('vtp')) {
-    return [
-      { icon: Building2, line1: '2 BHK (640 sq.ft)', line2: 'Scenic River View' },
-      { icon: ShieldCheck, line1: 'Multi-RERA', line2: '6 Numbers Reg.' },
-      { icon: MapPin, line1: 'Mahalunge', line2: 'Hinjewadi Annex' }
-    ];
-  }
-
-  if (t.includes('sensorium') || t.includes('joyville')) {
-    return [
-      { icon: Building2, line1: '2 & 3 BHK', line2: 'Terrace + Dry Balc.' },
-      { icon: ShieldCheck, line1: '4 Tower RERA', line2: 'P52100027234+' },
-      { icon: Trophy, line1: 'Riverfront', line2: 'Clubhouse & Pools' }
-    ];
-  }
-
-  return [
-    { icon: Building2, line1: 'Modern', line2: 'Amenities' },
-    { icon: MapPin, line1: 'Prime', line2: 'Location' },
-    { icon: ShieldCheck, line1: 'Verified', line2: 'Listing' }
-  ];
+  return 'Spacious Layout';
 };
 
 export default function PropertyCard({ 
@@ -529,8 +474,6 @@ export default function PropertyCard({
   };
 
   const priceObj = formatCardPrice(property?.price, property?.transactionType, property?.title);
-  const imageTagline = getImageTagline(property);
-  const highlights = getCardHighlights(property);
   const subtitleCorridor = formatSubtitleCorridor(property?.location, property?.title);
   const locationLabel = formatCorridorLabel(property?.location);
 
@@ -705,31 +648,7 @@ export default function PropertyCard({
           </button>
         </div>
 
-        {/* Tagline Overlay on Image */}
-        <div 
-          style={{
-            position: 'absolute',
-            bottom: '10px',
-            left: '16px',
-            right: '110px',
-            zIndex: 2,
-            pointerEvents: 'none'
-          }}
-        >
-          <div style={{
-            fontSize: '0.72rem',
-            fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif",
-            fontWeight: 700,
-            letterSpacing: '0.12em',
-            color: '#F1E5D1',
-            textTransform: 'uppercase',
-            textShadow: '0 2px 6px rgba(0,0,0,0.95)',
-            whiteSpace: 'pre-line',
-            lineHeight: 1.25
-          }}>
-            {imageTagline}
-          </div>
-        </div>
+
 
         {/* Authentic Photos Badge */}
         <div 
@@ -766,66 +685,106 @@ export default function PropertyCard({
           flex: 1
         }}
       >
-        {/* Title and Subtitle */}
-        <div>
-          <h3 
-            style={{
-              fontSize: '1.24rem',
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontWeight: 600,
-              color: '#FFFFFF',
-              margin: '0 0 2px 0',
-              lineHeight: 1.25,
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              minHeight: '2.5em'
-            }}
-          >
-            {property.title}
-          </h3>
-          <div 
-            style={{
-              fontSize: '0.7rem',
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              color: '#94A3B8',
-              textTransform: 'uppercase'
-            }}
-          >
-            {subtitleCorridor}
-          </div>
-        </div>
-
-        {/* Developer Name & Brand Mark Row */}
+        {/* Developer Eyebrow & Brand Mark */}
         <div 
           style={{ 
             display: 'flex', 
             justifyContent: 'space-between', 
-            alignItems: 'center' 
+            alignItems: 'center',
+            gap: '8px'
           }}
         >
           <span style={{ 
-            fontSize: '0.82rem', 
-            color: '#CBD5E1', 
-            fontWeight: 500,
+            fontSize: '0.72rem', 
+            color: '#D4AF37', 
+            fontWeight: 700,
+            letterSpacing: '0.07em',
+            textTransform: 'uppercase',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            maxWidth: '160px'
+            textOverflow: 'ellipsis'
           }}>
             {builderName}
           </span>
           <DeveloperBrandMark builderName={builderName} title={property.title} />
         </div>
 
-        {/* Price Row: Bold Price + Onwards + Negotiable Tag + Asset Score */}
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginTop: '2px' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
+        {/* Project Title & Micro-Location Corridor */}
+        <div>
+          <h3 
+            style={{
+              fontSize: '1.26rem',
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontWeight: 600,
+              color: '#FFFFFF',
+              margin: '0 0 3px 0',
+              lineHeight: 1.25,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden'
+            }}
+          >
+            {property.title}
+          </h3>
+          <div 
+            style={{
+              fontSize: '0.74rem',
+              color: '#94A3B8',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <MapPin size={13} color="#D4AF37" style={{ flexShrink: 0 }} />
+            <span>{locationLabel}</span>
+          </div>
+        </div>
+
+        {/* Streamlined Luxury Configuration & Carpet Area Ribbon */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid rgba(212, 175, 55, 0.18)',
+          borderRadius: '8px',
+          padding: '8px 12px',
+          gap: '8px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+            <Building2 size={14} color="#D4AF37" style={{ flexShrink: 0 }} />
+            <span style={{ 
+              fontSize: '0.78rem', 
+              fontWeight: 700, 
+              color: '#FFFFFF', 
+              letterSpacing: '0.01em',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}>
+              {getConfigSummary(property)}
+            </span>
+          </div>
+          <span style={{ fontSize: '0.72rem', color: '#E6C35C', fontWeight: 600, flexShrink: 0 }}>
+            {getCarpetSummary(property)}
+          </span>
+        </div>
+
+        {/* Price & MahaRERA Row */}
+        <div 
+          style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            gap: '8px',
+            marginTop: '2px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap' }}>
             <span 
               style={{
-                fontSize: '1.38rem',
+                fontSize: '1.36rem',
                 fontWeight: 800,
                 color: '#FFFFFF',
                 letterSpacing: '-0.01em',
@@ -837,76 +796,29 @@ export default function PropertyCard({
             {priceObj.suffix && (
               <span 
                 style={{
-                  fontSize: '0.78rem',
+                  fontSize: '0.74rem',
                   color: '#94A3B8',
-                  fontWeight: 400,
-                  marginLeft: '6px'
+                  fontWeight: 500
                 }}
               >
                 {priceObj.suffix}
               </span>
             )}
+            {isNegotiable && (
+              <span style={{
+                background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #B8860B 100%)',
+                color: '#040814',
+                fontSize: '0.58rem',
+                fontWeight: 800,
+                padding: '2px 6px',
+                borderRadius: '3px',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase'
+              }}>
+                Negotiable
+              </span>
+            )}
           </div>
-          {isNegotiable && (
-            <span style={{
-              background: 'linear-gradient(135deg, #FFF4D0 0%, #E6C35C 50%, #B8860B 100%)',
-              color: '#040814',
-              fontSize: '0.62rem',
-              fontWeight: 900,
-              padding: '3px 8px',
-              borderRadius: '4px',
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              boxShadow: '0 2px 8px rgba(230,195,92,0.35)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '3px'
-            }}>
-              ✨ NEGOTIABLE
-            </span>
-          )}
-          <span style={{
-            marginLeft: 'auto',
-            background: 'rgba(212,175,55,0.1)',
-            border: '1px solid rgba(212,175,55,0.3)',
-            color: '#D4AF37',
-            fontSize: '0.62rem',
-            fontWeight: 800,
-            padding: '2px 7px',
-            borderRadius: '4px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3px'
-          }}>
-            ⭐ 95/100 ASSET
-          </span>
-        </div>
-
-        {/* Location & MahaRERA Pill Row */}
-        <div 
-          style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          {/* Location corridor */}
-          <span 
-            style={{
-              fontSize: '0.76rem',
-              color: '#94A3B8',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis'
-            }}
-          >
-            <MapPin size={13} color="#94A3B8" style={{ flexShrink: 0 }} />
-            <span>{locationLabel}</span>
-          </span>
 
           {/* MahaRERA Pill Button */}
           <button 
@@ -930,187 +842,34 @@ export default function PropertyCard({
             title={property.reraNumber ? `MahaRERA: ${property.reraNumber}` : 'MahaRERA dossier'}
           >
             <div style={{
-              width: '14px',
-              height: '14px',
+              width: '13px',
+              height: '13px',
               borderRadius: '50%',
               background: 'rgba(16, 185, 129, 0.25)',
               border: '1px solid rgba(16, 185, 129, 0.6)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '0.55rem',
+              fontSize: '0.5rem',
               fontWeight: 800,
               color: '#34D399'
             }}>
               e
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1 }}>
-              <span style={{ fontSize: '0.52rem', fontWeight: 800, color: '#34D399', letterSpacing: '0.04em' }}>
-                RERA
-              </span>
-              <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#A7F3D0', letterSpacing: '0.02em' }}>
-                {(() => {
-                  if (!property.reraNumber) return 'VERIFIED';
-                  if (property.reraNumber.includes('/')) {
-                    const parts = property.reraNumber.split('/');
-                    return `${parts[0].trim()} (+${parts.length - 1} Wings)`;
-                  }
-                  return property.reraNumber;
-                })()}
-              </span>
-            </div>
+            <span style={{ fontSize: '0.6rem', fontWeight: 700, color: '#A7F3D0', letterSpacing: '0.02em' }}>
+              {(() => {
+                if (!property.reraNumber) return 'RERA VERIFIED';
+                if (property.reraNumber.includes('/')) {
+                  const parts = property.reraNumber.split('/');
+                  return `RERA ${parts[0].trim()} (+${parts.length - 1})`;
+                }
+                return `RERA ${property.reraNumber}`;
+              })()}
+            </span>
           </button>
         </div>
 
-        {/* ── 3. Available Configurations ── */}
-        <div style={{ marginTop: '2px' }}>
-          <div style={{ 
-            fontSize: '0.72rem', 
-            color: '#94A3B8', 
-            fontWeight: 500, 
-            marginBottom: '7px' 
-          }}>
-            Available Configurations
-          </div>
 
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {property.configurations && property.configurations.length > 0 ? (
-              property.configurations.map((cfg, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    flex: '1 1 0px',
-                    minWidth: '60px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: cfg.highlight 
-                      ? 'rgba(212, 175, 55, 0.08)' 
-                      : 'rgba(255, 255, 255, 0.03)',
-                    border: cfg.highlight 
-                      ? '1px solid #D4AF37' 
-                      : '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '8px 4px',
-                    position: 'relative',
-                    cursor: 'default'
-                  }}
-                >
-                  {cfg.highlight && (
-                    <span 
-                      style={{
-                        position: 'absolute',
-                        top: '-7px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        background: 'linear-gradient(90deg, #D4AF37 0%, #F3E5AB 100%)',
-                        color: '#070C15',
-                        fontSize: '0.5rem',
-                        fontWeight: 900,
-                        padding: '1px 5px',
-                        borderRadius: '3px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      POPULAR
-                    </span>
-                  )}
-                  <span 
-                    style={{ 
-                      fontSize: '0.76rem', 
-                      fontWeight: 700, 
-                      color: cfg.highlight ? '#E6C35C' : '#FFFFFF',
-                      lineHeight: 1.2
-                    }}
-                  >
-                    {cfg.bhk}
-                  </span>
-                  <span 
-                    style={{ 
-                      fontSize: '0.64rem', 
-                      color: cfg.highlight ? '#CBD5E1' : '#94A3B8', 
-                      marginTop: '2px',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    {cfg.carpet}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <div
-                style={{
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-around',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
-                  padding: '8px 12px'
-                }}
-              >
-                <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#FFFFFF' }}>
-                  {property.bedrooms ? `${property.bedrooms} BHK` : '2 & 3 BHK'}
-                </span>
-                <span style={{ fontSize: '0.72rem', color: '#94A3B8' }}>
-                  {property.areaSquareFeet ? `${property.areaSquareFeet} sq.ft` : 'Spacious Layout'}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* ── 4. 3 Highlights Row (Thin Gold Icons + Labels) ── */}
-        <div 
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '4px',
-            padding: '10px 0 6px 0',
-            borderTop: '1px solid rgba(255, 255, 255, 0.06)'
-          }}
-        >
-          {highlights.map((h, i) => {
-            const IconComp = h.icon;
-            return (
-              <div 
-                key={i}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                <div style={{
-                  width: '24px',
-                  height: '24px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#D4AF37',
-                  flexShrink: 0
-                }}>
-                  <IconComp size={16} strokeWidth={1.7} />
-                </div>
-                <div style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  lineHeight: 1.15,
-                  fontSize: '0.64rem', 
-                  color: '#CBD5E1', 
-                  fontWeight: 500 
-                }}>
-                  <span>{h.line1}</span>
-                  {h.line2 && <span>{h.line2}</span>}
-                </div>
-              </div>
-            );
-          })}
-        </div>
 
         {/* ── 5. Bottom Action Buttons: WhatsApp & Explore Project ── */}
         <div 
