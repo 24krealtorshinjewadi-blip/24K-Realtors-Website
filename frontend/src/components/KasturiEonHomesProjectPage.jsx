@@ -87,13 +87,28 @@ const KASTURI_EON_DATA = {
   gallery: [
     {
       id: 1,
-      tag: 'Grand Masterplan & Landmark Elevation',
+      tag: 'Verified Actual Tower Elevation & Main Gate',
       icon: '🏢',
-      roomName: 'Master Elevation Poster',
-      title: 'Kasturi Eon Homes — 12 Symmetrical Towers & 8-Acre Central Park',
-      subtitle: 'Official architectural master elevation showcasing the iconic 12 symmetrical high-rise towers built around an 8-acre continuous vehicle-free podium garden with lap pool in Hinjawadi Phase 3.',
+      roomName: 'High-Rise Tower & Gate',
+      title: 'Kasturi Eon Homes — Actual High-Rise Elevation & Entrance Canopy',
+      subtitle: 'Authentic on-site photograph showcasing the soaring 22+ storey residential towers, grand cantilevered entrance canopy gate, security access control, and tree-lined frontage directly opposite TCS Sahyadri Park.',
       src: '/kasturi_eon_homes_project_card.jpg',
-      badge: 'ARCHITECTURAL MASTERPIECE',
+      badge: 'VERIFIED ON-SITE ELEVATION',
+      features: [
+        { icon: '🏙️', title: 'Soaring Contemporary Facade', desc: 'Full-height glass balconies and pristine modern architectural symmetry' },
+        { icon: '⛩️', title: 'Grand Covered Entrance Canopy', desc: 'Exclusive access control gate with security canopy, RFID boom barriers, and lush tree canopy' },
+        { icon: '🏢', title: 'Iconic Hinjawadi Phase 3 Skyline', desc: 'Direct landmark presence right opposite the TCS Sahyadri Park campus' }
+      ]
+    },
+    {
+      id: 2,
+      tag: 'Grand Masterplan & 8-Acre Central Park Layout',
+      icon: '🌳',
+      roomName: '8-Acre Park Masterplan',
+      title: 'Architectural Masterplan — 12 Symmetrical Towers & Central Podium Greens',
+      subtitle: 'Architectural master layout illustrating the 12 symmetrical high-rise towers arranged seamlessly around the 8-acre continuous vehicle-free central park with Olympic lap pool.',
+      src: '/kasturi_eon_homes_masterplan.jpg',
+      badge: 'MASTER ARCHITECTURAL PLAN',
       features: [
         { icon: '🏙️', title: '12 Iconic Symmetrical Towers', desc: 'Flawlessly planned architectural symmetry with unhindered air circulation and natural daylight' },
         { icon: '🌳', title: '8-Acre Vehicle-Free Central Park', desc: 'Massive elevated green podium park free of vehicular traffic for children, seniors, and jogging' },
@@ -687,12 +702,13 @@ export default function KasturiEonHomesProjectPage({ initialBhkFilter = null, on
               borderRadius: '20px',
               overflow: 'hidden',
               border: '2px solid rgba(212,175,55,0.4)',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 35px rgba(212,175,55,0.2)'
+              boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 35px rgba(212,175,55,0.2)',
+              height: '460px'
             }}>
               <img
                 src={p.showcaseImage}
-                alt="Kasturi Eon Homes Master Elevation"
-                style={{ width: '100%', height: 'auto', display: 'block', transform: 'scale(1.01)', transition: 'transform 0.4s' }}
+                alt="Kasturi Eon Homes Actual Elevation"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 22%', display: 'block', transform: 'scale(1.01)', transition: 'transform 0.4s' }}
               />
               <div style={{
                 position: 'absolute',
@@ -707,10 +723,10 @@ export default function KasturiEonHomesProjectPage({ initialBhkFilter = null, on
                     <ShieldCheck size={13} /> 100% Verified Project
                   </span>
                   <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#FFF' }}>
-                    12 Symmetrical Towers & Central Park
+                    Actual Towers &amp; Gate Entrance
                   </p>
                   <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#CBD5E1' }}>
-                    Hinjawadi Phase 3, Pune
+                    Opp. TCS Sahyadri Park, Hinjawadi Phase 3
                   </p>
                 </div>
                 <button
@@ -965,7 +981,7 @@ export default function KasturiEonHomesProjectPage({ initialBhkFilter = null, on
               <img
                 src={activePhoto.src}
                 alt={activePhoto.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', cursor: 'zoom-in' }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: (activePhoto.src.includes('elevation') || activePhoto.src.includes('project_card')) ? 'center 22%' : 'center', display: 'block', cursor: 'zoom-in' }}
                 onClick={() => openLightbox(activeGalleryIdx)}
               />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(4,8,20,0.85) 0%, transparent 60%)', pointerEvents: 'none' }} />

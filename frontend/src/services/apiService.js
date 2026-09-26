@@ -1,8 +1,8 @@
-// Auto-clear stale mock database from localStorage if it lacks v2026_ten_flagship_kasturi_eon_homes_v27
+// Auto-clear stale mock database from localStorage if it lacks v2026_twelve_flagship_kasturi_eon_homes_real_gate_v29
 try {
   const currentPropVer = localStorage.getItem('mock_properties_version');
-  if (currentPropVer !== 'v2026_ten_flagship_kasturi_eon_homes_v27') {
-    console.info('[Cache Bust] Refreshing catalog to include Kasturi Eon Homes Hinjawadi Phase 3...');
+  if (currentPropVer !== 'v2026_twelve_flagship_kasturi_eon_homes_real_gate_v29') {
+    console.info('[Cache Bust] Refreshing catalog to include Kasturi Eon Homes real exterior image...');
     localStorage.removeItem('mock_properties');
     localStorage.removeItem('mock_properties_version');
     localStorage.removeItem('mock_societies');
@@ -871,6 +871,7 @@ const initialProperties = [
     imageUrl: "/kasturi_eon_homes_project_card.jpg",
     galleryImages: [
       "/kasturi_eon_homes_project_card.jpg",
+      "/kasturi_eon_homes_masterplan.jpg",
       "/kasturi_eon_homes_balcony.jpg",
       "/kasturi_eon_homes_living.jpg",
       "/kasturi_eon_homes_bedroom.jpg",
@@ -2503,6 +2504,7 @@ const initialSocieties = [
     imageUrl: "/kasturi_eon_homes_project_card.jpg",
     galleryImages: [
       "/kasturi_eon_homes_project_card.jpg",
+      "/kasturi_eon_homes_masterplan.jpg",
       "/kasturi_eon_homes_balcony.jpg",
       "/kasturi_eon_homes_living.jpg",
       "/kasturi_eon_homes_bedroom.jpg",
@@ -2671,7 +2673,7 @@ const saveLocalStorageItem = (key, data) => {
 
 // ── Cache version: bump this whenever initialProperties / initialSocieties change ──
 // This forces localStorage to reset so stale demo data never bleeds through.
-const HINJEWADI_PROP_VERSION = 'v2026_ten_flagship_kasturi_eon_homes_v27';
+const HINJEWADI_PROP_VERSION = 'v2026_twelve_flagship_kasturi_eon_homes_real_gate_v29';
 
 const LocalMockDb = {
   getProperties() {
