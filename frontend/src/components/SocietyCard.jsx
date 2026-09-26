@@ -87,7 +87,7 @@ export default function SocietyCard({ society, onSelect, parentTownship }) {
           src={heroImage}
           alt={society.canonicalName || society.name}
           loading="lazy"
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: (heroImage.includes('eon') || heroImage.includes('kasturi')) ? 'center 22%' : 'center' }}
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = '/dev_kolte_patil_township.png';

@@ -33,6 +33,11 @@ const getForbesTeslaPropertyImage = (property) => {
     return '/joyville_sensorium_project_card.jpg';
   }
 
+  // Kasturi Eon Homes Hinjawadi Phase 3 — Verified on-site tower & gate elevation photo
+  if (id.includes('eon') || title.includes('eon') || title.includes('kasturi')) {
+    return '/kasturi_eon_homes_project_card.jpg';
+  }
+
   if (property?.imageUrl && !property.imageUrl.includes('unsplash.com')) {
     return property.imageUrl;
   }
@@ -600,7 +605,7 @@ export default function PropertyCard({
             width: '100%', 
             height: '100%', 
             objectFit: 'cover',
-            objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : (cardImgSrc.includes('tcg') || cardImgSrc.includes('cliff')) ? 'center 20%' : (cardImgSrc.includes('vtp') || cardImgSrc.includes('blue-waters')) ? 'center 35%' : 'center',
+            objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('eon') || cardImgSrc.includes('kasturi')) ? 'center 22%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : (cardImgSrc.includes('tcg') || cardImgSrc.includes('cliff')) ? 'center 20%' : (cardImgSrc.includes('vtp') || cardImgSrc.includes('blue-waters')) ? 'center 35%' : 'center',
             transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         />
