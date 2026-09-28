@@ -499,6 +499,26 @@ export default function PropertyCard({
     `Namaste 24K Realtors! 🏛️\n\nI am interested in:\n📌 *${property.title}* — ${subtitleCorridor}\n📍 Location: ${locationLabel}\n🏢 Developer: ${builderName}\n💰 Listed Price: ${priceObj.main} ${priceObj.suffix}${isNegotiable ? ' (Negotiable)' : ''}\n🛡️ MahaRERA: ${property.reraNumber || 'Verified'}\n\nPlease share the official developer pricing sheet, verified floor plans, and negotiation margin.`
   );
 
+  // Resolve property status badge
+  const getStatusBadge = () => {
+    const t = (property.title || '').toLowerCase();
+    const status = (property.projectStatus || property.status || '').toLowerCase();
+    if (status.includes('ready') || status.includes('completed') || status.includes('move')) {
+      return { label: '✅ Ready to Move', bg: 'rgba(16,185,129,0.18)', border: 'rgba(16,185,129,0.5)', color: '#34D399' };
+    }
+    if (status.includes('new') || status.includes('launch') || status.includes('pre-launch')) {
+      return { label: '🔥 New Launch', bg: 'rgba(239,68,68,0.15)', border: 'rgba(239,68,68,0.45)', color: '#F87171' };
+    }
+    if (t.includes('godrej') || t.includes('yashone') || t.includes('blue ridge') || t.includes('kasturi') || t.includes('vtp blue')) {
+      return { label: '✅ Ready to Move', bg: 'rgba(16,185,129,0.18)', border: 'rgba(16,185,129,0.5)', color: '#34D399' };
+    }
+    if (t.includes('sensorium') || t.includes('joyville') || t.includes('kohinoor')) {
+      return { label: '🏗️ Under Construction', bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.45)', color: '#FBBF24' };
+    }
+    return { label: '📋 MahaRERA Verified', bg: 'rgba(212,175,55,0.12)', border: 'rgba(212,175,55,0.4)', color: '#D4AF37' };
+  };
+  const statusBadge = getStatusBadge();
+
   return (
     <div 
       className={`property-card premium-luxury-card ${isCompared ? 'compared-active' : ''}`}
@@ -509,22 +529,27 @@ export default function PropertyCard({
         overflow: 'hidden',
         background: 'radial-gradient(ellipse at top, #0A1322 0%, #050A14 100%)',
         border: '1px solid rgba(212, 175, 55, 0.28)',
-        transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s',
+        transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s',
         cursor: 'pointer',
         boxShadow: '0 12px 32px rgba(0, 0, 0, 0.55)',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        minHeight: '520px'
       }}
       onClick={handleCardClick}
       onMouseEnter={e => {
-        e.currentTarget.style.transform = 'translateY(-6px)';
-        e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.55)';
-        e.currentTarget.style.boxShadow = '0 18px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.15)';
+        e.currentTarget.style.transform = 'translateY(-7px) scale(1.005)';
+        e.currentTarget.style.borderColor = 'rgba(230, 195, 92, 0.65)';
+        e.currentTarget.style.boxShadow = '0 24px 55px rgba(0, 0, 0, 0.75), 0 0 35px rgba(212, 175, 55, 0.18)';
+        const img = e.currentTarget.querySelector('.card-main-image');
+        if (img) img.style.transform = 'scale(1.07)';
       }}
       onMouseLeave={e => {
-        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.transform = 'translateY(0) scale(1)';
         e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.28)';
         e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.55)';
+        const img = e.currentTarget.querySelector('.card-main-image');
+        if (img) img.style.transform = 'scale(1)';
       }}
     >
       {/* ── 1. Image Container with Badges & Tagline Overlay ── */}
@@ -549,7 +574,8 @@ export default function PropertyCard({
             height: '100%', 
             objectFit: 'cover',
             objectPosition: (cardImgSrc.includes('kohinoor') || cardImgSrc.includes('sportsville')) ? 'center 12%' : (cardImgSrc.includes('eon') || cardImgSrc.includes('kasturi')) ? 'center 22%' : (cardImgSrc.includes('godrej_24') || cardImgSrc.includes('elements') || cardImgSrc.includes('yashone')) ? 'center 32%' : (cardImgSrc.includes('tcg') || cardImgSrc.includes('cliff')) ? 'center 20%' : (cardImgSrc.includes('vtp') || cardImgSrc.includes('blue-waters')) ? 'center 35%' : 'center',
-            transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+            transition: 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)',
+            willChange: 'transform'
           }}
         />
 
@@ -562,26 +588,42 @@ export default function PropertyCard({
           pointerEvents: 'none'
         }}></div>
 
-        {/* Top-Left Transaction Tag (BUY) */}
-        <span 
-          style={{
-            position: 'absolute',
-            top: '12px',
-            left: '12px',
-            background: '#D4AF37',
-            color: '#070C15',
-            fontWeight: 800,
-            fontSize: '0.68rem',
-            padding: '4px 10px',
-            borderRadius: '4px',
-            textTransform: 'uppercase',
-            letterSpacing: '0.06em',
-            zIndex: 2,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-          }}
-        >
-          {property.transactionType || 'BUY'}
-        </span>
+        {/* Top-Left: Transaction Tag + Status Badge stacked */}
+        <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 2, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <span 
+            style={{
+              background: '#D4AF37',
+              color: '#070C15',
+              fontWeight: 800,
+              fontSize: '0.68rem',
+              padding: '4px 10px',
+              borderRadius: '4px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              display: 'inline-block',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+            }}
+          >
+            {property.transactionType || 'BUY'}
+          </span>
+          <span
+            style={{
+              background: statusBadge.bg,
+              border: `1px solid ${statusBadge.border}`,
+              color: statusBadge.color,
+              fontWeight: 700,
+              fontSize: '0.62rem',
+              padding: '3px 8px',
+              borderRadius: '4px',
+              letterSpacing: '0.03em',
+              display: 'inline-block',
+              backdropFilter: 'blur(6px)',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {statusBadge.label}
+          </span>
+        </div>
 
         {/* Top-Right Quick Actions (Wishlist Heart + Compare/Brochure) */}
         <div 

@@ -18,7 +18,7 @@ import {
   CheckCircle2, Star, Clock, Zap, Car, Dumbbell, Trees,
   Wifi, Lock, Coffee, Users, Home, IndianRupee, ExternalLink,
   ChevronDown, ChevronUp, Building2, Award, X, ChevronLeft, ChevronRight, Maximize2,
-  ZoomIn, ZoomOut, RotateCcw
+  ZoomIn, ZoomOut, RotateCcw, Calculator
 } from 'lucide-react';
 import { useSEO } from '../services/seoService';
 import CompanyLogo from './CompanyLogo';
@@ -140,11 +140,11 @@ const GODREJ_24 = {
     '24×7 Creche & Day Care',
   ],
   configurations: [
-    { bhk: '2 BHK', carpet: '725 sq.ft', highlight: false },
-    { bhk: '2 BHK', carpet: '820 sq.ft', highlight: false },
-    { bhk: '2 BHK', carpet: '940 sq.ft', highlight: true },
-    { bhk: '3 BHK', carpet: '1167 sq.ft', highlight: false },
-    { bhk: '3 BHK', carpet: '1488 sq.ft', highlight: true },
+    { bhk: '2 BHK', carpet: '725 sq.ft', highlight: false, priceRange: '₹68 – ₹72 Lakhs*' },
+    { bhk: '2 BHK', carpet: '820 sq.ft', highlight: false, priceRange: '₹75 – ₹80 Lakhs*' },
+    { bhk: '2 BHK', carpet: '940 sq.ft', highlight: true, priceRange: '₹82 – ₹89 Lakhs*' },
+    { bhk: '3 BHK', carpet: '1167 sq.ft', highlight: false, priceRange: '₹1.05 – ₹1.15 Cr*' },
+    { bhk: '3 BHK', carpet: '1488 sq.ft', highlight: true, priceRange: '₹1.30 – ₹1.48 Cr*' },
   ],
   amenities: [
     { icon: <Dumbbell size={18} />, label: '24×7 Gymnasium' },
@@ -474,6 +474,25 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const heroRef = useRef(null);
+
+  // Home Loan EMI Calculator State
+  const [loanAmount, setLoanAmount] = useState(65); // In Lakhs
+  const [interestRate, setInterestRate] = useState(8.5); // % p.a.
+  const [loanTenure, setLoanTenure] = useState(20); // Years
+
+  // EMI calculation logic
+  const calculateEmi = () => {
+    const P = loanAmount * 100000;
+    const r = interestRate / (12 * 100);
+    const n = loanTenure * 12;
+    if (r === 0) return Math.round(P / n);
+    const emi = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    return Math.round(emi);
+  };
+  const emiValue = calculateEmi();
+  const totalAmount = emiValue * loanTenure * 12;
+  const totalInterest = Math.max(0, totalAmount - (loanAmount * 100000));
+  const principalPercent = totalAmount > 0 ? Math.round(((loanAmount * 100000) / totalAmount) * 100) : 50;
 
   // Reset zoom on photo change or close
   const resetZoom = () => {
@@ -944,19 +963,222 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 40px ${p.accentColor}30`; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
               {c.highlight && (
-                <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(90deg, #D4AF37, #F3E5AB)', color: '#1a1a1a', fontSize: '0.65rem', fontWeight: 700, padding: '3px 12px', borderRadius: '20px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Most Popular</div>
+                <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(90deg, #D4AF37, #F3E5AB)', color: '#1a1a1a', fontSize: '0.65rem', fontWeight: 700, padding: '3px 12px', borderRadius: '20px', textTransform: 'uppercase', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>Most Popular</div>
               )}
               <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#F3E5AB', fontFamily: "'Cinzel', serif", lineHeight: 1, marginBottom: '6px' }}>{c.bhk}</div>
-              <div style={{ fontSize: '1.2rem', fontWeight: 700, color: c.highlight ? '#D4AF37' : '#94A3B8', marginBottom: '16px' }}>{c.carpet}</div>
-              <div style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Carpet Area</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 700, color: c.highlight ? '#D4AF37' : '#94A3B8', marginBottom: '6px' }}>{c.carpet}</div>
+              <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>Carpet Area</div>
+              {c.priceRange && (
+                <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#FFFFFF', background: c.highlight ? `${p.accentColor}30` : 'rgba(255,255,255,0.06)', border: c.highlight ? `1px solid ${p.accentColor}50` : '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px 10px', marginBottom: '10px', letterSpacing: '-0.01em' }}>
+                  {c.priceRange}
+                  <div style={{ fontSize: '0.62rem', color: '#64748B', fontWeight: 500, marginTop: '2px' }}>Approx. Onwards</div>
+                </div>
+              )}
               <div style={{ fontSize: '0.8rem', color: '#4ade80', fontWeight: 500, background: 'rgba(74,222,128,0.08)', borderRadius: '6px', padding: '4px 8px', marginBottom: '20px', display: 'inline-block' }}>RERA Verified</div>
-              <button onClick={handleWhatsApp} style={{ width: '100%', background: p.accentGradient, border: 'none', color: '#fff', padding: '10px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer' }}>Get Price →</button>
+              <button onClick={handleWhatsApp} style={{ width: '100%', background: p.accentGradient, border: 'none', color: '#fff', padding: '10px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer' }}>Get Exact Price →</button>
             </div>
           ))}
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '28px', padding: '16px', background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '10px', fontSize: '0.8rem', color: '#D4AF37' }}>
           ℹ️ All carpet areas listed above are as defined under MahaRERA Registration <strong>{p.rera}</strong>. Pricing is available on request.
+        </div>
+      </section>
+
+      {/* ── INTERACTIVE HOME LOAN EMI CALCULATOR ── */}
+      <section style={{ position: 'relative', zIndex: 1, padding: '70px 24px', background: 'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(212,175,55,0.04) 50%, rgba(255,255,255,0.01) 100%)', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ maxWidth: '1050px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '20px', padding: '5px 16px', marginBottom: '12px' }}>
+              <Calculator size={13} color="#D4AF37" />
+              <span style={{ fontSize: '0.72rem', color: '#F3E5AB', fontWeight: 700, letterSpacing: '0.08em' }}>FINANCIAL PLANNING TOOL</span>
+            </div>
+            <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 700, color: '#F3E5AB', marginBottom: '8px' }}>Home Loan EMI Calculator</h2>
+            <p style={{ color: '#94A3B8', fontSize: '0.9rem' }}>Estimate your monthly budget and financing for {p.name}</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '28px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.22)', borderRadius: '20px', padding: '32px', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
+            {/* Left Column: Sliders */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              {/* Loan Amount */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <label style={{ fontSize: '0.85rem', color: '#CBD5E1', fontWeight: 600 }}>Loan Amount</label>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#D4AF37', fontFamily: "'Cinzel', serif" }}>₹{loanAmount >= 100 ? `${(loanAmount / 100).toFixed(2)} Cr` : `${loanAmount} Lakhs`}</span>
+                </div>
+                <input
+                  type="range"
+                  min="20"
+                  max="200"
+                  step="1"
+                  value={loanAmount}
+                  onChange={(e) => setLoanAmount(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#D4AF37', cursor: 'pointer' }}
+                />
+                <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                  {[50, 75, 100, 140].map((amt) => (
+                    <button
+                      key={amt}
+                      onClick={() => setLoanAmount(amt)}
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: '0.72rem',
+                        fontWeight: 600,
+                        borderRadius: '6px',
+                        border: loanAmount === amt ? '1px solid #D4AF37' : '1px solid rgba(255,255,255,0.1)',
+                        background: loanAmount === amt ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.04)',
+                        color: loanAmount === amt ? '#F3E5AB' : '#94A3B8',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {amt >= 100 ? `₹${amt / 100} Cr` : `₹${amt}L`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Interest Rate */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <label style={{ fontSize: '0.85rem', color: '#CBD5E1', fontWeight: 600 }}>Interest Rate (% p.a.)</label>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#D4AF37', fontFamily: "'Cinzel', serif" }}>{interestRate.toFixed(1)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="7.0"
+                  max="12.0"
+                  step="0.1"
+                  value={interestRate}
+                  onChange={(e) => setInterestRate(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#D4AF37', cursor: 'pointer' }}
+                />
+                <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                  {[8.35, 8.5, 8.75, 9.0].map((rate) => (
+                    <button
+                      key={rate}
+                      onClick={() => setInterestRate(rate)}
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: '0.72rem',
+                        fontWeight: 600,
+                        borderRadius: '6px',
+                        border: interestRate === rate ? '1px solid #D4AF37' : '1px solid rgba(255,255,255,0.1)',
+                        background: interestRate === rate ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.04)',
+                        color: interestRate === rate ? '#F3E5AB' : '#94A3B8',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {rate}%
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Loan Tenure */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <label style={{ fontSize: '0.85rem', color: '#CBD5E1', fontWeight: 600 }}>Tenure (Years)</label>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#D4AF37', fontFamily: "'Cinzel', serif" }}>{loanTenure} Years</span>
+                </div>
+                <input
+                  type="range"
+                  min="5"
+                  max="30"
+                  step="1"
+                  value={loanTenure}
+                  onChange={(e) => setLoanTenure(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#D4AF37', cursor: 'pointer' }}
+                />
+                <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                  {[10, 15, 20, 25, 30].map((yr) => (
+                    <button
+                      key={yr}
+                      onClick={() => setLoanTenure(yr)}
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: '0.72rem',
+                        fontWeight: 600,
+                        borderRadius: '6px',
+                        border: loanTenure === yr ? '1px solid #D4AF37' : '1px solid rgba(255,255,255,0.1)',
+                        background: loanTenure === yr ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.04)',
+                        color: loanTenure === yr ? '#F3E5AB' : '#94A3B8',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {yr}Y
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Calculated Results */}
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '24px' }}>
+              <div>
+                <div style={{ fontSize: '0.74rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#94A3B8', marginBottom: '6px' }}>Estimated Monthly Installment</div>
+                <div style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, color: '#4ade80', fontFamily: "'Cinzel', serif", textShadow: '0 0 20px rgba(74,222,128,0.2)' }}>
+                  ₹{emiValue.toLocaleString('en-IN')} <span style={{ fontSize: '0.9rem', color: '#94A3B8', fontWeight: 500 }}>/ month</span>
+                </div>
+
+                {/* Progress Visual Bar */}
+                <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+                  <div style={{ height: '8px', borderRadius: '4px', background: 'rgba(255,255,255,0.1)', overflow: 'hidden', display: 'flex' }}>
+                    <div style={{ width: `${principalPercent}%`, background: '#D4AF37', transition: 'width 0.3s' }} title={`Principal ${principalPercent}%`} />
+                    <div style={{ width: `${100 - principalPercent}%`, background: '#38BDF8', transition: 'width 0.3s' }} title={`Interest ${100 - principalPercent}%`} />
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', marginTop: '6px', color: '#94A3B8' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D4AF37' }}></span> Principal ({principalPercent}%)</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#38BDF8' }}></span> Interest ({100 - principalPercent}%)</span>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '16px' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px 14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Total Principal</div>
+                    <div style={{ fontSize: '1rem', fontWeight: 700, color: '#F3E5AB' }}>₹{(loanAmount * 100000).toLocaleString('en-IN')}</div>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px 14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Total Interest</div>
+                    <div style={{ fontSize: '1rem', fontWeight: 700, color: '#38BDF8' }}>₹{totalInterest.toLocaleString('en-IN')}</div>
+                  </div>
+                </div>
+
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px 14px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.06)', marginTop: '12px' }}>
+                  <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Total Payable (Principal + Interest)</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF' }}>₹{totalAmount.toLocaleString('en-IN')}</div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: '24px' }}>
+                <a
+                  href={`https://wa.me/919673000053?text=Hi%2024K%20Realtors%2C%20I%20used%20the%20EMI%20calculator%20for%20${encodeURIComponent(p.name)}.%20Loan%20Amount%3A%20₹${loanAmount}%20Lakhs%2C%20Tenure%3A%20${loanTenure}%20Years.%20Please%20guide%20me%20on%20pre-approved%20bank%20offers.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    width: '100%',
+                    padding: '13px 20px',
+                    background: 'linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%)',
+                    borderRadius: '10px',
+                    color: '#000',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    textDecoration: 'none',
+                    boxShadow: '0 4px 20px rgba(212,175,55,0.25)',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(212,175,55,0.35)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(212,175,55,0.25)'; }}
+                >
+                  <MessageSquare size={16} /> Get Pre-Approved Loan Assistance →
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1007,6 +1229,84 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
               <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: i < p.nearbyLifestyle.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
                 <span style={{ fontSize: '0.88rem', color: '#CBD5E1', fontWeight: 500 }}>{item.label}</span>
                 <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontWeight: 500 }}>{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Google Maps Embed */}
+        <div style={{ marginTop: '40px', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 30px rgba(0,0,0,0.4)' }}>
+          <div style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '14px 20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <MapPin size={16} color="#D4AF37" />
+            <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#F3E5AB' }}>{p.name} — Hinjewadi Phase 1, Pune</span>
+            <a href={project === 'godrej24' ? 'https://maps.google.com/?q=Godrej+24+Hinjewadi+Phase+1+Pune' : 'https://maps.google.com/?q=Godrej+Elements+Hinjewadi+Phase+1+Pune'} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#60A5FA', fontWeight: 600, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <ExternalLink size={12} /> Open in Maps
+            </a>
+          </div>
+          <iframe
+            title={`${p.name} Location Map`}
+            src={project === 'godrej24'
+              ? 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3781.5!2d73.7395!3d18.5960!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb5e98b95e29%3A0x9b8d3e5f7d9c1a2b!2sGodrej%2024%20Hinjewadi!5e0!3m2!1sen!2sin!4v1234567890'
+              : 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3781.5!2d73.7380!3d18.5955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bb5e98b95e29%3A0x9b8d3e5f7d9c1a2b!2sGodrej%20Elements%20Hinjewadi!5e0!3m2!1sen!2sin!4v1234567890'}
+            width="100%"
+            height="320"
+            style={{ border: 'none', display: 'block' }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+      </section>
+
+      {/* ── SIMILAR PROJECTS ── */}
+      <section style={{ position: 'relative', zIndex: 1, padding: '70px 24px', background: 'rgba(255,255,255,0.01)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '20px', padding: '5px 16px', marginBottom: '12px' }}>
+              <span style={{ fontSize: '0.7rem', color: '#F3E5AB', fontWeight: 700, letterSpacing: '0.08em' }}>🏆 CURATED ALTERNATIVES</span>
+            </div>
+            <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 700, color: '#F3E5AB', marginBottom: '8px' }}>Similar Premium Projects</h2>
+            <p style={{ color: '#64748B', fontSize: '0.9rem' }}>Verified Pune West alternatives in the same budget range</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
+            {[
+              { name: 'VTP Blue Waters', loc: 'Mahalunge, Hinjewadi', config: '2 & 3 BHK', price: '₹72L – ₹1.2 Cr', tag: 'Ready / Under Const.', img: '/properties/vtp-blue-waters/00_project_card.jpg', url: '/vtp-blue-waters-mahalunge', score: 96 },
+              { name: 'Kasturi Eon Homes', loc: 'Hinjewadi Phase 3', config: '2, 2.5 & 3 BHK', price: '₹92L – ₹1.48 Cr', tag: 'Ready to Move • OC Received', img: '/kasturi_eon_homes_project_card.jpg', url: '/kasturi-eon-homes-hinjawadi', score: 98 },
+              { name: 'Joyville Sensorium', loc: 'Hinjewadi Phase 3', config: '2 & 3 BHK', price: '₹78L – ₹1.15 Cr', tag: 'Shapoorji Pallonji', img: '/joyville_sensorium_project_card.jpg', url: '/joyville-sensorium', score: 95 },
+              { name: 'TCG The Cliff Garden', loc: 'Hinjewadi Phase 3', config: '1, 2 & 3 BHK', price: '₹55L – ₹1.05 Cr', tag: 'Hillside Township', img: '/properties/tcg-the-cliff-garden/00_project_card.jpg', url: '/tcg-cliff-garden-hinjewadi', score: 93 },
+            ].map((proj, i) => (
+              <div
+                key={i}
+                onClick={() => { window.scrollTo({ top: 0, behavior: 'instant' }); window.location.href = proj.url; }}
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.25s, border-color 0.25s, box-shadow 0.25s' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(212,175,55,0.45)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.5)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.boxShadow = 'none'; }}
+              >
+                <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
+                  <img src={proj.img} alt={proj.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.06)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                    onError={e => { e.target.onerror = null; e.target.src = '/dev_godrej_building.png'; }}
+                  />
+                  <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(4,8,20,0.88)', border: '1px solid rgba(212,175,55,0.5)', borderRadius: '20px', padding: '3px 10px', fontSize: '0.66rem', fontWeight: 800, color: '#D4AF37' }}>
+                    ⭐ {proj.score}/100
+                  </div>
+                </div>
+                <div style={{ padding: '16px 18px' }}>
+                  <div style={{ fontSize: '0.66rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '4px' }}>{proj.tag}</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 700, fontFamily: "'Cinzel', serif", color: '#F3E5AB', marginBottom: '4px' }}>{proj.name}</div>
+                  <div style={{ fontSize: '0.78rem', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '10px' }}>
+                    <MapPin size={11} color="#D4AF37" /> {proj.loc}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontSize: '0.72rem', color: '#64748B' }}>{proj.config}</div>
+                      <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#FFFFFF' }}>{proj.price}</div>
+                    </div>
+                    <div style={{ fontSize: '0.76rem', color: '#D4AF37', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      Explore →
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -1340,64 +1640,65 @@ export default function GodrejProjectPage({ project = 'godrej24', bhkFilter = nu
         </div>
       )}
 
-      {/* ── Mobile Floating Action Bar ── */}
-      <div className="mobile-subpage-cta-bar" style={{
+      {/* ── Sticky Bottom CTA Bar (Desktop + Mobile) ── */}
+      <div style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
         zIndex: 99,
-        background: 'rgba(4, 8, 20, 0.96)',
-        backdropFilter: 'blur(16px)',
+        background: 'rgba(4, 8, 20, 0.97)',
+        backdropFilter: 'blur(20px)',
         borderTop: `1px solid ${p.accentColor}50`,
-        padding: '10px 16px',
-        display: 'none',
+        padding: '12px 24px',
+        display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: '10px',
-        boxShadow: '0 -10px 25px rgba(0,0,0,0.7)'
+        gap: '12px',
+        boxShadow: '0 -8px 30px rgba(0,0,0,0.6)'
       }}>
-        <a
-          href="tel:+919673000053"
-          style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.18)',
-            color: '#fff',
-            textDecoration: 'none',
-            padding: '11px 0',
-            borderRadius: '8px',
-            fontSize: '0.84rem',
-            fontWeight: 600
-          }}
-        >
-          <Phone size={14} color="#D4AF37" /> Call Advisor
-        </a>
-        <button
-          onClick={handleWhatsApp}
-          style={{
-            flex: 1.3,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            background: 'linear-gradient(135deg, #25D366, #128C7E)',
-            border: 'none',
-            color: '#fff',
-            padding: '11px 0',
-            borderRadius: '8px',
-            fontSize: '0.84rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            boxShadow: '0 4px 15px rgba(37,211,102,0.3)'
-          }}
-        >
-          <MessageSquare size={14} /> WhatsApp Price
-        </button>
+        {/* Left: project info */}
+        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+          <span style={{ fontSize: '0.78rem', fontFamily: "'Cinzel', serif", fontWeight: 700, color: '#F3E5AB', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</span>
+          <span style={{ fontSize: '0.68rem', color: '#64748B' }}>Hinjewadi Phase 1 · {p.status}</span>
+        </div>
+        {/* Right: CTAs */}
+        <div style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
+          <a
+            href="tel:+919673000053"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
+              background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.18)',
+              color: '#fff', textDecoration: 'none', padding: '10px 16px',
+              borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600
+            }}
+          >
+            <Phone size={14} color="#D4AF37" /> Call
+          </a>
+          <button
+            onClick={handleSiteVisit}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
+              background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.45)',
+              color: '#D4AF37', padding: '10px 16px',
+              borderRadius: '8px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer'
+            }}
+          >
+            <Car size={14} /> Site Visit
+          </button>
+          <button
+            onClick={handleWhatsApp}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
+              background: 'linear-gradient(135deg, #25D366, #128C7E)',
+              border: 'none', color: '#fff', padding: '10px 20px',
+              borderRadius: '8px', fontSize: '0.82rem', fontWeight: 700,
+              cursor: 'pointer', boxShadow: '0 4px 15px rgba(37,211,102,0.3)'
+            }}
+          >
+            <MessageSquare size={14} /> WhatsApp Price
+          </button>
+        </div>
       </div>
     </div>
   );
