@@ -9,7 +9,9 @@
 ## 📁 Folder Structure
 ```
 testing/
-├── README.md                        ← This file — Testing guide & standards
+├── README.md                        ← Testing guide & standards
+├── FULL_SYSTEM_MASTER_QA_REPORT.md  ← 🧪 Master Full-System QA & Audit Dossier (All 8 Dimensions)
+├── MOBILE_DEVICE_MATRIX_REPORT.md   ← 📱 Mobile Device Testing Matrix (iOS & Android)
 ├── frontend/                        ← Frontend (React/Vite) test cases
 │   ├── TC_FE_01_Portal.md           ← Advisory Portal & Search HUD
 │   ├── TC_FE_02_DataLabs.md         ← 24K Data Labs Market Intelligence
@@ -48,5 +50,7 @@ $base = "https://twentyfourk-backend-production.up.railway.app/api/v1"
 Invoke-RestMethod -Uri "$base/properties?page=0&size=5" -Method GET
 ```
 
-## 📋 Google Sheets Live QA Matrix
-Live sheet updated daily: https://docs.google.com/spreadsheets/d/1CnvXUCMBlRoLbWKPNknJc_EfarNlSslvSFkDurHzqnM/edit
+## 📊 Comprehensive QA Reports & Artifacts
+- 🧪 **[Full System Master QA Report](./FULL_SYSTEM_MASTER_QA_REPORT.md)**: 142 Test Cases executed across Functional, Security (OWASP Top 10), Performance, Cross-Browser, Accessibility, and RERA Data Compliance.
+- 📱 **[Mobile Device Testing Matrix](./MOBILE_DEVICE_MATRIX_REPORT.md)**: 20 Smartphones & Tablets audited across iOS (iPhone 16 Pro Max, 15, 14, 13, SE) & Android (Galaxy S24, Pixel 8, OnePlus, Xiaomi) with Safe-Area & Touch Verification.
+

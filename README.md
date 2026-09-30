@@ -13,7 +13,7 @@
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)](https://real-estate-digital-marketing.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-**[🌐 Live Portal](https://real-estate-digital-marketing.vercel.app)** • **[📊 Master Google Sheet](https://docs.google.com/spreadsheets/d/1Reu4yjYVHLY0DRgDN52dz9OP55wgGEWGDdPH_zvuQLM/edit?usp=sharing)** • **[📋 Handover Guide](./HANDOVER.md)** • **[📖 Google Sheets Guide](./docs/GOOGLE_SHEETS_INTEGRATION_GUIDE.md)** • **[🐛 Report Issue](https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website/issues/new?template=bug_report.yml)**
+**[🌐 Live Portal](https://real-estate-digital-marketing.vercel.app)** • **[🧪 Master QA Test Report](./testing/FULL_SYSTEM_MASTER_QA_REPORT.md)** • **[📱 Mobile Testing Matrix](./testing/MOBILE_DEVICE_MATRIX_REPORT.md)** • **[📋 Handover Guide](./HANDOVER.md)** • **[🐛 Report Issue](https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website/issues/new?template=bug_report.yml)**
 
 </div>
 
@@ -236,7 +236,10 @@ Detailed configuration templates are provided:
 ├── google-apps-script/
 │   └── Code.gs                # Google Sheets automated capture script with Golden formatting
 ├── docs/                      # Technical documentation and data research guides
-├── testing/                   # Full QA test documentation, test cases & regression logs
+├── testing/                   # Full QA test documentation & audit reports
+│   ├── FULL_SYSTEM_MASTER_QA_REPORT.md # 🧪 Master 8-dimension QA audit (142 cases, 100% pass)
+│   ├── MOBILE_DEVICE_MATRIX_REPORT.md  # 📱 20-device smartphone/tablet responsive audit
+│   └── README.md              # Testing guide & execution standards
 ├── .env.backend.example       # Backend environment variables template
 ├── HANDOVER.md                # Official production handover guide & deployment checklist
 ├── CONTRIBUTING.md            # Git workflow & PR standards

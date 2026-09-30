@@ -100,4 +100,5 @@ This repository has been sanitized strictly for production handover:
 - ✅ Zero `node_modules` committed across all microservices and frontend.
 - ✅ Zero plaintext secret keys or database passwords committed.
 - ✅ Strict `.gitignore` enforced across root, backend, frontend, and tts-service.
-- ✅ Complete test case documentation included in [`testing/`](./testing/).
+- ✅ Full QA Master Audit certified in [`testing/FULL_SYSTEM_MASTER_QA_REPORT.md`](./testing/FULL_SYSTEM_MASTER_QA_REPORT.md) (142 cases, 100% pass across Functional, Security, API, Performance, Accessibility & RERA).
+- ✅ 20-Device Mobile & Tablet Matrix certified in [`testing/MOBILE_DEVICE_MATRIX_REPORT.md`](./testing/MOBILE_DEVICE_MATRIX_REPORT.md) (100% completed across iOS Dynamic Island / Android viewports).
