@@ -1,14 +1,22 @@
 # Maven Ignore
 target/
+**/target/
 *.class
 
-# Node / React Ignore
-frontend/node_modules/
-frontend/dist/
-.env
-.env.local
+# Node / JavaScript Ignore
+node_modules/
+**/node_modules/
+dist/
+**/dist/
 
-# IDEs
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+!.env.backend.example
+!frontend/.env.example
+
+# IDEs & System files
 .idea/
 .vscode/
 *.suo
@@ -16,8 +24,6 @@ frontend/dist/
 *.njsproj
 *.sln
 *.swp
-
-# System Logs & OS files
 *.log
 Thumbs.db
 .DS_Store
@@ -27,12 +33,9 @@ process_logo.py
 *.pyc
 __pycache__/
 
-# Local Media Uploads
+# Deployment artifacts & local uploads
+.vercel/
+**/.vercel/
 uploads/
-
-.vercel
-.env*
-
 *.mp4
 
-*.mp4
