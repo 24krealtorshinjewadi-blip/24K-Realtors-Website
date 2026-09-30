@@ -2,7 +2,7 @@ name: "✨ Feature Request"
 description: "Suggest a new feature or improvement for 24K Realtors"
 title: "feat: [Brief description of the feature]"
 labels: ["enhancement", "needs-triage"]
-assignees: ["manishrai99-afk"]
+
 
 body:
   - type: markdown

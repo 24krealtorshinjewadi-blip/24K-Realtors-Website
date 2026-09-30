@@ -17,6 +17,7 @@ dist/
 !frontend/.env.example
 
 # IDEs & System files
+.agents/
 .idea/
 .vscode/
 *.suo

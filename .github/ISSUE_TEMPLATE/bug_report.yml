@@ -2,7 +2,7 @@ name: "🐛 Bug Report"
 description: "Report a reproducible bug in 24K Realtors platform"
 title: "fix: [Brief description of the bug]"
 labels: ["bug", "needs-triage"]
-assignees: ["manishrai99-afk"]
+
 
 body:
   - type: markdown

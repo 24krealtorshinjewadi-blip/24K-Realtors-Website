@@ -3,7 +3,7 @@
 # 🏛️ 24K REALTORS — LUXURY REAL ESTATE & CRM PLATFORM
 ### *Pune West's #1 MahaRERA Verified Real Estate Advisory & Enterprise CRM*
 
-[![CI — Build & Test](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/actions/workflows/ci.yml/badge.svg)](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/actions/workflows/ci.yml)
+[![CI — Build & Test](https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website/actions/workflows/ci.yml/badge.svg)](https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website/actions/workflows/ci.yml)
 [![MahaRERA Verified](https://img.shields.io/badge/MahaRERA%20Reg-A051262603190-gold?style=flat&logo=shield)](https://maharera.mahaonline.gov.in/)
 [![Java 21](https://img.shields.io/badge/Java-21%20LTS-orange?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
 [![Spring Boot 3](https://img.shields.io/badge/Spring%20Boot-3.3-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
@@ -13,7 +13,7 @@
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)](https://real-estate-digital-marketing.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-**[🌐 Live Portal](https://real-estate-digital-marketing.vercel.app)** • **[📊 Master Google Sheet](https://docs.google.com/spreadsheets/d/1Reu4yjYVHLY0DRgDN52dz9OP55wgGEWGDdPH_zvuQLM/edit?usp=sharing)** • **[📖 Google Sheets Guide](./docs/GOOGLE_SHEETS_INTEGRATION_GUIDE.md)** • **[🐛 Report Issue](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/issues/new?template=bug_report.yml)**
+**[🌐 Live Portal](https://real-estate-digital-marketing.vercel.app)** • **[📊 Master Google Sheet](https://docs.google.com/spreadsheets/d/1Reu4yjYVHLY0DRgDN52dz9OP55wgGEWGDdPH_zvuQLM/edit?usp=sharing)** • **[📋 Handover Guide](./HANDOVER.md)** • **[📖 Google Sheets Guide](./docs/GOOGLE_SHEETS_INTEGRATION_GUIDE.md)** • **[🐛 Report Issue](https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website/issues/new?template=bug_report.yml)**
 
 </div>
 
@@ -134,8 +134,8 @@ flowchart TD
 
 ### Step 1: Clone Repository
 ```bash
-git clone https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing.git
-cd 24k-real-Estate-Digital-marketing
+git clone https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website.git
+cd 24K-Realtors-Website
 ```
 
 ---
@@ -154,7 +154,7 @@ docker run -d --name 24k-postgres \
 ### Step 3: Run Backend Service (Spring Boot)
 ```bash
 cd backend
-# Configure your application.yml or pass environment variables
+# Uses Maven wrapper included in repo
 ./mvnw clean spring-boot:run
 ```
 > 📍 **Backend API Base:** `http://localhost:8080/api/v1`
@@ -173,21 +173,25 @@ npm run dev
 
 ## ⚙️ Environment Variables Reference
 
+Detailed configuration templates are provided:
+- **Backend:** [`.env.backend.example`](./.env.backend.example)
+- **Frontend:** [`frontend/.env.example`](./frontend/.env.example)
+
 ### Backend (`backend/src/main/resources/application.yml` or System Env)
 | Parameter | Default / Sample | Description |
 | :--- | :--- | :--- |
 | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/twentyfourk_db` | PostgreSQL connection string |
 | `SPRING_DATASOURCE_USERNAME` | `postgres` | Database user |
 | `SPRING_DATASOURCE_PASSWORD` | `postgres` | Database password |
-| `APP_JWT_SECRET` | `24kLuxuryRealtorsPuneSecureJwtSecretKeyMin32Chars` | HMAC-SHA256 signature secret |
+| `JWT_SECRET` | `openssl rand -base64 64` | HMAC-SHA256 signature secret |
+| `RESEND_API_KEY` | `re_xxx` | Transactional email delivery API |
 | `FAST2SMS_API_KEY` | `your_fast2sms_api_key` | SMS & OTP delivery gateway |
-| `SPRING_MAIL_USERNAME` | `advisory@24krealtors.com` | SMTP Email sender |
+| `WHATSAPP_API_TOKEN` | `your_meta_token` | Meta WhatsApp Cloud API token |
 
 ### Frontend (`frontend/.env`)
 | Parameter | Default / Sample | Description |
 | :--- | :--- | :--- |
 | `VITE_API_BASE_URL` | `https://twentyfourk-backend-production.up.railway.app` | Production Spring Boot API URL |
-| `VITE_GOOGLE_SHEET_WEBHOOK_URL` | `https://script.google.com/macros/s/.../exec` | Real-time Google Apps Script Webhook |
 | `VITE_GEMINI_API_KEY` | `AIzaSy...` | Google Gemini API key for Chat Assistant |
 
 ---
@@ -208,12 +212,12 @@ npm run dev
 ## 📁 Repository Directory Structure
 
 ```
-24k-real-Estate-Digital-marketing/
+24K-Realtors-Website/
 ├── .github/
 │   ├── workflows/             # CI/CD pipelines (ci.yml, release.yml, dependabot.yml)
 │   ├── ISSUE_TEMPLATE/        # Structured bug report & feature request templates
 │   └── pull_request_template.md
-├── backend/                   # Spring Boot 3 Java Application
+├── backend/                   # Spring Boot 3 Java Application (Java 21)
 │   ├── src/main/java/com/realestate/twentyfourk/
 │   │   ├── config/            # Security, CORS, OpenAPI, and WebMvc configurations
 │   │   ├── domain/            # Feature modules (lead, property, attendance, analytics)
@@ -222,15 +226,19 @@ npm run dev
 │       ├── db/migration/      # Flyway SQL migrations (V1 to V24)
 │       └── application.yml    # Spring configuration profiles
 ├── frontend/                  # React 18 + Vite Web Application
-│   ├── public/                # 100% Vector SVG logo (24k_logo.svg), favicon.svg, images
-│   └── src/
-│       ├── components/        # Portal, CRM, LeadDetails, EMI Calculator, DataLabs
-│       ├── layouts/           # Navbar, Footer, Mobile Drawer
-│       └── services/          # apiService.js, authService.js, crmService.js
+│   ├── public/                # Vector SVG logo (24k_logo.svg), favicon.svg, showcase images
+│   ├── src/
+│   │   ├── components/        # Portal, CRM, LeadDetails, EMI Calculator, DataLabs
+│   │   ├── layouts/           # Navbar, Footer, Mobile Drawer
+│   │   └── services/          # apiService.js, authService.js, crmService.js
+│   └── .env.example           # Frontend environment variables template
+├── tts-service/               # Node.js Express voice synthesizer microservice
 ├── google-apps-script/
 │   └── Code.gs                # Google Sheets automated capture script with Golden formatting
-├── docs/
-│   └── GOOGLE_SHEETS_INTEGRATION_GUIDE.md # 1-Minute Google Sheets setup documentation
+├── docs/                      # Technical documentation and data research guides
+├── testing/                   # Full QA test documentation, test cases & regression logs
+├── .env.backend.example       # Backend environment variables template
+├── HANDOVER.md                # Official production handover guide & deployment checklist
 ├── CONTRIBUTING.md            # Git workflow & PR standards
 ├── SECURITY.md                # Vulnerability disclosure policy
 ├── CHANGELOG.md               # Version release changelog

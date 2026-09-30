@@ -60,6 +60,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-[Unreleased]: https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/compare/v0.9.0...HEAD
-[0.9.0]: https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/compare/v0.5.0...v0.9.0
-[0.5.0]: https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/releases/tag/v0.5.0
+[Unreleased]: https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website/compare/v0.5.0...v0.9.0
+[0.5.0]: https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website/releases/tag/v0.5.0
+

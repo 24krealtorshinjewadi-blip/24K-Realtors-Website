@@ -6,43 +6,43 @@
 # ─────────────────────────────────────────
 # Global fallback — all files
 # ─────────────────────────────────────────
-*                                       @manishrai99-afk
+*                                       @24krealtorshinjewadi-blip
 
 # ─────────────────────────────────────────
 # Backend (Spring Boot / Java)
 # ─────────────────────────────────────────
-/backend/                               @manishrai99-afk
-/backend/src/main/java/**/*.java        @manishrai99-afk
-/backend/pom.xml                        @manishrai99-afk
+/backend/                               @24krealtorshinjewadi-blip
+/backend/src/main/java/**/*.java        @24krealtorshinjewadi-blip
+/backend/pom.xml                        @24krealtorshinjewadi-blip
 
 # ─────────────────────────────────────────
 # Database Migrations (Critical — always review)
 # ─────────────────────────────────────────
-/backend/src/main/resources/db/migration/**  @manishrai99-afk
+/backend/src/main/resources/db/migration/**  @24krealtorshinjewadi-blip
 
 # ─────────────────────────────────────────
 # Security Configuration (Extra care)
 # ─────────────────────────────────────────
-/backend/src/main/java/**/security/**   @manishrai99-afk
-/backend/src/main/java/**/config/SecurityConfig.java  @manishrai99-afk
+/backend/src/main/java/**/security/**   @24krealtorshinjewadi-blip
+/backend/src/main/java/**/config/SecurityConfig.java  @24krealtorshinjewadi-blip
 
 # ─────────────────────────────────────────
 # Frontend (React / Vite)
 # ─────────────────────────────────────────
-/frontend/                              @manishrai99-afk
-/frontend/src/**/*.jsx                  @manishrai99-afk
-/frontend/src/**/*.js                   @manishrai99-afk
-/frontend/package.json                  @manishrai99-afk
+/frontend/                              @24krealtorshinjewadi-blip
+/frontend/src/**/*.jsx                  @24krealtorshinjewadi-blip
+/frontend/src/**/*.js                   @24krealtorshinjewadi-blip
+/frontend/package.json                  @24krealtorshinjewadi-blip
 
 # ─────────────────────────────────────────
 # CI/CD & Infrastructure
 # ─────────────────────────────────────────
-/.github/                               @manishrai99-afk
-/Dockerfile*                            @manishrai99-afk
-/docker-compose*.yml                    @manishrai99-afk
+/.github/                               @24krealtorshinjewadi-blip
+/Dockerfile*                            @24krealtorshinjewadi-blip
+/docker-compose*.yml                    @24krealtorshinjewadi-blip
 
 # ─────────────────────────────────────────
 # Environment & Secrets Configuration
 # ─────────────────────────────────────────
-/.env*                                  @manishrai99-afk
-/backend/src/main/resources/application*.yml  @manishrai99-afk
+/.env*                                  @24krealtorshinjewadi-blip
+/backend/src/main/resources/application*.yml  @24krealtorshinjewadi-blip

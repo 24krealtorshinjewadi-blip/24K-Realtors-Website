@@ -700,7 +700,7 @@ export default function HelpSupportTab() {
                 { label: 'Google AI Studio — Get Gemini API Key (Free)', url: 'https://aistudio.google.com/app/apikey', icon: Sparkles, color: '#4285F4' },
                 { label: 'Vercel Dashboard — Environment Variables', url: 'https://vercel.com/dashboard', icon: Globe, color: '#FFF' },
                 { label: 'MahaRERA Official Portal', url: 'https://maharera.maharashtra.gov.in', icon: FileText, color: '#3B82F6' },
-                { label: 'GitHub Repository — CRM Source Code', url: 'https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing', icon: Globe, color: '#10B981' },
+                { label: 'GitHub Repository — CRM Source Code', url: 'https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website', icon: Globe, color: '#10B981' },
               ].map((link, i) => {
                 const IconC = link.icon;
                 return (

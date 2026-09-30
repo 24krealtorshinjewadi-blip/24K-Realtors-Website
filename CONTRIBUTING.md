@@ -33,8 +33,8 @@ Thank you for your interest in contributing! This guide covers everything you ne
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing.git
-cd "24k-real-Estate-Digital-marketing"
+git clone https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website.git
+cd "24K-Realtors-Website"
 
 # 2. Start PostgreSQL (Docker)
 docker run -d \
@@ -154,4 +154,4 @@ backend/src/main/resources/db/migration/
 
 ## Questions?
 
-Open a [Discussion](https://github.com/manishrai99-afk/24k-real-Estate-Digital-marketing/discussions) or reach out to [@manishrai99-afk](https://github.com/manishrai99-afk).
+Open an issue or [Discussion](https://github.com/24krealtorshinjewadi-blip/24K-Realtors-Website/discussions) on the GitHub repository.
